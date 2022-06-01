@@ -7,6 +7,10 @@ import xQuick.Controls  1.0 as X
 import xQuick.Fonts     1.0 as X
 import xQuick.Style     1.0 as X
 
+import gnomonQuick.Controls 1.0 as G
+import gnomonQuick.Style    1.0 as G
+import gnomonQuick.Icons    1.0 as G
+
 
 Item {
     id: _self
@@ -23,25 +27,21 @@ Item {
         RowLayout {
             Layout.fillWidth: true
 
-            X.Label {
+            Label {
                 id: _title;
-
                 Layout.preferredHeight: _title.contentHeight * 1.2;
                 Layout.minimumHeight: _title.contentHeight;
                 horizontalAlignment: Text.AlignLeft;
 
                 text: _self.title;
 
-                font {
-                    weight: Font.Bold
-                    pointSize: 16;
-                }
+                font: G.Style.fonts.header;
             }
 
-            X.Icon {
-                icon: X.Icons.icons.help;
+            G.Icon {
+                icon: G.Icons.icons["help-circle"];
                 size: 18;
-                color: X.Style.foregroundColor;
+                color: hovered ? G.Style.colors.hoveredBaseColor : G.Style.colors.neutralColor;
 
                 MouseArea {
                     anchors.fill: parent;
@@ -70,7 +70,7 @@ Item {
                 anchors.right: _description_view.right;
             }
 
-            X.Label {
+            Label {
                 id: _description;
 
                 width: _description_view.width;
@@ -79,13 +79,11 @@ Item {
                 text: _self.description
                 wrapMode: Text.Wrap
 
-                font {
-                    pointSize: 12;
-                }
+                font: G.Style.fonts.value;
             }
         }
 
-        X.Label {
+        Label {
             id: _plugins_section_title;
 
             Layout.fillWidth: true;
@@ -95,13 +93,10 @@ Item {
             visible: _self.show_description
 
             text: "Algorithms"
-            font {
-                weight: Font.Bold
-                pointSize: 14;
-            }
+            font: G.Style.fonts.subHeader;
         }
 
-        Rectangle {
+        G.Gutter {
             id: _plugins_section;
 
             Layout.fillWidth: true;
@@ -109,7 +104,6 @@ Item {
             Layout.minimumHeight: (_self.height) * 0.2;
 
             visible: _self.show_description
-            color: Qt.darker(X.Style.backgroundColor);
 
             ListView {
                 id: _plugins;
@@ -123,15 +117,16 @@ Item {
                     width: parent.width
                     height: 24
                     text: modelData
+                    font: G.Style.fonts.value
 
                     background: Rectangle {
                         opacity: enabled ? 0.8 : 0.3
-                        color: Qt.lighter(X.Style.backgroundColor, 1.2)
+                        color: G.Style.colors.fgColor;
 
                         Rectangle {
                             width: parent.width
                             height: 1
-                            color: X.Style.borderColor;
+                            color: G.Style.colors.embossColorNeutral;
                             anchors.bottom: parent.bottom
                         }
                     }

@@ -15,6 +15,8 @@ import gnomonQuick.Style  1.0 as G
 import gnomon.Visualization 1.0 as GV
 import gnomon.MetaData    1.0 as GM
 
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
 
 Rectangle {
 
@@ -340,13 +342,13 @@ Rectangle {
             }
         }
 
-        X.Dialog {
+        G.Dialog {
             id: _form_export_dialog;
 
             x: (parent.width - width) / 2
             y: (parent.height - height) / 2
-            width: window.width * 2/4
-            height: window.height * 2/4
+            width: G.Style.mediumDialogWidth;
+            height: G.Style.mediumDialogHeight;
 
             padding: 10;
 
@@ -386,7 +388,7 @@ Rectangle {
                 //form_name.forceActiveFocus();
             }
 
-            Rectangle {
+            G.Gutter {
                 id: _form_selection_panel;
 
                 width: _form_export_dialog.width / 3;
@@ -397,7 +399,6 @@ Rectangle {
                 anchors.right: parent.right;
                 anchors.margins: 10;
 
-                color: X.Style.backgroundColor;
 
                 Component {  id: _delegate;
                     ItemDelegate {
@@ -411,6 +412,29 @@ Rectangle {
 
                         onClicked: {
                             _list_view.currentIndex = index;
+                        }
+
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 60
+                            opacity: enabled ? 0.8 : 0.3
+                            color: getBgColor()
+
+                            Rectangle {
+                                width: parent.width
+                                height: 1
+                                color: getEmbossColor();
+                                anchors.bottom: parent.bottom
+                            }
+                        }
+
+                        function getEmbossColor() {
+                          return G.Style.colors.embossColorNeutral;
+                        }
+
+                        function getBgColor() {
+                          if(hovered) return G.Style.colors.neutralColor;
+                          return G.Style.colors.fgColor;
                         }
 
                         function save_metadata() {
@@ -431,8 +455,7 @@ Rectangle {
 
                             width: parent.width/3
 
-                            font.pointSize: 14;
-                            font.bold: true;
+                            font: G.Style.fonts.value
                             verticalAlignment: Text.AlignVCenter
                             text: modelData ? modelData.replace('gnomon', '') :"";
                         }
@@ -448,7 +471,7 @@ Rectangle {
 
                             width: 3*parent.width/5
 
-                            font.pointSize: 14;
+                            font: G.Style.fonts.value
                             text: "";
                             //focus: true;
                             onAccepted: {
@@ -486,6 +509,7 @@ Rectangle {
                     ScrollIndicator.vertical: ScrollIndicator { }
 
                     delegate: _delegate;
+
 
                     Component.onCompleted: {
 

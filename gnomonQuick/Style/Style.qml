@@ -89,6 +89,14 @@ QtObject {
     property int mediumPanelHeight: S.spacing["13"]
     property int largePanelHeight: S.spacing["14"]
 
+    property int smallDialogWidth: S.spacing["14"]
+    property int mediumDialogWidth: S.spacing["15"]
+    property int largeDialogWidth: S.spacing["16"]
+
+    property int smallDialogHeight: S.spacing["12"]
+    property int mediumDialogHeight: S.spacing["13"]
+    property int largeDialogHeight: S.spacing["14"]
+
     //This is not arbitrary but chosen to fit in a 48px section with a label and margins
     property int comboBoxHeight: 28;
 
@@ -198,13 +206,13 @@ QtObject {
 
         property font header: Qt.font({
             family: "Poppins",
-            weight: "Regular",
+            weight: Font.Medium, //"Regular",
             pointSize: S.fontScale["200"],
         })
 
         property font subHeader: Qt.font({
             family: "Poppins",
-            weight: "Regular",
+            weight: Font.Bold, //"Regular",
             pointSize: S.fontScale["100"],
         })
 

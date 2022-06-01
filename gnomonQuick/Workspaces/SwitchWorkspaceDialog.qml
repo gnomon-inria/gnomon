@@ -8,17 +8,20 @@ import xQuick.Fonts     1.0 as X
 import xQuick.Style     1.0 as X
 
 import gnomonQuick.Controls  1.0 as G
+import gnomonQuick.Style     1.0 as G
 
-Dialog {
+G.Dialog {
     id: self;
 
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
-    width: Math.min(window.width, window.height) / 3 * 2
-    height: window.height / 3 * 2
+    width: G.Style.mediumDialogWidth
+    height: G.Style.largeDialogHeight
 
     leftPadding: 0;
     rightPadding: 0;
+    topPadding: 0;
+    bottomPadding: 0;
 
     parent: Overlay.overlay
 
@@ -26,22 +29,26 @@ Dialog {
     title: "Workspaces"
     // standardButtons: Dialog.Close
 
-    footer: X.DialogButtonBox
+    footer: DialogButtonBox
     {
         visible: true
 
-        Button {
-            text: 'New';
-
-            onClicked: {
-                self.accept();
-                _workspace_dialog.open();
-            }
+        G.Button {
+            text: 'Close';
+            flat: true
+            type: G.Style.ButtonType.Neutral
+            onClicked: self.reject();
         }
 
-        Button {
-            text: 'Close';
-            onClicked: self.accept();
+        G.Button {
+            text: 'New';
+            flat: true
+            type: G.Style.ButtonType.Base
+
+            onClicked: {
+                self.reject();
+                _workspace_dialog.open();
+            }
         }
     }
 
@@ -54,10 +61,12 @@ Dialog {
         currentIndex: -1
 
         anchors.fill: parent
+        anchors.margins: 0
 
         delegate: ItemDelegate {
             width: listView.width
             text: model.title
+            font: G.Style.fonts.value
             highlighted: ListView.isCurrentItem
             onClicked: {
                 listView.currentIndex = index
@@ -67,17 +76,27 @@ Dialog {
 
             background: Rectangle {
                 implicitWidth: 100
-                implicitHeight: 80
+                implicitHeight: 60
                 opacity: enabled ? 0.8 : 0.3
                 // color: Qt.darker(X.Style.backgroundColor, 1.2)
-                color: "#22000000";
+                color: getBgColor()
 
                 Rectangle {
                     width: parent.width
                     height: 1
-                    color: X.Style.borderColor;
+                    color: getEmbossColor();
                     anchors.bottom: parent.bottom
                 }
+            }
+            function getEmbossColor() {
+              if(down || highlighted) return G.Style.colors.embossColorBlue;
+              return G.Style.colors.embossColorNeutral;
+            }
+
+            function getBgColor() {
+              if(down || highlighted) return G.Style.colors.baseColor;
+              if(hovered) return G.Style.colors.neutralColor;
+              return G.Style.colors.fgColor;
             }
 
             Item {
