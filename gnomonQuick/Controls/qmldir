@@ -9,6 +9,7 @@ ComboBoxDelegate 1.0 ComboBoxDelegate.qml
 FormIdentifier 1.0 FormIdentifier.qml
 ComboBox 1.0 ComboBox.qml
 ComboBoxWithLabel 1.0 ComboBoxWithLabel.qml
+CheckBox 1.0 CheckBox.qml
 CollapsiblePanel 1.0 CollapsiblePanel.qml
 ParameterGroup 1.0 ParameterGroup.qml
 Slider 1.0 Slider.qml

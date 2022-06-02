@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import crossQuick as C
+import dtkCore
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
@@ -58,7 +59,7 @@ Control {
         anchors.top: _slider.bottom
         x: _slider.gaugeWidth
 
-        text: _slider.value
+        text: _slider.value.toFixed(_control.param.decimals)
         font: G.Style.fonts.value
         color: G.Style.colors.hoveredBaseColor
     }

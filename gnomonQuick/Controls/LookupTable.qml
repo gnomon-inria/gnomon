@@ -8,6 +8,8 @@ import xQuick.Style    1.0 as X
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
+import dtkCore
+
 Control {
 	id: _control
 
@@ -79,16 +81,16 @@ Control {
             }
         }
 
-        X.CheckBox {
+        G.CheckBox {
             id: _visible
-            text: "Show";
+            text: "Hide";
             //Layout.fillWidth: true;
             width: G.Style.sizes.s6
 
-            checked: param.visibility
+            checked: !param.visibility
 
             onClicked: {
-                param.visibility = _visible.checked
+                param.visibility = !_visible.checked
             }
         }
 
