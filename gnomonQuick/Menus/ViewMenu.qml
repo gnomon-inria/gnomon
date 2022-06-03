@@ -44,9 +44,9 @@ Control {
         target: null
 
         function onValueChanged() {
-            // if (_auto_render.checked) {
-            //     view.viewLogic.update();
-            // }
+            if (_auto_render.checked) {
+                view.viewLogic.update();
+            }
         }
     }
 
@@ -85,8 +85,21 @@ Control {
 
     }
 
+    Label {
+        id: _visu_label
+
+        anchors.top: _form_selector.bottom
+        anchors.left: parent.left
+        anchors.topMargin: G.Style.sizes.s5
+        anchors.bottomMargin: G.Style.sizes.s4
+
+        text: "Visualization"
+        font: G.Style.fonts.header
+        color: G.Style.colors.textColorBase
+    }
+
     ColumnLayout {
-        anchors.top: _form_selector.bottom;
+        anchors.top: _visu_label.bottom;
         anchors.right: parent.right;
         anchors.left: parent.left;
         anchors.bottom: parent.bottom;
@@ -126,11 +139,24 @@ Control {
         }
 
         Item {
+            Layout.fillWidth: true
+            height: G.Style.sizes.s4
+        }
+
+        Item {
             id: _menu;
 
             Layout.fillWidth: true;
-            Layout.fillHeight: true;
+            height: G.Style.mediumPanelHeight
+            //Layout.fillHeight: true;
 
+        }
+
+        Item {
+            id: _spacer
+
+            Layout.fillWidth: true;
+            Layout.fillHeight: true;
         }
 
         Item {
@@ -173,71 +199,26 @@ Control {
 
             }
 
+            G.CheckBox {
+
+                id: _auto_render
+
+                anchors.bottom: _render.top
+                anchors.right: _render.right
+                anchors.bottomMargin: G.Style.smallPadding
+
+                text: "Auto render"
+
+                onClicked: {
+                    if (_auto_render.checked) {
+                        console.info('launching Render!')
+                        view.viewLogic.update();
+                    }
+                }
+
+            }
+
         }
-
-        // X.ButtonRaw {
-        //     text: "Render";
-
-        //     Layout.fillWidth: true;
-        //     enabled: view.viewLogic.formNames.length > 0;
-        //     visible: view.viewLogic.formNames.length > 0;
-
-        //     onClicked: {
-        //         view.viewLogic.update();
-        //     }
-
-        //     X.CheckBox{ id: _auto_render
-
-        //         text: ""
-        //         contentItem: null;
-
-        //         anchors.top: parent.top
-        //         anchors.topMargin: 5
-        //         anchors.right: parent.right
-        //         anchors.rightMargin: 5
-
-        //         height: parent.height - 10;
-
-
-        //         MouseArea {
-        //             id: _auto_render_mouse_area;
-        //             anchors.fill: parent;
-        //             hoverEnabled: true;
-
-        //             propagateComposedEvents: true
-
-        //             onClicked: mouse.accepted = false;
-        //             onPressed: mouse.accepted = false;
-        //             onReleased: mouse.accepted = false;
-        //             onDoubleClicked: mouse.accepted = false;
-        //             onPositionChanged: mouse.accepted = false;
-        //             onPressAndHold: mouse.accepted = false;
-        //         }
-
-        //         ToolTip.visible: _auto_render_mouse_area.containsMouse;
-        //         ToolTip.text: "Auto-render";
-
-        //         onClicked: {
-        //             if (_auto_render.checked) {
-        //                 console.info('launching Render!')
-        //                 view.viewLogic.update();
-        //             }
-        //         }
-        //     }
-        // }
-
-        // X.ButtonRaw {
-        //     text: "Clear";
-
-        //     Layout.fillWidth: true;
-        //     enabled: view.viewLogic.formNames.length > 0;
-        //     visible: view.viewLogic.formNames.length > 0;
-
-        //     onClicked: {
-        //         view.viewLogic.clear();
-        //         _internal.menu.destroy();
-        //     }
-        // }
     }
 
     QtObject {
