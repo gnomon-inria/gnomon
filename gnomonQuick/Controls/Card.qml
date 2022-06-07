@@ -35,7 +35,7 @@ Control {
         color: _mouse_area.containsMouse? _getHoveredBgColor() : _getBgColor()
         radius: _control.rounded? G.Style.cardRadius : 0
 
-        border.width: _control.outline? 2: 0
+        border.width: _control.outline? G.Style.borderWidth: 0
         border.color: _getBorderColor()
     }
 

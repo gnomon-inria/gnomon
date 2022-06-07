@@ -14,6 +14,8 @@ Control
   property bool clickable: false;
   property string tooltip: "";
 
+  property alias mouse_area: _mouse_area;
+
   readonly property real _implicitSize: icon.toString() ? size : 0
 
   signal clicked

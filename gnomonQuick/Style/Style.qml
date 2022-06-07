@@ -45,6 +45,8 @@ QtObject {
 
     property int cardRadius: S.spacing["3"]
 
+    property int borderWidth: S.spacing["0"]
+
     property int buttonRadius: S.spacing["1"]
     property int buttonPadding: S.spacing["2"]
     property int buttonWidth: S.spacing["10"]

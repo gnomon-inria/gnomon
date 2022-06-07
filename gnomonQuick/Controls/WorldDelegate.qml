@@ -40,10 +40,10 @@ Item {
             anchors.top: _world_delegate.top
             anchors.margins: 3*modelData
 
-            color: Qt.darker(X.Style.backgroundColor);
+            color: G.Style.colors.gutterColor
 
-            border.width: 2;
-            border.color: _world.currentIndex == _world_delegate.ref ? G.Style.colors.highlightColor : X.Style.backgroundColor;
+            border.width: G.Style.borderWidth;
+            border.color: _world.currentIndex == _world_delegate.ref ? G.Style.colors.highlightColor : G.Style.colors.gutterColor;
 
             visible: modelData == 0? true : GV.World.timeKeys(form_id).length > 1;
         }
@@ -53,10 +53,10 @@ Item {
         id: _thumbnail
 
         anchors.fill: parent;
-        anchors.margins: 3;
+        anchors.margins: G.Style.borderWidth + 1;
 
-        color: "#99D0A3BF"
-        radius: 2;
+        color: G.Style.colors.lightBlue
+        radius: G.Style.borderWidth;
 
         Drag.active: _dragger.drag.active
         Drag.dragType: Drag.Automatic
@@ -113,15 +113,14 @@ Item {
         }
 
         DropArea {
-
             id: _drop;
 
             anchors.fill: parent;
 
-            X.Icon {
-                icon: X.Icons.icons.arrow_circle_down;
-                size: 56;
-                color: "#44999999";
+            G.Icon {
+                icon: G.Icons.icons["arrow-down-circle"];
+                size: G.Style.smallDelegateHeight;
+                color: G.Style.colors.lightBlue;
                 visible: _drop.containsDrag;
                 anchors.centerIn: parent;
             }
@@ -135,89 +134,72 @@ Item {
             }
         }
 
-        X.ToolTip {
+        ToolTip {
             visible: _dragger.containsMouse
             text: GV.World.getDynamicFormMetadata(form_id).data["name"]
+            delay: 500;
         }
 
-        X.Icon {
+        G.Icon {
             id: _edit_icon;
-            icon: X.Icons.icons.edit;
-            size: 24;
-            color: X.Style.foregroundColor;
+            icon: G.Icons.icons["pencil"];
+            size: G.Style.iconMedium;
+            color: G.Style.colors.textColorNeutral;
+            clickable: true;
+            tooltip: "Edit form metadata";
 
             anchors.bottom: _thumbnail.bottom
-            anchors.bottomMargin: 5
+            anchors.bottomMargin: G.Style.smallPadding
             anchors.right: _thumbnail.right
-            anchors.rightMargin: 5
-            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse || _edit_mouse_area.containsMouse) && parent.parent.height > 42
+            anchors.rightMargin: G.Style.smallPadding
 
-            MouseArea { id: _edit_mouse_area;
-                anchors.fill: parent;
-                hoverEnabled: true;
+            visible: (_dragger.containsMouse || _save_icon.mouse_area.containsMouse || _delete_icon.mouse_area.containsMouse || _edit_icon.mouse_area.containsMouse) && parent.parent.height > 42
 
-                onClicked: {
-                    console.log("Form Id: ", form_id, metadata_edit.formId)
-
-                    metadata_edit.open()
-                }
+            onClicked: {
+                console.log("Form Id: ", form_id, metadata_edit.formId)
+                metadata_edit.open()
             }
-
-            ToolTip.visible: _edit_mouse_area.containsMouse;
-            ToolTip.text: "Edit form metadata";
         }
 
-        X.Icon {
+        G.Icon {
             id: _delete_icon;
-            icon: X.Icons.icons.delete;
-            size: 24;
-            color: X.Style.foregroundColor;
+            icon: G.Icons.icons["delete"];
+            size: G.Style.iconMedium;
+            color: G.Style.colors.textColorNeutral;
+            clickable: true;
+            tooltip: "Delete form";
 
             anchors.top: _thumbnail.top
-            anchors.topMargin: 5
+            anchors.topMargin: G.Style.smallPadding
             anchors.left: _thumbnail.left
-            anchors.rightMargin: 5
-            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse || _edit_mouse_area.containsMouse) && parent.parent.height > 42
+            anchors.rightMargin: G.Style.smallPadding
+            visible: (_dragger.containsMouse || _save_icon.mouse_area.containsMouse || _delete_icon.mouse_area.containsMouse || _edit_icon.mouse_area.containsMouse) && parent.parent.height > 42
 
-            MouseArea { id: _delete_mouse_area;
-                anchors.fill: parent;
-                hoverEnabled: true;
-
-                onClicked: {
-                    GV.World.deleteForm(form_id)
-                    console.log("delete ...", model.index, form_id)
-                    _world_model.remove(model.index)
-                }
+            onClicked: {
+                GV.World.deleteForm(form_id)
+                console.log("delete ...", model.index, form_id)
+                _world_model.remove(model.index)
             }
-
-            ToolTip.visible: _delete_mouse_area.containsMouse;
-            ToolTip.text: "Delete form";
         }
 
-        X.Icon {
+        G.Icon {
             id: _save_icon;
-            icon: X.Icons.icons.save;
-            size: 24;
-            color: X.Style.foregroundColor;
+            icon: G.Icons.icons["content-save"];
+            size: G.Style.iconMedium;
+            color: G.Style.colors.textColorNeutral;
+            clickable: true;
+            tooltip: "Save form";
 
             anchors.top: _thumbnail.top
-            anchors.topMargin: 5
+            anchors.topMargin: G.Style.smallPadding
             anchors.right: _thumbnail.right
-            anchors.rightMargin: 5
-            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse || _edit_mouse_area.containsMouse) && parent.parent.height > 42
+            anchors.rightMargin: G.Style.smallPadding
+            visible: (_dragger.containsMouse || _save_icon.mouse_area.containsMouse || _delete_icon.mouse_area.containsMouse || _edit_icon.mouse_area.containsMouse) && parent.parent.height > 42
 
-            MouseArea {
-                id: _save_mouse_area;
-                anchors.fill: parent;
-                hoverEnabled: true;
-
-                onClicked: _file_dialog.open()
-            }
-
-            ToolTip.visible: _save_mouse_area.containsMouse;
-            ToolTip.text: "Save form";
+            onClicked: _file_dialog.open()
         }
     }
+
     G.MetadataDialog {
         id: metadata_edit
 
