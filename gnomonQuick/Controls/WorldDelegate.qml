@@ -117,8 +117,8 @@ Item {
 
             anchors.fill: parent;
 
-            G.Icon {
-                icon: G.Icons.icons["arrow-down-circle"];
+            G.IconButton {
+                iconName: G.Icons.icons["arrow-down-circle"];
                 size: G.Style.smallDelegateHeight;
                 color: G.Style.colors.lightBlue;
                 visible: _drop.containsDrag;
@@ -140,12 +140,11 @@ Item {
             delay: 500;
         }
 
-        G.Icon {
+        G.IconButton {
             id: _edit_icon;
-            icon: G.Icons.icons["text-box-edit"];
+            iconName: G.Icons.icons["text-box-edit"];
             size: G.Style.iconMedium;
             color: G.Style.colors.textColorFaded;
-            clickable: true;
             tooltip: "Edit form metadata";
 
             anchors.bottom: _thumbnail.bottom
@@ -153,7 +152,7 @@ Item {
             anchors.right: _thumbnail.right
             anchors.rightMargin: G.Style.borderWidth
 
-            visible: (_dragger.containsMouse || _save_icon.mouse_area.containsMouse || _delete_icon.mouse_area.containsMouse || _edit_icon.mouse_area.containsMouse) && parent.parent.height > 42
+            visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse) && parent.parent.height > 42
 
             onClicked: {
                 console.log("Form Id: ", form_id, metadata_edit.formId)
@@ -161,19 +160,18 @@ Item {
             }
         }
 
-        G.Icon {
+        G.IconButton {
             id: _delete_icon;
-            icon: G.Icons.icons["delete"];
+            iconName: G.Icons.icons["delete"];
             size: G.Style.iconMedium;
             color: G.Style.colors.textColorFaded;
-            clickable: true;
             tooltip: "Delete form";
 
             anchors.top: _thumbnail.top
             anchors.topMargin: G.Style.borderWidth
             anchors.left: _thumbnail.left
             anchors.leftMargin: G.Style.borderWidth
-            visible: (_dragger.containsMouse || _save_icon.mouse_area.containsMouse || _delete_icon.mouse_area.containsMouse || _edit_icon.mouse_area.containsMouse) && parent.parent.height > 42
+            visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse) && parent.parent.height > 42
 
             onClicked: {
                 GV.World.deleteForm(form_id)
@@ -182,19 +180,18 @@ Item {
             }
         }
 
-        G.Icon {
+        G.IconButton {
             id: _save_icon;
-            icon: G.Icons.icons["content-save"];
+            iconName: G.Icons.icons["content-save"];
             size: G.Style.iconMedium;
             color: G.Style.colors.textColorFaded;
-            clickable: true;
             tooltip: "Save form";
 
             anchors.top: _thumbnail.top
             anchors.topMargin: G.Style.borderWidth
             anchors.right: _thumbnail.right
             anchors.rightMargin: G.Style.borderWidth
-            visible: (_dragger.containsMouse || _save_icon.mouse_area.containsMouse || _delete_icon.mouse_area.containsMouse || _edit_icon.mouse_area.containsMouse) && parent.parent.height > 42
+            visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse) && parent.parent.height > 42
 
             onClicked: _file_dialog.open()
         }

@@ -11,14 +11,7 @@ Control
   property int size: G.Style.iconMedium;
   property color color: G.Style.colors.textColorBase;
 
-  property bool clickable: false;
-  property string tooltip: "";
-
-  property alias mouse_area: _mouse_area;
-
   readonly property real _implicitSize: icon.toString() ? size : 0
-
-  signal clicked
 
   implicitWidth: _implicitSize
   implicitHeight: _implicitSize
@@ -35,21 +28,5 @@ Control
     text: _control.icon;
     font.pixelSize: _control.size;
     font.family: _loader.name;
-  }
-
-  ToolTip.visible: _control.tooltip && _mouse_area.containsMouse;
-  ToolTip.text: _control.tooltip;
-  ToolTip.delay: 500;
-
-  MouseArea {
-    id: _mouse_area;
-
-    anchors.fill: _control;
-    hoverEnabled: true;
-
-    onClicked: {
-      if (_control.clickable)
-        _control.clicked()
-    }
   }
 }

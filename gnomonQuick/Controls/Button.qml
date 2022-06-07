@@ -50,6 +50,10 @@ Button {
 
             anchors.fill: parent;
             hoverEnabled: true;
+
+            onClicked: {
+              _control.clicked()
+            }
         }
     }
 

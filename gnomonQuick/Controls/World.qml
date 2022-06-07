@@ -30,7 +30,6 @@ ListView {
 
     model: ListModel {
         id: _world_model;
-
     }
 
     delegate: G.WorldDelegate {

@@ -69,8 +69,8 @@ Rectangle {
 
         anchors.fill: parent;
 
-        G.Icon {
-            icon: G.Icons.icons["arrow-down-circle"];
+        G.IconButton {
+            iconName: G.Icons.icons["arrow-down-circle"];
             size: G.Style.smallDelegateHeight;
             color: G.Style.colors.fgColor
             visible: _drop.containsDrag;
@@ -143,12 +143,11 @@ Rectangle {
         }
     }
 
-    G.Icon { id: _2d_icon;
+    G.IconButton { id: _2d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_2D;
-        icon: G.Icons.icons["crop-free"];
+        iconName: G.Icons.icons["crop-free"];
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
-        clickable: true
         tooltip: "2D mode"
 
         anchors.top: _view.top
@@ -234,12 +233,11 @@ Rectangle {
         }
     }
 
-    G.Icon { id: _3d_icon;
+    G.IconButton { id: _3d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_3D;
-        icon: G.Icons.icons["cube-outline"];
+        iconName: G.Icons.icons["cube-outline"];
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
-        clickable: true
         tooltip: "3D mode";
 
         anchors.top: _view.top
@@ -264,12 +262,11 @@ Rectangle {
         }
     }
 
-    G.Icon {id: _link;
-        icon: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
+    G.IconButton {id: _link;
+        iconName: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
         size: G.Style.iconLarge;
         color: viewLogic.synced ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         visible: viewLogic.inPool
-        clickable: true;
         tooltip: "(Un)Link with other views for this workspace"
 
         anchors.top: _view.top
@@ -296,12 +293,11 @@ Rectangle {
         }
     }
 
-    G.Icon { id: _export_icon;
-        icon: viewLogic.inputView ? G.Icons.icons["arrow-down-circle"] : G.Icons.icons["arrow-up-circle"];
+    G.IconButton { id: _export_icon;
+        iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-circle"] : G.Icons.icons["arrow-up-circle"];
         enabled: !viewLogic.inputView
         size: G.Style.iconLarge;
         color: viewLogic.inputView ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
-        clickable: true
         tooltip: viewLogic.inputView? "" : "Export"
 
         anchors.top: _view.top

@@ -57,8 +57,8 @@ Rectangle {
 
         anchors.fill: parent;
 
-        G.Icon {
-            icon: G.Icons.icons["arrow-down-circle"];
+        G.IconButton {
+            iconName: G.Icons.icons["arrow-down-circle"];
             size: G.Style.smallDelegateHeight;
             color: G.Style.colors.bgColor
             visible: _drop.containsDrag;
@@ -80,12 +80,11 @@ Rectangle {
         }
     }
 
-    G.Icon { id: _export_icon;
-        icon: viewLogic.inputView ? G.Icons.icons["arrow-down-circle"] : G.Icons.icons["arrow-up-circle"];
+    G.IconButton { id: _export_icon;
+        iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-circle"] : G.Icons.icons["arrow-up-circle"];
         enabled: !viewLogic.inputView
         size: G.Style.iconLarge;
         color: viewLogic.inputView ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
-        clickable: true
         tooltip: viewLogic.inputView? "" : "Export"
 
         anchors.top: _view.top
