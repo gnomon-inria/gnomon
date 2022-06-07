@@ -34,7 +34,7 @@ Item {
 
              width: _world_delegate.width
             height: _world_delegate.height
-            radius: 4;
+            radius: G.Style.panelRadius;
 
             anchors.left: _world_delegate.left
             anchors.top: _world_delegate.top

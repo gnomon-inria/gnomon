@@ -88,9 +88,9 @@ Rectangle {
         tooltip: viewLogic.inputView? "" : "Export"
 
         anchors.top: _view.top
-        anchors.topMargin: 10
+        anchors.topMargin: G.Style.smallPadding
         anchors.right: _view.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: G.Style.smallPadding
 
         onClicked: {
             viewLogic.transmit();
