@@ -37,6 +37,7 @@ Dialog {
 
     background: Rectangle {
         anchors.fill: parent
+        radius: G.Style.panelRadius
         color: G.Style.colors.bgColor
     }
 

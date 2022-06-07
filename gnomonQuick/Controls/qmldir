@@ -41,3 +41,5 @@ TimeSeriesSlider 1.0 TimeSeriesSlider.qml
 Toast 1.0 Toast.qml
 Dialog 1.0 Dialog.qml
 Gutter 1.0 Gutter.qml
+ListItemDelegate 1.0 ListItemDelegate.qml
+MetadataDialog 1.0 MetadataDialog.qml

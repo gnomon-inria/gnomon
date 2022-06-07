@@ -392,7 +392,7 @@ Rectangle {
 
 
                 Component {  id: _delegate;
-                    ItemDelegate {
+                    G.ListItemDelegate {
                         id: _form_metadata_panel;
 
                         width: _list_view.width
@@ -405,28 +405,6 @@ Rectangle {
                             _list_view.currentIndex = index;
                         }
 
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 60
-                            opacity: enabled ? 0.8 : 0.3
-                            color: getBgColor()
-
-                            Rectangle {
-                                width: parent.width
-                                height: 1
-                                color: getEmbossColor();
-                                anchors.bottom: parent.bottom
-                            }
-                        }
-
-                        function getEmbossColor() {
-                          return G.Style.colors.embossColorNeutral;
-                        }
-
-                        function getBgColor() {
-                          if(hovered) return G.Style.colors.neutralColor;
-                          return G.Style.colors.fgColor;
-                        }
 
                         function save_metadata() {
                             metadata.set("name", _form_name.text);
@@ -441,41 +419,43 @@ Rectangle {
                             id: _name_label
                             anchors.left: parent.left;
                             anchors.bottom: parent.bottom;
-                            anchors.verticalCenter: _form_name.verticalCenter;
-                            anchors.margins: 5;
+                            anchors.top: parent.top;
+                            anchors.margins: G.Style.smallPadding;
 
-                            width: parent.width/3
+                            width: parent.width/4
 
                             font: G.Style.fonts.value
                             verticalAlignment: Text.AlignVCenter
                             text: modelData ? modelData.replace('gnomon', '') :"";
                         }
 
-                        TextField {
-                            id: _form_name;
-
+                        G.Gutter {
                             anchors.left: _name_label.right;
                             anchors.right: parent.right;
                             anchors.top: parent.top;
                             anchors.bottom: parent.bottom;
-                            anchors.margins: 5;
+                            anchors.margins: G.Style.smallPadding
 
-                            width: 3*parent.width/5
+                            TextField {
+                                id: _form_name;
+                                anchors.fill: parent
+                                leftPadding: G.Style.smallPadding
 
-                            font: G.Style.fonts.value
-                            text: "";
-                            //focus: true;
-                            onAccepted: {
-                                if(index != _list_view.count - 1) {
-                                    _list_view.incrementCurrentIndex();
-                                } else {
-                                    _form_export_dialog.accept();
+                                font: G.Style.fonts.value
+                                text: "";
+                                //focus: true;
+                                onAccepted: {
+                                    if(index != _list_view.count - 1) {
+                                        _list_view.incrementCurrentIndex();
+                                    } else {
+                                        _form_export_dialog.accept();
+                                    }
                                 }
-                            }
 
-                            onActiveFocusChanged: {
-                                if (focus) {
-                                    _list_view.currentIndex = index;
+                                onActiveFocusChanged: {
+                                    if (focus) {
+                                        _list_view.currentIndex = index;
+                                    }
                                 }
                             }
                         }

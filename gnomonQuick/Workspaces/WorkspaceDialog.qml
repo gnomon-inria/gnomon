@@ -120,9 +120,8 @@ G.Dialog {
 
                 model: _available_workspaces;
 
-                delegate: ItemDelegate {
+                delegate: G.ListItemDelegate {
                     width: _list_view.width
-                    height: 42;
                     highlighted: _list_view.currentIndex == index
 
                     text: model.title;
@@ -147,31 +146,6 @@ G.Dialog {
                         anchors.right: parent.right;
                         anchors.rightMargin: 10;
                         anchors.verticalCenter: parent.verticalCenter;
-                    }
-
-                    background: Rectangle {
-                        implicitWidth: 100
-                        implicitHeight: 60
-                        opacity: enabled ? 0.8 : 0.3
-                        color: getBgColor()
-
-                        Rectangle {
-                            width: parent.width
-                            height: 1
-                            color: getEmbossColor();
-                            anchors.bottom: parent.bottom
-                        }
-                    }
-
-                    function getEmbossColor() {
-                      if(down || highlighted) return G.Style.colors.embossColorBlue;
-                      return G.Style.colors.embossColorNeutral;
-                    }
-
-                    function getBgColor() {
-                      if(down || highlighted) return G.Style.colors.baseColor;
-                      if(hovered) return G.Style.colors.neutralColor;
-                      return G.Style.colors.fgColor;
                     }
                 }
 

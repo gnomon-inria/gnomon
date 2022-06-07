@@ -63,7 +63,7 @@ G.Dialog {
         anchors.fill: parent
         anchors.margins: 0
 
-        delegate: ItemDelegate {
+        delegate: G.ListItemDelegate {
             width: listView.width
             text: model.title
             font: G.Style.fonts.value
@@ -72,31 +72,6 @@ G.Dialog {
                 listView.currentIndex = index
                 window.switch_workspace(index)
                 self.close();
-            }
-
-            background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
-                opacity: enabled ? 0.8 : 0.3
-                // color: Qt.darker(X.Style.backgroundColor, 1.2)
-                color: getBgColor()
-
-                Rectangle {
-                    width: parent.width
-                    height: 1
-                    color: getEmbossColor();
-                    anchors.bottom: parent.bottom
-                }
-            }
-            function getEmbossColor() {
-              if(down || highlighted) return G.Style.colors.embossColorBlue;
-              return G.Style.colors.embossColorNeutral;
-            }
-
-            function getBgColor() {
-              if(down || highlighted) return G.Style.colors.baseColor;
-              if(hovered) return G.Style.colors.neutralColor;
-              return G.Style.colors.fgColor;
             }
 
             Item {
