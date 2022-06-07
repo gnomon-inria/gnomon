@@ -10,12 +10,12 @@ import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
 import xQuick.Style      1.0 as X
 
-import gnomonQuick.Menus      1.0 as G
-import gnomonQuick.Workspaces 1.0 as G
-import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Menus as G
+import gnomonQuick.Workspaces as G
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
 
 Control {
-
     id: _menu;
 
     property var parameters
@@ -26,14 +26,19 @@ Control {
     ColumnLayout {
 
         anchors.fill: parent
-        anchors.margins: 10
 
-        X.ComboBox {
-            id: _algos
-            Layout.fillWidth: true;
-            Layout.preferredHeight: 28;
+        anchors.margins: 12;
+
+        G.ComboBoxWithLabel {
+            id: _algos;
+
+            label: "Algorithm:"
             model: d ? d.algorithms : null;
-            currentIndex: d ? d.currentIndex : undefined;
+
+            Layout.fillWidth: true;
+            /* Layout.leftMargin: 20 */
+            /* Layout.rightMargin: 20 */
+
             onCurrentIndexChanged: {
                 _auto_apply.checked = false
 
@@ -42,81 +47,60 @@ Control {
                     d.algoName = d.algorithms[d.currentIndex];
                 }
             }
+
+            onCurrentValueChanged: {
+                _params.parameters =  d.parameters
+                _params.updateParametersModel();
+            }
+        }
+
+        G.Parameters {
+            id: _params;
         }
 
         ListView {
-            id: _l;
+            id: _control;
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
+
+            spacing: G.Style.smallColumnSpacing;
             clip: true;
 
-            model: parameters
+            model: _params.params_model
 
-            spacing: 10;
+            signal valueChanged();
 
-            delegate: Loader {
-                property var lparam: param;
-                height: 70;
-                width: _l.width;
-                sourceComponent: component
+            delegate: G.ParameterGroup {
+                title: group;
+                model: parameters;
+                width: _control.width;
 
-                Connections {
-                    target: param
-                    function onValueChanged() {
-                        if (_auto_apply.checked) {
-                            console.info('launching Run!')
-                            d.run();
-                        }
-                    }
+                onValueChanged: {
+                    _control.valueChanged();
+                }
+            }
+
+            onValueChanged: {
+                if (_auto_apply.checked) {
+                    console.info('launching Run!')
+                    d.run();
                 }
             }
 
             ScrollIndicator.vertical: ScrollIndicator {
-                visible: _l.contentHeight > _l.height;
+                visible: _control.contentHeight > _control.height;
             }
         }
 
-        X.ButtonRaw {
-            text: "Apply";
+        Item {
+            height: G.Style.sizes.s8
+            Layout.fillWidth: true;
 
-            onClicked: {
-                //_progress.open();
-                //_progress.start();
-                console.info('launching Run!')
-                d.run();
-            }
+            CheckBox{ id: _auto_apply
 
-            X.CheckBox{ id: _auto_apply
-
-                text: ""
-                contentItem: null;
-
-                anchors.top: parent.top
-                anchors.topMargin: 5
-                anchors.right: parent.right
-                anchors.rightMargin: 5
-
-                height: parent.height - 10;
-
-
-                MouseArea { id: _auto_apply_mouse_area;
-                    anchors.fill: parent;
-                    hoverEnabled: true;
-
-                    propagateComposedEvents: true
-
-                    onClicked: mouse.accepted = false;
-                    onPressed: mouse.accepted = false;
-                    onReleased: mouse.accepted = false;
-                    onDoubleClicked: mouse.accepted = false;
-                    onPositionChanged: mouse.accepted = false;
-                    onPressAndHold: mouse.accepted = false;
-                }
-
-                ToolTip.visible: _auto_apply_mouse_area.containsMouse;
-                ToolTip.text: "Auto-apply";
+                text: "Apply automatically"
 
                 onClicked: {
                     if (_auto_apply.checked) {
@@ -125,10 +109,29 @@ Control {
                     }
                 }
             }
+        }
 
+        Item {
+            id: _button_container
+
+            height: G.Style.sizes.s8
             Layout.fillWidth: true;
+
+            G.Button {
+
+                id: _apply
+
+                anchors.right: _button_container.right;
+                anchors.verticalCenter: _button_container
+                anchors.margins: G.Style.smallPadding
+
+                text: "Apply"
+
+                onClicked: {
+                    console.info('launching Run!')
+                    d.run();
+                }
+            }
         }
     }
-
-    background: Rectangle { color: "#00000000"; }
 }
