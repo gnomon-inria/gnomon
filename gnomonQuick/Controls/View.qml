@@ -88,26 +88,17 @@ Rectangle {
         }
     }
 
-    X.Dialog {
-        id: _bad_form_warning_dialog;
+    G.Toast {
+        id: _bad_form_warning_dialog
 
         property string badform_name: "";
         property string accepted_forms: "";
 
-        y: parent.height/3
-        x: parent.width/6
-
         parent: Overlay.overlay
+        header: "Bad Form!"
+        message: "You are trying to add a form of type: " + _bad_form_warning_dialog.badform_name + "\n , please select a suitted one: " + _bad_form_warning_dialog.accepted_forms;
 
-
-            X.Label {
-                anchors.fill: parent
-                text: "You are trying to add a form of type: " + _bad_form_warning_dialog.badform_name + "\n , please select a suitted one: " + _bad_form_warning_dialog.accepted_forms;
-                font {
-                    weight: Font.Bold
-                    pointSize: 14;
-                }
-            }
+        type: G.Style.ButtonType.Warning
     }
 
     Slider { id: _2d_slider

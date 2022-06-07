@@ -195,6 +195,9 @@ QtObject {
 
         //otherColors
         property color lightBlue: S.colors.blue["200"]
+        property color lightGreen: S.colors.green["200"]
+        property color lightRed: S.colors.red["200"]
+        property color lightOrange: S.colors.orange["200"]
     }
 
     // /////////////////////////////////////////////////////////////////////////////
