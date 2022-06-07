@@ -195,6 +195,7 @@ QtObject {
 
         //otherColors
         property color lightBlue: S.colors.blue["200"]
+        property color transparent: "#00000000"
     }
 
     // /////////////////////////////////////////////////////////////////////////////

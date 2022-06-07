@@ -41,6 +41,7 @@ Control {
 
     ToolTip.visible: _control.tooltip && _mouse_area.containsMouse
     ToolTip.text: _control.tooltip
+    ToolTip.delay: 500;
 
 // /////////////////////////////////////////////////////////////////////////////
 // CHILD OBJECTS

@@ -148,28 +148,19 @@ Rectangle {
         icon: G.Icons.icons["crop-free"];
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        clickable: true
+        tooltip: "2D mode"
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: G.Style.smallPadding
 
-        MouseArea { id: _2d_mouse_area;
-            anchors.fill: parent;
-            hoverEnabled: true;
-
-            onClicked: {
-                self.switchTo2D();
-                self.sliceChange(_2d_slider.value);
-            }
+        onClicked: {
+            self.switchTo2D();
+            self.sliceChange(_2d_slider.value);
         }
-
-        ToolTip.visible: _2d_mouse_area.containsMouse;
-        ToolTip.text: "2D mode";
     }
-
-
-    // G.ButtonViewer {}
 
     Image {
         id: _2d_xy;
@@ -205,7 +196,7 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
 
         anchors.top: _view.top
-        anchors.topMargin: 2*G.Style.iconLarge + 4*G.Style.smallPadding
+        anchors.topMargin: 2*G.Style.iconLarge + 3*G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 1.5*G.Style.smallPadding
 
@@ -229,7 +220,7 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
 
         anchors.top: _view.top
-        anchors.topMargin: 3*G.Style.iconLarge + 6*G.Style.smallPadding
+        anchors.topMargin: 3*G.Style.iconLarge + 4*G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 1.5*G.Style.smallPadding
 
@@ -248,23 +239,17 @@ Rectangle {
         icon: G.Icons.icons["cube-outline"];
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        clickable: true
+        tooltip: "3D mode";
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
-        anchors.leftMargin: 50
+        anchors.leftMargin: G.Style.iconLarge + 2*G.Style.smallPadding
 
-        MouseArea { id: _3d_mouse_area;
-            anchors.fill: parent;
-            hoverEnabled: true;
-
-            onClicked: {
-                self.switchTo3D();
-            }
+        onClicked: {
+            self.switchTo3D();
         }
-
-        ToolTip.visible: _3d_mouse_area.containsMouse;
-        ToolTip.text: "3D mode";
     }
 
     Connections {
@@ -281,30 +266,20 @@ Rectangle {
 
     G.Icon {id: _link;
         icon: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
-        enabled: !viewLogic.inputView
         size: G.Style.iconLarge;
         color: viewLogic.synced ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         visible: viewLogic.inPool
+        clickable: true;
+        tooltip: "(Un)Link with other views for this workspace"
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
-        anchors.leftMargin: 90
+        anchors.leftMargin: 2*G.Style.iconLarge + 3*G.Style.smallPadding
 
-        MouseArea {
-            id: _link_area;
-
-            anchors.fill: parent;
-
-            hoverEnabled: true;
-
-            onClicked: {
-                viewLogic.tryLinking();
-            }
+        onClicked: {
+            viewLogic.tryLinking();
         }
-
-        ToolTip.visible: _link_area.containsMouse;
-        ToolTip.text: "(Un)Link with other views for this workspace";
     }
 
     Keys.onPressed: (event) => {
@@ -326,23 +301,20 @@ Rectangle {
         enabled: !viewLogic.inputView
         size: G.Style.iconLarge;
         color: viewLogic.inputView ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
+        clickable: true
+        tooltip: viewLogic.inputView? "" : "Export"
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
         anchors.right: _view.right
         anchors.rightMargin: G.Style.smallPadding
 
-        MouseArea { id: _export_mouse_area;
-            anchors.fill: parent;
-            hoverEnabled: true;
-
-            onClicked: {
-                if(_list_view.count > 1) {
-                    _form_export_dialog.open();
-                    _form_export_dialog.reset();
-                } else {
-                    viewLogic.transmit()
-                }
+        onClicked: {
+            if(_list_view.count > 1) {
+                _form_export_dialog.open();
+                _form_export_dialog.reset();
+            } else {
+                viewLogic.transmit()
             }
         }
 
@@ -517,9 +489,6 @@ Rectangle {
                 }
             }
         }
-
-        ToolTip.visible: !viewLogic.inputView && _export_mouse_area.containsMouse;
-        ToolTip.text: "Export";
     }
 
     layer.enabled: true
@@ -541,7 +510,7 @@ Rectangle {
         height: self.height - 1
         radius: 4;
 
-        color: "#00000000";
+        color: G.Style.colors.transparent;
 
         border.width: 2;
         border.color: G.Style.colors.baseColor;
