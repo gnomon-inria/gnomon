@@ -113,23 +113,12 @@ Item {
                 focus: true
                 model: _self.plugins
 
-                delegate: ItemDelegate {
+                delegate: G.ListItemDelegate {
                     width: parent.width
                     height: 24
                     text: modelData
                     font: G.Style.fonts.value
-
-                    background: Rectangle {
-                        opacity: enabled ? 0.8 : 0.3
-                        color: G.Style.colors.fgColor;
-
-                        Rectangle {
-                            width: parent.width
-                            height: 1
-                            color: G.Style.colors.embossColorNeutral;
-                            anchors.bottom: parent.bottom
-                        }
-                    }
+                    hoverEnabled: false
                 }
 
                 ScrollIndicator.vertical: ScrollIndicator { visible: _plugins.contentHeight > _plugins_section.height; }

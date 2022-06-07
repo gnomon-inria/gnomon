@@ -34,25 +34,10 @@ G.Dialog { id: self;
     standardButtons: Dialog.Ok | Dialog.Cancel
 
     Component {  id: _delegate;
-        ItemDelegate {
+        G.ListItemDelegate {
             width: listView.width
             text: title
-            font: G.Style.fonts.formLabel
-            //color: G.Style.colors.textColorNeutral
             highlighted: listView.currentIndex == index
-
-            implicitHeight: G.Style.formDelegateHeight
-
-            Label {
-                anchors.fill: parent;
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignLeft
-
-                text: _delegate.text;
-                font: G.Style.fonts.formLabel
-                color: G.Style.colors.textColorNeutral
-
-            }
 
             onClicked: {
                 listView.currentIndex = index;
@@ -61,31 +46,6 @@ G.Dialog { id: self;
             onDoubleClicked: {
                 listView.currentIndex = index;
                 self.accept();
-            }
-
-            background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 60
-                opacity: enabled ? 0.8 : 0.3
-                color: getBgColor()
-
-                Rectangle {
-                    width: parent.width
-                    height: 1
-                    color: getEmbossColor();
-                    anchors.bottom: parent.bottom
-                }
-            }
-
-            function getEmbossColor() {
-              if(down || highlighted) return G.Style.colors.embossColorBlue;
-              return G.Style.colors.embossColorNeutral;
-            }
-
-            function getBgColor() {
-              if(down || highlighted) return G.Style.colors.baseColor;
-              if(hovered) return G.Style.colors.neutralColor;
-              return G.Style.colors.fgColor;
             }
         }
     }
