@@ -13,11 +13,15 @@ import xQuick.Vis         1.0 as XVis
 import gnomon.Visualization 1.0 as GV
 import gnomon.Mpl           1.0 as GV
 
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
+
 Rectangle {
 
     id: self;
 
-    color: Qt.darker(X.Style.alternateBaseColor);
+    color: G.Style.colors.bgColor;
 
     focus: true;
 
@@ -53,10 +57,10 @@ Rectangle {
 
         anchors.fill: parent;
 
-        X.Icon {
-            icon: X.Icons.icons.arrow_circle_down;
-            size: 56;
-            color: "#44999999";
+        G.Icon {
+            icon: G.Icons.icons["arrow-down-circle"];
+            size: G.Style.smallDelegateHeight;
+            color: G.Style.colors.bgColor
             visible: _drop.containsDrag;
             anchors.centerIn: parent;
         }
@@ -76,31 +80,25 @@ Rectangle {
         }
     }
 
-    X.Icon { id: _export_icon;
-        icon: X.Icons.icons.arrow_circle_up;
-        size: 32;
-        color: X.Style.foregroundColor;
+    G.Icon { id: _export_icon;
+        icon: viewLogic.inputView ? G.Icons.icons["arrow-down-circle"] : G.Icons.icons["arrow-up-circle"];
+        enabled: !viewLogic.inputView
+        size: G.Style.iconLarge;
+        color: viewLogic.inputView ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        clickable: true
+        tooltip: viewLogic.inputView? "" : "Export"
 
         anchors.top: _view.top
         anchors.topMargin: 10
         anchors.right: _view.right
         anchors.rightMargin: 10
 
-        MouseArea { id: _export_mouse_area;
-            anchors.fill: parent;
-            hoverEnabled: true;
+        onClicked: {
+            viewLogic.transmit();
 
-            onClicked: {
-
-                viewLogic.transmit();
-
-                // _view.requestCapture();
-                // _view.update();
-            }
+            // _view.requestCapture();
+            // _view.update();
         }
-
-        ToolTip.visible: _export_mouse_area.containsMouse;
-        ToolTip.text: "Export";
     }
 
     layer.enabled: true
@@ -110,7 +108,7 @@ Rectangle {
         {
              width: self.width
             height: self.height
-            radius: 4;
+            radius: G.Style.panelRadius;
         }
     }
 
@@ -120,12 +118,12 @@ Rectangle {
 
          width: self.width - 1
         height: self.height - 1
-        radius: 4;
+        radius: G.Style.panelRadius;
 
-        color: "#00000000";
+        color: G.Style.colors.transparent;
 
-        border.width: 2;
-        border.color: X.Style.accentColor;
+        border.width: G.Style.borderWidth;
+        border.color: G.Style.colors.baseColor;
 
         visible: window.currentView == self;
     }

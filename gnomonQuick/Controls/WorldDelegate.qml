@@ -142,16 +142,16 @@ Item {
 
         G.Icon {
             id: _edit_icon;
-            icon: G.Icons.icons["pencil"];
+            icon: G.Icons.icons["text-box-edit"];
             size: G.Style.iconMedium;
-            color: G.Style.colors.textColorNeutral;
+            color: G.Style.colors.textColorFaded;
             clickable: true;
             tooltip: "Edit form metadata";
 
             anchors.bottom: _thumbnail.bottom
-            anchors.bottomMargin: G.Style.smallPadding
+            anchors.bottomMargin: G.Style.borderWidth
             anchors.right: _thumbnail.right
-            anchors.rightMargin: G.Style.smallPadding
+            anchors.rightMargin: G.Style.borderWidth
 
             visible: (_dragger.containsMouse || _save_icon.mouse_area.containsMouse || _delete_icon.mouse_area.containsMouse || _edit_icon.mouse_area.containsMouse) && parent.parent.height > 42
 
@@ -165,14 +165,14 @@ Item {
             id: _delete_icon;
             icon: G.Icons.icons["delete"];
             size: G.Style.iconMedium;
-            color: G.Style.colors.textColorNeutral;
+            color: G.Style.colors.textColorFaded;
             clickable: true;
             tooltip: "Delete form";
 
             anchors.top: _thumbnail.top
-            anchors.topMargin: G.Style.smallPadding
+            anchors.topMargin: G.Style.borderWidth
             anchors.left: _thumbnail.left
-            anchors.rightMargin: G.Style.smallPadding
+            anchors.leftMargin: G.Style.borderWidth
             visible: (_dragger.containsMouse || _save_icon.mouse_area.containsMouse || _delete_icon.mouse_area.containsMouse || _edit_icon.mouse_area.containsMouse) && parent.parent.height > 42
 
             onClicked: {
@@ -186,14 +186,14 @@ Item {
             id: _save_icon;
             icon: G.Icons.icons["content-save"];
             size: G.Style.iconMedium;
-            color: G.Style.colors.textColorNeutral;
+            color: G.Style.colors.textColorFaded;
             clickable: true;
             tooltip: "Save form";
 
             anchors.top: _thumbnail.top
-            anchors.topMargin: G.Style.smallPadding
+            anchors.topMargin: G.Style.borderWidth
             anchors.right: _thumbnail.right
-            anchors.rightMargin: G.Style.smallPadding
+            anchors.rightMargin: G.Style.borderWidth
             visible: (_dragger.containsMouse || _save_icon.mouse_area.containsMouse || _delete_icon.mouse_area.containsMouse || _edit_icon.mouse_area.containsMouse) && parent.parent.height > 42
 
             onClicked: _file_dialog.open()

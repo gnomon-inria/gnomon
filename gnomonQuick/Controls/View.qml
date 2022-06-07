@@ -498,7 +498,7 @@ Rectangle {
         {
              width: self.width
             height: self.height
-            radius: 4;
+            radius: G.Style.panelRadius;
         }
     }
 
@@ -508,11 +508,11 @@ Rectangle {
 
          width: self.width - 1
         height: self.height - 1
-        radius: 4;
+        radius: G.Style.panelRadius;
 
         color: G.Style.colors.transparent;
 
-        border.width: 2;
+        border.width: G.Style.borderWidth;
         border.color: G.Style.colors.baseColor;
 
         visible: window.currentView == self;
