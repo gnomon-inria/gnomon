@@ -17,12 +17,13 @@ import gnomon.MetaData    1.0 as GM
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
 
 Rectangle {
 
     id: self;
 
-    color: G.Style.colors.bgColor; //Qt.darker(X.Style.alternateBaseColor);
+    color: G.Style.colors.bgColor;
 
     focus: true;
 
@@ -68,10 +69,10 @@ Rectangle {
 
         anchors.fill: parent;
 
-        X.Icon {
-            icon: X.Icons.icons.arrow_circle_down;
-            size: 56;
-            color: "#44999999";
+        G.Icon {
+            icon: G.Icons.icons["arrow-down-circle"];
+            size: G.Style.smallDelegateHeight;
+            color: G.Style.colors.fgColor
             visible: _drop.containsDrag;
             anchors.centerIn: parent;
         }
@@ -123,10 +124,10 @@ Rectangle {
 
         anchors.verticalCenter: _view.verticalCenter
         anchors.left: _view.left
-        anchors.leftMargin: 5 - _view.height / 2
+        anchors.leftMargin: G.Style.smallPadding / 2 - _view.height / 2
 
-        handle.implicitWidth: 10
-        handle.implicitHeight: 10
+        handle.implicitWidth: G.Style.smallPadding
+        handle.implicitHeight: G.Style.smallPadding
 
         onValueChanged: {
             self.sliceChange(value);
@@ -142,16 +143,16 @@ Rectangle {
         }
     }
 
-    X.Icon { id: _2d_icon;
+    G.Icon { id: _2d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_2D;
-        icon: X.Icons.icons.crop_square;
-        size: 32;
-        color: active? X.Style.foregroundColor : X.Style.backgroundColor;
+        icon: G.Icons.icons["crop-free"];
+        size: G.Style.iconLarge;
+        color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
 
         anchors.top: _view.top
-        anchors.topMargin: 10
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
-        anchors.leftMargin: 10
+        anchors.leftMargin: G.Style.smallPadding
 
         MouseArea { id: _2d_mouse_area;
             anchors.fill: parent;
@@ -175,13 +176,14 @@ Rectangle {
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XY;
         source: active? "qrc:/qml/gnomonQuick/assets/View-XY.png" : "qrc:/qml/gnomonQuick/assets/View-XY-off.png";
         visible: _2d_icon.active
-        // size: 32;
-        // color: X.Style.foregroundColor;
+
+        height: G.Style.iconLarge
+        fillMode: Image.PreserveAspectFit
 
         anchors.top: _view.top
-        anchors.topMargin: 50
+        anchors.topMargin: G.Style.iconLarge + 2*G.Style.smallPadding
         anchors.left: _view.left
-        anchors.leftMargin: 13
+        anchors.leftMargin: 1.5*G.Style.smallPadding
 
         MouseArea { id: _2d_xy_area;
             anchors.fill: parent;
@@ -198,13 +200,14 @@ Rectangle {
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XZ;
         source: active? "qrc:/qml/gnomonQuick/assets/View-XZ.png" : "qrc:/qml/gnomonQuick/assets/View-XZ-off.png";
         visible: _2d_icon.active;
-        // size: 32;
-        // color: X.Style.foregroundColor;
+
+        height: G.Style.iconLarge
+        fillMode: Image.PreserveAspectFit
 
         anchors.top: _view.top
-        anchors.topMargin: 90
+        anchors.topMargin: 2*G.Style.iconLarge + 4*G.Style.smallPadding
         anchors.left: _view.left
-        anchors.leftMargin: 13
+        anchors.leftMargin: 1.5*G.Style.smallPadding
 
         MouseArea { id: _2d_xz_area;
             anchors.fill: parent;
@@ -221,13 +224,14 @@ Rectangle {
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_YZ;
         source: active? "qrc:/qml/gnomonQuick/assets/View-YZ.png" : "qrc:/qml/gnomonQuick/assets/View-YZ-off.png";
         visible: _2d_icon.active;
-        // size: 32;
-        // color: X.Style.foregroundColor;
+
+        height: G.Style.iconLarge
+        fillMode: Image.PreserveAspectFit
 
         anchors.top: _view.top
-        anchors.topMargin: 130
+        anchors.topMargin: 3*G.Style.iconLarge + 6*G.Style.smallPadding
         anchors.left: _view.left
-        anchors.leftMargin: 13
+        anchors.leftMargin: 1.5*G.Style.smallPadding
 
         MouseArea { id: _2d_yz_area;
             anchors.fill: parent;
@@ -239,14 +243,14 @@ Rectangle {
         }
     }
 
-    X.Icon { id: _3d_icon;
+    G.Icon { id: _3d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_3D;
-        icon: X.Icons.icons._3d_rotation;
-        size: 32;
-        color: active? X.Style.foregroundColor : X.Style.backgroundColor;
+        icon: G.Icons.icons["cube-outline"];
+        size: G.Style.iconLarge;
+        color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
 
         anchors.top: _view.top
-        anchors.topMargin: 10
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 50
 
@@ -275,15 +279,15 @@ Rectangle {
         }
     }
 
-    X.Icon {
-        id: _link;
-        icon: viewLogic.synced ? X.Icons.icons.lock_outline : X.Icons.icons.lock_open;
-        size: 32;
-        color: viewLogic.synced ? X.Style.foregroundColor : X.Style.backgroundColor;
+    G.Icon {id: _link;
+        icon: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
+        enabled: !viewLogic.inputView
+        size: G.Style.iconLarge;
+        color: viewLogic.synced ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         visible: viewLogic.inPool
 
         anchors.top: _view.top
-        anchors.topMargin: 10
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 90
 
@@ -317,16 +321,16 @@ Rectangle {
         }
     }
 
-    X.Icon { id: _export_icon;
-        icon: viewLogic.inputView ? X.Icons.icons.arrow_circle_down : X.Icons.icons.arrow_circle_up;
+    G.Icon { id: _export_icon;
+        icon: viewLogic.inputView ? G.Icons.icons["arrow-down-circle"] : G.Icons.icons["arrow-up-circle"];
         enabled: !viewLogic.inputView
-        size: 32;
-        color: viewLogic.inputView ? X.Style.backgroundColor : X.Style.foregroundColor;
+        size: G.Style.iconLarge;
+        color: viewLogic.inputView ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
 
         anchors.top: _view.top
-        anchors.topMargin: 10
+        anchors.topMargin: G.Style.smallPadding
         anchors.right: _view.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: G.Style.smallPadding
 
         MouseArea { id: _export_mouse_area;
             anchors.fill: parent;
@@ -350,7 +354,7 @@ Rectangle {
             width: G.Style.mediumDialogWidth;
             height: G.Style.mediumDialogHeight;
 
-            padding: 10;
+            padding: G.Style.smallPadding;
 
             parent: Overlay.overlay
             modal: true
@@ -397,7 +401,7 @@ Rectangle {
                 anchors.bottom: parent.bottom;
                 anchors.left: parent.left;
                 anchors.right: parent.right;
-                anchors.margins: 10;
+                anchors.margins: G.Style.smallPadding;
 
 
                 Component {  id: _delegate;
@@ -406,7 +410,6 @@ Rectangle {
 
                         width: _list_view.width
 
-                        //color: X.Style.backgroundColor;
                         property var metadata: viewLogic.formMetadata(modelData);
                         property var form_name: _form_name;
 
