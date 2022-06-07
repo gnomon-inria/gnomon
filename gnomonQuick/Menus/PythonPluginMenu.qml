@@ -9,6 +9,7 @@ import xQuick.Style      1.0 as X
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
 
 Control {
 
@@ -26,74 +27,76 @@ Control {
         anchors.fill: parent;
         anchors.margins: 10;
 
-        X.Label {
+        Label {
             text: _self.type + "s";
             Layout.fillWidth: true;
             height: 20
 
-            color: X.Style.foregroundColor;
+            font: G.Style.fonts.subHeader;
+            color: G.Style.colors.textColorBase;
             horizontalAlignment: Text.AlignLeft;
+            verticalAlignment: Text.AlignVCenter;
         }
 
-        ListView {
-
-            id: _list_view
-
-            spacing: 10;
-            clip: true;
-
-            model: _self.type == "Parameter" ?
-                   list_model(d.code.parameters) :
-                   _self.type == "Input Form"  ? list_model(d.code.inputForms)  :
-                   _self.type == "Output Form" ? list_model(d.code.outputForms) : [] ;
-
+        G.Gutter {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            delegate: ItemDelegate {
-                width: _list_view.width
-                highlighted: ListView.isCurrentItem
+            ListView {
 
-                X.Label {
-                    anchors.left: parent.left;
-                    anchors.top: parent.top;
-                    anchors.margins: 10;
+                id: _list_view
 
-                    text: _self.type == "Parameter" ?
-                          modelData.name + " (" + modelData.type + ")" :
-                          modelData.name + " (" + (modelData.type).replace("gnomon","") + ")";
+                anchors.fill: parent
 
-                    color: X.Style.foregroundColor;
-                    font.pixelSize: 12;
+                //spacing: 10;
+                clip: true;
+
+                model: _self.type == "Parameter" ?
+                       list_model(d.code.parameters) :
+                       _self.type == "Input Form"  ? list_model(d.code.inputForms)  :
+                       _self.type == "Output Form" ? list_model(d.code.outputForms) : [] ;
+
+
+
+                delegate: G.ListItemDelegate {
+                    width: _list_view.width
+                    highlighted: false
+
+                    Label {
+                        anchors.left: parent.left;
+                        anchors.top: parent.top;
+                        anchors.margins: 10;
+
+                        text: _self.type == "Parameter" ?
+                              modelData.name + " (" + modelData.type + ")" :
+                              modelData.name + " (" + (modelData.type).replace("gnomon","") + ")";
+
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.formLabel;
+                    }
+
+                    Label {
+                        anchors.right: parent.right;
+                        anchors.bottom: parent.bottom;
+                        anchors.margins: 10;
+
+                        text: _self.type == "Parameter" ?
+                              modelData.doc :
+                              modelData.data_plugin;
+
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
+                    }
                 }
 
-                X.Label {
-                    anchors.right: parent.right;
-                    anchors.bottom: parent.bottom;
-                    anchors.margins: 10;
-
-                    text: _self.type == "Parameter" ?
-                          modelData.doc :
-                          modelData.data_plugin;
-
-                    color: X.Style.foregroundColor;
-                    font.pixelSize: 8;
-                }
-
-                background: Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 50
-
-                    radius: 4
-                    color: X.Style.backgroundColor
-                }
+                ScrollIndicator.vertical: ScrollIndicator { }
             }
-
-            ScrollIndicator.vertical: ScrollIndicator { }
         }
 
-        X.ButtonRaw {
+        G.Button {
             text: "Add "+ _self.type + "...";
+            flat: true
+            type: G.Style.ButtonType.Base;
 
             Layout.fillWidth: true;
 
@@ -104,11 +107,13 @@ Control {
     }
 
     background: Rectangle {
-        color: Qt.darker(X.Style.backgroundColor);
-        radius: 4;
+        anchors.fill: parent
+        color: G.Style.colors.bgColor;
+        radius: G.Style.panelRadius;
 
-        border.width: 1;
-        border.color: X.Style.borderColor;
+        border.color: G.Style.colors.embossColor
+        border.width: 1
+
     }
 
     G.PythonPluginDialog {

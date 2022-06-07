@@ -11,6 +11,8 @@ import xQuick.Style      1.0 as X
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Icons      1.0 as G
 
 Item {
 
@@ -56,7 +58,7 @@ Item {
         }
     }
 
-    X.Dialog {
+    G.Dialog {
         id: _message_dialog;
 
         x: Math.round((window.width - width) / 2)
@@ -71,30 +73,30 @@ Item {
 
         title: "Existing file"
 
-        X.Label {
+        Label {
             anchors.fill: parent;
 
             text: "The file already exists, do you want to replace it or save as new ?";
-            font {
-                pointSize: 12;
-            }
+            font: G.Style.fonts.value;
         }
 
-        footer: X.DialogButtonBox {
+        footer: DialogButtonBox {
             visible: true
 
-            X.ButtonRaw {
+            G.Button {
                 text: "Cancel"
-                foregroundColor: X.Style.accentColor
+                type: G.Style.ButtonType.Neutral
+                flat: true;
 
                 onClicked: {
                     _message_dialog.close();
                 }
             }
 
-            X.ButtonRaw {
+            G.Button {
                 text: "Replace"
-                foregroundColor: X.Style.accentColor
+                type: G.Style.ButtonType.Warning
+                flat: true;
 
                 onClicked: {
                     d.save(_file_dialog_save.file);
@@ -102,9 +104,10 @@ Item {
                 }
             }
 
-            X.ButtonRaw {
+            G.Button {
                 text: "Save as"
-                foregroundColor: X.Style.accentColor
+                type: G.Style.ButtonType.Base
+                flat: false;
 
                 onClicked: {
                     _self._current_file = "";
@@ -124,10 +127,28 @@ Item {
         currentIndex: d.editMode ? 0 : 1;
 
         TabButton {
-            text: "Edit"
+            text: qsTr("Edit")
+            contentItem: Label {
+                anchors.fill: parent
+
+                font: G.Style.fonts.header;
+                color: G.Style.colors.textColorBase;
+                text: parent.text;
+                verticalAlignment: Text.AlignVCenter;
+                horizontalAlignment: Text.AlignHCenter;
+          }
         }
         TabButton {
-            text: "Run"
+            text: qsTr("Run")
+            contentItem: Label {
+                anchors.fill: parent
+
+                font: G.Style.fonts.header;
+                color: G.Style.colors.textColorBase;
+                text: parent.text;
+                verticalAlignment: Text.AlignVCenter;
+                horizontalAlignment: Text.AlignHCenter;
+          }
         }
 
         onCurrentIndexChanged: {
@@ -156,17 +177,20 @@ Item {
 
                     Layout.fillWidth: true
 
-                    X.Label {
+                    Label {
                         Layout.fillWidth: true;
                         text: "Python Plugin Code";
-                        color: X.Style.foregroundColor;
-                        font.pixelSize: 18;
+                        color: G.Style.colors.textColorNeutral;
+                        font: G.Style.fonts.header;
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignLeft
+                        leftPadding: G.Style.smallPadding
                     }
 
-                    X.Icon { id: _update_icon;
-                        icon: X.Icons.icons.sync;
+                    G.Icon { id: _update_icon;
+                        icon: G.Icons.icons["refresh"];
                         size: 32;
-                        color: X.Style.foregroundColor;
+                        color: _update_mouse_area.containsMouse ? G.Style.colors.hoveredBaseColor : G.Style.colors.neutralColor;
 
                         MouseArea { id: _update_mouse_area;
                             anchors.fill: parent;
@@ -182,7 +206,7 @@ Item {
                     }
                 }
 
-                X.TextField {
+                TextField {
                     id: _plugin_name
 
                     Layout.fillWidth: true
@@ -231,8 +255,10 @@ Item {
                 RowLayout {
                     anchors.margins: 10;
 
-                    X.ButtonRaw {
+                    G.Button {
                         text: "Save";
+                        type: G.Style.ButtonType.Base
+                        flat: true
 
                         Layout.fillWidth: true;
 
@@ -246,8 +272,10 @@ Item {
                         }
                     }
 
-                    X.ButtonRaw {
+                    G.Button {
                         text: "Load";
+                        type: G.Style.ButtonType.Base
+                        flat: true
 
                         Layout.fillWidth: true;
 
