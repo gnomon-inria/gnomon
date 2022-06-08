@@ -46,6 +46,8 @@ Control {
 
             G.IconButton {
                 iconName: G.Icons.icons["plus"]
+                tooltip: "Add " + _self.type
+                hoverColor: G.Style.colors.hoveredBaseColor
 
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter

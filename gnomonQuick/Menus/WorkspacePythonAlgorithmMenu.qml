@@ -187,22 +187,14 @@ Item {
                         leftPadding: G.Style.smallPadding
                     }
 
-                    G.Icon { id: _update_icon;
-                        icon: G.Icons.icons["refresh"];
-                        size: 32;
-                        color: _update_mouse_area.containsMouse ? G.Style.colors.hoveredBaseColor : G.Style.colors.neutralColor;
+                    G.IconButton { id: _update_icon;
+                        iconName: G.Icons.icons["refresh"];
+                        size: G.Style.iconLarge;
+                        tooltip: "Update code";
 
-                        MouseArea { id: _update_mouse_area;
-                            anchors.fill: parent;
-                            hoverEnabled: true;
-
-                            onClicked: {
-                                d.code.updateCode();
-                            }
+                        onClicked: {
+                            d.code.updateCode();
                         }
-
-                        ToolTip.visible: _update_mouse_area.containsMouse;
-                        ToolTip.text: "Update code";
                     }
                 }
 
