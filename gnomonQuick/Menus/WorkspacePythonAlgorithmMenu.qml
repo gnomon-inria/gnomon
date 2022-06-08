@@ -126,29 +126,16 @@ Item {
 
         currentIndex: d.editMode ? 0 : 1;
 
-        TabButton {
-            text: qsTr("Edit")
-            contentItem: Label {
-                anchors.fill: parent
-
-                font: G.Style.fonts.header;
-                color: G.Style.colors.textColorBase;
-                text: parent.text;
-                verticalAlignment: Text.AlignVCenter;
-                horizontalAlignment: Text.AlignHCenter;
-          }
+        background: Rectangle {
+            anchors.fill: parent
+            color: G.Style.colors.bgColor
         }
-        TabButton {
-            text: qsTr("Run")
-            contentItem: Label {
-                anchors.fill: parent
 
-                font: G.Style.fonts.header;
-                color: G.Style.colors.textColorBase;
-                text: parent.text;
-                verticalAlignment: Text.AlignVCenter;
-                horizontalAlignment: Text.AlignHCenter;
-          }
+        G.TabButton {
+            text: qsTr("Edit")
+        }
+        G.TabButton {
+            text: qsTr("Run")
         }
 
         onCurrentIndexChanged: {

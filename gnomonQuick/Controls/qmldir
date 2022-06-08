@@ -42,3 +42,4 @@ Dialog 1.0 Dialog.qml
 Gutter 1.0 Gutter.qml
 ListItemDelegate 1.0 ListItemDelegate.qml
 MetadataDialog 1.0 MetadataDialog.qml
+TabButton 1.0 TabButton.qml
