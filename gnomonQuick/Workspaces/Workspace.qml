@@ -37,9 +37,9 @@ Page {
         anchors.bottom: parent.bottom;
         anchors.bottomMargin: 20;
 
-        radius:  X.Style.controls.radius;
-        color: "#bb000000";
-        border.color: "#333333";
+        radius: G.Style.panelRadius;
+        color: G.Style.colors.gutterColor;
+        border.color: G.Style.colors.fgColor;
         border.width: 1;
 
         width: 400;

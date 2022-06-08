@@ -49,7 +49,9 @@ QtObject {
 
     property int buttonRadius: S.spacing["1"]
     property int buttonPadding: S.spacing["2"]
+
     property int buttonWidth: S.spacing["10"]
+    property int longButtonWidth: S.spacing["12"]
 
     property int smallColumnSpacing: S.spacing["2"]
     property int mediumColumnSpacing: S.spacing["4"]
@@ -78,6 +80,10 @@ QtObject {
     property int thumbnailSmall: S.spacing["5"]
     property int thumbnailMedium: S.spacing["5"]
     property int thumbnailLarge: S.spacing["7"]
+
+    property int smallLabelHeight: S.spacing["5"]
+    property int mediumLabelHeight: S.spacing["6"]
+    property int largeLabelHeight: S.spacing["8"]
 
     property int smallPanelWidth: S.spacing["12"]
     property int mediumPanelWidth: S.spacing["13"]
