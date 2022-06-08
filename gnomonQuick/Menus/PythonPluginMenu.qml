@@ -10,6 +10,7 @@ import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Icons      1.0 as G
 
 Control {
 
@@ -96,9 +97,11 @@ Control {
         G.Button {
             text: "Add "+ _self.type + "...";
             flat: true
-            type: G.Style.ButtonType.Base;
+            type: G.Style.ButtonType.Neutral;
+            size: G.Style.buttonSize.Small;
 
-            Layout.fillWidth: true;
+            Layout.alignment: Qt.AlignHCenter
+            implicitWidth: G.Style.sizes.s11
 
             onClicked: {
                 _plugin_dialog.open();
@@ -113,7 +116,6 @@ Control {
 
         border.color: G.Style.colors.embossColor
         border.width: 1
-
     }
 
     G.PythonPluginDialog {

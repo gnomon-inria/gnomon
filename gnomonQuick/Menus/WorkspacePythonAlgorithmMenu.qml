@@ -253,14 +253,19 @@ Item {
                 }
 
                 RowLayout {
-                    anchors.margins: 10;
+                    anchors.margins: G.Style.smallPadding;
+                    spacing: G.Style.smallPadding
+
+                    Item {
+                        Layout.fillWidth: true
+                    }
 
                     G.Button {
                         text: "Save";
-                        type: G.Style.ButtonType.Base
-                        flat: true
 
-                        Layout.fillWidth: true;
+                        type: G.Style.ButtonType.Base
+                        iconName: G.Icons.icons["content-save"]
+                        empty: true
 
                         onClicked: {
                             if(_self._current_file == "") {
@@ -274,10 +279,10 @@ Item {
 
                     G.Button {
                         text: "Load";
-                        type: G.Style.ButtonType.Base
-                        flat: true
 
-                        Layout.fillWidth: true;
+                        type: G.Style.ButtonType.Base
+                        iconName: G.Icons.icons["folder-open"]
+                        empty: true
 
                         onClicked: {
                             _file_dialog.open();

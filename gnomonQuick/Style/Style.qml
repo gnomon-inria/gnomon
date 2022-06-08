@@ -23,6 +23,12 @@ QtObject {
         Danger
     }
 
+    enum ButtonSize {
+        Small,
+        Medium,
+        Large
+    }
+
     enum LabelType {
         Header,
         SubHeader,
@@ -47,7 +53,12 @@ QtObject {
 
     property int buttonRadius: S.spacing["1"]
     property int buttonPadding: S.spacing["2"]
+
     property int buttonWidth: S.spacing["10"]
+
+    property int smallButtonHeight: S.spacing["4"]
+    property int mediumButtonHeight: S.spacing["6"]
+    property int largeButtonHeight: S.spacing["7"]
 
     property int smallColumnSpacing: S.spacing["2"]
     property int mediumColumnSpacing: S.spacing["4"]
@@ -168,7 +179,7 @@ QtObject {
 
         //basic color theme
         property color baseColor: S.colors.blue["500"]
-        property color neutralColor: S.colors.gray["500"]
+        property color neutralColor: S.colors.gray["300"]
         property color dangerColor: S.colors.red["500"]
         property color warningColor: S.colors.orange["500"]
         property color okColor: S.colors.green["500"]
@@ -232,6 +243,12 @@ QtObject {
             family: "Poppins",
             weight: Font.Bold,
             pointSize: S.fontScale["200"],
+        })
+
+        property font buttonSmall: Qt.font({
+            family: "Poppins",
+            weight: Font.Bold,
+            pointSize: S.fontScale["100"],
         })
 
         property font buttonHovered: Qt.font({

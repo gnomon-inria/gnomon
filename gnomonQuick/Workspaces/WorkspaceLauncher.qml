@@ -230,7 +230,7 @@ G.Workspace {
                             anchors.verticalCenter: _project_header.verticalCenter;
                             anchors.margins: G.Style.mediumPadding
 
-                            height: G.Style.sizes.s7
+                            size: G.Style.ButtonSize.Large
 
                             text: "New"
                             iconName: G.Icons.icons["plus"]
@@ -245,7 +245,7 @@ G.Workspace {
                             anchors.verticalCenter: _project_header.verticalCenter;
                             anchors.margins: G.Style.mediumPadding
 
-                            height: G.Style.sizes.s7
+                            size: G.Style.ButtonSize.Large
 
                             text: "Load"
                             iconName: G.Icons.icons["play"]

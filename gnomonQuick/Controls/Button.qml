@@ -16,6 +16,7 @@ Button {
 
 
   property int type: G.Style.ButtonType.Base
+  property int size: G.Style.ButtonSize.Medium
   property bool empty: false
   property string iconName: undefined
 
@@ -23,9 +24,8 @@ Button {
 
   leftPadding: G.Style.buttonPadding
   rightPadding: _control.iconName ? 0 : G.Style.buttonPadding
-  implicitWidth: Math.max(G.Style.buttonWidth,
-    implicitContentWidth + leftPadding + rightPadding)
-  implicitHeight: 32
+  implicitWidth: Math.max(G.Style.buttonWidth, implicitContentWidth + leftPadding + rightPadding)
+  implicitHeight: _getButtonHeight()
 
 // /////////////////////////////////////////////////////////////////////////////
 // Content Item
@@ -78,7 +78,7 @@ Button {
 
         text: _control.text.toUpperCase()
 
-        font: G.Style.fonts.button
+        font: _control.size === G.Style.ButtonSize.Small? G.Style.fonts.buttonSmall : G.Style.fonts.button
 
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
@@ -203,6 +203,17 @@ Button {
 
     return G.Style.colors.textColorNeutral
   }
+
+  function _getButtonHeight() {
+
+      if(_control.size === G.Style.ButtonSize.Small)
+        return G.Style.smallButtonHeight
+
+      if(_control.size === G.Style.ButtonSize.Large)
+        return G.Style.largeButtonHeight
+
+        return G.Style.mediumButtonHeight
+    }
 
 }
 
