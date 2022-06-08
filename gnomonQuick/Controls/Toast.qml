@@ -9,11 +9,14 @@ import gnomonQuick.Icons as G
 
 Popup {
   id: _control
+
   x: Math.round((parent.width - contentWidth))
   y: Math.round((parent.height - contentHeight))
   clip: true
+
   implicitHeight: contentHeight;
   implicitWidth: contentWidth;
+
   margins: G.Style.smallPadding
   bottomPadding: 2
 
@@ -24,11 +27,11 @@ Popup {
 
 
   enter: Transition {
-        NumberAnimation { property: "opacity"; from: 0.0; to: 1.0; duration: _duration}
+    NumberAnimation { property: "opacity"; from: 0.0; to: 1.0; duration: _duration}
   }
 
   exit: Transition {
-        NumberAnimation { property: "opacity"; from: 1.0; to: 0.0; duration: _duration}
+    NumberAnimation { property: "opacity"; from: 1.0; to: 0.0; duration: _duration}
   }
   onOpened : {
     _timer.start()
@@ -41,6 +44,8 @@ Popup {
     }
 
   background: Rectangle {
+    radius: G.Style.panelRadius
+
     border.width: 1
     border.color: _getButtonColor()  
     color: _getBgColor()
@@ -49,13 +54,15 @@ Popup {
   contentItem: Rectangle {
     id : _popup_content
         
-    implicitHeight: Math.round(G.Style.smallDialogHeight / 5 * 2) 
+    implicitHeight: Math.round(G.Style.smallDialogHeight / 2)
     implicitWidth: G.Style.smallDialogWidth 
     color: _getBgColor() 
 
     G.Icon {
-      icon: G.Icons.icons["information"]
-      size: G.Style.iconMedium
+      id: _icon
+
+      icon: _getIcon()
+      size: G.Style.iconLarge
       visible: true
       color: _getButtonColor()
       anchors {
@@ -63,55 +70,56 @@ Popup {
       left: parent.left
       }
     }
+
     Text {
       id: _header
-      font.bold: true
-      font.pointSize: G.Style.sizes.s4
-      color: G.Style.colors.gutterColor
+
+      horizontalAlignment: Text.AlignLeft
+      verticalAlignment: Text.AlignVCenter
+      font: G.Style.fonts.header
+      color: _getTextColor()
+
       anchors {
-        top: parent.top
-        horizontalCenter: parent.horizontalCenter
+        verticalCenter: _icon.verticalCenter
+        left: _icon.right
+        margins: G.Style.smallPadding
       }
     }    
 
     Text {
       id: _message
+
       wrapMode: Text.Wrap
-      horizontalAlignment: Text.AlignHCenter
-      font.pointSize: G.Style.sizes.s3
-      color: G.Style.colors.gutterColor
+      horizontalAlignment: Text.AlignLeft
+      font: G.Style.fonts.value
+      color: _getTextColor()
+
       anchors {
         top: _header.bottom
-        horizontalCenter: parent.horizontalCenter
+        left: _icon.right
+        right: _button.left
+        margins: G.Style.smallPadding
       }
-
     }
-    
-    Rectangle {
-      anchors.margins: G.Style.smallPadding
+
+    G.Button {
+      id: _button
+
       anchors.bottom: parent.bottom
       anchors.right: parent.right
-      width: Math.round(G.Style.buttonWidth / 2)
-      height: 25
-      color: _getButtonColor()
-      Text {
-        anchors.centerIn: parent
-        text: "Got it"
-        color: "white"
+      anchors.margins: G.Style.smallPadding
+
+      text: "Got it"
+      type: _control.type
+      width: 2*G.Style.buttonWidth/3
+
+      onClicked: {
+        _control.close();
       }
     }
   }
 
-  MouseArea {
-    anchors.fill: parent
-    hoverEnabled: true
-    onClicked: {
-      _control.close();
-    }
-  }
-
-
-    function _getButtonColor() {
+  function _getButtonColor() {
     if(_control.type === G.Style.ButtonType.Danger)
       return G.Style.colors.dangerColor
 
@@ -127,19 +135,53 @@ Popup {
     return G.Style.colors.neutralColor
   }
 
-  function _getBgColor() {
+  function _getTextColor() {
     if(_control.type === G.Style.ButtonType.Danger)
-      return G.Style.colors.lightRed
+      return G.Style.colors.textColorDarkDanger
 
     if(_control.type === G.Style.ButtonType.Warning)
-      return G.Style.colors.lightOrange
+      return G.Style.colors.textColorDarkWarning
 
     if(_control.type === G.Style.ButtonType.OK)
-      return G.Style.colors.lightGreen
+      return G.Style.colors.textColorDarkOk
 
     if(_control.type === G.Style.ButtonType.Base)
-      return G.Style.colors.lightBlue
-    
-    return G.Style.colors.neutralColor
+      return G.Style.colors.textColorDarkBase
+
+    return G.Style.colors.textColorDarkNeutral
   }
+
+
+  function _getBgColor() {
+    if(_control.type === G.Style.ButtonType.Danger)
+      return G.Style.colors.textColorDanger
+
+    if(_control.type === G.Style.ButtonType.Warning)
+      return G.Style.colors.textColorWarning
+
+    if(_control.type === G.Style.ButtonType.OK)
+      return G.Style.colors.textColorOk
+
+    if(_control.type === G.Style.ButtonType.Base)
+      return G.Style.colors.textColorBase
+    
+    return G.Style.colors.textColorNeutral
+  }
+
+  function _getIcon() {
+    if(_control.type === G.Style.ButtonType.Danger)
+      return G.Icons.icons["close-circle-outline"]
+
+    if(_control.type === G.Style.ButtonType.Warning)
+      return G.Icons.icons["alert-circle-outline"]
+
+    if(_control.type === G.Style.ButtonType.OK)
+      return G.Icons.icons["check-circle-outline"]
+
+    if(_control.type === G.Style.ButtonType.Base)
+      return G.Icons.icons["information-outline"]
+
+    return G.Icons.icons["chevron-right-circle-outline"]
+  }
+
 }

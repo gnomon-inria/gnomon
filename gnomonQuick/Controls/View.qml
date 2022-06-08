@@ -89,14 +89,14 @@ Rectangle {
     }
 
     G.Toast {
-        id: _bad_form_warning_dialog
+        id: _badform_toast
 
         property string badform_name: "";
         property string accepted_forms: "";
 
         parent: Overlay.overlay
-        header: "Bad Form!"
-        message: "You are trying to add a form of type: " + _bad_form_warning_dialog.badform_name + "\n , please select a suitted one: " + _bad_form_warning_dialog.accepted_forms;
+        header: "Unsupported Form !"
+        message: "You are trying to load  a form of type: " + _badform_toast.badform_name + ", please select a supported one (" + _badform_toast.accepted_forms + ")";
 
         type: G.Style.ButtonType.Warning
     }
@@ -260,9 +260,9 @@ Rectangle {
             _2d_slider.value = value;
         }
         function onBadFormDropped(badFormName, acceptedForms) {
-            _bad_form_warning_dialog.badform_name = badFormName;
-            _bad_form_warning_dialog.accepted_forms = acceptedForms;
-            _bad_form_warning_dialog.open();
+            _badform_toast.badform_name = badFormName;
+            _badform_toast.accepted_forms = acceptedForms;
+            _badform_toast.open();
         }
     }
 
