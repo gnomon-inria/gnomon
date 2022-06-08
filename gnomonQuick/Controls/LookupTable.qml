@@ -67,6 +67,8 @@ Control {
 
             first.value: param.valueRangeMin
             second.value: param.valueRangeMax
+            // from: 0
+            // to: 255
 
             first.onMoved: {
                 param.valueRangeMin = first.value
@@ -76,8 +78,10 @@ Control {
             }
 
             Component.onCompleted: {
-                from = param.valueRangeMin;
-                to = param.valueRangeMax;
+                console.log(param.valueRangeMin)
+                console.log(param.valueRangeMax)
+                // from = param.valueRangeMin;
+                // to = param.valueRangeMax;
             }
         }
 
