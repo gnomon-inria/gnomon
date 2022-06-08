@@ -26,17 +26,36 @@ Control {
     ColumnLayout
     {
         anchors.fill: parent;
-        anchors.margins: 10;
+        anchors.margins: G.Style.smallPadding;
 
-        Label {
-            text: _self.type + "s";
+        Control {
             Layout.fillWidth: true;
-            height: 20
+            height: G.Style.iconSmall
 
-            font: G.Style.fonts.subHeader;
-            color: G.Style.colors.textColorBase;
-            horizontalAlignment: Text.AlignLeft;
-            verticalAlignment: Text.AlignVCenter;
+            Label {
+                text: _self.type + "s";
+
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+
+                font: G.Style.fonts.subHeader;
+                color: G.Style.colors.textColorBase;
+                horizontalAlignment: Text.AlignLeft;
+                verticalAlignment: Text.AlignVCenter;
+            }
+
+            G.IconButton {
+                iconName: G.Icons.icons["plus"]
+                tooltip: "Add " + _self.type
+                hoverColor: G.Style.colors.hoveredBaseColor
+
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+
+                onClicked: {
+                    _plugin_dialog.open();
+                }
+            }
         }
 
         G.Gutter {
@@ -48,16 +67,12 @@ Control {
                 id: _list_view
 
                 anchors.fill: parent
-
-                //spacing: 10;
                 clip: true;
 
                 model: _self.type == "Parameter" ?
                        list_model(d.code.parameters) :
                        _self.type == "Input Form"  ? list_model(d.code.inputForms)  :
                        _self.type == "Output Form" ? list_model(d.code.outputForms) : [] ;
-
-
 
                 delegate: G.ListItemDelegate {
                     width: _list_view.width
@@ -93,29 +108,15 @@ Control {
                 ScrollIndicator.vertical: ScrollIndicator { }
             }
         }
-
-        G.Button {
-            text: "Add "+ _self.type + "...";
-            flat: true
-            type: G.Style.ButtonType.Neutral;
-            size: G.Style.buttonSize.Small;
-
-            Layout.alignment: Qt.AlignHCenter
-            implicitWidth: G.Style.sizes.s11
-
-            onClicked: {
-                _plugin_dialog.open();
-            }
-        }
     }
 
     background: Rectangle {
         anchors.fill: parent
-        color: G.Style.colors.bgColor;
+        color: G.Style.colors.fgColor;
         radius: G.Style.panelRadius;
 
-        border.color: G.Style.colors.embossColor
-        border.width: 1
+        //border.color: G.Style.colors.embossColor
+        //border.width: 1
     }
 
     G.PythonPluginDialog {

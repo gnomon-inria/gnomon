@@ -10,7 +10,12 @@ Button
 
   property alias iconName: _icon.icon;
   property alias size: _icon.size;
-  property alias color: _icon.color;
+
+  property color color : G.Style.colors.textColorBase;
+  property color hoverColor : G.Style.colors.hoveredBaseColor;
+
+  property string tooltip: "";
+  property alias containsMouse: _icon_area.containsMouse
 
   implicitHeight: implicitContentHeight;
   implicitWidth: implicitContentWidth;
@@ -18,7 +23,25 @@ Button
   background: Rectangle {
     visible: false;
   }
+
   contentItem: G.Icon {
     id: _icon;
+
+    color: _control.hoverColor && _icon_area.containsMouse ? _control.hoverColor : _control.color
+
+    MouseArea {
+      id: _icon_area;
+
+      anchors.fill: parent;
+      hoverEnabled: true;
+
+      onClicked: {
+        _control.clicked()
+      }
+    }
   }
+
+  ToolTip.visible: _control.tooltip && _icon_area.containsMouse
+  ToolTip.text: _control.tooltip;
+  ToolTip.delay: 500;
 }
