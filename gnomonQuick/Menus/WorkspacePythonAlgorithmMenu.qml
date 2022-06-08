@@ -174,14 +174,22 @@ Item {
                         leftPadding: G.Style.smallPadding
                     }
 
-                    G.IconButton { id: _update_icon;
-                        iconName: G.Icons.icons["refresh"];
-                        size: G.Style.iconLarge;
-                        tooltip: "Update code";
+                    G.Icon { id: _update_icon;
+                        icon: G.Icons.icons["refresh"];
+                        size: 32;
+                        color: _update_mouse_area.containsMouse ? G.Style.colors.hoveredBaseColor : G.Style.colors.neutralColor;
 
-                        onClicked: {
-                            d.code.updateCode();
+                        MouseArea { id: _update_mouse_area;
+                            anchors.fill: parent;
+                            hoverEnabled: true;
+
+                            onClicked: {
+                                d.code.updateCode();
+                            }
                         }
+
+                        ToolTip.visible: _update_mouse_area.containsMouse;
+                        ToolTip.text: "Update code";
                     }
                 }
 
@@ -196,13 +204,11 @@ Item {
                     }
                 }
 
-                Flickable {
+                ScrollView {
                     Layout.fillWidth: true
                     implicitHeight: 60
 
-                    contentWidth: availableWidth
-
-                    TextArea.flickable: TextArea {
+                    G.TextArea {
                         id: _plugin_doc
 
                         wrapMode: Text.Wrap
@@ -212,8 +218,6 @@ Item {
                             d.code.pluginDocumentation = _plugin_doc.text
                         }
                     }
-
-                    ScrollIndicator.vertical: ScrollIndicator { }
                 }
 
                 G.PythonPluginMenu {
