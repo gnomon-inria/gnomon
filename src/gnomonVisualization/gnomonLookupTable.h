@@ -11,8 +11,9 @@
 
 using gnomonColorMap = QMap<double, QColor>;
 
-class GNOMONVISUALIZATION_EXPORT gnomonLookupTable
+class GNOMONVISUALIZATION_EXPORT gnomonLookupTable : public QObject
 {
+    Q_OBJECT
 
 public:
     gnomonLookupTable(void) = default;
@@ -24,8 +25,13 @@ public:
 
     const QString& colorMapName(void) const;
     const gnomonColorMap& colorMap(void) const;
-    const QList<double>& valueRange(void) const;
+    double valueMin(void) const;
+    QBindable<double> bindableValueMin(void);
+    double valueMax(void) const;
+    QBindable<double> bindableValueMax(void);
+    //const QList<double>& valueRange(void) const;
     bool visibility(void) const;
+    QBindable<bool> bindableVisibility(void);
 
     //gnomonCoreParameterColorMap& operator = (const QVariant&);
     gnomonLookupTable& operator = (const gnomonLookupTable&);
@@ -34,14 +40,19 @@ public:
     void setName(const QString&);
     void setColorMap(const gnomonColorMap&);
     void setColorMap(const QString&);
-    void setValueRange(const QList<double>&);
+    void setValueMin(double);
+    void setValueMax(double);
+    //void setValueRange(const QList<double>&);
     void setVisibility(bool);
 
 private:
 	QString name;
     gnomonColorMap colormap;
-    QList<double> value_range;
-    bool visible;
+    //QList<double> value_range;
+    Q_OBJECT_BINDABLE_PROPERTY(gnomonLookupTable, double, min);
+    Q_OBJECT_BINDABLE_PROPERTY(gnomonLookupTable, double, max);
+    //bool visible;
+    Q_OBJECT_BINDABLE_PROPERTY(gnomonLookupTable, bool, visible);
 };
 
 Q_DECLARE_METATYPE(gnomonLookupTable)

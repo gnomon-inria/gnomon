@@ -18,10 +18,9 @@ class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterLookupTableObject : public d
     Q_OBJECT
     Q_PROPERTY(QVariantMap colorMap READ colorMap WRITE setColorMap NOTIFY colorMapChanged)
     Q_PROPERTY(QString colorMapName READ colorMapName WRITE setColorMapName NOTIFY colorMapNameChanged)
-    Q_PROPERTY(double valueRangeMin READ valueRangeMin WRITE setValueRangeMin NOTIFY valueRangeMinChanged)
-    Q_PROPERTY(double valueRangeMax READ valueRangeMax WRITE setValueRangeMax NOTIFY valueRangeMinChanged)
-    Q_PROPERTY(bool visibility READ visibility WRITE setVisibility NOTIFY visibilityChanged)
-
+    Q_PROPERTY(double valueRangeMin READ valueRangeMin WRITE setValueRangeMin NOTIFY valueRangeMinChanged BINDABLE bindableValueRangeMin)
+    Q_PROPERTY(double valueRangeMax READ valueRangeMax WRITE setValueRangeMax NOTIFY valueRangeMaxChanged BINDABLE bindableValueRangeMax)
+    Q_PROPERTY(bool visibility READ visibility WRITE setVisibility NOTIFY visibilityChanged BINDABLE bindableVisibility)
     Q_PROPERTY(QStringList availableCluts READ availableCluts CONSTANT)
 
 public:
@@ -36,12 +35,15 @@ public:
 
     void setValueRangeMin(double);
     double valueRangeMin(void) const;
+    QBindable<double> bindableValueRangeMin(void);
 
     void setValueRangeMax(double);
     double valueRangeMax(void) const;
+    QBindable<double> bindableValueRangeMax(void);
 
     void setVisibility(bool);
     bool visibility(void) const;
+    QBindable<bool> bindableVisibility(void);
 
 public:
     QStringList availableCluts(void) const;

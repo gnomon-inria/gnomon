@@ -52,8 +52,11 @@ public:
     QString name(void) const;
 
     double valueRangeMin(void) const;
+    QBindable<double> bindableValueRangeMin(void);
     double valueRangeMax(void) const;
+    QBindable<double> bindableValueRangeMax(void);
     bool visibility(void) const;
+    QBindable<bool> bindableVisibility(void);
 
 public:
     QStringList availableCluts(void);
