@@ -22,8 +22,8 @@ Button {
 
   flat: false
 
-  leftPadding: G.Style.buttonPadding
-  rightPadding: _control.iconName ? 0 : G.Style.buttonPadding
+  //leftPadding: G.Style.buttonPadding
+  //rightPadding: _control.iconName ? 0 : G.Style.buttonPadding
   implicitWidth: Math.max(G.Style.buttonWidth, implicitContentWidth + leftPadding + rightPadding)
   implicitHeight: _getButtonHeight()
 
@@ -37,7 +37,9 @@ Button {
         id: _icon
 
         anchors.left: parent.left;
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: parent.top;
+        anchors.bottom: parent.bottom
+        width: height
 
         size: (2/3) * _control.height
 
@@ -58,7 +60,7 @@ Button {
 
         anchors.left: _icon.right
         anchors.verticalCenter: parent.verticalCenter
-        anchors.margins: G.Style.buttonPadding
+        //anchors.margins: G.Style.buttonPadding
 
         height: parent.height - 4
         width: 2
@@ -75,6 +77,8 @@ Button {
         anchors.right: parent.right;
         anchors.left: _control.iconName? _separator.right : parent.left;
         anchors.verticalCenter: parent.verticalCenter
+        leftPadding: G.Style.buttonPadding
+        rightPadding: G.Style.buttonPadding
 
         text: _control.text.toUpperCase()
 
