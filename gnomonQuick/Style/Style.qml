@@ -200,12 +200,23 @@ QtObject {
         property color textColorFaded: S.colors.gray["200"]
         property color textColorDeEmphasize: S.colors.gray["600"]
 
+        //text colors
+        property color textColorDarkBase: S.colors.blue["900"]
+        property color textColorDarkOk: S.colors.green["900"]
+        property color textColorDarkDanger: S.colors.red["900"]
+        property color textColorDarkWarning: S.colors.orange["900"]
+        property color textColorDarkNeutral: S.colors.gray["900"]
+        property color textColorDarkFaded: S.colors.gray["800"]
+
         //emboss for different colors
         property color embossColorBlue: S.colors.blue["400"]
         property color embossColorNeutral: S.colors.gray["500"]
 
         //otherColors
         property color lightBlue: S.colors.blue["200"]
+        property color lightGreen: S.colors.green["200"]
+        property color lightRed: S.colors.red["200"]
+        property color lightOrange: S.colors.orange["200"]
     }
 
     // /////////////////////////////////////////////////////////////////////////////

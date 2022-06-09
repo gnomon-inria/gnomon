@@ -197,7 +197,7 @@ Button {
       return G.Style.colors.textColorDanger
 
     if(_control.type === G.Style.ButtonType.Warning)
-      return G.Style.colors.bgColor
+      return G.Style.colors.textColorWarning
 
     if(_control.type === G.Style.ButtonType.OK)
       return G.Style.colors.textColorOk
