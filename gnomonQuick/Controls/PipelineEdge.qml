@@ -36,7 +36,7 @@ Shape {
         strokeWidth: 3
         strokeColor: window.world.currentIndex === _self.formIndex
             ? G.Style.colors.highlightColor
-            : X.Style.foregroundColor;
+            : G.Style.colors.neutralColor
 
         startX: _self.stt.x;
         startY: _self.stt.y;

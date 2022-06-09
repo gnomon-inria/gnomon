@@ -8,7 +8,10 @@ import xQuick.Controls  1.0 as X
 import xQuick.Style     1.0 as X
 import xQuick.Fonts     1.0 as X
 
-import gnomonQuick.Controls     1.0 as G
+import gnomonQuick.Controls  1.0 as G
+import gnomonQuick.Style     1.0 as G
+import gnomonQuick.Icons     1.0 as G
+
 import gnomon.Visualization     1.0 as GV
 
 Rectangle {
@@ -22,11 +25,11 @@ Rectangle {
     property var inputPorts: new Object();
     property var outputPorts: new Object();
 
-    width: 200;
+    width: G.Style.smallPanelWidth;
     height: 30 + 15*Math.max(node.inputPortsNames.length, node.outputPortsNames.length) - 5;
-    radius: 8;
+    radius: G.Style.panelRadius;
 
-    border.color: X.Style.accentColor;
+    border.color: G.Style.colors.baseColor;
     border.width: _self.workspaceIndex === window.current_workspace_index() ? 2 : 0;
 
     opacity: _dragArea.containsMouse ? 0.8 : 1.0
@@ -45,18 +48,18 @@ Rectangle {
         }
     }
 
-    X.Icon {
+    G.Icon {
         id: _edit_button
 
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.margins: 3;
+        anchors.margins: G.Style.borderWidth;
         visible: _dragArea.containsMouse
 
-        size: 15;
-        color: "#333333"; //TODO: get value from theme
+        size: G.Style.iconSmall;
+        color: G.Style.colors.textColorDarkNeutral
 
-        icon: X.Icons.icons.edit
+        icon: G.Icons.icons["pencil"]
 
     }
 
@@ -93,31 +96,29 @@ Rectangle {
         }
     }
 
-    X.Label {
+    Label {
         id: _classLabel
         text: node.name;
 
-        color: "#333333"; //TODO: get value from theme
-        font.pixelSize: 12; //TODO: get value from theme
-        font.bold: _self.workspaceIndex === window.current_workspace_index()
+        color: G.Style.colors.textColorDarkNeutral
+        font: _self.workspaceIndex === window.current_workspace_index() ? G.Style.fonts.nodeHeaderSelected : G.Style.fonts.nodeHeader
 
         anchors.fill: parent
-        anchors.topMargin: 3 //TODO: get value from theme
-        anchors.leftMargin: 6 //TODO: get value from theme
+        anchors.topMargin: G.Style.smallPadding
+        anchors.leftMargin: G.Style.smallPadding
         horizontalAlignment: Text.AlignLeft;
     }
 
-    X.Label {
+    Label {
         id: _pluginLabel
         text: node.algorithmPlugin;
 
-        color: "#333333";
-        font.pixelSize: 10;
-        font.bold: _self.workspaceIndex === window.current_workspace_index()
+        color: G.Style.colors.textColorDarkNeutral
+        font: _self.workspaceIndex === window.current_workspace_index() ? G.Style.fonts.nodeBodySelected : G.Style.fonts.nodeBody
 
         anchors.fill: parent
-        anchors.topMargin: 20
-        anchors.rightMargin: 5
+        anchors.topMargin: G.Style.largePadding
+        anchors.rightMargin: G.Style.smallPadding
         horizontalAlignment: Text.AlignRight;
     }
 
