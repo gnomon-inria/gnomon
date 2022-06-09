@@ -138,6 +138,12 @@ const QColor& gnomonPipelineNode::color(void)
     return d->color;
 }
 
+gnomonPipelineNode::Type gnomonPipelineNode::type(void)
+{
+    return d->type;
+}
+
+
 QJsonObject gnomonPipelineNode::parameters(void)
 {
     QJsonObject param;

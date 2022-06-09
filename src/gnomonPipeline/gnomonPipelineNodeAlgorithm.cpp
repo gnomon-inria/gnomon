@@ -37,8 +37,10 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorith
 {
     if (algorithm_class.contains("From")) {
         d->color = QColor(153, 69, 69);
+        d->type = gnomonPipelineNode::NODE_CONVERTER;
     } else {
         d->color = QColor(153, 125, 69);
+        d->type = gnomonPipelineNode::NODE_FILTER;
     }
     d->algorithm_class = algorithm_class;
     d->algorithm = algorithm;

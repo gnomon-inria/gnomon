@@ -34,6 +34,18 @@ public:
     ~gnomonPipelineNode(void);
 
 public:
+    enum Type {
+        NODE_ALGORITHM = 0,
+        NODE_READER = 1,
+        NODE_WRITER = 2,
+        NODE_CONSTRUCTOR = 3,
+        NODE_FILTER = 4,
+        NODE_CONVERTER = 5,
+        NODE_ADAPTER = 6,
+        NODE_TASK = 7
+    };
+
+public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged);
     Q_PROPERTY(QString version READ version WRITE setVersion NOTIFY versionChanged);
@@ -43,6 +55,7 @@ public:
     Q_PROPERTY(QJsonObject parameters READ parameters CONSTANT)
 
     Q_PROPERTY(QColor color READ color);
+    Q_PROPERTY(Type type READ type);
     Q_PROPERTY(QPointF position READ position WRITE setPosition NOTIFY positionChanged);
 
     Q_PROPERTY(QStringList inputPortsNames READ inputPortsNames NOTIFY inputPortsChanged);
@@ -50,6 +63,8 @@ public:
 
     Q_PROPERTY(int inputEdgeCount READ inputEdgeCount);
     Q_PROPERTY(int outputEdgeCount READ outputEdgeCount);
+
+    Q_ENUM(Type);
 
 public:
     const QString& name(void);
@@ -64,6 +79,7 @@ public:
     virtual QStringList parametersName(void);
     virtual void configureParameter(const QString &name, dtkCoreParameter *param);
 
+    Type type(void);
     const QColor& color(void);
 
     const QPointF& position(void);
