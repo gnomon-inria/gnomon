@@ -6,6 +6,7 @@ import gnomonQuick.Controls 1.0 as G
 import gnomonQuick.Style    1.0 as G
 
 import gnomon.Pipeline 1.0 as GP
+import gnomon.Visualization 1.0 as GV
 
 // /////////////////////////////////////////////////////////////////////////////
 // TODO: Use actual resolution as propertues bound to the shader
@@ -229,7 +230,7 @@ Control {
             if (node_component.status == Component.Ready) {
                 var n = node_component.createObject(_canvas, {
                     "node": node,
-                    "color": node.color,
+                    "color": _getNodeColor(node),
                     "x": Qt.binding(function() { return _canvas.width/2 + node.position.x }), //_internal.originX, //Qt.binding(function() { return _internal.originX + node.position.x }),
                     "y": Qt.binding(function() { return _canvas.height/2 + 0.33*node.position.y }), //_internal.originY, //Qt.binding(function() { return _internal.originY + node.position.y }),
                     "workspaceIndex": window.current_workspace_index()
@@ -240,6 +241,25 @@ Control {
             } else {
                 console.error(node_component.errorString());
             }
+        }
+
+        function _getNodeColor(node) {
+            if (node.type == GP.PipelineNode.NODE_READER)
+                return G.Style.colors.lightGreen
+            if (node.type == GP.PipelineNode.NODE_WRITER)
+                return G.Style.colors.lightOrange
+            if (node.type == GP.PipelineNode.NODE_FILTER)
+                return G.Style.colors.warningColor
+            if (node.type == GP.PipelineNode.NODE_CONVERTER)
+                return G.Style.colors.dangerColor
+            if (node.type == GP.PipelineNode.NODE_ADAPTER)
+                return G.Style.colors.lightRed
+            if (node.type == GP.PipelineNode.NODE_CONSTRUCTOR)
+                return G.Style.colors.okColor
+            if (node.type == GP.PipelineNode.NODE_TASK)
+                return G.Style.colors.lightBlue
+
+            return G.Style.colors.neutralColor
         }
 
         function addEdge(edge) {

@@ -70,7 +70,7 @@ Rectangle {
         anchors.fill: parent;
 
         G.IconButton {
-            iconName: G.Icons.icons["arrow-down-circle"];
+            iconName: G.Icons.icons["arrow-down-drop-circle"];
             size: G.Style.smallDelegateHeight;
             color: G.Style.colors.fgColor
             visible: _drop.containsDrag;
@@ -285,7 +285,7 @@ Rectangle {
     }
 
     G.IconButton { id: _export_icon;
-        iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-circle"] : G.Icons.icons["arrow-up-circle"];
+        iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
         enabled: !viewLogic.inputView
         size: G.Style.iconLarge;
         color: viewLogic.inputView ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;

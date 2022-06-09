@@ -118,7 +118,7 @@ Item {
             anchors.fill: parent;
 
             G.IconButton {
-                iconName: G.Icons.icons["arrow-down-circle"];
+                iconName: G.Icons.icons["arrow-down-drop-circle"];
                 size: G.Style.smallDelegateHeight;
                 color: G.Style.colors.lightBlue;
                 visible: _drop.containsDrag;
