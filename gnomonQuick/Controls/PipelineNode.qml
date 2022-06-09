@@ -26,7 +26,7 @@ Rectangle {
     property var outputPorts: new Object();
 
     width: G.Style.smallPanelWidth;
-    height: 30 + 15*Math.max(node.inputPortsNames.length, node.outputPortsNames.length) - 5;
+    height: 2*G.Style.smallButtonHeight + G.Style.smallPadding*(2*Math.max(node.inputPortsNames.length, node.outputPortsNames.length) - 1)
     radius: G.Style.panelRadius;
 
     border.color: G.Style.colors.baseColor;
@@ -103,9 +103,9 @@ Rectangle {
         color: G.Style.colors.textColorDarkNeutral
         font: _self.workspaceIndex === window.current_workspace_index() ? G.Style.fonts.nodeHeaderSelected : G.Style.fonts.nodeHeader
 
-        anchors.fill: parent
-        anchors.topMargin: G.Style.smallPadding
-        anchors.leftMargin: G.Style.smallPadding
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.margins: G.Style.smallPadding
         horizontalAlignment: Text.AlignLeft;
     }
 
@@ -116,17 +116,17 @@ Rectangle {
         color: G.Style.colors.textColorDarkNeutral
         font: _self.workspaceIndex === window.current_workspace_index() ? G.Style.fonts.nodeBodySelected : G.Style.fonts.nodeBody
 
-        anchors.fill: parent
-        anchors.topMargin: G.Style.largePadding
-        anchors.rightMargin: G.Style.smallPadding
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.margins: G.Style.smallPadding
         horizontalAlignment: Text.AlignRight;
     }
 
     Column {
-        spacing: 5;
+        spacing: G.Style.smallPadding;
         anchors.horizontalCenter: parent.left
         anchors.top: parent.top
-        anchors.topMargin: 15
+        anchors.topMargin: G.Style.smallButtonHeight;
 
         Repeater {
             id: _input_ports
@@ -149,10 +149,10 @@ Rectangle {
     }
 
     Column {
-        spacing: 5;
+        spacing: G.Style.smallPadding;
         anchors.horizontalCenter: parent.right
         anchors.top: parent.top
-        anchors.topMargin: 15
+        anchors.topMargin: G.Style.smallButtonHeight;
 
         Repeater {
             id: _output_ports

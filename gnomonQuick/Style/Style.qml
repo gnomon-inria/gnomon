@@ -328,25 +328,25 @@ QtObject {
         property font nodeHeader: Qt.font({
             family: "Poppins",
             weight: Font.Normal,
-            pointSize: S.fontScale["150"],
+            pointSize: S.fontScale["100"],
         })
 
         property font nodeHeaderSelected: Qt.font({
             family: "Poppins",
             weight: Font.Medium,
-            pointSize: S.fontScale["150"],
+            pointSize: S.fontScale["100"],
         })
 
         property font nodeBody: Qt.font({
             family: "Poppins",
             weight: Font.Normal,
-            pointSize: S.fontScale["100"],
+            pointSize: S.fontScale["50"],
         })
 
         property font nodeBodySelected: Qt.font({
             family: "Poppins",
             weight: Font.Medium,
-            pointSize: S.fontScale["100"],
+            pointSize: S.fontScale["50"],
         })
     }
 

@@ -2,6 +2,9 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
 
+import gnomonQuick.Controls 1.0 as G
+import gnomonQuick.Style    1.0 as G
+
 import gnomon.Pipeline 1.0 as GP
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -68,7 +71,7 @@ Control {
         x: -_canvas.width / 2 + _self.width / 2;
         y: -_canvas.height / 2+ _self.height / 2;
 
-        color: "#444444";
+        color: G.Style.colors.gutterColor;
 
 //         layer.enabled: true
 //         layer.samples: 4

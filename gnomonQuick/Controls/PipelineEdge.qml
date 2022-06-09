@@ -33,7 +33,7 @@ Shape {
     ShapePath {
         fillColor: "transparent";
 
-        strokeWidth: 3
+        strokeWidth: G.Style.borderWidth
         strokeColor: window.world.currentIndex === _self.formIndex
             ? G.Style.colors.highlightColor
             : G.Style.colors.neutralColor

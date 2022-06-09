@@ -15,11 +15,11 @@ Rectangle {
     property bool highlighted: port ? port.formIndex === window.world.currentIndex : false;
 
     color: _self.highlighted
-        ? G.Style.colors.highlightColor
-        : "#CCCCCC"
-    height: 10;
-    width: 10;
-    radius: 5;
+           ? G.Style.colors.highlightColor
+           : G.Style.colors.neutralColor
+    height: G.Style.smallPadding;
+    width: G.Style.smallPadding;
+    radius: G.Style.smallPadding / 2;
 
     X.ToolTip {
          text: port.name + ": " + port.label
