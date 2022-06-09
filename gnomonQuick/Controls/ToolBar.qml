@@ -50,14 +50,27 @@ import QtQuick          2.15
 import QtQuick.Controls 2.15
 
 import gnomonQuick.Style 1.0 as G
+import gnomonQuick.Controls as G
 
 ToolBar {
 
     id: _control;
 
+    property int location: G.Style.ToolBarLocation.Top
+
     background: Rectangle {
         implicitHeight: G.Style.toolBarHeight
         color: G.Style.colors.bgColor;
+    }
+
+    Rectangle {
+        anchors.top: _control.location == G.Style.ToolBarLocation.Bottom ? parent.top : undefined
+        anchors.bottom: _control.location == G.Style.ToolBarLocation.Top ? parent.bottom : undefined
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        height: 1;
+        color: G.Style.colors.gutterColor;
     }
 
 }
