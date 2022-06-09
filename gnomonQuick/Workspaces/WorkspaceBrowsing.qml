@@ -11,6 +11,7 @@ import xQuick.Style      1.0 as X
 
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
 
 import gnomon.Workspaces      1.0 as GW
 
@@ -97,8 +98,22 @@ G.Workspace {
                 console.debug("Saving", reader, "as default reader for", paths[i])
                 _cache.setValue(paths[i], reader)
             }
+            _reader_toast.reader_name = reader;
+            _reader_toast.open();
             d.readWith(reader);
         }
+    }
+
+    G.Toast {
+        id: _reader_toast
+
+        property string reader_name: "";
+
+        parent: Overlay.overlay
+        header: "Reader updated"
+        message: "Your choice has been saved! Next time you will open this file, it will be loaded using " + _reader_toast.reader_name + ". You can use \"LOAD AS\" to choose a different Reader.";
+
+        type: G.Style.ButtonType.Base
     }
 
     Component.onCompleted :  window.drawelr_closed = false;

@@ -16,6 +16,8 @@ import crossParameters   1.0 as C
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Icons      1.0 as G
 
 import gnomon.MetaData        1.0 as GM
 
@@ -51,7 +53,7 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent;
-        anchors.margins: 12;
+        anchors.margins: G.Style.smallPadding;
 
         X.Finder {
             id: _finder;
@@ -65,13 +67,24 @@ Item {
             }
         }
 
-        RowLayout {
-            spacing: 10
+        Item {
+            id: _button_container
 
-            X.ButtonRaw {
+            height: G.Style.largeButtonHeight
+            Layout.fillWidth: true;
+
+            G.Button {
+                id: _load_button
+
+                anchors.right: _button_container.right;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding;
+
                 text: _finder.selectedFolder ? "Open" : "Load as";
                 enabled: _finder.selectedFolder || _finder.selectedFile
-                Layout.fillWidth: true;
+                type: G.Style.ButtonType.Base
+                iconName: _finder.selectedFolder ? G.Icons.icons["folder-open"] : G.Icons.icons["folder-download"]
+                empty: true
 
                 onClicked: {
                     if(_finder.selectedFolder) _finder.openFolder(_finder.selectedFolder)
@@ -82,9 +95,15 @@ Item {
                 }
             }
 
-            X.ButtonRaw {
-                text: "Load Multiple Files";
-                Layout.fillWidth: true;
+            G.Button {
+                anchors.right: _load_button.left;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding;
+
+                text: "Load...";
+                type: G.Style.ButtonType.Base
+                iconName: G.Icons.icons["folder-multiple-plus"]
+                empty: true
 
                 onClicked: {
                     _file_dialog.open()

@@ -26,8 +26,7 @@ Control {
     ColumnLayout {
 
         anchors.fill: parent
-
-        anchors.margins: 12;
+        anchors.margins: G.Style.smallPadding;
 
         G.ComboBoxWithLabel {
             id: _algos;
@@ -114,7 +113,7 @@ Control {
         Item {
             id: _button_container
 
-            height: G.Style.sizes.s8
+            height: G.Style.largeButtonHeight
             Layout.fillWidth: true;
 
             G.Button {

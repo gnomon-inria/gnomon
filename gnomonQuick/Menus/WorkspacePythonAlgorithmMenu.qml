@@ -228,15 +228,17 @@ Item {
                     code: d.code
                 }
 
-                RowLayout {
-                    anchors.margins: G.Style.smallPadding;
-                    spacing: G.Style.smallPadding
+                Item {
+                    id: _button_container
 
-                    Item {
-                        Layout.fillWidth: true
-                    }
+                    height: G.Style.largeButtonHeight
+                    Layout.fillWidth: true
 
                     G.Button {
+                        anchors.right: _load_button.left;
+                        anchors.verticalCenter: _button_container.verticalCenter
+                        anchors.margins: G.Style.smallPadding;
+
                         text: "Save";
 
                         type: G.Style.ButtonType.Base
@@ -254,6 +256,12 @@ Item {
                     }
 
                     G.Button {
+                        id: _load_button
+
+                        anchors.right: _button_container.right;
+                        anchors.verticalCenter: _button_container.verticalCenter
+                        anchors.margins: G.Style.smallPadding;
+
                         text: "Load";
 
                         type: G.Style.ButtonType.Base
