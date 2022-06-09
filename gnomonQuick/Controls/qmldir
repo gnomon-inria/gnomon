@@ -38,7 +38,10 @@ WorldDelegate 1.0 WorldDelegate.qml
 Parameters 1.0 Parameters.qml
 ButtonViewer 1.0 ButtonViewer.qml
 TimeSeriesSlider 1.0 TimeSeriesSlider.qml
+Toast 1.0 Toast.qml
 Dialog 1.0 Dialog.qml
 Gutter 1.0 Gutter.qml
 ListItemDelegate 1.0 ListItemDelegate.qml
 MetadataDialog 1.0 MetadataDialog.qml
+TabButton 1.0 TabButton.qml
+TextArea 1.0 TextArea.qml

@@ -28,5 +28,7 @@ Control
     text: _control.icon;
     font.pixelSize: _control.size;
     font.family: _loader.name;
+    verticalAlignment: Text.AlignVCenter;
+    horizontalAlignment: Text.AlignHCenter;
   }
 }

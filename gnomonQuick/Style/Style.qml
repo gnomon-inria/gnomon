@@ -23,6 +23,12 @@ QtObject {
         Danger
     }
 
+    enum ButtonSize {
+        Small,
+        Medium,
+        Large
+    }
+
     enum LabelType {
         Header,
         SubHeader,
@@ -52,6 +58,10 @@ QtObject {
 
     property int buttonWidth: S.spacing["10"]
     property int longButtonWidth: S.spacing["12"]
+
+    property int smallButtonHeight: S.spacing["4"]
+    property int mediumButtonHeight: S.spacing["6"]
+    property int largeButtonHeight: S.spacing["7"]
 
     property int smallColumnSpacing: S.spacing["2"]
     property int mediumColumnSpacing: S.spacing["4"]
@@ -176,7 +186,7 @@ QtObject {
 
         //basic color theme
         property color baseColor: S.colors.blue["500"]
-        property color neutralColor: S.colors.gray["500"]
+        property color neutralColor: S.colors.gray["300"]
         property color dangerColor: S.colors.red["500"]
         property color warningColor: S.colors.orange["500"]
         property color okColor: S.colors.green["500"]
@@ -197,12 +207,24 @@ QtObject {
         property color textColorFaded: S.colors.gray["200"]
         property color textColorDeEmphasize: S.colors.gray["600"]
 
+        //text colors
+        property color textColorDarkBase: S.colors.blue["900"]
+        property color textColorDarkOk: S.colors.green["900"]
+        property color textColorDarkDanger: S.colors.red["900"]
+        property color textColorDarkWarning: S.colors.orange["900"]
+        property color textColorDarkNeutral: S.colors.gray["900"]
+        property color textColorDarkFaded: S.colors.gray["800"]
+
         //emboss for different colors
         property color embossColorBlue: S.colors.blue["400"]
         property color embossColorNeutral: S.colors.gray["500"]
 
         //otherColors
         property color lightBlue: S.colors.blue["200"]
+        property color lightGreen: S.colors.green["200"]
+        property color lightRed: S.colors.red["200"]
+        property color lightOrange: S.colors.orange["200"]
+
         property color transparent: "#00000000"
     }
 
@@ -241,6 +263,12 @@ QtObject {
             family: "Poppins",
             weight: Font.Bold,
             pointSize: S.fontScale["200"],
+        })
+
+        property font buttonSmall: Qt.font({
+            family: "Poppins",
+            weight: Font.Bold,
+            pointSize: S.fontScale["100"],
         })
 
         property font buttonHovered: Qt.font({

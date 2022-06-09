@@ -10,7 +10,9 @@ Button
 
   property alias iconName: _icon.icon;
   property alias size: _icon.size;
-  property alias color: _icon.color;
+
+  property color color : G.Style.colors.textColorBase;
+  property color hoverColor : G.Style.colors.hoveredBaseColor;
 
   property string tooltip: "";
   property alias containsMouse: _icon_area.containsMouse
@@ -24,6 +26,8 @@ Button
 
   contentItem: G.Icon {
     id: _icon;
+
+    color: _control.hoverColor && _icon_area.containsMouse ? _control.hoverColor : _control.color
 
     MouseArea {
       id: _icon_area;

@@ -16,16 +16,16 @@ Button {
 
 
   property int type: G.Style.ButtonType.Base
+  property int size: G.Style.ButtonSize.Medium
   property bool empty: false
   property string iconName: undefined
 
   flat: false
 
-  leftPadding: G.Style.buttonPadding
-  rightPadding: _control.iconName ? 0 : G.Style.buttonPadding
-  implicitWidth: Math.max(G.Style.buttonWidth,
-    implicitContentWidth + leftPadding + rightPadding)
-  implicitHeight: 32
+  //leftPadding: G.Style.buttonPadding
+  //rightPadding: _control.iconName ? 0 : G.Style.buttonPadding
+  implicitWidth: Math.max(G.Style.buttonWidth, implicitContentWidth + leftPadding + rightPadding)
+  implicitHeight: _getButtonHeight()
 
 // /////////////////////////////////////////////////////////////////////////////
 // Content Item
@@ -37,7 +37,9 @@ Button {
         id: _icon
 
         anchors.left: parent.left;
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: parent.top;
+        anchors.bottom: parent.bottom
+        width: height
 
         size: (2/3) * _control.height
 
@@ -62,7 +64,7 @@ Button {
 
         anchors.left: _icon.right
         anchors.verticalCenter: parent.verticalCenter
-        anchors.margins: G.Style.buttonPadding
+        //anchors.margins: G.Style.buttonPadding
 
         height: parent.height - 4
         width: 2
@@ -79,10 +81,12 @@ Button {
         anchors.right: parent.right;
         anchors.left: _control.iconName? _separator.right : parent.left;
         anchors.verticalCenter: parent.verticalCenter
+        leftPadding: G.Style.buttonPadding
+        rightPadding: G.Style.buttonPadding
 
         text: _control.text.toUpperCase()
 
-        font: G.Style.fonts.button
+        font: _control.size === G.Style.ButtonSize.Small? G.Style.fonts.buttonSmall : G.Style.fonts.button
 
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
@@ -197,7 +201,7 @@ Button {
       return G.Style.colors.textColorDanger
 
     if(_control.type === G.Style.ButtonType.Warning)
-      return G.Style.colors.bgColor
+      return G.Style.colors.textColorWarning
 
     if(_control.type === G.Style.ButtonType.OK)
       return G.Style.colors.textColorOk
@@ -207,6 +211,17 @@ Button {
 
     return G.Style.colors.textColorNeutral
   }
+
+  function _getButtonHeight() {
+
+      if(_control.size === G.Style.ButtonSize.Small)
+        return G.Style.smallButtonHeight
+
+      if(_control.size === G.Style.ButtonSize.Large)
+        return G.Style.largeButtonHeight
+
+        return G.Style.mediumButtonHeight
+    }
 
 }
 
