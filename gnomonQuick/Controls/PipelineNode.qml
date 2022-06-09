@@ -82,13 +82,18 @@ Rectangle {
 
         anchors.fill: _edit_button;
 
+        G.PipelineNodeDialog {
+            id: _test_dummy
+            node: _self.node
+        }
+
         onClicked: {
             var node_dialog_component = Qt.createComponent("PipelineNodeDialog.qml");
-            if (node_dialog_component.status == Component.Ready) {
+            if (node_dialog_component.status == Component.Ready || false) {
                 var dialog = node_dialog_component.createObject(_self, {
                     "node": _self.node,
                 });
-                dialog.open()
+                _test_dummy.open()
             }
         }
     }
