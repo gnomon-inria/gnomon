@@ -26,6 +26,7 @@ Button {
   //rightPadding: _control.iconName ? 0 : G.Style.buttonPadding
   implicitWidth: Math.max(G.Style.buttonWidth, implicitContentWidth + leftPadding + rightPadding)
   implicitHeight: _getButtonHeight()
+  hoverEnabled: enabled
 
 // /////////////////////////////////////////////////////////////////////////////
 // Content Item
@@ -111,10 +112,10 @@ Button {
 // Hover
 // /////////////////////////////////////////////////////////////////////////////
 
-  Binding on state {
-    when: _control.hovered || _icon_area.containsMouse
-    value: "hovered"
-  }
+  // Binding on state {
+  //   when: (_control.hovered || _icon_area.containsMouse) && _control.hoverEnabled
+  //   value: "hovered"
+  // }
 
   HoverHandler {
     // hovered: _control.hovered
@@ -125,10 +126,15 @@ Button {
 // States
 // /////////////////////////////////////////////////////////////////////////////
 
+onHoveredChanged: {
+    console.log(hovered, hoverEnabled, enabled)
+}
+
   states: [
 
     State {
       name: "hovered"
+      when: (_control.hovered || _icon_area.containsMouse) && _control.hoverEnabled && _control.enabled
       PropertyChanges {
         target: _text;
 //        font: G.Style.fonts.buttonHovered
