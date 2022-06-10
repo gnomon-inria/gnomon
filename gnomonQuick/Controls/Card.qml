@@ -39,9 +39,10 @@ Control {
         border.color: _getBorderColor()
     }
 
-    ToolTip.visible: _control.tooltip && _mouse_area.containsMouse
-    ToolTip.text: _control.tooltip
-    ToolTip.delay: 500;
+    G.ToolTip {
+        text: _control.tooltip
+        visible: _control.tooltip && _mouse_area.containsMouse
+    }
 
 // /////////////////////////////////////////////////////////////////////////////
 // CHILD OBJECTS

@@ -4,10 +4,10 @@ import QtQuick.Shapes 1.15
 
 import xQuick.Style       1.0 as X
 
-import gnomonQuick.Style  1.0 as G
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
 
 Rectangle {
-
     id: _self
 
     property var port;
@@ -21,7 +21,7 @@ Rectangle {
     width: G.Style.smallPadding;
     radius: G.Style.smallPadding / 2;
 
-    X.ToolTip {
+    G.ToolTip {
          text: port.name + ": " + port.label
          visible: _mouse_area.containsMouse
     }

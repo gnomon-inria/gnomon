@@ -8,13 +8,17 @@ import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 import xQuick.Vis         1.0 as XVis
 
+import gnomonQuick.Controls  1.0 as G
+import gnomonQuick.Style     1.0 as G
+import gnomonQuick.Icons     1.0 as G
+
 import gnomon.Visualization 1.0 as GV
 
 Rectangle {
 
     id: self;
 
-    color: Qt.darker(X.Style.alternateBaseColor);
+    color: G.Style.colors.gutterColor;
 
     focus: true;
 
@@ -38,10 +42,10 @@ Rectangle {
 
         anchors.fill: parent;
 
-        X.Icon {
-            icon: X.Icons.icons.arrow_circle_down;
-            size: 56;
-            color: "#44999999";
+        G.Icon {
+            icon: G.Icons.icons["arrow-down-drop-circle"];
+            size: G.Style.smallDelegateHeight;
+            color: G.Style.colors.fgColor
             visible: _drop.containsDrag;
             anchors.centerIn: parent;
         }
@@ -61,30 +65,22 @@ Rectangle {
         }
     }
 
-    X.Icon { id: _export_icon;
-        icon: viewLogic.inputView ? X.Icons.icons.arrow_circle_down : X.Icons.icons.arrow_circle_up;
+
+    G.IconButton { id: _export_icon;
+        iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
         enabled: !viewLogic.inputView
-        size: 32;
-        color: viewLogic.inputView ? X.Style.backgroundColor : X.Style.foregroundColor;
+        size: G.Style.iconLarge;
+        color: viewLogic.inputView ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
+        tooltip: viewLogic.inputView? "" : "Export"
 
         anchors.top: _view.top
-        anchors.topMargin: 10
+        anchors.topMargin: G.Style.smallPadding
         anchors.right: _view.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: G.Style.smallPadding
 
-        MouseArea { id: _export_mouse_area;
-            anchors.fill: parent;
-            hoverEnabled: true;
-
-            onClicked: {
-
-                viewLogic.transmit();
-
-            }
+        onClicked: {
+            viewLogic.transmit()
         }
-
-        ToolTip.visible: !viewLogic.inputView && _export_mouse_area.containsMouse;
-        ToolTip.text: "Export";
     }
 
     Rectangle {
@@ -93,12 +89,12 @@ Rectangle {
 
          width: self.width - 1
         height: self.height - 1
-        radius: 4;
+        radius: G.Style.panelRadius;
 
-        color: "#00000000";
+        color: G.Style.colors.transparent;
 
-        border.width: 2;
-        border.color: X.Style.accentColor;
+        border.width: G.Style.borderWidth;
+        border.color: G.Style.colors.baseColor;
 
         visible: window.currentView == self;
     }

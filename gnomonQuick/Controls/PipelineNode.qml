@@ -63,7 +63,7 @@ Rectangle {
 
     }
 
-    ToolTip {
+    G.ToolTip {
          text: node.description
          visible: (node.description != "") && _dragArea.containsMouse
     }

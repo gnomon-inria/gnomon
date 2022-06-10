@@ -45,7 +45,7 @@ Slider {
         }
     }
 
-    ToolTip {
+    G.ToolTip {
         parent: _ts_slider.handle
         visible: _ts_slider.pressed
         text: (_ts_slider.times &&  _ts_slider.times[_ts_slider.value] !== undefined) ? _ts_slider.times[_ts_slider.value] : ""

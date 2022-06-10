@@ -69,8 +69,8 @@ Rectangle {
 
         anchors.fill: parent;
 
-        G.IconButton {
-            iconName: G.Icons.icons["arrow-down-drop-circle"];
+        G.Icon {
+            icon: G.Icons.icons["arrow-down-drop-circle"];
             size: G.Style.smallDelegateHeight;
             color: G.Style.colors.fgColor
             visible: _drop.containsDrag;

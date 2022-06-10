@@ -41,7 +41,8 @@ Button
     }
   }
 
-  ToolTip.visible: _control.tooltip && _icon_area.containsMouse
-  ToolTip.text: _control.tooltip;
-  ToolTip.delay: 500;
+  G.ToolTip {
+    text: _control.tooltip;
+    visible: _control.tooltip && _icon_area.containsMouse
+  }
 }

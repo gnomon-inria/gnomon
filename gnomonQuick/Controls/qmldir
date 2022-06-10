@@ -45,3 +45,4 @@ ListItemDelegate 1.0 ListItemDelegate.qml
 MetadataDialog 1.0 MetadataDialog.qml
 TabButton 1.0 TabButton.qml
 TextArea 1.0 TextArea.qml
+ToolTip 1.0 ToolTip.qml
