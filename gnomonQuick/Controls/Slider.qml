@@ -20,46 +20,55 @@ X.ScientificSpinBoxReal {
 
     rightPadding: padding + (_self.mirrored ? (down.indicator ? down.indicator.width : 0) : (up.indicator ? up.indicator.width : 0))
 
-  contentItem: Rectangle {
-    id: _gauge
+    gaugeControl: X.ScientificSpinBoxReal.ControlLinear
+    contentItem: Control {
+        id: _content
 
-    height: parent.height
-    radius: G.Style.panelRadius
-    width: _content.width * _self.scaleValue();
+        Rectangle {
+            id: _gauge
 
-    color: G.Style.colors.textColorBase;
-    Component.onCompleted: {
-      console.log("SCALE VALUE: " + _self.scaleValue())
+            height: parent.height
+            radius: G.Style.panelRadius
+            width: _content.width * _self.scaleValue();
+
+            color: G.Style.colors.textColorBase;
+            Component.onCompleted: {
+                console.log("SCALE VALUE: " + _self.scaleValue())
+            }
+        }
+
+
+        MouseArea {
+            id: _slider
+            anchors.fill: parent
+        }
+
     }
 
-  }
-
     up.indicator: G.IconButton {
-        //flat: true
         autoRepeat: true
         x: _self.mirrored ? 0 : parent.width - width
         y: 0;
         size: parent.height / 2
 
         iconName: G.Icons.icons["chevron-up"]
-      onClicked: {
-        console.log("INCREASE")
-          _self.increase();
-      }
+        onClicked: {
+            _self.increase();
+            console.log("SHOULD INCREASE")
+        }
     }
 
 
     down.indicator: G.IconButton {
-        //flat: true
         autoRepeat: true
         x: _self.mirrored ? 0 : parent.width - width
         y: height;
         size: parent.height / 2
         iconName: G.Icons.icons["chevron-down"]
-      onClicked: {
-        console.log("DECREASE")
-        _self.decrease();
-      }
+        onClicked: {
+            _self.decrease();
+            console.log("SHOULD DECREASE")
+        }
     }
 
     background: Rectangle {
@@ -67,22 +76,6 @@ X.ScientificSpinBoxReal {
         color: G.Style.colors.gutterColor;
     }
 
-
-  MouseArea {
-    id: _slider
-
-    anchors.fill: _gauge
-
-    onPressed: {
-      console.log("PRESSING SLIDER")
-      console.log("VALUE: " + _self.scaleValueFromRatio(_slider.mouseX / _gauge.width))
-    }
-
-    onClicked: {
-      console.log("GAUGE CLICKED")
-    }
-
-  }
 
 
     Component.onCompleted: {
@@ -100,7 +93,7 @@ X.ScientificSpinBoxReal {
 
     Binding on value {
         when: _slider.pressed
-        value: _self.scaleValueFromRatio(_slider.mouseX / _gauge.width)
+        value: _self.scaleValueFromRatio(_slider.mouseX / _content.width)
         restoreMode: Binding.RestoreNone
     }
 

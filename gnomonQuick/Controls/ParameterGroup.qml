@@ -32,6 +32,8 @@ G.CollapsiblePanel {
 
     spacing: G.Style.mediumColumnSpacing
 
+    interactive: false
+
     delegate: Loader {
 
       property var lparam: param

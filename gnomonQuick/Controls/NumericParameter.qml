@@ -39,12 +39,14 @@ Control {
         anchors.left: parent.left
         anchors.right: parent.right
 
+		from: _control.param.min
+		to: _control.param.max
+		decimals: _control.param.decimals
+		increment: 1.0/Math.pow(10, _control.param.decimals)
         value: _control.param.value
-        decimals: 2
 
         onValueChanged: {
             _control.param.value = _slider.value
-            // _value.text = _slider.value.toFixed(_control.param.decimals)
         }
 
     }
@@ -61,4 +63,11 @@ Control {
         color: G.Style.colors.hoveredBaseColor
     }
 
+    Component.onCompleted: {
+        console.log("MIN: " + _control.param.min)
+        console.log("MAX: " + _control.param.max)
+        console.log("VAL: " + _control.param.value)
+        console.log("DECIMALS: " + _control.param.decimals)
+        console.log("INC: " + _slider.increment)
+    }
 }
