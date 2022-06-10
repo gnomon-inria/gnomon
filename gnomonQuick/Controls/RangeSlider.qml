@@ -7,7 +7,7 @@ import gnomonQuick.Icons as G
 
 
 RangeSlider {
-    id: _range
+    id: _control
 
     implicitWidth: G.Style.controlWidth
     implicitHeight: G.Style.gutterHeight
@@ -22,29 +22,29 @@ RangeSlider {
     contentItem: Rectangle {
         id: _gauge
 
-        x: _range.leftPadding + _range.first.visualPosition * _range.availableWidth
-        width: (_range.second.visualPosition - _range.first.visualPosition) * _range.availableWidth
-        height: _range.availableHeight
+        x: _control.leftPadding + _control.first.visualPosition * _control.availableWidth
+        width: (_control.second.visualPosition - _control.first.visualPosition) * _control.availableWidth
+        height: _control.availableHeight
 
         radius: G.Style.panelRadius
         color: G.Style.colors.textColorBase
     }
 
     first.handle: Rectangle {
-        x: _range.leftPadding + _range.first.visualPosition * (_range.availableWidth - width)
-        y: _range.topPadding + _range.availableHeight / 2 - height / 2
+        x: _control.leftPadding + _control.first.visualPosition * (_control.availableWidth - width)
+        y: _control.topPadding + _control.availableHeight / 2 - height / 2
         implicitHeight: _gauge.height
         implicitWidth: _gauge.height
         radius: _gauge.height / 2
-        color: _range.first.pressed || _range.first.hovered ? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
+        color: _control.first.pressed || _control.first.hovered ? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
     }
 
     second.handle: Rectangle {
-        x: _range.leftPadding + _range.second.visualPosition * (_range.availableWidth - width)
-        y: _range.topPadding + _range.availableHeight / 2 - height / 2
+        x: _control.leftPadding + _control.second.visualPosition * (_control.availableWidth - width)
+        y: _control.topPadding + _control.availableHeight / 2 - height / 2
         implicitHeight: _gauge.height
         implicitWidth: _gauge.height
         radius: _gauge.height / 2
-        color: _range.second.pressed || _range.second.hovered ? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
+        color: _control.second.pressed || _control.second.hovered ? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
     }
 }

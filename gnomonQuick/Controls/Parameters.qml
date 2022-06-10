@@ -29,6 +29,12 @@ Item {
     }
 
     Component {
+        id: _bool_component
+        //C.Numeric {param: lparam; paramType:  lparam? lparam.type : ""}
+        G.BoolParameter {param: lparam}
+    }
+
+    Component {
         id: _string_component
         C.Simple {param: lparam}
     }
@@ -45,7 +51,7 @@ Item {
 
     Component {
         id: _liststring_component
-        C.InList {param: lparam}
+        G.InList {param: lparam}
     }
 
     Component {
@@ -70,8 +76,12 @@ Item {
 
     function getComponent(type) {
         type = type.replace(',void', '')
-        if (type == "dtkCoreParameterNumeric<qlonglong>" || type == "dtkCoreParameterNumeric<bool>" || type == "dtkCoreParameterNumeric<double>") {
+        if (type == "dtkCoreParameterNumeric<qlonglong>" || type == "dtkCoreParameterNumeric<double>") {
             return _num_component;
+        }
+        if(type == "dtkCoreParameterNumeric<bool>") {
+            console.log("RETURNING BOOL COMPONENT")
+            return _bool_component;
         }
         if (type == "dtkCoreParameterSimple<QString>") {
             return  _string_component;

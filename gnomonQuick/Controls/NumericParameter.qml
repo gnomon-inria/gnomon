@@ -2,9 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import crossQuick as C
-import dtkCore
-
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
@@ -63,14 +60,5 @@ Control {
         font: G.Style.fonts.value
         color: G.Style.colors.hoveredBaseColor
     }
-
-
-    C.ParameterNumeric {
-	    id: _param
-	    param: _control.param
-        //paramType: _control.param.type
-	    value: _slider.value
-    }
-
 
 }

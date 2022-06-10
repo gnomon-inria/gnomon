@@ -53,9 +53,9 @@ Control {
         anchors.topMargin: G.Style.sizes.s1
         anchors.top: _range.bottom
 
-        x: _range.first.visualPosition * _gutter.width - width
+        x:  _range.leftPadding + _range.first.visualPosition * (_range.availableWidth - width)
 
-        visible: _range.first.hovered || _range.first.pressed
+        //visible: _range.first.hovered || _range.first.pressed
 
         text: _range.first.value.toFixed(decimals)
         font: G.Style.fonts.value
@@ -70,9 +70,9 @@ Control {
         anchors.topMargin: G.Style.sizes.s1
         anchors.top: _range.bottom
 
-        x: _range.second.visualPosition * _gutter.width - width
+        x: _range.leftPadding + _range.second.visualPosition * (_range.availableWidth - width)
 
-        visible: _range.second.hovered || _range.second.pressed
+        //visible: _range.second.hovered || _range.second.pressed
 
         text: _range.second.value.toFixed(decimals)
         font: G.Style.fonts.value
