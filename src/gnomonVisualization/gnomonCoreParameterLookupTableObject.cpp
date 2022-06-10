@@ -46,34 +46,44 @@ QString gnomonCoreParameterLookupTableObject::colorMapName(void) const
     return m_param->name();
 }
 
-void gnomonCoreParameterLookupTableObject::setValueRangeMin(double value)
+void gnomonCoreParameterLookupTableObject::setValueMin(double value)
 {
-    m_param->setValueRangeMin(value);
+    m_param->setValueMin(value);
 }
 
-double gnomonCoreParameterLookupTableObject::valueRangeMin(void) const
+double gnomonCoreParameterLookupTableObject::valueMin(void) const
 {
-    return m_param->valueRangeMin();
+    return m_param->valueMin();
 }
 
-QBindable<double> gnomonCoreParameterLookupTableObject::bindableValueRangeMin(void)
+void gnomonCoreParameterLookupTableObject::setValueMax(double value)
 {
-    return m_param->bindableValueRangeMin();
+    m_param->setValueMax(value);
 }
 
-void gnomonCoreParameterLookupTableObject::setValueRangeMax(double value)
+double gnomonCoreParameterLookupTableObject::valueMax(void) const
 {
-    m_param->setValueRangeMax(value);
+    return m_param->valueMax();
 }
 
-double gnomonCoreParameterLookupTableObject::valueRangeMax(void) const
+void gnomonCoreParameterLookupTableObject::setRangeMin(double value)
 {
-    return m_param->valueRangeMax();
+    m_param->setRangeMin(value);
 }
 
-QBindable<double> gnomonCoreParameterLookupTableObject::bindableValueRangeMax(void)
+double gnomonCoreParameterLookupTableObject::rangeMin(void) const
 {
-    return m_param->bindableValueRangeMax();
+    return m_param->rangeMin();
+}
+
+void gnomonCoreParameterLookupTableObject::setRangeMax(double value)
+{
+    m_param->setRangeMax(value);
+}
+
+double gnomonCoreParameterLookupTableObject::rangeMax(void) const
+{
+    return m_param->rangeMax();
 }
 
 void gnomonCoreParameterLookupTableObject::setVisibility(bool value)
@@ -84,11 +94,6 @@ void gnomonCoreParameterLookupTableObject::setVisibility(bool value)
 bool gnomonCoreParameterLookupTableObject::visibility(void) const
 {
     return m_param->visibility();
-}
-
-QBindable<bool> gnomonCoreParameterLookupTableObject::bindableVisibility(void)
-{
-    return m_param->bindableVisibility();
 }
 
 QStringList gnomonCoreParameterLookupTableObject::availableCluts() const
@@ -117,15 +122,27 @@ void gnomonCoreParameterLookupTableObject::notifyColorMapName(const QString &nam
     emit valueChanged(m_param->value());
 }
 
-void gnomonCoreParameterLookupTableObject::notifyValueRangeMin(double value)
+void gnomonCoreParameterLookupTableObject::notifyValueMin(double value)
 {
-    emit valueRangeMinChanged(value);
+    emit valueMinChanged(value);
     emit valueChanged(m_param->value());
 }
 
-void gnomonCoreParameterLookupTableObject::notifyValueRangeMax(double value)
+void gnomonCoreParameterLookupTableObject::notifyValueMax(double value)
 {
-    emit valueRangeMaxChanged(value);
+    emit valueMaxChanged(value);
+    emit valueChanged(m_param->value());
+}
+
+void gnomonCoreParameterLookupTableObject::notifyRangeMin(double value)
+{
+    emit rangeMinChanged(value);
+    emit valueChanged(m_param->value());
+}
+
+void gnomonCoreParameterLookupTableObject::notifyRangeMax(double value)
+{
+    emit rangeMaxChanged(value);
     emit valueChanged(m_param->value());
 }
 

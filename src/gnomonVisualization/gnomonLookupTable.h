@@ -11,14 +11,13 @@
 
 using gnomonColorMap = QMap<double, QColor>;
 
-class GNOMONVISUALIZATION_EXPORT gnomonLookupTable : public QObject
+class GNOMONVISUALIZATION_EXPORT gnomonLookupTable
 {
-    Q_OBJECT
 
 public:
     gnomonLookupTable(void) = default;
-    gnomonLookupTable(const gnomonColorMap& c, const QList<double> r={0,1}, bool v=true);
-    gnomonLookupTable(const QString& clut, const QList<double> r={0,1}, bool v=true);
+    gnomonLookupTable(const gnomonColorMap& c, const QList<double> a={0,1}, const QList<double> r={0,1}, bool v=true);
+    gnomonLookupTable(const QString& clut, const QList<double> a={0,1}, const QList<double> r={0,1}, bool v=true);
     gnomonLookupTable(const gnomonLookupTable&);
 
     ~gnomonLookupTable(void) = default;
@@ -26,12 +25,10 @@ public:
     const QString& colorMapName(void) const;
     const gnomonColorMap& colorMap(void) const;
     double valueMin(void) const;
-    QBindable<double> bindableValueMin(void);
+    double rangeMin(void) const;
     double valueMax(void) const;
-    QBindable<double> bindableValueMax(void);
-    //const QList<double>& valueRange(void) const;
+    double rangeMax(void) const;
     bool visibility(void) const;
-    QBindable<bool> bindableVisibility(void);
 
     //gnomonCoreParameterColorMap& operator = (const QVariant&);
     gnomonLookupTable& operator = (const gnomonLookupTable&);
@@ -41,18 +38,19 @@ public:
     void setColorMap(const gnomonColorMap&);
     void setColorMap(const QString&);
     void setValueMin(double);
+    void setRangeMin(double);
     void setValueMax(double);
-    //void setValueRange(const QList<double>&);
+    void setRangeMax(double);
     void setVisibility(bool);
 
 private:
 	QString name;
     gnomonColorMap colormap;
-    //QList<double> value_range;
-    Q_OBJECT_BINDABLE_PROPERTY(gnomonLookupTable, double, min);
-    Q_OBJECT_BINDABLE_PROPERTY(gnomonLookupTable, double, max);
-    //bool visible;
-    Q_OBJECT_BINDABLE_PROPERTY(gnomonLookupTable, bool, visible);
+    double min;
+    double r_min;
+    double max;
+    double r_max;
+    bool visible;
 };
 
 Q_DECLARE_METATYPE(gnomonLookupTable)

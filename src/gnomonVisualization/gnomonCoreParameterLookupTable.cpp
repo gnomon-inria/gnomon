@@ -108,24 +108,29 @@ gnomonCoreParameterLookupTable& gnomonCoreParameterLookupTable::operator = (cons
             }
 
             auto range_hash = hash["value_range"].toHash();
-            double range_min = range_hash["min"].value<double>();
-            double range_max = range_hash["max"].value<double>();
+            double min = range_hash["min"].value<double>();
+            double max = range_hash["max"].value<double>();
+            double r_min = range_hash["r_min"].value<double>();
+            double r_max = range_hash["r_max"].value<double>();
 
             bool visible = hash["visibility"].value<bool>();
 
             m_l.setName(cmap_name);
             m_l.setColorMap(cmap);
-            //m_l.setValueRange(QList<double>({range_min, range_max}));
-            m_l.setValueMin(range_min);
-            m_l.setValueMax(range_max);
+            m_l.setValueMin(min);
+            m_l.setValueMax(max);
+            m_l.setRangeMin(r_min);
+            m_l.setRangeMax(r_max);
             m_l.setVisibility(visible);
 
             m_object->notifyLabel(m_label);
             m_object->notifyDoc(m_doc);
             m_object->notifyColorMap(m_l.colorMap());
             m_object->notifyColorMapName(m_l.colorMapName());
-            m_object->notifyValueRangeMin(m_l.valueMin());
-            m_object->notifyValueRangeMax(m_l.valueMax());
+            m_object->notifyValueMin(m_l.valueMin());
+            m_object->notifyValueMax(m_l.valueMax());
+            m_object->notifyRangeMin(m_l.rangeMin());
+            m_object->notifyRangeMax(m_l.rangeMax());
             m_object->notifyVisibility(m_l.visibility());
 
     } else {
@@ -148,8 +153,10 @@ gnomonCoreParameterLookupTable& gnomonCoreParameterLookupTable::operator = (cons
         m_object->notifyDoc(m_doc);
         m_object->notifyColorMap(m_l.colorMap());
         m_object->notifyColorMapName(m_l.colorMapName());
-        m_object->notifyValueRangeMin(m_l.valueMin());
-        m_object->notifyValueRangeMax(m_l.valueMax());
+        m_object->notifyValueMin(m_l.valueMin());
+        m_object->notifyValueMax(m_l.valueMax());
+        m_object->notifyRangeMin(m_l.rangeMin());
+        m_object->notifyRangeMax(m_l.rangeMax());
         m_object->notifyVisibility(m_l.visibility());
     }
     return *this;
@@ -170,34 +177,29 @@ QString gnomonCoreParameterLookupTable::name(void) const
     return m_l.colorMapName();
 }
 
-double gnomonCoreParameterLookupTable::valueRangeMin(void) const
+double gnomonCoreParameterLookupTable::valueMin(void) const
 {
     return m_l.valueMin();
 }
 
-QBindable<double> gnomonCoreParameterLookupTable::bindableValueRangeMin(void)
-{
-    return m_l.bindableValueMin();
-}
-
-double gnomonCoreParameterLookupTable::valueRangeMax(void) const
+double gnomonCoreParameterLookupTable::valueMax(void) const
 {
     return m_l.valueMax();
 }
 
-QBindable<double> gnomonCoreParameterLookupTable::bindableValueRangeMax(void)
+double gnomonCoreParameterLookupTable::rangeMin(void) const
 {
-    return m_l.bindableValueMax();
+    return m_l.rangeMin();
+}
+
+double gnomonCoreParameterLookupTable::rangeMax(void) const
+{
+    return m_l.rangeMax();
 }
 
 bool gnomonCoreParameterLookupTable::visibility(void) const
 {
     return m_l.visibility();
-}
-
-QBindable<bool> gnomonCoreParameterLookupTable::bindableVisibility(void)
-{
-    return m_l.bindableVisibility();
 }
 
 QStringList gnomonCoreParameterLookupTable::availableCluts(void)
@@ -253,24 +255,30 @@ void gnomonCoreParameterLookupTable::setValue(const QVariant& v)
         }
 
         auto range_hash = hash["value_range"].toHash();
-        double range_min = range_hash["min"].value<double>();
-        double range_max = range_hash["max"].value<double>();
+        double min = range_hash["min"].value<double>();
+        double max = range_hash["max"].value<double>();
+        double r_min = range_hash["r_min"].value<double>();
+        double r_max = range_hash["r_max"].value<double>();
 
         bool visible = hash["visibility"].value<bool>();
 
         m_l.setName(cmap_name);
         m_l.setColorMap(cmap);
         //m_l.setValueRange(QList<double>({range_min, range_max}));
-        m_l.setValueMin(range_min);
-        m_l.setValueMax(range_max);
+        m_l.setValueMin(min);
+        m_l.setValueMax(max);
+        m_l.setRangeMin(r_min);
+        m_l.setRangeMax(r_max);
         m_l.setVisibility(visible);
 
         m_object->notifyLabel(m_label);
         m_object->notifyDoc(m_doc);
         m_object->notifyColorMap(m_l.colorMap());
         m_object->notifyColorMapName(m_l.colorMapName());
-        m_object->notifyValueRangeMin(m_l.valueMin());
-        m_object->notifyValueRangeMax(m_l.valueMax());
+        m_object->notifyValueMin(m_l.valueMin());
+        m_object->notifyValueMax(m_l.valueMax());
+        m_object->notifyRangeMin(m_l.rangeMin());
+        m_object->notifyRangeMax(m_l.rangeMax());
         m_object->notifyVisibility(m_l.visibility());
 
     } else {
@@ -288,8 +296,10 @@ void gnomonCoreParameterLookupTable::setValue(const gnomonLookupTable& lut)
     m_l = lut;
     m_object->notifyColorMap(m_l.colorMap());
     m_object->notifyColorMapName(m_l.colorMapName());
-    m_object->notifyValueRangeMin(m_l.valueMin());
-    m_object->notifyValueRangeMax(m_l.valueMax());
+    m_object->notifyValueMin(m_l.valueMin());
+    m_object->notifyValueMax(m_l.valueMax());
+    m_object->notifyRangeMin(m_l.rangeMin());
+    m_object->notifyRangeMax(m_l.rangeMax());
     m_object->notifyVisibility(m_l.visibility());
 }
 
@@ -301,18 +311,28 @@ void gnomonCoreParameterLookupTable::setName(const QString& clut)
 }
 
 
-void gnomonCoreParameterLookupTable::setValueRangeMin(double value)
+void gnomonCoreParameterLookupTable::setValueMin(double value)
 {
-    //m_l.setValueRange(QList<double>({value, m_l.valueRange()[1]}));
     m_l.setValueMin(value);
-    m_object->notifyValueRangeMin(value);
+    m_object->notifyValueMin(value);
 }
 
-void gnomonCoreParameterLookupTable::setValueRangeMax(double value)
+void gnomonCoreParameterLookupTable::setValueMax(double value)
 {
-    //m_l.setValueRange(QList<double>({m_l.valueRange()[0], value}));
     m_l.setValueMax(value);
-    m_object->notifyValueRangeMax(value);
+    m_object->notifyValueMax(value);
+}
+
+void gnomonCoreParameterLookupTable::setRangeMin(double value)
+{
+    m_l.setRangeMin(value);
+    m_object->notifyRangeMin(value);
+}
+
+void gnomonCoreParameterLookupTable::setRangeMax(double value)
+{
+    m_l.setRangeMax(value);
+    m_object->notifyRangeMax(value);
 }
 
 void gnomonCoreParameterLookupTable::setVisibility(bool value)
@@ -344,6 +364,8 @@ QVariantHash gnomonCoreParameterLookupTable::toVariantHash(void) const
     QVariantHash range_hash;
     range_hash.insert("min", m_l.valueMin());
     range_hash.insert("max", m_l.valueMax());
+    range_hash.insert("r_min", m_l.rangeMin());
+    range_hash.insert("r_max", m_l.rangeMax());
     hash.insert("value_range", range_hash);
 
     hash.insert("visibility", m_l.visibility());
@@ -361,7 +383,8 @@ GNOMONVISUALIZATION_EXPORT QDataStream& operator << (QDataStream& s, const gnomo
 {
     s << p.label();
     s << p.name();
-    s << p.valueRangeMin() << p.valueRangeMax();
+    s << p.valueMin() << p.valueMax();
+    s << p.rangeMin() << p.rangeMax();
     s << p.visibility();
     s << p.documentation();
 
@@ -372,12 +395,14 @@ GNOMONVISUALIZATION_EXPORT QDataStream& operator >> (QDataStream& s, gnomonCoreP
 {
     QString label; s >> label;
     QString clut; s >> clut;
-    double range_min; s >> range_min;
-    double range_max; s >> range_max;
+    double min; s >> min;
+    double max; s >> max;
+    double r_min; s >> r_min;
+    double r_max; s >> r_max;
     bool visible; s >> visible;
     QString doc; s >> doc;
 
-    gnomonLookupTable lut(clut, QList<double>({range_min, range_max}), visible);
+    gnomonLookupTable lut(clut, QList<double>({min, max}), QList<double>({r_min, r_max}), visible);
     p = gnomonCoreParameterLookupTable(label, lut, doc);
     return s;
 }
@@ -388,7 +413,7 @@ GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug dbg, gnomonCoreParameterLo
     dbg.nospace() << p.variant().typeName() << " : { ";
     dbg.nospace() << "label " << p.label() << ", "
                   << "colormap_name " << p.name() << ", "
-                  << "value_range [" << p.valueRangeMin() << "," << p.valueRangeMax() << "], "
+                  << "value_range [" << p.valueMin() << "," << p.valueMax() << "," << p.rangeMin() << "," << p.rangeMax() << "], "
                   << "visibility" << p.visibility()
                   << "documentation : " << p.documentation()
                   << " }";

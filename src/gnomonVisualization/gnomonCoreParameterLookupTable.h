@@ -1,4 +1,3 @@
-// gnomonCoreParameterLookupTable.h
 //
 
 #pragma once
@@ -43,20 +42,21 @@ public:
 
     void setName(const QString&);
 
-    void setValueRangeMin(double);
-    void setValueRangeMax(double);
+    void setValueMin(double);
+    void setValueMax(double);
+    void setRangeMin(double);
+    void setRangeMax(double);
     void setVisibility(bool);
 
     gnomonLookupTable value(void) const;
     gnomonColorMap colorMap(void) const;
     QString name(void) const;
 
-    double valueRangeMin(void) const;
-    QBindable<double> bindableValueRangeMin(void);
-    double valueRangeMax(void) const;
-    QBindable<double> bindableValueRangeMax(void);
+    double valueMin(void) const;
+    double valueMax(void) const;
+    double rangeMin(void) const;
+    double rangeMax(void) const;
     bool visibility(void) const;
-    QBindable<bool> bindableVisibility(void);
 
 public:
     QStringList availableCluts(void);

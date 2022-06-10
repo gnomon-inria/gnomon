@@ -20,17 +20,21 @@
 // gnomonLookupTable
 // ///////////////////////////////////////////////////////////////////
 
-gnomonLookupTable::gnomonLookupTable(const gnomonColorMap& c, const QList<double> r, bool v) : colormap(c), min(r[0]), max(r[1]), visible(v)
+gnomonLookupTable::gnomonLookupTable(const gnomonColorMap& c, const QList<double> a, const QList<double> r, bool v) : colormap(c), min(a[0]), max(a[1]),
+                                                                                                                      r_min(r[0]), r_max(r[1]), visible(v)
 {
     this->name = "no_name";
 }
 
-gnomonLookupTable::gnomonLookupTable(const QString& clut, const QList<double> r, bool v) : min(r[0]), max(r[1]), visible(v)
+gnomonLookupTable::gnomonLookupTable(const QString& clut, const QList<double> a, const QList<double> r, bool v) : min(a[0]), max(a[1]),
+                                                                                                                  r_min(r[0]), r_max(r[1]), visible(v)
 {
     this->setColorMap(clut);
 }
 
-gnomonLookupTable::gnomonLookupTable(const gnomonLookupTable& o) : name(o.name) ,colormap(o.colormap), min(o.min), max(o.max), visible(o.visible)
+gnomonLookupTable::gnomonLookupTable(const gnomonLookupTable& o) : name(o.name) ,colormap(o.colormap),
+                                                                   min(o.min), max(o.max),
+                                                                   r_min(o.r_min), r_max(o.r_max), visible(o.visible)
 {
 }
 
@@ -39,9 +43,10 @@ gnomonLookupTable& gnomonLookupTable::operator = (const gnomonLookupTable& o)
     if(this != &o) {
         this->name = o.name;
         this->colormap = o.colormap;
-        //this->value_range = o.value_range;
         this->min = o.min;
         this->max = o.max;
+        this->r_min = o.r_min;
+        this->r_max = o.r_max;
         this->visible = o.visible;
     }
 
@@ -51,8 +56,8 @@ gnomonLookupTable& gnomonLookupTable::operator = (const gnomonLookupTable& o)
 bool gnomonLookupTable::operator != (const gnomonLookupTable& o)
 {
     if(this->name == o.name && this->visible == o.visible) {
-        if(this->min == o.min) {
-            if(this->max = o.max) {
+        if((this->min == o.min) && (this->max == o.max) ) {
+            if((this->r_max = o.r_max) && (this->r_min = o.r_min)) {
                 return this->colormap == o.colormap;
             }
         }
@@ -72,20 +77,14 @@ const gnomonColorMap& gnomonLookupTable::colorMap(void) const
     return this->colormap;
 }
 
-// const QList<double>& gnomonLookupTable::valueRange(void) const
-// {
-//     return this->value_range;
-// }
-
-
 double gnomonLookupTable::valueMin(void) const
 {
     return this->min;
 }
 
-QBindable<double> gnomonLookupTable::bindableValueMin(void)
+double gnomonLookupTable::rangeMin(void) const
 {
-    return &this->min;
+    return this->r_min;
 }
 
 double gnomonLookupTable::valueMax(void) const
@@ -93,20 +92,14 @@ double gnomonLookupTable::valueMax(void) const
     return this->max;
 }
 
-QBindable<double> gnomonLookupTable::bindableValueMax(void)
+double gnomonLookupTable::rangeMax(void) const
 {
-    return &this->max;
+    return this->r_max;
 }
-
 
 bool gnomonLookupTable::visibility(void) const
 {
     return this->visible;
-}
-
-QBindable<bool> gnomonLookupTable::bindableVisibility(void)
-{
-    return &this->visible;
 }
 
 void gnomonLookupTable::setName(const QString& n)
@@ -172,10 +165,25 @@ void gnomonLookupTable::setColorMap(const QString& clut)
 }
 
 
-// void gnomonLookupTable::setValueRange(const QList<double>& range)
-// {
-//     this->value_range = range;
-// }
+void gnomonLookupTable::setValueMin(double m)
+{
+    this->min = m;
+}
+
+void gnomonLookupTable::setRangeMin(double m)
+{
+    this->r_min = m;
+}
+
+void gnomonLookupTable::setValueMax(double M)
+{
+    this->max = M;
+}
+
+void gnomonLookupTable::setRangeMax(double M)
+{
+    this->r_max = M;
+}
 
 void gnomonLookupTable::setVisibility(bool vis)
 {
