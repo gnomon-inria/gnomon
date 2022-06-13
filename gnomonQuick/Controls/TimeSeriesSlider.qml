@@ -6,6 +6,8 @@ import xQuick.Controls    1.0 as X
 import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 
+import gnomonQuick.Controls as G
+
 Slider {
     id: _ts_slider
     value: times && times.length > 0 ? times[0] : 0

@@ -27,7 +27,7 @@ ToolTip {
     delay: 500
 
     implicitHeight: G.Style.sizes.s5
-    implicitWidth: G.Style.sizes.s11
+    implicitWidth: contentWidth
 }
 
 //
