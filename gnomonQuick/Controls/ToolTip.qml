@@ -6,6 +6,11 @@ import gnomonQuick.Style 1.0 as G
 ToolTip {
     id: _control;
 
+    implicitHeight: G.Style.sizes.s5
+    implicitWidth: contentWidth + 2*G.Style.mediumPadding
+
+    delay: 500
+
     contentItem: Text{
         anchors.fill:parent
 
@@ -23,11 +28,6 @@ ToolTip {
 
         opacity: 0.9
     }
-
-    delay: 500
-
-    implicitHeight: G.Style.sizes.s5
-    implicitWidth: contentWidth
 }
 
 //
