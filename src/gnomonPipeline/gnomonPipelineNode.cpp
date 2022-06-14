@@ -78,6 +78,11 @@ gnomonPipelineNode::gnomonPipelineNode(void) : d(new gnomonPipelineNodePrivate)
     this->setTitle("");*/
 }
 
+gnomonPipelineNode::gnomonPipelineNode(Type t) : d(new gnomonPipelineNodePrivate)
+{
+    d->type = t;
+}
+
 gnomonPipelineNode::~gnomonPipelineNode(void)
 {
     delete d;
