@@ -170,7 +170,7 @@ QtObject {
         property int s13: S.spacing["13"] //384
         property int s14: S.spacing["14"] //512
         property int s15: S.spacing["15"] //640
-        property int s16: S.spacing["16"] //768
+        property int s16: S.spacing["16"] //896
     }
 
 
