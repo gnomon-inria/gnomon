@@ -126,10 +126,6 @@ Button {
 // States
 // /////////////////////////////////////////////////////////////////////////////
 
-onHoveredChanged: {
-    console.log(hovered, hoverEnabled, enabled)
-}
-
   states: [
 
     State {
