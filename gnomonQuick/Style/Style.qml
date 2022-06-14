@@ -290,7 +290,7 @@ QtObject {
         property font formLabel: Qt.font({
             family: "Poppins",
             weight: Font.Medium,
-            pointSize: S.fontScale["100"],
+            pointSize: S.fontScale["150"],
         })
 
         property font cardTitle: Qt.font({
