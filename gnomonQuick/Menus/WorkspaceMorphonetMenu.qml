@@ -411,12 +411,19 @@ Control {
 
             ColumnLayout {
                 anchors.fill: parent;
-                anchors.margins: 12;
+                anchors.margins: G.Style.smallPadding;
+
+                spacing: G.Style.smallPadding
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
 
                 G.Button {
                     id: _launch_morphoplot
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
+
                     type: G.Style.ButtonType.Base
                     flat: !enabled
                     //hoverEnabled: enabled
@@ -436,7 +443,7 @@ Control {
                 G.Button {
                     id: _collect_morphoplot
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
+
                     type: G.Style.ButtonType.Base
                     flat: !enabled
                     hoverEnabled: false
