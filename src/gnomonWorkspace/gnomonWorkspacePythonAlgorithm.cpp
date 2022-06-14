@@ -236,7 +236,10 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
         d->command = new gnomonFormAlgorithmCommand(d->algorithm_key);
         d->command->setFormAlgorithm(d->algorithm);
         d->command->setPythonCode(d->code->text());
-        connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
+        connect(d->command, &gnomonFormAlgorithmCommand::finished, [this]() {
+            this->viewOutputs();
+            this->finished();
+        });
 
         if (this->source()->binaryImage()) {
             d->algorithm->setInputBinaryImage(this->source()->binaryImage());

@@ -27,11 +27,6 @@ gnomonWorkspacePreprocess::gnomonWorkspacePreprocess(QObject *parent) : gnomonAl
     emit parametersChanged();
 
     d->updatePool();
-
-    connect(d->command, &gnomonAbstractCommand::finished, [this]() { 
-        this->viewOutputs();
-        this->finished();
-    });
 }
 
 gnomonWorkspacePreprocess::~gnomonWorkspacePreprocess(void)

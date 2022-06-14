@@ -145,6 +145,14 @@ void gnomonAlgorithmWorkspace::run(bool no_async)
 {
     Q_ASSERT(d->command);
 
+    disconnect(d->connect_finished);
+    if(!no_async) {
+        d->connect_finished = connect(d->command, &gnomonAbstractCommand::finished, [this]() {
+            this->viewOutputs();
+            this->finished();
+        });
+    }
+
     emit started();
 
     this->setInputs();
@@ -155,7 +163,9 @@ void gnomonAlgorithmWorkspace::run(bool no_async)
 
     d->command->redo();
 
-    this->viewOutputs();
+    if(no_async){
+        this->viewOutputs();
+    }
 }
 
 void gnomonAlgorithmWorkspace::setInputs()

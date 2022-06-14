@@ -42,6 +42,7 @@ public:
 
 public:
     gnomonAbstractCommand *command = nullptr;
+    QMetaObject::Connection connect_finished;
 
 public:
     gnomonViewFormList *sources = nullptr;
