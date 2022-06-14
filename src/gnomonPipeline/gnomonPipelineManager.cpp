@@ -49,7 +49,7 @@ public:
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , int> form_manager_index;
 
     QMap<gnomonPipelineNode *, QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > > node_input_forms;
-    QMap<std::shared_ptr<gnomonAbstractDynamicForm> , std::shared_ptr<gnomonAbstractDynamicForm> > form_clones; //TODO check what is it used for
+    //QMap<std::shared_ptr<gnomonAbstractDynamicForm> , std::shared_ptr<gnomonAbstractDynamicForm> > form_clones; //TODO check what is it used for
 
 public:
     void linkNodeInputs(gnomonPipelineNode *node);
@@ -68,9 +68,9 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
         auto&& input = it.key();
         std::shared_ptr<gnomonAbstractDynamicForm> input_form = input_forms[input];
         if (input_form) {
-            while (this->form_clones.contains(input_form) & !this->reader_nodes.contains(input_form)) {
-               input_form = this->form_clones[input_form];
-            }
+            //while (this->form_clones.contains(input_form) & !this->reader_nodes.contains(input_form)) {
+            //    input_form = this->form_clones[input_form];
+            //}
             gnomonPipelineEdge *edge = nullptr;
             if (this->reader_nodes.contains(input_form)) {
                 edge = new gnomonPipelineEdge();
@@ -190,9 +190,9 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
     for (auto it = forms.begin(); it != forms.end(); ++it) {
         auto&& form_name = it.key();
         std::shared_ptr<gnomonAbstractDynamicForm> form = forms[form_name];
-        if (std::shared_ptr<gnomonAbstractDynamicForm> clone = d->form_clones.key(form,nullptr)) {
-           form = clone;
-        }
+        //if (std::shared_ptr<gnomonAbstractDynamicForm> clone = d->form_clones.key(form,nullptr)) {
+        //    form = clone;
+        //}
         d->reader_nodes[form] = node;
         d->reader_output[form] = form_name;
     }
@@ -353,11 +353,11 @@ void gnomonPipelineManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> f
 
 void gnomonPipelineManager::addClonedForm(std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractDynamicForm> clone)
 {
-    // qDebug() << Q_FUNC_INFO << "nothing is done";
-    d->form_clones[clone] = form;
-    if (d->form_manager_index.contains(form)) {
-       d->form_manager_index[clone] = d->form_manager_index[form];
-    }
+    qDebug() << Q_FUNC_INFO << "nothing is done";
+    //d->form_clones[clone] = form;
+    //if (d->form_manager_index.contains(form)) {
+    //    d->form_manager_index[clone] = d->form_manager_index[form];
+    //}
 }
 
 void gnomonPipelineManager::setFormIndex(std::shared_ptr<gnomonAbstractDynamicForm> form, int index)
@@ -365,9 +365,9 @@ void gnomonPipelineManager::setFormIndex(std::shared_ptr<gnomonAbstractDynamicFo
     qDebug() << Q_FUNC_INFO << "form index " << form.get() << index;
     if (index > -1) {
         d->form_manager_index[form] = index;
-        if (d->form_clones.contains(form)) {
-          this->setFormIndex(d->form_clones[form], index);
-        }
+        //if (d->form_clones.contains(form)) {
+        //   this->setFormIndex(d->form_clones[form], index);
+        //}
 
         gnomonPipelinePort *output_port = nullptr;
         if (d->reader_nodes.contains(form)) {

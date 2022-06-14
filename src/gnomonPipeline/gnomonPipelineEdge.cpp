@@ -77,17 +77,11 @@ bool gnomonPipelineEdge::link(void)
     if (d->source->node() == d->target->node())
         return false;
 
-    if (d->source->type() == gnomonPipelinePort::Output) {
-        qDebug() << "##### checking output type" << d->source->type() << gnomonPipelinePort::Output;
+    if (d->source->type() == gnomonPipelinePort::Output)
         d->source->node()->addOutputEdge(this);
 
-    }
-
-    if (d->target->type() == gnomonPipelinePort::Input) {
-        qDebug() << "##### checking input type" << d->target->type() << gnomonPipelinePort::Input;
+    if (d->target->type() == gnomonPipelinePort::Input)
         d->target->node()->addInputEdge(this);
-    }
-        
 
     return true;
 }
