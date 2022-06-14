@@ -73,7 +73,7 @@ Rectangle {
             icon: G.Icons.icons["arrow-down-drop-circle"];
             size: G.Style.smallDelegateHeight;
             color: G.Style.colors.fgColor
-            visible: _drop.containsDrag;
+            visible: _drop.containsDrag & viewLogic.inputView;
             anchors.centerIn: parent;
         }
 

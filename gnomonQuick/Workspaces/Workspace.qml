@@ -10,8 +10,9 @@ import xQuick.Fonts     1.0 as X
 import xQuick.Style     1.0 as X
 
 import gnomonQuick.Controls 1.0 as G
+import gnomonQuick.Style 1.0 as G
 
-Page {
+G.Page {
 
     id: _self;
 
@@ -31,19 +32,17 @@ Page {
         id: _banner;
 
         anchors.left: parent.left;
-        anchors.leftMargin: 20;
         anchors.right: parent.right;
-        anchors.rightMargin: 20;
         anchors.bottom: parent.bottom;
-        anchors.bottomMargin: 20;
+        anchors.margins: G.Style.mediumPadding;
 
         radius: G.Style.panelRadius;
         color: G.Style.colors.gutterColor;
         border.color: G.Style.colors.fgColor;
         border.width: 1;
 
-        width: 400;
-        height: 52;
+        width: G.Style.mediumPanelWidth;
+        height: G.Style.largeLabelHeight;
 
         visible: false;
 
@@ -54,26 +53,25 @@ Page {
             opacity: 0.5
         }
 
-        RowLayout {
+        BusyIndicator {
+            id: _banner_indicator;
+
             anchors.left: parent.left;
-            anchors.leftMargin: 0;
+            anchors.verticalCenter: parent.verticalCenter;
+            anchors.margins: G.Style.smallPadding
+
+            height: G.Style.thumbnailLarge;
+        }
+
+        Label {
+            anchors.left: _banner_indicator.right;
             anchors.right: parent.right;
-            anchors.rightMargin: 0;
-            anchors.top: parent.top;
-            anchors.topMargin: 0;
-            height: 44
-            BusyIndicator {
-                id: _banner_indicator;
+            anchors.verticalCenter: parent.verticalCenter;
+            anchors.margins: G.Style.smallPadding
 
-                        height: 38;
-                implicitHeight: 38;
-            }
+            text: window.load_in_progress ? "Session loading in progress please dont launch other computations" : "Computation in progress" ;
 
-            X.Label {
-                text: window.load_in_progress ? "Session loading in progress please dont launch other computations" : "Computation in progress" ;
-                Layout.fillWidth: true;
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft;
-            }
+            font: G.Style.fonts.value
         }
     }
 
