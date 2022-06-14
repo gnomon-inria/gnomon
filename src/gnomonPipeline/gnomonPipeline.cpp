@@ -126,9 +126,16 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
         for (auto edge : node->inputEdges()) {
             int target_index = this->pipeline_node_names.indexOf(node_name);
             gnomonPipelineNode *source_node = edge->source()->node();
+            qDebug() << "### source node" << source_node;
+
+            QMap<QString, gnomonPipelineNode *>::iterator i;
+            for (i = pipeline_nodes.begin(); i != pipeline_nodes.end(); ++i)
+                qDebug() << i.key() << ": " << i.value() << Qt::endl;
+
             QString source_node_name = this->pipeline_nodes.key(source_node);
             int source_index = this->pipeline_node_names.indexOf(source_node_name);
             node_edge_indices.append(QPair<int,int>(source_index,target_index));
+            qDebug() << "****************" << node_name << source_node_name << target_index << source_index;
         }
     }
 
@@ -177,8 +184,10 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
         {
             int n1 = edge_indices.first;
             int n2 = edge_indices.second;
-            node_forces["edge_attraction"][n1] += (target_distance-node_distances[n1][n2])*node_vectors[n1][n2]/target_distance;
-            node_forces["edge_attraction"][n2] += (target_distance-node_distances[n2][n1])*node_vectors[n2][n1]/target_distance;
+            // qDebug() << "#### before calculus #### " << n1 << " " << n2;
+            // qDebug() << node_forces.size() << " " << node_distances.size() << " " << node_vectors.size();
+            // node_forces["edge_attraction"][n1] += (target_distance-node_distances[n1][n2])*node_vectors[n1][n2]/target_distance;
+            // node_forces["edge_attraction"][n2] += (target_distance-node_distances[n2][n1])*node_vectors[n2][n1]/target_distance;
         }
 
         node_forces["source_left_drift"] = QList<QVector2D>();
@@ -229,9 +238,9 @@ void gnomonPipelinePrivate::forceDrivenLayout(void)
         {
             int n1 = edge_indices.first;
             int n2 = edge_indices.second;
-            double edge_sinus = node_vectors[n1][n2].y()/node_vectors[n1][n2].length();
-            node_forces["edge_horizontality"][n1] += QVector2D(-abs(edge_sinus),-edge_sinus);
-            node_forces["edge_horizontality"][n2] += QVector2D(abs(edge_sinus),edge_sinus);
+            // double edge_sinus = node_vectors[n1][n2].y()/node_vectors[n1][n2].length();
+            // node_forces["edge_horizontality"][n1] += QVector2D(-abs(edge_sinus),-edge_sinus);
+            // node_forces["edge_horizontality"][n2] += QVector2D(abs(edge_sinus),edge_sinus);
         }
 
         QList<QVector2D> node_force;
