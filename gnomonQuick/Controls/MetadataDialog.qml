@@ -77,6 +77,7 @@ G.Dialog {
                 delegate: G.ListItemDelegate {
                     id: _f_delegate;
                     width: form_metadata.width;
+                    hoverEnabled: false
 
                     Label {
                         id: _name_label
@@ -168,6 +169,7 @@ G.Dialog {
                 delegate: G.ListItemDelegate {
                     id: _fc_delegate;
                     width: form_collection_metadata.width;
+                    hoverEnabled: false
 
                     Label {
                         id: _name_label

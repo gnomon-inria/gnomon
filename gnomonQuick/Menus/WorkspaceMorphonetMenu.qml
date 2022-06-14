@@ -13,6 +13,8 @@ import xQuick.Style      1.0 as X
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Icons      1.0 as G
 
 
 Control {
@@ -31,17 +33,17 @@ Control {
 
         currentIndex: _container.currentIndex
 
-        TabButton {
+        G.TabButton {
             text: "Download"
-            Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
+            //Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
-        TabButton {
+        G.TabButton {
             text: "Upload"
-            Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
+            //Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
-        TabButton {
+        G.TabButton {
             text: "Plot API"
-            Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
+            //Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
     }
 
@@ -67,14 +69,14 @@ Control {
                 anchors.fill: parent
                 anchors.margins: 10
 
-                X.Label {
+                Label {
                     Layout.fillWidth: true;
                     text: "Existing Dataset";
-                    color: X.Style.foregroundColor;
-                    font.pixelSize: 18;
+                    color: G.Style.colors.textColorBase;
+                    font: G.Style.fonts.header
                 }
 
-                X.ComboBox {
+                G.ComboBox {
                     id: _datasets
                     Layout.fillWidth: true;
                     Layout.preferredHeight: 28;
@@ -108,21 +110,23 @@ Control {
                 RowLayout {
                     Layout.fillWidth: true;
 
-                    X.Label { text: "Id:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.Label { id: _ds_id; text: "";  font.pixelSize: 12;}
-                    X.Label { text: "Date:";  font.pixelSize: 14;}
-                    X.Label { id: _ds_date; text: "";  font.pixelSize: 12;}
+                    Label { text: "Id:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
+                    Label { id: _ds_id; text: ""; color: G.Style.colors.textColorBase; font: G.Style.fonts.value;}
+                    Label { text: "Date:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel;}
+                    Label { id: _ds_date; text: ""; color: G.Style.colors.textColorBase; font: G.Style.fonts.value;}
                 }
 
                 RowLayout {
                     Layout.fillWidth: true;
 
-                    X.Label { text: "Owner:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.Label { id: _ds_owner; text: "";  font.pixelSize: 12;}
-                    X.ButtonRaw {
+                    Label { text: "Owner:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
+                    Label { id: _ds_owner; text: ""; color: G.Style.colors.textColorBase; font: G.Style.fonts.value;}
+                    G.Button {
                         id: _ds_delete;
                         text: "Delete";
                         visible: false;
+                        type: G.Style.ButtonType.Danger
+                        flat: true
                         onClicked: {
                            d.deleteDataset();
                            d.setDatasetInfos();
@@ -130,14 +134,15 @@ Control {
                     }
                 }
 
-                X.Label { text: "Description:";  font.pixelSize: 14;}
-                X.Label {
+                Label { text: "Description:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel;}
+                Label {
                     id: _ds_comments;
                     Layout.fillWidth: true;
                     Layout.minimumHeight: selected_ds_info.height/4;
 
                     text: "";
-                    font.pixelSize: 10;
+                    color: G.Style.colors.textColorBase;
+                    font: G.Style.fonts.label;
                     wrapMode: Label.WordWrap
                 }
 
@@ -145,20 +150,22 @@ Control {
                 RowLayout {
                     Layout.fillWidth: true;
 
-                    X.Label {
+                    Label {
                         text: "Voxel size:";
-                        color: X.Style.foregroundColor;
-                        font.pixelSize: 14;
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.formLabel;
                     }
-                    X.TextField { 
+                    TextField {
                         id: _voxelsize;
                         text: "1.0";
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
                         errorText: "bad Value";
                         Layout.fillWidth: true;
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
 
-                    X.ToolTip {
+                    ToolTip {
                         visible: _voxelsize.hovered
                         text: "Voxel size (x,y,z) in range [0.01, 10]"
                     }
@@ -168,22 +175,24 @@ Control {
                 RowLayout {
                     Layout.fillWidth: true;
 
-                    X.Label { text: "Time start:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField { id: _ds_time_start;
+                    Label { text: "Time start:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
+                    TextField { id: _ds_time_start;
                         Layout.fillWidth: true;
                         text: "";
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000;}
-                        font.pixelSize: 12;
                     }
-                    X.Label { text: "Time  End:";  font.pixelSize: 14;}
-                    X.TextField { id: _ds_time_end; text: "";
+                    Label { text: "Time  End:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel;}
+                    TextField { id: _ds_time_end; text: "";
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
                         Layout.fillWidth: true;
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000;}
-                        font.pixelSize: 12;
                     }
-                    X.ToolTip {
+                    ToolTip {
                         id: row_times_tooltip
                         visible: _ds_time_end.hovered || _ds_time_start.hovered
                         text: "times in range [0, 10000]"
@@ -194,9 +203,11 @@ Control {
                     Layout.fillHeight: true;
                 }
 
-                X.ButtonRaw {
+                G.Button {
                     Layout.fillWidth: true;
                     text: "Download";
+                    type: G.Style.ButtonType.Base
+                    flat: false
 
                     onClicked: {
                         //_progress.open();
@@ -218,35 +229,39 @@ Control {
                 anchors.fill: parent
                 anchors.margins: 10
 
-                X.Label {
+                Label {
                     Layout.fillWidth: true;
                     text: "New Dataset";
-                    color: X.Style.foregroundColor;
-                    font.pixelSize: 18;
+                    color: G.Style.colors.textColorBase;
+                    font: G.Style.fonts.header
                 }
 
                 RowLayout {
                     Layout.fillWidth: true;
-                    X.Label { text: "Name:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField {
+                    Label { text: "Name:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
+                    TextField {
                         id: _up_name;
                         Layout.fillWidth: true;
                         helperText: "New Dataset Name";
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
                     }
                 }
 
                 RowLayout {
                     Layout.fillWidth: true;
-                    X.Label { text: "NCBI:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField {
+                    Label { text: "NCBI:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
+                    TextField {
                         id: _up_ncbi;
                         Layout.fillWidth: true;
                         placeholderText: qsTr("NCBI specie if available");
                         text: "0";
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000; }
                     }
-                    X.ToolTip {
+                    ToolTip {
                         visible: _up_ncbi.hovered
                         text: "NCBI id see: https://www.ncbi.nlm.nih.gov"
                     }
@@ -255,13 +270,13 @@ Control {
 
                 RowLayout {
                     Layout.fillWidth: true;
-                    X.Label { text: "Type:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.ComboBox { id: _up_type
+                    Label { text: "Type:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
+                    G.ComboBox { id: _up_type
                         model: ["0: Observed", "1: Simulated", "2: Drawing"]
                         currentIndex: 0
                         Layout.fillWidth: true;
                     }
-                    X.ToolTip {
+                    ToolTip {
                         visible: _up_type.hovered
                         text: " 0 for Observed Data, 1 for Simulated Data, 2 for Drawing Data"
                     }
@@ -269,31 +284,35 @@ Control {
 
                 RowLayout {
                     Layout.fillWidth: true;
-                    X.Label { text: "Description:"; color: X.Style.foregroundColor; font.pixelSize: 14; }
-                    X.TextField {
+                    Label { text: "Description:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
+                    TextField {
                         id: _up_description;
                         Layout.fillWidth: true;
                         text: "(Uploaded from Gnomon)";
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
                     }
                 }
 
                 RowLayout {
                     Layout.fillWidth: true;
 
-                    X.Label {
+                    Label {
                         text: "Voxel size:";
-                        color: X.Style.foregroundColor;
-                        font.pixelSize: 14;
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.formLabel;
                     }
-                    X.TextField {
+                    TextField {
                         id: _upload_voxelsize;
                         Layout.fillWidth: true;
                         text: "1.0";
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
                         errorText: "bad Value";
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
 
-                    X.ToolTip {
+                    ToolTip {
                         visible: _upload_voxelsize.hovered
                         text: "Voxel size (x,y,z) for mesh generation"
                     }
@@ -303,9 +322,12 @@ Control {
                     Layout.fillHeight: true
                 }
 
-                X.ButtonRaw {
+                G.Button {
                     id: _dataset_created
                     Layout.fillWidth: true;
+
+                    type: G.Style.ButtonType.Base
+                    flat: true
 
                     property var link : ""
 
@@ -319,9 +341,12 @@ Control {
                     }
                 }
 
-                X.ButtonRaw {
+                G.Button {
                     id: _sync_infos
                     Layout.fillWidth: true;
+
+                    type: G.Style.ButtonType.Base
+                    flat: true
 
                     text: "Sync cell infos";
                     visible: false
@@ -334,9 +359,9 @@ Control {
                         }
                     }
 
-                    X.Icon {
+                    G.Icon {
                         icon: X.Icons.icons.sync;
-                        color: X.Style.foregroundColor;
+                        color: G.Style.colors.textColorBase;
 
                         anchors.left: _sync_infos.left;
                         anchors.leftMargin: 10;
@@ -344,9 +369,11 @@ Control {
                     }
                 }
 
-                X.ButtonRaw {
+                G.Button {
                     id: _upload_button
                     Layout.fillWidth: true;
+                    type: G.Style.ButtonType.Base
+                    flat: false
                     text: "Create Dataset and Upload"
 
                     onClicked: {
@@ -384,11 +411,22 @@ Control {
 
             ColumnLayout {
                 anchors.fill: parent;
-                anchors.margins: 12;
+                anchors.margins: G.Style.smallPadding;
 
-                X.ButtonRaw {
+                spacing: G.Style.smallPadding
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+
+                G.Button {
                     id: _launch_morphoplot
                     Layout.fillWidth: true
+
+                    type: G.Style.ButtonType.Base
+                    flat: !enabled
+                    //hoverEnabled: enabled
                     text: "Launch Plot";
                     onClicked: {
                         _launch_morphoplot.enabled = false;
@@ -402,9 +440,13 @@ Control {
                     }
                 }
 
-                X.ButtonRaw {
+                G.Button {
                     id: _collect_morphoplot
                     Layout.fillWidth: true
+
+                    type: G.Style.ButtonType.Base
+                    flat: !enabled
+                    hoverEnabled: false
                     enabled: false;
                     text: "Collect Plot Results";
                     onClicked: {

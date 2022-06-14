@@ -8,40 +8,41 @@ import xQuick.Controls  1.0 as X
 import xQuick.Style     1.0 as X
 import xQuick.Fonts     1.0 as X
 
-Control {
+import gnomonQuick.Controls 1.0 as G
+import gnomonQuick.Style    1.0 as G
+
+G.ListItemDelegate {
     id: _self;
 
     property var name: ""
     property var label: ""
-    property var text: _label_edit.text
+    property alias form_name: _label_edit.text
+
+    text: ""
+    hoverEnabled: false
 
     RowLayout {
         anchors.fill: parent
+        anchors.margins: G.Style.smallPadding
 
-        X.Label {
-            Layout.preferredWidth: parent.width/4
-            Layout.minimumWidth: parent.width/4
+        Label {
             Layout.fillHeight: true
+            Layout.minimumWidth: parent.width/4
 
             text: _self.name
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignLeft
 
-            font {
-                pointSize: 14
-                weight: Font.Bold
-            }
+            font: G.Style.fonts.formLabel
         }
 
-        Item {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
-
-        X.TextField {
+        TextField {
             id: _label_edit
 
-            Layout.preferredWidth: 2*parent.width/3
-            Layout.minimumWidth: 2*parent.width/3
+            Layout.fillWidth: true
             Layout.fillHeight: true
+
+            font: G.Style.fonts.value
 
             text: _self.label
         }
