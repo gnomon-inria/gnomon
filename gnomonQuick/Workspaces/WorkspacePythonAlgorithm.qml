@@ -10,6 +10,7 @@ import xQuick.Style      1.0 as X
 
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
 
 import gnomon.Workspaces    1.0 as GW
 import gnomon.Jupyter    1.0 as G

@@ -15,6 +15,7 @@ import crossParameters   1.0 as C
 
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
 
 import gnomon.Workspaces 1.0 as GW
 
@@ -50,7 +51,7 @@ G.Workspace {
         anchors.bottom: parent.bottom;
         anchors.left: parent.left;
         anchors.right: parent.right;
-        anchors.margins: 10;
+        anchors.margins: G.Style.smallPadding;
 
         Layout.fillWidth: true;
         Layout.fillHeight: true;

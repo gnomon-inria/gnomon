@@ -15,6 +15,8 @@ import crossParameters   1.0 as C
 
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Icons      1.0 as G
 
 import gnomon.Workspaces 1.0 as GW
 import gnomon.Visualization 1.0 as GV
@@ -37,11 +39,6 @@ G.Workspace {
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
-
-    /* G.WorkspaceProgressDialog { */
-    /*     id: _progress; */
-    /*     workspace_logic: d; */
-    /* } */
 
     GW.WorkspaceRegistration {
         id: d;
@@ -89,13 +86,16 @@ G.Workspace {
                 }
             }
 
-            X.Label {
+            Label {
                 anchors.bottom: parent.bottom
+                anchors.bottomMargin: G.Style.mediumPadding
                 anchors.right: parent.right
-                anchors.rightMargin: 10
+                anchors.rightMargin: G.Style.smallPadding
 
-                height: 24
+                height: G.Style.smallLabelHeight
                 text: "Floating Image"
+                font: G.Style.fonts.value
+                color: G.Style.colors.textColorNeutral
                 horizontalAlignment: Text.AlignRight
             }
 
@@ -119,35 +119,36 @@ G.Workspace {
                     Layout.fillWidth: true;
                     height: window.height/8;
 
-                    X.Label {
+                    Label {
                         anchors.top: parent.top
                         anchors.left: parent.left
+                        anchors.margins: G.Style.smallPadding
 
                         text: "Transformation matrix"
-                        color: X.Style.foregroundColor
+                        font: G.Style.fonts.value
+                        color: G.Style.colors.textColorNeutral
                     }
 
-                    X.Label {
+                    Label {
                         anchors.centerIn: parent
 
                         text: d.targetDict.dataDict
                         horizontalAlignment: Text.AlignRight
-                        color: X.Style.foregroundColor
-                        font {
-                            pointSize: 14
-                            bold: true
-                        }
+                        font: G.Style.fonts.value
+                        color: G.Style.colors.textColorNeutral
                     }
 
                     viewLogic: d.targetDict;
                 }
 
-                X.Label {
+                Label {
                     Layout.fillWidth: true;
 
-                    height: 24
+                    height: G.Style.smallLabelHeight
                     text: "Stack level " + _stack.currentIndex
                     horizontalAlignment: Text.AlignRight
+                    font: G.Style.fonts.value
+                    color: G.Style.colors.textColorNeutral
                 }
 
                 G.Stack {
@@ -165,10 +166,12 @@ G.Workspace {
                     }
                 }
 
-                X.ButtonRaw {
+                G.Button {
                     Layout.fillWidth: true;
 
                     text: "Iterate";
+                    type: G.Style.ButtonType.Base
+                    empty: true
 
                     onClicked: {
                         d.iterate();
@@ -199,13 +202,17 @@ G.Workspace {
                 }
             }
 
-            X.Label {
+            Label {
                 anchors.bottom: parent.bottom
+                anchors.bottomMargin: G.Style.mediumPadding
                 anchors.right: parent.right
+                anchors.rightMargin: G.Style.smallPadding
 
-                height: 24
+                height: G.Style.smallLabelHeight
                 text: "Reference Image"
                 horizontalAlignment: Text.AlignRight
+                font: G.Style.fonts.value
+                color: G.Style.colors.textColorNeutral
             }
 
             viewLogic: d.sources.views[0];
@@ -238,47 +245,42 @@ G.Workspace {
                 }
             }
 
-            X.Icon {
-                icon: _target_view._fullscreen ? X.Icons.icons.close_fullscreen : X.Icons.icons.fullscreen
-                size: 32;
-                color: X.Style.foregroundColor
-                anchors.bottom: parent.bottom
+            G.IconButton {
+                iconName: _target_view._fullscreen ? G.Icons.icons["fullscreen-exit"] : G.Icons.icons["fullscreen"]
+                size: G.Style.iconLarge;
+                color: G.Style.colors.textColorNeutral
+                tooltip: _target_view._fullscreen ? "Reduce View" : "Expand View"
+
+                anchors.bottom: _registered_label.top
                 anchors.right: parent.right
-                anchors.bottomMargin: 30
+                anchors.margins: G.Style.smallPadding
 
-                MouseArea {
-                    id: _expand_view_area;
-
-                    anchors.fill: parent;
-
-                    hoverEnabled: true;
-
-                    onClicked: {
-                        if(!_target_view._fullscreen) {
-                            _target_view._fullscreen = true
-                            _target_view.Layout.preferredHeight = _grid_block.height
-                            _target_view.Layout.preferredWidth = _grid_block.width
-                            parent.ToolTip.text = "Reduce View"
-                        } else {
-                            _target_view._fullscreen = false
-                            _target_view.Layout.preferredHeight = 0
-                            _target_view.Layout.preferredWidth = 0
-                            parent.ToolTip.text = "Expand View"
-                        }
+                onClicked: {
+                    if(!_target_view._fullscreen) {
+                        _target_view._fullscreen = true
+                        _target_view.Layout.preferredHeight = _grid_block.height
+                        _target_view.Layout.preferredWidth = _grid_block.width
+                    } else {
+                        _target_view._fullscreen = false
+                        _target_view.Layout.preferredHeight = 0
+                        _target_view.Layout.preferredWidth = 0
                     }
                 }
-
-                ToolTip.visible: _expand_view_area.containsMouse;
-                ToolTip.text: "Expand View";
             }
 
-            X.Label {
-                anchors.bottom: parent.bottom
-                anchors.right: parent.right
+            Label {
+                id: _registered_label
 
-                height: 24
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: G.Style.mediumPadding
+                anchors.right: parent.right
+                anchors.rightMargin: G.Style.smallPadding
+
+                height: G.Style.smallLabelHeight
                 text: "Registered Image"
                 horizontalAlignment: Text.AlignRight
+                font: G.Style.fonts.value
+                color: G.Style.colors.textColorNeutral
             }
 
             viewLogic: d.target;

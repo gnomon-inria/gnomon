@@ -15,5 +15,4 @@ WorkspacePreprocess              1.0 WorkspacePreprocess.qml
 WorkspacePythonAlgorithm         1.0 WorkspacePythonAlgorithm.qml
 WorkspaceSegmentation            1.0 WorkspaceSegmentation.qml
 WorkspaceRegistration            1.0 WorkspaceRegistration.qml
-WorkspaceProgressDialog          1.0 WorkspaceProgressDialog.qml
 WorkspaceBinarization            1.0 WorkspaceBinarization.qml

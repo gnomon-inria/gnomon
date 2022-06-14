@@ -25,6 +25,8 @@ G.Dialog { id: self;
     width: G.Style.mediumDialogWidth;
     height: G.Style.mediumDialogHeight;
 
+    padding: 0;
+
     parent: Overlay.overlay
 
     focus: true
@@ -37,6 +39,8 @@ G.Dialog { id: self;
         G.ListItemDelegate {
             width: listView.width
             text: title
+            font: G.Style.fonts.cardLabel
+
             highlighted: listView.currentIndex == index
 
             onClicked: {
@@ -53,6 +57,7 @@ G.Dialog { id: self;
     RowLayout {
         spacing: G.Style.mediumRowSpacing
         anchors.fill: parent;
+        anchors.margins: G.Style.smallPadding
 
         G.Gutter {
             id: _control
@@ -67,10 +72,6 @@ G.Dialog { id: self;
                 model: self.availableReaders
 
                 delegate: _delegate;
-
-                // highlight: Rectangle {
-                //     color: X.Style.foregroundColor
-                // }
 
                 Keys.onPressed: {
                     //console.log("........", event.key)
@@ -104,7 +105,7 @@ G.Dialog { id: self;
                 font: G.Style.fonts.header
                 horizontalAlignment: Text.AlignLeft;
 
-                Layout.preferredHeight: 30;
+                Layout.preferredHeight: G.Style.mediumLabelHeight;
                 Layout.fillWidth: true
             }
 
@@ -112,13 +113,11 @@ G.Dialog { id: self;
                 text: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? self.availableReaders.get(listView.currentIndex).description: "";
                 wrapMode: Text.Wrap
                 font: G.Style.fonts.label
-                Layout.preferredHeight: 30;
+                Layout.preferredHeight: G.Style.mediumLabelHeight;
                 Layout.fillWidth: true
             }
         }
     }
-
-
 
     onOpened: {
         self.enabled = true;

@@ -34,10 +34,10 @@ G.Dialog { id: _self;
         columns: 2
 
         anchors.fill: parent
-        anchors.margins: 10
+        anchors.margins: G.Style.smallPadding
 
-        rowSpacing: 10
-        columnSpacing: 10
+        rowSpacing: G.Style.smallPadding
+        columnSpacing: G.Style.smallPadding
 
         Label{
             text: _self.type == "Parameter" ? "Parameter type" : "Form type"

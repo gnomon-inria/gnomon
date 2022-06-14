@@ -29,12 +29,13 @@ G.Dialog {
     }
     property alias plugin_workspace: _internal.plugin_workspace
     property alias available_workspaces: _available_workspaces
+
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
-    width: window.width * 3/4
-    height: window.height * 3/4
+    width: G.Style.largeDialogWidth
+    height: G.Style.largeDialogHeight
 
-    padding: 10;
+    padding: 0;
 
     parent: Overlay.overlay
     modal: true
@@ -62,13 +63,13 @@ G.Dialog {
         anchors.top: parent.top;
         anchors.bottom: parent.bottom;
         anchors.left: parent.left;
-        anchors.margins: 10;
+        anchors.margins: G.Style.smallPadding;
 
         TextField {
 
             id: _workspace_search_bar;
 
-            height: 42
+            height: G.Style.formDelegateHeight
 
             anchors.right: _workspace_selection_panel.right;
             anchors.left: _workspace_selection_panel.left;
@@ -99,7 +100,7 @@ G.Dialog {
                 color: G.Style.colors.neutralColor;
 
                 anchors.right: _workspace_search_bar.right;
-                anchors.rightMargin: 10;
+                anchors.rightMargin: G.Style.smallPadding;
                 anchors.verticalCenter: _workspace_search_bar.verticalCenter;
             }
         }
@@ -125,7 +126,7 @@ G.Dialog {
                     highlighted: _list_view.currentIndex == index
 
                     text: model.title;
-                    font: G.Style.fonts.formLabel
+                    font: G.Style.fonts.cardLabel
                     enabled: model.available
 
                     onClicked: {
@@ -144,7 +145,7 @@ G.Dialog {
                         visible: !model.available
 
                         anchors.right: parent.right;
-                        anchors.rightMargin: 10;
+                        anchors.rightMargin: G.Style.smallPadding;
                         anchors.verticalCenter: parent.verticalCenter;
                     }
                 }
@@ -183,7 +184,7 @@ G.Dialog {
         anchors.bottom: parent.bottom;
         anchors.right: parent.right;
         anchors.left: _workspace_selection_panel.right;
-        anchors.margins: 10;
+        anchors.margins: G.Style.smallPadding;
 
         show_description: true
 

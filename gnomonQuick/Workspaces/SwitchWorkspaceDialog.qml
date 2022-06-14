@@ -18,10 +18,7 @@ G.Dialog {
     width: G.Style.mediumDialogWidth
     height: G.Style.largeDialogHeight
 
-    leftPadding: 0;
-    rightPadding: 0;
-    topPadding: 0;
-    bottomPadding: 0;
+    padding: 0;
 
     parent: Overlay.overlay
 
@@ -66,7 +63,7 @@ G.Dialog {
         delegate: G.ListItemDelegate {
             width: listView.width
             text: model.title
-            font: G.Style.fonts.value
+            font: G.Style.fonts.cardLabel
             highlighted: ListView.isCurrentItem
             onClicked: {
                 listView.currentIndex = index
@@ -80,7 +77,7 @@ G.Dialog {
                 height: parent.height;
                 width: parent.height;
                 anchors.right: parent.right;
-                anchors.rightMargin: 10;
+                anchors.rightMargin: G.Style.smallPadding;
 
                 Image {
                     id: _icon
@@ -122,22 +119,21 @@ G.Dialog {
                 rightPadding: _section_delegate.spacing;
                 text: _section_delegate.text;
                 font: _section_delegate.font;
-                color: X.Style.textColor;
+                color: G.Style.colors.textColorNeutral;
                 elide: Text.ElideRight;
                 verticalAlignment: Text.AlignVCenter;
             }
 
             background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 40
+                implicitWidth: G.Style.buttonWidth
+                implicitHeight: G.Style.mediumLabelHeight
                 opacity: enabled ? 0.8 : 0.3
-                // color: Qt.darker(X.Style.backgroundColor, 1.2)
-                color: "#11000000";
+                color: G.style.color.gutterColor
 
                 Rectangle {
                     width: parent.width
                     height: 1
-                    color: X.Style.borderColor;
+                    color: G.Style.colors.fgColor;
                     anchors.bottom: parent.bottom
                 }
             }

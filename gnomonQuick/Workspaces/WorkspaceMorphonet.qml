@@ -7,9 +7,9 @@ import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
 import xQuick.Style      1.0 as X
 
-
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
 
 import gnomon.Workspaces    1.0 as GW
 
@@ -68,7 +68,7 @@ G.Workspace {
         id: _view;
 
         anchors.fill: parent;
-        anchors.margins: 10;
+        anchors.margins: G.Style.smallPadding;
 
         visible: d.connected
         onDroppedFromManager: (index) => {

@@ -115,7 +115,7 @@ Item {
 
                 delegate: G.ListItemDelegate {
                     width: parent.width
-                    height: 24
+                    height: G.Style.smallLabelHeight
                     text: modelData
                     font: G.Style.fonts.value
                     hoverEnabled: false

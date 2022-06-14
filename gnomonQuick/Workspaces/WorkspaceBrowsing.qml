@@ -77,7 +77,7 @@ G.Workspace {
         id: _view;
 
         anchors.fill: parent;
-        anchors.margins: 10;
+        anchors.margins: G.Style.smallPadding;
 
         onDroppedFromFile: (path) => {
             let urls = path.split(',')
