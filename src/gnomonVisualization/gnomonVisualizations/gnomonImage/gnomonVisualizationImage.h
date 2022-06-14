@@ -15,6 +15,9 @@ public:
     ~gnomonVisualizationImage(void);
 
 public:
+    virtual const QString pluginName(void) override;
+
+public:
     void setImage(std::shared_ptr<gnomonImageSeries> image) override;
     std::shared_ptr<gnomonImageSeries> image(void) override;
 

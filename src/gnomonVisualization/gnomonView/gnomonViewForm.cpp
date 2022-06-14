@@ -966,14 +966,14 @@ void gnomonViewForm::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellIma
     QJsonObject parameters;
 
     if(visu) {
-        visu_name = visu->metaObject()->className();
+        visu_name = visu->pluginName();
         parameters = visuParameters(visu);
         //d->formVisualization[name] = visu;
         //d->formVisualizationNames[name] = visu_name;
     } else {
         if (d->formVisualization.contains(name) && d->formVisualization[name]) {
             std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
-            visu_name = current_visu->metaObject()->className();
+            visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
             visu_name = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
@@ -1001,14 +1001,14 @@ void gnomonViewForm::setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cel
     QJsonObject parameters;
 
     if(visu) {
-        visu_name = visu->metaObject()->className();
+        visu_name = visu->pluginName();
         parameters = visuParameters(visu);
         //d->formVisualization[name] = visu;
         //d->formVisualizationNames[name] = visu_name;
     } else {
         if (d->formVisualization.contains(name) && d->formVisualization[name]) {
             std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
-            visu_name = current_visu->metaObject()->className();
+            visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
             visu_name = gnomonVisualization::visualizationCellComplex::pluginFactory().keys()[0];
@@ -1036,14 +1036,14 @@ void gnomonViewForm::setImage(std::shared_ptr<gnomonImageSeries> image, std::sha
     QJsonObject parameters;
 
     if(visu) {
-        visu_name = visu->metaObject()->className();
+        visu_name = visu->pluginName();
         parameters = visuParameters(visu);
         //d->formVisualization[name] = visu;
         //d->formVisualizationNames[name] = visu_name;
     } else {
         if (d->formVisualization.contains(name) && d->formVisualization[name]) {
             std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
-            visu_name = current_visu->metaObject()->className();
+            visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
             visu_name = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
@@ -1072,14 +1072,14 @@ void gnomonViewForm::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> ima
     QJsonObject parameters;
 
     if(visu) {
-        visu_name = visu->metaObject()->className();
+        visu_name = visu->pluginName();
         parameters = visuParameters(visu);
         //d->formVisualization[name] = visu;
         //d->formVisualizationNames[name] = visu_name;
     } else {
         if (d->formVisualization.contains(name) && d->formVisualization[name]) {
             std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
-            visu_name = current_visu->metaObject()->className();
+            visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
             visu_name = gnomonVisualization::visualizationBinaryImage::pluginFactory().keys()[0];
@@ -1107,14 +1107,14 @@ void gnomonViewForm::setMesh(std::shared_ptr<gnomonMeshSeries> mesh, std::shared
     QJsonObject parameters;
 
     if(visu) {
-        visu_name = visu->metaObject()->className();
+        visu_name = visu->pluginName();
         parameters = visuParameters(visu);
         //d->formVisualization[name] = visu;
         //d->formVisualizationNames[name] = visu_name;
     } else {
         if (d->formVisualization.contains(name) && d->formVisualization[name]) {
             std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
-            visu_name = current_visu->metaObject()->className();
+            visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
             visu_name = gnomonVisualization::visualizationMesh::pluginFactory().keys()[0];
@@ -1142,14 +1142,14 @@ void gnomonViewForm::setPointCloud(std::shared_ptr<gnomonPointCloudSeries> point
     QJsonObject parameters;
 
     if(visu) {
-        visu_name = visu->metaObject()->className();
+        visu_name = visu->pluginName();
         parameters = visuParameters(visu);
         //d->formVisualization[name] = visu;
         //d->formVisualizationNames[name] = visu_name;
     } else {
         if (d->formVisualization.contains(name) && d->formVisualization[name]) {
             std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
-            visu_name = current_visu->metaObject()->className();
+            visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
             visu_name = gnomonVisualization::visualizationPointCloud::pluginFactory().keys()[0];

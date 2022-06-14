@@ -70,6 +70,11 @@ gnomonVisualizationImageChannelBlending::~gnomonVisualizationImageChannelBlendin
     delete dd;
 }
 
+const QString gnomonVisualizationImageChannelBlending::pluginName(void)
+{
+    return "gnomonVisualizationImageChannelBlending";
+}
+
 void gnomonVisualizationImageChannelBlending::clear(void)
 {
     if (dd->volume) {

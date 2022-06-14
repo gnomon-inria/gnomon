@@ -32,6 +32,9 @@ public:
     ~gnomonVisualizationCellComplex(void);
 
 public:
+    virtual const QString pluginName(void) override;
+
+public:
     void setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cellComplex) override;
     std::shared_ptr<gnomonCellComplexSeries> cellComplex(void) override;
 

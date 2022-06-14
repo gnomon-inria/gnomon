@@ -68,6 +68,11 @@ gnomonVisualizationImage::~gnomonVisualizationImage(void)
     delete dd;
 }
 
+const QString gnomonVisualizationImage::pluginName(void)
+{
+    return  "gnomonVisualizationImage";
+}
+
 void gnomonVisualizationImage::clear(void)
 {
     if (dd->volume) {

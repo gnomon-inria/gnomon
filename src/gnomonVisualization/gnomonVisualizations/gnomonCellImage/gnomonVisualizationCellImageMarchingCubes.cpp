@@ -123,6 +123,11 @@ gnomonVisualizationCellImageMarchingCubes::~gnomonVisualizationCellImageMarching
     dd = NULL;
 }
 
+const QString gnomonVisualizationCellImageMarchingCubes::pluginName(void)
+{
+    return  "gnomonVisualizationCellImageMarchingCubes";
+}
+
 void gnomonVisualizationCellImageMarchingCubes::clear(void)
 {
 //    gnomonAbstractVisualization::clear();

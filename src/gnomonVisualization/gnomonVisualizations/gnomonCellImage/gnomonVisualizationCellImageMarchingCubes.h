@@ -15,6 +15,9 @@ public:
     ~gnomonVisualizationCellImageMarchingCubes(void);
 
 public:
+    virtual const QString pluginName(void) override;
+
+public:
 	void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) override;
 	std::shared_ptr<gnomonCellImageSeries> cellImage(void) override;
 
