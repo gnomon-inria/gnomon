@@ -30,10 +30,6 @@ class GNOMONPIPELINE_EXPORT gnomonPipelineNode : public QObject
     Q_OBJECT
 
 public:
-    gnomonPipelineNode(void);
-    ~gnomonPipelineNode(void);
-
-public:
     enum Type {
         NODE_ALGORITHM = 0,
         NODE_READER = 1,
@@ -44,6 +40,14 @@ public:
         NODE_ADAPTER = 6,
         NODE_TASK = 7
     };
+
+public:
+    gnomonPipelineNode(void);
+#ifndef SWIG
+    gnomonPipelineNode(Type t);
+#endif
+    ~gnomonPipelineNode(void);
+
 
 public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);

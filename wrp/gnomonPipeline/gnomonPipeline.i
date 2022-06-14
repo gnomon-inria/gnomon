@@ -1,7 +1,6 @@
 #pragma once
 
 %module(directors="1", package="gnomon.pipeline", moduleimport="import _gnomonpipeline") gnomonpipeline
-
 //%include <gnomonCore/gnomonForm.i>
 
 /*
@@ -133,7 +132,6 @@
     }
     $input = list;
 }
-
 
 //%include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 %include <gnomonPipeline.h>
