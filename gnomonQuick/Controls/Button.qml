@@ -32,7 +32,9 @@ Button {
 // Content Item
 // /////////////////////////////////////////////////////////////////////////////
 
-  contentItem: Item {
+  contentItem: Control {
+
+    id: _content
 
     G.Icon {
         id: _icon
@@ -53,11 +55,13 @@ Button {
 
             anchors.fill: parent;
             hoverEnabled: true;
+            cursorShape: Qt.PointingHandCursor
 
             onClicked: {
               _control.clicked()
             }
         }
+
     }
 
     Rectangle {
@@ -116,13 +120,7 @@ Button {
 // Hover
 // /////////////////////////////////////////////////////////////////////////////
 
-  // Binding on state {
-  //   when: (_control.hovered || _icon_area.containsMouse) && _control.hoverEnabled
-  //   value: "hovered"
-  // }
-
   HoverHandler {
-    // hovered: _control.hovered
     cursorShape: Qt.PointingHandCursor
   }
 
@@ -134,7 +132,7 @@ Button {
 
     State {
       name: "hovered"
-      when: (_control.hovered || _icon_area.containsMouse) && _control.hoverEnabled && _control.enabled
+      when: (_control.hovered || _content.hovered || _icon_area.containsMouse) && _control.hoverEnabled && _control.enabled
       PropertyChanges {
         target: _text;
 //        font: G.Style.fonts.buttonHovered

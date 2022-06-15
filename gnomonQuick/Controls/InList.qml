@@ -22,6 +22,11 @@ Control {
 
     hoverEnabled: true
 
+    G.ToolTip {
+        visible: _control.hovered && !_combobox.down
+        text: param.doc
+    }
+
 	Label {
 
         id: _label

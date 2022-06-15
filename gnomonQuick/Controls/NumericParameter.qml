@@ -20,6 +20,11 @@ Control {
 
     hoverEnabled: true
 
+    G.ToolTip {
+        visible: _control.hovered && !_slider.pressed
+        text: param.doc
+    }
+
 	Label {
 
         id: _label

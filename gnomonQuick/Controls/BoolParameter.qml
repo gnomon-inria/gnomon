@@ -13,6 +13,11 @@ Control {
 
     implicitHeight: _label.implicitHeight + _switch.implicitHeight
 
+    G.ToolTip {
+        visible: _control.hovered && !_switch.pressed
+        text: param.doc
+    }
+
     Label {
         id: _label
 
