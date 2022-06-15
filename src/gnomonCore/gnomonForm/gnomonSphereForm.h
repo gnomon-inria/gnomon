@@ -17,7 +17,7 @@ public:
         deserialize(serialization);
     }
     gnomonSphereForm(const gnomonSphereForm& other);
-    gnomonAbstractForm *clone(void);
+    virtual gnomonAbstractForm *clone(void) override;
 
     ~gnomonSphereForm(void) = default;
 
