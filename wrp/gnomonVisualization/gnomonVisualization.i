@@ -2,14 +2,14 @@
 
 %module(directors="1", package="gnomon.visualization", moduleimport="import _gnomonvisualization") gnomonvisualization
 
-//%include <gnomonCore/numpyWrapper.i>
+%include <gnomonCore/numpyWrapper.i>
 
 %include "std_array.i"
 %include "std_vector.i"
 %include "carrays.i"
 %array_class(double, doubleArray);
 
-//%include "std_shared_ptr.i"
+%include "std_shared_ptr.i"
 
 /*
 %shared_ptr(gnomonAbstractForm)
@@ -75,8 +75,8 @@
 
 %}
 
-//%include <gnomonCore/gnomonForm.i>
-//%include <gnomonCore/gnomonCore.i>
+%include <gnomonCore/gnomonCore.i>
+%include <gnomonCore/gnomonForm.i>
 
 %{
 // VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
