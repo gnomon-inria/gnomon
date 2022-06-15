@@ -63,8 +63,7 @@ void gnomonImageDataChannelBlendingPrivate::updateOpacities(void)
     for (const auto& channelName : this->imageChannels.keys()) {
         gnomonLookupTable lut = this->channelLookupTables[channelName];
 
-        QList<double> value_range = QList<double>(lut.valueMin(), lut.valueMax());
-
+        QList<double> value_range = {lut.valueMin(), lut.valueMax()};
         this->opacities[channelName]->RemoveAllPoints();
         this->opacities[channelName]->AddPoint(value_range[0],0.00);
         this->opacities[channelName]->AddPoint(value_range[1],1.00);
@@ -76,7 +75,7 @@ void gnomonImageDataChannelBlendingPrivate::updateColorFunctions(void)
     for (const auto& channelName : this->imageChannels.keys()) {
         gnomonLookupTable lut = this->channelLookupTables[channelName];
 
-        QList<double> value_range = QList<double>(lut.valueMin(), lut.valueMax());
+        QList<double> value_range = {lut.valueMin(), lut.valueMax()};
         QMap<double, QColor> colormap = lut.colorMap();
 
         this->colorFunctions[channelName]->RemoveAllPoints();
