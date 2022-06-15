@@ -24,7 +24,14 @@ Item {
 
     Component {
         id: _num_component
-        C.Numeric {param: lparam; paramType:  lparam? lparam.type : ""}
+        //C.Numeric {param: lparam; paramType:  lparam? lparam.type : ""}
+        G.NumericParameter {param: lparam}
+    }
+
+    Component {
+        id: _bool_component
+        //C.Numeric {param: lparam; paramType:  lparam? lparam.type : ""}
+        G.BoolParameter {param: lparam}
     }
 
     Component {
@@ -44,12 +51,12 @@ Item {
 
     Component {
         id: _liststring_component
-        C.InList {param: lparam}
+        G.InList {param: lparam}
     }
 
     Component {
         id: _range_component
-        C.Range {param: lparam; decimals: 2}
+        G.RangeParameter {param: lparam; decimals: 2}
     }
 
     Component {
@@ -69,8 +76,11 @@ Item {
 
     function getComponent(type) {
         type = type.replace(',void', '')
-        if (type == "dtkCoreParameterNumeric<qlonglong>" || type == "dtkCoreParameterNumeric<bool>" || type == "dtkCoreParameterNumeric<double>") {
+        if (type == "dtkCoreParameterNumeric<qlonglong>" || type == "dtkCoreParameterNumeric<double>") {
             return _num_component;
+        }
+        if(type ==  "dtkCoreParameterNumeric<bool>") {
+            return _bool_component;
         }
         if (type == "dtkCoreParameterSimple<QString>") {
             return  _string_component;
@@ -99,19 +109,32 @@ Item {
 
     function updateParametersModel() {
         params_model.clear();
+
+        //When instantiating the parameters, we have to differentiate between general params
+        //and others so that the first group is always "General"
         const params = [];
         const groups = [];
+        const general = [];
 
         for (var param_name in _self.parameters) {
             var p = _self.parameters[param_name];
             var prop_dict = {};
             prop_dict["component"] = _self.getComponent(p.type)
             prop_dict["param"] = p;
-
             prop_dict["group"] = p.group ? p.group : "General";
-            if(!groups.includes(prop_dict["group"])) groups.push(prop_dict["group"])
-            params.push(prop_dict);
+            if(!groups.includes(prop_dict["group"]) && prop_dict["group"] !== "General") groups.push(prop_dict["group"])
+            if(p.group)
+                params.push(prop_dict);
+            else
+                general.push(prop_dict)
         }
+
+        //First add the general parameters if any
+        if(general.length)
+            params_model.append({
+                "group": "General",
+                "parameters": general
+            })
 
         //Instantiating the parameters by groups
         for(let i in groups) {

@@ -129,6 +129,9 @@ QtObject {
 
     property int controlHeight: S.spacing["8"]
 
+    property int gutterHeight: S.spacing["5"]
+    property int gutterWidth: S.spacing["4"]
+
     property FontLoader regular: FontLoader {
         id: _poppinsRegular
         source: "qrc:/ttf/Poppins-Regular.ttf"

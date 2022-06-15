@@ -7,39 +7,51 @@ import gnomonQuick.Style 1.0 as G
 
 G.CollapsiblePanel {
 
-  id: _control;
+  id: _control
 
-  property alias model: _parameters.model;
+  property alias model: _parameters.model
 
-  clip: true;
-  collapsed: false;
-  panelHeight: _parameters.childrenRect.height + G.Style.smallColumnSpacing;
+  clip: true
+  collapsed: false
+  panelHeight: _parameters.childrenRect.height + 2 * G.Style.smallColumnSpacing
 
-  signal valueChanged();
+  signal valueChanged()
 
   ListView {
     id: _parameters;
 
-    anchors.fill: _control.panel;
-    spacing: G.Style.smallColumnSpacing;
+    //anchors.fill: _control.panel
+
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.topMargin: G.Style.smallColumnSpacing
+
+    width: _control.width - G.Style.sizes.s4
+
+
+    spacing: G.Style.mediumColumnSpacing
+
+    interactive: false
 
     delegate: Loader {
 
-      property var lparam: param;
+      property var lparam: param
 
-      height: _control.collapsed ? 0 : G.Style.controlHeight;
-      width: _parameters.width;//_control.width - 4;
+      height: _control.collapsed ? 0 :
+        implicitHeight ? implicitHeight : G.Style.controlHeight
+      width: _parameters.width
 
-      opacity: _control.collapsed ? 0 : 1;
-      clip: true;
-      z: 1;
+      opacity: _control.collapsed ? 0 : 1
+      clip: true
+      z: 1
 
-      sourceComponent: component;
+      sourceComponent: component
 
       Connections {
         target: param
         function onValueChanged() {
-          _control.valueChanged();
+          _control.valueChanged()
         }
       }
 

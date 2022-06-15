@@ -72,7 +72,7 @@ Control {
             signal valueChanged();
 
             delegate: G.ParameterGroup {
-                title: group;
+                title: _menu.getTitleString(group);
                 model: parameters;
                 width: _control.width;
 
@@ -94,23 +94,6 @@ Control {
         }
 
         Item {
-            height: G.Style.sizes.s8
-            Layout.fillWidth: true;
-
-            CheckBox{ id: _auto_apply
-
-                text: "Apply automatically"
-
-                onClicked: {
-                    if (_auto_apply.checked) {
-                        console.info('launching Run!')
-                        d.run();
-                    }
-                }
-            }
-        }
-
-        Item {
             id: _button_container
 
             height: G.Style.largeButtonHeight
@@ -121,7 +104,7 @@ Control {
                 id: _apply
 
                 anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container
+                anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
                 text: "Apply"
@@ -131,6 +114,27 @@ Control {
                     d.run();
                 }
             }
+
+            G.CheckBox{
+                id: _auto_apply
+
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.left: _button_container.left
+                anchors.bottomMargin: G.Style.smallPadding
+
+                text: "Auto apply"
+
+                onClicked: {
+                    if (_auto_apply.checked) {
+                        console.info('launching Run!')
+                        d.run();
+                    }
+                }
+            }
         }
+    }
+
+    function getTitleString(group : string) : string {
+        return (group.charAt(0).toUpperCase() + group.slice(1)).replace('_', ' ')
     }
 }
