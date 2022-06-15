@@ -75,11 +75,6 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     d->pool->addView(this->sources()->views()[1]);
     d->pool->addView(this->targets()->views()[0]);
 
-    connect(d->command, &gnomonAbstractCommand::finished, [this]() { 
-        this->viewOutputs();
-        this->finished();
-    });
-
     connect(this->targets()->views()[0], &gnomonViewForm::syncedChanged, [=]() {
         this->targets()->views()[0]->disconnectTime();
         this->sources()->views()[0]->disconnectTime();
@@ -186,9 +181,7 @@ void gnomonWorkspaceRegistration::iterate(void)
 {
     std::shared_ptr<gnomonImageSeries> output_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->outputs()["output"]);
     if (output_image) {
-        //gnomonImageSeries * input_image = dynamic_cast<gnomonImageSeries *>(output_image->clone()); //TODO real clone here. to keep
-
-        std::shared_ptr<gnomonImageSeries> input_image = std::make_shared<gnomonImageSeries>(*(output_image.get())); // this is doing a data->clone() !!
+        auto input_image = output_image;
         dd->image_stack.insert(dd->stack_level+1, input_image);
         std::shared_ptr<gnomonDataDictSeries> transformation = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->command->outputs()["transformation"]);
         dd->transformation_stack.insert(dd->stack_level+1, transformation);
@@ -199,7 +192,6 @@ void gnomonWorkspaceRegistration::iterate(void)
         gnomonPipelineManager::instance()->addForm(output_image);
         //gnomonPipelineManager::instance()->addClonedForm(output_image, input_image);
     }
-
 }
 
 void gnomonWorkspaceRegistration::viewOutputs()

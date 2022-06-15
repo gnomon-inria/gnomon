@@ -85,7 +85,7 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
             } else if (this->algorithm_nodes.contains(input_form)) {
                 edge = new gnomonPipelineEdge();
                 edge->setSource(this->algorithm_nodes[input_form]->outputPorts()[this->algorithm_output[input_form]]);
-            }else if (this->task_nodes.contains(input_form)) {
+            } else if (this->task_nodes.contains(input_form)) {
                 edge = new gnomonPipelineEdge();
                 edge->setSource(this->task_nodes[input_form]->outputPorts()[this->task_output[input_form]]);
             }
