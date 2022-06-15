@@ -258,6 +258,8 @@ Control {
                 return G.Style.colors.okColor
             if (node.type == GP.PipelineNode.NODE_TASK)
                 return G.Style.colors.lightBlue
+            if (node.type == GP.PipelineNode.NODE_MORPHONET)
+                return G.Style.colors.baseColor
 
             return G.Style.colors.neutralColor
         }
