@@ -30,7 +30,7 @@ class gnomonAbstractVisualizationPrivate
 {
 
 public:
-    gnomonViewForm* view;
+    gnomonViewForm* view = nullptr;
 
 public:
     dtkCoreParameters parameters;

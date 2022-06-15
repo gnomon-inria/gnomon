@@ -78,6 +78,11 @@ gnomonPipelineNode::gnomonPipelineNode(void) : d(new gnomonPipelineNodePrivate)
     this->setTitle("");*/
 }
 
+gnomonPipelineNode::gnomonPipelineNode(Type t) : d(new gnomonPipelineNodePrivate)
+{
+    d->type = t;
+}
+
 gnomonPipelineNode::~gnomonPipelineNode(void)
 {
     delete d;
@@ -137,6 +142,12 @@ const QColor& gnomonPipelineNode::color(void)
 {
     return d->color;
 }
+
+gnomonPipelineNode::Type gnomonPipelineNode::type(void)
+{
+    return d->type;
+}
+
 
 QJsonObject gnomonPipelineNode::parameters(void)
 {

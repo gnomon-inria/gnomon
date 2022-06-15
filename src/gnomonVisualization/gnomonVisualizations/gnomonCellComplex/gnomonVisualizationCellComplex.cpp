@@ -97,6 +97,11 @@ gnomonVisualizationCellComplex::~gnomonVisualizationCellComplex(void)
     dd = NULL;
 }
 
+const QString gnomonVisualizationCellComplex::pluginName(void)
+{
+    return  "gnomonVisualizationCellComplex";
+}
+
 void gnomonVisualizationCellComplex::clear(void)
 {
     if (dd->actor) {

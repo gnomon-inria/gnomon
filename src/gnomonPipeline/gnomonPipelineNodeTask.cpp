@@ -14,6 +14,7 @@
 gnomonPipelineNodeTask::gnomonPipelineNodeTask(const QString &task, QList<QString> inputs, QList<QString> outputs) {
 
     d->color = QColor(147, 112, 219);
+    d->type = gnomonPipelineNode::NODE_TASK;
     d->algorithm_class = "task";
     d->algorithm = task;
 

@@ -54,6 +54,11 @@ gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
     delete dd;
 }
 
+const QString gnomonVisualizationMesh::pluginName(void)
+{
+    return  "gnomonVisualizationMesh";
+}
+
 void gnomonVisualizationMesh::clear(void)
 {
     if (dd->actor) {

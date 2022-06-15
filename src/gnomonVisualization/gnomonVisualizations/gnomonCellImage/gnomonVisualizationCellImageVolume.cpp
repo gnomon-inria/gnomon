@@ -54,6 +54,11 @@ gnomonVisualizationCellImageVolume::~gnomonVisualizationCellImageVolume(void)
     delete dd;
 }
 
+const QString gnomonVisualizationCellImageVolume::pluginName(void)
+{
+    return  "gnomonVisualizationCellImageVolume";
+}
+
 void gnomonVisualizationCellImageVolume::clear(void)
 {
 //    gnomonAbstractVisualization::clear();
