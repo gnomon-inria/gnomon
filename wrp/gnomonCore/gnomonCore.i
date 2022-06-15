@@ -100,8 +100,6 @@
 %feature("director");
 %feature("autodoc","1");
 
-%include <gnomonCore/gnomonForm.i>
-
 // /////////////////////////////////////////////////////////////////
 // Macro undefinition
 // /////////////////////////////////////////////////////////////////
@@ -144,28 +142,28 @@
     } else if (type == QMetaType::Bool) {
         bool b = $1.value<bool>();
         $result = b ? Py_True : Py_False;
-    } else if (name == "QVector<int>") {
+    } else if (name == "QList<int>") {
         PyObject *array = toNpArray1int($1);
         $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
-    } else if (name == "QVector<double>") {
+    } else if (name == "QList<double>") {
         PyObject *array = toNpArray1double($1);
         $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
-    } else if (name == "QVector<QVector<int>>") {
+    } else if (name == "QList<QList<int>>") {
         PyObject *array = toNpArray2int($1);
         $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
-    } else if (name == "QVector<QVector<double>>") {
+    } else if (name == "QList<QList<double>>") {
         PyObject *array = toNpArray2double($1);
         $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
-    } else if (name == "QVector<QVector<QVector<int>>>") {
+    } else if (name == "QList<QList<QList<int>>>") {
         PyObject *array = toNpArray3int($1);
         $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
-    } else if (name == "QVector<QVector<QVector<double>>>") {
+    } else if (name == "QList<QList<QList<double>>>") {
         PyObject *array = toNpArray3double($1);
         $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
-    } else if (name == "QVector<QVector<QVector<QVector<int>>>>") {
+    } else if (name == "QList<QList<QList<QList<int>>>>") {
         PyObject *array = toNpArray4int($1);
         $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
-    } else if (name == "QVector<QVector<QVector<QVector<double>>>>") {
+    } else if (name == "QList<QList<QList<QList<double>>>>") {
         PyObject *array = toNpArray4double($1);
         $result = SWIG_Python_AppendOutput($result,(PyObject*)array);
     } else {
@@ -174,6 +172,7 @@
     }
 }
 
+%include <gnomonCore/gnomonForm.i>
 
 // VTK
 
