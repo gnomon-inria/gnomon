@@ -151,7 +151,7 @@ Item {
             anchors.right: _thumbnail.right
             anchors.rightMargin: G.Style.borderWidth
 
-            visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse) && header.state == 'ANCHORED'
+            visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse) && _world.height > G.Style.smallDelegateHeight
 
             onClicked: {
                 console.log("Form Id: ", form_id, metadata_edit.formId)
@@ -170,7 +170,7 @@ Item {
             anchors.topMargin: G.Style.borderWidth
             anchors.left: _thumbnail.left
             anchors.leftMargin: G.Style.borderWidth
-            visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse) && header.state == 'ANCHORED'
+            visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse) && _world.height > G.Style.smallDelegateHeight
 
             onClicked: {
                 GV.World.deleteForm(form_id)
@@ -190,7 +190,7 @@ Item {
             anchors.topMargin: G.Style.borderWidth
             anchors.right: _thumbnail.right
             anchors.rightMargin: G.Style.borderWidth
-            visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse)  && header.state == 'ANCHORED'
+            visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse) && _world.height > G.Style.smallDelegateHeight
 
             onClicked: _file_dialog.open()
         }
