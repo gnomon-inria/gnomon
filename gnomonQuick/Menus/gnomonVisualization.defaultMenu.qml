@@ -54,6 +54,7 @@ Control {
         width: _control.availableWidth
         spacing: G.Style.smallColumnSpacing
         clip: true;
+        interactive: _list_view.contentHeight > _control.height
 
         delegate: G.ParameterGroup {
             title: _control.getTitleString(group)
