@@ -154,6 +154,11 @@ QJsonObject gnomonPipelineNode::parameters(void)
     QJsonObject param;
     return param;
 }
+QJsonObject gnomonPipelineNode::morphonet_data(void)
+{
+    QJsonObject m_data;
+    return m_data;
+}
 
 QStringList gnomonPipelineNode::parametersName(void) {
     return {};

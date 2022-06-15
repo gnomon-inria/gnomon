@@ -31,6 +31,7 @@ class GNOMONPIPELINE_EXPORT gnomonPipelineNode : public QObject
 
 public:
     enum Type {
+        NODE_DEFAULT = -1,
         NODE_ALGORITHM = 0,
         NODE_READER = 1,
         NODE_WRITER = 2,
@@ -38,7 +39,8 @@ public:
         NODE_FILTER = 4,
         NODE_CONVERTER = 5,
         NODE_ADAPTER = 6,
-        NODE_TASK = 7
+        NODE_TASK = 7,
+        NODE_MORPHONET = 8
     };
 
 public:
@@ -80,6 +82,7 @@ public:
 
     virtual inline QString path(void) { return ""; };
     virtual QJsonObject parameters(void);
+    virtual QJsonObject morphonet_data(void);
     virtual QStringList parametersName(void);
     virtual void configureParameter(const QString &name, dtkCoreParameter *param);
 

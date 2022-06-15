@@ -47,7 +47,8 @@ public:
     QSettings settings = QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     Status morphonet_status = Morphonet_NotLoaded;
    
-    int current_id = -1, start_time=-1, end_time=-1;
+    int current_id = -1, start_time=-1, end_time=-1, json_time;
+    double voxelsize;
     bool upload_mode = false;
     gnomonPipelineManager *pipeline_manager;
 
@@ -165,9 +166,9 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
 
     d->view->setAcceptForm("gnomonCellImage",true);
 
-    connect(d->view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+    connect(d->view, &gnomonViewForm::exportedForm, [=] () {
         //TODO what to do in pipeline manager if data coming from morphonet? 
-        d->pipeline_manager->addForm(f);
+        d->pipeline_manager->addForm(d->img_series);
     });
 
     int stat;
@@ -329,6 +330,7 @@ void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_
     if(id != -1) {
         qInfo() << Q_FUNC_INFO << "setting morphonet dataset id to" << id;
         d->current_id = id;
+        d->voxelsize = voxelsize;
     }
 
     //1 select dataset
@@ -352,7 +354,7 @@ void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_
             t0 = d->start_time;
             t_end = d->start_time;
         } 
-        
+        d->json_time = t_end;
         for(int time = t0; time <= t_end; time++) {
             std::shared_ptr<gnomonCellImage> cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize);
             if(cell_img) {
@@ -371,8 +373,9 @@ void gnomonWorkspaceMorphonet::onDataLoaded()
         d->view->clear();
         int form_count = gnomonFormManager::instance()->formCount(d->img_series->formName());
         d->img_series->metadata()->set("name", d->img_series->formName().remove("gnomon") + QString::number(form_count+1));
- 
         d->view->setCellImage(d->img_series, {});
+        d->pipeline_manager->addMorphoForm(d->img_series, d->current_id, d->voxelsize, d->start_time, d->json_time);
+
         emit timeEndChanged();
     }
 }
@@ -483,5 +486,4 @@ void gnomonWorkspaceMorphonet::saveState(void)
 void gnomonWorkspaceMorphonet::restoreState(void) 
 {
     //TODO
-    d->view->restoreState();
 }

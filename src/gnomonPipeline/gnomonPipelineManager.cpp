@@ -11,6 +11,7 @@
 #include "gnomonPipelineNodeReader.h"
 #include "gnomonPipelineNodeTask.h"
 #include "gnomonPipelineNodeWriter.h"
+#include "gnomonPipelineNodeMorphonet.h"
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand>
@@ -44,6 +45,8 @@ public:
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> algorithm_output;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , gnomonPipelineNodeTask *> task_nodes;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> task_output;
+    QMap<std::shared_ptr<gnomonAbstractDynamicForm> , gnomonPipelineNodeMorphonet *> morphonet_nodes;
+    QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> morphonet_output;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , gnomonPipelineNodeConstructor *> constructor_nodes;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> constructor_output;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , int> form_manager_index;
@@ -88,6 +91,9 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
             } else if (this->task_nodes.contains(input_form)) {
                 edge = new gnomonPipelineEdge();
                 edge->setSource(this->task_nodes[input_form]->outputPorts()[this->task_output[input_form]]);
+            } else if (this-morphonet_nodes.contains(input_form)) {
+                edge = new gnomonPipelineEdge();
+                edge->setSource(this->morphonet_nodes[input_form]->outputPorts()[this->morphonet_output[input_form]]);
             }
             if (edge) {
                 if (gnomonPipelineNodeWriter *writer_node = dynamic_cast<gnomonPipelineNodeWriter *>(node)) {
@@ -300,6 +306,20 @@ void gnomonPipelineManager::addAdaptedForm(std::shared_ptr<gnomonAbstractDynamic
     }
 }
 
+void gnomonPipelineManager::addMorphoForm(std::shared_ptr<gnomonAbstractDynamicForm> form, int id, double voxelsize, int time_start, int time_end)
+{
+    QJsonObject morphonet_data;
+    morphonet_data.insert("id", id);
+    morphonet_data.insert("voxelsize", voxelsize);
+    morphonet_data.insert("start_time", time_start);
+    morphonet_data.insert("end_time", time_end);
+
+    QString form_name = form->formName().remove("gnomon");
+    gnomonPipelineNodeMorphonet *node = new gnomonPipelineNodeMorphonet(form_name, morphonet_data);
+    d->morphonet_nodes[form] = node;
+    d->morphonet_output[form] = form_name;  
+}
+
 void gnomonPipelineManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     if (d->reader_nodes.contains(form)) {
@@ -348,6 +368,15 @@ void gnomonPipelineManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> f
             d->pipeline_nodes[node->name()] = node;
 
         }
+    } else if (d->morphonet_nodes.contains(form)) {
+        gnomonPipelineNodeMorphonet *node = d->morphonet_nodes[form];
+
+        if (!d->hasNode(node))
+        {
+            d->pipeline->addNode(node);
+            d->pipeline_nodes[node->name()] = node;
+
+        }
     }
 }
 
@@ -380,6 +409,8 @@ void gnomonPipelineManager::setFormIndex(std::shared_ptr<gnomonAbstractDynamicFo
             output_port = d->algorithm_nodes[form]->outputPorts()[d->algorithm_output[form]];
         }else if (d->task_nodes.contains(form)) {
             output_port = d->task_nodes[form]->outputPorts()[d->task_output[form]];
+        } else if(d->morphonet_nodes.contains(form)) {
+            output_port = d->morphonet_nodes[form]->outputPorts()[d->morphonet_output[form]];
         }
         if (output_port) {
             output_port->setFormIndex(d->form_manager_index[form]);

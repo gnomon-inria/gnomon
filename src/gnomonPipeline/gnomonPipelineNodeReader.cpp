@@ -38,7 +38,6 @@ gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_clas
 
     d->algorithm_class = algorithm_class;
     d->algorithm = algorithm;
-
     dd->path = path;
 
     for (const auto& output : outputs) {
