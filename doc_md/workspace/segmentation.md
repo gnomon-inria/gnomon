@@ -25,4 +25,4 @@ Image Segmentation Scenario
 ::::
 :::::
 
-The plugins performing cell segmentation usually consist in two phases: a cell dectection and an image segmentation. In some cases, plugins will accept a PointCloud input providing the result of the cell detection. In the resulting CellImage output, there will then be one cell for each point of the input PointCloud form.
+The plugins performing cell segmentation usually consist in two phases: a cell detection and an image segmentation. In some cases, plugins will accept a PointCloud input providing the result of the cell detection. In the resulting CellImage output, there will then be one cell for each point of the input PointCloud form.

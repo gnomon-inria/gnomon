@@ -1,5 +1,9 @@
 # Concepts
 
+:::{error}
+This section is deprecated! What you find here might still be accurate, but some is outdated.
+:::
+
 Gnomon provides a new *integrated modeling environment* (IME) for studying morphogenesis in biology.
 
 This IME provides a *project manager*, a *session manager*, *workspaces* to apply families of algorithms to forms (to transform them), *plugins* corresponding to algorithms able to transform forms, a data bus called the *form manager* to handle computed forms, and *abstractions* that formalize and unify in the system the notion of $(DS)^2$ simulation.
