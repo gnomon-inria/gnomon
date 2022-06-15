@@ -18,7 +18,7 @@ Item {
 
     id: _self;
 
-    property var parameters
+    property alias parameters : _parameters_menu.parameters
     property var d;
     property string _current_file: "";
 
@@ -134,6 +134,7 @@ Item {
         G.TabButton {
             text: qsTr("Edit")
         }
+
         G.TabButton {
             text: qsTr("Run")
         }
@@ -272,7 +273,6 @@ Item {
 
             id: _parameters_menu;
             d: _self.d
-            parameters: _self.parameters
 
             algo_combobox.model: [d.algorithm]
             algo_combobox.enabled: false
