@@ -192,8 +192,8 @@ Control {
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000;}
                     }
-                    ToolTip {
-                        id: row_times_G.ToolTip
+                    G.ToolTip {
+                        id: row_times_tooltip
                         visible: _ds_time_end.hovered || _ds_time_start.hovered
                         text: "times in range [0, 10000]"
                     }
