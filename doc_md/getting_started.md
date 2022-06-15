@@ -10,6 +10,9 @@ example/browser
 
 These tutorials illustrate the basic usage of the Gnomon platform, and are a good way to get familiar with the flow of interactions. We suggest that you follow these different tutorials in the given order.
 
+:::{warning}
+This section is under construction! Some information might be missing.
+:::
 
 :::{card}
 :link: example/project

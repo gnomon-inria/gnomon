@@ -1,5 +1,10 @@
 # Image Python Plugin Scenario
- Dynamically implement an image resampling plugin
+
+:::{warning}
+This section is under construction! Some information might be missing.
+:::
+
+Dynamically implement an image resampling plugin
 
   1. **Browsing**
       - Load image YR01_t40_crop.inr.gz

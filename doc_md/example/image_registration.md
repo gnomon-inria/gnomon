@@ -1,5 +1,9 @@
 # Image Registration Scenario
 
+:::{warning}
+This section is under construction! Some information might be missing.
+:::
+
 Perform iterative registration within one registration workspace
 
   1. **Browsing**

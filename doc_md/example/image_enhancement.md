@@ -1,5 +1,9 @@
 # Image Enhancement Scenario
 
+:::{warning}
+This section is under construction! Some information might be missing.
+:::
+
 Improving image segmentation with image enhancement methods
 
  1. **Browser**

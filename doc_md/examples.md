@@ -15,6 +15,10 @@ example/image_python_plugin
 
 These examples provide a variety of scenarios for simple 3D image-related tasks. They detail step by step the interactions you will need to perform, and are a good way to get an overview of the possibilities of the Gnomon platform for image analysis.
 
+:::{warning}
+This section is under construction! Some information might be missing.
+:::
+
 ::::{card-carousel} 3
 
 :::{card}
@@ -52,7 +56,7 @@ Load a series of images and align them using a geometric transformation.
 
 :::{card} 
 :class-header: sd-fs-5 sd-font-weight-bold
-:link: example/image_python_algorithm
+:link: example/image_python_plugin
 :link-type: doc
 :img-bottom: _static/image_python_plugin_example.png
 
