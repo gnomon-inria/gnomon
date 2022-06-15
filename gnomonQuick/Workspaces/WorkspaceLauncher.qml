@@ -122,7 +122,8 @@ G.Workspace {
                             font: G.Style.fonts.h3
                             color: G.Style.colors.textColorBase;
 
-                            text: "Deciphering morphogenesis"
+                            // text: "Deciphering morphogenesis"
+                            text: ""
 
                             wrapMode: Text.Wrap
                             horizontalAlignment: Text.AlignLeft
