@@ -65,21 +65,21 @@ Control {
 
             Layout.fillWidth: true;
 
-            first.value: param.valueRangeMin
-            second.value: param.valueRangeMax
-            // from: 0
-            // to: 255
+            first.value: param.valueMin
+            second.value: param.valueMax
+            from: param.from
+            to: param.to
 
             first.onMoved: {
-                param.valueRangeMin = first.value
+                param.valueMin = first.value
             }
             second.onMoved: {
-                param.valueRangeMax = second.value
+                param.valueMax = second.value
             }
 
             Component.onCompleted: {
-                console.log(param.valueRangeMin)
-                console.log(param.valueRangeMax)
+                console.log(param.valueMin)
+                console.log(param.valueMax)
                 // from = param.valueRangeMin;
                 // to = param.valueRangeMax;
             }
