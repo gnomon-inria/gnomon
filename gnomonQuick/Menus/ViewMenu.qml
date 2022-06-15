@@ -183,6 +183,7 @@ Control {
             }
 
             G.Button {
+                id: _clear
 
                 anchors.right: _render.left
                 anchors.verticalCenter: _button_container.verticalCenter
@@ -203,8 +204,8 @@ Control {
 
                 id: _auto_render
 
-                anchors.bottom: _render.top
-                anchors.right: _render.right
+                anchors.left: _button_container.left
+                anchors.verticalCenter: _button_container.verticalCenter
                 anchors.bottomMargin: G.Style.smallPadding
 
                 text: "Auto render"
@@ -215,9 +216,7 @@ Control {
                         view.viewLogic.update();
                     }
                 }
-
             }
-
         }
     }
 
