@@ -16,15 +16,18 @@ class GNOMONVISUALIZATION_EXPORT gnomonLookupTable
 
 public:
     gnomonLookupTable(void) = default;
-    gnomonLookupTable(const gnomonColorMap& c, const QList<double> r={0,1}, bool v=true);
-    gnomonLookupTable(const QString& clut, const QList<double> r={0,1}, bool v=true);
+    gnomonLookupTable(const gnomonColorMap& c, const QList<double> a={0,1}, const QList<double> r={0,1}, bool v=true);
+    gnomonLookupTable(const QString& clut, const QList<double> a={0,1}, const QList<double> r={0,1}, bool v=true);
     gnomonLookupTable(const gnomonLookupTable&);
 
     ~gnomonLookupTable(void) = default;
 
     const QString& colorMapName(void) const;
     const gnomonColorMap& colorMap(void) const;
-    const QList<double>& valueRange(void) const;
+    double valueMin(void) const;
+    double rangeMin(void) const;
+    double valueMax(void) const;
+    double rangeMax(void) const;
     bool visibility(void) const;
 
     //gnomonCoreParameterColorMap& operator = (const QVariant&);
@@ -34,13 +37,19 @@ public:
     void setName(const QString&);
     void setColorMap(const gnomonColorMap&);
     void setColorMap(const QString&);
-    void setValueRange(const QList<double>&);
+    void setValueMin(double);
+    void setRangeMin(double);
+    void setValueMax(double);
+    void setRangeMax(double);
     void setVisibility(bool);
 
 private:
 	QString name;
     gnomonColorMap colormap;
-    QList<double> value_range;
+    double min;
+    double r_min;
+    double max;
+    double r_max;
     bool visible;
 };
 

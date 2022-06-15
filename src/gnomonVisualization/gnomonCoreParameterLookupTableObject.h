@@ -18,10 +18,11 @@ class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterLookupTableObject : public d
     Q_OBJECT
     Q_PROPERTY(QVariantMap colorMap READ colorMap WRITE setColorMap NOTIFY colorMapChanged)
     Q_PROPERTY(QString colorMapName READ colorMapName WRITE setColorMapName NOTIFY colorMapNameChanged)
-    Q_PROPERTY(double valueRangeMin READ valueRangeMin WRITE setValueRangeMin NOTIFY valueRangeMinChanged)
-    Q_PROPERTY(double valueRangeMax READ valueRangeMax WRITE setValueRangeMax NOTIFY valueRangeMinChanged)
+    Q_PROPERTY(double valueMin READ valueMin WRITE setValueMin NOTIFY valueMinChanged)
+    Q_PROPERTY(double valueMax READ valueMax WRITE setValueMax NOTIFY valueMaxChanged)
+    Q_PROPERTY(double from READ rangeMin WRITE setRangeMin NOTIFY rangeMinChanged)
+    Q_PROPERTY(double to READ rangeMax WRITE setRangeMax NOTIFY rangeMaxChanged)
     Q_PROPERTY(bool visibility READ visibility WRITE setVisibility NOTIFY visibilityChanged)
-
     Q_PROPERTY(QStringList availableCluts READ availableCluts CONSTANT)
 
 public:
@@ -34,11 +35,17 @@ public:
     void setColorMapName(const QString&);
     QString colorMapName(void) const;
 
-    void setValueRangeMin(double);
-    double valueRangeMin(void) const;
+    void setValueMin(double);
+    double valueMin(void) const;
 
-    void setValueRangeMax(double);
-    double valueRangeMax(void) const;
+    void setValueMax(double);
+    double valueMax(void) const;
+
+    void setRangeMin(double);
+    double rangeMin(void) const;
+
+    void setRangeMax(double);
+    double rangeMax(void) const;
 
     void setVisibility(bool);
     bool visibility(void) const;
@@ -50,8 +57,10 @@ signals:
     void valueChanged(const gnomonLookupTable&);
     void colorMapChanged(const QVariantMap&);
     void colorMapNameChanged(const QString&);
-    void valueRangeMinChanged(double);
-    void valueRangeMaxChanged(double);
+    void valueMinChanged(double);
+    void valueMaxChanged(double);
+    void rangeMinChanged(double);
+    void rangeMaxChanged(double);
     void visibilityChanged(bool);
 
 public:
@@ -60,8 +69,10 @@ public:
 public:
     void notifyColorMap(const gnomonColorMap&);
     void notifyColorMapName(const QString&);
-    void notifyValueRangeMin(double);
-    void notifyValueRangeMax(double);
+    void notifyValueMin(double);
+    void notifyValueMax(double);
+    void notifyRangeMin(double);
+    void notifyRangeMax(double);
     void notifyVisibility(bool);
 
 private:
