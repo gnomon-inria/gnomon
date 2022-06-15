@@ -42,7 +42,7 @@ Control {
 		from: _control.param.min
 		to: _control.param.max
 		decimals: _control.param.decimals
-		increment: 1.0/Math.pow(10, _control.param.decimals)
+		//increment: 1.0/Math.pow(10, _control.param.decimals)
         value: _control.param.value
 
         onValueChanged: {

@@ -148,7 +148,7 @@ Control {
 
             Layout.fillWidth: true;
             height: G.Style.mediumPanelHeight
-            //Layout.fillHeight: true;
+            Layout.fillHeight: true;
 
         }
 
