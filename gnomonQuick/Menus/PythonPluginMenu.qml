@@ -9,6 +9,8 @@ import xQuick.Style      1.0 as X
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Icons      1.0 as G
 
 Control {
 
@@ -24,91 +26,97 @@ Control {
     ColumnLayout
     {
         anchors.fill: parent;
-        anchors.margins: 10;
+        anchors.margins: G.Style.smallPadding;
 
-        X.Label {
-            text: _self.type + "s";
+        Control {
             Layout.fillWidth: true;
-            height: 20
+            height: G.Style.iconSmall
 
-            color: X.Style.foregroundColor;
-            horizontalAlignment: Text.AlignLeft;
+            Label {
+                text: _self.type + "s";
+
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+
+                font: G.Style.fonts.subHeader;
+                color: G.Style.colors.textColorBase;
+                horizontalAlignment: Text.AlignLeft;
+                verticalAlignment: Text.AlignVCenter;
+            }
+
+            G.IconButton {
+                iconName: G.Icons.icons["plus"]
+                tooltip: "Add " + _self.type
+                hoverColor: G.Style.colors.hoveredBaseColor
+
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+
+                onClicked: {
+                    _plugin_dialog.open();
+                }
+            }
         }
 
-        ListView {
-
-            id: _list_view
-
-            spacing: 10;
-            clip: true;
-
-            model: _self.type == "Parameter" ?
-                   list_model(d.code.parameters) :
-                   _self.type == "Input Form"  ? list_model(d.code.inputForms)  :
-                   _self.type == "Output Form" ? list_model(d.code.outputForms) : [] ;
-
+        G.Gutter {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            delegate: ItemDelegate {
-                width: _list_view.width
-                highlighted: ListView.isCurrentItem
+            ListView {
 
-                X.Label {
-                    anchors.left: parent.left;
-                    anchors.top: parent.top;
-                    anchors.margins: 10;
+                id: _list_view
 
-                    text: _self.type == "Parameter" ?
-                          modelData.name + " (" + modelData.type + ")" :
-                          modelData.name + " (" + (modelData.type).replace("gnomon","") + ")";
+                anchors.fill: parent
+                clip: true;
 
-                    color: X.Style.foregroundColor;
-                    font.pixelSize: 12;
+                model: _self.type == "Parameter" ?
+                       list_model(d.code.parameters) :
+                       _self.type == "Input Form"  ? list_model(d.code.inputForms)  :
+                       _self.type == "Output Form" ? list_model(d.code.outputForms) : [] ;
+
+                delegate: G.ListItemDelegate {
+                    width: _list_view.width
+                    highlighted: false
+
+                    Label {
+                        anchors.left: parent.left;
+                        anchors.top: parent.top;
+                        anchors.margins: 10;
+
+                        text: _self.type == "Parameter" ?
+                              modelData.name + " (" + modelData.type + ")" :
+                              modelData.name + " (" + (modelData.type).replace("gnomon","") + ")";
+
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.formLabel;
+                    }
+
+                    Label {
+                        anchors.right: parent.right;
+                        anchors.bottom: parent.bottom;
+                        anchors.margins: 10;
+
+                        text: _self.type == "Parameter" ?
+                              modelData.doc :
+                              modelData.data_plugin;
+
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
+                    }
                 }
 
-                X.Label {
-                    anchors.right: parent.right;
-                    anchors.bottom: parent.bottom;
-                    anchors.margins: 10;
-
-                    text: _self.type == "Parameter" ?
-                          modelData.doc :
-                          modelData.data_plugin;
-
-                    color: X.Style.foregroundColor;
-                    font.pixelSize: 8;
-                }
-
-                background: Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 50
-
-                    radius: 4
-                    color: X.Style.backgroundColor
-                }
-            }
-
-            ScrollIndicator.vertical: ScrollIndicator { }
-        }
-
-        X.ButtonRaw {
-            text: "Add "+ _self.type + "...";
-
-            Layout.fillWidth: true;
-
-            onClicked: {
-                _plugin_dialog.open();
+                ScrollIndicator.vertical: ScrollIndicator { }
             }
         }
     }
 
     background: Rectangle {
-        color: Qt.darker(X.Style.backgroundColor);
-        radius: 4;
+        anchors.fill: parent
+        color: G.Style.colors.fgColor;
+        radius: G.Style.panelRadius;
 
-        border.width: 1;
-        border.color: X.Style.borderColor;
+        //border.color: G.Style.colors.embossColor
+        //border.width: 1
     }
 
     G.PythonPluginDialog {

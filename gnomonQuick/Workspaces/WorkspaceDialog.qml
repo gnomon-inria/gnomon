@@ -8,12 +8,14 @@ import xQuick.Fonts     1.0 as X
 import xQuick.Models    1.0 as X
 import xQuick.Style     1.0 as X
 
-import gnomonQuick.Controls      1.0 as G
-import gnomonQuick.Workspaces    1.0 as G
+import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Icons      1.0 as G
+import gnomonQuick.Workspaces 1.0 as G
 
 import gnomon.MetaData    1.0 as GM
 
-X.Dialog {
+G.Dialog {
     id: _self;
 
     QtObject {
@@ -52,7 +54,7 @@ X.Dialog {
         _workspace_search_bar.forceActiveFocus();
     }
 
-    Rectangle {
+    G.Gutter {
         id: _workspace_selection_panel;
 
         width: _self.width / 3;
@@ -61,8 +63,6 @@ X.Dialog {
         anchors.bottom: parent.bottom;
         anchors.left: parent.left;
         anchors.margins: 10;
-
-        color: X.Style.backgroundColor;
 
         TextField {
 
@@ -94,9 +94,9 @@ X.Dialog {
                 }
             }
 
-            X.Icon {
-                icon: X.Icons.icons.search;
-                color: X.Style.foregroundColor;
+            G.Icon {
+                icon: G.Icons.icons["text-search"];
+                color: G.Style.colors.neutralColor;
 
                 anchors.right: _workspace_search_bar.right;
                 anchors.rightMargin: 10;
@@ -120,13 +120,12 @@ X.Dialog {
 
                 model: _available_workspaces;
 
-                delegate: ItemDelegate {
+                delegate: G.ListItemDelegate {
                     width: _list_view.width
-                    height: 42;
                     highlighted: _list_view.currentIndex == index
 
                     text: model.title;
-                    font.pointSize: 14;
+                    font: G.Style.fonts.formLabel
                     enabled: model.available
 
                     onClicked: {
@@ -139,39 +138,14 @@ X.Dialog {
                         _self.close();
                     }
 
-                    Rectangle {
-                        radius: 4;
-                        anchors.fill: parent
-
-                        color: "transparent"
-                        z: Infinity
-
-                        border.width: 2;
-                        border.color: X.Style.accentColor;
-
-                        visible: _list_view.currentIndex == index
-                    }
-
-                    X.Icon {
-                        icon: X.Icons.icons.block;
-                        color: "red";
+                    G.Icon {
+                        icon: G.Icons.icons["cancel"];
+                        color: G.Style.colors.dangerColor; // "red"
                         visible: !model.available
 
                         anchors.right: parent.right;
                         anchors.rightMargin: 10;
                         anchors.verticalCenter: parent.verticalCenter;
-                    }
-
-                    background: Rectangle {
-                        opacity: enabled ? 0.8 : 0.1
-                        color: (down || highlighted || hovered) ? Qt.lighter(X.Style.backgroundColor, 1.2) : Qt.darker(X.Style.backgroundColor, 1.2)
-
-                        Rectangle {
-                            width: parent.width
-                            height: 1
-                            color: X.Style.borderColor;
-                            anchors.bottom: parent.bottom
-                        }
                     }
                 }
 

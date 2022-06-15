@@ -11,7 +11,9 @@ import xQuick.Vis         1.0 as XVis
 
 import gnomon.Visualization 1.0 as GV
 
-import gnomonQuick.Style  1.0 as G
+import gnomonQuick.Style     1.0 as G
+import gnomonQuick.Controls  1.0 as G
+import gnomonQuick.Icons     1.0 as G
 
 Item {
 
@@ -139,6 +141,33 @@ Item {
         }
 
         X.Icon {
+            id: _edit_icon;
+            icon: X.Icons.icons.edit;
+            size: 24;
+            color: X.Style.foregroundColor;
+
+            anchors.bottom: _thumbnail.bottom
+            anchors.bottomMargin: 5
+            anchors.right: _thumbnail.right
+            anchors.rightMargin: 5
+            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse || _edit_mouse_area.containsMouse) && parent.parent.height > 42
+
+            MouseArea { id: _edit_mouse_area;
+                anchors.fill: parent;
+                hoverEnabled: true;
+
+                onClicked: {
+                    console.log("Form Id: ", form_id, metadata_edit.formId)
+
+                    metadata_edit.open()
+                }
+            }
+
+            ToolTip.visible: _edit_mouse_area.containsMouse;
+            ToolTip.text: "Edit form metadata";
+        }
+
+        X.Icon {
             id: _delete_icon;
             icon: X.Icons.icons.delete;
             size: 24;
@@ -148,7 +177,7 @@ Item {
             anchors.topMargin: 5
             anchors.left: _thumbnail.left
             anchors.rightMargin: 5
-            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse) && parent.parent.height > 42
+            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse || _edit_mouse_area.containsMouse) && parent.parent.height > 42
 
             MouseArea { id: _delete_mouse_area;
                 anchors.fill: parent;
@@ -175,7 +204,7 @@ Item {
             anchors.topMargin: 5
             anchors.right: _thumbnail.right
             anchors.rightMargin: 5
-            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse) && parent.parent.height > 42
+            visible: (_dragger.containsMouse || _save_mouse_area.containsMouse || _delete_mouse_area.containsMouse || _edit_mouse_area.containsMouse) && parent.parent.height > 42
 
             MouseArea {
                 id: _save_mouse_area;
@@ -188,5 +217,10 @@ Item {
             ToolTip.visible: _save_mouse_area.containsMouse;
             ToolTip.text: "Save form";
         }
+    }
+    G.MetadataDialog {
+        id: metadata_edit
+
+        formId: form_id;
     }
 }

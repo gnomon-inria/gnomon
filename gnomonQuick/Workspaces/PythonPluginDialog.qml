@@ -7,17 +7,18 @@ import xQuick.Controls  1.0 as X
 import xQuick.Fonts     1.0 as X
 import xQuick.Style     1.0 as X
 
-import gnomonQuick.Controls      1.0 as G
+import gnomonQuick.Controls 1.0 as G
+import gnomonQuick.Style    1.0 as G
 
-Dialog { id: _self;
+G.Dialog { id: _self;
 
     property string type: "Parameter";
     property var code;
 
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
-    width: Math.min(window.width, window.height) / 3 * 2
-    height: window.height / 3 * 2
+    width: G.Style.mediumDialogWidth
+    height: G.Style.mediumDialogHeight
 
     leftPadding: 0;
     rightPadding: 0;
@@ -38,23 +39,23 @@ Dialog { id: _self;
         rowSpacing: 10
         columnSpacing: 10
 
-        X.Label{
+        Label{
             text: _self.type == "Parameter" ? "Parameter type" : "Form type"
         }
 
-        X.ComboBox { id: _type_combobox
+        G.ComboBox { id: _type_combobox
             Layout.fillWidth: true
             Layout.preferredHeight: 28;
 
             model: _self.type == "Parameter" ? code.parameterTypes : code.formTypes
         }
 
-        X.Label{
+        Label{
             text: "Form plugin"
             visible: _self.type != "Parameter"
         }
 
-        X.ComboBox { id: _data_plugin_combobox
+        G.ComboBox { id: _data_plugin_combobox
             Layout.fillWidth: true
             Layout.preferredHeight: 28;
 
@@ -63,7 +64,7 @@ Dialog { id: _self;
             model: _self.type == "Parameter" ? [] : code.formDataPlugins(_type_combobox.currentValue);
         }
 
-        X.Label{
+        Label{
             text: _self.type == "Parameter" ? "Parameter name" : "Variable name"
         }
 
@@ -72,7 +73,7 @@ Dialog { id: _self;
             Layout.preferredHeight: 28;
         }
 
-        X.Label{
+        Label{
             text: "Parameter documentation"
             visible: _self.type == "Parameter"
         }

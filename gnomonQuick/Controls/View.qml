@@ -15,6 +15,8 @@ import gnomonQuick.Style  1.0 as G
 import gnomon.Visualization 1.0 as GV
 import gnomon.MetaData    1.0 as GM
 
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
 
 Rectangle {
 
@@ -86,26 +88,17 @@ Rectangle {
         }
     }
 
-    X.Dialog {
-        id: _bad_form_warning_dialog;
+    G.Toast {
+        id: _badform_toast
 
         property string badform_name: "";
         property string accepted_forms: "";
 
-        y: parent.height/3
-        x: parent.width/6
-
         parent: Overlay.overlay
+        header: "Unsupported Form !"
+        message: "You are trying to load  a form of type: " + _badform_toast.badform_name + ", please select a supported one (" + _badform_toast.accepted_forms + ")";
 
-
-            X.Label {
-                anchors.fill: parent
-                text: "You are trying to add a form of type: " + _bad_form_warning_dialog.badform_name + "\n , please select a suitted one: " + _bad_form_warning_dialog.accepted_forms;
-                font {
-                    weight: Font.Bold
-                    pointSize: 14;
-                }
-            }
+        type: G.Style.ButtonType.Warning
     }
 
     Slider { id: _2d_slider
@@ -267,9 +260,9 @@ Rectangle {
             _2d_slider.value = value;
         }
         function onBadFormDropped(badFormName, acceptedForms) {
-            _bad_form_warning_dialog.badform_name = badFormName;
-            _bad_form_warning_dialog.accepted_forms = acceptedForms;
-            _bad_form_warning_dialog.open();
+            _badform_toast.badform_name = badFormName;
+            _badform_toast.accepted_forms = acceptedForms;
+            _badform_toast.open();
         }
     }
 
@@ -340,13 +333,13 @@ Rectangle {
             }
         }
 
-        X.Dialog {
+        G.Dialog {
             id: _form_export_dialog;
 
             x: (parent.width - width) / 2
             y: (parent.height - height) / 2
-            width: window.width * 2/4
-            height: window.height * 2/4
+            width: G.Style.mediumDialogWidth;
+            height: G.Style.mediumDialogHeight;
 
             padding: 10;
 
@@ -386,7 +379,7 @@ Rectangle {
                 //form_name.forceActiveFocus();
             }
 
-            Rectangle {
+            G.Gutter {
                 id: _form_selection_panel;
 
                 width: _form_export_dialog.width / 3;
@@ -397,10 +390,9 @@ Rectangle {
                 anchors.right: parent.right;
                 anchors.margins: 10;
 
-                color: X.Style.backgroundColor;
 
                 Component {  id: _delegate;
-                    ItemDelegate {
+                    G.ListItemDelegate {
                         id: _form_metadata_panel;
 
                         width: _list_view.width
@@ -412,6 +404,7 @@ Rectangle {
                         onClicked: {
                             _list_view.currentIndex = index;
                         }
+
 
                         function save_metadata() {
                             metadata.set("name", _form_name.text);
@@ -426,42 +419,43 @@ Rectangle {
                             id: _name_label
                             anchors.left: parent.left;
                             anchors.bottom: parent.bottom;
-                            anchors.verticalCenter: _form_name.verticalCenter;
-                            anchors.margins: 5;
+                            anchors.top: parent.top;
+                            anchors.margins: G.Style.smallPadding;
 
-                            width: parent.width/3
+                            width: parent.width/4
 
-                            font.pointSize: 14;
-                            font.bold: true;
+                            font: G.Style.fonts.value
                             verticalAlignment: Text.AlignVCenter
                             text: modelData ? modelData.replace('gnomon', '') :"";
                         }
 
-                        TextField {
-                            id: _form_name;
-
+                        G.Gutter {
                             anchors.left: _name_label.right;
                             anchors.right: parent.right;
                             anchors.top: parent.top;
                             anchors.bottom: parent.bottom;
-                            anchors.margins: 5;
+                            anchors.margins: G.Style.smallPadding
 
-                            width: 3*parent.width/5
+                            TextField {
+                                id: _form_name;
+                                anchors.fill: parent
+                                leftPadding: G.Style.smallPadding
 
-                            font.pointSize: 14;
-                            text: "";
-                            //focus: true;
-                            onAccepted: {
-                                if(index != _list_view.count - 1) {
-                                    _list_view.incrementCurrentIndex();
-                                } else {
-                                    _form_export_dialog.accept();
+                                font: G.Style.fonts.value
+                                text: "";
+                                //focus: true;
+                                onAccepted: {
+                                    if(index != _list_view.count - 1) {
+                                        _list_view.incrementCurrentIndex();
+                                    } else {
+                                        _form_export_dialog.accept();
+                                    }
                                 }
-                            }
 
-                            onActiveFocusChanged: {
-                                if (focus) {
-                                    _list_view.currentIndex = index;
+                                onActiveFocusChanged: {
+                                    if (focus) {
+                                        _list_view.currentIndex = index;
+                                    }
                                 }
                             }
                         }
@@ -486,6 +480,7 @@ Rectangle {
                     ScrollIndicator.vertical: ScrollIndicator { }
 
                     delegate: _delegate;
+
 
                     Component.onCompleted: {
 

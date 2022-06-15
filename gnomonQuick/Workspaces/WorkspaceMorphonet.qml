@@ -72,7 +72,7 @@ G.Workspace {
 
         visible: d.connected
         onDroppedFromManager: (index) => {
-            window.currentView = _source_view
+            window.currentView = _view
             d.view.drop(index);
             d.uploadMode = true;
         }

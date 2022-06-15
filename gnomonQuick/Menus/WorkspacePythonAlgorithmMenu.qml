@@ -11,6 +11,8 @@ import xQuick.Style      1.0 as X
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
+import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Icons      1.0 as G
 
 Item {
 
@@ -56,7 +58,7 @@ Item {
         }
     }
 
-    X.Dialog {
+    G.Dialog {
         id: _message_dialog;
 
         x: Math.round((window.width - width) / 2)
@@ -71,30 +73,30 @@ Item {
 
         title: "Existing file"
 
-        X.Label {
+        Label {
             anchors.fill: parent;
 
             text: "The file already exists, do you want to replace it or save as new ?";
-            font {
-                pointSize: 12;
-            }
+            font: G.Style.fonts.value;
         }
 
-        footer: X.DialogButtonBox {
+        footer: DialogButtonBox {
             visible: true
 
-            X.ButtonRaw {
+            G.Button {
                 text: "Cancel"
-                foregroundColor: X.Style.accentColor
+                type: G.Style.ButtonType.Neutral
+                flat: true;
 
                 onClicked: {
                     _message_dialog.close();
                 }
             }
 
-            X.ButtonRaw {
+            G.Button {
                 text: "Replace"
-                foregroundColor: X.Style.accentColor
+                type: G.Style.ButtonType.Warning
+                flat: true;
 
                 onClicked: {
                     d.save(_file_dialog_save.file);
@@ -102,9 +104,10 @@ Item {
                 }
             }
 
-            X.ButtonRaw {
+            G.Button {
                 text: "Save as"
-                foregroundColor: X.Style.accentColor
+                type: G.Style.ButtonType.Base
+                flat: false;
 
                 onClicked: {
                     _self._current_file = "";
@@ -123,11 +126,16 @@ Item {
 
         currentIndex: d.editMode ? 0 : 1;
 
-        TabButton {
-            text: "Edit"
+        background: Rectangle {
+            anchors.fill: parent
+            color: G.Style.colors.bgColor
         }
-        TabButton {
-            text: "Run"
+
+        G.TabButton {
+            text: qsTr("Edit")
+        }
+        G.TabButton {
+            text: qsTr("Run")
         }
 
         onCurrentIndexChanged: {
@@ -156,33 +164,29 @@ Item {
 
                     Layout.fillWidth: true
 
-                    X.Label {
+                    Label {
                         Layout.fillWidth: true;
                         text: "Python Plugin Code";
-                        color: X.Style.foregroundColor;
-                        font.pixelSize: 18;
+                        color: G.Style.colors.textColorNeutral;
+                        font: G.Style.fonts.header;
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignLeft
+                        leftPadding: G.Style.smallPadding
                     }
 
-                    X.Icon { id: _update_icon;
-                        icon: X.Icons.icons.sync;
-                        size: 32;
-                        color: X.Style.foregroundColor;
+                    G.IconButton { id: _update_icon;
+                        iconName: G.Icons.icons["refresh"];
+                        size: G.Style.iconLarge;
+                        tooltip: "Update code";
 
-                        MouseArea { id: _update_mouse_area;
-                            anchors.fill: parent;
-                            hoverEnabled: true;
-
-                            onClicked: {
-                                d.code.updateCode();
-                            }
+                        onClicked: {
+                            d.code.updateCode();
                         }
-
-                        ToolTip.visible: _update_mouse_area.containsMouse;
-                        ToolTip.text: "Update code";
                     }
+
                 }
 
-                X.TextField {
+                TextField {
                     id: _plugin_name
 
                     Layout.fillWidth: true
@@ -193,13 +197,11 @@ Item {
                     }
                 }
 
-                Flickable {
+                ScrollView {
                     Layout.fillWidth: true
                     implicitHeight: 60
 
-                    contentWidth: availableWidth
-
-                    TextArea.flickable: TextArea {
+                    G.TextArea {
                         id: _plugin_doc
 
                         wrapMode: Text.Wrap
@@ -209,8 +211,6 @@ Item {
                             d.code.pluginDocumentation = _plugin_doc.text
                         }
                     }
-
-                    ScrollIndicator.vertical: ScrollIndicator { }
                 }
 
                 G.PythonPluginMenu {
@@ -229,12 +229,19 @@ Item {
                 }
 
                 RowLayout {
-                    anchors.margins: 10;
+                    anchors.margins: G.Style.smallPadding;
+                    spacing: G.Style.smallPadding
 
-                    X.ButtonRaw {
+                    Item {
+                        Layout.fillWidth: true
+                    }
+
+                    G.Button {
                         text: "Save";
 
-                        Layout.fillWidth: true;
+                        type: G.Style.ButtonType.Base
+                        iconName: G.Icons.icons["content-save"]
+                        empty: true
 
                         onClicked: {
                             if(_self._current_file == "") {
@@ -246,10 +253,12 @@ Item {
                         }
                     }
 
-                    X.ButtonRaw {
+                    G.Button {
                         text: "Load";
 
-                        Layout.fillWidth: true;
+                        type: G.Style.ButtonType.Base
+                        iconName: G.Icons.icons["folder-open"]
+                        empty: true
 
                         onClicked: {
                             _file_dialog.open();
