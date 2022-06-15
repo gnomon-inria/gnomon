@@ -165,7 +165,7 @@ Control {
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
 
-                    ToolTip {
+                    G.ToolTip {
                         visible: _voxelsize.hovered
                         text: "Voxel size (x,y,z) in range [0.01, 10]"
                     }
@@ -193,7 +193,7 @@ Control {
                         validator: IntValidator{bottom: 0; top: 10000;}
                     }
                     ToolTip {
-                        id: row_times_tooltip
+                        id: row_times_G.ToolTip
                         visible: _ds_time_end.hovered || _ds_time_start.hovered
                         text: "times in range [0, 10000]"
                     }
@@ -261,7 +261,7 @@ Control {
                         errorText: "bad Value";
                         validator: IntValidator{bottom: 0; top: 10000; }
                     }
-                    ToolTip {
+                    G.ToolTip {
                         visible: _up_ncbi.hovered
                         text: "NCBI id see: https://www.ncbi.nlm.nih.gov"
                     }
@@ -276,7 +276,7 @@ Control {
                         currentIndex: 0
                         Layout.fillWidth: true;
                     }
-                    ToolTip {
+                    G.ToolTip {
                         visible: _up_type.hovered
                         text: " 0 for Observed Data, 1 for Simulated Data, 2 for Drawing Data"
                     }
@@ -312,7 +312,7 @@ Control {
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
 
-                    ToolTip {
+                    G.ToolTip {
                         visible: _upload_voxelsize.hovered
                         text: "Voxel size (x,y,z) for mesh generation"
                     }
