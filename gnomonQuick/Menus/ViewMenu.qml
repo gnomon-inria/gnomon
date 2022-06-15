@@ -44,68 +44,31 @@ Control {
         target: null
 
         function onValueChanged() {
-            // if (_auto_render.checked) {
-            //     view.viewLogic.update();
-            // }
+            if (_auto_render.checked) {
+                view.viewLogic.update();
+            }
         }
     }
 
-    X.Dialog {
-        //dialog deactivated for now. maybe to delete
-        id: _form_delete_modal;
+    Label {
+        id: _form_label
 
-        property string formName: "";
-        property int formIndex: -1;
+        anchors.top: parent.top
+        anchors.left: parent.left
 
-        x: Math.round((window.width - width) / 2)
-        y: Math.round((window.height - height) / 2)
-        width: Math.round(window.width / 3 * 2)
-        height: Math.round(window.height / 3)
-
-        title: "Confirm Action"
-
-        X.Label {
-
-            font {
-                pointSize: 14;
-                weight: Font.Bold;
-            }
-            //font.weight: bold;
-            //color: "red"
-            text: "Are you sure you wish to delete " + _form_delete_modal.formName + " ?";
-        }
-
-        parent: Overlay.overlay
-
-        focus: true;
-        modal: true;
-
-        standardButtons: Dialog.Ok | Dialog.Cancel
-
-        onAccepted: {
-            if(formIndex === _form_selector.currentIndex) {
-                if(view.viewLogic.formNames.length)
-                    _form_selector.currentIndex = 0;
-                else {
-                    _form_selector.currentIndex = -1;
-                    _internal.menu.destroy();
-                }
-
-            }
-            view.viewLogic.removeForm(formName);
-            view.viewLogic.update();
-            _form_delete_modal.close();
-        }
+        text: "Forms"
+        font: G.Style.fonts.header
+        color: G.Style.colors.textColorBase
     }
 
     G.FormSelector {
 
-        id: _form_selector;
+        id: _form_selector
 
-        currentValue: "";
-        currentIndex: -1;
+        currentValue: ""
+        currentIndex: -1
 
-        anchors.top: parent.top
+        anchors.top: _form_label.bottom
         anchors.left: parent.left
         anchors.right: parent.right
 
@@ -122,8 +85,21 @@ Control {
 
     }
 
+    Label {
+        id: _visu_label
+
+        anchors.top: _form_selector.bottom
+        anchors.left: parent.left
+        anchors.topMargin: G.Style.sizes.s5
+        anchors.bottomMargin: G.Style.sizes.s4
+
+        text: "Visualization"
+        font: G.Style.fonts.header
+        color: G.Style.colors.textColorBase
+    }
+
     ColumnLayout {
-        anchors.top: _form_selector.bottom;
+        anchors.top: _visu_label.bottom;
         anchors.right: parent.right;
         anchors.left: parent.left;
         anchors.bottom: parent.bottom;
@@ -163,11 +139,24 @@ Control {
         }
 
         Item {
+            Layout.fillWidth: true
+            height: G.Style.sizes.s4
+        }
+
+        Item {
             id: _menu;
 
             Layout.fillWidth: true;
-            Layout.fillHeight: true;
+            height: G.Style.mediumPanelHeight
+            //Layout.fillHeight: true;
 
+        }
+
+        Item {
+            id: _spacer
+
+            Layout.fillWidth: true;
+            Layout.fillHeight: true;
         }
 
         Item {
@@ -181,7 +170,7 @@ Control {
                 id: _render
 
                 anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container
+                anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
                 text: "Render"
@@ -194,9 +183,10 @@ Control {
             }
 
             G.Button {
+                id: _clear
 
                 anchors.right: _render.left
-                anchors.verticalCenter: _button_container
+                anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
                 text: "Clear"
@@ -210,71 +200,24 @@ Control {
 
             }
 
+            G.CheckBox {
+
+                id: _auto_render
+
+                anchors.left: _button_container.left
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.bottomMargin: G.Style.smallPadding
+
+                text: "Auto render"
+
+                onClicked: {
+                    if (_auto_render.checked) {
+                        console.info('launching Render!')
+                        view.viewLogic.update();
+                    }
+                }
+            }
         }
-
-        // X.ButtonRaw {
-        //     text: "Render";
-
-        //     Layout.fillWidth: true;
-        //     enabled: view.viewLogic.formNames.length > 0;
-        //     visible: view.viewLogic.formNames.length > 0;
-
-        //     onClicked: {
-        //         view.viewLogic.update();
-        //     }
-
-        //     X.CheckBox{ id: _auto_render
-
-        //         text: ""
-        //         contentItem: null;
-
-        //         anchors.top: parent.top
-        //         anchors.topMargin: 5
-        //         anchors.right: parent.right
-        //         anchors.rightMargin: 5
-
-        //         height: parent.height - 10;
-
-
-        //         MouseArea {
-        //             id: _auto_render_mouse_area;
-        //             anchors.fill: parent;
-        //             hoverEnabled: true;
-
-        //             propagateComposedEvents: true
-
-        //             onClicked: mouse.accepted = false;
-        //             onPressed: mouse.accepted = false;
-        //             onReleased: mouse.accepted = false;
-        //             onDoubleClicked: mouse.accepted = false;
-        //             onPositionChanged: mouse.accepted = false;
-        //             onPressAndHold: mouse.accepted = false;
-        //         }
-
-        //         ToolTip.visible: _auto_render_mouse_area.containsMouse;
-        //         ToolTip.text: "Auto-render";
-
-        //         onClicked: {
-        //             if (_auto_render.checked) {
-        //                 console.info('launching Render!')
-        //                 view.viewLogic.update();
-        //             }
-        //         }
-        //     }
-        // }
-
-        // X.ButtonRaw {
-        //     text: "Clear";
-
-        //     Layout.fillWidth: true;
-        //     enabled: view.viewLogic.formNames.length > 0;
-        //     visible: view.viewLogic.formNames.length > 0;
-
-        //     onClicked: {
-        //         view.viewLogic.clear();
-        //         _internal.menu.destroy();
-        //     }
-        // }
     }
 
     QtObject {

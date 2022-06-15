@@ -12,6 +12,8 @@ ComboBox {
 
   id: _control;
 
+  property color textColor: G.Style.colors.textColorBase;
+
   implicitWidth: G.Style.smallPanelWidth;
   implicitHeight: G.Style.comboBoxHeight;
   padding: 8;
@@ -52,7 +54,7 @@ ComboBox {
     width: _control.implicitWidth - _indicator.width;
 
     font: G.Style.fonts.formLabel;
-    color: G.Style.colors.textColorBase;
+    color: _control.textColor;
     text: _control.displayText;
     verticalAlignment: Text.AlignVCenter;
     elide: Text.ElideRight
