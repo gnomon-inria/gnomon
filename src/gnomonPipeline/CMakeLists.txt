@@ -27,7 +27,9 @@ set(${PROJECT_NAME}_HEADERS
   gnomonPipelineNodeTask.h
   gnomonPipelineNodeWriter
   gnomonPipelineNodeWriter.h
-  gnomonPipelinePort.h)
+  gnomonPipelinePort.h
+  gnomonPipelineNodeMorphonet
+  gnomonPipelineNodeMorphonet.h)
 
 set(${PROJECT_NAME}_SOURCES
   # gnomonComposerNodeWorkspace.cpp
@@ -42,7 +44,8 @@ set(${PROJECT_NAME}_SOURCES
   gnomonPipelineNodeReader.cpp
   gnomonPipelineNodeTask.cpp
   gnomonPipelineNodeWriter.cpp
-  gnomonPipelinePort.cpp)
+  gnomonPipelinePort.cpp
+  gnomonPipelineNodeMorphonet.cpp)
 
 ## set(${PROJECT_NAME}_RESOURCES gnomonPipeline.qrc)
 

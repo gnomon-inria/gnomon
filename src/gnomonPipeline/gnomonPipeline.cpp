@@ -8,6 +8,7 @@
 #include "gnomonPipelineNodeAlgorithm.h"
 #include "gnomonPipelineNodeReader.h"
 #include "gnomonPipelineNodeTask.h"
+#include "gnomonPipelineNodeMorphonet.h"
 #include "gnomonPipelineNodeWriter.h"
 
 #include <cmath>
@@ -681,6 +682,15 @@ void gnomonPipeline::readFromJson(const QString& url)
                     outputs.append(output_variant.toString());
                 }
                 gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(algorithm_class, algorithm_plugin, path, outputs);
+                node->setName(name);
+                this->addNode(node);
+            } else if(algorithm_class.contains("morphonetCellImage")) {
+                QJsonObject morphonet_data = node_json.value("morphonet_data").toObject();
+                QStringList outputs;
+                for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
+                    outputs.append(output_variant.toString());
+                }
+                gnomonPipelineNodeMorphonet *node =  new gnomonPipelineNodeMorphonet(outputs[0], morphonet_data);
                 node->setName(name);
                 this->addNode(node);
             } else if (algorithm_class.contains("Writer")) {

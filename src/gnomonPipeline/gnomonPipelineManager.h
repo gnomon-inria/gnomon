@@ -36,6 +36,7 @@ public slots:
     void addWriter(gnomonAbstractWriterCommand *command);
     void addAdapter(gnomonAbstractAdapterCommand *command); //todo DEPRECATED !!
     void addAdaptedForm(std::shared_ptr<gnomonAbstractDynamicForm> form); //todo delete ?
+    void addMorphoForm(std::shared_ptr<gnomonAbstractDynamicForm> form, int id, double voxelsize, int time_start, int time_end);
     void addAlgorithm(gnomonAbstractCommand *command);
     void addTask(const QString &task, QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs,
                  QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs);

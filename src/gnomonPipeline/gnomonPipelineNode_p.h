@@ -28,7 +28,7 @@ public:
     QString algorithm;
 
 public:
-    gnomonPipelineNode::Type type = gnomonPipelineNode::NODE_TASK;
+    gnomonPipelineNode::Type type = gnomonPipelineNode::NODE_DEFAULT;
 
 public:
     QColor color;
