@@ -94,6 +94,7 @@ Control {
 
         anchors.left: _control.thumbnail? _thumbnail.right : _control.left
         anchors.right: _control.right
+        anchors.top: _title.bottom
         anchors.bottom: _control.thumbnail? _thumbnail.bottom : _control.bottom
 
         anchors.topMargin: G.Style.smallPadding
@@ -105,7 +106,7 @@ Control {
         font: G.Style.fonts.cardLabel
 
         horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignTop
+        verticalAlignment: Text.AlignVCenter
 
         wrapMode: Text.Wrap
         color: G.Style.colors.textColorBase
@@ -123,7 +124,6 @@ Control {
 // /////////////////////////////////////////////////////////////////////////////
 // JAVASCRIPT FUNCTIONS
 // /////////////////////////////////////////////////////////////////////////////
-
 
     function _getHoveredBgColor() {
         if(_control.type === G.Style.CardType.Background)
