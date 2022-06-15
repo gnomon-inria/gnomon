@@ -19,7 +19,7 @@ Control {
         + _controls_row.implicitHeight + _controls_row.anchors.topMargin + _value.implicitHeight
     width: G.Style.smallPanelWidth
 
-    X.ToolTip {
+    G.ToolTip {
         visible: _cluts.hovered && !_cluts.pressed
         text: param.doc
     }
