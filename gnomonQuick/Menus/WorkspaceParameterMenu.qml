@@ -73,7 +73,7 @@ Control {
             signal valueChanged();
 
             delegate: G.ParameterGroup {
-                title: group;
+                title: _menu.getTitleString(group);
                 model: parameters;
                 width: _control.width;
 
@@ -133,5 +133,9 @@ Control {
                 }
             }
         }
+    }
+
+    function getTitleString(group : string) : string {
+        return (group.charAt(0).toUpperCase() + group.slice(1)).replace('_', ' ')
     }
 }

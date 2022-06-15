@@ -56,7 +56,7 @@ Control {
         clip: true;
 
         delegate: G.ParameterGroup {
-            title: group
+            title: _control.getTitleString(group)
             model: parameters
             width: _list_view.width - 10
 
@@ -70,5 +70,9 @@ Control {
             visible: _list_view.contentHeight > _control.height
         }
 
+    }
+
+    function getTitleString(group : string) : string {
+        return (group.charAt(0).toUpperCase() + group.slice(1)).replace('_', ' ')
     }
 }
