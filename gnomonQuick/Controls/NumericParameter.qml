@@ -94,7 +94,6 @@ Control {
         color: G.Style.colors.hoveredBaseColor
     }
 
-
 	TextInput {
 		id: _value_input;
 

@@ -46,15 +46,6 @@ Control {
                     d.algoName = d.algorithms[d.currentIndex];
                 }
             }
-
-            onCurrentValueChanged: {
-                _params.parameters =  d.parameters
-                _params.updateParametersModel();
-            }
-        }
-
-        G.Parameters {
-            id: _params;
         }
 
         ListView {
@@ -67,7 +58,7 @@ Control {
             spacing: G.Style.smallColumnSpacing;
             clip: true;
 
-            model: _params.params_model
+            model: _menu.parameters
 
             signal valueChanged();
 

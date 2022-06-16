@@ -15,6 +15,54 @@ Slider {
     implicitHeight: G.Style.gutterHeight
     padding: 6
 
+    /*rightPadding: padding + (_self.mirrored ? (down.indicator ? down.indicator.width : 0) : (up.indicator ? up.indicator.width : 0))
+
+    gaugeControl: X.ScientificSpinBoxReal.ControlLinear
+    contentItem: Control {
+        id: _content
+
+        Rectangle {
+            id: _gauge
+
+            height: parent.height
+            radius: G.Style.panelRadius
+            width: _content.width * _self.scaleValue();
+
+            color: G.Style.colors.textColorBase;
+        }
+
+
+        MouseArea {
+            id: _slider
+            anchors.fill: parent
+        }
+
+    }
+
+    up.indicator: G.IconButton {
+        autoRepeat: true
+        x: _self.mirrored ? 0 : parent.width - width
+        y: 0;
+        size: parent.height / 2
+
+        iconName: G.Icons.icons["chevron-up"]
+        onClicked: {
+            _self.increase();
+        }
+    }
+
+
+    down.indicator: G.IconButton {
+        autoRepeat: true
+        x: _self.mirrored ? 0 : parent.width - width
+        y: height;
+        size: parent.height / 2
+        iconName: G.Icons.icons["chevron-down"]
+        onClicked: {
+            _self.decrease();
+        }
+    }*/
+
     background: Rectangle {
         id: _gutter
 
