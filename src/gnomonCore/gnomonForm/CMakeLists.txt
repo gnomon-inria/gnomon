@@ -36,12 +36,11 @@ add_subdirectory(gnomonTree)
 ADD_GNOMON_HEADERS(
   gnomonAbstractDynamicForm
   gnomonAbstractDynamicForm.h
-  gnomonAbstractDynamicForm_p.h
   gnomonAbstractForm
   gnomonAbstractForm.h
   gnomonAbstractFormData
   gnomonAbstractFormData.h
-  gnomonDynamicFormMetadata.
+  gnomonDynamicFormMetadata
   gnomonDynamicFormMetadata.h
   gnomonSphereForm
   gnomonSphereForm.h

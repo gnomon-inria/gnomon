@@ -22,7 +22,7 @@ public:
     }
     gnomonBinaryImage(const gnomonBinaryImage& other) : m_data(other.m_data->clone()) {}
 
-    gnomonAbstractForm* clone() { return new gnomonBinaryImage(*this);}
+    gnomonAbstractForm* clone() override { return new gnomonBinaryImage(*this);}
 
     virtual ~gnomonBinaryImage() {
         delete m_data;

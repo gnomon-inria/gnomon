@@ -6,7 +6,7 @@
 class gnomonAbstractConstructorCommand : public gnomonAbstractCommand
 {
 public:
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override {
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override {
         return {};
     }
 
@@ -14,7 +14,7 @@ public:
         return {};
     }
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override {
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override {
         dtkWarn() << Q_FUNC_INFO << "Constructor takes no input form";
     }
 };

@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -29,8 +15,11 @@ public:
     ~gnomonVisualizationCellImageMarchingCubes(void);
 
 public:
-	void setCellImage(gnomonCellImageSeries *cellImage) override;
-	gnomonCellImageSeries *cellImage(void) override;
+    virtual const QString pluginName(void) override;
+
+public:
+	void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) override;
+	std::shared_ptr<gnomonCellImageSeries> cellImage(void) override;
 
 public:
     gnomonInteractorStyle *interactorStyle(void) override;
@@ -63,7 +52,7 @@ public:
     QMap<QString, QString> parameterGroups(void) override;
 
 public:
-    long cellId(long vtkId) override;
+    long cellId(long vtkId) ; //override;
     QVariantMap cellInfo(long cellId);
 
 public:

@@ -18,16 +18,10 @@ public:
     virtual ~gnomonAbstractCellImageReader(void) = default;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
-public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonCellImageSeries *cellImage(void) = 0;
+    virtual std::shared_ptr<gnomonCellImageSeries> cellImage(void) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -42,7 +36,6 @@ public:
         }
         return {};
     };
-
 
 public:
     virtual QStringList extensions(void) = 0;

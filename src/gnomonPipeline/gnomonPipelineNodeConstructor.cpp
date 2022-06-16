@@ -36,6 +36,7 @@ public:
 gnomonPipelineNodeConstructor::gnomonPipelineNodeConstructor(const QString& algorithm_class, const QString& algorithm, QJsonObject parameters, QList<QString> outputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeConstructorPrivate)
 {
     d->color = QColor(83, 153, 69);
+    d->type = gnomonPipelineNode::NODE_CONSTRUCTOR;
 
     d->algorithm_class = algorithm_class;
     d->algorithm = algorithm;
@@ -86,13 +87,6 @@ const QJsonObject gnomonPipelineNodeConstructor::toJson(void)
         parameters.insert(param, QJsonObject::fromVariantHash(parameter));
     }
     json.insert("parameters", parameters);
-
-    QJsonArray out;
-    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
-        auto&& output_name = it.key();
-        out.append(output_name);
-    }
-    json.insert("outputs", out);
 
     return json;
 }

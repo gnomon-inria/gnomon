@@ -12,21 +12,12 @@
 
 class GNOMONCORE_EXPORT gnomonAbstractCellComplexFromCellImage : public gnomonAbstractAlgorithm
 {
+public:
+    virtual void setInput(std::shared_ptr<gnomonCellImageSeries> cellimage) = 0;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
-    //Inputs
-public:
-    virtual void setInput(gnomonCellImageSeries *cellimage) = 0;
-
-    // Outputs
-public:
-    virtual gnomonCellImageSeries *input(void) = 0;
-    virtual gnomonCellComplexSeries *output(void) const = 0;
+    virtual std::shared_ptr<gnomonCellImageSeries> input(void) = 0;
+    virtual std::shared_ptr<gnomonCellComplexSeries> output(void) const = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

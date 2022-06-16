@@ -26,11 +26,11 @@ public:
     const QString& path();
     void setPath(const QString& path);
 
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
     orderedMap inputTypes() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 protected:
     QString m_path = "";

@@ -127,12 +127,12 @@ import_array();
 
 %extend QVariant {
     void setValue(TYPE *IN_ARRAY1, int DIM) {
-        QVector<TYPE> vec(IN_ARRAY1, IN_ARRAY1 + DIM);
+        QList<TYPE> vec(IN_ARRAY1, IN_ARRAY1 + DIM);
         $self->setValue(vec);
     }
 
     void setValue(TYPE *IN_ARRAY2, int DIM1, int DIM2) {
-        QVector<QVector<TYPE>> vec(DIM1, QVector<TYPE>(DIM2));
+        QList<QList<TYPE>> vec(DIM1, QList<TYPE>(DIM2));
         for(int i=0; i<DIM1; ++i) {
             for(int j=0; j<DIM2; ++j) {
                 vec[i][j] = IN_ARRAY2[i*DIM2 + j];
@@ -142,9 +142,9 @@ import_array();
     }
 
     void setValue(TYPE *IN_ARRAY3, int DIM1, int DIM2, int DIM3) {
-        QVector<QVector<QVector<TYPE>>> vec(DIM1,
-                                            QVector<QVector<TYPE>>(DIM2,
-                                                                   QVector<TYPE>(DIM3)));
+        QList<QList<QList<TYPE>>> vec(DIM1,
+                                            QList<QList<TYPE>>(DIM2,
+                                                                   QList<TYPE>(DIM3)));
         for(int i=0; i<DIM1; ++i) {
             for(int j=0; j<DIM2; ++j) {
                 for(int k=0; k<DIM3; ++k) {
@@ -156,10 +156,10 @@ import_array();
     }
 
     void setValue(TYPE *IN_ARRAY4, int DIM1, int DIM2, int DIM3, int DIM4) {
-        QVector<QVector<QVector<QVector<TYPE>>>> vec(DIM1,
-                                                     QVector<QVector<QVector<TYPE>>>(DIM2,
-                                                                                     QVector<QVector<TYPE>>(DIM3,
-                                                                                                            QVector<TYPE>(DIM4))));
+        QList<QList<QList<QList<TYPE>>>> vec(DIM1,
+                                                     QList<QList<QList<TYPE>>>(DIM2,
+                                                                                     QList<QList<TYPE>>(DIM3,
+                                                                                                            QList<TYPE>(DIM4))));
         for(int i=0; i<DIM1; ++i) {
             for(int j=0; j<DIM2; ++j) {
                 for(int k=0; k<DIM3; ++k) {
@@ -176,7 +176,7 @@ import_array();
 
 %inline %{
     PyObject *toNpArray1##TYPE (const QVariant &var) {
-        QVector<TYPE> vec = var.value<QVector<TYPE>>();
+        QList<TYPE> vec = var.value<QList<TYPE>>();
         npy_intp dims[1] = { vec.size() };
         PyObject *array = PyArray_SimpleNew(1, dims, DATA_TYPECODE);
         if (!array) {
@@ -192,7 +192,7 @@ import_array();
     }
 
     PyObject *toNpArray2##TYPE (const QVariant &var) {
-        QVector<QVector<TYPE>> vec = var.value<QVector<QVector<TYPE>>>();
+        QList<QList<TYPE>> vec = var.value<QList<QList<TYPE>>>();
         int rows = vec.size();
         int cols = vec[0].size();
         npy_intp dims[2] = { rows, cols };
@@ -212,7 +212,7 @@ import_array();
     }
 
     PyObject *toNpArray3##TYPE (const QVariant &var) {
-        QVector<QVector<QVector<TYPE>>> vec = var.value<QVector<QVector<QVector<TYPE>>>>();
+        QList<QList<QList<TYPE>>> vec = var.value<QList<QList<QList<TYPE>>>>();
         int d = vec.size();
         int dd = vec[0].size();
         int ddd = vec[0][0].size();
@@ -236,7 +236,7 @@ import_array();
     }
 
     PyObject *toNpArray4##TYPE (const QVariant &var) {
-        QVector<QVector<QVector<QVector<TYPE>>>> vec = var.value<QVector<QVector<QVector<QVector<TYPE>>>>>();
+        QList<QList<QList<QList<TYPE>>>> vec = var.value<QList<QList<QList<QList<TYPE>>>>>();
         int d = vec.size();
         int dd = vec[0].size();
         int ddd = vec[0][0].size();

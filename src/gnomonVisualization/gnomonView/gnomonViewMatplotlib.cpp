@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonViewMatplotlib.h"
 
 #include <dtkScript>
@@ -56,9 +42,9 @@ public slots:
     void clear(void);
 
 public:
-    QMap<QString, gnomonAbstractDynamicForm *> forms;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
     QMap<QString, QString> formVisualizationNames;
-    QMap<QString, gnomonAbstractMatplotlibVisualization *> formVisualization;
+    QMap<QString, std::shared_ptr<gnomonAbstractMatplotlibVisualization> > formVisualization;
 
 public:
     QMap<QString, bool> acceptForms;
@@ -86,7 +72,7 @@ public:
     QMap<QString, QMap<QString, QString> > adapterTargets;
     QMap<QString, QMap<QString, QString> > adapterDescriptions;
 
-    gnomonAbstractDynamicForm *form_to_adapt = nullptr;
+    std::shared_ptr<gnomonAbstractDynamicForm> form_to_adapt = nullptr;
 
 public slots:
     void adaptForm(const QString& adapter_plugin);
@@ -104,7 +90,7 @@ gnomonViewMatplotlibPrivate::~gnomonViewMatplotlibPrivate(void)
 void gnomonViewMatplotlibPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys()) {
-        gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->formVisualization[key]);
+        gnomonFormManager::instance()->addForm(this->forms[key], this->formVisualization[key]);
         q->emit exportedForm(this->forms[key]);
     }
 }
@@ -134,10 +120,10 @@ void gnomonViewMatplotlibPrivate::saveFigure(const QString& path)
 
 void gnomonViewMatplotlibPrivate::removeForm(const QString& key)
 {
-    this->formVisualization[key]->disconnect();
+    //this->formVisualization[key]->disconnect();
 //        this->formVisualization[key]->clearConnections();
 //        this->formVisualization[key]->clear();
-    delete this->formVisualization[key];
+    //delete this->formVisualization[key];
     this->formVisualization.remove(key);
 
     this->formModified.remove(key);
@@ -171,21 +157,21 @@ void gnomonViewMatplotlibPrivate::updateFormVisualization(const QString& name)
     bool update = false;
 
     if (name == "gnomonDataFrame") {
-        auto formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)visu;
-        if (formVisualizationDataFrame->dataFrame() != ((gnomonDataFrameSeries *)form)->current()) {
-            formVisualizationDataFrame->setDataFrame(((gnomonDataFrameSeries *)form)->current());
+        auto formVisualizationDataFrame = std::dynamic_pointer_cast<gnomonAbstractMatplotlibVisualizationDataFrame>(visu);
+        if (formVisualizationDataFrame->dataFrame() != std::dynamic_pointer_cast<gnomonDataFrameSeries>(form)->current()) {
+            formVisualizationDataFrame->setDataFrame(std::dynamic_pointer_cast<gnomonDataFrameSeries>(form)->current());
             update = true;
         }
     } else if (name == "gnomonLString") {
-        auto formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)visu;
-        if (formVisualizationLString->lString() != ((gnomonLStringSeries *)form)->current()) {
-            formVisualizationLString->setLString(((gnomonLStringSeries *)form)->current());
+        auto formVisualizationLString = std::dynamic_pointer_cast<gnomonAbstractMatplotlibVisualizationLString>(visu);
+        if (formVisualizationLString->lString() != std::dynamic_pointer_cast<gnomonLStringSeries>(form)->current()) {
+            formVisualizationLString->setLString(std::dynamic_pointer_cast<gnomonLStringSeries>(form)->current());
             update = true;
         }
     } else if (name == "gnomonTree") {
-        auto formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)visu;
-        if (formVisualizationTree->tree() != ((gnomonTreeSeries *)form)->current()) {
-            formVisualizationTree->setTree(((gnomonTreeSeries *)form)->current());
+        auto formVisualizationTree = std::dynamic_pointer_cast<gnomonAbstractMatplotlibVisualizationTree>(visu);
+        if (formVisualizationTree->tree() != std::dynamic_pointer_cast<gnomonTreeSeries>(form)->current()) {
+            formVisualizationTree->setTree(std::dynamic_pointer_cast<gnomonTreeSeries>(form)->current());
             update = true;
         }
     }
@@ -201,132 +187,22 @@ void gnomonViewMatplotlibPrivate::setFormVisualization(const QString& name, cons
 
         if (this->formVisualization[name]) {
             this->formVisualization[name]->clear();
-            delete this->formVisualization[name];
-            this->formVisualization[name] = nullptr;
+            //delete this->formVisualization[name];
+            //this->formVisualization[name] = nullptr;
         }
 
         if (name == "gnomonDataFrame") {
-            this->formVisualization[name] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
+            this->formVisualization[name] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationDataFrame>(gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu));
         } else if (name == "gnomonLString") {
-            this->formVisualization[name] = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu);
+            this->formVisualization[name] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationLString>(gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu));
         } else if (name == "gnomonTree") {
-            this->formVisualization[name] = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(visu);
+            this->formVisualization[name] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationTree>(gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(visu));
         }
     }
 
     this->formVisualizationNames[name] = visu;
     this->updateFormVisualization(name);
 }
-
-/*void gnomonViewMatplotlibPrivate::configure(dtkWidgetsMenuItemDIY *parent, const QString& key)
-{
-    if (this->formVisualization.contains(key)) {
-
-        gnomonAbstractMatplotlibVisualization *v = this->formVisualization[key];
-
-        if(v) {
-             if ((this->parameterLayouts.contains(key)) && (this->parameterLayouts[key])) {
-                 for(int row = 0, max_row = this->parameterLayouts[key]->count(); row < max_row; ++row) {
-                     QLayoutItem *forDeletion = this->parameterLayouts[key]->takeAt(0);
-                     forDeletion->widget()->disconnect();
-                     delete forDeletion->widget();
-                     delete forDeletion;
-                 }
-             } else {
-
-                this->parameterLayouts[key] = new QFormLayout;
-                this->parameterLayouts[key]->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-
-                parent->addLayout(this->parameterLayouts[key]);
-            }
-
-            dtkCoreParameters parameters = v->parameters();
-
-            QList<QString> keys = parameters.keys();
-            keys.sort();
-            for(QString k : keys) {
-                QWidget *widget = gnomonWidgetsParameter::widget(parameters[k], 0);
-                if (widget) {
-                    this->parameterLayouts[key]->addRow(k, widget);
-                }
-            }
-        }
-    }
-
-    this->render();
-}
-
-void gnomonViewMatplotlibPrivate::addFormMenu(const QString& key)
-{
-    if ((!this->formVisualizationPaneItems.contains(key))||(!this->formVisualizationPaneItems[key]))
-    {
-        this->formVisualizationMenus[key] = new dtkWidgetsMenu(fa::table, key);
-        this->formVisualizationPaneItems[key] = new dtkWidgetsMenuItemDIY(key);
-
-        this->formVisualizationPaneItems[key]->setShowTitle(false);
-        this->formVisualizationMenus[key]->addItem(this->formVisualizationPaneItems[key]);
-
-        QComboBox *combo_box = new QComboBox;
-
-        QWidget *contents = new QWidget;
-
-        QStringList combo_box_keys = {};
-
-        if (key == "gnomonTree") {
-            combo_box_keys = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys();
-        } else if (key == "gnomonDataFrame") {
-            combo_box_keys = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
-        } else if (key == "gnomonLString") {
-            combo_box_keys = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys();
-        }
-        for (auto it = combo_box_keys.begin(), it_end = combo_box_keys.end(); it != it_end; ++it) {
-            combo_box->addItem(*it);
-        }
-        combo_box->model()->sort(0);
-
-        connect(combo_box, &QComboBox::currentTextChanged, [=] (const QString& visu)
-        {
-            if (this->formVisualization[key]) {
-//                this->formVisualization[key]->clear();
-                delete this->formVisualization[key];
-                this->formVisualization[key] = nullptr;
-            }
-
-            if (key == "gnomonTree") {
-                this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(visu);
-                this->formVisualization[key]->setView(q);
-                gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)this->formVisualization[key];
-                gnomonTreeSeries *tree = (gnomonTreeSeries *)this->forms[key];
-                formVisualizationTree->setTree(dynamic_cast<gnomonTree *>(tree->current()));
-                q->setIsModifiedForm("gnomonTree");
-            } else if (key == "gnomonDataFrame") {
-                this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu);
-                this->formVisualization[key]->setView(q);
-                gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)this->formVisualization[key];
-                gnomonDataFrameSeries *dataFrame = (gnomonDataFrameSeries *)this->forms[key];
-                formVisualizationDataFrame->setDataFrame(dynamic_cast<gnomonDataFrame *>(dataFrame->current()));
-                q->setIsModifiedForm("gnomonDataFrame");
-            } else if (key == "gnomonLString") {
-                this->formVisualization[key] = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu);
-                this->formVisualization[key]->setView(q);
-                gnomonAbstractMatplotlibVisualizationLString *formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)this->formVisualization[key];
-                gnomonLStringSeries *lString = (gnomonLStringSeries *)this->forms[key];
-                formVisualizationLString->setLString(dynamic_cast<gnomonLString *>(lString->current()));
-                q->setIsModifiedForm("gnomonLString");
-            }
-
-            this->configure(formVisualizationPaneItems[key], key);
-        });
-
-        this->formVisualizationPaneItems[key]->addWidget(combo_box);
-        this->formVisualizationPaneItems[key]->addWidget(contents);
-
-//        this->formVisualizationMenus[key]->addItem(this->view_item);
-        this->view_menubar->addMenu(this->formVisualizationMenus[key]);
-        this->view_menubar->touch();
-    }
-
-}*/
 
 void gnomonViewMatplotlibPrivate::render(void)
 {
@@ -339,26 +215,26 @@ void gnomonViewMatplotlibPrivate::render(void)
 
 void gnomonViewMatplotlibPrivate::adaptForm(const QString& adapter_plugin)
 {
-    gnomonAbstractDynamicForm *form = this->form_to_adapt;
+    std::shared_ptr<gnomonAbstractDynamicForm> form = this->form_to_adapt;
 
-    if (gnomonLStringSeries* lString = dynamic_cast<gnomonLStringSeries *>(form)) {
+    if (std::shared_ptr<gnomonLStringSeries> lString = std::dynamic_pointer_cast<gnomonLStringSeries>(form)) {
         gnomonLStringAdapterCommand *lStringCommand = dynamic_cast<gnomonLStringAdapterCommand *>(this->adapterCommands["gnomonLString"][adapter_plugin]);
 
         lStringCommand->setInput(lString);
         lStringCommand->redo();
-        gnomonAbstractDynamicForm *adaptedLString = lStringCommand->output();
+        std::shared_ptr<gnomonAbstractDynamicForm> adaptedLString = lStringCommand->output();
         if (adaptedLString) {
-            gnomonPipelineManager::instance()->addAdapter(lStringCommand);
+            //gnomonPipelineManager::instance()->addAdapter(lStringCommand);
             q->setForm("gnomonLString",adaptedLString);
         }
-    } else if (gnomonTreeSeries* tree = dynamic_cast<gnomonTreeSeries *>(form)) {
+    } else if (std::shared_ptr<gnomonTreeSeries> tree = std::dynamic_pointer_cast<gnomonTreeSeries>(form)) {
         gnomonTreeAdapterCommand *treeCommand = dynamic_cast<gnomonTreeAdapterCommand *>(this->adapterCommands["gnomonTree"][adapter_plugin]);
 
         treeCommand->setInput(tree);
         treeCommand->redo();
-        gnomonAbstractDynamicForm *adaptedTree = treeCommand->output();
+        std::shared_ptr<gnomonAbstractDynamicForm> adaptedTree = treeCommand->output();
         if (adaptedTree) {
-            gnomonPipelineManager::instance()->addAdapter(treeCommand);
+            //gnomonPipelineManager::instance()->addAdapter(treeCommand);
             q->setForm("gnomonTree",adaptedTree);
         }
     }
@@ -470,69 +346,55 @@ gnomonViewMatplotlib::~gnomonViewMatplotlib(void)
     delete d;
 }
 
-void gnomonViewMatplotlib::setForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractMatplotlibVisualization *visualization)
+void gnomonViewMatplotlib::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    if (gnomonTreeSeries *tree = dynamic_cast<gnomonTreeSeries *>(form)) {
+    if (std::shared_ptr<gnomonTreeSeries> tree = std::dynamic_pointer_cast<gnomonTreeSeries>(form)) {
         if (d->acceptForms["gnomonTree"]) {
             d->forms["gnomonTree"] = tree;
+            if ((!d->formVisualization.contains("gnomonTree"))||(!d->formVisualization["gnomonTree"])) {
+                QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
 
-            QString key = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().keys()[0];
-
-            if ((!d->formVisualization.contains("gnomonTree"))||(!d->formVisualization["gnomonTree"]))
-            {
-                d->formVisualization["gnomonTree"] = gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(key);
+                d->formVisualization["gnomonTree"] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationTree>(gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(key));
                 d->formVisualization["gnomonTree"]->setView(this);
             }
-            gnomonAbstractMatplotlibVisualizationTree *formVisualizationTree = (gnomonAbstractMatplotlibVisualizationTree *)d->formVisualization["gnomonTree"];
-            formVisualizationTree->setTree(dynamic_cast<gnomonTree *>(tree->current()));
-            if (visualization) {
-                formVisualizationTree->setParameters(visualization->parameters());
-            }
+            std::shared_ptr<gnomonAbstractMatplotlibVisualizationTree> formVisualizationTree = std::dynamic_pointer_cast<gnomonAbstractMatplotlibVisualizationTree>(d->formVisualization["gnomonTree"]);
+            formVisualizationTree->setTree(std::dynamic_pointer_cast<gnomonTree>(tree->current()));
             this->setIsModifiedForm("gnomonTree");
             emit formAdded("gnomonTree");
         } else {
-            this->setAdaptedForm("gnomonTree", tree, visualization);
+            this->setAdaptedForm("gnomonTree", tree);
         }
-    } else if (gnomonDataFrameSeries *dataFrame = dynamic_cast<gnomonDataFrameSeries *>(form)) {
+    } else if (std::shared_ptr<gnomonDataFrameSeries> dataFrame = std::dynamic_pointer_cast<gnomonDataFrameSeries>(form)) {
         if (d->acceptForms["gnomonDataFrame"]) {
             d->forms["gnomonDataFrame"] = dataFrame;
 
-            QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
-
             if ((!d->formVisualization.contains("gnomonDataFrame"))||(!d->formVisualization["gnomonDataFrame"]))
             {
-                d->formVisualization["gnomonDataFrame"] = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(key);
+                QString key = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys()[0];
+                d->formVisualization["gnomonDataFrame"] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationDataFrame>(gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(key));
                 d->formVisualization["gnomonDataFrame"]->setView(this);
             }
-            gnomonAbstractMatplotlibVisualizationDataFrame *formVisualizationDataFrame = (gnomonAbstractMatplotlibVisualizationDataFrame *)d->formVisualization["gnomonDataFrame"];
-            formVisualizationDataFrame->setDataFrame(dynamic_cast<gnomonDataFrame *>(dataFrame->current()));
-            if (visualization) {
-                formVisualizationDataFrame->setParameters(visualization->parameters());
-            }
+            std::shared_ptr<gnomonAbstractMatplotlibVisualizationDataFrame> formVisualizationDataFrame = std::dynamic_pointer_cast<gnomonAbstractMatplotlibVisualizationDataFrame>(d->formVisualization["gnomonDataFrame"]);
+            formVisualizationDataFrame->setDataFrame(std::dynamic_pointer_cast<gnomonDataFrame>(dataFrame->current()));
             this->setIsModifiedForm("gnomonDataFrame");
             emit formAdded("gnomonDataFrame");
         }
-    } else if (gnomonLStringSeries *lString = dynamic_cast<gnomonLStringSeries *>(form)) {
-        qDebug()<<Q_FUNC_INFO<<"gnomonLString"<<lString<<d->acceptForms["gnomonLString"];
+    } else if (std::shared_ptr<gnomonLStringSeries> lString = std::dynamic_pointer_cast<gnomonLStringSeries>(form)) {
         if (d->acceptForms["gnomonLString"]) {
             d->forms["gnomonLString"] = lString;
 
-            QString key = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys()[0];
-
             if ((!d->formVisualization.contains("gnomonLString"))||(!d->formVisualization["gnomonLString"]))
             {
-                d->formVisualization["gnomonLString"] = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(key);
+                QString key = gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys()[0];
+                d->formVisualization["gnomonLString"] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationLString>(gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(key));
                 d->formVisualization["gnomonLString"]->setView(this);
             }
-            gnomonAbstractMatplotlibVisualizationLString *formVisualizationLString = (gnomonAbstractMatplotlibVisualizationLString *)d->formVisualization["gnomonLString"];
-            formVisualizationLString->setLString(dynamic_cast<gnomonLString *>(lString->current()));
-            if (visualization) {
-                formVisualizationLString->setParameters(visualization->parameters());
-            }
+            std::shared_ptr<gnomonAbstractMatplotlibVisualizationLString> formVisualizationLString = std::dynamic_pointer_cast<gnomonAbstractMatplotlibVisualizationLString>(d->formVisualization["gnomonLString"]);
+            formVisualizationLString->setLString(std::dynamic_pointer_cast<gnomonLString>(lString->current()));
             this->setIsModifiedForm("gnomonLString");
             emit formAdded("gnomonLString");
         } else {
-            this->setAdaptedForm("gnomonLString", lString, visualization);
+            this->setAdaptedForm("gnomonLString", lString);
         }
     }
 }
@@ -542,7 +404,7 @@ QStringList gnomonViewMatplotlib::formNames(void)
      return d->forms.keys();
 }
 
-gnomonAbstractDynamicForm *gnomonViewMatplotlib::form(const QString& name)
+std::shared_ptr<gnomonAbstractDynamicForm> gnomonViewMatplotlib::form(const QString& name)
 {
   return d->forms[name];
 }
@@ -552,7 +414,7 @@ void gnomonViewMatplotlib::clearForm(const QString& name)
     return d->removeForm(name);
 }
 
-void gnomonViewMatplotlib::setAdaptedForm(const QString& name, gnomonAbstractDynamicForm *form, gnomonAbstractMatplotlibVisualization *visualization)
+void gnomonViewMatplotlib::setAdaptedForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, gnomonAbstractMatplotlibVisualization *visualization)
 {
     if (d->adapterCommands.contains(name)) {
         QVariantMap adapter_descs;
@@ -673,10 +535,7 @@ void gnomonViewMatplotlib::render(void)
 void gnomonViewMatplotlib::update(void)
 {
      for (const auto& key : d->formVisualization.keys()) {
-         gnomonAbstractMatplotlibVisualization *v = d->formVisualization[key];
-         if(v) {
-             v->update();
-         }
+         d->formVisualization[key]->update();
      }
 }
 

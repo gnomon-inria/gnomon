@@ -18,7 +18,7 @@ public:
     virtual ~gnomonAbstractBinaryImageWriter(void) = default;
 
 public:
-    virtual void setBinaryImage(gnomonBinaryImageSeries *binaryImage) = 0;
+    virtual void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binaryImage) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonBinaryImage") {

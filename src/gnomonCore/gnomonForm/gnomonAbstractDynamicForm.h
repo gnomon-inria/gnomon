@@ -2,96 +2,61 @@
 
 #include <gnomonCoreExport.h>
 
+#include <memory>
 #include <QtCore>
-
 #include <dtkCore>
-#include "gnomonAbstractDynamicForm_p.h"
 
-//#include <gnomonTime.h>
-
-// ///////////////////////////////////////////////////////////////////
-//
-// ///////////////////////////////////////////////////////////////////
-class gnomonAbstractForm;
+#include "gnomonAbstractForm"
+#include "gnomonDynamicFormMetadata"
 
 class GNOMONCORE_EXPORT gnomonAbstractDynamicForm
 {
 public:
-             gnomonAbstractDynamicForm(void): d(new gnomonAbstractDynamicFormPrivate) {
+             gnomonAbstractDynamicForm(void) : p_metadata(new gnomonDynamicFormMetadata) {};
+    virtual ~gnomonAbstractDynamicForm(void) {delete p_metadata;}
 
-             }
-    virtual ~gnomonAbstractDynamicForm(void) {
-                 delete d;
-             };
 
 public:
-    virtual gnomonAbstractDynamicForm *clone(void) const = 0;
+    virtual std::shared_ptr<gnomonAbstractDynamicForm> clone(void) const = 0;
 
 public:
-    virtual gnomonAbstractForm *at(double t) const = 0;
-    virtual gnomonAbstractForm *current(void) const = 0;
+    std::shared_ptr<gnomonAbstractForm> at(double t) {
+        return std::shared_ptr<gnomonAbstractForm>(this->at_impl(t)->clone());
+    };
+    std::shared_ptr<gnomonAbstractForm> current(void) const {
+        return std::shared_ptr<gnomonAbstractForm>(this->current()->clone());
+    };
+
+    virtual QMap<QString,QString> metadataAtT(double t) const = 0;
+
     virtual double time(void) const = 0;
     virtual QList<double> times(void) const = 0;
+    virtual void compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) = 0;
 
-//    virtual void insert(double t, T *form) = 0;
-//    virtual void insert(const T& form) = 0;
     virtual void drop(double t) = 0;
 
-    virtual QString formName(void) = 0;
+    virtual QString formName(void) = 0; //TODO CRTP to be able to put that as virtual static
 
     virtual QJsonObject serialize(void) {
         QJsonObject json;
-        json["metadata"] = d->metadata->serialize();
+        json["metadata"] = p_metadata->serialize();
         return json;
     }
 
     virtual void deserialize(QJsonObject & json) {
-        d->metadata->deserialize(json);
+        p_metadata->deserialize(json);
     }
 
     gnomonDynamicFormMetadata* metadata(void) {
-        return d->metadata;
-    }
-
-    void setMetadata(gnomonDynamicFormMetadata* metadata) {
-        delete d->metadata;
-        d->metadata = metadata;
+        return p_metadata;
     }
 
 protected:
-    // for subclassing, see https://wiki.qt.io/D-Pointer#Inheriting_d-pointers_for_optimization
-    explicit gnomonAbstractDynamicForm(gnomonAbstractDynamicFormPrivate* otherPrivate): d(otherPrivate) {}
+    virtual gnomonAbstractForm *at_impl(double t) = 0;
+    virtual gnomonAbstractForm *current_impl(void) const = 0;
 
-    gnomonAbstractDynamicFormPrivate* d;
-
-//public:
-//    virtual void setInitialTime(gnomonTime T_i) = 0;
-//    virtual gnomonAbstractForm* atTime(gnomonTime t) = 0;
-//
-//    virtual void insert(gnomonAbstractForm* form, gnomonTime t) = 0;
-//    virtual void drop(gnomonTime t) = 0;
-//
-//    virtual QList<gnomonTime> availableTimes(void) = 0;
+protected:
+    gnomonDynamicFormMetadata *p_metadata = nullptr;
 };
-
-//typedef QSharedPointer<gnomonAbstractDynamicForm> gnomonAbstractDynamicFormPtr;
-
-// ///////////////////////////////////////////////////////////////////
-// Give the concept the plugin machinery
-// ///////////////////////////////////////////////////////////////////
-
-//DTK_DECLARE_OBJECT        (gnomonAbstractDynamicForm *)
-// DTK_DECLARE_PLUGIN        (gnomonAbstractDynamicForm, GNOMONCORE_EXPORT)
-// DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractDynamicForm, GNOMONCORE_EXPORT)
-// DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDynamicForm, GNOMONCORE_EXPORT)
-
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-// namespace gnomonCore {
-//     DTK_DECLARE_CONCEPT(gnomonAbstractDynamicForm, GNOMONCORE_EXPORT, dynamicForm);
-// }
-
 //
 // gnomonAbstractDynamicForm.h ends here

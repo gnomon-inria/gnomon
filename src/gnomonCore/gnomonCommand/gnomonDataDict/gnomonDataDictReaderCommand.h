@@ -15,8 +15,8 @@ public:
     void   undo(void) override;
 
 public:
-    gnomonDataDictSeries *dataDict();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonDataDictSeries> dataDict();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap outputTypes() override;
 

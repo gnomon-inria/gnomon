@@ -1,20 +1,59 @@
 #pragma once
 
 %module(directors="1", package="gnomon.pipeline", moduleimport="import _gnomonpipeline") gnomonpipeline
+//%include <gnomonCore/gnomonForm.i>
 
-%import <dtkBase/dtkBase.i>
-%import <dtkCore/dtkCore.i>
+/*
+%include "std_shared_ptr.i"
+
+%shared_ptr(gnomonAbstractForm)
+%shared_ptr(gnomonBinaryImage)
+%shared_ptr(gnomonCellComplex)
+%shared_ptr(gnomonCellGraph)
+%shared_ptr(gnomonCellImage)
+%shared_ptr(gnomonDataDict)
+%shared_ptr(gnomonDataFrame)
+%shared_ptr(gnomonImage)
+%shared_ptr(gnomonLString)
+%shared_ptr(gnomonMesh)
+%shared_ptr(gnomonPointCloud)
+%shared_ptr(gnomonTree)
+%shared_ptr(gnomonSphereForm)
+%shared_ptr(gnomonWallForm)
+
+%shared_ptr(gnomonAbstractDynamicForm)
+%shared_ptr(gnomonBinaryImageSeries)
+%shared_ptr(gnomonCellComplexSeries)
+%shared_ptr(gnomonCellGraphSeries)
+%shared_ptr(gnomonCellImageSeries)
+%shared_ptr(gnomonDataDictSeries)
+%shared_ptr(gnomonDataFrameSeries)
+%shared_ptr(gnomonImageSeries)
+%shared_ptr(gnomonLStringSeries)
+%shared_ptr(gnomonMeshSeries)
+%shared_ptr(gnomonPointCloudSeries)
+%shared_ptr(gnomonTreeSeries)
+
+
+%import(module="gnomon.core") <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
+//%import(module="gnomon.core") <gnomonCore/gnomonForm/gnomonAbstractForm.h>
+*/
 
 %{
     #include <dtkCore>
-
+    //#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
+    
     #include <gnomonPipeline.h>
     #include <gnomonPipelineManager.h>
     #include <gnomonPipelineEdge.h>
     #include <gnomonPipelineNode.h>
+    #include <gnomonPipelineNodeTask.h>
     #include <gnomonPipelinePort.h>
 %}
 
+%include <gnomonCore/gnomonForm.i>
+
+//%include <gnomonCore/gnomonCore.i>
 
 // /////////////////////////////////////////////////////////////////
 // Macro undefinition
@@ -94,8 +133,10 @@
     $input = list;
 }
 
+//%include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 %include <gnomonPipeline.h>
 %include <gnomonPipelineManager.h>
 %include <gnomonPipelineEdge.h>
 %include <gnomonPipelineNode.h>
+%include <gnomonPipelineNodeTask.h>
 %include <gnomonPipelinePort.h>

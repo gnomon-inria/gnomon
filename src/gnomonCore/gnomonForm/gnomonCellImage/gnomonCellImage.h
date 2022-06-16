@@ -21,7 +21,7 @@ public:
     }
     gnomonCellImage(const gnomonCellImage& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonCellImage(*this); };
+    gnomonAbstractForm *clone(void) override { return new gnomonCellImage(*this); };
 
     ~gnomonCellImage(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 

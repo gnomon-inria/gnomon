@@ -7,6 +7,8 @@
 
 #include <QJSValue>
 
+#define MORPHOPLOT_TMP_FILE "edited_seg_img.inr.gz"
+
 class gnomonViewForm;
 class gnomonPythonAlgorithmPluginCode;
 
@@ -14,7 +16,7 @@ class GNOMONWORKSPACE_EXPORT gnomonWorkspaceMorphonet : public gnomonAbstractWor
 {
     Q_OBJECT
     Q_CLASSINFO("description", "\
-This workspace allows to connect to Morphonet and import/export datasets\
+This workspace allows to connect to MorphoNet and import/export datasets\
 \n")
 
 public:
@@ -45,15 +47,18 @@ public:
     void setTimeEnd(int);
     void setUploadMode(bool);
 
-    Q_INVOKABLE QString datasetsInfo(const QString& search = "");
-    Q_INVOKABLE void importDatasetPreview(int id, int dim_x, int dim_y, int dim_z);
-    Q_INVOKABLE void importDataset(int time_start, int time_end, int id, int dim_x, int dim_y, int dim_z);
-    Q_INVOKABLE int exportDataset(QString name, int id_NCBI, int id_type, QString description);
+    Q_INVOKABLE bool deleteDataset(int id=-1);
+    Q_INVOKABLE QString importDatasetInfos(const QString& search = "");
+    Q_INVOKABLE void importDataset(int id, double voxelsize, int time_start=-1, int time_end=-1);
+    Q_INVOKABLE int exportDataset(QString name, int id_NCBI, int id_type, QString description, double voxelsize);
+    Q_INVOKABLE int morphoPlot(void);
+    Q_INVOKABLE void morphoPlotCollect(void);
 
     Q_INVOKABLE gnomonViewForm *view(void);
 
 signals:
     void currentIdChanged(void);
+    void started(void);
     void timeStartChanged(void);
     void timeEndChanged(void);
     void connectionStatusChanged(void);
@@ -63,6 +68,7 @@ signals:
 public slots:
     void saveState(void);
     void restoreState(void);
+    void onDataLoaded(void);
 
 
 private:

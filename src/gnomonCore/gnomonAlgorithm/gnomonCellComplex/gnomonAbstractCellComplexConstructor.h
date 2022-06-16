@@ -13,12 +13,7 @@ class dtkImage;
 
 class GNOMONCORE_EXPORT gnomonAbstractCellComplexConstructor : public gnomonAbstractAlgorithm
 {
-
-    //Inputs
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-
     static inline QString defaultSetter(QString formName) {
         return {};
     };
@@ -26,22 +21,14 @@ public:
         return {};
     };
 
-
-
-    // Outputs
 public:
-    virtual gnomonCellComplexSeries *output() const = 0;
+    virtual std::shared_ptr<gnomonCellComplexSeries> output() const = 0;
     static inline QString defaultOutput(QString formName) {
         if(formName == "gnomonCellComplex") {
             return {"output"};
         }
         return {};
     };
-
-public:
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractCellComplexConstructor *)

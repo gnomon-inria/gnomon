@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 
@@ -32,16 +18,14 @@
 class gnomonVisualizationMeshPrivate
 {
 public:
-    gnomonMeshSeries *meshSeries;
-    gnomonMesh *mesh;
-
+    std::shared_ptr<gnomonMeshSeries> meshSeries;
+    std::shared_ptr<gnomonMesh> mesh;
 
 public:
     gnomonPolyDataMesh *polydata = nullptr;
     gnomonActorPolyData *actor = nullptr;
     gnomonActorPolyData *edge_actor = nullptr;
     gnomonActor2DPolyData *actor2D = nullptr;
-
 };
 
 
@@ -51,8 +35,6 @@ public:
 
 gnomonVisualizationMesh::gnomonVisualizationMesh(void) : gnomonAbstractVisualizationMesh(), dd(new gnomonVisualizationMeshPrivate)
 {
-    dd->mesh = Q_NULLPTR;
-
     d->parameters["property_name"] = new dtk::d_inliststring("", {""}, "Mesh property to be displayed");
     d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("colormap", "gray", "Colormap to apply to the mesh");
@@ -69,10 +51,12 @@ gnomonVisualizationMesh::gnomonVisualizationMesh(void) : gnomonAbstractVisualiza
 gnomonVisualizationMesh::~gnomonVisualizationMesh(void)
 {
     this->clear();
-
     delete dd;
+}
 
-    dd = NULL;
+const QString gnomonVisualizationMesh::pluginName(void)
+{
+    return  "gnomonVisualizationMesh";
 }
 
 void gnomonVisualizationMesh::clear(void)
@@ -107,10 +91,10 @@ void gnomonVisualizationMesh::setVisible(bool visible)
     }
 }
 
-void gnomonVisualizationMesh::setMesh(gnomonMeshSeries *mesh)
+void gnomonVisualizationMesh::setMesh(std::shared_ptr<gnomonMeshSeries> mesh)
 {
     dd->meshSeries = mesh;
-    dd->mesh = (gnomonMesh *) mesh->current();
+    dd->mesh = mesh->current();
 
     this->setParameter("alpha",1.0);
 
@@ -130,11 +114,10 @@ void gnomonVisualizationMesh::setMesh(gnomonMeshSeries *mesh)
         propertyParam->setValue(QString(""));
     }
 
-
     this->updateValueRange();
 }
 
-gnomonMeshSeries *gnomonVisualizationMesh::mesh(void)
+std::shared_ptr<gnomonMeshSeries> gnomonVisualizationMesh::mesh(void)
 {
     return dd->meshSeries;
 }
@@ -214,7 +197,7 @@ void gnomonVisualizationMesh::update(void)
 
     if (!dd->polydata)
         dd->polydata = gnomonPolyDataMesh::New();
-    dd->polydata->setMesh((gnomonMesh *)dd->mesh->clone());
+    dd->polydata->setMesh(dd->mesh);
     dd->polydata->setPropertyName(property_name);
     dd->polydata->update();
 
@@ -353,7 +336,7 @@ void gnomonVisualizationMesh::onXZ(void)
 void gnomonVisualizationMesh::onTimeChanged(double value)
 {
     if (dd->meshSeries->times().contains(value)) {
-        dd->mesh = (gnomonMesh *) dd->meshSeries->at(value);
+        dd->mesh = dd->meshSeries->at(value);
         this->update();
     }
     this->render();

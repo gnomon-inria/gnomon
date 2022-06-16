@@ -28,6 +28,9 @@ public:
     QString algorithm;
 
 public:
+    gnomonPipelineNode::Type type = gnomonPipelineNode::NODE_DEFAULT;
+
+public:
     QColor color;
     QPointF position;
 

@@ -30,8 +30,26 @@ class GNOMONPIPELINE_EXPORT gnomonPipelineNode : public QObject
     Q_OBJECT
 
 public:
+    enum Type {
+        NODE_DEFAULT = -1,
+        NODE_ALGORITHM = 0,
+        NODE_READER = 1,
+        NODE_WRITER = 2,
+        NODE_CONSTRUCTOR = 3,
+        NODE_FILTER = 4,
+        NODE_CONVERTER = 5,
+        NODE_ADAPTER = 6,
+        NODE_TASK = 7,
+        NODE_MORPHONET = 8
+    };
+
+public:
     gnomonPipelineNode(void);
+#ifndef SWIG
+    gnomonPipelineNode(Type t);
+#endif
     ~gnomonPipelineNode(void);
+
 
 public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
@@ -43,6 +61,7 @@ public:
     Q_PROPERTY(QJsonObject parameters READ parameters CONSTANT)
 
     Q_PROPERTY(QColor color READ color);
+    Q_PROPERTY(Type type READ type);
     Q_PROPERTY(QPointF position READ position WRITE setPosition NOTIFY positionChanged);
 
     Q_PROPERTY(QStringList inputPortsNames READ inputPortsNames NOTIFY inputPortsChanged);
@@ -50,6 +69,8 @@ public:
 
     Q_PROPERTY(int inputEdgeCount READ inputEdgeCount);
     Q_PROPERTY(int outputEdgeCount READ outputEdgeCount);
+
+    Q_ENUM(Type);
 
 public:
     const QString& name(void);
@@ -61,9 +82,11 @@ public:
 
     virtual inline QString path(void) { return ""; };
     virtual QJsonObject parameters(void);
+    virtual QJsonObject morphonet_data(void);
     virtual QStringList parametersName(void);
     virtual void configureParameter(const QString &name, dtkCoreParameter *param);
 
+    Type type(void);
     const QColor& color(void);
 
     const QPointF& position(void);

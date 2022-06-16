@@ -21,28 +21,20 @@ public:
     virtual ~gnomonAbstractImageRegistration(void) = default;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
+    virtual void setImage(std::shared_ptr<gnomonImageSeries> ) = 0;
+    virtual std::shared_ptr<gnomonImageSeries> image() = 0;
 
-public:
-    virtual void setImage(gnomonImageSeries *) = 0;
-    virtual gnomonImageSeries *image() = 0;
-
-    virtual gnomonImageSeries* output() = 0;
-    virtual gnomonDataDictSeries* outputTransformation() = 0;
+    virtual std::shared_ptr<gnomonImageSeries> output() = 0;
+    virtual std::shared_ptr<gnomonDataDictSeries> outputTransformation() = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
-        // dtkWarn() << Q_FUNC_INFO << "Do not use decorators to implement virtual void setImage(gnomonImageSeries *) since this method accept multiple images of the same type";
         if(formName == "gnomonImage") {
             return {"setImage"};
         }
         return {};
     };
     static inline QString defaultGetter(QString formName) {
-        // dtkWarn() << Q_FUNC_INFO << "No getter defined";
         if(formName == "gnomonImage") {
             return {"image"};
         }
@@ -56,8 +48,6 @@ public:
         }
         return {};
     };
-
-
 };
 
 // ///////////////////////////////////////////////////////////////////

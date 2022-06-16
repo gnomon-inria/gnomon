@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonVisualizationCellComplex.h"
 
 #include <gnomonVisualization/gnomonCoreParameterColor>
@@ -36,8 +22,8 @@
 class gnomonVisualizationCellComplexPrivate
 {
 public:
-    gnomonCellComplexSeries *cellComplexSeries;
-    gnomonCellComplex *cellComplex;
+    std::shared_ptr<gnomonCellComplexSeries> cellComplexSeries;
+    std::shared_ptr<gnomonCellComplex> cellComplex;
 
 public:
     gnomonPolyDataCellComplex *polydata = nullptr;
@@ -95,7 +81,6 @@ gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbs
 {
 
     dd->q = this;
-    dd->cellComplex = Q_NULLPTR;
 
     d->parameters["property_name"] = new dtk::d_inliststring("property", "", {""}, "CellComplex property to be displayed");
     d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
@@ -110,6 +95,11 @@ gnomonVisualizationCellComplex::~gnomonVisualizationCellComplex(void)
 
     delete dd;
     dd = NULL;
+}
+
+const QString gnomonVisualizationCellComplex::pluginName(void)
+{
+    return  "gnomonVisualizationCellComplex";
 }
 
 void gnomonVisualizationCellComplex::clear(void)
@@ -138,10 +128,10 @@ void gnomonVisualizationCellComplex::setVisible(bool visible)
     }
 }
 
-void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplexSeries *cellComplexSeries)
+void gnomonVisualizationCellComplex::setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cellComplexSeries)
 {
     dd->cellComplexSeries = cellComplexSeries;
-    dd->cellComplex = (gnomonCellComplex *) cellComplexSeries->current();
+    dd->cellComplex = cellComplexSeries->current();
 
     this->setParameter("alpha",1.0);
     d->parameters["property_name"]->connect([=] (QVariant v) {
@@ -170,7 +160,7 @@ void gnomonVisualizationCellComplex::setCellComplex(gnomonCellComplexSeries *cel
     dd->updateValueRange();
 }
 
-gnomonCellComplexSeries *gnomonVisualizationCellComplex::cellComplex(void)
+std::shared_ptr<gnomonCellComplexSeries> gnomonVisualizationCellComplex::cellComplex(void)
 {
     return dd->cellComplexSeries;
 }
@@ -212,7 +202,7 @@ void gnomonVisualizationCellComplex::update(void)
 
     if (!dd->polydata)
         dd->polydata = gnomonPolyDataCellComplex::New();
-    dd->polydata->setCellComplex((gnomonCellComplex *)dd->cellComplex->clone());
+    dd->polydata->setCellComplex(dd->cellComplex);
     dd->polydata->set8Bit(colormap_name=="glasbey");
     dd->polydata->setPropertyName(property_name);
     dd->polydata->setScaleFactor(scale);
@@ -339,7 +329,7 @@ void gnomonVisualizationCellComplex::onXZ(void)
 void gnomonVisualizationCellComplex::onTimeChanged(double value)
 {
     if (dd->cellComplexSeries->times().contains(value)) {
-        dd->cellComplex = (gnomonCellComplex *) dd->cellComplexSeries->at(value);
+        dd->cellComplex = dd->cellComplexSeries->at(value);
         this->update();
     }
     this->render();

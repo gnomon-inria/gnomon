@@ -6,7 +6,7 @@
 class gnomonImageConstructorCommandPrivate
 {
 public:
-    gnomonImageSeries* output = nullptr;
+    std::shared_ptr<gnomonImageSeries> output = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ void gnomonImageConstructorCommand::predo(void)
 
 void gnomonImageConstructorCommand::postdo(void)
 {
-    gnomonImageSeries *image = ((gnomonAbstractImageConstructor *) this->action)->output();
+    std::shared_ptr<gnomonImageSeries> image = ((gnomonAbstractImageConstructor *) this->action)->output();
 
     if ((!image)||(image->times().empty())) {
         d->output = nullptr;
@@ -59,14 +59,14 @@ void gnomonImageConstructorCommand::undo()
 {
 }
 
-gnomonImageSeries *gnomonImageConstructorCommand::output()
+std::shared_ptr<gnomonImageSeries> gnomonImageConstructorCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageConstructorCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageConstructorCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -88,7 +88,7 @@ gnomonAbstractCommand::orderedMap gnomonImageConstructorCommand::outputTypes() {
 
 void gnomonImageConstructorCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonImageSeries();
+        d->output = std::make_shared<gnomonImageSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

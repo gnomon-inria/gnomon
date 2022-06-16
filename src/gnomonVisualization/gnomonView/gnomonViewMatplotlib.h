@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonVisualizationExport>
@@ -19,7 +5,7 @@
 #include <QtCore>
 #include <QtQml>
 
-class gnomonAbstractDynamicForm;
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 class gnomonAbstractMatplotlibVisualization;
 
 class GNOMONVISUALIZATION_EXPORT gnomonViewMatplotlib  : public QObject
@@ -37,12 +23,12 @@ public:
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
 
 public:
-    void setForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractMatplotlibVisualization *  = nullptr);
-    gnomonAbstractDynamicForm *form (const QString&);
+    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>);
+    std::shared_ptr<gnomonAbstractDynamicForm> form (const QString&);
     void clearForm(const QString&);
 
 public:
-    void setAdaptedForm(const QString&, gnomonAbstractDynamicForm *, gnomonAbstractMatplotlibVisualization * = nullptr);
+    void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> , gnomonAbstractMatplotlibVisualization * = nullptr);
 
 public slots:
     void setAcceptForm(const QString&, bool);
@@ -84,7 +70,7 @@ public slots:
     void transmit(void);
 
 signals:
-    void exportedForm(gnomonAbstractDynamicForm *);
+    void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm> );
 
 private:
     class gnomonViewMatplotlibPrivate *d;

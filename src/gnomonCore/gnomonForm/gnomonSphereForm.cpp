@@ -5,7 +5,13 @@ gnomonSphereForm::gnomonSphereForm(void)
 //    this->record();
 }
 
-gnomonSphereForm *gnomonSphereForm::clone(void)
+gnomonSphereForm::gnomonSphereForm(const gnomonSphereForm& other)
+{
+    this->setCenter(other.m_center);
+    this->setRadius(other.m_radius);
+}
+
+gnomonAbstractForm *gnomonSphereForm::clone(void)
 {
     gnomonSphereForm *newForm = new gnomonSphereForm();
     newForm->setCenter(m_center);

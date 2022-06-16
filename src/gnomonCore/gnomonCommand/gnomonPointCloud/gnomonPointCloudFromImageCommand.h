@@ -17,14 +17,14 @@ public:
     void   undo(void) override;
 
 public:
-    void setInput(gnomonImageSeries *image);
-    gnomonImageSeries *input();
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    void setInput(std::shared_ptr<gnomonImageSeries> image);
+    std::shared_ptr<gnomonImageSeries> input();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
-    gnomonPointCloudSeries *output();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonPointCloudSeries> output();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     void setAlgorithmName(const QString& algo_name) override;
 

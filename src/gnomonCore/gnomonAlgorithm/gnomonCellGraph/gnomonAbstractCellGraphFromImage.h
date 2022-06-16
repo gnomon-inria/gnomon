@@ -26,11 +26,7 @@ public:
 
     // Outputs
 public:
-    virtual gnomonCellGraph *computedGraph(void) const = 0;
-
-public:
-    virtual void run(void) = 0;
-    virtual QString documentation(void) = 0;
+    virtual std::shared_ptr<gnomonCellGraph> computedGraph(void) const = 0;
 
 };
 

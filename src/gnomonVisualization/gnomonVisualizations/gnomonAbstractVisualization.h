@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -37,6 +23,9 @@ public:
     void setView(gnomonViewForm *view);
 
 public:
+    virtual const QString pluginName(void) = 0;
+
+public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
     virtual void setParameters(const dtkCoreParameters&) = 0;
 
@@ -44,7 +33,7 @@ public:
     gnomonViewForm* view(void);
     virtual gnomonInteractorStyle * interactorStyle(void);
     virtual dtkCoreParameters parameters(void) const = 0;
-    virtual QMap<QString, QString> parameterGroups(void) = 0;
+    virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
 
 public:
     virtual QImage imageRendering(void) = 0;

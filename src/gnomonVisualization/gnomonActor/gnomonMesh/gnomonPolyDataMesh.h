@@ -17,6 +17,7 @@
 #include <vtkObject.h>
 
 #include <gnomonVisualizationExport.h>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 #include "gnomonActor/gnomonActor.h"
 #include "gnomonActor/gnomonPolyData/gnomonPolyData.h"
@@ -31,7 +32,7 @@ public:
     static gnomonPolyDataMesh *New(void);
 
 public:
-	void setMesh(gnomonMesh *cellimage);
+	void setMesh(std::shared_ptr<gnomonMesh> cellimage);
     void setPropertyName(const QString& property_name);
 
 public slots:

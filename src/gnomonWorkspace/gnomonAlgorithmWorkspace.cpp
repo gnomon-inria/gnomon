@@ -66,7 +66,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
 
     d->targets = new gnomonViewFormList(this);
     connect(d->targets, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *v) {
-        connect(v, &gnomonViewForm::exportedForm, [=] (gnomonAbstractDynamicForm *f) {
+        connect(v, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
             d->pipeline_manager->addForm(f);
         });
     });
@@ -119,7 +119,16 @@ void gnomonAlgorithmWorkspace::setCurrentIndex(int i) {
 
 QJSValue gnomonAlgorithmWorkspace::parameters(void)
 {
-    return dtkCoreParameterCollection(d->command->parameters()).toJSValue(this);
+    QJSValue parameters = dtkCoreParameterCollection(d->command->parameters()).toJSValue(this);
+    QMap<QString, QString> parameter_groups = d->command->parameterGroups();
+
+    QJSValueIterator it(parameters);
+    while (it.hasNext()) {
+        it.next();
+        QString group = parameter_groups.contains(it.name()) ? parameter_groups[it.name()] : "";
+        it.value().setProperty("group", group != "" ? group : nullptr);
+    }
+    return parameters;
 }
 
 gnomonViewFormList* gnomonAlgorithmWorkspace::sources(void) const
@@ -136,6 +145,14 @@ void gnomonAlgorithmWorkspace::run(bool no_async)
 {
     Q_ASSERT(d->command);
 
+    disconnect(d->connect_finished);
+    if(!no_async) {
+        d->connect_finished = connect(d->command, &gnomonAbstractCommand::finished, [this]() {
+            this->viewOutputs();
+            this->finished();
+        });
+    }
+
     emit started();
 
     this->setInputs();
@@ -146,7 +163,9 @@ void gnomonAlgorithmWorkspace::run(bool no_async)
 
     d->command->redo();
 
-    this->viewOutputs();
+    if(no_async){
+        this->viewOutputs();
+    }
 }
 
 void gnomonAlgorithmWorkspace::setInputs()
@@ -183,7 +202,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     bool empty_output = true;
 
     int i=0;
-    gnomonAbstractDynamicForm* inputForm = nullptr;
+    std::shared_ptr<gnomonAbstractDynamicForm> inputForm = nullptr;
     for(auto [name, output_type] : d->command->inputTypes()) {
         if (d->command->inputs()[name]) {
             inputForm = d->command->inputs()[name];
@@ -245,6 +264,13 @@ void gnomonAlgorithmWorkspace::saveState(void) {
 void gnomonAlgorithmWorkspace::restoreState(void) {
     QString previousAlgo = algoName();
     unSerialize(d->savedState);
+
+    for (auto view : d->sources->views()) {
+        view->restoreState();
+    }
+    for (auto view : d->targets->views()) {
+        view->restoreState();
+    }
 }
 
 void gnomonAlgorithmWorkspace::addInputView(const QVector<QString>& accepted_forms) {

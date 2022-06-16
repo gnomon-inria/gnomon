@@ -16,16 +16,16 @@ public:
     void   undo(void) override;
 
 public:
-    void setForm(gnomonAbstractDynamicForm *form) override;
-    void setPointCloud(gnomonPointCloudSeries *pointCloud);
+    void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) override;
+    void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud);
     void setAlgorithmName(const QString& algo_name) override;
 
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
 public:
     orderedMap inputTypes() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
     static bool isEmpty();

@@ -20,16 +20,10 @@ public:
     virtual ~gnomonAbstractMeshFilter(void) = default;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
+    virtual void setInput(std::shared_ptr<gnomonMeshSeries> mesh_series) = 0;
+    virtual std::shared_ptr<gnomonMeshSeries> input() = 0;
 
-public:
-    virtual void setInput(gnomonMeshSeries *mesh_series) = 0;
-    virtual gnomonMeshSeries *input() = 0;
-
-    virtual gnomonMeshSeries *output() = 0;
+    virtual std::shared_ptr<gnomonMeshSeries> output() = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

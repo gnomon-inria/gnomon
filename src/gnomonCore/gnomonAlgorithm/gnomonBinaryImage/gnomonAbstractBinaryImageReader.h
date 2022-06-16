@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gnomonCoreExport.h> // enables the visibility of the concept
+#include <gnomonCoreExport.h>
 
 #include <dtkCore>
 
@@ -18,16 +18,10 @@ public:
     virtual ~gnomonAbstractBinaryImageReader(void) = default;
 
 public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
-public:
     virtual void setPath(const QString& path) = 0;
 
 public:
-    virtual gnomonBinaryImageSeries *binaryImage(void) = 0;
+    virtual std::shared_ptr<gnomonBinaryImageSeries> binaryImage(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         return {};

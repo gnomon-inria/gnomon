@@ -23,9 +23,9 @@ public:
     explicit gnomonPointCloud(QJsonObject& serialization) : m_data(nullptr) {
         static_cast<gnomonPointCloud*>(this)->deserialize(serialization);
     }
-             gnomonPointCloud(const gnomonPointCloud& o) : m_data(o.m_data->clone()) {}
+    gnomonPointCloud(const gnomonPointCloud& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonPointCloud(*this); };
+    gnomonAbstractForm *clone(void) override { return new gnomonPointCloud(*this); };
 
     ~gnomonPointCloud(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 

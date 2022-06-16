@@ -34,10 +34,10 @@ public:
 gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> outputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeReaderPrivate)
 {
     d->color = QColor(111, 153, 69);
+    d->type = gnomonPipelineNode::NODE_READER;
 
     d->algorithm_class = algorithm_class;
     d->algorithm = algorithm;
-
     dd->path = path;
 
     for (const auto& output : outputs) {
@@ -71,13 +71,6 @@ const QJsonObject gnomonPipelineNodeReader::toJson(void)
 {
     QJsonObject json = gnomonPipelineNode::toJson();
     json.insert("path", dd->path);
-
-    QJsonArray out;
-    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
-        auto&& output_name = it.key();
-        out.append(output_name);
-    }
-    json.insert("outputs", out);
 
     return json;
 }

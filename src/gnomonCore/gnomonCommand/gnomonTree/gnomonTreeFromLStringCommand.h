@@ -17,19 +17,19 @@ public:
     void   undo(void) override;
 
 public:
-    void setInput(gnomonLStringSeries *lString_series);
+    void setInput(std::shared_ptr<gnomonLStringSeries> lString_series);
 
-    gnomonLStringSeries *input();
-    QMap<QString, gnomonAbstractDynamicForm *> inputs() override;
+    std::shared_ptr<gnomonLStringSeries> input();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
-    gnomonTreeSeries *output();
-    QMap<QString, gnomonAbstractDynamicForm *> outputs() override;
+    std::shared_ptr<gnomonTreeSeries> output();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
     orderedMap inputTypes() override;
 
     orderedMap outputTypes() override;
 
-    void setInputForm(const QString &name, gnomonAbstractDynamicForm *form) override;
+    void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
     void deserializeResults(QJsonObject &serialization) override;
 

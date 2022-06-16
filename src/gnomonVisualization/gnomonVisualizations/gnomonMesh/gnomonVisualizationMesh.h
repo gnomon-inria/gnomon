@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonVisualizationExport.h>
@@ -19,9 +5,6 @@
 #include "gnomonAbstractVisualizationMesh.h"
 
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
-
-class gnomonViewForm;
-class dtkCoreParameter;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVisualizationMesh : public gnomonAbstractVisualizationMesh
 {
@@ -32,8 +15,11 @@ public:
     ~gnomonVisualizationMesh(void);
 
 public:
-	void setMesh(gnomonMeshSeries *mesh) override;
-	gnomonMeshSeries *mesh(void) override;
+    virtual const QString pluginName(void) override;
+
+public:
+	void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) override;
+	std::shared_ptr<gnomonMeshSeries> mesh(void) override;
 
 public slots:
     void updateOpacity(void);

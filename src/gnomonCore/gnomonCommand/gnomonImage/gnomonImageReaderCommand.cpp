@@ -10,7 +10,7 @@
 class gnomonImageReaderCommandPrivate
 {
 public:
-    gnomonImageSeries *image = nullptr;
+    std::shared_ptr<gnomonImageSeries> image = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -50,9 +50,9 @@ void gnomonImageReaderCommand::predo(void)
 
 void gnomonImageReaderCommand::postdo(void)
 {
-    gnomonImageSeries *image = ((gnomonAbstractImageReader *) this->action)->image();
+    std::shared_ptr<gnomonImageSeries> image = ((gnomonAbstractImageReader *) this->action)->image();
 
-    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+    if ((!image)||(image->times().empty())||(image->current()->channels().empty())) {
         d->image = nullptr;
         QString str = "pb reading Image " + this->m_path;
         if(!image) str += "  image is empty";
@@ -71,14 +71,14 @@ void gnomonImageReaderCommand::undo()
     ((gnomonAbstractImageReader *) this->action)->setPath("");
 }
 
-gnomonImageSeries *gnomonImageReaderCommand::image()
+std::shared_ptr<gnomonImageSeries> gnomonImageReaderCommand::image()
 {
     return d->image;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageReaderCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageReaderCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["image"] = this->image();
     return outputs;
 }
@@ -100,7 +100,7 @@ gnomonAbstractCommand::orderedMap gnomonImageReaderCommand::outputTypes() {
 
 void gnomonImageReaderCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->image) {
-        d->image = new gnomonImageSeries();
+        d->image = std::make_shared<gnomonImageSeries>();
     }
     auto tmp = serialization["image"].toObject();
     d->image->deserialize(tmp);

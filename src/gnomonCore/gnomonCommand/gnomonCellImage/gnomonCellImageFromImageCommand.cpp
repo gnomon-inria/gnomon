@@ -8,11 +8,11 @@
 class gnomonCellImageFromImageCommandPrivate
 {
 public:
-    gnomonImageSeries *image_series = nullptr;
-    gnomonPointCloudSeries *pointCloud_series = nullptr;
-    gnomonBinaryImageSeries *binary_image_series = nullptr;
+    std::shared_ptr<gnomonImageSeries> image_series = nullptr;
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud_series = nullptr;
+    std::shared_ptr<gnomonBinaryImageSeries> binary_image_series = nullptr;
 
-    gnomonCellImageSeries *output = nullptr;
+    std::shared_ptr<gnomonCellImageSeries> output = nullptr;
 };
 
 gnomonCellImageFromImageCommand::gnomonCellImageFromImageCommand() : d(new gnomonCellImageFromImageCommandPrivate)
@@ -47,7 +47,7 @@ void gnomonCellImageFromImageCommand::predo(void)
 
 void gnomonCellImageFromImageCommand::postdo(void)
 {
-    gnomonCellImageSeries *cellImage = ((gnomonAbstractCellImageFromImage *) this->action)->output();
+    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageFromImage *) this->action)->output();
 
     if ((!cellImage)||cellImage->times().empty()) {
         d->output = nullptr;
@@ -64,9 +64,9 @@ void gnomonCellImageFromImageCommand::undo()
     ((gnomonAbstractCellImageFromImage *) this->action)->setCellPoints(nullptr);
 }
 
-void gnomonCellImageFromImageCommand::setInput(gnomonImageSeries* image_series)
+void gnomonCellImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries> image_series)
 {
-    if ((!image_series)||(image_series->times().empty())||(((gnomonImage *)image_series->current())->channels().empty())) {
+    if ((!image_series)||(image_series->times().empty())||(image_series->current()->channels().empty())) {
         d->image_series = nullptr;
     } else {
         d->image_series = image_series;
@@ -75,12 +75,12 @@ void gnomonCellImageFromImageCommand::setInput(gnomonImageSeries* image_series)
     ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->image_series);
 }
 
-gnomonImageSeries *gnomonCellImageFromImageCommand::input()
+std::shared_ptr<gnomonImageSeries> gnomonCellImageFromImageCommand::input()
 {
     return d->image_series;
 }
 
-void gnomonCellImageFromImageCommand::setCellPoints(gnomonPointCloudSeries *pointCloud_series)
+void gnomonCellImageFromImageCommand::setCellPoints(std::shared_ptr<gnomonPointCloudSeries> pointCloud_series)
 {
     if ((!pointCloud_series)||(pointCloud_series->times().empty())) {
         d->pointCloud_series = nullptr;
@@ -91,19 +91,19 @@ void gnomonCellImageFromImageCommand::setCellPoints(gnomonPointCloudSeries *poin
     ((gnomonAbstractCellImageFromImage *) this->action)->setCellPoints(d->pointCloud_series);
 }
 
-gnomonPointCloudSeries *gnomonCellImageFromImageCommand::cellPoints()
+std::shared_ptr<gnomonPointCloudSeries> gnomonCellImageFromImageCommand::cellPoints()
 {
     return d->pointCloud_series;
 }
 
-gnomonCellImageSeries *gnomonCellImageFromImageCommand::output()
+std::shared_ptr<gnomonCellImageSeries> gnomonCellImageFromImageCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFromImageCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageFromImageCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     inputs["cellPoints"] = this->cellPoints();
     inputs["binaryImage"] = this->binaryImage();
@@ -119,22 +119,22 @@ gnomonAbstractCommand::orderedMap gnomonCellImageFromImageCommand::inputTypes()
     return input_types;
 }
 
-void gnomonCellImageFromImageCommand::setInputForm(const QString& name, gnomonAbstractDynamicForm *form)
+void gnomonCellImageFromImageCommand::setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     if (name == "input") {
-        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else if (name == "cellPoints") {
-        this->setCellPoints(dynamic_cast<gnomonPointCloudSeries *>(form));
+        this->setCellPoints(std::dynamic_pointer_cast<gnomonPointCloudSeries>(form));
     } else if (name == "binaryImage") {
-        this->setBinaryImage(dynamic_cast<gnomonBinaryImageSeries *>(form));
+        this->setBinaryImage(std::dynamic_pointer_cast<gnomonBinaryImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellImageFromImageCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageFromImageCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -151,7 +151,7 @@ bool gnomonCellImageFromImageCommand::isEmpty()
     return availablePlugins().empty();
 }
 
-void gnomonCellImageFromImageCommand::setBinaryImage(gnomonBinaryImageSeries *binary_image_series) {
+void gnomonCellImageFromImageCommand::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binary_image_series) {
     if ((!binary_image_series)||(binary_image_series->times().empty())) {
         d->binary_image_series = nullptr;
     } else {
@@ -160,7 +160,7 @@ void gnomonCellImageFromImageCommand::setBinaryImage(gnomonBinaryImageSeries *bi
     ((gnomonAbstractCellImageFromImage *) this->action)->setBinaryImage(d->binary_image_series);
 }
 
-gnomonBinaryImageSeries *gnomonCellImageFromImageCommand::binaryImage() {
+std::shared_ptr<gnomonBinaryImageSeries> gnomonCellImageFromImageCommand::binaryImage() {
     return d->binary_image_series;
 }
 
@@ -170,7 +170,7 @@ QStringList gnomonCellImageFromImageCommand::availablePlugins() {
 
 void gnomonCellImageFromImageCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonCellImageSeries();
+        d->output = std::make_shared<gnomonCellImageSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

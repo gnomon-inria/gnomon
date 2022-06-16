@@ -3,11 +3,9 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore/dtkCoreParameters>
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 
 #include "gnomonAbstractAlgorithm.h"
-
-class gnomonAbstractDynamicForm;
-
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -18,16 +16,12 @@ public:
     virtual ~gnomonAbstractFormAdapter(void) = default;
 
 public:
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
-
-public:
-    virtual void setInput(T *form_series) = 0;
-    virtual T *input() = 0;
+    virtual void setInput(std::shared_ptr<T> form_series) = 0;
+    virtual std::shared_ptr<T> input() = 0;
 
     static inline QString defaultSetter(QString formName) {
         // TODO: find a clever way to do this
-        // if(formName == T::formName()) {
+        // if(formName == T::formName()) {  //well that's called a CRTP ;) 
             return {"setInput"};
         // }
         // return {};
@@ -40,7 +34,7 @@ public:
         // return {};
     };
 
-    virtual gnomonAbstractDynamicForm *output() = 0;
+    virtual std::shared_ptr<gnomonAbstractDynamicForm> output() = 0;
     static inline QString defaultOutput(QString formName) {
         return {"output"};
     };
@@ -48,9 +42,6 @@ public:
 public:
     virtual QString target(void) = 0;
 
-public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
 };
 
 

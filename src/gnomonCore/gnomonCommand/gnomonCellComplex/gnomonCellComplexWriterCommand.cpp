@@ -6,7 +6,7 @@
 class gnomonCellComplexWriterCommandPrivate
 {
 public:
-    gnomonCellComplexSeries *cellComplex = nullptr;
+    std::shared_ptr<gnomonCellComplexSeries> cellComplex = nullptr;
 };
 
 gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand() : d(new gnomonCellComplexWriterCommandPrivate)
@@ -46,19 +46,19 @@ void gnomonCellComplexWriterCommand::undo()
     ((gnomonAbstractCellComplexWriter *) this->action)->setPath("");
 }
 
-void gnomonCellComplexWriterCommand::setCellComplex(gnomonCellComplexSeries *cellComplex)
+void gnomonCellComplexWriterCommand::setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cellComplex)
 {
     d->cellComplex = cellComplex;
 }
 
-void gnomonCellComplexWriterCommand::setForm(gnomonAbstractDynamicForm *form)
+void gnomonCellComplexWriterCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
-    d->cellComplex = dynamic_cast<gnomonCellComplexSeries *>(form);
+    d->cellComplex = std::dynamic_pointer_cast<gnomonCellComplexSeries>(form);
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonCellComplexWriterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellComplexWriterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["cellComplex"] = d->cellComplex;
     return inputs;
 }
@@ -74,9 +74,9 @@ gnomonAbstractCommand::orderedMap gnomonCellComplexWriterCommand::inputTypes() {
     return input_types;
 }
 
-void gnomonCellComplexWriterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonCellComplexWriterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
-        this->setForm(dynamic_cast<gnomonCellComplexSeries *>(form));
+        this->setForm(std::dynamic_pointer_cast<gnomonCellComplexSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

@@ -25,11 +25,10 @@ void gnomonAbstractCommand::redo(void)
     this->predo(); //setting is_async here
 
     if(override_async) {
-        this->action->is_async = false;
+        this->action->is_async = false;  //TODO delete now not needed anymore on pipeline load!!!!!!!
     }
     
     if(this->action->is_async) {
-        qDebug() << "launch in async mode";
 
         // cleaning watcher
         if(watcher){
@@ -45,10 +44,7 @@ void gnomonAbstractCommand::redo(void)
         connect(watcher, &QFutureWatcher<void>::finished, this, &gnomonAbstractCommand::finished);
         auto future = QtConcurrent::run(runner, this);
         watcher->setFuture(future);
-
-
     } else {
-        qDebug() << Q_FUNC_INFO << "sync run";
         this->action->run();
         this->postdo();
         this->finished();
@@ -62,7 +58,7 @@ extern void runner(gnomonAbstractCommand* command) {
         if(command) {
             command->postdo();
         } else {
-            qDebug() << Q_FUNC_INFO << "command is null";
+            qWarning() << Q_FUNC_INFO << "command is null";
         }
     };
 
@@ -73,4 +69,13 @@ extern void runner(gnomonAbstractCommand* command) {
     // choice 2: callback not called, we directly call postdo and finished
     command->action->run();
     command->postdo();
+
+    if(gnomonAbstractCommand::gui_thread ) {
+        for(const QString& k : command->outputs().keys()) {
+            if(command->outputs()[k])
+                command->outputs()[k]->metadata()->moveToThread(gnomonAbstractCommand::gui_thread);
+        }
+    }
 }
+
+QThread *gnomonAbstractCommand::gui_thread = nullptr;

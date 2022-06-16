@@ -81,12 +81,14 @@ const QString& gnomonPythonAlgorithmPluginCode::pluginName(void) const
     return d->plugin_name;
 }
 
-void gnomonPythonAlgorithmPluginCode::setPluginName(const QString& name)
+void gnomonPythonAlgorithmPluginCode::setPluginName(const QString& name, bool update_code)
 {
     if (name != d->plugin_name) {
         d->plugin_name = name;
+        if (update_code) {
+            this->updateCode();
+        }
         emit pluginNameChanged();
-        this->updateCode();
     }
 }
 
@@ -95,12 +97,14 @@ const QString& gnomonPythonAlgorithmPluginCode::pluginDocumentation(void) const
     return d->plugin_documentation;
 }
 
-void gnomonPythonAlgorithmPluginCode::setPluginDocumentation(const QString& doc)
+void gnomonPythonAlgorithmPluginCode::setPluginDocumentation(const QString& doc, bool update_code)
 {
     if (doc != d->plugin_documentation) {
         d->plugin_documentation = doc;
+        if (update_code) {
+            this->updateCode();
+        }
         emit pluginDocumentationChanged();
-        this->updateCode();
     }
 }
 
@@ -253,21 +257,43 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
 
     bool user_line = false;
     int section = 0;
-    for (const auto& line : code_lines) {
 
-        if (line.contains("# {#")) {
-            user_line = false;
-            section++;
-        }
-        if (user_line) {
-            if (section == 1) {
-                import_code += line + "\n";
-            } else {
-                run_code += line + "\n";
+    if (current_code.contains("# {# gnomon")) { // Well-formatted plugin
+        for (const auto &line: code_lines) {
+            if (line.contains("# {#")) {
+                user_line = false;
+                section++;
+            }
+            if (user_line) {
+                if (section == 1) {
+                    import_code += line + "\n";
+                } else {
+                    run_code += line + "\n";
+                }
+            }
+            if (line.contains("# #}")) {
+                user_line = true;
             }
         }
-        if (line.contains("# #}")) {
-            user_line = true;
+    } else { // Have to guess!
+        for (const auto &line: code_lines) {
+            if (line.contains("import")) {
+                user_line = true;
+                section = 1;
+            } else if (line.contains("@")) {
+                user_line = false;
+            }
+            if (user_line) {
+                if (section == 1) {
+                    import_code += line + "\n";
+                } else {
+                    run_code += line + "\n";
+                }
+            }
+            if (line.contains("def run(")) {
+                user_line = true;
+                section = 2;
+            }
         }
     }
     run_code = run_code.left(run_code.length()-1);
@@ -317,7 +343,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
     plugin_code += "# {# gnomon, plugin.class\n";
     plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
 
-    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='0.61.0')\n";
+    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='0.70.0')\n";
 
     for (const auto &form_type : d->input_forms.keys()) {
         gnomonFormDescription desc = d->input_forms[form_type];
@@ -377,13 +403,14 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         plugin_code += "\n";
     }
     plugin_code += "    def run(self):\n";
-    if (n_forms == 0)
-    {
+
+    QString default_run_code =  "        # implement the run method\n\n        pass\n";
+    QString default_run_code_indented =  "            # implement the run method\n\n            pass\n";
+
+    if ((n_forms == 0) | (run_code.startsWith("        ") & !run_code.contains(default_run_code))) {
         plugin_code += "        # #}\n";
-        if (run_code.isEmpty() | !run_code.startsWith("        ")) {
-            plugin_code += "        # implement the run method\n";
-            plugin_code += "\n";
-            plugin_code += "        pass\n";
+        if (run_code.isEmpty() | run_code.startsWith(default_run_code_indented) | run_code.startsWith(default_run_code)) {
+            plugin_code += default_run_code;
         } else {
             plugin_code += run_code;
         }
@@ -403,10 +430,8 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
             plugin_code += "            " + desc.name + " = self." + desc.name + "[time]\n";
         }
         plugin_code += "            # #}\n";
-        if (run_code.isEmpty() | !run_code.startsWith("            ")) {
-            plugin_code += "            # implement the run method\n";
-            plugin_code += "\n";
-            plugin_code += "            pass\n";
+        if (run_code.isEmpty() | run_code.startsWith(default_run_code_indented) | run_code.startsWith(default_run_code)) {
+            plugin_code += default_run_code_indented;
             for (const auto &form_type : d->output_forms.keys()) {
                 gnomonFormDescription desc = d->output_forms[form_type];
                 plugin_code += "            self." + desc.name + "[time] = None\n";
@@ -417,6 +442,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
     }
 
     this->setText(plugin_code);
+    emit codeUpdated();
 }
 
 void gnomonPythonAlgorithmPluginCode::parseCode(void)
@@ -431,11 +457,8 @@ void gnomonPythonAlgorithmPluginCode::parseCode(void)
     QString current_code = this->text();
     d->parser->parsePluginCode(current_code);
 
-    d->plugin_name = d->parser->pluginName();
-    emit pluginNameChanged();
-
-    d->plugin_documentation = d->parser->pluginDocumentation();
-    emit pluginDocumentationChanged();
+    this->setPluginName(d->parser->pluginName(), false);
+    this->setPluginDocumentation(d->parser->pluginDocumentation(), false);
 
     auto input_forms = d->parser->inputForms();
     for (const auto& form_name : input_forms.keys()) {

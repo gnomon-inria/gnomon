@@ -6,8 +6,8 @@
 class gnomonLStringAdapterCommandPrivate
 {
 public:
-    gnomonLStringSeries* input = nullptr;
-    gnomonAbstractDynamicForm* output = nullptr;
+    std::shared_ptr<gnomonLStringSeries> input = nullptr;
+    std::shared_ptr<gnomonAbstractDynamicForm> output = nullptr;
 };
 
 gnomonLStringAdapterCommand::gnomonLStringAdapterCommand() : d(new gnomonLStringAdapterCommandPrivate)
@@ -42,7 +42,7 @@ void gnomonLStringAdapterCommand::predo(void)
 
 void gnomonLStringAdapterCommand::postdo(void)
 {
-    gnomonAbstractDynamicForm *output = ((gnomonAbstractLStringAdapter *) this->action)->output();
+    std::shared_ptr<gnomonAbstractDynamicForm> output = ((gnomonAbstractLStringAdapter *) this->action)->output();
 
     if ((!output)||(output->times().empty())) {
         d->output = nullptr;
@@ -56,7 +56,7 @@ void gnomonLStringAdapterCommand::undo()
     ((gnomonAbstractLStringAdapter *) this->action)->setInput(nullptr);
 }
 
-void gnomonLStringAdapterCommand::setInput(gnomonLStringSeries *input)
+void gnomonLStringAdapterCommand::setInput(std::shared_ptr<gnomonLStringSeries> input)
 {
     if ((!input)||(input->times().empty())) {
         d->input = nullptr;
@@ -67,26 +67,26 @@ void gnomonLStringAdapterCommand::setInput(gnomonLStringSeries *input)
     }
 }
 
-gnomonLStringSeries *gnomonLStringAdapterCommand::input()
+std::shared_ptr<gnomonLStringSeries> gnomonLStringAdapterCommand::input()
 {
     return d->input;
 }
 
-gnomonAbstractDynamicForm *gnomonLStringAdapterCommand::output()
+std::shared_ptr<gnomonAbstractDynamicForm> gnomonLStringAdapterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringAdapterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringAdapterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonLStringAdapterCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringAdapterCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -106,9 +106,9 @@ gnomonAbstractCommand::orderedMap gnomonLStringAdapterCommand::inputTypes() {
     return input_types;
 }
 
-void gnomonLStringAdapterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonLStringAdapterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
-        this->setInput(dynamic_cast<gnomonLStringSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonLStringSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -124,7 +124,5 @@ QJsonObject gnomonLStringAdapterCommand::serializeResults(void) {
     out["output"] = d->output->serialize();
     return out;
 }
-
-
 //
 // gnomonLStringAdapterCommand.cpp ends here

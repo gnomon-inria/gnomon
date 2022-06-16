@@ -25,7 +25,7 @@ public:
     }
     gnomonLString(const gnomonLString& o) : m_data(o.m_data->clone()) {}
 
-    gnomonAbstractForm *clone(void) { return new gnomonLString(*this); };
+    gnomonAbstractForm *clone(void) override { return new gnomonLString(*this); };
 
     ~gnomonLString(void) { if (m_data) { delete m_data; } m_data = nullptr; }
 

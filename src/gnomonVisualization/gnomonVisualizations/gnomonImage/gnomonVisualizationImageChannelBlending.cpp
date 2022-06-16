@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonVisualizationImageChannelBlending.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 
@@ -37,8 +23,8 @@
 class gnomonVisualizationImageChannelBlendingPrivate
 {
 public:
-    gnomonImageSeries *imageSeries;
-    gnomonImage *image;
+    std::shared_ptr<gnomonImageSeries> imageSeries;
+    std::shared_ptr<gnomonImage> image;
 
 public:
     int orientation = 2;
@@ -64,14 +50,10 @@ public:
 
 gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending(void) : gnomonAbstractVisualizationImage(), dd(new gnomonVisualizationImageChannelBlendingPrivate)
 {
-
-    dd->image = Q_NULLPTR;
-
     // d->parameters["channel"] = new dtk::d_inliststring("", {""}, "Image channel to be displayed");
     // d->parameters["value_range"] = new dtk::d_range_int(0, 255, 0, 255, "Value range for display ramps");
     // d->parameters["colormap"] = new gnomonCoreParameterLookupTable(new gnomonLookupTable("Greys"), "Colormap to apply to the image channel");
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
-
 
     dd->defaultColormaps[0] = "gray";
     dd->defaultColormaps[1] = "0CMY_cyan";
@@ -80,16 +62,17 @@ gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending
     dd->defaultColormaps[4] = "0RGB_green";
     dd->defaultColormaps[5] = "0RGB_red";
     dd->defaultColormaps[6] = "0RGB_blue";
-
 }
 
 gnomonVisualizationImageChannelBlending::~gnomonVisualizationImageChannelBlending(void)
 {
     this->clear();
-
     delete dd;
+}
 
-    dd = NULL;
+const QString gnomonVisualizationImageChannelBlending::pluginName(void)
+{
+    return "gnomonVisualizationImageChannelBlending";
 }
 
 void gnomonVisualizationImageChannelBlending::clear(void)
@@ -126,10 +109,10 @@ void gnomonVisualizationImageChannelBlending::setVisible(bool visible)
     }
 }
 
-void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
+void gnomonVisualizationImageChannelBlending::setImage(std::shared_ptr<gnomonImageSeries> image)
 {
     dd->imageSeries = image;
-    dd->image = dynamic_cast<gnomonImage *>(image->current());
+    dd->image = image->current();
 
     this->setParameter("alpha",1.0);
 
@@ -158,7 +141,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
         if (dd->channelLookupTables.contains("")) {
             dd->channelLookupTables.remove("");
         }
-        dd->channelLookupTables[""] = gnomonLookupTable("gray", valueRange, true);
+        dd->channelLookupTables[""] = gnomonLookupTable("gray", valueRange, valueRange, true);
         d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("LUT", dd->channelLookupTables[""], "Lookuptable to apply to the image");
         /*d->parameters["lookuptable"]->connect([this](QVariant v) {
               // this->update();
@@ -170,7 +153,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
             if (dd->channelLookupTables.contains(channelName)) {
                 dd->channelLookupTables.remove(channelName);
             }
-            dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, true);
+            dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, valueRange, true);
             auto param = new gnomonCoreParameterLookupTable(channelName+"\nLUT", dd->channelLookupTables[channelName], "Lookuptable to apply to the "+channelName+" image channel");
             /*param->connect( [this](QVariant v) {
                 // this->update();
@@ -183,7 +166,7 @@ void gnomonVisualizationImageChannelBlending::setImage(gnomonImageSeries *image)
     emit parametersChanged();
 }
 
-gnomonImageSeries *gnomonVisualizationImageChannelBlending::image(void)
+std::shared_ptr<gnomonImageSeries> gnomonVisualizationImageChannelBlending::image(void)
 {
     return dd->imageSeries;
 }
@@ -352,7 +335,7 @@ void gnomonVisualizationImageChannelBlending::onXZ(void)
 void gnomonVisualizationImageChannelBlending::onTimeChanged(double value)
 {
     if (dd->imageSeries->times().contains(value)) {
-        dd->image = dynamic_cast<gnomonImage *>(dd->imageSeries->at(value));
+        dd->image = dd->imageSeries->at(value);
         this->update();
     }
     this->render();

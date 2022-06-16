@@ -26,67 +26,63 @@ class GNOMONCORE_EXPORT gnomonAbstractFormAlgorithm : public gnomonAbstractAlgor
 public:
              gnomonAbstractFormAlgorithm(void) = default;
     virtual ~gnomonAbstractFormAlgorithm(void) = default;
-
-public:
-    virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) override = 0;
-    virtual dtkCoreParameters parameters(void) const override = 0;
     
     // BinaryImage
 public:
-    virtual void setInputBinaryImage(gnomonBinaryImageSeries *binaryImage) { return; };
+    virtual void setInputBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binaryImage) { return; };
     // set update argument to false to avoid re-generating gnomon classes in Python plugins
-    virtual gnomonBinaryImageSeries *inputBinaryImage(bool update=true) const { return nullptr; };
-    virtual gnomonBinaryImageSeries *outputBinaryImage(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonBinaryImageSeries> inputBinaryImage(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonBinaryImageSeries> outputBinaryImage(bool update=true) const { return nullptr; };
 
     
     // CellComplex
 public:
-    virtual void setInputCellComplex(gnomonCellComplexSeries *cellComplex) { return; };
+    virtual void setInputCellComplex(std::shared_ptr<gnomonCellComplexSeries> cellComplex) { return; };
     // set update argument to false to avoid re-generating gnomon classes in Python plugins
-    virtual gnomonCellComplexSeries *inputCellComplex(bool update=true) const { return nullptr; };
-    virtual gnomonCellComplexSeries *outputCellComplex(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonCellComplexSeries> inputCellComplex(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonCellComplexSeries> outputCellComplex(bool update=true) const { return nullptr; };
 
     // CellImage
 public:
-    virtual void setInputCellImage(gnomonCellImageSeries *cellImage) { return; };
-    virtual gnomonCellImageSeries *inputCellImage(bool update=true) const { return nullptr; };
-    virtual gnomonCellImageSeries *outputCellImage(bool update=true) const { return nullptr; };
+    virtual void setInputCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) { return; };
+    virtual std::shared_ptr<gnomonCellImageSeries> inputCellImage(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonCellImageSeries> outputCellImage(bool update=true) const { return nullptr; };
 
     // DataFrame
 public:
-    virtual void setInputDataFrame(gnomonDataFrameSeries *dataFrame) { return; };
-    virtual gnomonDataFrameSeries *inputDataFrame(bool update=true) const { return nullptr; };
-    virtual gnomonDataFrameSeries *outputDataFrame(bool update=true) const { return nullptr; };
+    virtual void setInputDataFrame(std::shared_ptr<gnomonDataFrameSeries> dataFrame) { return; };
+    virtual std::shared_ptr<gnomonDataFrameSeries> inputDataFrame(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonDataFrameSeries> outputDataFrame(bool update=true) const { return nullptr; };
 
     // Image
 public:
-    virtual void setInputImage(gnomonImageSeries *image) { return; };
-    virtual gnomonImageSeries *inputImage(bool update=true) const { return nullptr; };
-    virtual gnomonImageSeries *outputImage(bool update=true) const { return nullptr; };
+    virtual void setInputImage(std::shared_ptr<gnomonImageSeries> image) { return; };
+    virtual std::shared_ptr<gnomonImageSeries> inputImage(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonImageSeries> outputImage(bool update=true) const { return nullptr; };
 
     // LString
 public:
-    virtual void setInputLString(gnomonLStringSeries *lString) { return; };
-    virtual gnomonLStringSeries *inputLString(bool update=true) const { return nullptr; };
-    virtual gnomonLStringSeries *outputLString(bool update=true) const { return nullptr; };
+    virtual void setInputLString(std::shared_ptr<gnomonLStringSeries> lString) { return; };
+    virtual std::shared_ptr<gnomonLStringSeries> inputLString(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonLStringSeries> outputLString(bool update=true) const { return nullptr; };
 
     // Mesh
 public:
-    virtual void setInputMesh(gnomonMeshSeries *mesh) { return; };
-    virtual gnomonMeshSeries *inputMesh(bool update=true) const { return nullptr; };
-    virtual gnomonMeshSeries *outputMesh(bool update=true) const { return nullptr; };
+    virtual void setInputMesh(std::shared_ptr<gnomonMeshSeries> mesh) { return; };
+    virtual std::shared_ptr<gnomonMeshSeries> inputMesh(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonMeshSeries> outputMesh(bool update=true) const { return nullptr; };
 
     // PointCloud
 public:
-    virtual void setInputPointCloud(gnomonPointCloudSeries *pointCloud) { return; };
-    virtual gnomonPointCloudSeries *inputPointCloud(bool update=true) const { return nullptr; };
-    virtual gnomonPointCloudSeries *outputPointCloud(bool update=true) const { return nullptr; };
+    virtual void setInputPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud) { return; };
+    virtual std::shared_ptr<gnomonPointCloudSeries> inputPointCloud(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonPointCloudSeries> outputPointCloud(bool update=true) const { return nullptr; };
 
     // Tree
 public:
-    virtual void setInputTree(gnomonTreeSeries *tree) { return; };
-    virtual gnomonTreeSeries *inputTree(bool update=true) const { return nullptr; };
-    virtual gnomonTreeSeries *outputTree(bool update=true) const { return nullptr; };
+    virtual void setInputTree(std::shared_ptr<gnomonTreeSeries> tree) { return; };
+    virtual std::shared_ptr<gnomonTreeSeries> inputTree(bool update=true) const { return nullptr; };
+    virtual std::shared_ptr<gnomonTreeSeries> outputTree(bool update=true) const { return nullptr; };
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -98,10 +94,6 @@ public:
     static inline QString defaultOutput(QString formName) {
         return "output" +  formName.split("gnomon")[1];
     };
-
-public:
-    virtual void run(void) override = 0;
-    virtual QString documentation(void) override = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

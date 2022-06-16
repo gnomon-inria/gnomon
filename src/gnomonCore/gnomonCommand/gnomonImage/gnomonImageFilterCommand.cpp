@@ -11,9 +11,9 @@
 class gnomonImageFilterCommandPrivate
 {
 public:
-    gnomonImageSeries* input = nullptr;
-    gnomonImageSeries* output = nullptr;
-    gnomonBinaryImageSeries* mask = nullptr;
+    std::shared_ptr<gnomonImageSeries> input;
+    std::shared_ptr<gnomonImageSeries> output;
+    std::shared_ptr<gnomonBinaryImageSeries> mask;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -47,14 +47,14 @@ void gnomonImageFilterCommand::setAlgorithmName(const QString& algo_name)
 
 void gnomonImageFilterCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonImageFilterCommand::postdo(void)
 {
-    gnomonImageSeries *image = ((gnomonAbstractImageFilter *) this->action)->output();
+    std::shared_ptr<gnomonImageSeries> image = ((gnomonAbstractImageFilter *) this->action)->output();
 
-    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+    if ((!image)||(image->times().empty())||(image->current()->channels().empty())) {
         d->output = nullptr;
     } else {
         d->output = image;
@@ -67,9 +67,9 @@ void gnomonImageFilterCommand::undo()
     ((gnomonAbstractImageFilter *) this->action)->setMask(nullptr);
 }
 
-void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
+void gnomonImageFilterCommand::setInput(std::shared_ptr<gnomonImageSeries> input)
 {
-    if ((!input)||(input->times().empty())||(((gnomonImage *)input->current())->channels().empty())) {
+    if ((!input)||(input->times().empty())||(input->current()->channels().empty())) {
         d->input = nullptr;
     } else {
         d->input = input;
@@ -78,19 +78,19 @@ void gnomonImageFilterCommand::setInput(gnomonImageSeries *input)
     ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
 }
 
-gnomonImageSeries *gnomonImageFilterCommand::input()
+std::shared_ptr<gnomonImageSeries> gnomonImageFilterCommand::input()
 {
     return d->input;
 }
 
-gnomonImageSeries *gnomonImageFilterCommand::output()
+std::shared_ptr<gnomonImageSeries> gnomonImageFilterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageFilterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     inputs["mask"] = this->mask();
     return inputs;
@@ -104,25 +104,20 @@ gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::inputTypes()
     return input_types;
 }
 
-void gnomonImageFilterCommand::setInputForm(const QString& name, gnomonAbstractDynamicForm *form)
+void gnomonImageFilterCommand::setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     if (name == "input") {
-        this->setInput(dynamic_cast<gnomonImageSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else if(name == "mask") {
-        this->setMask(dynamic_cast<gnomonBinaryImageSeries *>(form));
+        this->setMask(std::dynamic_pointer_cast<gnomonBinaryImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
 }
 
-void gnomonImageFilterCommand::addInputForm(gnomonAbstractDynamicForm *form) {
-    this->setInputForm("input", form);
-}
-
-
-QMap<QString, gnomonAbstractDynamicForm *> gnomonImageFilterCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageFilterCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -143,7 +138,7 @@ QStringList gnomonImageFilterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
 
-void gnomonImageFilterCommand::setMask(gnomonBinaryImageSeries *init)
+void gnomonImageFilterCommand::setMask(std::shared_ptr<gnomonBinaryImageSeries> init)
 {
     if ((!init)||(init->times().size()==0)) {
         d->mask = nullptr;
@@ -154,14 +149,14 @@ void gnomonImageFilterCommand::setMask(gnomonBinaryImageSeries *init)
     ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
 }
 
-gnomonBinaryImageSeries *gnomonImageFilterCommand::mask(void)
+std::shared_ptr<gnomonBinaryImageSeries> gnomonImageFilterCommand::mask(void)
 {
     return d->mask;
 }
 
 void gnomonImageFilterCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->output) {
-        d->output = new gnomonImageSeries();
+        d->output = std::make_shared<gnomonImageSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->output->deserialize(tmp);

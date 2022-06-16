@@ -6,8 +6,8 @@
 class gnomonTreeAdapterCommandPrivate
 {
 public:
-    gnomonTreeSeries* input = nullptr;
-    gnomonAbstractDynamicForm* output = nullptr;
+    std::shared_ptr<gnomonTreeSeries> input = nullptr;
+    std::shared_ptr<gnomonAbstractDynamicForm> output = nullptr;
 };
 
 gnomonTreeAdapterCommand::gnomonTreeAdapterCommand() : d(new gnomonTreeAdapterCommandPrivate)
@@ -41,12 +41,8 @@ void gnomonTreeAdapterCommand::predo(void)
 }
 
 void gnomonTreeAdapterCommand::postdo(void)
-{
-    qDebug()<<Q_FUNC_INFO<<((gnomonAbstractTreeAdapter *) this->action)->output();
-    qDebug()<<Q_FUNC_INFO<<((gnomonAbstractTreeAdapter *) this->action)->output()->times();
-    qDebug()<<Q_FUNC_INFO<<((gnomonAbstractTreeAdapter *) this->action)->output()->times().size();
-    
-    gnomonAbstractDynamicForm *output = ((gnomonAbstractTreeAdapter *) this->action)->output();
+{   
+    std::shared_ptr<gnomonAbstractDynamicForm> output = ((gnomonAbstractTreeAdapter *) this->action)->output();
 
     if ((!output)||(output->times().empty())) {
         d->output = nullptr;
@@ -60,7 +56,7 @@ void gnomonTreeAdapterCommand::undo()
     ((gnomonAbstractTreeAdapter *) this->action)->setInput(nullptr);
 }
 
-void gnomonTreeAdapterCommand::setInput(gnomonTreeSeries *input)
+void gnomonTreeAdapterCommand::setInput(std::shared_ptr<gnomonTreeSeries> input)
 {
     if ((!input)||(input->times().empty())) {
         d->input = nullptr;
@@ -68,30 +64,29 @@ void gnomonTreeAdapterCommand::setInput(gnomonTreeSeries *input)
         d->input = input;
         Q_ASSERT(this->action);
         ((gnomonAbstractTreeAdapter *) this->action)->setInput(d->input);
-        qDebug()<<Q_FUNC_INFO<<((gnomonAbstractTreeAdapter *) this->action)->input();
     }
 }
 
-gnomonTreeSeries *gnomonTreeAdapterCommand::input()
+std::shared_ptr<gnomonTreeSeries> gnomonTreeAdapterCommand::input()
 {
     return d->input;
 }
 
-gnomonAbstractDynamicForm *gnomonTreeAdapterCommand::output()
+std::shared_ptr<gnomonAbstractDynamicForm> gnomonTreeAdapterCommand::output()
 {
     return d->output;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeAdapterCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeAdapterCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonTreeAdapterCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeAdapterCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
 }
@@ -117,9 +112,9 @@ gnomonAbstractCommand::orderedMap gnomonTreeAdapterCommand::outputTypes() {
     return types;
 }
 
-void gnomonTreeAdapterCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonTreeAdapterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
-        this->setInput(dynamic_cast<gnomonTreeSeries *>(form));
+        this->setInput(std::dynamic_pointer_cast<gnomonTreeSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

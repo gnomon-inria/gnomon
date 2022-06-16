@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonVisualizationImage.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 
@@ -40,8 +26,8 @@
 class gnomonVisualizationImagePrivate
 {
 public:
-    gnomonImageSeries *imageSeries;
-    gnomonImage *image;
+    std::shared_ptr<gnomonImageSeries> imageSeries;
+    std::shared_ptr<gnomonImage> image;
 
 public:
     int orientation = 2;
@@ -62,9 +48,6 @@ public:
 
 gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisualizationImage(), dd(new gnomonVisualizationImagePrivate)
 {
-    dd->imageSeries = Q_NULLPTR;
-    dd->image = Q_NULLPTR;
-
     d->parameters["channel"] = new dtk::d_inliststring("", {""}, "Image channel to be displayed");
     d->parameters["value_range"] = new dtk::d_range_int("value_range", {0, 255}, 0, 255, "Value range for display ramps");
     d->parameters["colormap"] = new gnomonCoreParameterColorMap("colormap", "gray", "Colormap to apply to the image");
@@ -82,10 +65,12 @@ gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisuali
 gnomonVisualizationImage::~gnomonVisualizationImage(void)
 {
     this->clear();
-
     delete dd;
+}
 
-    dd = NULL;
+const QString gnomonVisualizationImage::pluginName(void)
+{
+    return  "gnomonVisualizationImage";
 }
 
 void gnomonVisualizationImage::clear(void)
@@ -122,10 +107,10 @@ void gnomonVisualizationImage::setVisible(bool visible)
     }
 }
 
-void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
+void gnomonVisualizationImage::setImage(std::shared_ptr<gnomonImageSeries> image)
 {
     dd->imageSeries = image;
-    dd->image = dynamic_cast<gnomonImage *>(image->current());
+    dd->image = image->current();
 
     this->setParameter("alpha",1.0);
 
@@ -156,7 +141,7 @@ void gnomonVisualizationImage::setImage(gnomonImageSeries *image)
      }
 }
 
-gnomonImageSeries *gnomonVisualizationImage::image(void)
+std::shared_ptr<gnomonImageSeries> gnomonVisualizationImage::image(void)
 {
     return dd->imageSeries;
 }

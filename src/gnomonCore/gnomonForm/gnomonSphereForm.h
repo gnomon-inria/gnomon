@@ -16,8 +16,10 @@ public:
     explicit gnomonSphereForm(QJsonObject& serialization) {
         deserialize(serialization);
     }
+    gnomonSphereForm(const gnomonSphereForm& other);
+    virtual gnomonAbstractForm *clone(void) override;
+
     ~gnomonSphereForm(void) = default;
-    gnomonSphereForm *clone(void);
 
 public:
     QString name(void) const override;

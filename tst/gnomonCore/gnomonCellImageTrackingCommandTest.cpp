@@ -25,19 +25,19 @@ public:
     void run(void) override{ tracking::t_run_called = true;};
     QString documentation(void) override {return "empty";};
 
-    void setCellImage(gnomonCellImageSeries *cellimage) override {
+    void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) override {
         tracking::t_set_cell_image_called = true;
     }
 
-    void setImage(gnomonImageSeries *image) override {
+    void setImage(std::shared_ptr<gnomonImageSeries> image) override {
         tracking::t_set_image_called = true;
     }
 
-    gnomonCellImageSeries *cellImage() const override {
+    std::shared_ptr<gnomonCellImageSeries> cellImage() const override {
         return nullptr;
     }
 
-    gnomonTreeSeries *tree() const override {
+    std::shared_ptr<gnomonTreeSeries> tree() const override {
         return nullptr;
     }
 };
@@ -49,8 +49,8 @@ inline gnomonAbstractCellImageTracking* dummyCellImageTrackingPluginCreator(void
 class gnomonCellImageTrackingCommandTestCasePrivate
 {
 public:
-    gnomonImageSeries *image_series;
-    gnomonCellImageSeries *cell_image_series;
+    std::shared_ptr<gnomonImageSeries> image_series;
+    std::shared_ptr<gnomonCellImageSeries> cell_image_series;
     gnomonCellImageTrackingCommand *tracking_command = nullptr;
 };
 
@@ -75,16 +75,17 @@ void gnomonCellImageTrackingCommandTestCase::init(void) {
 
 void gnomonCellImageTrackingCommandTestCase::redo(void) {
 
-    auto img_series = gnomonImageSeries();
-    d->tracking_command->setImage(&img_series);
+    auto img_series = std::make_shared<gnomonImageSeries>();
+    d->tracking_command->setImage(img_series);
     QVERIFY(!tracking::t_set_image_called); //empty time series so not called
 
-    auto cellimg_series = gnomonCellImageSeries();
-    auto cellimg = gnomonCellImage();
-    cellimg_series.insert(0, &cellimg);
-    d->tracking_command->setCellImage(&cellimg_series);
+    auto cellimg_series = std::make_shared<gnomonCellImageSeries>();
+    auto cellimg = std::make_shared<gnomonCellImage>();
+    cellimg_series->insert(0, cellimg);
+    d->tracking_command->setCellImage(cellimg_series);
     QVERIFY(tracking::t_set_cell_image_called);
 
+    d->tracking_command->setNoAsync();
     d->tracking_command->redo();
     QVERIFY(tracking::t_run_called);
 }

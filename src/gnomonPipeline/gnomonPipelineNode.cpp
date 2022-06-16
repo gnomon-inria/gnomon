@@ -78,6 +78,11 @@ gnomonPipelineNode::gnomonPipelineNode(void) : d(new gnomonPipelineNodePrivate)
     this->setTitle("");*/
 }
 
+gnomonPipelineNode::gnomonPipelineNode(Type t) : d(new gnomonPipelineNodePrivate)
+{
+    d->type = t;
+}
+
 gnomonPipelineNode::~gnomonPipelineNode(void)
 {
     delete d;
@@ -138,10 +143,21 @@ const QColor& gnomonPipelineNode::color(void)
     return d->color;
 }
 
+gnomonPipelineNode::Type gnomonPipelineNode::type(void)
+{
+    return d->type;
+}
+
+
 QJsonObject gnomonPipelineNode::parameters(void)
 {
     QJsonObject param;
     return param;
+}
+QJsonObject gnomonPipelineNode::morphonet_data(void)
+{
+    QJsonObject m_data;
+    return m_data;
 }
 
 QStringList gnomonPipelineNode::parametersName(void) {
@@ -465,6 +481,21 @@ const QJsonObject gnomonPipelineNode::toJson(void)
     json.insert("plugin_name", d->algorithm);
     json.insert("plugin_version", d->version);
     json.insert("description", d->description);
+
+    QJsonObject in;
+    for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {
+        auto&& input_name = it.key();
+        in.insert(input_name, QJsonValue::Null);
+    }
+    json.insert("inputs", in);
+
+    QJsonArray out;
+    for (auto it = d->output_ports.begin(); it != d->output_ports.end(); ++it) {
+        auto&& output_name = it.key();
+        out.append(output_name);
+    }
+    json.insert("outputs", out);
+
     return json;
 }
 

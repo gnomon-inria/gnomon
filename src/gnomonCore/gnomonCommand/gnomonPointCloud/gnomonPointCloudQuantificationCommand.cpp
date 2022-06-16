@@ -6,11 +6,11 @@
 class gnomonPointCloudQuantificationCommandPrivate
 {
 public:
-    gnomonImageSeries* image = nullptr;
-    gnomonPointCloudSeries* input_pointCloud = nullptr;
+    std::shared_ptr<gnomonImageSeries> image;
+    std::shared_ptr<gnomonPointCloudSeries> input_pointCloud;
 
-    gnomonPointCloudSeries* pointCloud = nullptr;
-    gnomonDataFrameSeries* dataFrame = nullptr;
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud;
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame;
 };
 
 gnomonPointCloudQuantificationCommand::gnomonPointCloudQuantificationCommand() : d(new gnomonPointCloudQuantificationCommandPrivate)
@@ -45,7 +45,7 @@ void gnomonPointCloudQuantificationCommand::predo(void)
 
 void gnomonPointCloudQuantificationCommand::postdo(void)
 {
-    gnomonPointCloudSeries *pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->pointCloud();
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->pointCloud();
 
     if ((!pointCloud)||pointCloud->times().empty()) {
         d->pointCloud = nullptr;
@@ -53,7 +53,7 @@ void gnomonPointCloudQuantificationCommand::postdo(void)
         d->pointCloud = pointCloud;
     }
 
-    gnomonDataFrameSeries *dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->dataFrame();
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->dataFrame();
 
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
@@ -69,9 +69,9 @@ void gnomonPointCloudQuantificationCommand::undo()
     ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(nullptr);
 }
 
-void gnomonPointCloudQuantificationCommand::setImage(gnomonImageSeries *image)
+void gnomonPointCloudQuantificationCommand::setImage(std::shared_ptr<gnomonImageSeries> image)
 {
-    if ((!image)||(image->times().empty())||(((gnomonImage *)image->current())->channels().empty())) {
+    if ((!image)||(image->times().empty())||(image->current()->channels().empty())) {
         d->image = nullptr;
     } else {
         d->image = image;
@@ -80,7 +80,7 @@ void gnomonPointCloudQuantificationCommand::setImage(gnomonImageSeries *image)
     }
 }
 
-void gnomonPointCloudQuantificationCommand::setPointCloud(gnomonPointCloudSeries *pointCloud)
+void gnomonPointCloudQuantificationCommand::setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud)
 {
     if ((!pointCloud)||(pointCloud->times().empty())) {
         d->input_pointCloud = nullptr;
@@ -92,27 +92,27 @@ void gnomonPointCloudQuantificationCommand::setPointCloud(gnomonPointCloudSeries
     }
 }
 
-gnomonPointCloudSeries *gnomonPointCloudQuantificationCommand::pointCloud()
+std::shared_ptr<gnomonPointCloudSeries> gnomonPointCloudQuantificationCommand::pointCloud()
 {
     return d->pointCloud;
 }
 
-gnomonDataFrameSeries *gnomonPointCloudQuantificationCommand::dataFrame()
+std::shared_ptr<gnomonDataFrameSeries> gnomonPointCloudQuantificationCommand::dataFrame()
 {
     return d->dataFrame;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand::inputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudQuantificationCommand::inputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> inputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["image"] = d->image;
     inputs["pointCloud"] = d->input_pointCloud;
     return inputs;
 }
 
-QMap<QString, gnomonAbstractDynamicForm *> gnomonPointCloudQuantificationCommand::outputs()
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudQuantificationCommand::outputs()
 {
-    QMap<QString, gnomonAbstractDynamicForm *> outputs;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["pointCloud"] = this->pointCloud();
     outputs["dataFrame"] = this->dataFrame();
     return outputs;
@@ -141,11 +141,11 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::outputT
     return output_types;
 }
 
-void gnomonPointCloudQuantificationCommand::setInputForm(const QString &name, gnomonAbstractDynamicForm *form) {
+void gnomonPointCloudQuantificationCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "image") {
-        this->setImage(dynamic_cast<gnomonImageSeries *>(form));
+        this->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else if (name == "pointCloud") {
-        this->setPointCloud(dynamic_cast<gnomonPointCloudSeries *>(form));
+        this->setPointCloud(std::dynamic_pointer_cast<gnomonPointCloudSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
@@ -153,12 +153,12 @@ void gnomonPointCloudQuantificationCommand::setInputForm(const QString &name, gn
 
 void gnomonPointCloudQuantificationCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->pointCloud) {
-        d->pointCloud = new gnomonPointCloudSeries();
+        d->pointCloud = std::make_shared<gnomonPointCloudSeries>();
     }
     auto tmp = serialization["pointCloud"].toObject();
     d->pointCloud->deserialize(tmp);
     if(!d->dataFrame) {
-        d->dataFrame = new gnomonDataFrameSeries ();
+        d->dataFrame = std::make_shared<gnomonDataFrameSeries>();
     }
     auto tmp2 = serialization["dataFrame"].toObject();
     d->dataFrame->deserialize(tmp2);
