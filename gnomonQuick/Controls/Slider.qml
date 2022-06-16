@@ -32,9 +32,6 @@ X.ScientificSpinBoxReal {
             width: _content.width * _self.scaleValue();
 
             color: G.Style.colors.textColorBase;
-            Component.onCompleted: {
-                console.log("SCALE VALUE: " + _self.scaleValue())
-            }
         }
 
 
@@ -54,7 +51,6 @@ X.ScientificSpinBoxReal {
         iconName: G.Icons.icons["chevron-up"]
         onClicked: {
             _self.increase();
-            console.log("SHOULD INCREASE")
         }
     }
 
@@ -67,7 +63,6 @@ X.ScientificSpinBoxReal {
         iconName: G.Icons.icons["chevron-down"]
         onClicked: {
             _self.decrease();
-            console.log("SHOULD DECREASE")
         }
     }
 

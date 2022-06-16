@@ -76,13 +76,6 @@ Control {
             second.onMoved: {
                 param.valueMax = second.value
             }
-
-            Component.onCompleted: {
-                console.log(param.valueMin)
-                console.log(param.valueMax)
-                // from = param.valueRangeMin;
-                // to = param.valueRangeMax;
-            }
         }
 
         G.CheckBox {

@@ -63,11 +63,4 @@ Control {
         color: G.Style.colors.hoveredBaseColor
     }
 
-    Component.onCompleted: {
-        console.log("MIN: " + _control.param.min)
-        console.log("MAX: " + _control.param.max)
-        console.log("VAL: " + _control.param.value)
-        console.log("DECIMALS: " + _control.param.decimals)
-        console.log("INC: " + _slider.increment)
-    }
 }
