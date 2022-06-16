@@ -4,6 +4,7 @@ import QtQuick.Layouts
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
 
 Control {
 	id: _control
@@ -19,6 +20,12 @@ Control {
     }
 
     hoverEnabled: true
+
+    QtObject {
+        id: _internal;
+
+        property bool textEdit: false;
+    }
 
     G.ToolTip {
         visible: _control.hovered && !_slider.pressed
@@ -37,6 +44,24 @@ Control {
         color: G.Style.colors.textColorBase
     }
 
+    G.IconButton {
+
+        id: _enable_text;
+
+        anchors.right: parent.right
+        anchors.top: parent.top
+        enabled: !_internal.textEdit
+
+        size: G.Style.iconSmall;
+        color: G.Style.colors.textColorBase
+
+        iconName: G.Icons.icons["pencil"];
+
+        onClicked: {
+            _internal.textEdit = !_internal.textEdit
+        }
+    }
+
     G.Slider {
         id: _slider
 
@@ -46,7 +71,7 @@ Control {
 
 		from: _control.param.min
 		to: _control.param.max
-		decimals: _control.param.decimals
+		// decimals: _control.param.decimals
 		//increment: 1.0/Math.pow(10, _control.param.decimals)
         value: _control.param.value
 
@@ -61,18 +86,59 @@ Control {
 
         anchors.topMargin: G.Style.sizes.s1
         anchors.top: _slider.bottom
-        x: _slider.gaugeWidth
+        x: 0 //_slider.gaugeWidth
+        visible: !_internal.textEdit
 
         text: _slider.value.toFixed(_control.param.decimals)
         font: G.Style.fonts.value
         color: G.Style.colors.hoveredBaseColor
     }
 
-    Component.onCompleted: {
-        console.log("MIN: " + _control.param.min)
-        console.log("MAX: " + _control.param.max)
-        console.log("VAL: " + _control.param.value)
-        console.log("DECIMALS: " + _control.param.decimals)
-        console.log("INC: " + _slider.increment)
+
+	TextInput {
+		id: _value_input;
+
+
+        anchors.topMargin: G.Style.sizes.s1
+        anchors.top: _slider.bottom
+        x: 0 //_slider.gaugeWidth
+        visible: _internal.textEdit
+
+		text: _slider.value.toFixed(_control.param.decimals)
+        font: G.Style.fonts.value
+		color: G.Style.colors.textColorBase
+
+		validator: DoubleValidator{
+            bottom: param.min
+            top: param.max
+            decimals: (param.decimals) ? param.decimals : 0
+            notation: DoubleValidator.StandardNotation
+        }
+
+		onEditingFinished: {
+            _slider.value = parseFloat(text);
+            _internal.textEdit = false
+        }
+
+        Keys.onReturnPressed: editingFinished()
+	}
+
+    G.IconButton {
+
+        id: _validate_text;
+
+        anchors.right: parent.right
+        anchors.topMargin: G.Style.sizes.s1
+        anchors.top: _slider.bottom
+
+        visible: _internal.textEdit
+        enabled: _internal.textEdit
+
+        size: G.Style.iconSmall;
+        color: G.Style.colors.textColorBase
+
+        iconName: G.Icons.icons["check"];
+
+        onClicked: _value_input.editingFinished()
     }
 }
