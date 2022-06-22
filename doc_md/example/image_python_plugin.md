@@ -35,3 +35,6 @@ Dynamically implement an image resampling plugin
 
   4. Pipeline
       - Show the generated nodes
+
+**Tutorial on YouTube**
+>>  [![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/j9aUt9a6aRk) 
