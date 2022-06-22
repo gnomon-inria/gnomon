@@ -1,6 +1,7 @@
 from typing import Tuple, List, Dict, Callable
 from threading import Thread
 from functools import partial
+import pathlib
 
 from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
 from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineNodeTask, gnomonPipelineEdge, gnomonPipelinePort
@@ -33,11 +34,12 @@ class PNodeRunner:
     inputs_connections: Dict[str, Tuple[str, str]]
     inputs: Dict[str, Callable[[gnomonAbstractDynamicForm], None]]
     outputs: Dict[str, Callable[[], gnomonAbstractDynamicForm]]
+    data_dir: pathlib.Path
     _has_path: bool
     _is_task: bool
     _node: gnomonPipelineNode
 
-    def __init__(self, node: gnomonPipelineNode):
+    def __init__(self, node: gnomonPipelineNode, data_dir: str = ""):
         """
         Node wrapper which instantiate the corresponding plugin, parametrize them
         and provides a unified interface.
@@ -50,6 +52,7 @@ class PNodeRunner:
         algo_name = node.name()
         algo_class = node.algorithmClass()
         self.name = algo_name
+        self.data_dir = pathlib.Path(data_dir)
         self._has_path = False
 
         # making connections
@@ -132,7 +135,13 @@ class PNodeRunner:
             New path for the node.
         """
         if self.has_path():
-            self.algo.setPath(path)
+            # double-checking if called from outside
+            new_path = []
+            for fp in path.split(","):
+                fp = pathlib.Path(fp)
+                new_path.append(fp if fp.is_absolute() else self.data_dir.joinpath(fp))
+            new_path = ",".join(map(str, new_path))
+            self.algo.setPath(new_path)
 
 
 class PipelineRunner:
@@ -151,20 +160,24 @@ class PipelineRunner:
         Dictionary mapping node_name --> PNodeRunner object
     path_dict: Dict[str, str]
         Dictionary mapping node_name --> path for each node having a path parameter
+    data_dir: pathlib.Path, default=""
+        Path to the directory containing the data. Used to resolve relative paths.
 
     """
     pipeline: gnomonPipeline
     nodes: Dict[str, PNodeRunner]
     path_dict: Dict[str, str]
+    data_dir: pathlib.Path
 
-    def __init__(self, pipeline: gnomonPipeline):
+    def __init__(self, pipeline: gnomonPipeline, data_dir: str = ""):
         self.pipeline = pipeline
         self.nodes = {}
         self.path_dict = {}
+        self.data_dir = pathlib.Path(data_dir)
         for node_name in self.pipeline.nodeNames():
             print(f"making node {node_name}")
             node = self.pipeline.node(node_name)
-            runner = PNodeRunner(node)
+            runner = PNodeRunner(node, data_dir)
             if runner.has_path():
                 self.path_dict[node_name] = node.path()
             self.nodes[node_name] = runner
@@ -201,7 +214,13 @@ class PipelineRunner:
 
         # setting path
         for node_name, path in self.path_dict.items():
-            self.nodes[node_name].setPath(path)
+            # checking path here in case data_dir is changed in PipelineRunner
+            new_path = []
+            for fp in path.split(","):
+                fp = pathlib.Path(fp)
+                new_path.append(fp if fp.is_absolute() else self.data_dir.joinpath(fp))
+            new_path = ",".join(map(str, new_path))
+            self.nodes[node_name].setPath(new_path)
 
         # getting sources
         sources = groups[0]
@@ -246,7 +265,7 @@ class PipelineRunner:
         self.path_dict.update(path_dict)
 
 
-def load_pipeline(path: str):
+def load_pipeline(path: str, data_dir: str = ""):
     """
     Load a pipeline from path and returns a PipelineRunner object
 
@@ -261,4 +280,4 @@ def load_pipeline(path: str):
     """
     pipeline = gnomonPipeline()
     pipeline.readFromJson(path)
-    return PipelineRunner(pipeline)
+    return PipelineRunner(pipeline, data_dir=data_dir)

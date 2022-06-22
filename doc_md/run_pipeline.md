@@ -1,5 +1,14 @@
 # Running a pipeline
 
+```{Warning}
+Currently unsupported plugin groups for python pipeline's API and the command-line `gnomon-utils run` :
+
+`formAlgorithm` (nodes from `PythonAlgorithm` workspace) and `imageRegistration`
+
+Pipeline containing those nodes can still be runned through gnomon's GUI.
+```
+
+
 A pipeline is a graph of tasks made by different plugins. 
 Input and output is done through source and sinks nodes,
 respectively readers and constructors for sources and writers for sinks.
@@ -32,12 +41,18 @@ The corresponding pipeline file is available at the bottom of this page.
 
 The command to run a pipeline file is:
 ```
-gnomon-utils run ./my_pipeline.json
+gnomon-utils run my_pipeline.json
 ```
 
 To run a pipeline with new input and output path use:
 ```
-gnomon-utils run ./my_pipeline.json --ios imageReader1 ./new/image1.inr binaryImageWriter1 ./new/out.inr
+gnomon-utils run my_pipeline.json --ios imageReader1 ./new/image1.inr binaryImageWriter1 ./new/out.inr
+```
+
+If the pipeline contains relative path you can change the path 
+to the directory containing the data.
+```
+gnomon-utils run my_pipeline.json --data-dir ../gnomon-data
 ```
 
 ## Python API
@@ -50,7 +65,7 @@ A pipeline can also be run through the python API in the subpackage
 ```python
 from gnomon.utils.pipelines import load_pipeline
 
-pr = load_pipeline("./my_pipeline.json")
+pr = load_pipeline("./my_pipeline.json", data_dir="./data")
 pr.run()
 ```
 
@@ -59,7 +74,7 @@ pr.run()
 ```python
 from gnomon.utils.pipelines import load_pipeline
 
-pr = load_pipeline("./my_pipeline.json")
+pr = load_pipeline("./my_pipeline.json", data_dir="./data")
 pr.path_dict["imageReader1"] = "./new/image1.inr"
 pr.run()
 ```

@@ -32,7 +32,7 @@ def generate(args: argparse.Namespace):
 
 def run(args: argparse.Namespace):
     from gnomon.utils.pipelines import load_pipeline
-    pr = load_pipeline(args.pipeline)
+    pr = load_pipeline(args.pipeline, args.data_dir)
     if args.ios:
         nodes = args.ios[::2]
         paths = args.ios[1::2]
@@ -63,7 +63,7 @@ generate_parser.add_argument("outpath", help="Target folder where the files will
 generate_parser.add_argument("--inpath", help="Optional path to a json schematic that will be used instead")
 
 
-# generate command
+# pipeline command
 generate_parser = subparsers.add_parser(
     "run",
     description=f"""
@@ -75,5 +75,7 @@ generate_parser = subparsers.add_parser(
 )
 generate_parser.set_defaults(func=run)
 generate_parser.add_argument("pipeline", help="Path to the pipeline file")
+generate_parser.add_argument("--data-dir", type=str, default="", dest="data_dir",
+                             help="Path to the directory containing the data")
 generate_parser.add_argument("--ios", action="extend", nargs="+", type=str,
                              help="List of pairs of node names / path to file.")
