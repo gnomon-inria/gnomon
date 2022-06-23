@@ -16,6 +16,7 @@ Control {
     id: _self;
     clip: true;
     property var _node;
+    property var pipelineEdges: [];
 
     QtObject {
         id: _internal;
@@ -212,6 +213,7 @@ Control {
                 if (node.inputEdgeCount > 0) {
                     for (var i=0; i<node.inputEdgeCount; i++) {
                         var edge = node.inputEdgeAt(i);
+                        pipelineEdges.push(edge)
                         console.log(" --> edge", i, ":",
                                     edge.source.node.name, "(", edge.source.name, ")",
                                     "->",
@@ -219,6 +221,16 @@ Control {
                         var e = _canvas.addEdge(edge);
                     }
                 }
+            }
+        }
+
+        Connections {
+            target: GP.PipelineManager.pipeline
+            function onPipelineCleared () {
+                _canvas.removePipeline();
+            }
+            function onLastNodeRemoved () {
+                _canvas.removeLastNode();
             }
         }
 
@@ -290,6 +302,33 @@ Control {
             } else {
                 console.error(edge_component.errorString());
             }
+        }
+
+        function removePipeline() {
+            for(let node_index in nodes) {
+                nodes[node_index].destroy(100)
+                delete nodes[node_index]
+            }
+            for(let edge_index in edges) {
+                edges[edge_index].destroy(100)
+                delete edges[edge_index]
+            }
+
+        }
+
+        function removeLastNode() {
+            let node_index = null
+            for(node_index in nodes) {}
+            for(let edge_index in pipelineEdges) {
+                if( node_index == pipelineEdges[edge_index].target.node) {
+                    edges[edge_index].destroy(100)
+                    delete edges[edge_index]
+                }
+            }
+            
+            nodes[node_index].destroy(100)
+            delete nodes[node_index]
+            
         }
 
     }
