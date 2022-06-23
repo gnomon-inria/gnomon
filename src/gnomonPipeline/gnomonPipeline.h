@@ -36,12 +36,15 @@ public:
 
 public slots:
     void addNode(gnomonPipelineNode *node);
+    void removeLastNode(void);
 
 signals:
     void nameChanged(void);
     void descriptionChanged(void);
     void nodeAdded(gnomonPipelineNode *);
     void pluginChanged(void);
+    void pipelineCleared(void);
+    void lastNodeRemoved(void);
 
 public:
     QList<QStringList> scheduleGroups(void);

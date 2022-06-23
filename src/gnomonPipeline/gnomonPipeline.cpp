@@ -360,6 +360,7 @@ QStringList gnomonPipeline::nodeNames(void)
 void gnomonPipeline::clear(void)
 {
     d->clear();
+    emit pipelineCleared();
 }
 
 gnomonPipelineNode *gnomonPipeline::node(const QString& node_name)
@@ -393,6 +394,15 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
 
     emit nodeAdded(node);
 }
+
+void gnomonPipeline::removeLastNode() 
+{
+    d->node_type_count[d->pipeline_nodes[d->pipeline_node_names.last()]->algorithmClass()] -= 1;
+    d->pipeline_node_names.removeLast();
+    d->pipeline_nodes.remove(d->pipeline_nodes.lastKey());
+    emit lastNodeRemoved();
+}
+
 
 QStringList gnomonPipeline::scheduledNodeNames(bool recompute_form_indices)
 {

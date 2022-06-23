@@ -4,8 +4,9 @@
 
 #include <QtCore>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
+#include "gnomonPipeline.h"
 
-class gnomonPipeline;
+// class gnomonPipeline;
 class gnomonPipelineNode;
 
 class gnomonAbstractAdapterCommand;
