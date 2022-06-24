@@ -40,6 +40,7 @@ public slots:
 public slots:
     void saveAs(int id, const QString& filename) const;
     void deleteForm(int id);
+    void deleteAllForms(void);
     void compose(int first, int second);
 
 public:

@@ -142,9 +142,16 @@ void gnomonFormManager::deleteForm(int id)
     d->formCameras.remove(id);
     d->formData.remove(id);
     d->formWriterCommand.remove(id);
-    // Choose a proper method remove last Node or entire pipeline
-    // gnomonPipelineManager::instance()->pipeline()->clear();
     gnomonPipelineManager::instance()->pipeline()->removeLastNode();
+}
+
+void gnomonFormManager::deleteAllForms()
+{
+    d->forms.clear();
+    d->formCameras.clear();
+    d->formData.clear();
+    d->formWriterCommand.clear();
+    gnomonPipelineManager::instance()->pipeline()->clear();
 }
 
 void gnomonFormManager::compose(int first, int second) {
