@@ -52,9 +52,9 @@ With imageEnhancement package:
       - Apply
       - Show segmentation enhancement
 
-**Tutorials on YouTube**
+**Vidoes**
 - Scenario 1
->>  [![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/WZ574C1sqNU) 
+>>[![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/WZ574C1sqNU) 
 - Scenario 2
 
 >>[![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/1.jpg)](https://youtu.be/s7oJI8gqcpo)

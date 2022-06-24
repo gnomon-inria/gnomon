@@ -35,5 +35,5 @@ In the view menu of the 3D viewer, switch the visualization plugin to  *...March
     - Press on the save icon to export the pipeline as a JSON file
 
 
-**Tutorial on YouTube**
+**Video**
 >>  [![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/ayVMaLrO24A)
