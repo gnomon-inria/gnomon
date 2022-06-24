@@ -4,9 +4,8 @@
 
 #include <QtCore>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
-#include "gnomonPipeline.h"
 
-// class gnomonPipeline;
+class gnomonPipeline;
 class gnomonPipelineNode;
 
 class gnomonAbstractAdapterCommand;
@@ -44,7 +43,7 @@ public slots:
     void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
     void addForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
     void addClonedForm(std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractDynamicForm> clone); // TODO check?
-
+    bool removeForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
 public:
     void setFormIndex(std::shared_ptr<gnomonAbstractDynamicForm> form, int index=-1);
 

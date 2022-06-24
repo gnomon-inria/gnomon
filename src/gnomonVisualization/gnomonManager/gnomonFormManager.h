@@ -39,8 +39,7 @@ public slots:
 
 public slots:
     void saveAs(int id, const QString& filename) const;
-    void deleteForm(int id);
-    void deleteAllForms(void);
+    bool deleteForm(int id);
     void compose(int first, int second);
 
 public:

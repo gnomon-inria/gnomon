@@ -132,26 +132,20 @@ void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
     this->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 }
 
-void gnomonFormManager::deleteForm(int id)
+bool gnomonFormManager::deleteForm(int id)
 {
     if (!d->forms.contains(id)) {
         dtkWarn() << "Unknown forms id" << id << "can't delete it ";
-        return;
+        return false;
     }
-    d->forms.remove(id);
-    d->formCameras.remove(id);
-    d->formData.remove(id);
-    d->formWriterCommand.remove(id);
-    gnomonPipelineManager::instance()->pipeline()->removeLastNode();
-}
-
-void gnomonFormManager::deleteAllForms()
-{
-    d->forms.clear();
-    d->formCameras.clear();
-    d->formData.clear();
-    d->formWriterCommand.clear();
-    gnomonPipelineManager::instance()->pipeline()->clear();
+    if(gnomonPipelineManager::instance()->removeForm(d->forms[id])) {
+        d->forms.remove(id);
+        d->formCameras.remove(id);
+        d->formData.remove(id);
+        d->formWriterCommand.remove(id);
+        return true;
+    }
+    return false;
 }
 
 void gnomonFormManager::compose(int first, int second) {
