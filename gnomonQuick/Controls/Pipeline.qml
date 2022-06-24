@@ -226,11 +226,8 @@ Control {
 
         Connections {
             target: GP.PipelineManager.pipeline
-            function onPipelineCleared () {
-                _canvas.removePipeline();
-            }
-            function onLastNodeRemoved () {
-                _canvas.removeLastNode();
+            function onNodeRemoved (node) {
+                _canvas.removeNode(node);
             }
         }
 
@@ -304,30 +301,16 @@ Control {
             }
         }
 
-        function removePipeline() {
-            for(let node_index in nodes) {
-                nodes[node_index].destroy(100)
-                delete nodes[node_index]
-            }
-            for(let edge_index in edges) {
-                edges[edge_index].destroy(100)
-                delete edges[edge_index]
-            }
-
-        }
-
-        function removeLastNode() {
+        function removeNode(node) {
             let node_index = null
-            for(node_index in nodes) {}
             for(let edge_index in pipelineEdges) {
-                if( node_index == pipelineEdges[edge_index].target.node) {
+                if(node == pipelineEdges[edge_index].target.node) {
                     edges[edge_index].destroy(100)
                     delete edges[edge_index]
                 }
             }
-            
-            nodes[node_index].destroy(100)
-            delete nodes[node_index]
+            nodes[node].destroy(100)
+            delete nodes[node]
             
         }
 

@@ -173,14 +173,9 @@ Item {
             visible: (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse) && _world.height > G.Style.smallDelegateHeight
 
             onClicked: {
-                if(form_id == _world_model.count -1) {
-                    GV.World.deleteForm(form_id)
+                if(GV.World.deleteForm(form_id)) {
                     console.log("delete ...", model.index, form_id)
                     _world_model.remove(model.index)
-                } else {
-                    console.log("delete ...all pipeline")
-                    GV.World.deleteAllForms()
-                    _world_model.clear()
                 }
             }
         }
