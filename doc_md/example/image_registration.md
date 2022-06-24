@@ -50,4 +50,5 @@ Perform iterative registration within one registration workspace
     
   
   **Video**
->>  [![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/eoIMCHqKVTw) 
+
+  <iframe width="560" height="315" src="http://www.youtube.com/embed/eoIMCHqKVTw?rel=0" frameborder="0" allowfullscreen></iframe> 

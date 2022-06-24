@@ -37,4 +37,4 @@ Dynamically implement an image resampling plugin
       - Show the generated nodes
 
 **Video**
->>  [![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/j9aUt9a6aRk) 
+ <iframe width="560" height="315" src="http://www.youtube.com/embed/j9aUt9a6aRk?rel=0" frameborder="0" allowfullscreen></iframe>

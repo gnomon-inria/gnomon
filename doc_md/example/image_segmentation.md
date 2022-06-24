@@ -1,9 +1,5 @@
 # Image Segmentation Scenario
 
-:::{warning}
-This section is under construction! Some information might be missing.
-:::
-
 Segment a 3D membrane-marker image and measure cell properties
 
 
@@ -36,4 +32,6 @@ In the view menu of the 3D viewer, switch the visualization plugin to  *...March
 
 
 **Video**
->>  [![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/ayVMaLrO24A)
+
+<iframe width="560" height="315" src="http://www.youtube.com/embed/ayVMaLrO24A?rel=0" frameborder="0" allowfullscreen></iframe> 
+

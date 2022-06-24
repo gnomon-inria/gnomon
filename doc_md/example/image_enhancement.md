@@ -4,7 +4,8 @@
 This section is under construction! Some information might be missing.
 :::
 
-Improving image segmentation with image enhancement methods
+
+## I Improving image segmentation with image enhancement methods
 
  1. **Browser**
       - Load image YR01_t40_crop.inr.gz
@@ -29,7 +30,7 @@ Improving image segmentation with image enhancement methods
       - Show segmentation defects
 
 
-With imageEnhancement package:
+## II Improving image segmentation With *imageEnhancement* package:
 
   5. **Preprocess**
       - algo *anisotropic3dImageEnhancement*
@@ -52,9 +53,12 @@ With imageEnhancement package:
       - Apply
       - Show segmentation enhancement
 
-**Vidoes**
-- Scenario 1
->>[![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/WZ574C1sqNU) 
-- Scenario 2
+**Videos**
 
->>[![IMAGE_ALT](https://img.youtube.com/vi/VIDEO_ID/1.jpg)](https://youtu.be/s7oJI8gqcpo)
+<table>
+<tr> <th> First Scenario </th> <th> Second Scenario </th> </tr>
+<tr>
+  <td> <iframe width="560" height="315" src="http://www.youtube.com/embed/WZ574C1sqNU?rel=0" frameborder="0" allowfullscreen></iframe> </td>
+  <td> <iframe width="560" height="315" src="http://www.youtube.com/embed/s7oJI8gqcpo?rel=0" frameborder="0" allowfullscreen></iframe> </td>
+</tr>
+</table>
