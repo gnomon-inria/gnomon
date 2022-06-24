@@ -35,3 +35,6 @@ Dynamically implement an image resampling plugin
 
   4. Pipeline
       - Show the generated nodes
+
+**Video**
+ <iframe width="560" height="315" src="http://www.youtube.com/embed/j9aUt9a6aRk?rel=0" frameborder="0" allowfullscreen></iframe>

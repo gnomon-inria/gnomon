@@ -1,9 +1,5 @@
 # Image Segmentation Scenario
 
-:::{warning}
-This section is under construction! Some information might be missing.
-:::
-
 Segment a 3D membrane-marker image and measure cell properties
 
 
@@ -33,4 +29,9 @@ In the view menu of the 3D viewer, switch the visualization plugin to  *...March
     - Open the pipeline panel at the bottom
     - Edit the pipeline name and information
     - Press on the save icon to export the pipeline as a JSON file
+
+
+**Video**
+
+<iframe width="560" height="315" src="http://www.youtube.com/embed/ayVMaLrO24A?rel=0" frameborder="0" allowfullscreen></iframe> 
 
