@@ -176,6 +176,8 @@ Item {
                 if(GV.World.deleteForm(form_id)) {
                     console.log("delete ...", model.index, form_id)
                     _world_model.remove(model.index)
+                } else {
+                    _delete_form_toast.open()
                 }
             }
         }
@@ -201,5 +203,14 @@ Item {
         id: metadata_edit
 
         formId: form_id;
+    }
+
+    G.Toast {
+        id: _delete_form_toast
+        parent: Overlay.overlay
+        header: "Can't Delete This Form"
+        message: "Please choose a form without an output edge"
+
+        type: G.Style.ButtonType.Warning
     }
 }
