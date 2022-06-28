@@ -341,7 +341,7 @@ void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_
     }
 
 
-    // load everything if not specified otherwise
+    // load only the first frame if not specified otherwise
     int t0 = time_start;
     int t_end = time_end;
     if(time_start == -1 || time_end == -1) {
