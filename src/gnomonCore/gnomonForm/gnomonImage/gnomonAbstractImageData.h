@@ -41,6 +41,10 @@ public:
 
 public:
     virtual QStringList channels(void) const = 0;
+
+public:
+    virtual int minValue(const QString& channel) const = 0;
+    virtual int maxValue(const QString& channel) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
