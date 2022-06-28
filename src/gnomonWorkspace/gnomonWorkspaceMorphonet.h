@@ -68,7 +68,7 @@ signals:
 public slots:
     void saveState(void);
     void restoreState(void);
-    void onDataLoaded(void);
+    void onDataLoaded(int startTime, int endTime);
 
 
 private:

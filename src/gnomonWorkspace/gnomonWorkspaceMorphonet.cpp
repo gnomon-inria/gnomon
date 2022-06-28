@@ -41,13 +41,13 @@ public:
     };
 
 public: 
-    void clear(void);
+    void clearWatcherAndForms(void);
 
 public:
     QSettings settings = QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     Status morphonet_status = Morphonet_NotLoaded;
    
-    int current_id = -1, start_time=-1, end_time=-1, json_time;
+    int current_id = -1, dataset_start_time=-1, dataset_end_time=-1;
     double voxelsize;
     bool upload_mode = false;
     gnomonPipelineManager *pipeline_manager;
@@ -85,11 +85,11 @@ bool gnomonWorkspaceMorphonetPrivate::selectDataset(int id)
     }
 
     //clear current data 
-    this->clear();
+    this->clearWatcherAndForms();
 
     if(gnomonMorphonetHelper::instance()->selectDataset(id)) {
-        this->start_time = gnomonMorphonetHelper::instance()->startTime();
-        this->end_time = gnomonMorphonetHelper::instance()->endTime();
+        this->dataset_start_time = gnomonMorphonetHelper::instance()->startTime();
+        this->dataset_end_time = gnomonMorphonetHelper::instance()->endTime();
     } else {
         qWarning() << Q_FUNC_INFO << "Problem selecting dataset id:" << this->current_id;
         return false;   
@@ -103,13 +103,13 @@ bool gnomonWorkspaceMorphonetPrivate::selectDataset(int id)
     // Py_XDECREF(pFunc);
     // Py_XDECREF(pArgs); 
 
-    // //  set start_time and end_time
+    // //  set dataset_start_time and dataset_end_time
     // PyObject *pMinTime = PyObject_GetAttrString(this->mn_net, "minTime");
-    // this->start_time = PyLong_AsLong(pMinTime);
+    // this->dataset_start_time = PyLong_AsLong(pMinTime);
     // Py_XDECREF(pMinTime);
 
     // PyObject *pMaxTime = PyObject_GetAttrString(this->mn_net, "maxTime");
-    // this->end_time = PyLong_AsLong(pMaxTime);
+    // this->dataset_end_time = PyLong_AsLong(pMaxTime);
     // Py_XDECREF(pMaxTime);
     // dtkScriptInterpreterPython::instance()->childReleaseLock();
 
@@ -129,7 +129,7 @@ void gnomonWorkspaceMorphonetPrivate::loadMNDataAtTime(int time, double voxelsiz
 }
 
 
-void gnomonWorkspaceMorphonetPrivate::clear(void) {
+void gnomonWorkspaceMorphonetPrivate::clearWatcherAndForms(void) {
 
     if(watcher){
         watcher->disconnect();
@@ -148,7 +148,7 @@ void gnomonWorkspaceMorphonetPrivate::clear(void) {
 }
 
 gnomonWorkspaceMorphonetPrivate::~gnomonWorkspaceMorphonetPrivate() {
-    this->clear();
+    this->clearWatcherAndForms();
     delete morphoplot_process;
     delete morphoplot_tmp_dir;
     delete view;
@@ -263,12 +263,12 @@ int gnomonWorkspaceMorphonet::currentId(void) const
 
 int gnomonWorkspaceMorphonet::timeStart(void) const
 {
-    return d->start_time;
+    return d->dataset_start_time;
 }
 
 int gnomonWorkspaceMorphonet::timeEnd(void) const
 {
-    return d->end_time;
+    return d->dataset_end_time;
 }
 
 bool gnomonWorkspaceMorphonet::uploadMode(void) const
@@ -278,13 +278,13 @@ bool gnomonWorkspaceMorphonet::uploadMode(void) const
 
 void gnomonWorkspaceMorphonet::setTimeStart(int new_time)
 {
-    d->start_time = new_time;
+    d->dataset_start_time = new_time;
     emit timeStartChanged();
 }
 
 void gnomonWorkspaceMorphonet::setTimeEnd(int new_time)
 {
-    d->end_time = new_time;
+    d->dataset_end_time = new_time;
     emit timeEndChanged();
 }
 
@@ -340,21 +340,23 @@ void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_
         return;
     }
 
-    d->clear();
+
+    // load everything if not specified otherwise
+    int t0 = time_start;
+    int t_end = time_end;
+    if(time_start == -1 || time_end == -1) {
+        t0 = d->dataset_start_time;
+        t_end = d->dataset_start_time;
+    }
+
+    d->clearWatcherAndForms();
     d->watcher = new QFutureWatcher<void>();
-    connect(d->watcher, &QFutureWatcher<void>::finished, [this]() {
-        this->onDataLoaded();
+    connect(d->watcher, &QFutureWatcher<void>::finished, [this, t0, t_end]() {
+        this->onDataLoaded(t0, t_end);
         this->finished();
     });
     
     auto future = QtConcurrent::run([=](){
-        int t0 = time_start;
-        int t_end = time_end;
-        if(time_start == -1 && time_end == -1) {
-            t0 = d->start_time;
-            t_end = d->start_time;
-        } 
-        d->json_time = t_end;
         for(int time = t0; time <= t_end; time++) {
             std::shared_ptr<gnomonCellImage> cell_img = gnomonMorphonetHelper::instance()->loadMnDataAtTime(time, voxelsize);
             if(cell_img) {
@@ -367,14 +369,14 @@ void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_
     d->watcher->setFuture(future);
 }
 
-void gnomonWorkspaceMorphonet::onDataLoaded() 
+void gnomonWorkspaceMorphonet::onDataLoaded(int startTime, int endTime)
 {
     if(!d->img_series->times().isEmpty()) {
         d->view->clear();
         int form_count = gnomonFormManager::instance()->formCount(d->img_series->formName());
         d->img_series->metadata()->set("name", d->img_series->formName().remove("gnomon") + QString::number(form_count+1));
         d->view->setCellImage(d->img_series, {});
-        d->pipeline_manager->addMorphoForm(d->img_series, d->current_id, d->voxelsize, d->start_time, d->json_time);
+        d->pipeline_manager->addMorphoForm(d->img_series, d->current_id, d->voxelsize, startTime, endTime);
 
         emit timeEndChanged();
     }
