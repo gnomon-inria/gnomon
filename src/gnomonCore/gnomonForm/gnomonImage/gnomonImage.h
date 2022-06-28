@@ -91,6 +91,10 @@ public:
 
 public:
     QStringList channels(void) const { return m_data->channels(); };
+
+public:
+    int minValue(const QString& channel) const { return m_data->minValue(channel); };
+    int maxValue(const QString& channel) const { return m_data->maxValue(channel); };
 };
 
 

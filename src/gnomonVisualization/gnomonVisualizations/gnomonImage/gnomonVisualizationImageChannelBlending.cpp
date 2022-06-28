@@ -141,7 +141,9 @@ void gnomonVisualizationImageChannelBlending::setImage(std::shared_ptr<gnomonIma
         if (dd->channelLookupTables.contains("")) {
             dd->channelLookupTables.remove("");
         }
-        dd->channelLookupTables[""] = gnomonLookupTable("gray", valueRange, valueRange, true);
+
+        QList<double> channelRange = {(double) dd->image->minValue(dd->image->channels()[0]), (double) dd->image->maxValue(dd->image->channels()[0])};
+        dd->channelLookupTables[""] = gnomonLookupTable("gray", channelRange, valueRange, true);
         d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("LUT", dd->channelLookupTables[""], "Lookuptable to apply to the image");
         /*d->parameters["lookuptable"]->connect([this](QVariant v) {
               // this->update();
@@ -153,7 +155,9 @@ void gnomonVisualizationImageChannelBlending::setImage(std::shared_ptr<gnomonIma
             if (dd->channelLookupTables.contains(channelName)) {
                 dd->channelLookupTables.remove(channelName);
             }
-            dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], valueRange, valueRange, true);
+
+            QList<double> channelRange = {(double) dd->image->minValue(channelName), (double) dd->image->maxValue(channelName)};
+            dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], channelRange, valueRange, true);
             auto param = new gnomonCoreParameterLookupTable(channelName+"\nLUT", dd->channelLookupTables[channelName], "Lookuptable to apply to the "+channelName+" image channel");
             /*param->connect( [this](QVariant v) {
                 // this->update();
