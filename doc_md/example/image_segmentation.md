@@ -33,5 +33,5 @@ In the view menu of the 3D viewer, switch the visualization plugin to  *...March
 
 **Video**
 
-<iframe width="560" height="315" src="http://www.youtube.com/embed/ayVMaLrO24A?rel=0" frameborder="0" allowfullscreen></iframe> 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ayVMaLrO24A?rel=0" frameborder="0" allowfullscreen></iframe> 
 

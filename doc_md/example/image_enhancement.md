@@ -58,7 +58,7 @@ This section is under construction! Some information might be missing.
 <table>
 <tr> <th> First Scenario </th> <th> Second Scenario </th> </tr>
 <tr>
-  <td> <iframe width="560" height="315" src="http://www.youtube.com/embed/WZ574C1sqNU?rel=0" frameborder="0" allowfullscreen></iframe> </td>
-  <td> <iframe width="560" height="315" src="http://www.youtube.com/embed/s7oJI8gqcpo?rel=0" frameborder="0" allowfullscreen></iframe> </td>
+  <td> <iframe width="560" height="315" src="https://www.youtube.com/embed/WZ574C1sqNU?rel=0" frameborder="0" allowfullscreen></iframe> </td>
+  <td> <iframe width="560" height="315" src="https://www.youtube.com/embed/s7oJI8gqcpo?rel=0" frameborder="0" allowfullscreen></iframe> </td>
 </tr>
 </table>
