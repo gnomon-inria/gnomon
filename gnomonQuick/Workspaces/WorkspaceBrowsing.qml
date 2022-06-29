@@ -21,7 +21,6 @@ G.Workspace {
     workspace_title: "Browsing";
 
     property string current_file: "";
-    property alias d: d;
 
     Settings {
         id: _cache;
@@ -50,7 +49,7 @@ G.Workspace {
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    GW.WorkspaceBrowser {
+    d: GW.WorkspaceBrowser {
         id: d;
 
         onAvailable: (readers) => {

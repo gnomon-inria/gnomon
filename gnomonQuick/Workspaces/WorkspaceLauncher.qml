@@ -294,7 +294,8 @@ G.Workspace {
                                 title: name
                                 body: "Description: " + description
                                 tooltip: source
-                                thumbnail: "image://thumbnails/project_" + index
+                                // there are no thumbnails for now
+                                //thumbnail: "image://thumbnails/project_" + index
 
                                 onClicked: {
                                     load_session(source)

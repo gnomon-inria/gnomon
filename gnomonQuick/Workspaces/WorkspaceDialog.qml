@@ -84,7 +84,7 @@ G.Dialog {
                 _self.onAccepted()
             }
 
-            Keys.onPressed: {
+            Keys.onPressed: (event) => {
                 // TODO: broken when filter is active because of proxy interaction
                 if (event.key == Qt.Key_Down) {
                     event.accepted = true;

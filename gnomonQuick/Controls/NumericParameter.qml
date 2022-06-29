@@ -11,7 +11,7 @@ Control {
 
 	required property var param;
     //for crossParameters
-    readonly property var paramType: _control.param.type
+    readonly property var paramType: _control.param ? _control.param.type : undefined
 
     implicitHeight: _label.implicitHeight + _slider.implicitHeight + _value.implicitHeight
     width: G.Style.smallPanelWidth
@@ -29,7 +29,7 @@ Control {
 
     G.ToolTip {
         visible: _control.hovered && !_slider.pressed
-        text: param.doc
+        text: param ? param.doc : ""
     }
 
 	Label {
@@ -39,7 +39,7 @@ Control {
         anchors.left: parent.left
         anchors.top: parent.top
 
-        text: param.label.toUpperCase()
+        text: param ? param.label.toUpperCase() : ""
         font: G.Style.fonts.label
         color: G.Style.colors.textColorBase
     }
@@ -69,14 +69,15 @@ Control {
         anchors.left: parent.left
         anchors.right: parent.right
 
-		from: _control.param.min
-		to: _control.param.max
+		from: _control.param ? _control.param.min : 0
+		to: _control.param ? _control.param.max : 0
 		// decimals: _control.param.decimals
 		//increment: 1.0/Math.pow(10, _control.param.decimals)
-        value: _control.param.value
+        value: _control.param ? _control.param.value : 0
 
         onValueChanged: {
-            _control.param.value = _slider.value
+			if(_control.param)
+            	_control.param.value = _slider.value
         }
 
     }
@@ -89,7 +90,7 @@ Control {
         x: 0 //_slider.gaugeWidth
         visible: !_internal.textEdit
 
-        text: _slider.value.toFixed(_control.param.decimals)
+        text: _control.param ? _slider.value.toFixed(_control.param.decimals) : "0"
         font: G.Style.fonts.value
         color: G.Style.colors.hoveredBaseColor
     }
@@ -103,14 +104,14 @@ Control {
         x: 0 //_slider.gaugeWidth
         visible: _internal.textEdit
 
-		text: _slider.value.toFixed(_control.param.decimals)
+		text: _control.param ? _slider.value.toFixed(_control.param.decimals) : "0"
         font: G.Style.fonts.value
 		color: G.Style.colors.textColorBase
 
 		validator: DoubleValidator{
-            bottom: param.min
-            top: param.max
-            decimals: (param.decimals) ? param.decimals : 0
+            bottom: param ? param.min : 0
+            top: param ? param.max : 0
+            decimals: (param && param.decimals) ? param.decimals : 0
             notation: DoubleValidator.StandardNotation
         }
 

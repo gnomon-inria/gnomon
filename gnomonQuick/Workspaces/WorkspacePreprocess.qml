@@ -27,7 +27,7 @@ G.Workspace {
 
     property string current_file: "";
 
-    property alias d: d;
+    //property alias d: d;
 
     fill: () => {
         if(world.currentRef < 0)
@@ -40,7 +40,7 @@ G.Workspace {
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    GW.WorkspacePreprocess {
+    d: GW.WorkspacePreprocess {
         id: d;
 
         onParametersChanged: {

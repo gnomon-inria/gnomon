@@ -21,8 +21,7 @@ G.Workspace {
     id: _self;
 
     workspace_title: "Python Algorithm";
-
-    property alias d: d;
+    
     property alias code: d.code;
     property alias editor: _editor;
 
@@ -30,7 +29,7 @@ G.Workspace {
 
     focus: true;
 
-    GW.WorkspacePythonAlgorithm {
+    d: GW.WorkspacePythonAlgorithm {
         id: d;
 
         onEditModeChanged: {

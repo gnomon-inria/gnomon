@@ -18,8 +18,8 @@ Control {
     property int type: G.Style.CardType.Base
     property bool outline: false
     property bool rounded: true
-    property string tooltip: undefined
-    property string thumbnail: undefined
+    property string tooltip: ""
+    property string thumbnail: ""
 
     property alias title: _title.text
     property alias body: _body.text
