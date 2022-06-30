@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include <float.h>
 
 #include "gnomonPipelinePort.h"
@@ -68,14 +54,6 @@ QString gnomonPipelineNodePrivate::variantParameterString(const QVariant& parame
 
 gnomonPipelineNode::gnomonPipelineNode(void) : d(new gnomonPipelineNodePrivate)
 {
-    /*d->color = QColor(Qt::darkGray);
-
-    d->rect = QRectF(0, 0, 200, 50);
-    d->offset = QPointF(50, 50);
-
-    this->setAcceptDrops(false);
-    // this->layout()();
-    this->setTitle("");*/
 }
 
 gnomonPipelineNode::gnomonPipelineNode(Type t) : d(new gnomonPipelineNodePrivate)
@@ -136,11 +114,6 @@ const QString& gnomonPipelineNode::algorithmClass(void)
 const QString& gnomonPipelineNode::algorithmPlugin(void)
 {
     return d->algorithm;
-}
-
-const QColor& gnomonPipelineNode::color(void)
-{
-    return d->color;
 }
 
 gnomonPipelineNode::Type gnomonPipelineNode::type(void)

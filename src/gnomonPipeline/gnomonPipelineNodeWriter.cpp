@@ -33,7 +33,6 @@ public:
 
 gnomonPipelineNodeWriter::gnomonPipelineNodeWriter(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> inputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeWriterPrivate)
 {
-    d->color = QColor(153, 153, 69);
     d->type = gnomonPipelineNode::NODE_WRITER;
 
     d->algorithm_class = algorithm_class;

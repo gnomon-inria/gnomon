@@ -23,7 +23,6 @@
 
 gnomonPipelineNodeAdapter::gnomonPipelineNodeAdapter(const QString& algorithm_class, const QString& algorithm, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode()
 {
-    d->color = QColor(153, 69, 125);
     d->type = gnomonPipelineNode::NODE_ADAPTER;
     d->algorithm_class = algorithm_class;
     d->algorithm = algorithm;
