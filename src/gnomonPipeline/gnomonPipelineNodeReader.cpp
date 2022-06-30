@@ -33,7 +33,6 @@ public:
 
 gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> outputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeReaderPrivate)
 {
-    d->color = QColor(111, 153, 69);
     d->type = gnomonPipelineNode::NODE_READER;
 
     d->algorithm_class = algorithm_class;
