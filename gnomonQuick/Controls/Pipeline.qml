@@ -303,15 +303,23 @@ Control {
 
         function removeNode(node) {
             let node_index = null
+
+            let edges_to_remove = []
             for(let edge_index in pipelineEdges) {
                 if(node == pipelineEdges[edge_index].target.node) {
-                    edges[edge_index].destroy(100)
-                    delete edges[edge_index]
+                    edges_to_remove.push(edge_index)
                 }
             }
+            for(let i_e in edges_to_remove)
+            {
+                let edge_index = edges_to_remove[i_e] - i_e
+                edges[edge_index].destroy(100)
+                edges.splice(edge_index, 1)
+                pipelineEdges.splice(edge_index, 1)
+            }
+
             nodes[node].destroy(100)
             delete nodes[node]
-            
         }
 
     }
