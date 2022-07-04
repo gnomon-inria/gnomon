@@ -55,6 +55,7 @@ public:
 
 public:
     int formCount(const QString& form_name);
+    void setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form);
 
 public:
     std::shared_ptr<gnomonAbstractDynamicForm> get(int index);

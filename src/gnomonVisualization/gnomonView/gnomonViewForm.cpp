@@ -1566,6 +1566,7 @@ void gnomonViewForm::drop(int index)
     this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
 
     d->interactor()->Render();
+    gnomonFormManager::instance()->setFormDropped(form);
 }
 
 gnomonDynamicFormMetadata* gnomonViewForm::formMetadata(const QString &name) {

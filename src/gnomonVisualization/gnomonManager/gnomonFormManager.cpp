@@ -44,6 +44,7 @@ public:
     QHash<int, vtkCamera *> formCameras;
     QHash<QString, gnomonAbstractWriterCommand *> commands;
     QHash<QString, int> formCounter;
+    QHash<int, bool> formDropped;
 
 public:
     gnomonViewForm *view = nullptr;
@@ -134,8 +135,8 @@ void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
 
 bool gnomonFormManager::deleteForm(int id)
 {
-    if (!d->forms.contains(id)) {
-        dtkWarn() << "Unknown forms id" << id << "can't delete it ";
+    if (!d->forms.contains(id) || d->formDropped[id]) {
+        dtkWarn() << "Unknown forms id or form already dropped in other workspace" << id << "can't delete it ";
         return false;
     }
     if(gnomonPipelineManager::instance()->removeForm(d->forms[id])) {
@@ -143,6 +144,7 @@ bool gnomonFormManager::deleteForm(int id)
         d->formCameras.remove(id);
         d->formData.remove(id);
         d->formWriterCommand.remove(id);
+        d->formDropped.remove(id);
         d->item_counter--;
         return true;
     }
@@ -201,9 +203,10 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
     qDebug() << Q_FUNC_INFO << form.get() << visualization.get() ;
     int item = d->item_counter++;
     d->forms.insert(item, form);
-     d->formVisualizations.insert(item, visualization);
+    d->formVisualizations.insert(item, visualization);
     d->formCameras.insert(item, cam);
     d->formData.insert(item, image);
+    d->formDropped.insert(item, false);
 
     gnomonPipelineManager::instance()->setFormIndex(form, item);
 
@@ -367,6 +370,12 @@ int gnomonFormManager::formCount(const QString& form_name)
     } else {
         return  d->formCounter[form_name];
     }
+}
+
+void gnomonFormManager::setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form) 
+{
+    int index = d->forms.key(form);
+    d->formDropped[index] = true;
 }
 
 #include "gnomonFormManager.moc"
