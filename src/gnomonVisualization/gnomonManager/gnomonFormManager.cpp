@@ -143,6 +143,7 @@ bool gnomonFormManager::deleteForm(int id)
         d->formCameras.remove(id);
         d->formData.remove(id);
         d->formWriterCommand.remove(id);
+        d->item_counter--;
         return true;
     }
     return false;
