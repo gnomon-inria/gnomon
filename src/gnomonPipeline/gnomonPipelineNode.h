@@ -67,6 +67,7 @@ public:
     virtual QJsonObject morphonet_data(void);
     virtual QStringList parametersName(void);
     virtual void configureParameter(const QString &name, dtkCoreParameter *param);
+    virtual QString getParameterAsString(const QString &name);
 
     Type type(void);
     const QPointF& position(void);

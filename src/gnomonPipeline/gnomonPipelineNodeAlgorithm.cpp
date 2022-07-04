@@ -151,5 +151,9 @@ void gnomonPipelineNodeAlgorithm::configureParameter(const QString &name, dtkCor
     param->setValue(QVariant(dd->parameters[name].toObject().toVariantHash()));
 }
 
+QString gnomonPipelineNodeAlgorithm::getParameterAsString(const QString &name) {
+    return dd->parameters[name].toString();
+}
+
 //
 // gnomonPipelineNodeAlgorithm.cpp ends here
