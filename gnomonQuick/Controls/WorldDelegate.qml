@@ -209,7 +209,7 @@ Item {
         id: _delete_form_toast
         parent: Overlay.overlay
         header: "Can't Delete This Form"
-        message: "Please choose a form without an output edge"
+        message: "This form has an output edge or already dropped in an other workspace"
 
         type: G.Style.ButtonType.Warning
     }

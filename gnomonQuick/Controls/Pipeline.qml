@@ -302,8 +302,6 @@ Control {
         }
 
         function removeNode(node) {
-            let node_index = null
-
             let edges_to_remove = []
             for(let edge_index in pipelineEdges) {
                 if(node == pipelineEdges[edge_index].target.node) {
