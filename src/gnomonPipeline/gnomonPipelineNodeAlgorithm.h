@@ -31,7 +31,7 @@ public:
     virtual QStringList parametersName(void) override;
     virtual void configureParameter(const QString &name, dtkCoreParameter *param) override;
 
-    QString getParameterAsString(const QString &name) override;
+    virtual QString getParameterAsString(const QString &name) override;
 
 public:
     virtual QString toToml(void) override;
