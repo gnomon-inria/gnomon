@@ -3,11 +3,14 @@ from threading import Thread
 from functools import partial
 import pathlib
 
+import gnomon.utils.gnomonPlugin
 from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
 from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineNodeTask, gnomonPipelineEdge, gnomonPipelinePort
 from gnomon.core import gnomonAbstractDynamicForm, gnomonAbstractAlgorithm
 
+gnomon.utils.gnomonPlugin.DEBUG = True
 
+# if a plugin fail, everything should fail
 THREADING = True
 
 class PNodeRunner:
@@ -84,9 +87,18 @@ class PNodeRunner:
         else:
             self._is_task = False
             # instantiating algorithm
-            load_plugin_group(algo_class)
-            factory = get_factory(algo_class)
-            self.algo = factory().create(node.algorithmPlugin())
+            if algo_class == "formAlgorithm":
+                tmp = {}
+                exec(node.getParameterAsString("python_code") + f"\nalgo = {node.algorithmPlugin()}()", tmp)  # Oh no D:
+                self.algo = tmp["algo"]
+            else:
+                load_plugin_group(algo_class)
+                factory = get_factory(algo_class)
+                self.algo = factory().create(node.algorithmPlugin())
+
+            if self.algo is None:
+                raise RuntimeError(f"Could not instantiate plugin {node.algorithmPlugin()} from plugin group"
+                                   f" {algo_class}. It might not be installed.")
 
             # generating input setters
             self.inputs = {}
@@ -105,9 +117,10 @@ class PNodeRunner:
 
             # setting parameters
             for param_name in node.parametersName():
-                param = self.algo._parameters[param_name]
-                node.configureParameter(param_name, param)
-                self.algo.setParameter(param_name, param)
+                if param_name not in ("python_code",):
+                    param = self.algo._parameters[param_name]
+                    node.configureParameter(param_name, param)
+                    self.algo.setParameter(param_name, param)
 
     def run(self):
         """
