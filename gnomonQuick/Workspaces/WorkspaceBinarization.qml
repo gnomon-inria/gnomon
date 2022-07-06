@@ -25,8 +25,6 @@ G.Workspace {
 
     workspace_title: "Binarization";
 
-    property alias d: d;
-
     fill: () => {
         if(world.currentRef < 0)
             return;
@@ -34,7 +32,7 @@ G.Workspace {
         _source_view.droppedFromManager(world.currentRef);
     }
 
-    GW.WorkspaceBinarization {
+    d: GW.WorkspaceBinarization {
         id: d;
 
         onParametersChanged: {

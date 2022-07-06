@@ -26,7 +26,6 @@ G.Workspace {
     workspace_title: "Segmentation";
 
     property string current_file: "";
-    property alias d: d;
 
     fill: () => {
         if(world.currentRef < 0)
@@ -40,7 +39,7 @@ G.Workspace {
 // /////////////////////////////////////////////////////////////////////////////
 
 
-    GW.WorkspaceSegmentation {
+    d: GW.WorkspaceSegmentation {
         id: d;
 
         onStarted: idleStart();

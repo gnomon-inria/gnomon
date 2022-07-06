@@ -62,7 +62,7 @@ Item {
 
             extensionFilters: _extensions_model;
 
-            onFileDoubleClicked: {
+            onFileDoubleClicked: (fileUrl) => {
                 window.current_workspace().requestOpenFiles([fileUrl])
             }
         }

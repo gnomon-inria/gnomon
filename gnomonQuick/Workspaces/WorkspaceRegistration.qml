@@ -25,9 +25,7 @@ G.Workspace {
 
     id: _self;
 
-    workspace_title: "Registration";
-
-    property alias d: d;
+    workspace_title: "Registration"
 
     fill: () => {
         if(world.currentRef < 0)
@@ -40,7 +38,7 @@ G.Workspace {
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    GW.WorkspaceRegistration {
+    d: GW.WorkspaceRegistration {
         id: d;
 
         onStarted: idleStart();

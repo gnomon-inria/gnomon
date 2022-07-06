@@ -19,27 +19,26 @@ G.Workspace {
 
     workspace_title: "MorphoNet";
 
-    property alias d: d;
     property alias mn_ds_info: mn_datasets_info;
-    
+
     fill: () => {}
 
     focus: true;
 
-    GW.WorkspaceMorphonet {
+    d: GW.WorkspaceMorphonet {
         id: d;
 
         onStarted: idleStart();
         onFinished: idleStop();
 
-        onMessage: { 
+        onMessage: {
             console.log("message: ", msg)
             _message_dialog.text = msg;
             _message_dialog.open();
 
         }
 
-        onConnectionStatusChanged: { 
+        onConnectionStatusChanged: {
             setDatasetInfos();
             d.connected ? drawer.open() : drawer.close()
         }
@@ -84,10 +83,10 @@ G.Workspace {
     }
 
     Component.onCompleted: {
-        timer.interval= 500; 
+        timer.interval= 500;
         timer.repeat= false;
         timer.triggered.connect(function ff () {
-            if(!d.connected) { 
+            if(!d.connected) {
                 _connection_dialog.open();
                 drawer.close()
             }
@@ -166,14 +165,14 @@ G.Workspace {
                 }
             }
 
-            X.TextField { 
+            X.TextField {
                 id: _morphonet_passwd
                 placeholderText: qsTr("Enter password here")
                 text: ""
                 echoMode: TextInput.PasswordEchoOnEdit
                 implicitWidth: Math.round(_connection_dialog.width/2)
                 implicitHeight: Math.round(_connection_dialog.height/4)
-                wrapMode: TextInput.WrapAnywhere    
+                wrapMode: TextInput.WrapAnywhere
                 Keys.onReturnPressed: {
                     _connection_dialog.accept()
                 }

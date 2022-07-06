@@ -25,8 +25,6 @@ G.Workspace {
 
     workspace_title: "Cell Image Quantification";
 
-    property alias d: d;
-
     fill: () => {
         if(world.currentRef < 0)
             return;
@@ -34,7 +32,7 @@ G.Workspace {
         _source_view.droppedFromManager(world.currentRef);
     }
 
-    GW.WorkspaceCellImageQuantification {
+    d: GW.WorkspaceCellImageQuantification {
         id: d;
 
         onParametersChanged: {
@@ -80,7 +78,7 @@ G.Workspace {
             Layout.fillHeight: true;
 
             viewLogic: d.targetMpl;
-        } 
+        }
     }
 
     Component.onCompleted: {

@@ -128,6 +128,7 @@ QtObject {
     property int collapsibleMaxHeight: S.spacing["12"]
 
     property int controlHeight: S.spacing["8"]
+    property int controlWidth: S.spacing["12"]
 
     property int gutterHeight: S.spacing["5"]
     property int gutterWidth: S.spacing["4"]

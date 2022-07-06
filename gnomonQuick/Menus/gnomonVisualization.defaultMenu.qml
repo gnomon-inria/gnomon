@@ -67,7 +67,7 @@ Control {
         }
 
         ScrollIndicator.vertical: G.ScrollIndicator {
-            anchors.right: _control.right
+            anchors.right: parent.right
             visible: _list_view.contentHeight > _control.height
         }
 

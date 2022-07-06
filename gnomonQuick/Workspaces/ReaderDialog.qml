@@ -73,7 +73,7 @@ G.Dialog { id: self;
 
                 delegate: _delegate;
 
-                Keys.onPressed: {
+                Keys.onPressed: (event) => {
                     //console.log("........", event.key)
                     if (event.key == Qt.Key_Return) {
                         //console.log("OK......")

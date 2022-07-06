@@ -18,7 +18,7 @@ Button {
   property int type: G.Style.ButtonType.Base
   property int size: G.Style.ButtonSize.Medium
   property bool empty: false
-  property string iconName: undefined
+  property string iconName: ""
 
   flat: false
 
