@@ -514,9 +514,9 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
         QStringList filenames = d->filename.split(",");
 
         // check for conformity
-        QString ext = filenames[0].split(".").sliced(1).join(".");
+        QString ext = filenames[0].split(".").sliced(1).join(".").toLower();
         for(const auto & fname: filenames) {
-            if(ext != fname.split(".").sliced(1).join(".")) {
+            if(ext != fname.split(".").sliced(1).join(".").toLower()) {
                 dtkWarn() << Q_FUNC_INFO << "Selected files don't have the same extension. Please select files with the same extensions.";
                 return;
             }
