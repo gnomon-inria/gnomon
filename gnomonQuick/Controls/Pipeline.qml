@@ -311,12 +311,12 @@ Control {
             for(let i_e in edges_to_remove)
             {
                 let edge_index = edges_to_remove[i_e] - i_e
-                edges[edge_index].destroy(100)
+                edges[edge_index].destroy()
                 edges.splice(edge_index, 1)
                 pipelineEdges.splice(edge_index, 1)
             }
 
-            nodes[node].destroy(100)
+            nodes[node].destroy()
             delete nodes[node]
         }
 
