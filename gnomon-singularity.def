@@ -1,0 +1,43 @@
+BootStrap: library
+From: ubuntu:latest
+
+# is necessary only until new release
+#%files
+# ../gnmPlugin.patch /root/gnmPlugin.patch
+
+%post
+    apt update
+    apt -y upgrade
+    apt install -y wget git build-essential bash-completion
+    apt install locales
+    mkdir -p ~/miniconda3
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /opt/miniconda.sh
+    bash /opt/miniconda.sh -b -u -p /opt/miniconda3
+    rm -rf /opt/miniconda.sh
+    export PATH="/opt/miniconda3/bin:$PATH"
+    . /opt/miniconda3/etc/profile.d/conda.sh
+
+    # install gnomon
+    conda create -n gnm-singularity python=3.9
+    conda activate gnm-singularity
+    conda install -y -c conda-forge mamba python=3.9
+    mamba install -y -c gnomon -c mosaic -c morpheme -c dtk-forge6 -c conda-forge gnomon=0.70.0 jinja2
+
+    # activate env at next startup
+    conda init bash
+
+    # left here as an example of how to apply a patch to test before doing a release
+    #patch -d /opt/miniconda3/envs/gnm-singularity/lib/python3.9/site-packages/gnomon/utils < /root/gnmPlugin.patch
+
+%environment
+    export LC_ALL=C
+    export SINGULARITY_SHELL=/bin/bash
+    . /opt/miniconda3/etc/profile.d/conda.sh
+    conda activate gnm-singularity
+
+%runscript
+    echo "running $@"
+    $@
+
+%labels
+    Author tristan.cabel@inria.fr

@@ -19,7 +19,6 @@ from pkg_resources import iter_entry_points, resource_filename
 from setuptools import findall
 
 import gnomon.core
-import gnomon.visualization
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
@@ -634,6 +633,8 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
     """
 
     def decorator(cls):
+        import gnomon.visualization
+
         if not (issubclass(cls, gnomon.visualization.gnomonAbstractVisualization) or
                 issubclass(cls, gnomon.visualization.gnomonAbstractMatplotlibVisualization)):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractVisualization interface."

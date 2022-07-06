@@ -1,21 +1,6 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
-#include <QtGui>
 
 
 class gnomonPipelineNodePrivate
@@ -31,7 +16,6 @@ public:
     gnomonPipelineNode::Type type = gnomonPipelineNode::NODE_DEFAULT;
 
 public:
-    QColor color;
     QPointF position;
 
 /*public:
