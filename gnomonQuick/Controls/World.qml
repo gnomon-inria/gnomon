@@ -50,4 +50,35 @@ ListView {
             _control.currentRef = id;
         }
     }
+
+    MouseArea {
+        anchors.fill: parent
+        z: -1
+        hoverEnabled: true
+        property bool _world_opened: false
+        
+        onEntered: {
+            if(_world_model.count > 0 & header_state === "UNANCHORED") {
+                header_state  = "ANCHORED"
+                _world_opened = true
+                if(_timer.running)
+                    _timer.stop()
+            }
+        }
+
+        onExited: {
+            if(_world_opened) {
+                _timer.start()
+                _world_opened = false
+            }
+        }
+    }
+
+    Timer {
+        id: _timer;
+        interval: 1000;
+        onTriggered: {
+            header_state  = "UNANCHORED"
+        }
+    }
 }
