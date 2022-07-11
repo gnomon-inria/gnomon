@@ -17,7 +17,6 @@ Control {
     background: Rectangle {
       radius: G.Style.panelRadius;
       color: G.Style.colors.gutterColor;
-
     }
 
     layer.enabled: true
