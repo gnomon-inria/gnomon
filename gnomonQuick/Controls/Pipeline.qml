@@ -16,7 +16,6 @@ Control {
     id: _self;
     clip: true;
     property var _node;
-    property var pipelineEdges: [];
 
     QtObject {
         id: _internal;
@@ -25,9 +24,7 @@ Control {
         property int zoomLevel: 0;
         property double originX: (_self.width / 2 - _canvas.x) * Math.pow(_internal.factor, - _internal.zoomLevel);
         property double originY: (_self.height / 2 - _canvas.y) * Math.pow(_internal.factor, - _internal.zoomLevel);
-
     }
-
 
     MouseArea {
         id: _mouse_area
@@ -213,7 +210,6 @@ Control {
                 if (node.inputEdgeCount > 0) {
                     for (var i=0; i<node.inputEdgeCount; i++) {
                         var edge = node.inputEdgeAt(i);
-                        pipelineEdges.push(edge)
                         console.log(" --> edge", i, ":",
                                     edge.source.node.name, "(", edge.source.name, ")",
                                     "->",
@@ -303,8 +299,8 @@ Control {
 
         function removeNode(node) {
             let edges_to_remove = []
-            for(let edge_index in pipelineEdges) {
-                if(node == pipelineEdges[edge_index].target.node) {
+            for(let edge_index in edges) {
+                if(node == edges[edge_index].edge.target.node) {
                     edges_to_remove.push(edge_index)
                 }
             }
@@ -313,7 +309,6 @@ Control {
                 let edge_index = edges_to_remove[i_e] - i_e
                 edges[edge_index].destroy()
                 edges.splice(edge_index, 1)
-                pipelineEdges.splice(edge_index, 1)
             }
 
             nodes[node].destroy()
