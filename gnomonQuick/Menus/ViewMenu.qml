@@ -77,10 +77,11 @@ Control {
         onToggleVisibility: view.viewLogic.setFormVisible(view.viewLogic.formNames[index], flag)
 
         onDeleteForm: {
-            if(deleteMenu) _internal.menu.destroy()
-
             view.viewLogic.removeForm(view.viewLogic.formNames[index]);
             view.viewLogic.update();
+
+            if(deleteMenu & _internal.menu)
+                _internal.menu.destroy()
         }
 
     }
