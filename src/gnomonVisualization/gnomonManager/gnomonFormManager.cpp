@@ -142,6 +142,11 @@ bool gnomonFormManager::deleteForm(int id)
     if(gnomonPipelineManager::instance()->removeForm(d->forms[id])) {
         d->forms.remove(id);
         d->formCameras.remove(id);
+        if (d->formVisualizations.contains(id)) {
+            d->formVisualizations.remove(id);
+        } else if (d->formMatplotlibVisualizations.contains(id)) {
+            d->formMatplotlibVisualizations.remove(id);
+        }
         d->formData.remove(id);
         d->formWriterCommand.remove(id);
         d->formDropped.remove(id);
