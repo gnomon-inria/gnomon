@@ -33,6 +33,7 @@ Figure 1.0 Figure.qml
 DataDict 1.0 DataDict.qml
 LookupTable 1.0 LookupTable.qml
 Monaco 1.0 Monaco.qml
+MenuItemDelegate 1.0 MenuItemDelegate.qml
 MetadataExplorer 1.0 MetadataExplorer.qml
 Pipeline 1.0 Pipeline.qml
 PipelineEdge 1.0 PipelineEdge.qml
