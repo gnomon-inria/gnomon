@@ -3,8 +3,6 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
-#include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage>
-
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -12,11 +10,11 @@
 class gnomonImageRegistrationCommandPrivate
 {
 public:
-    gnomonAbstractCommand::orderedMap input_types = {{"input", "gnomonImage"}};
-    gnomonAbstractCommand::orderedMap output_types = {{"output", "gnomonImage"}, {"transformation", "gnomonDataDict"}};
+    gnomonAbstractCommand::orderedMap input_types = {{"image", "gnomonImage"}};
+    gnomonAbstractCommand::orderedMap output_types = {{"output", "gnomonImage"}, {"outputTransformation", "gnomonDataDict"}};
 
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs = {{"input", nullptr}};
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs = {{"output", nullptr}, {"transformation", nullptr}};
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs = {{"image", nullptr}};
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs = {{"output", nullptr}, {"outputTransformation", nullptr}};
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -65,9 +63,9 @@ void gnomonImageRegistrationCommand::postdo(void)
 
     std::shared_ptr<gnomonDataDictSeries> transformation = ((gnomonAbstractImageRegistration *) this->action)->outputTransformation();
     if ((!transformation)||(transformation->times().empty())||(transformation->current()->keys().empty())) {
-        d->outputs["transformation"] = nullptr;
+        d->outputs["outputTransformation"] = nullptr;
     } else {
-        d->outputs["transformation"] = transformation;
+        d->outputs["outputTransformation"] = transformation;
     }
 }
 
@@ -79,16 +77,16 @@ void gnomonImageRegistrationCommand::undo()
 void gnomonImageRegistrationCommand::setImage(std::shared_ptr<gnomonImageSeries> image_series)
 {
     if ((!image_series)||(image_series->times().empty())||(image_series->current()->channels().empty())) {
-        d->inputs["input"] = nullptr;
+        d->inputs["image"] = nullptr;
     } else {
-        d->inputs["input"] = image_series;
+        d->inputs["image"] = image_series;
     }
-    ((gnomonAbstractImageRegistration *) this->action)->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(d->inputs["input"]));
+    ((gnomonAbstractImageRegistration *) this->action)->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(d->inputs["image"]));
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonImageRegistrationCommand::image()
 {
-    return std::dynamic_pointer_cast<gnomonImageSeries>(d->inputs["input"]);
+    return std::dynamic_pointer_cast<gnomonImageSeries>(d->inputs["image"]);
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonImageRegistrationCommand::output()
@@ -127,7 +125,7 @@ QStringList gnomonImageRegistrationCommand::availablePlugins() {
 
 void gnomonImageRegistrationCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     // TODO: come back later to check if correct
-    if(name == "input") {
+    if(name == "image") {
         this->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else {
         dtkWarn() << Q_FUNC_INFO << "unknown input " << name;
@@ -137,21 +135,21 @@ void gnomonImageRegistrationCommand::setInputForm(const QString &name, std::shar
 
 void gnomonImageRegistrationCommand::deserializeResults(QJsonObject &serialization) {
     if(!d->outputs["output"]) {
-        d->outputs["output"] = std::make_shared<gnomonBinaryImageSeries>();
+        d->outputs["output"] = std::make_shared<gnomonImageSeries>();
     }
     auto tmp = serialization["output"].toObject();
     d->outputs["output"]->deserialize(tmp);
-    if(!d->outputs["transformation"]) {
-        d->outputs["transformation"] = std::make_shared<gnomonBinaryImageSeries>();
+    if(!d->outputs["outputTransformation"]) {
+        d->outputs["outputTransformation"] = std::make_shared<gnomonDataDictSeries>();
     }
-    auto tmp2 = serialization["transformation"].toObject();
-    d->outputs["transformation"]->deserialize(tmp2);
+    auto tmp2 = serialization["outputTransformation"].toObject();
+    d->outputs["outputTransformation"]->deserialize(tmp2);
 }
 
 QJsonObject gnomonImageRegistrationCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = std::dynamic_pointer_cast<gnomonImageSeries>(d->outputs["output"])->serialize();
-    out["transformation"] = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->outputs["transformation"])->serialize();
+    out["outputTransformation"] = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->outputs["outputTransformation"])->serialize();
     return out;
 }
 
