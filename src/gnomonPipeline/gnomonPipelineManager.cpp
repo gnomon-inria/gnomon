@@ -452,7 +452,6 @@ bool gnomonPipelineManager::removeForm(std::shared_ptr<gnomonAbstractDynamicForm
         auto *node = d->task_nodes[form];
         if(rNode(node))
             return true;
-
     } else if (d->morphonet_nodes.contains(form)) {
         auto *node = d->morphonet_nodes[form];
         if(rNode(node))

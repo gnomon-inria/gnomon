@@ -31,6 +31,7 @@ public:
 
 signals:
     void added(int id);
+    void alreadyAdded(void);
 
 public slots:    
     void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> visualization,const QImage& image, vtkCamera *cam=nullptr);
