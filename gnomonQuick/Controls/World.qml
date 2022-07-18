@@ -49,6 +49,19 @@ ListView {
             _control.currentIndex = _world_model.count - 1;
             _control.currentRef = id;
         }
+        function onAlreadyAdded() {
+            _already_added_toast.open();
+        }
+    }
+
+    G.Toast {
+        id: _already_added_toast
+
+        parent: Overlay.overlay
+        header: "Already exported !"
+        message: "The Form you are trying to export is already present in the Form Manager; it will not be added a second time.";
+
+        type: G.Style.ButtonType.Warning
     }
 
     MouseArea {
