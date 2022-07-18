@@ -2,8 +2,8 @@
 
 ## [Mac and Linux] Install gnomon using conda
 **Prerequisite**
-- Make sure you have conda installed on your pc. If not please 
-<a href="https://conda.io/projects/conda/en/latest/user-guide/install/index.html" target="_blank"> install</a> it first and come back.
+- Make sure you have miniconda installed on your pc. If not please 
+<a href="https://docs.conda.io/en/latest/miniconda.html" target="_blank"> install</a> it first and come back (with python 3.9).
 
 - You need around *6 GB* of free memory
 
