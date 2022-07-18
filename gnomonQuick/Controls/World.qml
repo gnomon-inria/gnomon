@@ -25,7 +25,7 @@ ListView {
     snapMode: ListView.SnapToItem
 
     property alias count: _world_model.count;
-
+    property bool containsMouse;
     property int currentRef: -1;
 
     model: ListModel {
@@ -37,7 +37,6 @@ ListView {
     }
 
     ScrollIndicator.horizontal: ScrollIndicator {
-
         orientation: Qt.Horizontal;
         visible: _world.contentWidth > _world.width;
     }
@@ -48,6 +47,13 @@ ListView {
             _world_model.append({"form_id": id })
             _control.currentIndex = _world_model.count - 1;
             _control.currentRef = id;
+            _control.containsMouse = Qt.binding(function() {
+                let in_delegate = false;
+                for(let index=0; index<_world_model.count; index++) {
+                    in_delegate = in_delegate || _control.itemAtIndex(index).containsMouse;
+                }
+                return in_delegate;
+            });
         }
         function onAlreadyAdded() {
             _already_added_toast.open();
@@ -62,36 +68,5 @@ ListView {
         message: "The Form you are trying to export is already present in the Form Manager; it will not be added a second time.";
 
         type: G.Style.ButtonType.Warning
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        z: -1
-        hoverEnabled: true
-        property bool _world_opened: false
-        
-        onEntered: {
-            if(_world_model.count > 0 & header_state === "UNANCHORED") {
-                header_state  = "ANCHORED"
-                _world_opened = true
-                if(_timer.running)
-                    _timer.stop()
-            }
-        }
-
-        onExited: {
-            if(_world_opened) {
-                _timer.start()
-                _world_opened = false
-            }
-        }
-    }
-
-    Timer {
-        id: _timer;
-        interval: 1000;
-        onTriggered: {
-            header_state  = "UNANCHORED"
-        }
     }
 }
