@@ -152,7 +152,10 @@ class PNodeRunner:
             new_path = []
             for fp in path.split(","):
                 fp = pathlib.Path(fp)
-                new_path.append(fp if fp.is_absolute() else self.data_dir.joinpath(fp))
+                if fp.is_absolute() or str(self.data_dir) in str(fp):
+                    new_path.append(fp)
+                else: 
+                    new_path.append(self.data_dir.joinpath(fp))
             new_path = ",".join(map(str, new_path))
             self.algo.setPath(new_path)
 
