@@ -406,6 +406,15 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
     emit nodeAdded(node);
 }
 
+void gnomonPipeline::removeNode(gnomonPipelineNode *node) 
+{
+    d->node_type_count[node->algorithmClass()] -= 1;
+    d->pipeline_node_names.removeAt(d->pipeline_node_names.indexOf(node->name()));
+    d->pipeline_nodes.remove(node->name());
+    emit nodeRemoved(node);
+}
+
+
 QStringList gnomonPipeline::scheduledNodeNames(bool recompute_form_indices)
 {
     int form_index = 0;

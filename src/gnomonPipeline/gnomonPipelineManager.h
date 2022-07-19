@@ -43,7 +43,7 @@ public slots:
     void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
     void addForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
     void addClonedForm(std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractDynamicForm> clone); // TODO check?
-
+    bool removeForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
 public:
     void setFormIndex(std::shared_ptr<gnomonAbstractDynamicForm> form, int index=-1);
 

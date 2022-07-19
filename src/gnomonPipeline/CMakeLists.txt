@@ -57,6 +57,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Network)
 #target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Svg)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Xml)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Qml)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)

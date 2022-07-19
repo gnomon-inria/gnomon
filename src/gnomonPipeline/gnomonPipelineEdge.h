@@ -29,9 +29,9 @@ class GNOMONPIPELINE_EXPORT gnomonPipelineEdge : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(gnomonPipelinePort *source READ source WRITE setSource);
-    Q_PROPERTY(gnomonPipelinePort *target READ target WRITE setTarget);
-    Q_PROPERTY(gnomonPipelineNode *parent READ parent WRITE setParent);
+    Q_PROPERTY(gnomonPipelinePort *source READ source WRITE setSource NOTIFY sourceChanged);
+    Q_PROPERTY(gnomonPipelinePort *target READ target WRITE setTarget NOTIFY targetChanged);
+    Q_PROPERTY(gnomonPipelineNode *parent READ parent WRITE setParent NOTIFY parentChanged);
 
     Q_PROPERTY(int formIndex READ formIndex WRITE setFormIndex NOTIFY formIndexChanged)
 
@@ -62,6 +62,9 @@ public:
     void setFormIndex(int index);
 
 signals:
+    void sourceChanged();
+    void targetChanged();
+    void parentChanged();
     void formIndexChanged(int);
 
 private:

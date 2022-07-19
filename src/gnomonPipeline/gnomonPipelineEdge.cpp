@@ -20,11 +20,11 @@
 class gnomonPipelineEdgePrivate
 {
 public:
-    gnomonPipelineNode *parent;
+    gnomonPipelineNode *parent = nullptr;
 
 public:
-    gnomonPipelinePort *source;
-    gnomonPipelinePort *target;
+    gnomonPipelinePort *source = nullptr;
+    gnomonPipelinePort *target = nullptr;
 
 public:
     int formIndex = -1;
@@ -32,10 +32,6 @@ public:
 
 gnomonPipelineEdge::gnomonPipelineEdge(void) : d(new gnomonPipelineEdgePrivate)
 {
-    d->source = nullptr;
-    d->target = nullptr;
-
-    d->parent = nullptr;
 }
 
 gnomonPipelineEdge::~gnomonPipelineEdge(void)
@@ -58,12 +54,18 @@ gnomonPipelinePort *gnomonPipelineEdge::target(void)
 
 void gnomonPipelineEdge::setSource(gnomonPipelinePort *port)
 {
-    d->source = port;
+    if (port != d->source) {
+        d->source = port;
+        emit sourceChanged();
+    }
 }
 
 void gnomonPipelineEdge::setTarget(gnomonPipelinePort *port)
 {
-    d->target = port;
+    if (port != d->target) {
+        d->target = port;
+        emit targetChanged();
+    }
 }
 
 bool gnomonPipelineEdge::link(void)
@@ -107,7 +109,10 @@ gnomonPipelineNode *gnomonPipelineEdge::parent(void)
 
 void gnomonPipelineEdge::setParent(gnomonPipelineNode *parent)
 {
-    d->parent = parent;
+    if (parent != d->parent) {
+        d->parent = parent;
+        emit parentChanged();
+    }
 }
 
 int gnomonPipelineEdge::formIndex(void)
