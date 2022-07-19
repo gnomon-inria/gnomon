@@ -22,7 +22,6 @@ gnomonPipelineNodeMorphonet::gnomonPipelineNodeMorphonet(const QString& form_nam
                             gnomonPipelineNode(),
                             dd(new gnomonPipelineNodeMorphonetPrivate)
 {
-    d->color = QColor(135, 206, 235);
     d->type = gnomonPipelineNode::NODE_MORPHONET;
     d->algorithm_class = "morphonetCellImage";
     d->algorithm = form_name;

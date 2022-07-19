@@ -35,7 +35,6 @@ public:
 
 gnomonPipelineNodeConstructor::gnomonPipelineNodeConstructor(const QString& algorithm_class, const QString& algorithm, QJsonObject parameters, QList<QString> outputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeConstructorPrivate)
 {
-    d->color = QColor(83, 153, 69);
     d->type = gnomonPipelineNode::NODE_CONSTRUCTOR;
 
     d->algorithm_class = algorithm_class;

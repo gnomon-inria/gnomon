@@ -1,25 +1,8 @@
-/* gnomonPipelineNode.h ---
- *
- * Author: Julien Wintz
- * Created: Fri Feb  3 12:32:09 2012 (+0100)
- */
-
-/* Commentary:
- *
- */
-
-/* Change log:
- *
- */
-
 #pragma once
 
-// #include <dtkComposerExport.h>
-// #include <dtkComposer>
 #include <gnomonPipelineExport.h>
 
 #include <QtCore>
-#include <QtGui>
 
 class gnomonPipelineEdge;
 class gnomonPipelinePort;
@@ -60,7 +43,6 @@ public:
     Q_PROPERTY(QString path READ path CONSTANT);
     Q_PROPERTY(QJsonObject parameters READ parameters CONSTANT)
 
-    Q_PROPERTY(QColor color READ color);
     Q_PROPERTY(Type type READ type);
     Q_PROPERTY(QPointF position READ position WRITE setPosition NOTIFY positionChanged);
 
@@ -85,10 +67,9 @@ public:
     virtual QJsonObject morphonet_data(void);
     virtual QStringList parametersName(void);
     virtual void configureParameter(const QString &name, dtkCoreParameter *param);
+    virtual QString getParameterAsString(const QString &name);
 
     Type type(void);
-    const QColor& color(void);
-
     const QPointF& position(void);
 
 public:

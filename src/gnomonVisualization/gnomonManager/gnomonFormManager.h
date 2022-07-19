@@ -31,6 +31,8 @@ public:
 
 signals:
     void added(int id);
+    void removed(int id);
+    void alreadyAdded(void);
 
 public slots:    
     void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> visualization,const QImage& image, vtkCamera *cam=nullptr);
@@ -39,7 +41,7 @@ public slots:
 
 public slots:
     void saveAs(int id, const QString& filename) const;
-    void deleteForm(int id);
+    bool deleteForm(int id);
     void compose(int first, int second);
 
 public:
@@ -55,6 +57,7 @@ public:
 
 public:
     int formCount(const QString& form_name);
+    void setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form);
 
 public:
     std::shared_ptr<gnomonAbstractDynamicForm> get(int index);

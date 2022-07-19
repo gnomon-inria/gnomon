@@ -5,11 +5,6 @@ project(gnomonPipeline VERSION ${gnomon_VERSION})
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  # gnomonComposer
-  # gnomonComposerNodeWorkspace
-  # gnomonComposerNodeWorkspace.h
-  # gnomonComposerWidget_p.h
-  # gnomonComposerWidget.h
   gnomonPipeline
   gnomonPipeline.h
   gnomonPipelineEdge.h
@@ -32,8 +27,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonPipelineNodeMorphonet.h)
 
 set(${PROJECT_NAME}_SOURCES
-  # gnomonComposerNodeWorkspace.cpp
-  # gnomonComposerWidget.cpp
   gnomonPipeline.cpp
   gnomonPipelineEdge.cpp
   gnomonPipelineManager.cpp
@@ -47,38 +40,27 @@ set(${PROJECT_NAME}_SOURCES
   gnomonPipelinePort.cpp
   gnomonPipelineNodeMorphonet.cpp)
 
-## set(${PROJECT_NAME}_RESOURCES gnomonPipeline.qrc)
 
 ## #################################################################
 ## Build rules
 ## #################################################################
 
-## qt5_add_resources(${PROJECT_NAME}_SOURCES_QRC ${${PROJECT_NAME}_RESOURCES})
-
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_HEADERS}
   ${${PROJECT_NAME}_SOURCES})
-  ##${${PROJECT_NAME}_SOURCES_QRC})
 
 ## ###################################################################
 ## Link rules
 ## ###################################################################
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Core)
-# target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Widgets)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Network)
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Svg)
+#target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Svg)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Xml)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Qml)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
-# target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
-# target_link_libraries(${PROJECT_NAME} PRIVATE dtkWidgets)
-#target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
-
-# target_link_libraries(${PROJECT_NAME} PUBLIC dtkComposer)
-
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
-# target_link_libraries(${PROJECT_NAME} PUBLIC gnomonWidgets)
 
 ## #############################################################################
 ##

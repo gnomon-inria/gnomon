@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonPipelineNodeAlgorithm.h"
 
 #include <dtkCore>
@@ -36,10 +22,8 @@ public:
 gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QJsonObject parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
 {
     if (algorithm_class.contains("From")) {
-        d->color = QColor(153, 69, 69);
         d->type = gnomonPipelineNode::NODE_CONVERTER;
     } else {
-        d->color = QColor(153, 125, 69);
         d->type = gnomonPipelineNode::NODE_FILTER;
     }
     d->algorithm_class = algorithm_class;
@@ -165,6 +149,10 @@ QStringList gnomonPipelineNodeAlgorithm::parametersName(void) {
 
 void gnomonPipelineNodeAlgorithm::configureParameter(const QString &name, dtkCoreParameter *param) {
     param->setValue(QVariant(dd->parameters[name].toObject().toVariantHash()));
+}
+
+QString gnomonPipelineNodeAlgorithm::getParameterAsString(const QString &name) {
+    return dd->parameters[name].toString();
 }
 
 //

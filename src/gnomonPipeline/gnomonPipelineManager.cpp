@@ -418,6 +418,48 @@ void gnomonPipelineManager::setFormIndex(std::shared_ptr<gnomonAbstractDynamicFo
     }
 }
 
+bool gnomonPipelineManager::removeForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
+{
+    auto removeNodeFromPipeline = [=](gnomonPipelineNode *node){
+        if(!node->outputEdgeCount()) {
+            for(auto edge:node->inputEdges()) {
+                edge->source()->node()->removeOutputEdge(edge);
+                node->removeInputEdge(edge);
+            }
+            d->pipeline->removeNode(node);
+            d->pipeline_nodes.remove(node->name());
+            return true;
+        }
+        return false;
+    };
+    
+    if (d->reader_nodes.contains(form)) {
+        auto *node = d->reader_nodes[form];
+        if(removeNodeFromPipeline(node))
+            return true;
+    } else if (d->adapter_nodes.contains(form)) {
+        auto *node = d->adapter_nodes[form];
+        if(removeNodeFromPipeline(node))
+            return true;
+    } else if (d->constructor_nodes.contains(form)) {
+        auto *node = d->constructor_nodes[form];
+        if(removeNodeFromPipeline(node))
+            return true;
+    } else if (d->algorithm_nodes.contains(form)) {
+        auto *node = d->algorithm_nodes[form];
+        if(removeNodeFromPipeline(node))
+            return true;
+    } else if (d->task_nodes.contains(form)) {
+        auto *node = d->task_nodes[form];
+        if(removeNodeFromPipeline(node))
+            return true;
+    } else if (d->morphonet_nodes.contains(form)) {
+        auto *node = d->morphonet_nodes[form];
+        if(removeNodeFromPipeline(node))
+            return true;
+    }
+    return false;
+}
 
 gnomonPipelineManager *gnomonPipelineManager::s_instance = nullptr;
 

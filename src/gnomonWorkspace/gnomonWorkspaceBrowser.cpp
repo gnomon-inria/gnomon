@@ -513,13 +513,21 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
 
         QStringList filenames = d->filename.split(",");
 
-        // check for conformity
-        QString ext = filenames[0].split(".").sliced(1).join(".");
-        for(const auto & fname: filenames) {
-            if(ext != fname.split(".").sliced(1).join(".")) {
-                dtkWarn() << Q_FUNC_INFO << "Selected files don't have the same extension. Please select files with the same extensions.";
-                return;
+        QString filename = filenames[0].split(".").join(".").toLower();
+        QString ext;
+
+        QMap<QString, QMap<QString, gnomonAbstractCommand *> > ::iterator i;
+        for (i = d->fileReaderCommands.begin(); i != d->fileReaderCommands.end(); ++i)
+        {
+            if( filename.endsWith(i.key()))
+            {
+                ext = i.key();
             }
+        }
+                    
+        if(ext.isEmpty()) {
+            dtkWarn() << Q_FUNC_INFO << "Selected files don't have the same extension. Please select files with the same extensions.";
+            return;
         }
 
         if(ext.endsWith("zip")) {

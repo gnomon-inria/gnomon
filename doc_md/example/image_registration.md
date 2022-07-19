@@ -48,3 +48,7 @@ Perform iterative registration within one registration workspace
         - new output integrates the stack
     - Press Export to save the actual image into the world and add a new node in the pipeline. When exporting the pipeline, we also save the stack    composition to be able to redo, re-load the computation.            
     
+  
+  **Video**
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/eoIMCHqKVTw?rel=0" frameborder="0" allowfullscreen></iframe> 

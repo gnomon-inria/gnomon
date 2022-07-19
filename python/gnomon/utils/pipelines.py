@@ -1,12 +1,16 @@
 from typing import Tuple, List, Dict, Callable
 from threading import Thread
 from functools import partial
+import pathlib
 
+import gnomon.utils.gnomonPlugin
 from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
 from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineNodeTask, gnomonPipelineEdge, gnomonPipelinePort
 from gnomon.core import gnomonAbstractDynamicForm, gnomonAbstractAlgorithm
 
+gnomon.utils.gnomonPlugin.DEBUG = True
 
+# if a plugin fail, everything should fail
 THREADING = True
 
 class PNodeRunner:
@@ -33,11 +37,12 @@ class PNodeRunner:
     inputs_connections: Dict[str, Tuple[str, str]]
     inputs: Dict[str, Callable[[gnomonAbstractDynamicForm], None]]
     outputs: Dict[str, Callable[[], gnomonAbstractDynamicForm]]
+    data_dir: pathlib.Path
     _has_path: bool
     _is_task: bool
     _node: gnomonPipelineNode
 
-    def __init__(self, node: gnomonPipelineNode):
+    def __init__(self, node: gnomonPipelineNode, data_dir: str = ""):
         """
         Node wrapper which instantiate the corresponding plugin, parametrize them
         and provides a unified interface.
@@ -50,6 +55,7 @@ class PNodeRunner:
         algo_name = node.name()
         algo_class = node.algorithmClass()
         self.name = algo_name
+        self.data_dir = pathlib.Path(data_dir)
         self._has_path = False
 
         # making connections
@@ -81,9 +87,18 @@ class PNodeRunner:
         else:
             self._is_task = False
             # instantiating algorithm
-            load_plugin_group(algo_class)
-            factory = get_factory(algo_class)
-            self.algo = factory().create(node.algorithmPlugin())
+            if algo_class == "formAlgorithm":
+                tmp = {}
+                exec(node.getParameterAsString("python_code") + f"\nalgo = {node.algorithmPlugin()}()", tmp)  # Oh no D:
+                self.algo = tmp["algo"]
+            else:
+                load_plugin_group(algo_class)
+                factory = get_factory(algo_class)
+                self.algo = factory().create(node.algorithmPlugin())
+
+            if self.algo is None:
+                raise RuntimeError(f"Could not instantiate plugin {node.algorithmPlugin()} from plugin group"
+                                   f" {algo_class}. It might not be installed.")
 
             # generating input setters
             self.inputs = {}
@@ -102,9 +117,10 @@ class PNodeRunner:
 
             # setting parameters
             for param_name in node.parametersName():
-                param = self.algo._parameters[param_name]
-                node.configureParameter(param_name, param)
-                self.algo.setParameter(param_name, param)
+                if param_name not in ("python_code",):
+                    param = self.algo._parameters[param_name]
+                    node.configureParameter(param_name, param)
+                    self.algo.setParameter(param_name, param)
 
     def run(self):
         """
@@ -132,7 +148,16 @@ class PNodeRunner:
             New path for the node.
         """
         if self.has_path():
-            self.algo.setPath(path)
+            # double-checking if called from outside
+            new_path = []
+            for fp in path.split(","):
+                fp = pathlib.Path(fp)
+                if fp.is_absolute() or str(self.data_dir) in str(fp):
+                    new_path.append(fp)
+                else: 
+                    new_path.append(self.data_dir.joinpath(fp))
+            new_path = ",".join(map(str, new_path))
+            self.algo.setPath(new_path)
 
 
 class PipelineRunner:
@@ -151,20 +176,24 @@ class PipelineRunner:
         Dictionary mapping node_name --> PNodeRunner object
     path_dict: Dict[str, str]
         Dictionary mapping node_name --> path for each node having a path parameter
+    data_dir: pathlib.Path, default=""
+        Path to the directory containing the data. Used to resolve relative paths.
 
     """
     pipeline: gnomonPipeline
     nodes: Dict[str, PNodeRunner]
     path_dict: Dict[str, str]
+    data_dir: pathlib.Path
 
-    def __init__(self, pipeline: gnomonPipeline):
+    def __init__(self, pipeline: gnomonPipeline, data_dir: str = ""):
         self.pipeline = pipeline
         self.nodes = {}
         self.path_dict = {}
+        self.data_dir = pathlib.Path(data_dir)
         for node_name in self.pipeline.nodeNames():
             print(f"making node {node_name}")
             node = self.pipeline.node(node_name)
-            runner = PNodeRunner(node)
+            runner = PNodeRunner(node, data_dir)
             if runner.has_path():
                 self.path_dict[node_name] = node.path()
             self.nodes[node_name] = runner
@@ -201,7 +230,13 @@ class PipelineRunner:
 
         # setting path
         for node_name, path in self.path_dict.items():
-            self.nodes[node_name].setPath(path)
+            # checking path here in case data_dir is changed in PipelineRunner
+            new_path = []
+            for fp in path.split(","):
+                fp = pathlib.Path(fp)
+                new_path.append(fp if fp.is_absolute() else self.data_dir.joinpath(fp))
+            new_path = ",".join(map(str, new_path))
+            self.nodes[node_name].setPath(new_path)
 
         # getting sources
         sources = groups[0]
@@ -246,7 +281,7 @@ class PipelineRunner:
         self.path_dict.update(path_dict)
 
 
-def load_pipeline(path: str):
+def load_pipeline(path: str, data_dir: str = ""):
     """
     Load a pipeline from path and returns a PipelineRunner object
 
@@ -261,4 +296,4 @@ def load_pipeline(path: str):
     """
     pipeline = gnomonPipeline()
     pipeline.readFromJson(path)
-    return PipelineRunner(pipeline)
+    return PipelineRunner(pipeline, data_dir=data_dir)

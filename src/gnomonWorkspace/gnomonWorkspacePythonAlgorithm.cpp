@@ -210,6 +210,7 @@ void gnomonWorkspacePythonAlgorithm::run(void) {
     if(d->algorithm) {
         d->algorithm->run();
         this->viewOutputs();
+        emit finished();
     } else {
         dtkWarn() << Q_FUNC_INFO << "d->algorithm is null, nothing is done!";
     }

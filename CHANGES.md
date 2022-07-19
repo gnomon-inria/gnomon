@@ -1,6 +1,6 @@
 # ChangeLog
 
-## version 0.70.0 - 2022-04-15
+## version 0.70.1 - 2022-04-15
  - first morphonet api
  - 3d and 4d numpy wrapper
  - support time series

@@ -94,3 +94,11 @@ passwd
 If a connection to an existing db is not possible, a local one will be created in the directory defined by the qsetting `mongo/dbpath`
 or in the directory `~/gnomondb` if the qsetting is not set.
 
+
+# Singularity
+
+To create a singularity image: 
+ 1. install singularity on your machine
+ 2. `sudo singularity build gnomon.sif gnomon-singularity.def`
+
+To run the container do: `singularity exec gnomon.sif gnomon-utils`  or `./gnomon.if gnomon-utils`

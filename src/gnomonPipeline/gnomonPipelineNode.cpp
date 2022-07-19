@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include <float.h>
 
 #include "gnomonPipelinePort.h"
@@ -21,6 +7,8 @@
 #include "gnomonPipelineNode_p.h"
 
 #include <dtkCoreParameter>
+
+#include <QtQml>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodePrivate
@@ -68,14 +56,6 @@ QString gnomonPipelineNodePrivate::variantParameterString(const QVariant& parame
 
 gnomonPipelineNode::gnomonPipelineNode(void) : d(new gnomonPipelineNodePrivate)
 {
-    /*d->color = QColor(Qt::darkGray);
-
-    d->rect = QRectF(0, 0, 200, 50);
-    d->offset = QPointF(50, 50);
-
-    this->setAcceptDrops(false);
-    // this->layout()();
-    this->setTitle("");*/
 }
 
 gnomonPipelineNode::gnomonPipelineNode(Type t) : d(new gnomonPipelineNodePrivate)
@@ -138,11 +118,6 @@ const QString& gnomonPipelineNode::algorithmPlugin(void)
     return d->algorithm;
 }
 
-const QColor& gnomonPipelineNode::color(void)
-{
-    return d->color;
-}
-
 gnomonPipelineNode::Type gnomonPipelineNode::type(void)
 {
     return d->type;
@@ -166,6 +141,10 @@ QStringList gnomonPipelineNode::parametersName(void) {
 
 void gnomonPipelineNode::configureParameter(const QString &name, dtkCoreParameter *param) {
 
+}
+
+QString gnomonPipelineNode::getParameterAsString(const QString &name) {
+    return {};
 }
 
 const QPointF& gnomonPipelineNode::position(void)
@@ -357,7 +336,9 @@ int gnomonPipelineNode::outputEdgeCount(void)
 gnomonPipelineEdge *gnomonPipelineNode::inputEdgeAt(int index)
 {
     if (index < d->input_edges.size()) {
-        return d->input_edges[index];
+        gnomonPipelineEdge* edge = d->input_edges[index];
+        QQmlEngine::setObjectOwnership(edge, QQmlEngine::CppOwnership);
+        return edge;
     } else {
         return nullptr;
     }
@@ -366,7 +347,9 @@ gnomonPipelineEdge *gnomonPipelineNode::inputEdgeAt(int index)
 gnomonPipelineEdge *gnomonPipelineNode::outputEdgeAt(int index)
 {
     if (index < d->output_edges.size()) {
-        return d->output_edges[index];
+        gnomonPipelineEdge* edge = d->output_edges[index];
+        QQmlEngine::setObjectOwnership(edge, QQmlEngine::CppOwnership);
+        return edge;
     } else {
         return nullptr;
     }
@@ -418,7 +401,9 @@ QStringList gnomonPipelineNode::outputPortsNames(void)
 gnomonPipelinePort *gnomonPipelineNode::inputPort(const QString& name)
 {
     if (d->input_ports.contains(name)) {
-        return d->input_ports[name];
+        gnomonPipelinePort *port = d->input_ports[name];
+        QQmlEngine::setObjectOwnership(port, QQmlEngine::CppOwnership);
+        return port;
     } else {
         return nullptr;
     }
@@ -427,7 +412,9 @@ gnomonPipelinePort *gnomonPipelineNode::inputPort(const QString& name)
 gnomonPipelinePort *gnomonPipelineNode::outputPort(const QString& name)
 {
     if (d->output_ports.contains(name)) {
-        return d->output_ports[name];
+        gnomonPipelinePort *port = d->output_ports[name];
+        QQmlEngine::setObjectOwnership(port, QQmlEngine::CppOwnership);
+        return port;
     } else {
         return nullptr;
     }

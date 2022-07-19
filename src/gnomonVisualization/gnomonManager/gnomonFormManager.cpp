@@ -33,6 +33,7 @@ public:
     ~gnomonFormManagerPrivate(void);
 
 public:
+    void insertForm(int item, std::shared_ptr<gnomonAbstractDynamicForm> form, const QImage& image);
     void addFormWriter(const QString& form_name, int item);
 
 public:
@@ -44,6 +45,10 @@ public:
     QHash<int, vtkCamera *> formCameras;
     QHash<QString, gnomonAbstractWriterCommand *> commands;
     QHash<QString, int> formCounter;
+    QHash<int, bool> formDropped;
+
+    // TODO: to remove when destruction of visualizations will not cause a crash
+    QList<std::shared_ptr<gnomonAbstractVisualization> > removedVisualizations;
 
 public:
     gnomonViewForm *view = nullptr;
@@ -71,6 +76,22 @@ gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
     for (auto command: this->commands)
         delete command;
     this->commands.clear();
+}
+
+void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstractDynamicForm> form, const QImage& image)
+{
+    this->forms.insert(item, form);
+    this->formData.insert(item, image);
+    this->formDropped.insert(item, false);
+
+    gnomonPipelineManager::instance()->setFormIndex(form, item);
+
+    QString form_name = form->formName();
+    this->addFormWriter(form_name, item);
+    if (!this->formCounter.contains(form_name)) {
+        this->formCounter.insert(form_name, 0);
+    }
+    this->formCounter[form_name]++;
 }
 
 void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
@@ -132,17 +153,32 @@ void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
     this->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 }
 
-void gnomonFormManager::deleteForm(int id)
+bool gnomonFormManager::deleteForm(int id)
 {
-    if (!d->forms.contains(id)) {
-        dtkWarn() << "Unknown forms id" << id << "can't delete it ";
-        return;
+    if (!d->forms.contains(id) || d->formDropped[id]) {
+        dtkWarn() << "Unknown forms id or form already dropped in other workspace" << id << "can't delete it ";
+        return false;
     }
-    d->forms.remove(id);
-    d->formCameras.remove(id);
-    d->formData.remove(id);
-    d->formWriterCommand.remove(id);
-    // TODO: do something with pipeline ?
+    if(gnomonPipelineManager::instance()->removeForm(d->forms[id])) {
+        d->forms.remove(id);
+        if (d->formCameras.contains(id)) {
+            d->formCameras.remove(id);
+        }
+        if (d->formVisualizations.contains(id)) {
+            // TODO: to remove when destruction of visualizations will not cause a crash
+            d->removedVisualizations.append(d->formVisualizations[id]);
+            d->formVisualizations.remove(id);
+        } else if (d->formMatplotlibVisualizations.contains(id)) {
+            d->formMatplotlibVisualizations.remove(id);
+        }
+        d->formData.remove(id);
+        d->formWriterCommand.remove(id);
+        d->formDropped.remove(id);
+        d->item_counter--;
+        emit removed(id);
+        return true;
+    }
+    return false;
 }
 
 void gnomonFormManager::compose(int first, int second) {
@@ -194,68 +230,44 @@ gnomonFormManager *gnomonFormManager::instance(void)
 
 void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,  std::shared_ptr<gnomonAbstractVisualization> visualization, const QImage& image,  vtkCamera *cam)
 {
-    qDebug() << Q_FUNC_INFO << form.get() << visualization.get() ;
-    int item = d->item_counter++;
-    d->forms.insert(item, form);
-     d->formVisualizations.insert(item, visualization);
-    d->formCameras.insert(item, cam);
-    d->formData.insert(item, image);
-
-    gnomonPipelineManager::instance()->setFormIndex(form, item);
-
-    QString form_name = form->formName();
-    d->addFormWriter(form_name, item);
-    if (!d->formCounter.contains(form_name)) {
-        d->formCounter.insert(form_name, 0);
+    if (!d->forms.values().contains(form)) {
+        qDebug() << Q_FUNC_INFO << form.get() << visualization.get();
+        int item = d->item_counter++;
+        d->insertForm(item, form, image);
+        d->formVisualizations.insert(item, visualization);
+        d->formCameras.insert(item, cam);
+        emit added(item);
+    } else {
+        emit alreadyAdded();
     }
-    d->formCounter[form_name]++;
-    
-    emit added(item);
 }
 
 void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractMatplotlibVisualization> visualization)
 {
-    QImage image = visualization->imageRendering();
-    form->metadata()->moveToThread(QThread::currentThread());
-
-    int item = d->item_counter++;
-
-    d->forms.insert(item, form);
-    d->formMatplotlibVisualizations.insert(item, visualization);
-    d->formData.insert(item, image);
-
-    gnomonPipelineManager::instance()->setFormIndex(form, item);
-
-    QString form_name = form->formName();
-    d->addFormWriter(form_name, item);
-    if (!d->formCounter.contains(form_name)) {
-        d->formCounter.insert(form_name, 0);
+    if (!d->forms.values().contains(form)) {
+        int item = d->item_counter++;
+        QImage image = visualization->imageRendering();
+        form->metadata()->moveToThread(QThread::currentThread());
+        d->insertForm(item, form, image);
+        d->formMatplotlibVisualizations.insert(item, visualization);
+        emit added(item);
+    } else {
+        emit alreadyAdded();
     }
-    d->formCounter[form_name]++;
-
-    emit added(item);
 }
 
 
 void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, const QImage& image)
 {
-    int item = d->item_counter++;
-    form->metadata()->moveToThread(QThread::currentThread());
-
-    d->forms.insert(item, form);
-    d->formMatplotlibVisualizations.insert(item, nullptr);
-    d->formData.insert(item, image);
-
-    gnomonPipelineManager::instance()->setFormIndex(form, item);
-
-    QString form_name = form->formName();
-    d->addFormWriter(form_name, item);
-    if (!d->formCounter.contains(form_name)) {
-        d->formCounter.insert(form_name, 0);
+    if (!d->forms.values().contains(form)) {
+        int item = d->item_counter++;
+        form->metadata()->moveToThread(QThread::currentThread());
+        d->insertForm(item, form, image);
+        d->formMatplotlibVisualizations.insert(item, nullptr);
+        emit added(item);
+    } else {
+        emit alreadyAdded();
     }
-    d->formCounter[form_name]++;
-
-    emit added(item);
 }
 
 std::shared_ptr<gnomonAbstractDynamicForm> gnomonFormManager::get(int index)
@@ -363,6 +375,12 @@ int gnomonFormManager::formCount(const QString& form_name)
     } else {
         return  d->formCounter[form_name];
     }
+}
+
+void gnomonFormManager::setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form) 
+{
+    int index = d->forms.key(form);
+    d->formDropped[index] = true;
 }
 
 #include "gnomonFormManager.moc"
