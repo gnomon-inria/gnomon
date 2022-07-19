@@ -1,33 +1,62 @@
 # How to install gnomon 
 
 ## [Mac and Linux] Install gnomon using conda
-**Prerequisite**
-- Make sure you have miniconda installed on your pc. If not please 
-<a href="https://docs.conda.io/en/latest/miniconda.html" target="_blank"> install</a> it first and come back (with python 3.9).
 
-- You need around *6 GB* of free memory
-
-- **Step 1:** Install Mamba package in your environment
+### Prerequisite: Install Conda
+- Make sure you have `conda` installed on your system. To check, simply open a new terminal window and type:
 ```shell script
-conda install -c conda-forge mamba
+conda
 ```
 
-- **Step 2:**  Create conda environment with right python version. Then activate this environment
+- If `conda` is installed, you should get a long return value describing how to use the command, otherwise you will get a `command not found` message.
+
+- If `conda` is not installed, we recommend that you [install Miniconda](https://docs.conda.io/en/latest/miniconda.html) by picking the *latest* installer suitable for your system.
+
+:::{admonition} About Conda and Miniconda
+Conda is an open source package management system and environment management system that runs on Windows, macOS and Linux. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your local computer. Find out more on [the official documentation](https://docs.conda.io/en/latest/)
+
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html) is a free minimal installer for conda. It is a small, bootstrap version of Anaconda that includes only `conda`, Python, the packages they depend on, and a small number of other useful packages, including pip, zlib and a few others. 
+:::
+
+### Install Gnomon
+
+:::{warning}
+Installing `gnomon` requires around *6 GB* of free disk space.
+:::
+
+- **Step 1:** Install Mamba in your `(base)` environment
+```shell script
+conda install -n base -c conda-forge mamba
+```
+
+- **Step 2:**  Create a conda environment with the right python version. Then activate this environment
 ```shell script
 conda create -n gnomon python=3.9
 
 conda activate gnomon
 ```
 
-- **Step 3:** Install **gnomon** and its **dependancies**
+- **Step 3:** Install **gnomon** and its **dependencies**
 ```shell script
 mamba install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
 ```
-- **Step 4:** Congrats you can launch your application
+
+- **Step 4:** Congrats, you can now launch the application
 ```shell script
 gnomon
 ```
 
+### Update `gnomon`
+
+- **Step 1:** Activate your `(gnomon)` environment
+```shell script
+conda activate gnomon
+```
+
+- **Step 2:**  Update **gnomon** and its **dependencies**
+```shell script
+mamba update -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
+```
 
 ## [Windows] Install with Windows Subsystem for Linux (WSL)
 
