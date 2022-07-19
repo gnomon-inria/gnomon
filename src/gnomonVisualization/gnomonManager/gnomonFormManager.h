@@ -31,6 +31,7 @@ public:
 
 signals:
     void added(int id);
+    void removed(int id);
     void alreadyAdded(void);
 
 public slots:    

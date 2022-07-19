@@ -47,6 +47,9 @@ public:
     QHash<QString, int> formCounter;
     QHash<int, bool> formDropped;
 
+    // TODO: to remove when destruction of visualizations will not cause a crash
+    QList<std::shared_ptr<gnomonAbstractVisualization> > removedVisualizations;
+
 public:
     gnomonViewForm *view = nullptr;
 
@@ -158,8 +161,12 @@ bool gnomonFormManager::deleteForm(int id)
     }
     if(gnomonPipelineManager::instance()->removeForm(d->forms[id])) {
         d->forms.remove(id);
-        d->formCameras.remove(id);
+        if (d->formCameras.contains(id)) {
+            d->formCameras.remove(id);
+        }
         if (d->formVisualizations.contains(id)) {
+            // TODO: to remove when destruction of visualizations will not cause a crash
+            d->removedVisualizations.append(d->formVisualizations[id]);
             d->formVisualizations.remove(id);
         } else if (d->formMatplotlibVisualizations.contains(id)) {
             d->formMatplotlibVisualizations.remove(id);
@@ -168,6 +175,7 @@ bool gnomonFormManager::deleteForm(int id)
         d->formWriterCommand.remove(id);
         d->formDropped.remove(id);
         d->item_counter--;
+        emit removed(id);
         return true;
     }
     return false;
