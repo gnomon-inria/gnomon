@@ -77,7 +77,6 @@ Item {
             fileMode: P.FileDialog.SaveFile
 
             onAccepted: {
-                console.log("save", form_id)
                 GV.World.saveAs(form_id, _file_dialog.file);
             }
         }
@@ -128,7 +127,6 @@ Item {
             }
 
             onDropped: {
-                // console.log("Dropping item on ", form_id, drop)
                 if (!drop.hasUrls) {
                     GV.World.compose(form_id, drag.source.ref)
                 }
@@ -156,7 +154,6 @@ Item {
             visible: _world_delegate.containsMouse && _world.height > G.Style.smallDelegateHeight
 
             onClicked: {
-                console.log("Form Id: ", form_id, metadata_edit.formId)
                 metadata_edit.open()
             }
         }
@@ -176,7 +173,6 @@ Item {
 
             onClicked: {
                 if(GV.World.deleteForm(form_id)) {
-                    console.log("delete ...", model.index, form_id)
                     _world_model.remove(model.index)
                 } else {
                     _delete_form_toast.open()

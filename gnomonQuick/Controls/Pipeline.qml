@@ -71,12 +71,10 @@ Control {
         y: -_canvas.height / 2+ _self.height / 2;
 
         color: G.Style.colors.gutterColor;
+        readonly property real transitionDuration: 0;
 
 //         layer.enabled: true
 //         layer.samples: 4
-
-//         readonly property real transitionDuration: 0;
-
 
 //         ShaderEffect {
 
@@ -201,19 +199,12 @@ Control {
         Connections {
             target: GP.PipelineManager.pipeline
             function onNodeAdded (node) {
-
-                console.log(node.name, "(", node.algorithmClass, ")", GP.PipelineManager.pipeline.nodeNames);
                 _self._node = node
                 var n = _canvas.addNode(node);
 
-                console.log(node.inputEdgeCount, "input edges")
                 if (node.inputEdgeCount > 0) {
                     for (var i=0; i<node.inputEdgeCount; i++) {
                         var edge = node.inputEdgeAt(i);
-                        console.log(" --> edge", i, ":",
-                                    edge.source.node.name, "(", edge.source.name, ")",
-                                    "->",
-                                    edge.target.node.name, "(", edge.target.name,")")
                         var e = _canvas.addEdge(edge);
                     }
                 }
@@ -228,9 +219,6 @@ Control {
         }
 
         function addNode(node) {
-            console.log("originx, x", _internal.originX, node.position.x)
-            console.log("originy, y", _internal.originY, node.position.y)
-
             var node_component = Qt.createComponent("PipelineNode.qml");
             if (node_component.status == Component.Ready) {
                 var n = node_component.createObject(_canvas, {
@@ -241,7 +229,6 @@ Control {
                     "workspaceIndex": window.current_workspace_index()
                 });
                 nodes[node] = n;
-                console.log("Adding node...", n)
                 return n;
             } else {
                 console.error(node_component.errorString());
@@ -290,7 +277,6 @@ Control {
                 });
 
                 edges.push(e);
-                console.log("Adding edge...", e)
                 return e;
             } else {
                 console.error(edge_component.errorString());

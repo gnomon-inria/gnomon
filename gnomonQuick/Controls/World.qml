@@ -47,17 +47,29 @@ ListView {
             _world_model.append({"form_id": id })
             _control.currentIndex = _world_model.count - 1;
             _control.currentRef = id;
-            _control.containsMouse = Qt.binding(function() {
-                let in_delegate = false;
-                for(let index=0; index<_world_model.count; index++) {
-                    in_delegate = in_delegate || _control.itemAtIndex(index).containsMouse;
-                }
-                return in_delegate;
-            });
+            updateContainsMouse();
+        }
+        function onRemoved(id) {
+            _control.currentIndex = -1;
+            _control.currentRef = -1;
+            updateContainsMouse();
         }
         function onAlreadyAdded() {
             _already_added_toast.open();
         }
+    }
+
+
+    function updateContainsMouse() {
+        _control.containsMouse = Qt.binding(function() {
+            let in_delegate = false;
+            for(let index=0; index<_world_model.count; index++) {
+                if (_control.itemAtIndex(index)) {
+                    in_delegate = in_delegate || _control.itemAtIndex(index).containsMouse;
+                }
+            }
+            return in_delegate;
+        });
     }
 
     G.Toast {
