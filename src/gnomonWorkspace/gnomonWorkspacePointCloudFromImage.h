@@ -1,47 +1,24 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include "gnomonAlgorithmWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspacePointCloudFromImage : public dtkWidgetsWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspacePointCloudFromImage : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "\
+This workspace allows to detect punctual objects in a 3D image such as spots, \
+or object centers, and represents them as a Point Cloud form.\n\
+\n\
+The points are detected from the input Image in the left view, and the \
+detected point cloud will be displayed in the right view.\n\
+\n")
 
 public:
-     gnomonWorkspacePointCloudFromImage(QWidget *parent = nullptr);
+     gnomonWorkspacePointCloudFromImage(QObject *parent = nullptr);
     ~gnomonWorkspacePointCloudFromImage(void);
 
-public:
-    void enter(void) override;
-    void leave(void) override;
-
-public slots:
-    void apply(void) override;
-    void configure(const QString& text);
-
-public:
-    static const QColor color;
-
-public:
-    static bool isEmpty(void);
-
-private:
-    class gnomonWorkspacePointCloudFromImagePrivate *d;
 };
 
 //
