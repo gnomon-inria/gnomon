@@ -45,7 +45,7 @@ void gnomonPointCloudFromImageCommand::setAlgorithmName(const QString& algo_name
 
 void gnomonPointCloudFromImageCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonPointCloudFromImageCommand::postdo(void)
@@ -121,7 +121,7 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudFromImageCommand::outputTypes(
 }
 
 void gnomonPointCloudFromImageCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
-    if (name == "image") {
+    if (name == "input") {
         this->setInput(std::dynamic_pointer_cast<gnomonImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;

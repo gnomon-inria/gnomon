@@ -4,7 +4,7 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspacePointCloudFromImage : public gnomonAlgorithmWorkspace
+class GNOMONWORKSPACE_EXPORT gnomonWorkspacePointDetection : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
     Q_CLASSINFO("description", "\
@@ -16,10 +16,10 @@ detected point cloud will be displayed in the right view.\n\
 \n")
 
 public:
-     gnomonWorkspacePointCloudFromImage(QObject *parent = nullptr);
-    ~gnomonWorkspacePointCloudFromImage(void);
+     gnomonWorkspacePointDetection(QObject *parent = nullptr);
+    ~gnomonWorkspacePointDetection(void);
 
 };
 
 //
-// gnomonWorkspacePointCloudFromImage.h ends here
+// gnomonWorkspacePointDetection.h ends here

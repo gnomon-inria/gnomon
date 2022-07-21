@@ -1,4 +1,4 @@
-#include "gnomonWorkspacePointCloudFromImage.h"
+#include "gnomonWorkspacePointDetection.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
 #include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudFromImage.h>
@@ -9,7 +9,7 @@
 // gnomonWorkspacePointCloudFromImage
 // ///////////////////////////////////////////////////////////////////
 
-gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QObject *parent) : gnomonAlgorithmWorkspace(parent)
+gnomonWorkspacePointDetection::gnomonWorkspacePointDetection(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
     loadPluginGroup("pointCloudFromImage");
     emit algorithmsLoaded();
@@ -29,7 +29,7 @@ gnomonWorkspacePointCloudFromImage::gnomonWorkspacePointCloudFromImage(QObject *
     d->updatePool();
 }
 
-gnomonWorkspacePointCloudFromImage::~gnomonWorkspacePointCloudFromImage(void)
+gnomonWorkspacePointDetection::~gnomonWorkspacePointDetection(void)
 {
     gnomonPointCloudFromImageCommand *command = (gnomonPointCloudFromImageCommand *)d->command;
     if (command) {
@@ -39,4 +39,4 @@ gnomonWorkspacePointCloudFromImage::~gnomonWorkspacePointCloudFromImage(void)
 
 
 //
-// gnomonWorkspacePointCloudFromImage.cpp ends here
+// gnomonWorkspacePointDetection.cpp ends here
