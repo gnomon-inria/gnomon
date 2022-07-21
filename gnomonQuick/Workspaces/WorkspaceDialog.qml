@@ -228,6 +228,12 @@ G.Dialog {
             available: true
         }
         ListElement {
+            type: "gnomonWorkspacePointDetection"
+            title: "Point Detection"
+            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePointDetection.qml"
+            available: true
+        }
+        ListElement {
             type: "gnomonWorkspacePreprocess"
             title: "Preprocessing"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
@@ -265,6 +271,7 @@ G.Dialog {
         _internal.workspace_groups["gnomonWorkspaceCellImageQuantification"] = "cellImageQuantification"
         _internal.workspace_groups["gnomonWorkspaceMorphonet"] = ""
         _internal.workspace_groups["gnomonWorkspaceCellImageTracking"] = "cellImageTracking"
+        _internal.workspace_groups["gnomonWorkspacePointDetection"] = "pointCloudFromImage"
         _internal.workspace_groups["gnomonWorkspacePreprocess"] = "imageFilter"
         _internal.workspace_groups["gnomonWorkspacePythonAlgorithm"] = "formAlgorithm"
         _internal.workspace_groups["gnomonWorkspaceRegistration"] = "imageRegistration"
