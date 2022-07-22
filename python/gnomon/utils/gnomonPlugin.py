@@ -240,7 +240,10 @@ def gnomonParametric(cls):
     cls.__setitem__ = __setitem__
 
     def __getitem__(self, key):
-        return self._parameters[key].value()
+        if  self._parameters[key].typeName() == "dtkCoreParameterPath":
+            return self._parameters[key].path()
+        else:
+            return self._parameters[key].value()
 
     cls.__getitem__ = __getitem__
 
