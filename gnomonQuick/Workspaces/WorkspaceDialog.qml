@@ -192,6 +192,12 @@ G.Dialog {
         description: _internal.selected_workspace ? _internal.selected_workspace.description : ""
         plugins : _internal.selected_workspace ? _internal.workspace_plugins[_internal.selected_workspace.type] : []
 
+        onOpenWithAlgo : (algo_name) => {
+            let selected_workspace = _internal.selected_workspace
+            window.add_workspace(selected_workspace.source)
+            window.current_workspace().d.algoName = algo_name
+            _self.close()
+        }
     }
 
     ListModel {

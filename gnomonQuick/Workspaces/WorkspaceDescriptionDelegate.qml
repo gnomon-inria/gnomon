@@ -19,6 +19,7 @@ Item {
     property var title: ""
     property var description: ""
     property var plugins: []
+    signal openWithAlgo(string algo_name)
 
     ColumnLayout {
         spacing: 6
@@ -118,7 +119,12 @@ Item {
                     height: G.Style.smallLabelHeight
                     text: modelData
                     font: G.Style.fonts.value
-                    hoverEnabled: false
+                    hoverEnabled: true
+
+                    onDoubleClicked: {
+                        _plugins.currentIndex = index
+                        openWithAlgo(modelData)
+                    }
                 }
 
                 ScrollIndicator.vertical: ScrollIndicator { visible: _plugins.contentHeight > _plugins_section.height; }

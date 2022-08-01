@@ -46,6 +46,19 @@ Control {
                     d.algoName = d.algorithms[d.currentIndex];
                 }
             }
+
+            // creating an alias for signal handling
+            property string algoName: d ? d.algoName : ""
+            onAlgoNameChanged: {
+                if(d.algoName != d.algorithms[_algos.currentIndex]) {
+                    for(let i=0; i<model.length; i++) {
+                        if(d.algorithms[i] == d.algoName) {
+                            _algos.currentIndex = i
+                            d.currentIndex = i
+                        }
+                    }
+                }
+            }
         }
 
         ListView {
