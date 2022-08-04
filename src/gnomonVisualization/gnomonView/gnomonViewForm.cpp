@@ -1574,6 +1574,10 @@ gnomonDynamicFormMetadata* gnomonViewForm::formMetadata(const QString &name) {
     return ptr;
 }
 
+bool gnomonViewForm::empty(void) {
+    return d->forms.empty();
+}
+
 // ///////////////////////////////////////////////////////////////////
 
 #include "gnomonViewForm.moc"

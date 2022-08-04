@@ -561,6 +561,10 @@ void gnomonViewMatplotlib::setFigureNumber(int num)
     emit figureNumberChanged(num);
 }
 
+bool gnomonViewMatplotlib::empty(void) {
+    return d->forms.empty();
+}
+
 // ///////////////////////////////////////////////////////////////////
 
 #include "gnomonViewMatplotlib.moc"

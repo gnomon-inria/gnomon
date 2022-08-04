@@ -134,6 +134,7 @@ public:
 public:
     QStringList formNames(void);
     QStringList acceptedForms(void);
+    bool empty(void);
     bool inputView(void);
     bool synced(void);
     bool syncing(void);
