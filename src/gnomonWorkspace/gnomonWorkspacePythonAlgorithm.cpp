@@ -438,7 +438,9 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
 
         if (output_form_added) {
             this->target()->render();
-            this->target()->tryLinking();
+            if(!this->target()->synced()) {
+                this->target()->tryLinking();
+            }
             d->registerPipeline();
         }
     }
