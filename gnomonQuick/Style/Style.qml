@@ -302,8 +302,8 @@ QtObject {
 
         property font h3: Qt.font({
             family: "Poppins",
-            weight: Font.Normal,
-            pointSize: S.fontScale["200"],
+            weight: Font.Medium,
+            pointSize: S.fontScale["250"],
         })
 
         property font formLabel: Qt.font({

@@ -15,6 +15,8 @@ import gnomonQuick.Workspaces as G
 import gnomonQuick.Style as G
 import gnomonQuick.Icons as G
 
+import gnomon.Pipeline  1.0 as GP
+
 
 G.Workspace {
 
@@ -225,23 +227,6 @@ G.Workspace {
                         }
 
                         G.Button {
-                            id: _new
-
-                            anchors.right: _project_header.right;
-                            anchors.verticalCenter: _project_header.verticalCenter;
-                            anchors.margins: G.Style.mediumPadding
-
-                            size: G.Style.ButtonSize.Large
-
-                            text: "New"
-                            iconName: G.Icons.icons["plus"]
-
-                            onClicked: {
-                                switch_from_launcher()
-                            }
-                        }
-
-                        G.Button {
                             anchors.right: _new.left
                             anchors.verticalCenter: _project_header.verticalCenter;
                             anchors.margins: G.Style.mediumPadding
@@ -256,6 +241,31 @@ G.Workspace {
                                 _file_dialog.open()
                             }
                         }
+
+                        G.Button {
+                            id: _new
+
+                            anchors.right: _project_header.right;
+                            anchors.verticalCenter: _project_header.verticalCenter;
+                            anchors.margins: G.Style.mediumPadding
+
+                            size: G.Style.ButtonSize.Large
+                            type: new_pipeline_info.visible ? G.Style.ButtonType.OK : G.Style.ButtonType.Base
+
+                            text: "New"
+                            iconName: G.Icons.icons["plus"]
+
+                            onClicked: {
+                                if(new_pipeline_info.visible) {
+                                    new_pipeline_info.close()
+                                    GP.PipelineManager.pipeline.name = new_pipeline_info.pipeline_title
+                                    GP.PipelineManager.pipeline.description = new_pipeline_info.pipeline_descr
+                                    switch_from_launcher()
+                                } else {
+                                    new_pipeline_info.open()
+                                }
+                            }
+                        }
                     }
 
                     Control {
@@ -263,6 +273,99 @@ G.Workspace {
 
                         Layout.fillWidth: true;
                         Layout.fillHeight: true;
+
+                        Popup {
+                            id: new_pipeline_info
+                            height: _projects.height
+                            width: G.Style.mediumPanelWidth
+                            x: _projects.x + _projects.width - width
+                            //x: _projects.x
+                            y: _project_header.y
+                            modal: false
+                            topInset: 0
+
+                            property alias pipeline_title: _pipeline_title.text
+                            property alias pipeline_descr: _pipeline_description.text
+
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: G.Style.colors.bgColor;
+                                border.color: G.Style.colors.gutterColor
+                                border.width: G.Style.borderWidth
+                            }
+
+
+                            ColumnLayout {
+                                id: _layout
+                                anchors.fill: parent
+
+                                Label {
+                                    Layout.fillWidth: true;
+                                    text: "New project infos"
+                                    font: G.Style.fonts.h3
+
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignTop
+
+                                    wrapMode: Text.Wrap
+                                    color: G.Style.colors.textColorBase
+
+                                }
+
+                                Label {
+                                    Layout.fillWidth: true;
+                                    text: "Title"
+                                    font: G.Style.fonts.formLabel
+
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignTop
+
+                                    wrapMode: Text.Wrap
+                                    color: G.Style.colors.textColorBase
+                                }
+
+                                TextField {
+                                    id: _pipeline_title
+                                    Layout.fillWidth: true;
+                                    text: ""
+                                    placeholderText: "Pipeline's title"
+                                    font: G.Style.fonts.value
+
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignTop
+
+                                    wrapMode: Text.Wrap
+                                    color: G.Style.colors.textColorBase
+                                }
+
+                                Label {
+                                    Layout.fillWidth: true;
+                                    text: "Description"
+                                    font: G.Style.fonts.formLabel
+
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignTop
+
+                                    wrapMode: Text.Wrap
+                                    color: G.Style.colors.textColorBase
+                                }
+
+                                G.TextArea {
+                                    id: _pipeline_description
+                                    Layout.fillWidth: true;
+                                    Layout.fillHeight: true;
+                                    text: ""
+                                    placeholderText: "Enter the desciption of the pipeline here ..."
+                                    font: G.Style.fonts.value
+
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignTop
+
+                                    wrapMode: Text.Wrap
+                                    color: G.Style.colors.textColorBase
+                                }
+                            }
+                        }
 
                         background: Rectangle {
                             radius: G.Style.panelRadius;
@@ -292,7 +395,7 @@ G.Workspace {
                                 type: G.Style.CardType.Background
                                 outline: true
                                 title: name
-                                body: "Description: " + description
+                                body: description
                                 tooltip: source
                                 // there are no thumbnails for now
                                 //thumbnail: "image://thumbnails/project_" + index
