@@ -44,6 +44,14 @@ G.Dialog {
 
     onAccepted: {
         if (_internal.selected_workspace) {
+            if(!window.check_if_forms_in_world()) {
+                console.log(_internal.selected_workspace)
+                console.log(_internal.selected_workspace.source)
+                console.log(_list_view.currentIndex)
+                no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
+                no_form_exported_dialog.open()
+                return
+            }
             window.add_workspace(_internal.selected_workspace.source);
             _self.close();
         }
@@ -81,7 +89,7 @@ G.Dialog {
             }
 
             onAccepted: {
-                _self.onAccepted()
+                _self.accept()
             }
 
             Keys.onPressed: (event) => {
@@ -135,8 +143,7 @@ G.Dialog {
 
                     onDoubleClicked: {
                         _list_view.currentIndex = index
-                        window.add_workspace(model.source);
-                        _self.close();
+                        _self.accept()
                     }
 
                     G.Icon {
@@ -198,6 +205,94 @@ G.Dialog {
             window.current_workspace().d.algoName = algo_name
             _self.close()
         }
+    }
+
+    G.Dialog {
+        id: no_form_exported_dialog
+        width: G.Style.mediumDialogWidth
+        height: G.Style.mediumDialogHeight
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+
+        property string workspace_source: ""
+
+        modal: true
+        title: "No form exported yet."
+
+        onAccepted: {
+            window.add_workspace(workspace_source);
+        }
+
+        ColumnLayout {
+            anchors.fill: parent
+            Label {
+                Layout.fillWidth: true
+                Layout.fillHeight: false
+
+                text: "There are currently no forms in the world (top bar). You probably want to export a form to it with the export button : "
+                wrapMode: TextInput.Wrap
+                font: G.Style.fonts.value
+                color: G.Style.colors.textColorBase
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignJustify
+            }
+            G.Icon {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                icon: G.Icons.icons["arrow-up-drop-circle"]
+                color: G.Style.colors.textColorNeutral
+                font: G.Style.fonts.header
+            }
+        }
+
+        footer: DialogButtonBox
+        {
+            visible: true
+            // anchors.left: parent.left
+            // anchors.right: parent.right
+            // anchors.bottom: parent.bottom
+            G.Button {
+                id: _cancel_button
+                anchors.right: _ignore_button.left
+                anchors.margins: G.Style.smallRowSpacing
+                text: 'Cancel';
+                flat: true
+                type: G.Style.ButtonType.Neutral
+                onClicked: no_form_exported_dialog.reject();
+            }
+
+            G.Button {
+                anchors.right: _export_button.left
+                anchors.margins: G.Style.smallRowSpacing
+                id: _ignore_button
+                text: 'Ignore';
+                flat: true
+                type: G.Style.ButtonType.Base
+
+                onClicked: {
+                    no_form_exported_dialog.accept();
+                }
+            }
+
+            G.Button {
+                id: _export_button
+                anchors.right: parent.right
+                anchors.margins: G.Style.smallRowSpacing
+                text: 'Export and Continue';
+                iconName: G.Icons.icons["arrow-up-drop-circle"]
+                flat: false
+                type: G.Style.ButtonType.OK
+                width: G.Style.buttonWidth * 2
+
+                onClicked: {
+                    // export
+                    let workspace = window.current_workspace()
+                    workspace.d.export_outputs()
+                    no_form_exported_dialog.accept();
+                }
+            }
+        }
+
     }
 
     ListModel {
