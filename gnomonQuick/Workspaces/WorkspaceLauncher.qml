@@ -33,6 +33,7 @@ G.Workspace {
         currentFile: _workspace.current_file;
         folder: P.StandardPaths.writableLocation(P.StandardPaths.HomeLocation);
         modality: Qt.NonModal;
+        nameFilters: ["Json files (*.json)"]
 
         onAccepted: {
             console.log('Loading an existing project');
