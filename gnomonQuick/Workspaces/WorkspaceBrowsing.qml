@@ -67,7 +67,20 @@ G.Workspace {
             }
         }
 
+        onNoReaderAvailable: (ext) => {
+            console.log("No reader available: extension not recognized.")
+            extension_error.message = "No reader available: extension not recognized."
+            extension_error.open()
+        }
+
         onFinished: idleStop();
+    }
+
+    G.Toast {
+        id: extension_error
+        header: "Reader error"
+        message: ""
+        type: G.Style.ButtonType.Warning
     }
 
 // /////////////////////////////////////////////////////////////////////////////
