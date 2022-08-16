@@ -505,6 +505,12 @@ void gnomonWorkspacePythonAlgorithm::restoreState(void)
     }
 }
 
+void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
+    for(const auto &output_view: d->targets->views()) {
+        output_view->transmit();
+    }
+}
+
 
 
 //

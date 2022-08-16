@@ -70,6 +70,7 @@ public slots:
     void restoreState(void);
     void onDataLoaded(int startTime, int endTime);
 
+    void export_outputs(void) override;
 
 private:
     class gnomonWorkspaceMorphonetPrivate *d;

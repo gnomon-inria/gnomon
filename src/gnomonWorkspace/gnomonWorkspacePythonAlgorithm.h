@@ -82,6 +82,8 @@ public slots:
     virtual void setInputs(void);
     virtual void viewOutputs(void);
 
+    void export_outputs(void) override;
+
 public:
     static bool isEmpty(void);
 

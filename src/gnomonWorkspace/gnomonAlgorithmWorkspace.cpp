@@ -117,6 +117,12 @@ void gnomonAlgorithmWorkspace::setCurrentIndex(int i) {
     }
 }
 
+void gnomonAlgorithmWorkspace::export_outputs(void) {
+    for(const auto &output_view: d->targets->views()) {
+        output_view->transmit();
+    }
+}
+
 QJSValue gnomonAlgorithmWorkspace::parameters(void)
 {
     QJSValue parameters = dtkCoreParameterCollection(d->command->parameters()).toJSValue(this);

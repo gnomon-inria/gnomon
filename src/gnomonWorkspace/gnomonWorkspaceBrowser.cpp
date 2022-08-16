@@ -612,6 +612,10 @@ QStringList gnomonWorkspaceBrowser::readerExtensions(void)
     return d->fileReaderCommands.keys();
 }
 
+void gnomonWorkspaceBrowser::export_outputs(void) {
+    d->browse_view->transmit();
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspaceBrowser.moc"
