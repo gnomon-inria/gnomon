@@ -42,6 +42,7 @@ public slots:
     virtual void viewOutputs(void);
     virtual void saveState(void);
     virtual void restoreState(void);
+    virtual void export_outputs(void);
 
 public:
     QString algoName(void) const;

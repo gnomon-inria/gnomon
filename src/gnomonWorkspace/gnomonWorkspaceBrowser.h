@@ -44,6 +44,8 @@ public slots:
     inline void saveState() {};  // nothing to be saved
     void restoreState();
 
+    void export_outputs(void) override;
+
 public:
     Q_INVOKABLE QUrl defaultReadPath();
     Q_INVOKABLE gnomonViewForm *view(void);

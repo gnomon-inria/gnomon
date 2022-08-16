@@ -489,3 +489,7 @@ void gnomonWorkspaceMorphonet::restoreState(void)
 {
     //TODO
 }
+
+void gnomonWorkspaceMorphonet::export_outputs(void) {
+    d->view->transmit();
+}
