@@ -100,7 +100,8 @@ void gnomonWorkspaceBrowserPrivate::findReaders(const QString &default_plugin)
         }
         emit q->available(reader_descs);
     } else {
-        dtkWarn() << Q_FUNC_INFO << "File format"<<this->ext<<"is not supported.";
+        emit q->noReaderAvailable(this->ext);
+        dtkWarn() << Q_FUNC_INFO << "File format "<<this->ext<<" is not supported.";
     }
     
     return;
@@ -514,7 +515,7 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
         QStringList filenames = d->filename.split(",");
 
         QString filename = filenames[0].split(".").join(".").toLower();
-        QString ext;
+        QString ext = "";
 
         QMap<QString, QMap<QString, gnomonAbstractCommand *> > ::iterator i;
         for (i = d->fileReaderCommands.begin(); i != d->fileReaderCommands.end(); ++i)
@@ -526,7 +527,8 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
         }
                     
         if(ext.isEmpty()) {
-            dtkWarn() << Q_FUNC_INFO << "Selected files don't have the same extension. Please select files with the same extensions.";
+            dtkWarn() << Q_FUNC_INFO << "Extension not recognized";
+            d->ext = "";
             return;
         }
 
@@ -540,6 +542,7 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
             auto index = zip_name_locate(z, name, 0);
             if(index < 0) {
                 dtkWarn() << Q_FUNC_INFO << "Invalid time series container. Containers doesn't have a manifest.json file.";
+                d->ext = "";
                 return;
             }
 
@@ -565,6 +568,7 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
             auto manifest = manifest_doc.object();
             if(!(manifest.contains("extension") && manifest.contains("series"))) {
                 dtkWarn() << Q_FUNC_INFO << "Invalid time series container. manifest.json does not provide both extension and files fields";
+                d->ext = "";
                 return;
             }
             d->ext = manifest["extension"].toString();

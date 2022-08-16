@@ -32,6 +32,7 @@ public:
 signals:
     void available(const QVariantMap& readers);
     void readerPathChanged(void);
+    void noReaderAvailable(QString);
 
 public:
     const QString& readerPath(void) const;
