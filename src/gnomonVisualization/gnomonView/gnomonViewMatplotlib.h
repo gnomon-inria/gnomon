@@ -45,6 +45,7 @@ public:
     QStringList formNames(void);
     QStringList acceptedForms(void);
     bool inputView(void);
+    bool empty(void);
 
 signals:
     void formsChanged(void);
