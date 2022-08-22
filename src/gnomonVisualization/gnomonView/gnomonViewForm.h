@@ -11,6 +11,7 @@
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
+#include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 
@@ -125,6 +126,7 @@ public:
     void setCellComplex(std::shared_ptr<gnomonCellComplexSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
     void setCellImage(std::shared_ptr<gnomonCellImageSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
     void setImage(std::shared_ptr<gnomonImageSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
+    void setLString(std::shared_ptr<gnomonLStringSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
     void setMesh(std::shared_ptr<gnomonMeshSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
     void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
 
@@ -151,6 +153,7 @@ public:
     std::shared_ptr<gnomonCellComplexSeries> cellComplex(void);
     std::shared_ptr<gnomonCellImageSeries> cellImage(void);
     std::shared_ptr<gnomonImageSeries> image(void);
+    std::shared_ptr<gnomonLStringSeries> lString(void);
     std::shared_ptr<gnomonMeshSeries> mesh(void);
     std::shared_ptr<gnomonPointCloudSeries> pointCloud(void);
 
