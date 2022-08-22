@@ -1,4 +1,5 @@
 import os
+import sys
 import traceback
 import logging
 import warnings
@@ -19,6 +20,7 @@ from pkg_resources import iter_entry_points, resource_filename
 from setuptools import findall
 
 import gnomon.core
+from gnomon.utils.logCapture import StreamCapture
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
@@ -651,7 +653,7 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
 
 def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     # -----------------------------------------------------
-    # Python error management
+    # Doc and Version
     # -----------------------------------------------------
 
     def documentation(self):
@@ -677,6 +679,36 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
         return self.__version__
 
     cls.version = _version
+
+    # -----------------------------------------------------
+    # TCP Logging
+    # -----------------------------------------------------
+
+    # attach output capture to run method
+    if hasattr(cls, "run"):
+        _old_run = cls.run
+
+        @wraps(_old_run)
+        def logger_init(self, *args, **kwargs):
+            # logger init
+            _logger = None
+            try:
+                _logger = StreamCapture([sys.stdout, sys.stderr], echo=True)
+            except Exception as e:
+                logging.warn("Could not initialize logger.")
+                print(e)
+            # base run
+            out = _old_run(self, *args, **kwargs)
+            # cleanup
+            if _logger:
+                _logger.close()
+            return out
+
+        cls.run = logger_init
+
+    # -----------------------------------------------------
+    # Python error management
+    # -----------------------------------------------------
 
     def wrapper(f):
         @wraps(f)
