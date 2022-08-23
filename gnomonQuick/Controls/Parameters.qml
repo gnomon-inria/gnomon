@@ -41,7 +41,8 @@ Item {
 
     Component {
         id: _path_component
-        C.Path {param: lparam}
+        //C.Path {param: lparam}
+        G.PathParameter {param: lparam}
     }
 
     Component {
