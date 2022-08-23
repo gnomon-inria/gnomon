@@ -1235,7 +1235,7 @@ QStringList gnomonViewForm::formVisualizations(const QString& name)
              visu_names = gnomonVisualization::visualizationCellImage::pluginFactory().keys();
         } else if (name == "gnomonImage") {
              visu_names = gnomonVisualization::visualizationImage::pluginFactory().keys();
-        } else if (name == "gnomonlString") {
+        } else if (name == "gnomonLString") {
             visu_names = gnomonVisualization::visualizationLString::pluginFactory().keys();
         } else if (name == "gnomonMesh") {
              visu_names = gnomonVisualization::visualizationMesh::pluginFactory().keys();
