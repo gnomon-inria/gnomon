@@ -7,6 +7,8 @@
 
 
 class gnomonLogCaptureServerPrivate {
+
+public:
     gnomonLogCaptureServerPrivate();
     ~gnomonLogCaptureServerPrivate();
 
@@ -48,7 +50,11 @@ gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QObject(parent)
 
 gnomonLogCaptureServer::~gnomonLogCaptureServer() {
     s_instance = nullptr;
+    delete d;
 }
+
+gnomonLogCaptureServer *gnomonLogCaptureServer::s_instance = nullptr;
+
 
 gnomonLogConnection *gnomonLogCaptureServer::getPendingConnection() {
     //TODO: check QML ownership
@@ -62,4 +68,3 @@ gnomonLogCaptureServer *gnomonLogCaptureServer::instance(void) {
     return s_instance;
 }
 
-#include "gnomonLogCaptureServer.moc"
