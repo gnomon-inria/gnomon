@@ -19,6 +19,7 @@ class StreamCapture:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(TIMEOUT)
         self.sock.connect(ADDR)
+        # TODO: wait for a message before proceeding
         self.fd = {}
         self.dup_fd = {}
         self.oldwrite = {}
