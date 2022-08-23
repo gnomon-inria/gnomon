@@ -11,6 +11,7 @@ import xQuick.Style     1.0 as X
 
 import gnomonQuick.Controls 1.0 as G
 import gnomonQuick.Style 1.0 as G
+//import gnomon.Visualization   1.0 as GV
 
 G.Page {
 
@@ -26,6 +27,77 @@ G.Page {
     G.Parameters {
         id: _params;
         parameters: d ? d.parameters : null;
+    }
+
+    Control {
+        id: _logs_control
+        anchors.top: parent.top
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+        anchors.bottom: _banner.top;
+        anchors.margins: G.Style.mediumPadding;
+
+        enabled: false
+        visible: false
+
+        property var log_connection = undefined;
+
+        background: Rectangle {
+            anchors.fill: parent
+            color: G.Style.colors.bgColor
+            opacity: 0.7
+        }
+
+        Label {
+            id: _logs_title
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: G.Style.mediumPadding;
+            text: qsTr("Logs")
+            font: G.Style.fonts.formLabel
+
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
+
+            wrapMode: Text.Wrap
+            color: G.Style.colors.textColorBase
+        }
+
+        G.TextArea {
+            id: _console
+            anchors.top: _logs_title.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: G.Style.mediumPadding;
+
+            text: log_connection ? log_connection.text : "/!\\ Disconnected /!\\"
+
+            font: G.Style.fonts.value
+
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignTop
+
+            wrapMode: Text.Wrap
+            color: G.Style.colors.textColorBase
+        }
+
+        function display_console() {
+            _logs_control.z = Infinity;
+            _logs_control.enabled = true;
+            _logs_control.visible = true;
+        }
+
+        function close_console() {
+            _logs_control.visible = false;
+            _logs_control.enabled = false;
+        }
+
+        function new_connection() {
+            //_logs_control.log_connection = GV.Visualization.LogServer.getPendingConnection();
+        }
     }
 
     Rectangle {
@@ -85,9 +157,12 @@ G.Page {
         _banner.z = Infinity;
         _banner.visible = true;
         _banner_indicator.running = true;
+        new_connection()
+        display_console()
     }
 
     function idleStop() {
         _banner.visible = false;
+        close_console()
     }
 }
