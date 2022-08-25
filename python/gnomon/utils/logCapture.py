@@ -19,6 +19,9 @@ class StreamCapture:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(TIMEOUT)
         self.sock.connect(ADDR)
+        print("========= Log connection established")
+        self.sock.sendall(b"hello ?!")
+        print(self.sock.getpeername())
         # TODO: wait for a message before proceeding
         self.fd = {}
         self.dup_fd = {}

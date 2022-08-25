@@ -13,21 +13,18 @@ public:
     ~gnomonLogCaptureServerPrivate();
 
 public:
-    QTcpServer server;
     QQueue<gnomonLogConnection*> pending_connections;
     QList<QTcpSocket*> sockets;
     static bool alive;
 };
 bool gnomonLogCaptureServerPrivate::alive = false;
 
-gnomonLogCaptureServerPrivate::gnomonLogCaptureServerPrivate(): server() {
-    server.listen(QHostAddress::LocalHost, 54600);
+gnomonLogCaptureServerPrivate::gnomonLogCaptureServerPrivate() {
     alive = true;
 }
 
 gnomonLogCaptureServerPrivate::~gnomonLogCaptureServerPrivate() {
     alive = false;
-    server.close();
     while(!pending_connections.isEmpty()) {
         auto *connection = pending_connections.dequeue();
         delete connection;
@@ -39,32 +36,59 @@ gnomonLogCaptureServerPrivate::~gnomonLogCaptureServerPrivate() {
 
 // --- gnomonLogCaptureServer ------------------------------------------------------------------------------------------
 
-gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QObject(parent), d() {
+gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QTcpServer(parent), d(new gnomonLogCaptureServerPrivate()) {
     s_instance = this;
-    connect(&d->server, &QTcpServer::newConnection, [this]() {
-        auto socket = this->d->server.nextPendingConnection();
-        auto connection = new gnomonLogConnection(this, socket, &gnomonLogCaptureServerPrivate::alive);
-        this->d->pending_connections.enqueue(connection);
+    if(!QTcpServer::listen(QHostAddress::LocalHost, 54600)) {
+        qDebug() << Q_FUNC_INFO << "Not listening";
+    }
+    auto co1 = connect(this, &QTcpServer::newConnection, this, &gnomonLogCaptureServer::newServerConnectionHandler);
+    auto co2 = connect(this, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
+        qDebug() << Q_FUNC_INFO << error;
     });
+    qDebug() << Q_FUNC_INFO << "New connection handler initialized";
 }
 
 gnomonLogCaptureServer::~gnomonLogCaptureServer() {
+    QTcpServer::close();
     s_instance = nullptr;
     delete d;
 }
 
 gnomonLogCaptureServer *gnomonLogCaptureServer::s_instance = nullptr;
 
+void gnomonLogCaptureServer::newServerConnectionHandler(void) {
+    qDebug() << Q_FUNC_INFO << " ========= Receiving new connection";
+    auto socket = QTcpServer::nextPendingConnection();
+    auto connection = new gnomonLogConnection(this, socket, &gnomonLogCaptureServerPrivate::alive);
+    this->d->pending_connections.enqueue(connection);
+    emit newConnection();
+}
 
 gnomonLogConnection *gnomonLogCaptureServer::getPendingConnection() {
     //TODO: check QML ownership
-    return d->pending_connections.dequeue();
+    gnomonLogConnection *connection = nullptr;
+    if(d->pending_connections.empty()) {
+        auto socket = QTcpServer::nextPendingConnection();
+        connection = new gnomonLogConnection(this, socket, &gnomonLogCaptureServerPrivate::alive);
+    } else {
+        connection = d->pending_connections.dequeue();
+    }
+    return connection;
 }
 
 gnomonLogCaptureServer *gnomonLogCaptureServer::instance(void) {
     if(!s_instance) {
-        s_instance = new gnomonLogCaptureServer(nullptr);
+        s_instance = new gnomonLogCaptureServer(0);
     }
     return s_instance;
 }
+
+bool gnomonLogCaptureServer::newConnectionAvailable() {
+    return !d->pending_connections.empty(); // || d->server.hasPendingConnections();
+}
+
+void gnomonLogCaptureServer::incomingConnection(qintptr handle) {
+    QTcpServer::incomingConnection(handle);
+}
+
 
