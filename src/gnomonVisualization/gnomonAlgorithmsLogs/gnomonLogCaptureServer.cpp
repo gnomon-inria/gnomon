@@ -14,7 +14,6 @@ public:
 
 public:
     QQueue<gnomonLogConnection*> pending_connections;
-    QList<QTcpSocket*> sockets;
     static bool alive;
 };
 bool gnomonLogCaptureServerPrivate::alive = false;
@@ -37,12 +36,11 @@ gnomonLogCaptureServerPrivate::~gnomonLogCaptureServerPrivate() {
 // --- gnomonLogCaptureServer ------------------------------------------------------------------------------------------
 
 gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QTcpServer(parent), d(new gnomonLogCaptureServerPrivate()) {
-    s_instance = this;
     if(!QTcpServer::listen(QHostAddress::LocalHost, 54600)) {
         qDebug() << Q_FUNC_INFO << "Not listening";
     }
-    auto co1 = connect(this, &QTcpServer::newConnection, this, &gnomonLogCaptureServer::newServerConnectionHandler);
-    auto co2 = connect(this, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
+    connect(this, &QTcpServer::newConnection, this, &gnomonLogCaptureServer::newServerConnectionHandler);
+    connect(this, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
         qDebug() << Q_FUNC_INFO << error;
     });
     qDebug() << Q_FUNC_INFO << "New connection handler initialized";

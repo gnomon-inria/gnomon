@@ -20,9 +20,6 @@ public:
 public slots:
     gnomonLogConnection *getPendingConnection();
 
-signals:
-    void newConnection(void);
-
 public:
     bool newConnectionAvailable(void);
     static gnomonLogCaptureServer *instance(void);
