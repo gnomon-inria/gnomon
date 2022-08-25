@@ -11,7 +11,7 @@ import xQuick.Style     1.0 as X
 
 import gnomonQuick.Controls 1.0 as G
 import gnomonQuick.Style 1.0 as G
-//import gnomon.Visualization   1.0 as GV
+import gnomon.Visualization   1.0 as GV
 
 G.Page {
 
@@ -40,7 +40,7 @@ G.Page {
         enabled: false
         visible: false
 
-        property var log_connection = undefined;
+        property var log_connection: undefined;
 
         background: Rectangle {
             anchors.fill: parent
@@ -73,7 +73,7 @@ G.Page {
             anchors.bottom: parent.bottom
             anchors.margins: G.Style.mediumPadding;
 
-            text: log_connection ? log_connection.text : "/!\\ Disconnected /!\\"
+            text: _logs_control.log_connection ? _logs_control.log_connection.text : "/!\\ Disconnected /!\\"
 
             font: G.Style.fonts.value
 
@@ -85,6 +85,7 @@ G.Page {
         }
 
         function display_console() {
+            console.log("============ Display")
             _logs_control.z = Infinity;
             _logs_control.enabled = true;
             _logs_control.visible = true;
@@ -96,7 +97,11 @@ G.Page {
         }
 
         function new_connection() {
-            //_logs_control.log_connection = GV.Visualization.LogServer.getPendingConnection();
+            console.log("============ Getting New Connections")
+            _logs_control.log_connection = GV.LogServer.getPendingConnection();
+            console.log(_logs_control.log_connection)
+            _logs_control.display_console()
+            GV.LogServer.newConnection.disconnect(_logs_control.new_connection)
         }
     }
 
@@ -154,15 +159,15 @@ G.Page {
     }
 
     function idleStart() {
+        console.log("==================== Hello ?!")
         _banner.z = Infinity;
         _banner.visible = true;
         _banner_indicator.running = true;
-        new_connection()
-        display_console()
+        GV.LogServer.newConnection.connect(_logs_control.new_connection)
     }
 
     function idleStop() {
         _banner.visible = false;
-        close_console()
+        _logs_control.close_console()
     }
 }
