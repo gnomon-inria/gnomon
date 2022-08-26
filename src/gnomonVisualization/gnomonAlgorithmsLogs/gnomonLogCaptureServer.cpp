@@ -35,6 +35,7 @@ gnomonLogCaptureServerPrivate::~gnomonLogCaptureServerPrivate() {
 // --- gnomonLogCaptureServer ------------------------------------------------------------------------------------------
 
 gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QTcpServer(parent), d(new gnomonLogCaptureServerPrivate()) {
+    // listening to the wrong port for debugging (real port is 54600)
     if(!QTcpServer::listen(QHostAddress::LocalHost, 54601)) {
         qDebug() << Q_FUNC_INFO << "Not listening";
     }
