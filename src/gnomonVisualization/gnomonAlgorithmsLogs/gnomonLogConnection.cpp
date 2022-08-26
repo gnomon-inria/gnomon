@@ -5,7 +5,7 @@
 class gnomonLogConnectionPrivate {
 public:
     explicit gnomonLogConnectionPrivate(QTcpSocket *socket, bool *server_alive);
-
+    ~gnomonLogConnectionPrivate();
 
 public:
     QTcpSocket *socket;
@@ -16,6 +16,12 @@ public:
 gnomonLogConnectionPrivate::gnomonLogConnectionPrivate(QTcpSocket *socket, bool *server_alive):
     socket(socket), text(), server_alive(server_alive) {
 
+}
+
+gnomonLogConnectionPrivate::~gnomonLogConnectionPrivate() {
+    if(*server_alive) {
+        socket->close();
+    }
 }
 
 // --- gnomonLogConnection ---------------------------------------------------------------------------------------------
@@ -30,10 +36,17 @@ QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
             emit this->textChanged();
         }
     });
+    connect(d->socket, &QAbstractSocket::errorOccurred, [=] (auto error) {
+        qDebug() << Q_FUNC_INFO << error;
+    });
+    connect(d->socket, &QTcpSocket::disconnected,
+            d->socket, &QTcpSocket::deleteLater);
+
 }
 
 gnomonLogConnection::~gnomonLogConnection() {
     // do not delete socket
+    delete d;
 }
 
 QString gnomonLogConnection::text() {

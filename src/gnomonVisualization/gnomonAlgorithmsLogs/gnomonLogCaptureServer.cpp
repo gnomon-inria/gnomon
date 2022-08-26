@@ -1,6 +1,5 @@
 #include "gnomonLogCaptureServer.h"
 
-#include <memory>
 #include <QtGui>
 
 #include "gnomonLogConnection"
@@ -36,7 +35,7 @@ gnomonLogCaptureServerPrivate::~gnomonLogCaptureServerPrivate() {
 // --- gnomonLogCaptureServer ------------------------------------------------------------------------------------------
 
 gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QTcpServer(parent), d(new gnomonLogCaptureServerPrivate()) {
-    if(!QTcpServer::listen(QHostAddress::LocalHost, 54600)) {
+    if(!QTcpServer::listen(QHostAddress::LocalHost, 54601)) {
         qDebug() << Q_FUNC_INFO << "Not listening";
     }
     connect(this, &QTcpServer::newConnection, this, &gnomonLogCaptureServer::newServerConnectionHandler);
