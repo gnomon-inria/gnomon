@@ -77,22 +77,39 @@ class StreamCapture:
 
 # for testing
 if __name__ == "__main__":
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(ADDR)
-    client = None
+    import sys
+    print("starttttt")
+    logger = None
     try:
-        server.listen(1)
+        logger = StreamCapture([sys.stdout, sys.stderr], echo=True)
+    except Exception as e:
+        print("Could not initialize logger.")
+        print(e)
+    # base run
+    print("log connection established")
+    print("I am running")
+    print("I have finished")
 
-        print("Waiting for client")
-        client, client_address = server.accept()
-        print("Connection accepted : ", client, client_address)
-        while True:
-            # rlist, wlist, xlist = select.select([client], [], [])
-            data = client.recv(4096)
-            if data:
-                print(str(data, encoding="utf-8"), end="")
-            sleep(0.01)
-    finally:
-        server.close()
-        if client:
-            client.close()
+    # cleanup
+    if logger:
+        logger.close()
+        
+    #server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #server.bind(ADDR)
+    #client = None
+    #try:
+    #    server.listen(1)
+    #
+    #    print("Waiting for client")
+    #    client, client_address = server.accept()
+    #    print("Connection accepted : ", client, client_address)
+    #    while True:
+    #        # rlist, wlist, xlist = select.select([client], [], [])
+    #        data = client.recv(4096)
+    #        if data:
+    #            print(str(data, encoding="utf-8"), end="")
+    #        sleep(0.01)
+    #finally:
+    #    server.close()
+    #    if client:
+    #        client.close()

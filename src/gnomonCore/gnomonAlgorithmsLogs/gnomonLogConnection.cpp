@@ -32,12 +32,13 @@ QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
         if(this->d->server_alive) {
             QByteArray data = this->d->socket->readAll();
             QString data_string = QString::fromUtf8(data);
+            qDebug() << Q_FUNC_INFO << "Received : " << data_string;
             this->d->text.append(data_string);
             emit this->textChanged();
         }
     });
     connect(d->socket, &QAbstractSocket::errorOccurred, [=] (auto error) {
-        qDebug() << Q_FUNC_INFO << error;
+        qDebug() << "Socket Error: " << error;
     });
     connect(d->socket, &QTcpSocket::disconnected,
             d->socket, &QTcpSocket::deleteLater);

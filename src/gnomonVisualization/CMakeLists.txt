@@ -1,17 +1,3 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
 project(gnomonVisualization VERSION ${gnomon_VERSION})
 
 ## #################################################################
@@ -19,7 +5,6 @@ project(gnomonVisualization VERSION ${gnomon_VERSION})
 ## #################################################################
 
 add_subdirectory(gnomonActor)
-add_subdirectory(gnomonAlgorithmsLogs)
 # add_subdirectory(gnomonInspector)
 add_subdirectory(gnomonInteractorStyle)
 add_subdirectory(gnomonManager)
@@ -45,7 +30,6 @@ set(${PROJECT_NAME}_HEADERS
     gnomonCoreParameterLookupTableObject.h # NOTE: Transitional ?
 
     ${${PROJECT_NAME}_ACTOR_HEADERS}
-    ${${PROJECT_NAME}_ALGORITHMSLOGS_HEADERS}
 #   ${${PROJECT_NAME}_INSPECTOR_HEADERS}
     ${${PROJECT_NAME}_INTERACTORSTYLE_HEADERS}
     ${${PROJECT_NAME}_MANAGER_HEADERS}
@@ -62,7 +46,6 @@ set(${PROJECT_NAME}_SOURCES
     gnomonCoreParameterLookupTableObject.cpp # NOTE: Transitional ?
 
     ${${PROJECT_NAME}_ACTOR_SOURCES}
-    ${${PROJECT_NAME}_ALGORITHMSLOGS_SOURCES}
 #   ${${PROJECT_NAME}_INSPECTOR_SOURCES}
     ${${PROJECT_NAME}_INTERACTORSTYLE_SOURCES}
     ${${PROJECT_NAME}_MANAGER_SOURCES}
@@ -90,25 +73,17 @@ add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES_RCC})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Core)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Gui)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Network)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Xml)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Qml)
-# target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Quick)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::QuickWidgets)
 
-# target_link_libraries(${PROJECT_NAME} PRIVATE dtkFonts)
-# target_link_libraries(${PROJECT_NAME} PRIVATE dtkThemes)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
-# target_link_libraries(${PROJECT_NAME} PUBLIC dtkWidgets)
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)
-#target_link_libraries(${PROJECT_NAME} dtkImagingWidgets)
-#
+
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonPipeline)
-# target_link_libraries(${PROJECT_NAME} PRIVATE gnomonWidgets)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
 

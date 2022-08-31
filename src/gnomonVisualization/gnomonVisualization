@@ -10,5 +10,4 @@
 #include "gnomonCoreParameterColor.h"
 #include "gnomonCoreParameterLookupTable.h"
 #include "gnomonLookupTable.h"
-#include "gnomonAlgorithmsLogs/gnomonLogCaptureServer.h"
-#include "gnomonAlgorithmsLogs/gnomonLogConnection.h"
+

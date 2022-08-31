@@ -1,15 +1,15 @@
 #pragma once
 
+#include <QtCore>
 #include <QTcpServer>
-#include <Qt>
 
-#include <gnomonVisualizationExport>
+#include <gnomonCoreExport>
 
 
 class gnomonLogCaptureServerPrivate;
 class gnomonLogConnection;
 
-class GNOMONVISUALIZATION_EXPORT gnomonLogCaptureServer: public QTcpServer {
+class GNOMONCORE_EXPORT gnomonLogCaptureServer: public QTcpServer {
     Q_OBJECT
 private:
     gnomonLogCaptureServer(QObject *parent);

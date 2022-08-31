@@ -1,6 +1,6 @@
 #include "gnomonLogCaptureServer.h"
 
-#include <QtGui>
+//#include <QtGui>
 
 #include "gnomonLogConnection"
 
@@ -35,19 +35,15 @@ gnomonLogCaptureServerPrivate::~gnomonLogCaptureServerPrivate() {
 // --- gnomonLogCaptureServer ------------------------------------------------------------------------------------------
 
 gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QTcpServer(parent), d(new gnomonLogCaptureServerPrivate()) {
-    // listening to the wrong port for debugging (real port is 54600)
-    if(!QTcpServer::listen(QHostAddress::LocalHost, 54601)) {
-        qDebug() << Q_FUNC_INFO << "Not listening";
-    }
-    connect(this, &QTcpServer::newConnection, this, &gnomonLogCaptureServer::newServerConnectionHandler);
-    connect(this, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
-        qDebug() << Q_FUNC_INFO << error;
-    });
+    //connect(this, &QTcpServer::newConnection, this, &gnomonLogCaptureServer::newServerConnectionHandler);
+    //connect(this, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
+    //    qDebug() << Q_FUNC_INFO << "Error:" << error;
+    //});
     qDebug() << Q_FUNC_INFO << "New connection handler initialized";
 }
 
 gnomonLogCaptureServer::~gnomonLogCaptureServer() {
-    QTcpServer::close();
+    this->close();
     s_instance = nullptr;
     delete d;
 }
@@ -59,7 +55,7 @@ void gnomonLogCaptureServer::newServerConnectionHandler(void) {
     auto socket = QTcpServer::nextPendingConnection();
     auto connection = new gnomonLogConnection(this, socket, &gnomonLogCaptureServerPrivate::alive);
     this->d->pending_connections.enqueue(connection);
-    emit newConnection();
+    //emit newConnection();
 }
 
 gnomonLogConnection *gnomonLogCaptureServer::getPendingConnection() {
@@ -77,6 +73,15 @@ gnomonLogConnection *gnomonLogCaptureServer::getPendingConnection() {
 gnomonLogCaptureServer *gnomonLogCaptureServer::instance(void) {
     if(!s_instance) {
         s_instance = new gnomonLogCaptureServer(0);
+        if(!s_instance->listen(QHostAddress::LocalHost, 54600)) {
+            qDebug() << Q_FUNC_INFO << "Not listening";
+        }
+        connect(s_instance, &QTcpServer::newConnection, s_instance, &gnomonLogCaptureServer::newServerConnectionHandler);
+        connect(s_instance, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
+            qDebug() << Q_FUNC_INFO << "Error:" << error;
+        });
+
+        qDebug() << "log server listening on " << s_instance->serverAddress() << ":" << s_instance->serverPort();
     }
     return s_instance;
 }
@@ -86,6 +91,7 @@ bool gnomonLogCaptureServer::newConnectionAvailable() {
 }
 
 void gnomonLogCaptureServer::incomingConnection(qintptr handle) {
+    qDebug() << Q_FUNC_INFO << "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
     QTcpServer::incomingConnection(handle);
 }
 

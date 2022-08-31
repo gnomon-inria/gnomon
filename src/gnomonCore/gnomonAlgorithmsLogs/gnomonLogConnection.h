@@ -3,11 +3,11 @@
 #include <QtCore>
 #include <QTcpSocket>
 
-#include <gnomonVisualizationExport>
+#include <gnomonCoreExport>
 
 class gnomonLogConnectionPrivate;
 
-class GNOMONVISUALIZATION_EXPORT gnomonLogConnection: public QObject {
+class GNOMONCORE_EXPORT gnomonLogConnection: public QObject {
     Q_OBJECT
     Q_PROPERTY(QString text READ text NOTIFY textChanged);
 

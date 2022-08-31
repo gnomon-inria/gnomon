@@ -24,7 +24,6 @@
 #include "gnomonVisualizations/gnomonCellImage/gnomonVisualizationCellImageVolume.h"
 #include "gnomonVisualizations/gnomonImage/gnomonVisualizationImageChannelBlending.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVisualizationMesh.h"
-#include "gnomonAlgorithmsLogs/gnomonLogCaptureServer.h"
 
 namespace gnomonVisualization {
 
@@ -65,8 +64,6 @@ void initialize(const QString& path)
     gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageVolume", gnomonVisualizationCellImageVolumeCreator);
     gnomonVisualization::visualizationImage::pluginFactory().record("gnomonVisualizationImageChannelBlending", gnomonVisualizationImageChannelBlendingCreator);
     gnomonVisualization::visualizationMesh::pluginFactory().record("gnomonVisualizationMesh", gnomonVisualizationMeshCreator);
-
-    gnomonLogCaptureServer::instance();
 }
 
 void uninitialize(void)
