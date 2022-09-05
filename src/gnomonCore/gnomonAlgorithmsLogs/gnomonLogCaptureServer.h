@@ -16,8 +16,10 @@ private:
 public:
     virtual ~gnomonLogCaptureServer() override;
 
-public slots:
-    gnomonLogConnection *getPendingConnection();
+    Q_INVOKABLE gnomonLogConnection *getPendingConnection();
+
+signals:
+    void newPendingLogConnection();
 
 public:
     bool newConnectionAvailable(void);
