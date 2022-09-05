@@ -21,7 +21,7 @@ G.Workspace {
     id: _self;
 
     workspace_title: "Python Algorithm";
-    
+
     property alias code: d.code;
     property alias editor: _editor;
 
@@ -31,6 +31,9 @@ G.Workspace {
 
     d: GW.WorkspacePythonAlgorithm {
         id: d;
+
+        onStarted: idleStart();
+        onFinished: idleStop();
 
         onEditModeChanged: {
             d.code.text = _editor.contents
