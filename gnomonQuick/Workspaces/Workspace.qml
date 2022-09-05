@@ -41,10 +41,11 @@ G.Page {
         visible: false
 
         property var log_connection: undefined;
+        property bool show: false;
 
         background: Rectangle {
             anchors.fill: parent
-            color: G.Style.colors.bgColor
+            color: G.Style.colors.fgColor
             opacity: 0.7
         }
 
@@ -53,7 +54,7 @@ G.Page {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.bottom: parent.bottom
+            //anchors.bottom: parent.bottom
             anchors.margins: G.Style.mediumPadding;
             text: qsTr("Logs")
             font: G.Style.fonts.formLabel
@@ -65,27 +66,40 @@ G.Page {
             color: G.Style.colors.textColorBase
         }
 
-        G.TextArea {
-            id: _console
+        ScrollView {
             anchors.top: _logs_title.bottom
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            anchors.margins: G.Style.mediumPadding;
+            anchors.margins: G.Style.mediumPadding
 
-            text: _logs_control.log_connection ? _logs_control.log_connection.text : "/!\\ Disconnected /!\\"
+            G.TextArea {
+                id: _console
+                anchors.fill: parent
 
-            font: G.Style.fonts.value
+                text: _logs_control.log_connection ? _logs_control.log_connection.text : "/!\\ Disconnected /!\\"
+                readOnly: true
+                font: G.Style.fonts.value
 
-            horizontalAlignment: Text.AlignLeft
-            verticalAlignment: Text.AlignTop
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignTop
 
-            wrapMode: Text.Wrap
-            color: G.Style.colors.textColorBase
+                onTextChanged: {
+                    ScrollBar.position = 1.0
+                }
+
+                wrapMode: Text.Wrap
+                color: G.Style.colors.textColorBase
+                background: G.Gutter {
+                    //anchors.fill: parent
+                    opacity: 0.7
+                }
+            }
         }
 
+
+
         function display_console() {
-            console.log("============ Display")
             _logs_control.z = Infinity;
             _logs_control.enabled = true;
             _logs_control.visible = true;
@@ -97,11 +111,11 @@ G.Page {
         }
 
         function new_connection() {
-            console.log("============ Getting New Connections")
             _logs_control.log_connection = GV.LogServer.getPendingConnection();
-            console.log(_logs_control.log_connection)
-            _logs_control.display_console()
-            GV.LogServer.newConnection.disconnect(_logs_control.new_connection)
+            if(_logs_control.show){
+                _logs_control.display_console()
+            }
+            GV.LogServer.newPendingLogConnection.disconnect(_logs_control.new_connection)
         }
     }
 
@@ -159,15 +173,16 @@ G.Page {
     }
 
     function idleStart() {
-        console.log("==================== Hello ?!")
         _banner.z = Infinity;
         _banner.visible = true;
         _banner_indicator.running = true;
-        GV.LogServer.newConnection.connect(_logs_control.new_connection)
+        _logs_control.show = true;
+        GV.LogServer.newPendingLogConnection.connect(_logs_control.new_connection)
     }
 
     function idleStop() {
         _banner.visible = false;
+        _logs_control.show = false;
         _logs_control.close_console()
     }
 }
