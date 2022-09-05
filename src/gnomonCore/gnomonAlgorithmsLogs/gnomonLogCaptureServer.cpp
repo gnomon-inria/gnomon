@@ -39,7 +39,6 @@ gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QTcpServer(pare
     //connect(this, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
     //    qDebug() << Q_FUNC_INFO << "Error:" << error;
     //});
-    qDebug() << Q_FUNC_INFO << "New connection handler initialized";
 }
 
 gnomonLogCaptureServer::~gnomonLogCaptureServer() {
@@ -51,11 +50,11 @@ gnomonLogCaptureServer::~gnomonLogCaptureServer() {
 gnomonLogCaptureServer *gnomonLogCaptureServer::s_instance = nullptr;
 
 void gnomonLogCaptureServer::newServerConnectionHandler(void) {
-    qDebug() << Q_FUNC_INFO << " ========= Receiving new connection";
+    //qDebug() << Q_FUNC_INFO << " ========= Receiving new connection";
     auto socket = QTcpServer::nextPendingConnection();
     auto connection = new gnomonLogConnection(this, socket, &gnomonLogCaptureServerPrivate::alive);
     this->d->pending_connections.enqueue(connection);
-    //emit newConnection();
+    emit newPendingLogConnection();
 }
 
 gnomonLogConnection *gnomonLogCaptureServer::getPendingConnection() {
@@ -67,6 +66,7 @@ gnomonLogConnection *gnomonLogCaptureServer::getPendingConnection() {
     } else {
         connection = d->pending_connections.dequeue();
     }
+    //QQmlEngine::setObjectOwnership(connection, QQmlEngine::CppOwnership);
     return connection;
 }
 
@@ -91,7 +91,6 @@ bool gnomonLogCaptureServer::newConnectionAvailable() {
 }
 
 void gnomonLogCaptureServer::incomingConnection(qintptr handle) {
-    qDebug() << Q_FUNC_INFO << "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
     QTcpServer::incomingConnection(handle);
 }
 

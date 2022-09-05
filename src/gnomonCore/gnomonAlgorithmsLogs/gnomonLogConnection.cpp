@@ -19,7 +19,8 @@ gnomonLogConnectionPrivate::gnomonLogConnectionPrivate(QTcpSocket *socket, bool 
 }
 
 gnomonLogConnectionPrivate::~gnomonLogConnectionPrivate() {
-    if(*server_alive) {
+    // qDebug() << Q_FUNC_INFO << "LogConnection dying " << socket->peerPort();
+    if(*server_alive && socket->isOpen()) {
         socket->close();
     }
 }
@@ -32,13 +33,13 @@ QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
         if(this->d->server_alive) {
             QByteArray data = this->d->socket->readAll();
             QString data_string = QString::fromUtf8(data);
-            qDebug() << Q_FUNC_INFO << "Received : " << data_string;
             this->d->text.append(data_string);
             emit this->textChanged();
         }
     });
     connect(d->socket, &QAbstractSocket::errorOccurred, [=] (auto error) {
-        qDebug() << "Socket Error: " << error;
+        // qDebug() << "Socket Error: " << error;
+        d->socket->close();
     });
     connect(d->socket, &QTcpSocket::disconnected,
             d->socket, &QTcpSocket::deleteLater);

@@ -19,10 +19,6 @@ class StreamCapture:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(TIMEOUT)
         self.sock.connect(ADDR)
-        print("========= Log connection established")
-        self.sock.sendall(b"hello ?!")
-        print(self.sock.getpeername())
-        # TODO: wait for a message before proceeding
         self.fd = {}
         self.dup_fd = {}
         self.oldwrite = {}
@@ -44,17 +40,28 @@ class StreamCapture:
 
     def printer(self, input_fd, echo_fd):
         while True:
+            sleep(0.001)
             data = os.read(input_fd, 100000)
             if len(data) == 0:
-                self.sock.close()
                 os.close(echo_fd)
                 os.close(input_fd)
+                # print("====== Closing connection")
+                self.sock.close()
                 return
-            self.sock.sendall(data)
+            try:
+                self.sock.sendall(data)
+            except OSError:
+                os.close(echo_fd)
+                os.close(input_fd)
+                print("====== Closing connection due to error")
+                print(data)
+                self.sock.close()
+                return
             if self.echo:
                 os.write(echo_fd, data)
 
     def close(self):
+        # print("====== Closing stream dup")
         if not self.active:
             return
         self.active = False
