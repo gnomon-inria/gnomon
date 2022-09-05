@@ -108,13 +108,24 @@ G.Dialog { id: self;
                 Layout.preferredHeight: G.Style.mediumLabelHeight;
                 Layout.fillWidth: true
             }
-
-            Label { id: descriptionLabel;
-                text: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? self.availableReaders.get(listView.currentIndex).description: "";
-                wrapMode: Text.Wrap
-                font: G.Style.fonts.label
-                Layout.preferredHeight: G.Style.mediumLabelHeight;
+            RowLayout {
+                spacing: G.Style.mediumRowSpacing
                 Layout.fillWidth: true
+
+                Label { id: descriptionLabel;
+                    text: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? self.availableReaders.get(listView.currentIndex).description: "";
+                    wrapMode: Text.Wrap
+                    font: G.Style.fonts.label
+                    Layout.preferredHeight: G.Style.mediumLabelHeight;
+                    Layout.fillWidth: true
+                }
+                Image {
+                    Layout.fillWidth: true
+                    height: 0.5 * parent.height
+                    source: self.availableReaders.get(listView.currentIndex).image_source
+                    source: "qrc:/qml/gnomonQuick/binaryImageReader.png"
+                }
+
             }
         }
     }

@@ -60,7 +60,8 @@ G.Workspace {
                 for (var r in readers) {
                     _reader_dialog.availableReaders.append({
                               "title": r.toString(),
-                        "description": readers[r].toString()
+                            "description": readers[r].toString(),
+                            "image_source": "qrc:/qml/gnomonQuick/" + r.toString() + ".png"
                     });
                 }
                 _reader_dialog.open();
