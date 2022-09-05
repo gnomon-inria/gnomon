@@ -20,6 +20,7 @@ public:
     }
 
 signals:
+    void started(void);
     void finished(void);
 
 public slots:

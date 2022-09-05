@@ -592,7 +592,9 @@ void gnomonWorkspaceBrowser::requestReaders(QString default_reader="")
 
 bool gnomonWorkspaceBrowser::readWith(const QString& reader)
 {
+    emit started();
     return d->readForm(reader);
+    emit finished();
 }
 
 gnomonViewForm *gnomonWorkspaceBrowser::view(void)
