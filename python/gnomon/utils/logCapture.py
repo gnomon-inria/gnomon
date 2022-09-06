@@ -13,12 +13,14 @@ class StreamCapture:
     Adapted from https://stackoverflow.com/a/66808947
     """
     def __init__(self, streams: list, echo=True, monkeypatch=None):
-        self.active = True
+        self.monkeypatch = None
+        self.active = False
         self.streams = streams
         self.echo = echo
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(TIMEOUT)
         self.sock.connect(ADDR)
+        # connected
         self.fd = {}
         self.dup_fd = {}
         self.oldwrite = {}
@@ -37,6 +39,7 @@ class StreamCapture:
             t = threading.Thread(target=self.printer, args=(pipe_read_fd, self.dup_fd[stream]))
             self.threads[stream] = t
             t.start()
+        self.active = True
 
     def printer(self, input_fd, echo_fd):
         while True:

@@ -695,8 +695,8 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
             try:
                 _logger = StreamCapture([sys.stdout, sys.stderr], echo=True)
             except Exception as e:
-                logging.warn("Could not initialize logger.")
-                print(e)
+                logging.warn("Could not initialize logger. Server probably not found.")
+                pass
             # base run
             out = _old_run(self, *args, **kwargs)
             # cleanup
