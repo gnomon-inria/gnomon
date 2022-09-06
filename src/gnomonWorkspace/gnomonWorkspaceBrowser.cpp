@@ -11,6 +11,7 @@
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
@@ -55,6 +56,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
     commands << new gnomonCellComplexReaderCommand;
     commands << new gnomonDataFrameReaderCommand;
     commands << new gnomonImageReaderCommand;
+    commands << new gnomonLStringReaderCommand;
     commands << new gnomonMeshReaderCommand;
     commands << new gnomonPointCloudReaderCommand;
     commands << new gnomonTreeReaderCommand;
@@ -220,6 +222,23 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
             gnomonPipelineManager::instance()->addForm(dataFrame_series);
             this->pipeline_manager->addReader(dataFrameCommand);
         }
+    } else if (gnomonLStringReaderCommand *lStringCommand = dynamic_cast<gnomonLStringReaderCommand *>(readerCommand))
+    {
+        lStringCommand->setPath(path);
+        lStringCommand->redo();
+        std::shared_ptr<gnomonLStringSeries>  lString_series = lStringCommand->lString();
+        if (!lString_series) {
+            dtkWarn() << Q_FUNC_INFO << "Resulting lString series is void.";
+            return false;
+        } else {
+            int form_count = gnomonFormManager::instance()->formCount(lString_series->formName());
+            lString_series->metadata()->set("name", lString_series->formName().remove("gnomon") + QString::number(form_count+1));
+            lString_series->metadata()->set("source", source);
+            this->browse_view->setForm("gnomonLString",lString_series);
+            gnomonPipelineManager::instance()->addForm(lString_series);
+            //this->pipeline_manager->addClonedForm(lString_series,this->browse_view->lString());
+            this->pipeline_manager->addReader(lStringCommand);
+        }
     } else if (gnomonMeshReaderCommand *meshCommand = dynamic_cast<gnomonMeshReaderCommand *>(readerCommand))
     {
         meshCommand->setPath(path);
@@ -292,6 +311,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
     d->browse_view->setAcceptForm("gnomonCellComplex",true);
     d->browse_view->setAcceptForm("gnomonCellImage",true);
     d->browse_view->setAcceptForm("gnomonImage",true);
+    d->browse_view->setAcceptForm("gnomonLString",true);
     d->browse_view->setAcceptForm("gnomonMesh",true);
     d->browse_view->setAcceptForm("gnomonPointCloud",true);
     // d->browse_view->setAcceptDrops(true);

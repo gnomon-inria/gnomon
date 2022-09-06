@@ -60,7 +60,9 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringAdapter.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringTranslation.h>
+#include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringWriter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshAdapter.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshConstructor.h>
@@ -329,7 +331,9 @@ INCLUDE_GNOMON_CONCEPT(gnomonAbstractCellComplexReader, CellComplexReader, gnomo
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageRegistration.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringAdapter.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringTranslation.h>
+%include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractFemSolver.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshAdapter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshConstructor.h>

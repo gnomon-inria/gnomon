@@ -66,6 +66,7 @@
 #include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
 
@@ -638,6 +639,7 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterColorMap, ParameterLookupT
 %include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
 
