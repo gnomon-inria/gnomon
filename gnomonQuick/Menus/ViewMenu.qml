@@ -112,6 +112,7 @@ Control {
 
             label: "Type:"
             model: view.viewLogic.formVisualizations(_form_selector.currentValue);
+            currentIndex: 0
 
             Layout.fillWidth: true;
             /* Layout.leftMargin: 20 */
@@ -125,7 +126,10 @@ Control {
             }
 
             onCurrentValueChanged: {
-                _visu_combobox.currentIndex = model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue))
+                let index = model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue))
+                if(index > -1) {
+                    _visu_combobox.currentIndex = model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue))
+                }
 
                 //_auto_render.checked = false
                 _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
