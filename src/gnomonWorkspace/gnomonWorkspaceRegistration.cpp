@@ -133,20 +133,20 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
 
 void gnomonWorkspaceRegistration::setInputs(void)
 {
-    std::shared_ptr<gnomonImageSeries> input_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->inputs()["input"]);
+    std::shared_ptr<gnomonImageSeries> input_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->inputs()["image"]);
     bool empty_input = (input_image == nullptr);
 
     //gnomonAlgorithmWorkspace::setInputs();
-    d->command->setInputForm("input", d->sources->views()[1]->image());
+    d->command->setInputForm("image", d->sources->views()[1]->image());
 
-    if (empty_input || !d->command->inputs()["input"]) {
+    if (empty_input || !d->command->inputs()["image"]) {
         dd->image_stack.clear();
         dd->transformation_stack.clear();
         emit stackSizeChanged();
         this->setStackLevel(-1);
 
-        if (d->command->inputs()["input"]) {
-            input_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->inputs()["input"]);
+        if (d->command->inputs()["image"]) {
+            input_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->inputs()["image"]);
             dd->image_stack.insert(0, input_image);
             emit stackSizeChanged();
             this->setStackLevel(0);
@@ -198,12 +198,12 @@ void gnomonWorkspaceRegistration::viewOutputs()
 {   
     gnomonAlgorithmWorkspace::viewOutputs();
     gnomonImageRegistrationCommand * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
-    if(command->outputs()["transformation"]) {
-        this->m_target_dict->setForm("gnomonDataDict", command->outputs()["transformation"]->clone());
+    if(command->outputs()["outputTransformation"]) {
+        this->m_target_dict->setForm("gnomonDataDict", command->outputs()["outputTransformation"]->clone());
 
-        int form_count = gnomonFormManager::instance()->formCount(command->outputs()["transformation"]->formName());
-        command->outputs()["transformation"]->metadata()->set("name", command->outputs()["transformation"]->formName().remove("gnomon") + QString::number(form_count+1));
-        command->outputs()["transformation"]->metadata()->set("source", d->algorithm);
+        int form_count = gnomonFormManager::instance()->formCount(command->outputs()["outputTransformation"]->formName());
+        command->outputs()["outputTransformation"]->metadata()->set("name", command->outputs()["outputTransformation"]->formName().remove("gnomon") + QString::number(form_count+1));
+        command->outputs()["outputTransformation"]->metadata()->set("source", d->algorithm);
     }
 }
 
