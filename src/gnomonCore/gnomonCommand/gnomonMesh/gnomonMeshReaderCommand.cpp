@@ -23,6 +23,7 @@ gnomonMeshReaderCommand::gnomonMeshReaderCommand() : d(new gnomonMeshReaderComma
         m_descriptions.insert(key, algo->documentation());
         m_extensions.insert(key, algo->extensions());
         m_actions.insert(key, algo);
+        m_thumbshots.insert(key, algo->thumbshots());
     }
 }
 

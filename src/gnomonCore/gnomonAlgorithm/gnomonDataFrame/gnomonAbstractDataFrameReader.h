@@ -41,6 +41,10 @@ public:
 
 public:
     virtual QStringList extensions(void) = 0;
+    virtual QString thumbshots(void) {
+        return "";
+    };
+
 };
 
 // ///////////////////////////////////////////////////////////////////

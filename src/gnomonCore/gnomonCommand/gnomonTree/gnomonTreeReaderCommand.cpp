@@ -31,6 +31,7 @@ gnomonTreeReaderCommand::gnomonTreeReaderCommand() : d(new gnomonTreeReaderComma
         m_descriptions.insert(key, algo->documentation());
         m_extensions.insert(key, algo->extensions());
         m_actions.insert(key, algo);
+        m_thumbshots.insert(key, algo->thumbshots());
     }
 }
 
