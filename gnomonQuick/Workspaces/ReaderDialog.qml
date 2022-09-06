@@ -108,8 +108,8 @@ G.Dialog { id: self;
                 Layout.preferredHeight: G.Style.mediumLabelHeight;
                 Layout.fillWidth: true
             }
-            RowLayout {
-                spacing: G.Style.mediumRowSpacing
+            ColumnLayout {
+                spacing: G.Style.mediumColumnSpacing
                 Layout.fillWidth: true
 
                 Label { id: descriptionLabel;
@@ -120,10 +120,9 @@ G.Dialog { id: self;
                     Layout.fillWidth: true
                 }
                 Image {
-                    Layout.fillWidth: true
-                    height: 0.5 * parent.height
-                    source: self.availableReaders.get(listView.currentIndex).image_source
-                    source: "qrc:/qml/gnomonQuick/binaryImageReader.png"
+                    Layout.preferredWidth: G.Style.sizes.s12;
+                    Layout.preferredHeight: G.Style.sizes.s10;
+                    source: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? self.availableReaders.get(listView.currentIndex).thumbshot: "";
                 }
 
             }
