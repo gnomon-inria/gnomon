@@ -84,10 +84,6 @@ G.Page {
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignTop
 
-                onTextChanged: {
-                    ScrollBar.position = 1.0
-                }
-
                 wrapMode: Text.Wrap
                 color: G.Style.colors.textColorBase
                 background: G.Gutter {
