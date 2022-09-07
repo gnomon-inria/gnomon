@@ -320,7 +320,7 @@ def serialize(attr):
     return decorator
 
 
-def seriesReader(form_attr: str, path_attr: str = "path"):
+def seriesReader(form_attr: str, path_attr: str = "path", preview_path: str = None):
     """
     Decorator for Reader plugins which enables the use of the series container format.
 
@@ -381,6 +381,12 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
             return run_wrapper
 
         setattr(cls, "run", run_decorator(cls.run))
+
+        def preview(self):
+            return getattr(self, preview_path)
+    
+        setattr(cls, "preview", preview)
+
         return cls
     return seriesReaderDecorator
 

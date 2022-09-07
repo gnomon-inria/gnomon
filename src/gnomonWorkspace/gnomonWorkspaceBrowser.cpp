@@ -63,7 +63,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
     for (auto command: commands) {
         QMap<QString, QStringList> extensions = command->extensions();
         auto descriptions = command->descriptions();
-        auto thumbshots = command->thumbshots();
+        auto preview = command->preview();
         for (const auto& algo_name : command->algorithmNames()) {
             for (QString ext : extensions[algo_name]) {
 
@@ -77,7 +77,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
 
                 fileReaderDescriptions[ext][algo_name] = descriptions[algo_name].split("\n")[1];
                 fileReaderCommands[ext][algo_name] = command;
-                fileReaderImagePath[ext][algo_name] = thumbshots[algo_name];
+                fileReaderImagePath[ext][algo_name] = preview[algo_name];
             }
         }
         QObject::connect(command, SIGNAL(finished()), q, SIGNAL(finished()));
@@ -98,12 +98,12 @@ void gnomonWorkspaceBrowserPrivate::findReaders(const QString &default_plugin)
         QJsonObject reader_descs;
         if(available_plugins.contains(default_plugin)) {
             reader_descs.insert("description", fileReaderDescriptions[ext][default_plugin]);
-            reader_descs.insert("thumbshot", fileReaderImagePath[ext][default_plugin]);
+            reader_descs.insert("preview", fileReaderImagePath[ext][default_plugin]);
             readers.insert(default_plugin, reader_descs);
         } else {
             for (const auto &plugin_name : available_plugins) {
                 reader_descs.insert("description", fileReaderDescriptions[ext][plugin_name]);
-                reader_descs.insert("thumbshot", fileReaderImagePath[ext][plugin_name]);
+                reader_descs.insert("preview", fileReaderImagePath[ext][plugin_name]);
                 readers.insert(plugin_name, reader_descs);
             }
         }
