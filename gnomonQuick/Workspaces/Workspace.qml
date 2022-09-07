@@ -90,6 +90,9 @@ G.Page {
                     //anchors.fill: parent
                     opacity: 0.7
                 }
+                onTextChanged: {
+                    _console.cursorPosition = _console.length-1
+                }   
             }
         }
 
