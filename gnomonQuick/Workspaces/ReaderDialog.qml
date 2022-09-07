@@ -122,7 +122,7 @@ G.Dialog { id: self;
                 Image {
                     Layout.preferredWidth: G.Style.sizes.s12;
                     Layout.preferredHeight: G.Style.sizes.s10;
-                    source: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? self.availableReaders.get(listView.currentIndex).thumbshot: "";
+                    source: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? "file:/"+self.availableReaders.get(listView.currentIndex).thumbshot: "";
                 }
 
             }
