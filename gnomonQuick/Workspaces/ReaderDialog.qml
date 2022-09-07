@@ -123,7 +123,7 @@ G.Dialog { id: self;
                     Layout.preferredWidth: G.Style.sizes.s13;
                     Layout.preferredHeight: G.Style.sizes.s11;
                     fillMode: Image.PreserveAspectFit
-                    source: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? "file:/"+self.availableReaders.get(listView.currentIndex).thumbshot: "";
+                    source: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? "file:/"+self.availableReaders.get(listView.currentIndex).preview: "";
                 }
 
             }
