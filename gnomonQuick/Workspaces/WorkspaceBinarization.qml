@@ -35,6 +35,9 @@ G.Workspace {
     d: GW.WorkspaceBinarization {
         id: d;
 
+        onStarted: idleStart();
+        onFinished: idleStop();
+
         onParametersChanged: {
             _self.updateParametersModel();
         }

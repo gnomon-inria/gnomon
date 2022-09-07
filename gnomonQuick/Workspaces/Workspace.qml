@@ -11,6 +11,7 @@ import xQuick.Style     1.0 as X
 
 import gnomonQuick.Controls 1.0 as G
 import gnomonQuick.Style 1.0 as G
+import gnomon.Visualization   1.0 as GV
 
 G.Page {
 
@@ -26,6 +27,95 @@ G.Page {
     G.Parameters {
         id: _params;
         parameters: d ? d.parameters : null;
+    }
+
+    Control {
+        id: _logs_control
+        anchors.top: parent.top
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+        anchors.bottom: _banner.top;
+        anchors.margins: G.Style.mediumPadding;
+
+        enabled: false
+        visible: false
+
+        property var log_connection: undefined;
+        property bool show: false;
+
+        background: Rectangle {
+            anchors.fill: parent
+            color: G.Style.colors.fgColor
+            opacity: 0.7
+        }
+
+        Label {
+            id: _logs_title
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            //anchors.bottom: parent.bottom
+            anchors.margins: G.Style.mediumPadding;
+            text: qsTr("Logs")
+            font: G.Style.fonts.formLabel
+
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
+
+            wrapMode: Text.Wrap
+            color: G.Style.colors.textColorBase
+        }
+
+        ScrollView {
+            anchors.top: _logs_title.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: G.Style.mediumPadding
+
+            G.TextArea {
+                id: _console
+                anchors.fill: parent
+
+                text: _logs_control.log_connection ? _logs_control.log_connection.text : "/!\\ Disconnected /!\\"
+                readOnly: true
+                font: G.Style.fonts.value
+
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignTop
+
+                wrapMode: Text.Wrap
+                color: G.Style.colors.textColorBase
+                background: G.Gutter {
+                    //anchors.fill: parent
+                    opacity: 0.7
+                }
+                onTextChanged: {
+                    _console.cursorPosition = _console.length-1
+                }   
+            }
+        }
+
+
+
+        function display_console() {
+            _logs_control.z = Infinity;
+            _logs_control.enabled = true;
+            _logs_control.visible = true;
+        }
+
+        function close_console() {
+            _logs_control.visible = false;
+            _logs_control.enabled = false;
+        }
+
+        function new_connection() {
+            _logs_control.log_connection = GV.LogServer.getPendingConnection();
+            if(_logs_control.show){
+                _logs_control.display_console()
+            }
+            GV.LogServer.newPendingLogConnection.disconnect(_logs_control.new_connection)
+        }
     }
 
     Rectangle {
@@ -85,9 +175,13 @@ G.Page {
         _banner.z = Infinity;
         _banner.visible = true;
         _banner_indicator.running = true;
+        _logs_control.show = true;
+        GV.LogServer.newPendingLogConnection.connect(_logs_control.new_connection)
     }
 
     function idleStop() {
         _banner.visible = false;
+        _logs_control.show = false;
+        _logs_control.close_console()
     }
 }

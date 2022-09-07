@@ -43,6 +43,9 @@ G.Workspace {
     d: GW.WorkspacePointDetection {
         id: d;
 
+        onStarted: idleStart();
+        onFinished: idleStop();
+
         onParametersChanged: {
             updateParametersModel(); //_workspace.updateParametersModel();
         }

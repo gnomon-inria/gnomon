@@ -52,6 +52,9 @@ G.Workspace {
     d: GW.WorkspaceBrowser {
         id: d;
 
+        onStarted: idleStart();
+        onFinished: idleStop();
+
         onAvailable: (readers) => {
             if(Object.keys(readers).length == 1) {
                 d.readWith(Object.keys(readers)[0])
@@ -72,8 +75,6 @@ G.Workspace {
             extension_error.message = "No reader available: extension not recognized."
             extension_error.open()
         }
-
-        onFinished: idleStop();
     }
 
     G.Toast {

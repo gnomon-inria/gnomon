@@ -45,9 +45,6 @@ G.Dialog {
     onAccepted: {
         if (_internal.selected_workspace) {
             if(!window.check_if_forms_in_world()) {
-                console.log(_internal.selected_workspace)
-                console.log(_internal.selected_workspace.source)
-                console.log(_list_view.currentIndex)
                 no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
                 no_form_exported_dialog.open()
                 return
