@@ -19,7 +19,6 @@ gnomonLogConnectionPrivate::gnomonLogConnectionPrivate(QTcpSocket *socket, bool 
 }
 
 gnomonLogConnectionPrivate::~gnomonLogConnectionPrivate() {
-    // qDebug() << Q_FUNC_INFO << "LogConnection dying " << socket->peerPort();
     if(*server_alive && socket->isOpen()) {
         socket->close();
     }
@@ -38,7 +37,6 @@ QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
         }
     });
     connect(d->socket, &QAbstractSocket::errorOccurred, [=] (auto error) {
-        // qDebug() << "Socket Error: " << error;
         d->socket->close();
     });
     connect(d->socket, &QTcpSocket::disconnected,
@@ -47,7 +45,6 @@ QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
 }
 
 gnomonLogConnection::~gnomonLogConnection() {
-    // do not delete socket
     delete d;
 }
 

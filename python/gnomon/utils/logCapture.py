@@ -43,7 +43,7 @@ class StreamCapture:
 
     def printer(self, input_fd, echo_fd):
         while True:
-            sleep(0.001)
+            sleep(0.1)
             data = os.read(input_fd, 100000)
             if len(data) == 0:
                 os.close(echo_fd)

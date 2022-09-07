@@ -1,7 +1,5 @@
 #include "gnomonLogCaptureServer.h"
 
-//#include <QtGui>
-
 #include "gnomonLogConnection"
 
 
@@ -29,16 +27,9 @@ gnomonLogCaptureServerPrivate::~gnomonLogCaptureServerPrivate() {
     }
 }
 
-
-
-
 // --- gnomonLogCaptureServer ------------------------------------------------------------------------------------------
 
 gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QTcpServer(parent), d(new gnomonLogCaptureServerPrivate()) {
-    //connect(this, &QTcpServer::newConnection, this, &gnomonLogCaptureServer::newServerConnectionHandler);
-    //connect(this, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
-    //    qDebug() << Q_FUNC_INFO << "Error:" << error;
-    //});
 }
 
 gnomonLogCaptureServer::~gnomonLogCaptureServer() {
@@ -50,7 +41,6 @@ gnomonLogCaptureServer::~gnomonLogCaptureServer() {
 gnomonLogCaptureServer *gnomonLogCaptureServer::s_instance = nullptr;
 
 void gnomonLogCaptureServer::newServerConnectionHandler(void) {
-    //qDebug() << Q_FUNC_INFO << " ========= Receiving new connection";
     auto socket = QTcpServer::nextPendingConnection();
     auto connection = new gnomonLogConnection(this, socket, &gnomonLogCaptureServerPrivate::alive);
     this->d->pending_connections.enqueue(connection);
