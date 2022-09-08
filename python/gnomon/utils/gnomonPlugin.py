@@ -336,7 +336,9 @@ def seriesReader(form_attr: str, path_attr: str = "path", preview_path: str = No
         Name of the form attribute where the form read are stored.
     path_attr: str
         Name of the attribute containing the path to be read.
-
+    preview_path: str
+        Path of plugin illustration image.
+        
     Returns
     -------
     Class
