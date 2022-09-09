@@ -16,9 +16,9 @@ public:
     virtual ~gnomonAbstractEvolutionModel(void) = default;
 
 public:
-    virtual void reset(void) = 0;
-    virtual void step(double time, double dt) = 0;
-    virtual void run(double timeMin, double timeMax, double dt) = 0;
+    virtual void reset(void) override = 0;
+    virtual void step(double time, double dt) override = 0;
+    virtual void run(double timeMin, double timeMax, double dt) override = 0;
 
 public:
     virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms() = 0;

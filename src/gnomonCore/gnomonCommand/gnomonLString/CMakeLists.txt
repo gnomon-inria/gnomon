@@ -21,6 +21,8 @@
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonLStringAdapterCommand
     gnomonLStringAdapterCommand.h
+    gnomonLStringEvolutionModelCommand
+    gnomonLStringEvolutionModelCommand.h
     gnomonLStringReaderCommand
     gnomonLStringReaderCommand.h
     gnomonLStringTranslationCommand
@@ -31,6 +33,7 @@ ADD_GNOMON_SUBDIRECTORY_HEADERS(
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
   gnomonLStringAdapterCommand.cpp
+  gnomonLStringEvolutionModelCommand.cpp
   gnomonLStringReaderCommand.cpp
   gnomonLStringTranslationCommand.cpp
   gnomonLStringWriterCommand.cpp)

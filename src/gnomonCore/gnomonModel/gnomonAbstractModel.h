@@ -12,8 +12,14 @@ public:
     virtual ~gnomonAbstractModel(void) = default;
 
 public:
+    virtual void reset(void) = 0;
+    virtual void step(double time, double dt) = 0;
+    virtual void run(double timeMin, double timeMax, double dt) = 0;
+
+public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
     virtual dtkCoreParameters parameters(void) const = 0;
+    virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
 };
 
 DTK_DECLARE_OBJECT        (gnomonAbstractModel *)

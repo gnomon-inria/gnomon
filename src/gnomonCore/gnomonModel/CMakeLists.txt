@@ -21,6 +21,8 @@
 ADD_GNOMON_HEADERS(
     gnomonAbstractEvolutionModel
     gnomonAbstractEvolutionModel.h
+    gnomonAbstractLStringEvolutionModel
+    gnomonAbstractLStringEvolutionModel.h
     gnomonAbstractModel
     gnomonAbstractModel.h
     gnomonAbstractSystemScenario
@@ -33,6 +35,7 @@ ADD_GNOMON_HEADERS(
 
 ADD_GNOMON_SOURCES(
     gnomonAbstractEvolutionModel.cpp
+    gnomonAbstractLStringEvolutionModel.cpp
     gnomonAbstractModel.cpp
     gnomonAbstractSystemScenario.cpp
     gnomonAbstractTissueGrowthModel.cpp
