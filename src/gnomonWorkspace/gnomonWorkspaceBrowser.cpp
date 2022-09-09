@@ -122,7 +122,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     QStringList sources;
     for (auto file : this->filename.split(",")) {
         QString file_path = file.remove("file://");
-        if(!QFile::exists(file_path)) {
+        if(!QFile::exists(file_path) && !file_path.contains("http")) {
             dtkWarn() << Q_FUNC_INFO << "file " << file_path << "doesn't exist";
         } else {
             paths.append(file_path);
