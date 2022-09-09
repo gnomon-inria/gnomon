@@ -51,6 +51,33 @@ Item {
         }
     }
 
+    G.Dialog {
+        id: _load_url_dialog;
+
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.smallDialogWidth;
+
+        parent: Overlay.overlay
+        modal: true
+        standardButtons:  Dialog.Ok | Dialog.Cancel
+        TextField {
+            id: _url_text_field
+            Layout.fillWidth: true
+            width: parent.width
+            placeholderText: qsTr("Enter an url like: https://...")
+        }
+        header: ToolBar {
+            height: 0
+        }
+        onAccepted: {
+            let file_url = _url_text_field.text
+            _url_text_field.text = ""
+            d.readerPath = decodeURIComponent(file_url);
+            d.requestReaders("");
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent;
         anchors.margins: G.Style.smallPadding;
@@ -70,21 +97,21 @@ Item {
         Item {
             id: _button_container
 
-            height: G.Style.largeButtonHeight
+            height: G.Style.largeButtonHeight * 2
             Layout.fillWidth: true;
 
             G.Button {
                 id: _load_button
-
+                anchors.top: _button_container.top
                 anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding;
+                size: G.Style.ButtonSize.Large
+                implicitWidth: _load_file_button.implicitWidth + _load_url_button.implicitWidth + G.Style.buttonPadding
 
                 text: _finder.selectedFolder ? "Open" : "Load as";
                 enabled: _finder.selectedFolder || _finder.selectedFile
                 type: G.Style.ButtonType.Base
                 iconName: _finder.selectedFolder ? G.Icons.icons["folder-open"] : G.Icons.icons["folder-download"]
-                empty: true
 
                 onClicked: {
                     if(_finder.selectedFolder) _finder.openFolder(_finder.selectedFolder)
@@ -96,8 +123,9 @@ Item {
             }
 
             G.Button {
-                anchors.right: _load_button.left;
-                anchors.verticalCenter: _button_container.verticalCenter
+                id: _load_file_button
+                anchors.top: _load_button.bottom
+                anchors.right: _button_container.right;
                 anchors.margins: G.Style.smallPadding;
 
                 text: "Load...";
@@ -107,6 +135,22 @@ Item {
 
                 onClicked: {
                     _file_dialog.open()
+                }
+            }
+
+            G.Button {
+                id: _load_url_button
+                anchors.top: _load_button.bottom
+                anchors.right: _load_file_button.left
+                anchors.margins: G.Style.smallPadding;
+
+                text: "Load URL";
+                type: G.Style.ButtonType.Base
+                iconName: G.Icons.icons["file-upload"]
+                empty: true
+
+                onClicked: {
+                    _load_url_dialog.open()
                 }
             }
         }
