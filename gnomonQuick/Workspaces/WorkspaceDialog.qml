@@ -320,6 +320,12 @@ G.Dialog {
             available: true
         }
         ListElement {
+            type: "gnomonWorkspaceLSystemModel"
+            title: "L-System Model"
+            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
+            available: true
+        }
+        ListElement {
             type: "gnomonWorkspaceMorphonet"
             title: "MorphoNet"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
@@ -367,6 +373,7 @@ G.Dialog {
         _internal.workspace_groups["gnomonWorkspaceBinarization"] = "binaryImageFromImage"
         _internal.workspace_groups["gnomonWorkspaceBrowser"] = ["binaryImageReader", "cellImageReader", "cellComplexReader", "imageReader", "meshReader", "pointCloudReader"]
         _internal.workspace_groups["gnomonWorkspaceCellImageQuantification"] = "cellImageQuantification"
+        _internal.workspace_groups["gnomonWorkspaceLSystemModel"] = "lStringEvolutionModel"
         _internal.workspace_groups["gnomonWorkspaceMorphonet"] = ""
         _internal.workspace_groups["gnomonWorkspaceCellImageTracking"] = "cellImageTracking"
         _internal.workspace_groups["gnomonWorkspacePointDetection"] = "pointCloudFromImage"
@@ -388,7 +395,7 @@ G.Dialog {
                 }
             }
             _internal.workspace_plugins[w.type] = plugins
-            _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm" || w.type === "gnomonWorkspaceMorphonet"))
+            _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm" || w.type === "gnomonWorkspaceMorphonet" || w.type === "gnomonWorkspaceLSystemModel"))
         }
     }
 }
