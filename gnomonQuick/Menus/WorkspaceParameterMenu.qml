@@ -126,7 +126,7 @@ Control {
                 anchors.bottomMargin: G.Style.smallPadding
 
                 text: "Auto apply"
-                checked: true
+                checked: false
 
                 Settings {
                     property alias auto_run: _auto_apply.checked
