@@ -51,6 +51,33 @@ Item {
         }
     }
 
+    G.Dialog {
+        id: _load_url_dialog;
+
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.smallDialogWidth;
+
+        parent: Overlay.overlay
+        modal: true
+        standardButtons:  Dialog.Ok | Dialog.Cancel
+        TextField {
+            id: _url_text_field
+            Layout.fillWidth: true
+            width: parent.width
+            placeholderText: qsTr("Enter an url like: https://...")
+        }
+        header: ToolBar {
+            height: 0
+        }
+        onAccepted: {
+            let file_url = _url_text_field.text
+            _url_text_field.text = ""
+            d.readerPath = decodeURIComponent(file_url);
+            d.requestReaders("");
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent;
         anchors.margins: G.Style.smallPadding;
@@ -59,11 +86,25 @@ Item {
             id: _finder;
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-
+            
             extensionFilters: _extensions_model;
 
             onFileDoubleClicked: (fileUrl) => {
                 window.current_workspace().requestOpenFiles([fileUrl])
+            }
+
+            onFileRightClicked: (fileUrl) => {
+                if(_finder.selectedFile) {
+                    d.readerPath = decodeURIComponent(_finder.selectedFile);
+                    d.requestReaders("");
+                } else {
+                    console.log("no file selected, Right click not available")
+                }
+            }
+
+            G.ToolTip {
+                visible: _finder.hovered
+                text: "Double click on a file/folder to open it. \n Right click on a file to open with a specific plugin reader for a file."
             }
         }
 
@@ -74,39 +115,34 @@ Item {
             Layout.fillWidth: true;
 
             G.Button {
-                id: _load_button
-
-                anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container.verticalCenter
+                id: _load_file_button
+                anchors.top: _button_container.top
+                anchors.left: _button_container.left;
                 anchors.margins: G.Style.smallPadding;
 
-                text: _finder.selectedFolder ? "Open" : "Load as";
-                enabled: _finder.selectedFolder || _finder.selectedFile
-                type: G.Style.ButtonType.Base
-                iconName: _finder.selectedFolder ? G.Icons.icons["folder-open"] : G.Icons.icons["folder-download"]
-                empty: true
-
-                onClicked: {
-                    if(_finder.selectedFolder) _finder.openFolder(_finder.selectedFolder)
-                    if(_finder.selectedFile) {
-                        d.readerPath = decodeURIComponent(_finder.selectedFile);
-                        d.requestReaders("");
-                    }
-                }
-            }
-
-            G.Button {
-                anchors.right: _load_button.left;
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding;
-
-                text: "Load...";
+                text: "File";
                 type: G.Style.ButtonType.Base
                 iconName: G.Icons.icons["folder-multiple-plus"]
                 empty: true
 
                 onClicked: {
                     _file_dialog.open()
+                }
+            }
+
+            G.Button {
+                id: _load_url_button
+                anchors.top: _button_container.top
+                anchors.left: _load_file_button.right
+                anchors.margins: G.Style.smallPadding;
+
+                text: "URL";
+                type: G.Style.ButtonType.Base
+                iconName: G.Icons.icons["cloud-download"]
+                empty: true
+
+                onClicked: {
+                    _load_url_dialog.open()
                 }
             }
         }
