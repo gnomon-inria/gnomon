@@ -121,18 +121,23 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     QStringList paths;
     QStringList sources;
     for (auto file : this->filename.split(",")) {
-        QString file_path = file.remove("file://");
-        if(!QFile::exists(file_path) && !file_path.contains("http")) {
-            dtkWarn() << Q_FUNC_INFO << "file " << file_path << "doesn't exist";
+        if(file.startsWith("file://")) {
+            QString file_path = file.remove("file://");
+            if(!QFile::exists(file_path)) {
+                dtkWarn() << Q_FUNC_INFO << "file " << file_path << "doesn't exist";
+            } else {
+                paths.append(file_path);
+                sources.append(QFileInfo(file_path).fileName());
+            }
         } else {
-            paths.append(file_path);
+            //it's not a file, most likely a url
+            //
+            paths.append(file);
+            sources.append(QUrl(file).fileName());
         }
     }
     if (paths.size() == 0) {
         return false;
-    }
-    for (auto file_path: paths) {
-        sources.append(QFileInfo(file_path).fileName());
     }
     QString path = paths.join(",");
     QString source = sources.join(",");
