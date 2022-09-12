@@ -86,49 +86,41 @@ Item {
             id: _finder;
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-
+            
             extensionFilters: _extensions_model;
 
             onFileDoubleClicked: (fileUrl) => {
                 window.current_workspace().requestOpenFiles([fileUrl])
+            }
+
+            onFileRightClicked: (fileUrl) => {
+                if(_finder.selectedFile) {
+                    d.readerPath = decodeURIComponent(_finder.selectedFile);
+                    d.requestReaders("");
+                } else {
+                    console.log("no file selected, Right click not available")
+                }
+            }
+
+            G.ToolTip {
+                visible: _finder.hovered
+                text: "Double click on a file/folder to open it. \n Right click on a file to open with a specific plugin reader for a file."
             }
         }
 
         Item {
             id: _button_container
 
-            height: G.Style.largeButtonHeight * 2
+            height: G.Style.largeButtonHeight
             Layout.fillWidth: true;
 
             G.Button {
-                id: _load_button
-                anchors.top: _button_container.top
-                anchors.right: _button_container.right;
-                anchors.margins: G.Style.smallPadding;
-                size: G.Style.ButtonSize.Large
-                implicitWidth: _load_file_button.implicitWidth + _load_url_button.implicitWidth + G.Style.buttonPadding
-
-                text: _finder.selectedFolder ? "Open" : "Load as";
-                enabled: _finder.selectedFolder || _finder.selectedFile
-                type: G.Style.ButtonType.Base
-                iconName: _finder.selectedFolder ? G.Icons.icons["folder-open"] : G.Icons.icons["folder-download"]
-
-                onClicked: {
-                    if(_finder.selectedFolder) _finder.openFolder(_finder.selectedFolder)
-                    if(_finder.selectedFile) {
-                        d.readerPath = decodeURIComponent(_finder.selectedFile);
-                        d.requestReaders("");
-                    }
-                }
-            }
-
-            G.Button {
                 id: _load_file_button
-                anchors.top: _load_button.bottom
-                anchors.right: _button_container.right;
+                anchors.top: _button_container.top
+                anchors.left: _button_container.left;
                 anchors.margins: G.Style.smallPadding;
 
-                text: "Load...";
+                text: "File";
                 type: G.Style.ButtonType.Base
                 iconName: G.Icons.icons["folder-multiple-plus"]
                 empty: true
@@ -140,13 +132,13 @@ Item {
 
             G.Button {
                 id: _load_url_button
-                anchors.top: _load_button.bottom
-                anchors.right: _load_file_button.left
+                anchors.top: _button_container.top
+                anchors.left: _load_file_button.right
                 anchors.margins: G.Style.smallPadding;
 
-                text: "Load URL";
+                text: "URL";
                 type: G.Style.ButtonType.Base
-                iconName: G.Icons.icons["file-upload"]
+                iconName: G.Icons.icons["cloud-download"]
                 empty: true
 
                 onClicked: {
