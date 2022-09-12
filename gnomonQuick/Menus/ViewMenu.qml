@@ -4,6 +4,8 @@ import QtQuick.Layouts      1.15
 
 import Qt5Compat.GraphicalEffects
 
+import Qt.labs.settings
+
 import xQuick.Controls      1.0 as X
 import xQuick.Fonts         1.0 as X
 import xQuick.Style         1.0 as X
@@ -214,6 +216,11 @@ Control {
                 anchors.bottomMargin: G.Style.smallPadding
 
                 text: "Auto render"
+                checked: true
+
+                Settings {
+                    property alias auto_render: _auto_render.checked
+                }
 
                 onClicked: {
                     if (_auto_render.checked) {

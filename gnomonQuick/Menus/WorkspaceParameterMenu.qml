@@ -5,6 +5,7 @@ import QtQuick.Layouts   1.15
 import QtQml.Models      2.15
 
 import Qt.labs.platform  1.0 as P
+import Qt.labs.settings
 
 import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
@@ -39,8 +40,6 @@ Control {
             /* Layout.rightMargin: 20 */
 
             onCurrentIndexChanged: {
-                _auto_apply.checked = false
-
                 if (d && d.algorithms) {
                     d.currentIndex = _algos.currentIndex;
                     d.algoName = d.algorithms[d.currentIndex];
@@ -127,6 +126,11 @@ Control {
                 anchors.bottomMargin: G.Style.smallPadding
 
                 text: "Auto apply"
+                checked: true
+
+                Settings {
+                    property alias auto_run: _auto_apply.checked
+                }
 
                 onClicked: {
                     if (_auto_apply.checked) {
