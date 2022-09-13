@@ -63,7 +63,8 @@ G.Workspace {
                 for (var r in readers) {
                     _reader_dialog.availableReaders.append({
                               "title": r.toString(),
-                        "description": readers[r].toString()
+                            "description": readers[r].description.toString(),
+                            "preview": readers[r].preview.toString()
                     });
                 }
                 _reader_dialog.open();
