@@ -3,6 +3,7 @@ import traceback
 import logging
 import warnings
 import importlib
+import inspect
 import re
 import pickle
 import zipfile
@@ -320,7 +321,7 @@ def serialize(attr):
     return decorator
 
 
-def seriesReader(form_attr: str, path_attr: str = "path", preview_path: str = None):
+def seriesReader(form_attr: str, path_attr: str = "path"):
     """
     Decorator for Reader plugins which enables the use of the series container format.
 
@@ -336,8 +337,6 @@ def seriesReader(form_attr: str, path_attr: str = "path", preview_path: str = No
         Name of the form attribute where the form read are stored.
     path_attr: str
         Name of the attribute containing the path to be read.
-    preview_path: str
-        Path of plugin illustration image.
         
     Returns
     -------
@@ -385,7 +384,7 @@ def seriesReader(form_attr: str, path_attr: str = "path", preview_path: str = No
         setattr(cls, "run", run_decorator(cls.run))
 
         def preview(self):
-            return getattr(self, preview_path)
+            return f"{os.path.splitext(inspect.getfile(cls))[0]}.png"
     
         setattr(cls, "preview", preview)
 
