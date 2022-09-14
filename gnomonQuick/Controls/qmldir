@@ -44,6 +44,7 @@ PipelinePort 1.0 PipelinePort.qml
 PipelinePortEdit 1.0 PipelinePortEdit.qml
 Project.qml 1.0 Project.qml
 Stack 1.0 Stack.qml
+StringParameter 1.0 StringParameter.qml
 View 1.0 View.qml
 World 1.0 World.qml
 WorldDelegate 1.0 WorldDelegate.qml
