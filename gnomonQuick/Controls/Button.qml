@@ -19,6 +19,7 @@ Button {
   property int size: G.Style.ButtonSize.Medium
   property bool empty: false
   property string iconName: ""
+  property bool isHovered: (_control.hovered || _content.hovered || _icon_area.containsMouse) && _control.hoverEnabled && _control.enabled
 
   flat: false
 
