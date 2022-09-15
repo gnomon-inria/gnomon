@@ -64,6 +64,7 @@ QtObject {
     property int buttonWidth: S.spacing["10"]
     //= 2 buttons with small padding
     property int longButtonWidth: S.spacing["12"] + S.spacing["2"]
+    property int extraLongButtonWidth: S.spacing["12"] + S.spacing["6"]
 
     property int smallButtonHeight: S.spacing["4"]
     property int mediumButtonHeight: S.spacing["6"]
