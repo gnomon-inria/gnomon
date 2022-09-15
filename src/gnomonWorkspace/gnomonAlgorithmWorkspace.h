@@ -30,7 +30,6 @@ public:
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
-    void started(void);
     void algorithmsLoaded(void);
     void algorithmChanged(const QString& algorithm);
     void parametersChanged(void);
@@ -42,6 +41,7 @@ public slots:
     virtual void viewOutputs(void);
     virtual void saveState(void);
     virtual void restoreState(void);
+    virtual void export_outputs(void);
 
 public:
     QString algoName(void) const;

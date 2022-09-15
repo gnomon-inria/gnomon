@@ -30,8 +30,9 @@ public:
     Q_PROPERTY(QString readerPath READ readerPath WRITE setReaderPath NOTIFY readerPathChanged);
 
 signals:
-    void available(const QVariantMap& readers);
+    void available(QJsonObject readers);
     void readerPathChanged(void);
+    void noReaderAvailable(QString);
 
 public:
     const QString& readerPath(void) const;
@@ -42,6 +43,8 @@ public slots:
     bool readWith(const QString&);
     inline void saveState() {};  // nothing to be saved
     void restoreState();
+
+    void export_outputs(void) override;
 
 public:
     Q_INVOKABLE QUrl defaultReadPath();

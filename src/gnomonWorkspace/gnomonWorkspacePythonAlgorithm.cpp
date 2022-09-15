@@ -104,6 +104,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
         v->setAcceptForm("gnomonCellComplex",true);
         v->setAcceptForm("gnomonCellImage",true);
         v->setAcceptForm("gnomonImage",true);
+        v->setAcceptForm("gnomonLString",true);
         v->setAcceptForm("gnomonMesh",true);
         v->setAcceptForm("gnomonPointCloud",true);
         v->setInputView(true);
@@ -117,6 +118,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
         v->setAcceptForm("gnomonCellComplex",true);
         v->setAcceptForm("gnomonCellImage",true);
         v->setAcceptForm("gnomonImage",true);
+        v->setAcceptForm("gnomonLString",true);
         v->setAcceptForm("gnomonMesh",true);
         v->setAcceptForm("gnomonPointCloud",true);
         connect(v, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
@@ -286,6 +288,16 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.inputImage(False).items()}",
                     &stat);
         }
+        if (this->source()->lString()) {
+            d->algorithm->setInputLString(this->source()->lString());
+            d->command->addInput(this->source()->lString());
+            QString form_name("lString_in");
+            if (d->code->inputForms().contains("gnomonLString")) {
+                form_name = d->code->inputForms()["gnomonLString"].name;
+            }
+            output = dtkScriptInterpreterPython::instance()->interpret(
+                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.inputLString(False).items()}", &stat);
+        }
         if (this->source()->mesh()) {
             d->algorithm->setInputMesh(this->source()->mesh());
             d->command->addInput(this->source()->mesh());
@@ -401,6 +413,23 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
             image->metadata()->set("source", d->algorithm_key);
         }
 
+        std::shared_ptr<gnomonLStringSeries> lString = d->algorithm->outputLString();
+        if ((lString) && (lString->times().size() != 0)) {
+            d->command->addOutput(lString);
+            this->target()->setForm("gnomonLString", lString);
+            QString form_name("lString_out");
+            if (d->code->outputForms().contains("gnomonLString")) {
+                form_name = d->code->outputForms()["gnomonLString"].name;
+            }
+            output = dtkScriptInterpreterPython::instance()->interpret(
+                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputLString(False).items()}",
+                    &stat);
+            output_form_added = true;
+            int form_count = gnomonFormManager::instance()->formCount(lString->formName());
+            lString->metadata()->set("name", lString->formName().remove("gnomon") + QString::number(form_count + 1));
+            lString->metadata()->set("source", d->algorithm_key);
+        }
+        
         std::shared_ptr<gnomonMeshSeries> mesh = d->algorithm->outputMesh();
         if ((mesh) && (mesh->times().size() != 0)) {
             d->command->addOutput(mesh);
@@ -438,7 +467,9 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
 
         if (output_form_added) {
             this->target()->render();
-            this->target()->tryLinking();
+            if(!this->target()->synced()) {
+                this->target()->tryLinking();
+            }
             d->registerPipeline();
         }
     }
@@ -502,6 +533,12 @@ void gnomonWorkspacePythonAlgorithm::restoreState(void)
     }
     for (auto view : d->targets->views()) {
         view->restoreState();
+    }
+}
+
+void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
+    for(const auto &output_view: d->targets->views()) {
+        output_view->transmit();
     }
 }
 

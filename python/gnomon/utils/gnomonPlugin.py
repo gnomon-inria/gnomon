@@ -1,8 +1,10 @@
 import os
+import sys
 import traceback
 import logging
 import warnings
 import importlib
+import inspect
 import re
 import pickle
 import zipfile
@@ -19,6 +21,7 @@ from pkg_resources import iter_entry_points, resource_filename
 from setuptools import findall
 
 import gnomon.core
+from gnomon.utils.logCapture import StreamCapture
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
@@ -240,7 +243,10 @@ def gnomonParametric(cls):
     cls.__setitem__ = __setitem__
 
     def __getitem__(self, key):
-        return self._parameters[key].value()
+        if  self._parameters[key].typeName() == "dtkCoreParameterPath":
+            return self._parameters[key].path()
+        else:
+            return self._parameters[key].value()
 
     cls.__getitem__ = __getitem__
 
@@ -333,7 +339,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
         Name of the form attribute where the form read are stored.
     path_attr: str
         Name of the attribute containing the path to be read.
-
+        
     Returns
     -------
     Class
@@ -378,6 +384,12 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
             return run_wrapper
 
         setattr(cls, "run", run_decorator(cls.run))
+
+        def preview(self):
+            return f"{os.path.splitext(inspect.getfile(cls))[0]}.png"
+    
+        setattr(cls, "preview", preview)
+
         return cls
     return seriesReaderDecorator
 
@@ -648,7 +660,7 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
 
 def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     # -----------------------------------------------------
-    # Python error management
+    # Doc and Version
     # -----------------------------------------------------
 
     def documentation(self):
@@ -674,6 +686,36 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
         return self.__version__
 
     cls.version = _version
+
+    # -----------------------------------------------------
+    # TCP Logging
+    # -----------------------------------------------------
+
+    # attach output capture to run method
+    if hasattr(cls, "run"):
+        _old_run = cls.run
+
+        @wraps(_old_run)
+        def logger_init(self, *args, **kwargs):
+            # logger init
+            _logger = None
+            try:
+                _logger = StreamCapture([sys.stdout, sys.stderr], echo=True)
+            except Exception as e:
+                logging.warn("Could not initialize logger. Server probably not found.")
+                pass
+            # base run
+            out = _old_run(self, *args, **kwargs)
+            # cleanup
+            if _logger:
+                _logger.close()
+            return out
+
+        cls.run = logger_init
+
+    # -----------------------------------------------------
+    # Python error management
+    # -----------------------------------------------------
 
     def wrapper(f):
         @wraps(f)

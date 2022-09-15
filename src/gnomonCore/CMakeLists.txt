@@ -5,6 +5,7 @@ project(gnomonCore VERSION ${gnomon_VERSION})
 ## #################################################################
 
 add_subdirectory(gnomonAlgorithm)
+add_subdirectory(gnomonAlgorithmsLogs)
 add_subdirectory(gnomonCommand)
 add_subdirectory(gnomonForm)
 add_subdirectory(gnomonModel)
@@ -37,6 +38,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonTime.h
   simpleCrypt.h
   ${${PROJECT_NAME}_ALGORITHM_HEADERS}
+  ${${PROJECT_NAME}_ALGORITHMSLOGS_HEADERS}
   ${${PROJECT_NAME}_COMMAND_HEADERS}
   ${${PROJECT_NAME}_FORM_HEADERS}
   ${${PROJECT_NAME}_MODEL_HEADERS})
@@ -55,6 +57,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonTime.cpp
   simpleCrypt.cpp
   ${${PROJECT_NAME}_ALGORITHM_SOURCES}
+  ${${PROJECT_NAME}_ALGORITHMSLOGS_SOURCES}
   ${${PROJECT_NAME}_COMMAND_SOURCES}
   ${${PROJECT_NAME}_FORM_SOURCES}
   ${${PROJECT_NAME}_MODEL_SOURCES})
@@ -80,6 +83,7 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Concurrent)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Network)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC  dtkCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC  dtkLog)

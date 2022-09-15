@@ -15,7 +15,7 @@
 // #include "gnomonWorkspaceMeshFromImage.h"
 // #include "gnomonWorkspacePlantScan3D.h"
 // #include "gnomonWorkspacePointCloudConstructor.h"
-// #include "gnomonWorkspacePointCloudFromImage.h"
+#include "gnomonWorkspacePointDetection.h"
 // #include "gnomonWorkspacePointCloudQuantification.h"
 // #include "gnomonWorkspaceCellComplexConstructor.h"
 // #include "gnomonWorkspaceCellComplexFromCellImage.h"

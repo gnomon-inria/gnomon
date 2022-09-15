@@ -21,13 +21,19 @@
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
     gnomonAbstractLStringAdapter
     gnomonAbstractLStringAdapter.h
+    gnomonAbstractLStringReader
+    gnomonAbstractLStringReader.h
     gnomonAbstractLStringTranslation
-    gnomonAbstractLStringTranslation.h)
+    gnomonAbstractLStringTranslation.h
+    gnomonAbstractLStringWriter
+    gnomonAbstractLStringWriter.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
     gnomonAbstractLStringAdapter.cpp
-    gnomonAbstractLStringTranslation.cpp)
+    gnomonAbstractLStringReader.cpp
+    gnomonAbstractLStringTranslation.cpp
+    gnomonAbstractLStringWriter.cpp)
 
 
 ######################################################################
