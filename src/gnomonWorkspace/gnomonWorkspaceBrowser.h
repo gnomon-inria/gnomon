@@ -30,7 +30,7 @@ public:
     Q_PROPERTY(QString readerPath READ readerPath WRITE setReaderPath NOTIFY readerPathChanged);
 
 signals:
-    void available(const QVariantMap& readers);
+    void available(QJsonObject readers);
     void readerPathChanged(void);
     void noReaderAvailable(QString);
 

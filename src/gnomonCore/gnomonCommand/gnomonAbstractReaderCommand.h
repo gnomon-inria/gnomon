@@ -18,6 +18,7 @@ public:
     QMap<QString, QString> descriptions() const;
     QMap<QString, QStringList>  extensions() const;
     QStringList algorithmNames() const;
+    QMap<QString, QString> preview() const;
 
 public:
     void setAlgorithmName(const QString& algo_name) override;
@@ -34,6 +35,7 @@ public:
 
 protected:
     QString m_path = "";
+    QMap<QString, QString> m_preview;
     QMap<QString, QString> m_descriptions;
     QMap<QString, QStringList> m_extensions;
     QMap<QString, gnomonAbstractAlgorithm*> m_actions;

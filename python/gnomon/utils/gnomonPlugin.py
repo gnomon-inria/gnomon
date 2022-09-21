@@ -4,6 +4,7 @@ import traceback
 import logging
 import warnings
 import importlib
+import inspect
 import re
 import pickle
 import zipfile
@@ -338,7 +339,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
         Name of the form attribute where the form read are stored.
     path_attr: str
         Name of the attribute containing the path to be read.
-
+        
     Returns
     -------
     Class
@@ -383,6 +384,12 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
             return run_wrapper
 
         setattr(cls, "run", run_decorator(cls.run))
+
+        def preview(self):
+            return f"{os.path.splitext(inspect.getfile(cls))[0]}.png"
+    
+        setattr(cls, "preview", preview)
+
         return cls
     return seriesReaderDecorator
 

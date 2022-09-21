@@ -39,6 +39,7 @@ public:
     QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
     QString filename;
     QString ext;
+    QMap<QString, QMap<QString, QString> > fileReaderImagePath;
 
 };
 
@@ -64,6 +65,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
     for (auto command: commands) {
         QMap<QString, QStringList> extensions = command->extensions();
         auto descriptions = command->descriptions();
+        auto preview = command->preview();
         for (const auto& algo_name : command->algorithmNames()) {
             for (QString ext : extensions[algo_name]) {
 
@@ -72,10 +74,12 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
                     fileReaderDescriptions[ext] = empty_desc;
                     QMap<QString, gnomonAbstractCommand *> empty_list;
                     fileReaderCommands[ext] = empty_list;
+                    fileReaderImagePath[ext] = empty_desc;
                 }
 
                 fileReaderDescriptions[ext][algo_name] = descriptions[algo_name].split("\n")[1];
                 fileReaderCommands[ext][algo_name] = command;
+                fileReaderImagePath[ext][algo_name] = preview[algo_name];
             }
         }
         QObject::connect(command, SIGNAL(finished()), q, SIGNAL(finished()));
@@ -92,15 +96,20 @@ void gnomonWorkspaceBrowserPrivate::findReaders(const QString &default_plugin)
     {
         auto available_plugins = this->fileReaderCommands[this->ext].keys();
 
-        QVariantMap reader_descs;
+        QJsonObject readers;
+        QJsonObject reader_descs;
         if(available_plugins.contains(default_plugin)) {
-            reader_descs[default_plugin] = fileReaderDescriptions[ext][default_plugin];
+            reader_descs.insert("description", fileReaderDescriptions[ext][default_plugin]);
+            reader_descs.insert("preview", fileReaderImagePath[ext][default_plugin]);
+            readers.insert(default_plugin, reader_descs);
         } else {
             for (const auto &plugin_name : available_plugins) {
-                reader_descs[plugin_name] = fileReaderDescriptions[ext][plugin_name];
+                reader_descs.insert("description", fileReaderDescriptions[ext][plugin_name]);
+                reader_descs.insert("preview", fileReaderImagePath[ext][plugin_name]);
+                readers.insert(plugin_name, reader_descs);
             }
         }
-        emit q->available(reader_descs);
+        emit q->available(readers);
     } else {
         emit q->noReaderAvailable(this->ext);
         dtkWarn() << Q_FUNC_INFO << "File format "<<this->ext<<" is not supported.";
@@ -121,18 +130,23 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     QStringList paths;
     QStringList sources;
     for (auto file : this->filename.split(",")) {
-        QString file_path = file.remove("file://");
-        if(!QFile::exists(file_path)) {
-            dtkWarn() << Q_FUNC_INFO << "file " << file_path << "doesn't exist";
+        if(file.startsWith("file://")) {
+            QString file_path = file.remove("file://");
+            if(!QFile::exists(file_path)) {
+                dtkWarn() << Q_FUNC_INFO << "file " << file_path << "doesn't exist";
+            } else {
+                paths.append(file_path);
+                sources.append(QFileInfo(file_path).fileName());
+            }
         } else {
-            paths.append(file_path);
+            //it's not a file, most likely a url
+            //
+            paths.append(file);
+            sources.append(QUrl(file).fileName());
         }
     }
     if (paths.size() == 0) {
         return false;
-    }
-    for (auto file_path: paths) {
-        sources.append(QFileInfo(file_path).fileName());
     }
     QString path = paths.join(",");
     QString source = sources.join(",");

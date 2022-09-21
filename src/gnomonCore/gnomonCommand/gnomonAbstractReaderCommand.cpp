@@ -32,6 +32,11 @@ QMap<QString,QString> gnomonAbstractReaderCommand::descriptions() const
     return m_descriptions;
 }
 
+QMap<QString, QString> gnomonAbstractReaderCommand::preview() const
+{
+    return m_preview;
+}
+
 QMap<QString,QStringList> gnomonAbstractReaderCommand::extensions() const
 {
     return m_extensions;

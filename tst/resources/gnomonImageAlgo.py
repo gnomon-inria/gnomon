@@ -10,7 +10,7 @@ from gnomon.utils.decorators import imageInput, imageOutput
 
 from timagetk import SpatialImage, MultiChannelImage
 
-@algorithmPlugin(version='0.1.0', coreversion='0.70.1')
+@algorithmPlugin(version='0.1.0', coreversion='0.71.0')
 @imageInput(attr='in_img', data_plugin="gnomonImageDataMultiChannelImage")
 @imageOutput(attr='out_img', data_plugin="gnomonImageDataMultiChannelImage")
 class imageAlgorithm(gnomon.core.gnomonAbstractFormAlgorithm):
