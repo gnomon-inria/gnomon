@@ -39,7 +39,6 @@ gnomonLStringEvolutionModelCommand::~gnomonLStringEvolutionModelCommand()
 
 void gnomonLStringEvolutionModelCommand::predo(void)
 {
-    ((gnomonAbstractLStringEvolutionModel *) this->model)->setInitialState(d->init_lString);
 }
 
 void gnomonLStringEvolutionModelCommand::postdo(void)
@@ -66,13 +65,10 @@ void gnomonLStringEvolutionModelCommand::undo()
 
 void gnomonLStringEvolutionModelCommand::redo(void)
 {
-    qDebug()<<Q_FUNC_INFO<<this->model;
     Q_ASSERT(this->model);
 
     this->predo();
-    qDebug()<<Q_FUNC_INFO<<"run...";
     this->model->run(0, 1, 1);
-    qDebug()<<Q_FUNC_INFO<<"run OK";
     this->postdo();
 }
 

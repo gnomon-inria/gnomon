@@ -44,6 +44,8 @@ public:
     QString model;
     int currentIndex = 0;
 
+    QTemporaryFile *model_file = nullptr;
+
 public:
     gnomonLStringEvolutionModelCommand *command = nullptr;
 
@@ -87,6 +89,11 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
         this->setInitialState();
     });
 
+    d->model_file = new QTemporaryFile();
+    if (d->model_file->open()) {
+        d->command->setLSystem(d->model_file->fileName());
+    }
+
     this->setText(vonKochLSystem());
     emit parametersChanged();
 }
@@ -109,7 +116,15 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
 {
     if (text != d->text) {
         d->text = text;
-        d->command->setLSystem(d->text);
+        QFile *model_file = new QFile(d->model_file->fileName());
+        if (model_file->open(QIODevice::WriteOnly))
+        {
+            QTextStream model_stream(model_file);
+            model_stream<<d->text;
+            model_stream.flush();
+        }
+        model_file->close();
+        d->command->setLSystem(d->model_file->fileName());
         emit textChanged(d->text);
     }
 }
@@ -118,24 +133,24 @@ void gnomonWorkspaceLSystemModel::run()
 {
     Q_ASSERT(d->command);
 
+    // TODO: redo=step or redo=run?
     emit started();
-    d->command->undo();
-    qDebug()<<Q_FUNC_INFO<<"undo";
     this->setInitialState();
-    qDebug()<<Q_FUNC_INFO<<"init";
+    d->command->undo();
     d->command->redo();
-    qDebug()<<Q_FUNC_INFO<<"redo";
     this->viewState();
-    qDebug()<<Q_FUNC_INFO<<"view";
+    emit finished();
 }
 
 void gnomonWorkspaceLSystemModel::step()
 {
     Q_ASSERT(d->command);
 
+    // TODO: make the commannd async
     emit started();
     d->command->redo();
     this->viewState();
+    emit finished();
 }
 
 void gnomonWorkspaceLSystemModel::reset()
@@ -143,18 +158,22 @@ void gnomonWorkspaceLSystemModel::reset()
     Q_ASSERT(d->command);
 
     emit started();
-    d->command->undo();
     this->setInitialState();
+    d->command->undo();
     this->viewState();
+    emit finished();
 }
 
 void gnomonWorkspaceLSystemModel::setInitialState()
 {
-    d->command->setInitialState(d->view->lString());
+    // TODO: drop axiom into a different view?
+    // d->command->setInitialState(d->view->lString());
+    d->command->setInitialState(nullptr);
 }
 
 void gnomonWorkspaceLSystemModel::viewState()
 {
+    // TODO: pass lsystem to visu plugin
     auto lString = d->command->state();
     if (lString) {
         d->view->setLString(lString);
