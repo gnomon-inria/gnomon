@@ -23,6 +23,7 @@ public:
 
 public:
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+    Q_PROPERTY(int derivationLength READ derivationLength WRITE setDerivationLength NOTIFY derivationLengthChanged)
 
     Q_PROPERTY(QString modelName READ modelName WRITE setModelName NOTIFY modelChanged);
     Q_PROPERTY(QStringList models READ models NOTIFY modelsLoaded);
@@ -33,6 +34,8 @@ public:
     
 signals:
     void textChanged(const QString&);
+    void derivationLengthChanged(int);
+
     void modelsLoaded(void);
     void modelChanged(const QString& model);
     void parametersChanged(void);
@@ -41,6 +44,9 @@ signals:
 public:
     QString text(void);
     void setText(const QString& text);
+
+    int derivationLength(void);
+    void setDerivationLength(int l);
 
 public slots:
     void run(void);

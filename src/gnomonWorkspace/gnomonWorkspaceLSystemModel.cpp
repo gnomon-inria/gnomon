@@ -37,6 +37,7 @@ public:
 
 public:
     QString text;
+    int derivationLength = 1;
 
 public:
     QString workspace;
@@ -129,6 +130,19 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
     }
 }
 
+int gnomonWorkspaceLSystemModel::derivationLength(void)
+{
+    return d->derivationLength;
+}
+
+void gnomonWorkspaceLSystemModel::setDerivationLength(int l)
+{
+    if (l != d->derivationLength) {
+        d->derivationLength = l;
+        emit derivationLengthChanged(d->derivationLength);
+    }
+}
+
 void gnomonWorkspaceLSystemModel::run()
 {
     Q_ASSERT(d->command);
@@ -137,7 +151,9 @@ void gnomonWorkspaceLSystemModel::run()
     emit started();
     this->setInitialState();
     d->command->undo();
-    d->command->redo();
+    for (int t=0; t<d->derivationLength; t++) {
+        d->command->redo();
+    }
     this->viewState();
     emit finished();
 }

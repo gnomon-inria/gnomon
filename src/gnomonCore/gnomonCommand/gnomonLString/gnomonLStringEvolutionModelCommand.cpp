@@ -68,7 +68,13 @@ void gnomonLStringEvolutionModelCommand::redo(void)
     Q_ASSERT(this->model);
 
     this->predo();
-    this->model->run(0, 1, 1);
+
+    int t = 0;
+    std::shared_ptr<gnomonLStringSeries> lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
+    if (lString) {
+        t = int(lString->times().last());
+    }
+    this->model->step(t, 1);
     this->postdo();
 }
 
