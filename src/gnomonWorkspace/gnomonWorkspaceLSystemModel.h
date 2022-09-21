@@ -49,6 +49,10 @@ public:
     void setDerivationLength(int l);
 
 public slots:
+    void read(const QString& file_url);
+    void save(const QString& file_url) const;
+
+public slots:
     void run(void);
     void step(void);
     void reset(void);

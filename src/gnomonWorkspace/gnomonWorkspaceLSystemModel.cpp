@@ -5,6 +5,7 @@
 #include <gnomonCore/gnomonPythonPluginLoader>
 
 #include <gnomonVisualization/gnomonView/gnomonViewForm>
+#include "gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString"
 
 QString vonKochLSystem(void)
 {
@@ -20,6 +21,19 @@ QString vonKochLSystem(void)
     l_sys += "    context.options.setSelection(\"Selection Required\",0)\n";
     l_sys += "    context.options.setSelection(\"Module declaration\",0)\n";
     return l_sys;
+}
+
+QString filePathFromUrl(const QString& file_url)
+{
+    QString file_path;
+    const QUrl url(file_url);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    if (url.isLocalFile()) {
+        file_path = QDir::toNativeSeparators(url.toLocalFile());
+    } else {
+        file_path = file_url;
+    }
+    return file_path;
 }
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -82,12 +96,27 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
 
-    d->view = new gnomonViewForm(parent);
+    d->view = new gnomonViewForm(this);
     d->view->setAcceptForm("gnomonLString", true);
 
-    connect(d->view, &gnomonViewForm::formsChanged, [=] ()
-    {
+    connect(d->view, &gnomonViewForm::formsChanged, [=] () {
         this->setInitialState();
+        emit parametersChanged();
+    });
+
+    connect(d->view, &gnomonViewForm::formAdded, [=](const QString &name) {
+        const QString plugin_name = "lStringVisualizationPglScene";
+        if (name == "gnomonLString") {
+            if (gnomonVisualization::visualizationLString::pluginFactory().keys().contains(plugin_name)) {
+                d->view->setFormVisuName(name, plugin_name);
+                d->view->setFormVisuParameter(name, "interpretation_lsystem", d->model_file->fileName());
+            }
+            auto visu_params = d->view->formVisuParameters(name);
+            QJSValueIterator it(visu_params);
+            while (it.hasNext()) {
+                it.next();
+            }
+        }
     });
 
     d->model_file = new QTemporaryFile();
@@ -143,6 +172,33 @@ void gnomonWorkspaceLSystemModel::setDerivationLength(int l)
     }
 }
 
+void gnomonWorkspaceLSystemModel::read(const QString& file_url)
+{
+    QString file_path = filePathFromUrl(file_url);
+
+    QFile f(file_path);
+    if (f.open(QIODevice::ReadOnly)) {
+        QTextStream in(&f);
+        this->setText(in.readAll());
+    } else {
+        dtkWarn()<<"Could not open file"<<file_path;
+    }
+}
+
+void gnomonWorkspaceLSystemModel::save(const QString& file_url) const
+{
+    QString file_path = filePathFromUrl(file_url);
+
+    QFile f(file_path);
+    if(f.open(QIODevice::WriteOnly| QIODevice::Text)) {
+        QTextStream out(&f);
+        out<<d->text;
+        f.close();
+    } else {
+        dtkWarn()<<"Could not save to file"<<file_path;
+    }
+}
+
 void gnomonWorkspaceLSystemModel::run()
 {
     Q_ASSERT(d->command);
@@ -164,6 +220,11 @@ void gnomonWorkspaceLSystemModel::step()
 
     // TODO: make the commannd async
     emit started();
+    auto lString = d->command->state();
+    if (!lString || lString->times().size() == 0) {
+        this->setInitialState();
+        d->command->undo();
+    }
     d->command->redo();
     this->viewState();
     emit finished();
@@ -193,6 +254,9 @@ void gnomonWorkspaceLSystemModel::viewState()
     auto lString = d->command->state();
     if (lString) {
         d->view->setLString(lString);
+        if (lString->times().size() != 0) {
+            d->view->setCurrentTime(lString->times().last());
+        }
         d->view->render();
     }
 }

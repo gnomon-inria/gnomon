@@ -1272,6 +1272,14 @@ QJSValue gnomonViewForm::formVisuParameters(const QString& name)
     }
 }
 
+void gnomonViewForm::setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value)
+{
+    if (d->forms.contains(name)) {
+        auto visu = d->formVisualization[name];
+        visu->setParameter(parameter_name, value);
+    }
+}
+
 void gnomonViewForm::setFormVisible(const QString& name, bool visible)
 {
     if (d->formVisualization.contains(name)) {
