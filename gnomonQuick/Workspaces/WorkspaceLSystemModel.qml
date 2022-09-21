@@ -41,6 +41,9 @@ G.Workspace {
     d: GW.WorkspaceLSystemModel {
         id: d;
 
+        onStarted: idleStart();
+        onFinished: idleStop();
+
         onParametersChanged: {
             updateParametersModel(); //_workspace.updateParametersModel();
         }
@@ -69,6 +72,10 @@ G.Workspace {
 
             theme: X.Style.variant == 'LIGHT' ? 'vs-light' : 'vs-dark';
             language: 'python';
+
+            onModified: (contents) => {
+                d.text = eval(contents);
+            }
         }
 
         G.View {
@@ -87,5 +94,6 @@ G.Workspace {
         console.log(d.text)
         _editor.contents = d.text;
         d.onParametersChanged();
+        drawel.close();
     }
 }
