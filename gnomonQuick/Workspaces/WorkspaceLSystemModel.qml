@@ -16,12 +16,13 @@ import crossParameters   1.0 as C
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Icons      1.0 as G
 
 import gnomon.Workspaces 1.0 as GW
 
 G.Workspace {
 
-    id: _workspace;
+    id: _self;
 
     workspace_title: "L-System Model";
 
@@ -45,11 +46,41 @@ G.Workspace {
         onFinished: idleStop();
 
         onParametersChanged: {
-            updateParametersModel(); //_workspace.updateParametersModel();
+            updateParametersModel(); //_self.updateParametersModel();
         }
+    }
 
-        Component.onCompleted: {
-            console.log(d.text)
+    P.FileDialog {
+        id: _file_dialog;
+
+        currentFile: _self._current_file;
+        folder: d.defaultReadPath();
+        fileMode: P.FileDialog.OpenFile;
+
+        modality: Qt.NonModal;
+        nameFilters: ["L-Py source files (*.lpy)"]
+
+        onAccepted: {
+            d.read(decodeURIComponent(_file_dialog.file));
+            _editor.contents = d.text
+            _self._current_file = _file_dialog.file;
+        }
+    }
+
+    P.FileDialog {
+        id: _file_dialog_save
+
+        title: "Save L-System model"
+
+        folder: d.defaultReadPath();
+        fileMode: P.FileDialog.SaveFile
+
+        modality: Qt.WindowModal;
+        nameFilters: ["L-Py source files (*.lpy)"]
+
+        onAccepted: {
+            d.save(decodeURIComponent(_file_dialog_save.file));
+            _self._current_file = _file_dialog_save.file;
         }
     }
 
@@ -64,17 +95,74 @@ G.Workspace {
         Layout.fillWidth: true;
         Layout.fillHeight: true;
 
-        G.Monaco {
-            id: _editor
+        Control {
+            id: _editor_pane
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            theme: X.Style.variant == 'LIGHT' ? 'vs-light' : 'vs-dark';
-            language: 'python';
+            Item {
+                id: _button_container
 
-            onModified: (contents) => {
-                d.text = eval(contents);
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: G.Style.largeButtonHeight
+
+                G.Button {
+                    anchors.right: _load_button.left;
+                    anchors.verticalCenter: _button_container.verticalCenter
+                    anchors.margins: G.Style.smallPadding;
+
+                    text: "Save";
+
+                    type: G.Style.ButtonType.Base
+                    iconName: G.Icons.icons["content-save"]
+                    empty: true
+
+                    onClicked: {
+                        if(_self._current_file == "") {
+                            _file_dialog_save.open()
+
+                        } else {
+                            _message_dialog.open();
+                        }
+                    }
+                }
+
+                G.Button {
+                    id: _load_button
+
+                    anchors.right: _button_container.right;
+                    anchors.verticalCenter: _button_container.verticalCenter
+                    anchors.margins: G.Style.smallPadding;
+
+                    text: "Load";
+
+                    type: G.Style.ButtonType.Base
+                    iconName: G.Icons.icons["folder-open"]
+                    empty: true
+
+                    onClicked: {
+                        _file_dialog.open();
+                    }
+                }
+            }
+
+            G.Monaco {
+                id: _editor
+
+                anchors.top: _button_container.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+
+                theme: X.Style.variant == 'LIGHT' ? 'vs-light' : 'vs-dark';
+                language: 'python';
+
+                onModified: (contents) => {
+                    d.text = eval(contents);
+                }
             }
         }
 
@@ -91,7 +179,6 @@ G.Workspace {
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
 
-        console.log(d.text)
         _editor.contents = d.text;
         d.onParametersChanged();
         drawel.close();
