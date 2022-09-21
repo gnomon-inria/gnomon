@@ -85,6 +85,55 @@ Item {
         }
 
         Item {
+            id: _slider_container
+
+            height: G.Style.largeButtonHeight
+            Layout.fillWidth: true;
+
+            Label {
+                id: _label
+
+                anchors.left: parent.left
+                anchors.top: parent.top
+
+                text: "DERIVATION LENGTH"
+                font: G.Style.fonts.label
+                color: G.Style.colors.textColorBase
+            }
+
+            G.Slider {
+                id: _slider
+
+                anchors.top: _label.bottom
+                anchors.left:  parent.left
+                anchors.right:  parent.right
+
+                from: 0
+                to: 10
+                value: 1
+		        stepSize: 1
+		        snapMode: Slider.SnapAlways
+
+                onValueChanged: {
+                    console.log("derivation length :", _slider.value)
+                    d.derivationLength = _slider.value
+                }
+            }
+
+            Label {
+                id: _value
+
+                anchors.topMargin: G.Style.sizes.s1
+                anchors.top: _slider.bottom
+                x: 0
+
+                text: _slider.value.toFixed(0)
+                font: G.Style.fonts.value
+                color: G.Style.colors.hoveredBaseColor
+            }
+        }
+
+        Item {
             id: _button_container
 
             height: G.Style.largeButtonHeight
