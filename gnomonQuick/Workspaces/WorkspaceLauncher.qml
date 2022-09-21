@@ -91,7 +91,7 @@ G.Workspace {
                             font: G.Style.fonts.subHeader
                             color: G.Style.colors.textColorBase;
 
-                            text: "version 0.70.1"
+                            text: "version 0.71.0"
 
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -266,6 +266,12 @@ G.Workspace {
                                     new_pipeline_info.open()
                                 }
                             }
+                            onDoubleClicked: {
+                                new_pipeline_info.close()
+                                GP.PipelineManager.pipeline.name = new_pipeline_info.pipeline_title
+                                GP.PipelineManager.pipeline.description = new_pipeline_info.pipeline_descr
+                                switch_from_launcher()
+                            }
                         }
                     }
 
@@ -287,6 +293,9 @@ G.Workspace {
 
                             property alias pipeline_title: _pipeline_title.text
                             property alias pipeline_descr: _pipeline_description.text
+
+                            enter.enabled: false
+                            exit.enabled: false
 
                             background: Rectangle {
                                 anchors.fill: parent

@@ -36,7 +36,7 @@ Item {
 
     Component {
         id: _string_component
-        C.Simple {param: lparam}
+        G.StringParameter {param: lparam}
     }
 
     Component {

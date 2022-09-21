@@ -108,13 +108,25 @@ G.Dialog { id: self;
                 Layout.preferredHeight: G.Style.mediumLabelHeight;
                 Layout.fillWidth: true
             }
-
-            Label { id: descriptionLabel;
-                text: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? self.availableReaders.get(listView.currentIndex).description: "";
-                wrapMode: Text.Wrap
-                font: G.Style.fonts.label
-                Layout.preferredHeight: G.Style.mediumLabelHeight;
+            ColumnLayout {
+                spacing: G.Style.smallPadding
                 Layout.fillWidth: true
+
+                Label { id: descriptionLabel;
+                    text: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? self.availableReaders.get(listView.currentIndex).description: "";
+                    wrapMode: Text.Wrap
+                    font: G.Style.fonts.label
+                    Layout.preferredHeight: G.Style.mediumLabelHeight;
+                    Layout.fillWidth: true
+                }
+
+                Image {
+                    Layout.preferredWidth: G.Style.sizes.s13 - G.Style.smallPadding;
+                    Layout.preferredHeight: G.Style.sizes.s11 - G.Style.smallPadding;
+                    fillMode: Image.PreserveAspectFit
+                    source: (self.availableReaders.count > 0 && self.availableReaders.get(listView.currentIndex)) ? "file:/"+self.availableReaders.get(listView.currentIndex).preview: "";
+                }
+
             }
         }
     }
