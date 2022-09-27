@@ -11,10 +11,10 @@ import zipfile
 
 from base64 import b64decode, b64encode
 from functools import wraps
-from typing import Tuple, Callable
+from typing import Callable
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from json import loads, dump
+from json import load, loads, dump
 
 from pkg_resources import iter_entry_points, resource_filename
 
@@ -81,27 +81,51 @@ def available_plugins(group_name: str) -> list[str]:
     list[str]
         list of the plugin names in the plugin group (keys of the related factory)
     """
-    print([ep.name for ep in iter_entry_points(group=group_name, name=None)])
+    # print([ep.name for ep in iter_entry_points(group=group_name, name=None)])
     return [ep.name for ep in iter_entry_points(group=group_name, name=None)]
 
 
-def plugin_metadata(group_name):
+def plugin_metadata(group_name: str, plugin_name: str) -> dict[str, str]:
     """
-    ***Unused***
-    returns list of path to resource files associated with a plugin and sharing the name
+    Returns a dict of metadata regarding the plugin and its package.
+
+    Package information:
+        - package: the name of the package (in conda for instance as it may differ from the import statement)
+        - conda_channel: channel from which to pull this package
     Parameters
     ----------
-    group_name
+    group_name: str
+        Name of the plugin group (or entry_point group)
+
+    plugin_name: str
+        Name of the plugin
+
 
     Returns
     -------
+    Returns a dictionary of string to string containing metadata regarding the plugin and the package.
 
     """
-    out = []
-    for ep in iter_entry_points(group_name):
-        *module, resource = ep.module_name.split(".")
-        path = resource_filename(".".join(module), resource + ".json")
-        out.append((ep.name, path))
+    out = {}
+    try:
+        ep = next(iter_entry_points(group_name, name=plugin_name))
+    except StopIteration:
+        raise ValueError(f"No entry point found names {plugin_name} in group {group_name}")
+
+    # package metadata
+    root_module = importlib.import_module(ep.module_name.split(".")[0])
+    try:
+        out["package"] = root_module.package
+        out["conda_channel"] = root_module.conda_channel
+    except AttributeError as e:
+        print(f"Missing either 'package' or 'conda_channel' from root package {ep.module_name.split('.')[0]}")
+
+    # plugin metadata
+    *module, resource = ep.module_name.split(".")
+    path = resource_filename(".".join(module), resource + ".json")
+    if os.path.exists(path):
+        with open(path, "r") as file:
+            out.update(load(file))
     return out
 
 

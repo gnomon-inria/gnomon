@@ -56,8 +56,8 @@ class StreamCapture:
             except OSError:
                 os.close(echo_fd)
                 os.close(input_fd)
-                print("====== Closing connection due to error")
-                print(data)
+                #print("====== Closing connection due to error")
+                #print(data)
                 self.sock.close()
                 return
             if self.echo:
