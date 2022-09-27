@@ -63,3 +63,52 @@ QStringList availablePluginsFromGroup(const QString & module) {
     dtkScriptInterpreterPython::instance()->childReleaseLock();
     return available_plugins;
 }
+
+QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugin_name) {
+    QMap<QString, QString> metadata;
+    dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
+
+    PyObject* pName = PyUnicode_FromString("gnomon.utils.gnomonPlugin");
+    PyObject* pModule = PyImport_Import(pName);
+
+    if(pModule)
+    {
+        PyObject* pFunc = PyObject_GetAttrString(pModule, "plugin_metadata");
+        if(pFunc && PyCallable_Check(pFunc))
+        {
+            PyObject* args = Py_BuildValue("(s, s)", group.toStdString().c_str(), plugin_name.toStdString().c_str());
+            PyObject* py_metadata = PyObject_CallObject(pFunc, args);
+
+            PyObject *key, *value;
+            Py_ssize_t pos = 0;
+
+            while (PyDict_Next(py_metadata, &pos, &key, &value)) {
+                /* do something interesting with the values... */
+                Py_ssize_t size_key = 0;
+                Py_ssize_t size_val = 0;
+                metadata.insert(
+                        PyUnicode_AsUTF8AndSize(key, &size_key),
+                        PyUnicode_AsUTF8AndSize(value, &size_val)
+                );
+            }
+            Py_DECREF(args);
+            Py_DECREF(py_metadata);
+            Py_DECREF(key);
+            Py_DECREF(value);
+        }
+        else
+        {
+            dtkWarn() << Q_FUNC_INFO << "can't get plugins metadata for plugin " << plugin_name;
+        }
+        Py_DECREF(pFunc);
+    }
+    else
+    {
+        dtkWarn() << Q_FUNC_INFO << "Import gnomon.utils.gnomonPlugin failed. This is worrying";
+    }
+    Py_DECREF(pModule);
+    Py_DECREF(pName);
+
+    dtkScriptInterpreterPython::instance()->childReleaseLock();
+    return metadata;
+}
