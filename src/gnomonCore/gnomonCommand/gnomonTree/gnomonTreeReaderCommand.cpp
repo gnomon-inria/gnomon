@@ -43,6 +43,7 @@ gnomonTreeReaderCommand::~gnomonTreeReaderCommand()
 
 void gnomonTreeReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractTreeReader *) this->action)->setPath(this->m_path);
 }
 

@@ -45,6 +45,7 @@ gnomonCellImageReaderCommand::~gnomonCellImageReaderCommand()
 
 void gnomonCellImageReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractCellImageReader *) this->action)->setPath(this->m_path);
 }
 

@@ -65,6 +65,7 @@ void gnomonImageReaderCommandTestCase::readInr(void)
     d->command->setPath(image_file_path);
     QVERIFY(!reader::t_set_path);
 
+    d->command->setNoAsync();
     d->command->redo();
     QVERIFY(reader::t_set_path && reader::t_run_called);
 }

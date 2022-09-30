@@ -35,6 +35,7 @@ gnomonBinaryImageReaderCommand::~gnomonBinaryImageReaderCommand()
 
 void gnomonBinaryImageReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractBinaryImageReader *) this->action)->setPath(this->m_path);
 }
 

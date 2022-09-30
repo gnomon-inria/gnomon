@@ -35,6 +35,7 @@ gnomonMeshReaderCommand::~gnomonMeshReaderCommand()
 
 void gnomonMeshReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractMeshReader *) this->action)->setPath(this->m_path);
 }
 
