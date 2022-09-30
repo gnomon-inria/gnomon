@@ -62,3 +62,11 @@ gnomonAbstractCommand::orderedMap gnomonAbstractReaderCommand::inputTypes() {
 void gnomonAbstractReaderCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     dtkWarn() << Q_FUNC_INFO << "Reader takes no input form";
 }
+
+const QString &gnomonAbstractReaderCommand::source() {
+    return m_source;
+}
+
+void gnomonAbstractReaderCommand::setSource(const QString &source) {
+    m_source = source;
+}

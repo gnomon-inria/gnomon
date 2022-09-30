@@ -35,6 +35,7 @@ gnomonDataDictReaderCommand::~gnomonDataDictReaderCommand()
 
 void gnomonDataDictReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractDataDictReader *) this->action)->setPath(this->m_path);
 }
 

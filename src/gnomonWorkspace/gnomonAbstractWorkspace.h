@@ -21,7 +21,7 @@ public:
 
 signals:
     void started(void);
-    void finished(void);
+    void finished(bool success=true);
 
 public slots:
     virtual void export_outputs(void) = 0;

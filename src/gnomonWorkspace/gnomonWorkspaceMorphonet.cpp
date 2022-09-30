@@ -353,7 +353,7 @@ void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_
     d->watcher = new QFutureWatcher<void>();
     connect(d->watcher, &QFutureWatcher<void>::finished, [this, t0, t_end]() {
         this->onDataLoaded(t0, t_end);
-        this->finished();
+        emit finished();
     });
     
     auto future = QtConcurrent::run([=](){

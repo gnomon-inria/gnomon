@@ -155,7 +155,7 @@ void gnomonAlgorithmWorkspace::run(bool no_async)
     if(!no_async) {
         d->connect_finished = connect(d->command, &gnomonAbstractCommand::finished, [this]() {
             this->viewOutputs();
-            this->finished();
+            emit finished();
         });
     }
 

@@ -47,7 +47,7 @@ void gnomonAbstractCommand::redo(void)
     } else {
         this->action->run();
         this->postdo();
-        this->finished();
+        emit finished();
     }
 }
 

@@ -241,8 +241,8 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
         d->command->setPythonCode(d->code->text());
         connect(d->command, &gnomonFormAlgorithmCommand::finished, [this]() {
             this->viewOutputs();
-            this->finished();
-        });
+            emit finished();
+        }); // never called as the algo is run directly and not through the command
 
         if (this->source()->binaryImage()) {
             d->algorithm->setInputBinaryImage(this->source()->binaryImage());

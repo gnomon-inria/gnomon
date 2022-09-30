@@ -84,4 +84,11 @@ void gnomonLogCaptureServer::incomingConnection(qintptr handle) {
     QTcpServer::incomingConnection(handle);
 }
 
+void gnomonLogCaptureServer::clear() {
+    while(!d->pending_connections.isEmpty()) {
+        auto *connection = d->pending_connections.dequeue();
+        delete connection;
+    }
+}
+
 

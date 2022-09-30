@@ -17,6 +17,7 @@ public:
     virtual ~gnomonLogCaptureServer() override;
 
     Q_INVOKABLE gnomonLogConnection *getPendingConnection();
+    Q_INVOKABLE void clear();
 
 signals:
     void newPendingLogConnection();

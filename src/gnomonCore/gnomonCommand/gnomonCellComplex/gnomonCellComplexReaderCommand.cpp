@@ -35,6 +35,7 @@ gnomonCellComplexReaderCommand::~gnomonCellComplexReaderCommand()
 
 void gnomonCellComplexReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractCellComplexReader *) this->action)->setPath(this->m_path);
 }
 
