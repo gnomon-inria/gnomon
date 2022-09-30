@@ -92,7 +92,7 @@ G.Page {
                 }
                 onTextChanged: {
                     _console.cursorPosition = _console.length-1
-                }   
+                }
             }
         }
 
@@ -111,10 +111,12 @@ G.Page {
 
         function new_connection() {
             _logs_control.log_connection = GV.LogServer.getPendingConnection();
-            if(_logs_control.show){
-                _logs_control.display_console()
+            if(_logs_control.log_connection.alive) {
+                if(_logs_control.show){
+                    _logs_control.display_console()
+                }
+                GV.LogServer.newPendingLogConnection.disconnect(_logs_control.new_connection)
             }
-            GV.LogServer.newPendingLogConnection.disconnect(_logs_control.new_connection)
         }
     }
 
