@@ -16,6 +16,7 @@
 
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
+#include "gnomonPythonPluginLoader"
 
 
 // /////////////////////////////////////////////////////////////////
@@ -25,13 +26,16 @@
 class gnomonPipelineNodeReaderPrivate {
 public:
     QString path;
+    QJsonObject metadata;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeReader
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> outputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeReaderPrivate)
+gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString &algorithm_class, const QString &algorithm,
+                                                   const QString &path, QList<QString> outputs,
+                                                   QJsonObject metadata) : gnomonPipelineNode(), dd(new gnomonPipelineNodeReaderPrivate)
 {
     d->type = gnomonPipelineNode::NODE_READER;
 
@@ -43,6 +47,24 @@ gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_clas
         this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, output, this));
     }
     // this->layout()();
+    qDebug() << "A-a";
+    dd->metadata = metadata;
+    qDebug() << "A-b";
+    auto plugins = availablePluginsFromGroup(algorithm_class);
+    qDebug() << "A-c";
+    if(plugins.contains(algorithm)) {
+        qDebug() << "B-a";
+        auto localMetadata = pluginMetadata(algorithm_class, algorithm);
+        qDebug() << "B-b";
+        QMap<QString, QString>::key_value_iterator ptr;
+        for(ptr = localMetadata.keyValueBegin(); ptr!=localMetadata.keyValueEnd(); ptr++) {
+            qDebug() << "C-a";
+            dd->metadata.insert(ptr->first, ptr->second);
+            qDebug() << "C-b";
+        }
+        qDebug() << "B-c";
+    }
+    qDebug() << "A-d";
 }
 
 gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)

@@ -702,7 +702,9 @@ void gnomonPipeline::readFromJson(const QString& url)
                 for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
                     outputs.append(output_variant.toString());
                 }
-                gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(algorithm_class, algorithm_plugin, path, outputs);
+                QJsonObject metadata = node_json.contains("metadata") ? node_json.value("metadata").toObject() : QJsonObject();
+                gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(algorithm_class, algorithm_plugin, path,
+                                                                              outputs, metadata);
                 node->setName(name);
                 this->addNode(node);
             } else if(algorithm_class.contains("morphonetCellImage")) {
@@ -736,7 +738,9 @@ void gnomonPipeline::readFromJson(const QString& url)
                     outputs.append(output_variant.toString());
                 }
                 QJsonObject parameters = node_json.value("parameters").toObject();
-                gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(algorithm_class, algorithm_plugin, parameters, inputs, outputs);
+                QJsonObject metadata = node_json.contains("metadata") ? node_json.value("metadata").toObject() : QJsonObject();
+                gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(algorithm_class, algorithm_plugin,
+                                                                                    parameters, inputs, outputs, metadata);
                 node->setName(name);
                 this->addNode(node);
             }

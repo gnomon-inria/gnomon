@@ -4,6 +4,7 @@
 
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
+#include "gnomonPythonPluginLoader"
 
 
 // /////////////////////////////////////////////////////////////////
@@ -13,13 +14,18 @@
 class gnomonPipelineNodeAlgorithmPrivate {
 public:
     QJsonObject parameters;
+    QJsonObject metadata;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeAlgorithm
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QJsonObject parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
+gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString &algorithm_class, const QString &algorithm,
+                                                         QJsonObject &parameters,
+                                                         QList<QString> inputs, QList<QString> outputs,
+                                                         QJsonObject metadata) :
+                                                         gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
 {
     if (algorithm_class.contains("From")) {
         d->type = gnomonPipelineNode::NODE_CONVERTER;
@@ -37,6 +43,25 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorith
         this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, output, this));
     }
     // this->layout()();
+
+    qDebug() << "A-a";
+    dd->metadata = metadata;
+    qDebug() << "A-b";
+    auto plugins = availablePluginsFromGroup(algorithm_class);
+    qDebug() << "A-c";
+    if(plugins.contains(algorithm)) {
+        qDebug() << "B-a";
+        auto localMetadata = pluginMetadata(algorithm_class, algorithm);
+        qDebug() << "B-b";
+        QMap<QString, QString>::key_value_iterator ptr;
+        for(ptr = localMetadata.keyValueBegin(); ptr!=localMetadata.keyValueEnd(); ptr++) {
+            qDebug() << "C-a";
+            dd->metadata.insert(ptr->first, ptr->second);
+            qDebug() << "C-b";
+        }
+        qDebug() << "B-c";
+    }
+    qDebug() << "A-d";
 }
 
 gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
@@ -82,6 +107,7 @@ const QJsonObject gnomonPipelineNodeAlgorithm::toJson(void)
         }
     }
     json.insert("parameters", parameters);
+    json.insert("metadata", dd->metadata);
 
     return json;
 }
@@ -153,6 +179,14 @@ void gnomonPipelineNodeAlgorithm::configureParameter(const QString &name, dtkCor
 
 QString gnomonPipelineNodeAlgorithm::getParameterAsString(const QString &name) {
     return dd->parameters[name].toString();
+}
+
+QMap<QString, QString> gnomonPipelineNodeAlgorithm::getPluginMetadata(void) {
+    QMap<QString, QString> out;
+    for(const auto &key: dd->metadata.keys()) {
+        out.insert(key, dd->metadata[key].toString());
+    }
+    return out;
 }
 
 //
