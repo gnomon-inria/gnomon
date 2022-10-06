@@ -8,10 +8,11 @@ from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
 from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineNodeTask, gnomonPipelineEdge, gnomonPipelinePort
 from gnomon.core import gnomonAbstractDynamicForm, gnomonAbstractAlgorithm
 
+# if a plugin fail, everything should fail
 gnomon.utils.gnomonPlugin.DEBUG = True
 
-# if a plugin fail, everything should fail
 THREADING = True
+
 
 class PNodeRunner:
     """
@@ -297,3 +298,7 @@ def load_pipeline(path: str, data_dir: str = ""):
     pipeline = gnomonPipeline()
     pipeline.readFromJson(path)
     return PipelineRunner(pipeline, data_dir=data_dir)
+
+
+def install_missing_package():
+    pass
