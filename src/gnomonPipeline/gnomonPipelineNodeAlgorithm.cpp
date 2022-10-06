@@ -44,18 +44,18 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString &algorith
     }
     // this->layout()();
 
-    qDebug() << "A-a";
+    qDebug() << "A-a" << metadata << " end md";
     dd->metadata = metadata;
     qDebug() << "A-b";
     auto plugins = availablePluginsFromGroup(algorithm_class);
     qDebug() << "A-c";
     if(plugins.contains(algorithm)) {
-        qDebug() << "B-a";
+        qDebug() << "B-a" << algorithm;
         auto localMetadata = pluginMetadata(algorithm_class, algorithm);
         qDebug() << "B-b";
         QMap<QString, QString>::key_value_iterator ptr;
         for(ptr = localMetadata.keyValueBegin(); ptr!=localMetadata.keyValueEnd(); ptr++) {
-            qDebug() << "C-a";
+            qDebug() << "C-a" << ptr->first << ptr->second;
             dd->metadata.insert(ptr->first, ptr->second);
             qDebug() << "C-b";
         }

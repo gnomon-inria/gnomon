@@ -27,7 +27,20 @@ QStringList availablePluginsFromGroup(const QString & module) {
     QStringList available_plugins;
 
     qDebug() << "D-a";
-    dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
+    qDebug() << "is init" << Py_IsInitialized();
+    qDebug() << "gilstate_check (1 is holding the GIL)" <<  PyGILState_Check();
+    qDebug() << "Get this thread State" << PyGILState_GetThisThreadState();
+    PyGILState_STATE gstate;
+    //if(Py_IsInitialized()) {
+    //    qDebug() << "allowthreads";
+
+        //leads to: Fatal Python error: PyEval_SaveThread: the function must be called with the GIL held, but the GIL is released (the current Python thread state is NULL)
+        //dtkScriptInterpreterPython::instance()->allowThreads();
+
+        gstate = PyGILState_Ensure();
+    //}
+
+    //dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
     qDebug() << "D-b";
     PyObject* pName = PyUnicode_FromString("gnomon.utils");
     PyObject* pModule = PyImport_Import(pName);
@@ -62,14 +75,18 @@ QStringList availablePluginsFromGroup(const QString & module) {
     Py_DECREF(pName);
     //Py_Finalize();
     qDebug() << "D-c";
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
+
+    PyGILState_Release(gstate);
+    //dtkScriptInterpreterPython::instance()->childReleaseLock();
     qDebug() << "D-d";
     return available_plugins;
 }
 
 QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugin_name) {
     QMap<QString, QString> metadata;
-    dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure(); 
+    //dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
 
     PyObject* pName = PyUnicode_FromString("gnomon.utils.gnomonPlugin");
     PyObject* pModule = PyImport_Import(pName);
@@ -112,6 +129,7 @@ QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugi
     Py_DECREF(pModule);
     Py_DECREF(pName);
 
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
+    //dtkScriptInterpreterPython::instance()->childReleaseLock();
+    PyGILState_Release(gstate);
     return metadata;
 }
