@@ -46,6 +46,7 @@ gnomonImageReaderCommand::~gnomonImageReaderCommand()
 
 void gnomonImageReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractImageReader *) this->action)->setPath(this->m_path);
 }
 

@@ -26,6 +26,8 @@ public:
 public:
     const QString& path();
     void setPath(const QString& path);
+    const QString& source();
+    void setSource(const QString& source);
 
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
@@ -35,6 +37,7 @@ public:
 
 protected:
     QString m_path = "";
+    QString m_source = "";
     QMap<QString, QString> m_preview;
     QMap<QString, QString> m_descriptions;
     QMap<QString, QStringList> m_extensions;

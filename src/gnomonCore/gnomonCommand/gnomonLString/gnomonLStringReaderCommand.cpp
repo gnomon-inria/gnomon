@@ -42,6 +42,7 @@ gnomonLStringReaderCommand::~gnomonLStringReaderCommand()
 
 void gnomonLStringReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractLStringReader *) this->action)->setPath(this->m_path);
 }
 
