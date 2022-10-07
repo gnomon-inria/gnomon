@@ -26,6 +26,7 @@ dependencies:
     - pymongo
     - matplotlib-base
     - timagetk =3
+    - openalea.lpy
     - python-lsp-server
     - pyside6
     - qtconsole-base
