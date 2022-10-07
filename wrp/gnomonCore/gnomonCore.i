@@ -84,6 +84,7 @@
  
 #include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
 #include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
+#include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 #include <gnomonCore/gnomonModel/gnomonAbstractSystemScenario.h>
 #include <gnomonCore/gnomonModel/gnomonSystem.h>
 
@@ -357,6 +358,7 @@ INCLUDE_GNOMON_CONCEPT(gnomonAbstractPointCloudWriter, PointCloudWriter, gnomonC
 
 %include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
 %include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
+%include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 %include <gnomonCore/gnomonModel/gnomonAbstractSystemScenario.h>
 %include <gnomonCore/gnomonModel/gnomonSystem.h>
 

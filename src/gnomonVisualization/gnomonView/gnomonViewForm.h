@@ -162,6 +162,7 @@ public:
     Q_INVOKABLE QStringList formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
+    void setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value);
 
     Q_INVOKABLE void setFormVisible(const QString& name, bool visible);
     Q_INVOKABLE void removeForm(const QString& name);

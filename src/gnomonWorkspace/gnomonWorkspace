@@ -31,3 +31,4 @@
 // #include "gnomonWorkspaceTreeConstructor.h"
 // #include "gnomonWorkspaceTreeFromLString.h"
 // #include "gnomonWorkspaceLStringTranslation.h"
+#include "gnomonWorkspaceLSystemModel.h"
