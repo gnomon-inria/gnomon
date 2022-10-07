@@ -104,7 +104,7 @@ G.Workspace {
             Item {
                 id: _button_container
 
-                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
                 height: G.Style.largeButtonHeight
@@ -152,10 +152,10 @@ G.Workspace {
             G.Monaco {
                 id: _editor
 
-                anchors.top: _button_container.bottom
+                anchors.top: parent.top
+                anchors.bottom: _button_container.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.bottom: parent.bottom
 
                 theme: X.Style.variant == 'LIGHT' ? 'vs-light' : 'vs-dark';
                 language: 'python';
