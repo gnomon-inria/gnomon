@@ -10,7 +10,7 @@
 
 gnomonCoreParameterGraphicalObject::gnomonCoreParameterGraphicalObject(gnomonCoreParameterGraphical *p) : dtkCoreParameterObject(p), m_param(p) 
 {
-    
+
 }
 
 gnomonCoreParameterGraphicalObject::~gnomonCoreParameterGraphicalObject(void)
@@ -31,6 +31,16 @@ QString gnomonCoreParameterGraphicalObject::identifier(void) const
 void gnomonCoreParameterGraphicalObject::notifyName(const QString& name)
 {
     emit nameChanged(name);
+}
+
+void gnomonCoreParameterGraphicalObject::setName(const QString& name)
+{
+    m_param->setName(name);
+}
+
+QString gnomonCoreParameterGraphicalObject::name(void) const
+{
+    return m_param->name();
 }
 
 //

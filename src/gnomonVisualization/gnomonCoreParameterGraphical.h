@@ -15,8 +15,12 @@ class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterGraphical : public dtkCorePa
 {
 public:
 
+    using self_type = gnomonCoreParameterGraphical;
+    using base_type = dtkCoreParameterBase<self_type>;
+
     gnomonCoreParameterGraphical(void);
     gnomonCoreParameterGraphical(const QString& label);
+    gnomonCoreParameterGraphical(const dtkCoreParameter *);
 
     ~gnomonCoreParameterGraphical(void);
 
@@ -32,6 +36,11 @@ public:
     QVariantHash toVariantHash(void) const override;
 
     dtkCoreParameterObject *object(void) override;
+
+    using dtkCoreParameter::documentation;
+    using dtkCoreParameter::setDocumentation;
+    using dtkCoreParameter::label;
+    using dtkCoreParameter::setLabel;
 
 private:
     using dtkCoreParameter::m_label;
