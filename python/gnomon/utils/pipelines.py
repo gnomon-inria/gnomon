@@ -282,7 +282,7 @@ class PipelineRunner:
         self.path_dict.update(path_dict)
 
 
-def load_pipeline(path: str, data_dir: str = ""):
+def load_pipeline(path: str, data_dir: str = "", ios: Dict[str, str]= None):
     """
     Load a pipeline from path and returns a PipelineRunner object
 
@@ -291,13 +291,27 @@ def load_pipeline(path: str, data_dir: str = ""):
     path: str
         Path to pipeline file
 
-    Returns
-    -------
-    PipelineRunner
+    data_dir: str
+        path to the data directory
+
+    ios: Dict[str, str]
+        dictionary of [input_output name : path] to apply the pipeline to new datas
+
     """
+
     pipeline = gnomonPipeline()
     pipeline.readFromJson(path)
-    return PipelineRunner(pipeline, data_dir=data_dir)
+    print("pipeline read!!")
+
+    pipeline_runner = PipelineRunner(pipeline, data_dir=data_dir)
+    if ios:
+        print("has ios")
+        print(ios)
+        nodes = ios[::2]
+        paths = ios[1::2]
+        for node_name, path in zip(nodes, paths):
+            pipeline_runner.path_dict[node_name] = path
+    pipeline_runner.run()
 
 
 def install_missing_package():

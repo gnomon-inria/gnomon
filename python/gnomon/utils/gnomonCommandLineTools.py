@@ -30,15 +30,15 @@ def generate(args: argparse.Namespace):
             {},
         )
 
-def run(args: argparse.Namespace):
-    from gnomon.utils.pipelines import load_pipeline
-    pr = load_pipeline(args.pipeline, args.data_dir)
-    if args.ios:
-        nodes = args.ios[::2]
-        paths = args.ios[1::2]
-        for node_name, path in zip(nodes, paths):
-            pr.path_dict[node_name] = path
-    pr.run()
+# def run(args: argparse.Namespace):
+#     from gnomon.utils.pipelines import load_pipeline
+#     pr = load_pipeline(args.pipeline, args.data_dir)
+#     if args.ios:
+#         nodes = args.ios[::2]
+#         paths = args.ios[1::2]
+#         for node_name, path in zip(nodes, paths):
+#             pr.path_dict[node_name] = path
+#     pr.run()
 
 
 
@@ -64,18 +64,18 @@ generate_parser.add_argument("--inpath", help="Optional path to a json schematic
 
 
 # pipeline command
-generate_parser = subparsers.add_parser(
-    "run",
-    description=f"""
-    Run a pipeline from a pipeline file.
+# generate_parser = subparsers.add_parser(
+#     "run",
+#     description=f"""
+#     Run a pipeline from a pipeline file.
     
-    Example:
-    gnomon-utils run ./my_pipeline.json --ios imageReader1 ./my_image.inr imageReader2 ./other_image.inr
-    """
-)
-generate_parser.set_defaults(func=run)
-generate_parser.add_argument("pipeline", help="Path to the pipeline file")
-generate_parser.add_argument("--data-dir", type=str, default="", dest="data_dir",
-                             help="Path to the directory containing the data")
-generate_parser.add_argument("--ios", action="extend", nargs="+", type=str,
-                             help="List of pairs of node names / path to file.")
+#     Example:
+#     gnomon-utils run ./my_pipeline.json --ios imageReader1 ./my_image.inr imageReader2 ./other_image.inr
+#     """
+# )
+# generate_parser.set_defaults(func=run)
+# generate_parser.add_argument("pipeline", help="Path to the pipeline file")
+# generate_parser.add_argument("--data-dir", type=str, default="", dest="data_dir",
+#                              help="Path to the directory containing the data")
+# generate_parser.add_argument("--ios", action="extend", nargs="+", type=str,
+#                              help="List of pairs of node names / path to file.")
