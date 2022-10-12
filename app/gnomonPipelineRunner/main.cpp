@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
             return 1;
         } 
 
-        PyObject* pFunc = PyObject_GetAttrString(pModule, "load_pipeline");
+        PyObject* pFunc = PyObject_GetAttrString(pModule, "run_pipeline");
         if(pFunc && PyCallable_Check(pFunc))
         {
             PyObject *ios_dict = PyDict_New();
@@ -59,7 +59,6 @@ int main(int argc, char *argv[])
                 PyDict_SetItemString(ios_dict, io_list[0].toStdString().c_str(), val);
                 Py_DECREF(val);
             }
-            qDebug() << "making args" << ios_dict;
             PyObject* args = Py_BuildValue("(s, s, O)", 
                 pipeline_file.toStdString().c_str(),
                 data_dir.toStdString().c_str(),
@@ -67,10 +66,10 @@ int main(int argc, char *argv[])
             PyObject_CallObject(pFunc, args);
             Py_DECREF(args);
             Py_DECREF(ios_dict);
+            Py_DECREF(pFunc);
         } else {
             dtkError() << "Cannot call load_pipeline";
         }
-        Py_DECREF(pFunc);
         Py_DECREF(pModule);
     } else {
         dtkError() << "No pipeline set, nothing is done. Run with --help to show usage";

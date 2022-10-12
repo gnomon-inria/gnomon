@@ -1,23 +1,9 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonPipelineNodeReader.h"
 
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
 #include "gnomonPythonPluginLoader"
-
+#include "gnomonPythonPluginLoader.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeReaderPrivate
@@ -46,25 +32,17 @@ gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString &algorithm_clas
     for (const auto& output : outputs) {
         this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, output, this));
     }
-    // this->layout()();
-    qDebug() << "A-a";
     dd->metadata = metadata;
-    qDebug() << "A-b";
     auto plugins = availablePluginsFromGroup(algorithm_class);
-    qDebug() << "A-c";
     if(plugins.contains(algorithm)) {
-        qDebug() << "B-a";
         auto localMetadata = pluginMetadata(algorithm_class, algorithm);
-        qDebug() << "B-b";
         QMap<QString, QString>::key_value_iterator ptr;
         for(ptr = localMetadata.keyValueBegin(); ptr!=localMetadata.keyValueEnd(); ptr++) {
-            qDebug() << "C-a";
             dd->metadata.insert(ptr->first, ptr->second);
-            qDebug() << "C-b";
         }
-        qDebug() << "B-c";
+    } else {
+        qWarning() << Q_FUNC_INFO << algorithm_class << " doesn't have algorithm " << algorithm << " available algorithms are: " << plugins;
     }
-    qDebug() << "A-d";
 }
 
 gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)

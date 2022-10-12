@@ -10,6 +10,7 @@
 #include "gnomonPipelineNodeTask.h"
 #include "gnomonPipelineNodeMorphonet.h"
 #include "gnomonPipelineNodeWriter.h"
+#include "gnomonPythonPluginLoader.h"
 
 #include <cmath>
 
@@ -662,7 +663,7 @@ void gnomonPipeline::updateLayout(void)
 }
 
 
-void gnomonPipeline::readFromJson(const QString& url)
+bool gnomonPipeline::readFromJson(const QString& url)
 {
     QString path;
     const QUrl q_url(url);
@@ -675,7 +676,7 @@ void gnomonPipeline::readFromJson(const QString& url)
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << Q_FUNC_INFO << "can't open file " << path;
-        return;
+        return false;
     }
 
     QByteArray pipeline_json = file.readAll();
@@ -689,6 +690,7 @@ void gnomonPipeline::readFromJson(const QString& url)
     d->name = rootObj.value("name").toString();
     d->description = rootObj.value("description").toString();
 
+    bool read_ok = true;
     for(auto k:rootObj.keys()) {
         QJsonObject node_json = rootObj.value(k).toObject();
 
@@ -696,62 +698,74 @@ void gnomonPipeline::readFromJson(const QString& url)
             QString name = node_json.value("name").toString();
             QString algorithm_class = node_json.value("plugin_group").toString();
             QString algorithm_plugin = node_json.value("plugin_name").toString();
-            if (algorithm_class.contains("Reader")) {
-                QString path = node_json.value("path").toString();
-                QStringList outputs;
-                for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
-                    outputs.append(output_variant.toString());
+            QJsonObject metadatas = node_json.contains("metadata") ? node_json.value("metadata").toObject() : QJsonObject();
+
+            auto plugins = availablePluginsFromGroup(algorithm_class);
+            if(!plugins.contains(algorithm_plugin)) {
+                dtkWarn() << algorithm_plugin << " is not available in group" << algorithm_class << " available algorithms are " << plugins;
+                dtkWarn() << "Here is some info to help you install the missing package:";
+                for(const QString& k : metadatas.keys()) {
+                    dtkWarn() << k << " : " << metadatas.value(k).toString();
                 }
-                QJsonObject metadata = node_json.contains("metadata") ? node_json.value("metadata").toObject() : QJsonObject();
-                gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(algorithm_class, algorithm_plugin, path,
-                                                                              outputs, metadata);
-                node->setName(name);
-                this->addNode(node);
-            } else if(algorithm_class.contains("morphonetCellImage")) {
-                QJsonObject morphonet_data = node_json.value("morphonet_data").toObject();
-                QStringList outputs;
-                for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
-                    outputs.append(output_variant.toString());
-                }
-                gnomonPipelineNodeMorphonet *node =  new gnomonPipelineNodeMorphonet(outputs[0], morphonet_data);
-                node->setName(name);
-                this->addNode(node);
-            } else if (algorithm_class.contains("Writer")) {
-                QString path = node_json.value("path").toString();
-                QStringList inputs = node_json.value("inputs").toObject().keys();
-                gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(algorithm_class, algorithm_plugin, path, inputs);
-                node->setName(name);
-                this->addNode(node);
-            } else if (algorithm_class == "task") {
-                QStringList inputs = node_json.value("inputs").toObject().keys();
-                QStringList outputs;
-                for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
-                    outputs.append(output_variant.toString());
-                }
-                auto *node = new gnomonPipelineNodeTask(algorithm_plugin, inputs, outputs);
-                node->setName(name);
-                this->addNode(node);
-            } else {
-                QStringList inputs = node_json.value("inputs").toObject().keys();
-                QStringList outputs;
-                for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
-                    outputs.append(output_variant.toString());
-                }
-                QJsonObject parameters = node_json.value("parameters").toObject();
-                QJsonObject metadata = node_json.contains("metadata") ? node_json.value("metadata").toObject() : QJsonObject();
-                gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(algorithm_class, algorithm_plugin,
-                                                                                    parameters, inputs, outputs, metadata);
-                node->setName(name);
-                this->addNode(node);
+                read_ok = false;
             }
 
-            if (node_json.contains("inputs")) {
-                QJsonObject inputs_json = node_json.value("inputs").toObject();
-                for (const QString &input_name: inputs_json.keys()) {
-                    QJsonValue in = inputs_json.value(input_name);
-                    if (in != QJsonValue::Null) {
-                        QStringList input_source = in.toString().split(" -> ");
-                        edges[QPair<QString, QString>(name, input_name)] = QPair<QString, QString>(input_source[0], input_source[1]);
+            if(read_ok) {
+                if (algorithm_class.contains("Reader")) {
+                    QString path = node_json.value("path").toString();
+                    QStringList outputs;
+                    for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
+                        outputs.append(output_variant.toString());
+                    }
+                    gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(algorithm_class, algorithm_plugin, path,
+                                                                                outputs, metadatas);
+                    node->setName(name);
+                    this->addNode(node);
+                } else if(algorithm_class.contains("morphonetCellImage")) {
+                    QJsonObject morphonet_data = node_json.value("morphonet_data").toObject();
+                    QStringList outputs;
+                    for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
+                        outputs.append(output_variant.toString());
+                    }
+                    gnomonPipelineNodeMorphonet *node =  new gnomonPipelineNodeMorphonet(outputs[0], morphonet_data);
+                    node->setName(name);
+                    this->addNode(node);
+                } else if (algorithm_class.contains("Writer")) {
+                    QString path = node_json.value("path").toString();
+                    QStringList inputs = node_json.value("inputs").toObject().keys();
+                    gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(algorithm_class, algorithm_plugin, path, inputs, metadatas);
+                    node->setName(name);
+                    this->addNode(node);
+                } else if (algorithm_class == "task") {
+                    QStringList inputs = node_json.value("inputs").toObject().keys();
+                    QStringList outputs;
+                    for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
+                        outputs.append(output_variant.toString());
+                    }
+                    auto *node = new gnomonPipelineNodeTask(algorithm_plugin, inputs, outputs);
+                    node->setName(name);
+                    this->addNode(node);
+                } else {
+                    QStringList inputs = node_json.value("inputs").toObject().keys();
+                    QStringList outputs;
+                    for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
+                        outputs.append(output_variant.toString());
+                    }
+                    QJsonObject parameters = node_json.value("parameters").toObject();
+                    gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(algorithm_class, algorithm_plugin,
+                                                                                        parameters, inputs, outputs, metadatas);
+                    node->setName(name);
+                    this->addNode(node);
+                }
+
+                if (node_json.contains("inputs")) {
+                    QJsonObject inputs_json = node_json.value("inputs").toObject();
+                    for (const QString &input_name: inputs_json.keys()) {
+                        QJsonValue in = inputs_json.value(input_name);
+                        if (in != QJsonValue::Null) {
+                            QStringList input_source = in.toString().split(" -> ");
+                            edges[QPair<QString, QString>(name, input_name)] = QPair<QString, QString>(input_source[0], input_source[1]);
+                        }
                     }
                 }
             }
@@ -767,6 +781,8 @@ void gnomonPipeline::readFromJson(const QString& url)
         edge->setTarget(d->pipeline_nodes[target.first]->inputPort(target.second));
         edge->link();
     }
+
+    return read_ok;
 }
 
 QList<QStringList> gnomonPipeline::scheduleGroups(void) {
