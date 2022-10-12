@@ -70,6 +70,11 @@ Item {
         G.LookupTable {param: lparam}
     }
 
+    Component {
+        id: _graphical_component
+        G.GraphicalParameter {param: lparam}
+    }
+
     ListModel {
         id: params_model;
         dynamicRoles: true;
@@ -103,6 +108,9 @@ Item {
         }
         if (type == "gnomonCoreParameterLookupTable") {
             return _lookuptable_component
+        }
+        if (type == "gnomonCoreParameterGraphical") {
+            return _graphical_component
         }
 
         return _dummy_component;
