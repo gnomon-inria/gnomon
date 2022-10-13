@@ -1,22 +1,9 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonPipelineNodeReader.h"
 
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
-
+#include "gnomonPythonPluginLoader"
+#include "gnomonPythonPluginLoader.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeReaderPrivate
@@ -25,13 +12,16 @@
 class gnomonPipelineNodeReaderPrivate {
 public:
     QString path;
+    QJsonObject metadata;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeReader
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> outputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeReaderPrivate)
+gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString &algorithm_class, const QString &algorithm,
+                                                   const QString &path, QList<QString> outputs,
+                                                   QJsonObject metadata) : gnomonPipelineNode(), dd(new gnomonPipelineNodeReaderPrivate)
 {
     d->type = gnomonPipelineNode::NODE_READER;
 
@@ -42,7 +32,17 @@ gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString& algorithm_clas
     for (const auto& output : outputs) {
         this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, output, this));
     }
-    // this->layout()();
+    dd->metadata = metadata;
+    auto plugins = availablePluginsFromGroup(algorithm_class);
+    if(plugins.contains(algorithm)) {
+        auto localMetadata = pluginMetadata(algorithm_class, algorithm);
+        QMap<QString, QString>::key_value_iterator ptr;
+        for(ptr = localMetadata.keyValueBegin(); ptr!=localMetadata.keyValueEnd(); ptr++) {
+            dd->metadata.insert(ptr->first, ptr->second);
+        }
+    } else {
+        qWarning() << Q_FUNC_INFO << algorithm_class << " doesn't have algorithm " << algorithm << " available algorithms are: " << plugins;
+    }
 }
 
 gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)

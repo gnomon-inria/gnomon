@@ -190,7 +190,8 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms = command->outputs();
 
-    gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(command->factoryName(), command->algorithmName(), command->path(), forms.keys());
+    gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(command->factoryName(), command->algorithmName(),
+                                                                  command->path(), forms.keys());
     node->setVersion(command->version());
 
     for (auto it = forms.begin(); it != forms.end(); ++it) {
@@ -249,7 +250,10 @@ void gnomonPipelineManager::addAlgorithm(gnomonAbstractCommand *command)
         parameter_json.insert("python_code", QJsonValue(code));
     }
 
-    gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(command->factoryName(), command->algorithmName(), parameter_json, input_forms.keys(), output_forms.keys());
+    gnomonPipelineNodeAlgorithm *node = new gnomonPipelineNodeAlgorithm(command->factoryName(),
+                                                                        command->algorithmName(), parameter_json,
+                                                                        input_forms.keys(),
+                                                                        output_forms.keys());
     node->setVersion(command->version());
 
     d->node_input_forms[node] = input_forms;

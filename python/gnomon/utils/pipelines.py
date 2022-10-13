@@ -8,10 +8,11 @@ from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
 from gnomon.pipeline import gnomonPipeline, gnomonPipelineNode, gnomonPipelineNodeTask, gnomonPipelineEdge, gnomonPipelinePort
 from gnomon.core import gnomonAbstractDynamicForm, gnomonAbstractAlgorithm
 
+# if a plugin fail, everything should fail
 gnomon.utils.gnomonPlugin.DEBUG = True
 
-# if a plugin fail, everything should fail
 THREADING = True
+
 
 class PNodeRunner:
     """
@@ -290,10 +291,55 @@ def load_pipeline(path: str, data_dir: str = ""):
     path: str
         Path to pipeline file
 
+    data_dir: str
+        path to the data directory
+
+    ios: Dict[str, str]
+        dictionary of [input_output name : path] to apply the pipeline to new datas
+
     Returns
-    -------
-    PipelineRunner
+    ----------
+    PipelineRunner object
     """
+
     pipeline = gnomonPipeline()
-    pipeline.readFromJson(path)
-    return PipelineRunner(pipeline, data_dir=data_dir)
+    ok = pipeline.readFromJson(path)
+    if (not ok):
+        print("cannot read pipeline from path " + path)
+        return None
+    else:
+        return PipelineRunner(pipeline, data_dir=data_dir)
+
+
+def run_pipeline(path: str, data_dir: str = "", ios: Dict[str, str]= None):
+    """
+    run a pipeline from a path
+    Parameters
+    ----------
+    path: str
+        Path to pipeline file
+
+    data_dir: str
+        path to the data directory
+
+    ios: Dict[str, str]
+        dictionary of [input_output name : path] to apply the pipeline to new datas
+
+    """
+
+    pipeline_runner = load_pipeline(path, data_dir)
+    if not pipeline_runner:
+        return
+
+    if ios:
+        print("has ios")
+        print(ios)
+        nodes = ios[::2]
+        paths = ios[1::2]
+        for node_name, path in zip(nodes, paths):
+            pipeline_runner.path_dict[node_name] = path
+    pipeline_runner.run()
+
+
+def install_missing_package():
+    pass

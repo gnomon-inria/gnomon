@@ -1,20 +1,5 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
+#if(GNOMON_ENABLE_WIDGETS)
+#add_subdirectory(gnomon)
+#endif(GNOMON_ENABLE_WIDGETS)
 
-if(GNOMON_ENABLE_WIDGETS)
-add_subdirectory(gnomon)
-endif(GNOMON_ENABLE_WIDGETS)
-
-######################################################################
-### CMakeLists.txt ends here
+add_subdirectory(gnomonPipelineRunner)

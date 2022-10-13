@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonPipelineExport.h>
@@ -23,7 +9,11 @@ class gnomonPipelinePort;
 class GNOMONPIPELINE_EXPORT gnomonPipelineNodeWriter : public gnomonPipelineNode
 {
 public:
-     gnomonPipelineNodeWriter(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> inputs);
+     gnomonPipelineNodeWriter(const QString& algorithm_class, 
+                              const QString& algorithm,
+                              const QString& path,
+                              QList<QString> inputs,
+                              QJsonObject metadata = {});
     ~gnomonPipelineNodeWriter(void);
 
 public:

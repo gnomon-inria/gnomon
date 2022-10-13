@@ -493,5 +493,9 @@ gnomonPipelineEdge *gnomonPipelineNode::inputEdgeFromPort(const QString& portNam
     return nullptr;
 }
 
+QMap<QString, QString> gnomonPipelineNode::getPluginMetadata() {
+    return QMap<QString, QString>();
+}
+
 //
 // gnomonPipelineNode.cpp ends here

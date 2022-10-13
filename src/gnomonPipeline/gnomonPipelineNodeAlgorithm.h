@@ -23,7 +23,8 @@ class gnomonPipelinePort;
 class GNOMONPIPELINE_EXPORT gnomonPipelineNodeAlgorithm : public gnomonPipelineNode
 {
 public:
-     gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QJsonObject parameters, QList<QString> inputs, QList<QString> outputs);
+     gnomonPipelineNodeAlgorithm(const QString &algorithm_class, const QString &algorithm, QJsonObject &parameters,
+                                 QList<QString> inputs, QList<QString> outputs, QJsonObject metadata={});
     ~gnomonPipelineNodeAlgorithm(void);
 
 public:
@@ -32,6 +33,8 @@ public:
     virtual void configureParameter(const QString &name, dtkCoreParameter *param) override;
 
     virtual QString getParameterAsString(const QString &name) override;
+
+    QMap<QString, QString> getPluginMetadata(void) override;
 
 public:
     virtual QString toToml(void) override;
