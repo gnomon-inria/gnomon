@@ -15,8 +15,7 @@ Control {
 
     required property var param
 
-    implicitHeight: _label.implicitHeight + _cluts.implicitHeight
-        + _controls_row.implicitHeight + _controls_row.anchors.topMargin + _value.implicitHeight
+    implicitHeight: _label.implicitHeight + 2*G.Style.smallPadding
     width: G.Style.smallPanelWidth
 
     Label {
