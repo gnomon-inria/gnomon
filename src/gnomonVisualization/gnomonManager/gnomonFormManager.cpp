@@ -16,6 +16,7 @@
 #include <gnomonCore/gnomonCommand/gnomonDataDict/gnomonDataDictWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
@@ -119,6 +120,11 @@ void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
             this->commands.insert(form_name, new gnomonImageWriterCommand);
         }
         writer_plugin = dynamic_cast<gnomonImageWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
+    } else if (form_name == "gnomonLString") {
+        if (!this->commands.contains(form_name)) {
+            this->commands.insert(form_name, new gnomonLStringWriterCommand);
+        }
+        writer_plugin = dynamic_cast<gnomonLStringWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
     } else if (form_name == "gnomonMesh") {
         if (!this->commands.contains(form_name)) {
             this->commands.insert(form_name, new gnomonMeshWriterCommand);

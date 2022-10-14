@@ -28,6 +28,10 @@ set(${PROJECT_NAME}_HEADERS
     gnomonCoreParameterLookupTable.h # NOTE: Transitional ?
     gnomonCoreParameterLookupTableObject # NOTE: Transitional ?
     gnomonCoreParameterLookupTableObject.h # NOTE: Transitional ?
+    gnomonCoreParameterGraphical
+    gnomonCoreParameterGraphical.h
+    gnomonCoreParameterGraphicalObject
+    gnomonCoreParameterGraphicalObject.h
 
     ${${PROJECT_NAME}_ACTOR_HEADERS}
 #   ${${PROJECT_NAME}_INSPECTOR_HEADERS}
@@ -44,6 +48,8 @@ set(${PROJECT_NAME}_SOURCES
     gnomonLookupTable.cpp # NOTE: Transitional ?
     gnomonCoreParameterLookupTable.cpp # NOTE: Transitional ?
     gnomonCoreParameterLookupTableObject.cpp # NOTE: Transitional ?
+    gnomonCoreParameterGraphical.cpp
+    gnomonCoreParameterGraphicalObject.cpp
 
     ${${PROJECT_NAME}_ACTOR_SOURCES}
 #   ${${PROJECT_NAME}_INSPECTOR_SOURCES}

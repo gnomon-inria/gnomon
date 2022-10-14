@@ -156,6 +156,7 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
         model_file->close();
         d->command->setLSystem(d->model_file->fileName());
         emit textChanged(d->text);
+        emit parametersChanged();
     }
 }
 
