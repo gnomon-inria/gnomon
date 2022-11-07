@@ -700,19 +700,20 @@ bool gnomonPipeline::readFromJson(const QString& url)
             QString algorithm_plugin = node_json.value("plugin_name").toString();
             QJsonObject metadatas = node_json.contains("metadata") ? node_json.value("metadata").toObject() : QJsonObject();
 
-            read_ok = true;
-            auto plugins = availablePluginsFromGroup(algorithm_class);
-            if(!plugins.contains(algorithm_plugin)) {
-                dtkWarn() << algorithm_plugin << " is not available in group" << algorithm_class << " available algorithms are " << plugins;
-                dtkWarn() << "Here is some info to help you install the missing package:";
-                for(const QString& k : metadatas.keys()) {
-                    dtkWarn() << k << " : " << metadatas.value(k).toString();
+            if ( (!algorithm_class.contains("morphonetCellImage")) && (algorithm_class != "task") && (algorithm_class != "formAlgorithm"))  {
+                auto plugins = availablePluginsFromGroup(algorithm_class);
+                if(!plugins.contains(algorithm_plugin)) {
+                    dtkWarn() << algorithm_plugin << " is not available in group" << algorithm_class << " available algorithms are " << plugins;
+                    dtkWarn() << "Here is some info to help you install the missing package:";
+                    for(const QString& k : metadatas.keys()) {
+                        dtkWarn() << k << " : " << metadatas.value(k).toString();
+                    }
+                    read_ok = false;
+                    break; //stop the pipeline loading if there is an error
                 }
-                read_ok = false;
             }
 
-
-            if (algorithm_class.contains("Reader") && read_ok) {
+            if (algorithm_class.contains("Reader")) {
                 QString path = node_json.value("path").toString();
                 QStringList outputs;
                 for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
@@ -731,7 +732,7 @@ bool gnomonPipeline::readFromJson(const QString& url)
                 gnomonPipelineNodeMorphonet *node =  new gnomonPipelineNodeMorphonet(outputs[0], morphonet_data);
                 node->setName(name);
                 this->addNode(node);
-            } else if (algorithm_class.contains("Writer") && read_ok) {
+            } else if (algorithm_class.contains("Writer")) {
                 QString path = node_json.value("path").toString();
                 QStringList inputs = node_json.value("inputs").toObject().keys();
                 gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(algorithm_class, algorithm_plugin, path, inputs, metadatas);
@@ -746,7 +747,8 @@ bool gnomonPipeline::readFromJson(const QString& url)
                 auto *node = new gnomonPipelineNodeTask(algorithm_plugin, inputs, outputs);
                 node->setName(name);
                 this->addNode(node);
-            } else if(read_ok || algorithm_class == "formAlgorithm") {
+            // else if "usual case" or "formAlgorithm"    
+            } else { 
                 QStringList inputs = node_json.value("inputs").toObject().keys();
                 QStringList outputs;
                 for (auto output_variant: node_json.value("outputs").toArray().toVariantList()) {
