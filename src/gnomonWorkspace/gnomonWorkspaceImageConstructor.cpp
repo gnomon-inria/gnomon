@@ -82,7 +82,7 @@ gnomonWorkspaceImageConstructor::gnomonWorkspaceImageConstructor(QWidget *parent
 
     d = new gnomonWorkspaceImageConstructorPrivate;
 
-    d->target = new gnomonViewForm(this);
+    d->target = new gnomonViewForm({}, this);
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonImage",true);
 

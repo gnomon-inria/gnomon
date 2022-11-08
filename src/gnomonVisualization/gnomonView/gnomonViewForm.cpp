@@ -120,6 +120,7 @@ public:
     QVariantMap parameters;
 public:
     QMap<QString, bool> acceptForms;
+    QStringList nodePortNames; 
 
 public:
     QMetaObject::Connection connect3D;
@@ -472,10 +473,11 @@ void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
 // gnomonViewForm
 // ///////////////////////////////////////////////////////////////////
 
-gnomonViewForm::gnomonViewForm(QObject *parent) : QObject(parent)
+gnomonViewForm::gnomonViewForm(QStringList nodePortNames, QObject *parent) : QObject(parent)
 {
     d = new gnomonViewFormPrivate;
     d->q = this;
+    d->nodePortNames = nodePortNames;
 
     loadPluginGroup("visualizationBinaryImage");
     loadPluginGroup("visualizationCellComplex");
@@ -1470,6 +1472,10 @@ QStringList gnomonViewForm::acceptedForms(void)
     return forms;
 }
 
+QStringList gnomonViewForm::nodePortNames(void) 
+{
+    return d->nodePortNames;
+}
 
 void gnomonViewForm::setEnableLinking(bool enable)
 {

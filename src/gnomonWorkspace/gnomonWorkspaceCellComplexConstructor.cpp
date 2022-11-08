@@ -82,7 +82,7 @@ gnomonWorkspaceCellComplexConstructor::gnomonWorkspaceCellComplexConstructor(QWi
 
     d = new gnomonWorkspaceCellComplexConstructorPrivate;
 
-    d->target = new gnomonViewForm(this);
+    d->target = new gnomonViewForm({}, this);
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonCellComplex",true);
 
