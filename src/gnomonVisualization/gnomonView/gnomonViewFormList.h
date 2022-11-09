@@ -18,7 +18,7 @@ public:
     Q_PROPERTY(QList<QObject *> views READ viewsAsQObject);
 
 public slots:
-    void addView(const QVector<QString> &accepted_forms = {});
+    void addView(const QVector<QString> &accepted_forms = {}, QStringList nodePortNames = QStringList());
 	void removeAllViews(void);
 
 public:

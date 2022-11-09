@@ -96,7 +96,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
 
-    d->view = new gnomonViewForm(this);
+    d->view = new gnomonViewForm({}, this);
     d->view->setAcceptForm("gnomonLString", true);
 
     connect(d->view, &gnomonViewForm::formsChanged, [=] () {

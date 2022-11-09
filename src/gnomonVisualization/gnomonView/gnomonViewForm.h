@@ -27,7 +27,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QObject
 {
     Q_OBJECT
 public:
-     gnomonViewForm(QObject *parent = nullptr);
+     gnomonViewForm(QStringList nodePortNames, QObject *parent = nullptr);
     ~gnomonViewForm(void);
 
 public:
@@ -136,6 +136,7 @@ public:
 public:
     QStringList formNames(void);
     QStringList acceptedForms(void);
+    QStringList nodePortNames(void);
     bool empty(void);
     bool inputView(void);
     bool synced(void);

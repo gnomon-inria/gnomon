@@ -92,7 +92,7 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
 
     d = new gnomonWorkspacePointCloudQuantificationPrivate;
 
-    d->view = new gnomonViewForm(this);
+    d->view = new gnomonViewForm({}, this);
     d->view->setExportColor(this->color);
     d->view->setAcceptForm("gnomonPointCloud",true);
     d->view->setAcceptForm("gnomonImage",true);
