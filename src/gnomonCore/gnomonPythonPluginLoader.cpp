@@ -26,10 +26,8 @@ QStringList availablePluginsFromGroup(const QString & module) {
     QStringList available_plugins;
 
     PyGILState_STATE gstate;
-
     gstate = PyGILState_Ensure();
 
-    //dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
     PyObject* pName = PyUnicode_FromString("gnomon.utils");
     PyObject* pModule = PyImport_Import(pName);
 
@@ -63,7 +61,6 @@ QStringList availablePluginsFromGroup(const QString & module) {
     Py_DECREF(pName);
 
     PyGILState_Release(gstate);
-    //dtkScriptInterpreterPython::instance()->childReleaseLock();
     return available_plugins;
 }
 
@@ -71,13 +68,12 @@ QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugi
     QMap<QString, QString> metadata;
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure(); 
-    //dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
-
+    
     PyObject* pName = PyUnicode_FromString("gnomon.utils.gnomonPlugin");
     PyObject* pModule = PyImport_Import(pName);
 
     if(pModule)
-    {
+    {   
         PyObject* pFunc = PyObject_GetAttrString(pModule, "plugin_metadata");
         if(pFunc && PyCallable_Check(pFunc))
         {
@@ -88,7 +84,6 @@ QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugi
             Py_ssize_t pos = 0;
 
             while (PyDict_Next(py_metadata, &pos, &key, &value)) {
-                /* do something interesting with the values... */
                 Py_ssize_t size_key = 0;
                 Py_ssize_t size_val = 0;
                 metadata.insert(
@@ -98,8 +93,6 @@ QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugi
             }
             Py_DECREF(args);
             Py_DECREF(py_metadata);
-            Py_DECREF(key);
-            Py_DECREF(value);
         }
         else
         {
@@ -114,7 +107,6 @@ QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugi
     Py_DECREF(pModule);
     Py_DECREF(pName);
 
-    //dtkScriptInterpreterPython::instance()->childReleaseLock();
     PyGILState_Release(gstate);
     return metadata;
 }

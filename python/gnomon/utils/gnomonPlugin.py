@@ -81,7 +81,6 @@ def available_plugins(group_name: str) -> list[str]:
     list[str]
         list of the plugin names in the plugin group (keys of the related factory)
     """
-    # print([ep.name for ep in iter_entry_points(group=group_name, name=None)])
     return [ep.name for ep in iter_entry_points(group=group_name, name=None)]
 
 
@@ -111,8 +110,7 @@ def plugin_metadata(group_name: str, plugin_name: str) -> dict[str, str]:
         ep = next(iter_entry_points(group_name, name=plugin_name))
     except StopIteration:
         raise ValueError(f"No entry point found names {plugin_name} in group {group_name}")
-
-    # package metadata
+    
     root_module = importlib.import_module(ep.module_name.split(".")[0])
     try:
         out["package"] = root_module.package
