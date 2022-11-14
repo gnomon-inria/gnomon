@@ -62,8 +62,8 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     emit parametersChanged();
 
     //create the views
-    this->addInputView({}, {"reference"}); // reference
-    this->addInputView({}, {"floating"}); // floating
+    this->addInputView({}, {"reference", "image"}); // reference
+    this->addInputView({}, {"floating", "image"}); // floating
     this->addOutputView(); // registered
 
     this->m_target_dict = new gnomonViewData(this);

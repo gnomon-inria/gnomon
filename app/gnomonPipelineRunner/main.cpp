@@ -75,6 +75,6 @@ int main(int argc, char *argv[])
         dtkError() << "No pipeline set, nothing is done. Run with --help to show usage";
     }
 
-    Py_Finalize();
+    Py_FinalizeEx();
     return 0;
 }
