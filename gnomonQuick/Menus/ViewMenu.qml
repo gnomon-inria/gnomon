@@ -22,7 +22,7 @@ Control {
     required property Item view;
 
     Connections {
-        target: view.viewLogic
+        target: view? view.viewLogic : null
         function onFormVisuParametersChanged() {
             _params.parameters = view.viewLogic.formVisuParameters(_form_selector.currentValue);
             _params.updateParametersModel();
@@ -74,7 +74,7 @@ Control {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        model: view.viewLogic.formNames
+        model: view ? view.viewLogic.formNames : null
 
         onToggleVisibility: view.viewLogic.setFormVisible(view.viewLogic.formNames[index], flag)
 
@@ -113,28 +113,28 @@ Control {
             id: _visu_combobox;
 
             label: "Type:"
-            model: view.viewLogic.formVisualizations(_form_selector.currentValue);
+            model: view? view.viewLogic.formVisualizations(_form_selector.currentValue) : null;
             currentIndex: 0
 
             Layout.fillWidth: true;
             /* Layout.leftMargin: 20 */
             /* Layout.rightMargin: 20 */
-            visible: view.viewLogic.formNames.length > 0
+            visible: view? view.viewLogic.formNames.length > 0 : false
 
             onCurrentIndexChanged: {
-                if(_visu_combobox.currentValue) {
+                if(view && _visu_combobox.currentValue) {
                     view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex]);
                 }
             }
 
             onCurrentValueChanged: {
-                let index = model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue))
+                let index = view ? model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue)) : -1
                 if(index > -1) {
                     _visu_combobox.currentIndex = model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue))
                 }
 
                 //_auto_render.checked = false
-                _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
+                _params.parameters =  view?  view.viewLogic.formVisuParameters(_form_selector.currentValue) : null;
                 _params.updateParametersModel();
 
                 _control.update_menu(_visu_combobox.currentValue);
@@ -181,7 +181,7 @@ Control {
                 anchors.margins: G.Style.smallPadding
 
                 text: "Render"
-                enabled: view.viewLogic.formNames.length > 0;
+                enabled: view? view.viewLogic.formNames.length > 0 : false;
 
                 onClicked: {
                     view.viewLogic.update();
@@ -198,7 +198,7 @@ Control {
 
                 text: "Clear"
                 flat: true
-                enabled: view.viewLogic.formNames.length > 0;
+                enabled: view ? view.viewLogic.formNames.length > 0 : false;
 
                 onClicked: {
                     view.viewLogic.clear();
