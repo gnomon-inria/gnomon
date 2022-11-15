@@ -395,7 +395,6 @@ void gnomonPipelineManager::addClonedForm(std::shared_ptr<gnomonAbstractDynamicF
 
 void gnomonPipelineManager::setFormIndex(std::shared_ptr<gnomonAbstractDynamicForm> form, int index)
 {
-    qDebug() << Q_FUNC_INFO << "form index " << form.get() << index;
     if (index > -1) {
         d->form_manager_index[form] = index;
         //if (d->form_clones.contains(form)) {

@@ -237,7 +237,6 @@ gnomonFormManager *gnomonFormManager::instance(void)
 void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,  std::shared_ptr<gnomonAbstractVisualization> visualization, const QImage& image,  vtkCamera *cam)
 {
     if (!d->forms.values().contains(form)) {
-        qDebug() << Q_FUNC_INFO << form.get() << visualization.get();
         int item = d->item_counter++;
         d->insertForm(item, form, image);
         d->formVisualizations.insert(item, visualization);
