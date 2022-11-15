@@ -81,4 +81,10 @@ ListView {
 
         type: G.Style.ButtonType.Warning
     }
+
+    function getIdAndRemove(i) {
+        let res = _world_model.get(i).form_id
+        _world_model.remove(i)
+        return res
+    }
 }

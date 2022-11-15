@@ -55,8 +55,6 @@ Shape {
         onDoubleTapped: window.world.currentIndex = _self.formIndex;
     }
 
-    Component.onCompleted: {
-        console.log("in: ", inputWorkspaceIndex)
-        console.log("out: ", outputWorkspaceIndex)
-    }
+    //Component.onCompleted: {
+    //}
 }
