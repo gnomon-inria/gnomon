@@ -20,6 +20,15 @@ gnomonAlgorithmWorkspacePrivate::gnomonAlgorithmWorkspacePrivate(void)
 
 gnomonAlgorithmWorkspacePrivate::~gnomonAlgorithmWorkspacePrivate(void)
 {
+    if(this->pool)
+        delete pool;
+
+    if(this->sources) 
+        delete this->sources;
+
+    if(this->targets)
+        delete this->targets;
+
 }
 
 bool gnomonAlgorithmWorkspacePrivate::setAlgorithm(const QString& algorithm)
@@ -81,7 +90,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
 }
 
 gnomonAlgorithmWorkspace::~gnomonAlgorithmWorkspace(void)
-{
+{    
     delete d;
 }
 
