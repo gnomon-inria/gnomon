@@ -53,6 +53,7 @@ Control {
                 anchors.verticalCenter: parent.verticalCenter
 
                 onClicked: {
+                    _plugin_dialog.clear();
                     _plugin_dialog.open();
                 }
             }
@@ -84,7 +85,7 @@ Control {
                         anchors.margins: 10;
 
                         text: _self.type == "Parameter" ?
-                              modelData.name + " (" + modelData.type + ")" :
+                              modelData.name + " (" + modelData.type + ") = " + modelData.value:
                               modelData.name + " (" + (modelData.type).replace("gnomon","") + ")";
 
                         color: G.Style.colors.textColorBase;
