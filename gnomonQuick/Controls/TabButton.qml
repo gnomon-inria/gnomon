@@ -5,7 +5,6 @@ import QtQuick.Layouts      1.15
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
-
 TabButton {
     id: _self
     text: ""
