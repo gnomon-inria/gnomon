@@ -111,6 +111,11 @@ Item {
             onContainsMouseChanged: {
                 flickable.interactive = !containsMouse;
             }
+
+            onEntered: {
+                _formMenu.popup(0,height)
+                _formMenu.open();
+            }
         }
 
         DropArea {
@@ -194,6 +199,36 @@ Item {
             visible: _world_delegate.containsMouse && _world.height > G.Style.smallDelegateHeight
 
             onClicked: _file_dialog.open()
+        }
+    }
+
+    Menu {
+        id: _formMenu
+        width: _world_delegate.width;
+        Action {
+            text: qsTr("Save")
+            shortcut: StandardKey.Save
+            onTriggered: {
+                _file_dialog.open()
+            }
+        }
+        Action {
+            text: qsTr("Edit")
+            shortcut: StandardKey.Open
+            onTriggered: {
+                metadata_edit.open()
+            }
+        }
+        Action {
+            text: qsTr("Delete")
+            shortcut: StandardKey.Open
+            onTriggered: {
+                if(GV.World.deleteForm(form_id)) {
+                    _world_model.remove(model.index)
+                } else {
+                    _delete_form_toast.open()
+                }
+            }
         }
     }
 

@@ -25,6 +25,7 @@ Control {
     property alias body: _body.text
 
     signal clicked
+    signal doubleClicked
 
     implicitHeight: _title.implicitHeight + _body.implicitHeight
     implicitWidth: _control.thumbnail ? _thumbnail.width + _title.implicitWidth + _body.implicitWidth : _title.implicitWidth + _body.implicitWidth
@@ -118,6 +119,9 @@ Control {
         hoverEnabled: true
         onClicked: {
             _control.clicked()
+        }
+        onDoubleClicked: {
+            _control.doubleClicked()
         }
     }
 

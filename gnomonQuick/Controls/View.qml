@@ -292,9 +292,10 @@ Rectangle {
     G.IconButton { id: _export_icon;
         iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
         enabled: !viewLogic.inputView
+        visible: !viewLogic.inputView
         size: G.Style.iconLarge;
         color: viewLogic.inputView ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
-        tooltip: viewLogic.inputView? "" : "Export"
+        tooltip: viewLogic.inputView? "" : "Upload"
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -322,7 +323,7 @@ Rectangle {
 
             parent: Overlay.overlay
             modal: true
-            title: "Export forms"
+            title: "Upload forms"
             standardButtons:  Dialog.Ok | Dialog.Cancel
 
             onAccepted: {

@@ -25,8 +25,8 @@ Rectangle {
     property var inputPorts: new Object();
     property var outputPorts: new Object();
 
-    width: G.Style.smallPanelWidth;
-    height: 2*G.Style.smallButtonHeight + G.Style.smallPadding*(2*Math.max(node.inputPortsNames.length, node.outputPortsNames.length) - 1)
+    width: G.Style.smallPanelWidth + _self.height;
+    height: 3*G.Style.smallButtonHeight + G.Style.smallPadding*(2*Math.max(node.inputPortsNames.length, node.outputPortsNames.length) - 1)
     radius: G.Style.panelRadius;
 
     border.color: G.Style.colors.baseColor;
@@ -122,9 +122,33 @@ Rectangle {
         font: _self.workspaceIndex === window.current_workspace_index() ? G.Style.fonts.nodeBodySelected : G.Style.fonts.nodeBody
 
         anchors.bottom: parent.bottom
-        anchors.right: parent.right
+        anchors.right: _thumbnail.left
         anchors.margins: G.Style.smallPadding
         horizontalAlignment: Text.AlignRight;
+    }
+
+    Rectangle {
+        id: _thumbnail
+
+        anchors.right: parent.right;
+        anchors.top: parent.top;
+        anchors.margins: G.Style.borderWidth + 1;
+        height: parent.height - 2*G.Style.panelRadius;
+        width: this.height;
+
+        color: G.Style.colors.lightBlue
+        radius: G.Style.borderWidth;
+
+        border.color: G.Style.colors.baseColor;
+        border.width: _self.workspaceIndex === window.current_workspace_index() ? 2 : 0;
+
+        Image {
+            id: _img
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectFit;
+            source: "image://thumbnails/" + workspaceIndex
+        }
+
     }
 
     Column {
