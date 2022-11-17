@@ -407,19 +407,59 @@ G.Workspace {
                                 title: name
                                 body: description
                                 tooltip: source
+                                background: Rectangle {
+                                    color: _getBgColor()
+                                    radius: G.Style.cardRadius
+
+                                    border.width: G.Style.borderWidth
+                                    border.color: _getBorderColor()
+                                }
                                 // there are no thumbnails for now
                                 //thumbnail: "image://thumbnails/project_" + index
 
-                                onClicked: {
+                                onDoubleClicked: {
                                     load_session(source)
                                 }
-                            }
 
-                            ScrollIndicator.vertical: ScrollIndicator {
-                              id: _scroll_indicator;
+                                G.IconButton {
+                                    id: _load_icon;
+                                    iconName: G.Icons.icons["arrow-down"];
+                                    size: G.Style.iconLarge;
+                                    color: G.Style.colors.fgColor;
+                                    tooltip: "Load"
 
-                              width: 8;
-                              visible: _project_grid.contentHeight > _project_grid.height;
+                                    anchors.top: parent.top
+                                    anchors.topMargin: G.Style.smallPadding
+                                    anchors.right: _trash_icon.left
+                                    anchors.rightMargin: G.Style.smallPadding
+
+                                    onClicked: {
+                                        load_session(source)
+                                    }
+                                }
+                                G.IconButton {
+                                    id: _trash_icon;
+                                    iconName: G.Icons.icons["trash-can"];
+                                    size: G.Style.iconLarge;
+                                    color: G.Style.colors.fgColor;
+                                    tooltip: "Delete"
+
+                                    anchors.top: parent.top
+                                    anchors.topMargin: G.Style.smallPadding
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: G.Style.smallPadding
+
+                                    onClicked: {
+                                        remove_from_history(source)
+                                    }
+                                }
+
+                                ScrollIndicator.vertical: ScrollIndicator {
+                                    id: _scroll_indicator;
+
+                                    width: 8;
+                                    visible: _project_grid.contentHeight > _project_grid.height;
+                                }
                             }
                         }
                     }
