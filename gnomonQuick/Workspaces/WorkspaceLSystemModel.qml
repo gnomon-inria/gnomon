@@ -5,6 +5,7 @@ import QtQuick.Layouts   1.15
 import QtQml.Models      2.15
 
 import Qt.labs.platform  1.0 as P
+import Qt.labs.settings
 
 import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
@@ -50,11 +51,18 @@ G.Workspace {
         }
     }
 
+    property string _read_path: d.defaultReadPath()
+
+    Settings {
+        category: "lpy"
+        property alias read_path: _self._read_path
+    }
+
     P.FileDialog {
         id: _file_dialog;
 
         currentFile: _self._current_file;
-        folder: d.defaultReadPath();
+        folder: _self._read_path;
         fileMode: P.FileDialog.OpenFile;
 
         modality: Qt.NonModal;
@@ -64,6 +72,7 @@ G.Workspace {
             d.read(decodeURIComponent(_file_dialog.file));
             _editor.contents = d.text
             _self._current_file = _file_dialog.file;
+            _self._read_path = folder;
         }
     }
 
@@ -72,7 +81,7 @@ G.Workspace {
 
         title: "Save L-System model"
 
-        folder: d.defaultReadPath();
+        folder: _read_path;
         fileMode: P.FileDialog.SaveFile
 
         modality: Qt.WindowModal;
@@ -81,6 +90,7 @@ G.Workspace {
         onAccepted: {
             d.save(decodeURIComponent(_file_dialog_save.file));
             _self._current_file = _file_dialog_save.file;
+            _self._read_path = folder;
         }
     }
 
