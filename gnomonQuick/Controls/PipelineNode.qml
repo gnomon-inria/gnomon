@@ -26,7 +26,7 @@ Rectangle {
     property var outputPorts: new Object();
 
     width: G.Style.smallPanelWidth;
-    height: 2*G.Style.smallButtonHeight + G.Style.smallPadding*(2*Math.max(node.inputPortsNames.length, node.outputPortsNames.length) - 1)
+    height: 2*G.Style.smallButtonHeight + G.Style.smallPadding*(2*Math.max(node.data.inputPortsNames.length, node.data.outputPortsNames.length) - 1)
     radius: G.Style.panelRadius;
 
     border.color: G.Style.colors.baseColor;
@@ -36,17 +36,31 @@ Rectangle {
 
     Drag.active: _dragArea.drag.active
 
-    onXChanged: {
-        if (_self.x != _canvas.width/2 + node.position.x) {
-            node.position = Qt.point(_self.x - _canvas.width/2, (_self.y - _canvas.height/2)/0.33)
+    Behavior on x {
+        enabled: !_dragArea.drag.active
+        NumberAnimation {
+            duration: 500
         }
     }
 
-    onYChanged: {
-        if (_self.y != _canvas.height/2 + 0.33*node.position.y) {
-            node.position = Qt.point(_self.x - _canvas.width/2, (_self.y - _canvas.height/2)/0.33)
+    Behavior on y {
+        enabled: !_dragArea.drag.active
+        NumberAnimation {
+            duration: 500
         }
     }
+
+    // onXChanged: {
+    //     if (_self.x != _canvas.width/2 + node.data.position.x) {
+    //         node.data.position = Qt.point(_self.x - _canvas.width/2, (_self.y - _canvas.height/2)/0.33)
+    //     }
+    // }
+
+    // onYChanged: {
+    //     if (_self.y != _canvas.height/2 + 0.33*node.data.position.y) {
+    //         node.data.position = Qt.point(_self.x - _canvas.width/2, (_self.y - _canvas.height/2)/0.33)
+    //     }
+    // }
 
     G.Icon {
         id: _edit_button
@@ -64,8 +78,8 @@ Rectangle {
     }
 
     G.ToolTip {
-         text: node.description
-         visible: (node.description != "") && _dragArea.containsMouse
+         text: node.data.description
+         visible: (node.data.description != "") && _dragArea.containsMouse
     }
 
     MouseArea {
@@ -87,14 +101,14 @@ Rectangle {
 
         G.PipelineNodeDialog {
             id: _test_dummy
-            node: _self.node
+            node: _self.node.data
         }
 
         onClicked: {
             var node_dialog_component = Qt.createComponent("PipelineNodeDialog.qml");
             if (node_dialog_component.status == Component.Ready || false) {
                 var dialog = node_dialog_component.createObject(_self, {
-                    "node": _self.node,
+                    "node": _self.node.data,
                 });
                 _test_dummy.open()
             }
@@ -103,7 +117,7 @@ Rectangle {
 
     Label {
         id: _classLabel
-        text: node.name;
+        text: node.data.name;
 
         color: G.Style.colors.textColorDarkNeutral
         font: _self.workspaceIndex === window.current_workspace_index() ? G.Style.fonts.nodeHeaderSelected : G.Style.fonts.nodeHeader
@@ -116,7 +130,7 @@ Rectangle {
 
     Label {
         id: _pluginLabel
-        text: node.algorithmPlugin;
+        text: node.data.algorithmPlugin;
 
         color: G.Style.colors.textColorDarkNeutral
         font: _self.workspaceIndex === window.current_workspace_index() ? G.Style.fonts.nodeBodySelected : G.Style.fonts.nodeBody
@@ -135,12 +149,12 @@ Rectangle {
 
         Repeater {
             id: _input_ports
-            model: node.inputPortsNames;
+            model: node.data.inputPortsNames;
             G.PipelinePort {
                 id: _port
-                port: node.inputPort(modelData)
+                port: node.data.inputPort(modelData)
                 Component.onCompleted: {
-                    let port = node.inputPort(modelData);
+                    let port = node.data.inputPort(modelData);
                     _self.inputPorts[port] = _input_ports.itemAt(index)
                     let form_id = port.formIndex;
                     if (form_id > -1) {
@@ -161,12 +175,12 @@ Rectangle {
 
         Repeater {
             id: _output_ports
-            model: node.outputPortsNames;
+            model: node.data.outputPortsNames;
             G.PipelinePort {
                 id: _port
-                port: node.outputPort(modelData)
+                port: node.data.outputPort(modelData)
                 Component.onCompleted: {
-                    let port = node.outputPort(modelData);
+                    let port = node.data.outputPort(modelData);
                     _self.outputPorts[port] = _output_ports.itemAt(index)
                     let form_id = port.formIndex;
                     if (form_id > -1) {
