@@ -31,9 +31,11 @@ def buildFormSeries(form_dict: dict, form_class: type, data_plugin: type):
 def formDictFromSeries(form, data_plugin: type):
     form_dict = {}
     for time in form.keys():
-        try:
+        if isinstance(form[time].data(), data_plugin):
+            # passing the form from the data plugin directly as it is the one expected
             form_dict[time] = form[time].data().__data_getter()
-        except AttributeError:
+        else:
+            # create a new data plugin from the gnomonForm to get expected format
             form_data = data_plugin()
             form_data.__disown__()
             form_data.fromGnomonForm(form[time])
