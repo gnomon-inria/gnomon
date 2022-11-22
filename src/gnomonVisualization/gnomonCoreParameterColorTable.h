@@ -37,7 +37,7 @@ public:
     gnomonColorTable value(void) const;
 
 public:
-    const QColor& color(long i) const;
+    QColor color(long i) const;
     void setColor(long i, const QColor& color);
 
 public:

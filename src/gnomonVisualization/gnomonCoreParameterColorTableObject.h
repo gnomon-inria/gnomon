@@ -31,7 +31,7 @@ signals:
     void valueChanged(const QVariantMap&);
 
 public:
-    Q_INVOKABLE const QColor& color(long i) const;
+    Q_INVOKABLE QColor color(long i) const;
     Q_INVOKABLE void setColor(long i, const QColor& color);
 
 public:

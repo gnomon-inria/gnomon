@@ -193,6 +193,20 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
     return;
 }
 
+QColor gnomonCoreParameterColorTable::color(long i) const
+{
+    if (m_c.contains(i)) {
+        return m_c[i];
+    } else {
+        return QColor();
+    }
+}
+
+void gnomonCoreParameterColorTable::setColor(long i, const QColor& color)
+{
+    m_c[i] = color;
+}
+
 QVariantHash gnomonCoreParameterColorTable::toVariantHash(void) const
 {
     QVariantHash hash = dtkCoreParameterBase<gnomonCoreParameterColorTable>::toVariantHash();

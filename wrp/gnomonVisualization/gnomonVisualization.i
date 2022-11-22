@@ -71,6 +71,7 @@
 #include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
 
 #include <gnomonVisualization/gnomonCoreParameterColor.h>
+#include <gnomonVisualization/gnomonCoreParameterColorTable.h>
 #include <gnomonVisualization/gnomonLookupTable.h>
 #include <gnomonVisualization/gnomonCoreParameterLookupTable.h>
 #include <gnomonVisualization/gnomonCoreParameterGraphical.h>
@@ -493,6 +494,8 @@
 // QMap of colors
 // /////////////////////////////////////////////////////////////////
 
+// QMap<double, QColor>
+
 %typemap(in) QMap<double, QColor> {
     if (PyDict_Check($input)) {
         PyObject *key, *value;
@@ -607,12 +610,131 @@
   $input = dict;
 }
 
+// QMap<long, QColor>
+
+%typemap(in) QMap<long, QColor> {
+    if (PyDict_Check($input)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QColor v;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            long k = long(PyLong_AsLong(key));
+            if (PyList_Check(value)) {
+                int r, g, b;
+                r = PyLong_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyLong_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyLong_AsLong(PyList_GET_ITEM(value, 2));
+                v = QColor::fromRgb(r,g,b);
+            } else {
+                qDebug("Value type is not handled. Empty QColor is set.");
+            }
+            $1.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<long, QColor> is returned.");
+    }
+}
+
+%typemap(in) const QMap<long, QColor>& {
+    if (PyDict_Check($input)) {
+        $1 = new QMap<long, QColor>;
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QColor v;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            long k = long(PyLong_AsLong(key));
+            if (PyList_Check(value)) {
+                int r, g, b;
+                r = PyLong_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyLong_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyLong_AsLong(PyList_GET_ITEM(value, 2));
+                v = QColor::fromRgb(r,g,b);
+            } else {
+                qDebug("Value type is not handled. Empty QColor is set.");
+            }
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<long, QColor> is returned.");
+    }
+}
+
+%typemap(freearg) const QMap<long, QColor>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorout) QMap<long, QColor> {
+    PyObject *dict = static_cast<PyObject *>($1);
+    if (PyDict_Check(dict)) {
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QColor v;
+        while (PyDict_Next(dict, &pos, &key, &value)) {
+            long k = long(PyLong_AsLong(key));
+            if (PyList_Check(value)) {
+                int r, g, b;
+                r = PyLong_AsLong(PyList_GET_ITEM(value, 0));
+                g = PyLong_AsLong(PyList_GET_ITEM(value, 1));
+                b = PyLong_AsLong(PyList_GET_ITEM(value, 2));
+                v = QColor::fromRgb(r,g,b);
+            } else {
+                qDebug("Value type is not handled. Empty QColor is set.");
+            }
+            $result.insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QMap<long, QColor> is returned.");
+    }
+}
+
+
+%typemap(out) QMap<long, QColor> {
+  $result = PyDict_New();
+  QColor c;
+  long k;
+
+  QList<long> keys = $1.keys();
+  for (auto it = keys.begin(); it != keys.end(); ++it) {
+    k = *it;
+    c = $1[k];
+
+    PyObject *value = PyList_New(3);
+    PyList_SET_ITEM(value, 0, PyLong_FromLong(c.red()));
+    PyList_SET_ITEM(value, 1, PyLong_FromLong(c.green()));
+    PyList_SET_ITEM(value, 2, PyLong_FromLong(c.blue()));
+    PyDict_SetItem($result, PyLong_FromLong(k), value);
+  }
+}
+
+%typemap(directorin) QMap<long, QColor> {
+  PyObject *dict = PyDict_New();
+  QColor c;
+  long k;
+
+  QList<long> keys = $1.keys();
+  for (auto it = keys.begin(); it != keys.end(); ++it) {
+    k = *it;
+    c = $1[k];
+    PyObject *value = PyList_New(3);
+    PyList_SET_ITEM(value, 0, PyLong_FromLong(c.red()));
+    PyList_SET_ITEM(value, 1, PyLong_FromLong(c.green()));
+    PyList_SET_ITEM(value, 2, PyLong_FromLong(c.blue()));
+    PyDict_SetItem($result, PyLong_FromLong(k), value);
+  }
+  $input = dict;
+}
+
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
 WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterColorMap, ParameterColorMap)
 %include <gnomonVisualization/gnomonCoreParameterColor.h>
+
+WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterColorTable, ParameterColorTable)
+%include <gnomonVisualization/gnomonCoreParameterColorTable.h>
 
 // %ignore dtkCoreParameterSimple<gnomonLookupTable>::__str__;
 %include <gnomonVisualization/gnomonLookupTable.h>

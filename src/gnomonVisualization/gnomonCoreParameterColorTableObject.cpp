@@ -48,7 +48,7 @@ gnomonCoreParameterColorTable *gnomonCoreParameterColorTableObject::parameter(vo
     return m_param;
 }
 
-const QColor& gnomonCoreParameterColorTableObject::color(long i) const
+QColor gnomonCoreParameterColorTableObject::color(long i) const
 {
     return m_param->color(i);
 }
