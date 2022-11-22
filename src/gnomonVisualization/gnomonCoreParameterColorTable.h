@@ -40,6 +40,8 @@ public:
     QColor color(long i) const;
     void setColor(long i, const QColor& color);
 
+    void clearColors(void);
+
     int colorIndexCount(void) const;
     QList<long> colorIndices(void) const;
     long colorIndexAt(int index) const;

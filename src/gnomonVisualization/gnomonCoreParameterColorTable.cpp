@@ -207,6 +207,11 @@ void gnomonCoreParameterColorTable::setColor(long i, const QColor& color)
     m_c[i] = color;
 }
 
+void gnomonCoreParameterColorTable::clearColors(void)
+{
+    m_c.clear();
+}
+
 int gnomonCoreParameterColorTable::colorIndexCount(void) const
 {
     return m_c.size();

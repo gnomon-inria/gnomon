@@ -63,6 +63,13 @@ void gnomonCoreParameterColorTableObject::setColor(long i, const QColor& color)
     notifyColorTable(m_param->value());
 }
 
+void gnomonCoreParameterColorTableObject::clearColors(void)
+{
+    m_param->clearColors();
+    emit colorIndexChanged();
+    notifyColorTable(m_param->value());
+}
+
 int gnomonCoreParameterColorTableObject::colorIndexCount(void) const
 {
     return m_param->colorIndexCount();
