@@ -207,6 +207,25 @@ void gnomonCoreParameterColorTable::setColor(long i, const QColor& color)
     m_c[i] = color;
 }
 
+int gnomonCoreParameterColorTable::colorIndexCount(void) const
+{
+    return m_c.size();
+}
+
+QList<long> gnomonCoreParameterColorTable::colorIndices(void) const
+{
+    return m_c.keys();
+}
+
+long gnomonCoreParameterColorTable::colorIndexAt(int index) const
+{
+    if (index < m_c.size()) {
+        return m_c.keys()[index];
+    } else {
+        return -1;
+    }
+}
+
 QVariantHash gnomonCoreParameterColorTable::toVariantHash(void) const
 {
     QVariantHash hash = dtkCoreParameterBase<gnomonCoreParameterColorTable>::toVariantHash();

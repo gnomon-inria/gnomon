@@ -40,6 +40,10 @@ public:
     QColor color(long i) const;
     void setColor(long i, const QColor& color);
 
+    int colorIndexCount(void) const;
+    QList<long> colorIndices(void) const;
+    long colorIndexAt(int index) const;
+
 public:
     QVariantHash toVariantHash(void) const override;
 

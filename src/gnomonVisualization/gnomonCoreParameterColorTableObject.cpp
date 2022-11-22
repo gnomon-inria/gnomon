@@ -55,7 +55,27 @@ QColor gnomonCoreParameterColorTableObject::color(long i) const
 
 void gnomonCoreParameterColorTableObject::setColor(long i, const QColor& color)
 {
+    bool new_color = !m_param->value().contains(i);
     m_param->setColor(i, color);
+    if (new_color) {
+        emit colorIndexChanged();
+    }
+    notifyColorTable(m_param->value());
+}
+
+int gnomonCoreParameterColorTableObject::colorIndexCount(void) const
+{
+    return m_param->colorIndexCount();
+}
+
+QList<long> gnomonCoreParameterColorTableObject::colorIndices(void) const
+{
+    return m_param->colorIndices();
+}
+
+Q_INVOKABLE long gnomonCoreParameterColorTableObject::colorIndexAt(int index) const
+{
+    return m_param->colorIndexAt(index);
 }
 
 void gnomonCoreParameterColorTableObject::notifyColorTable(const gnomonColorTable& map)
