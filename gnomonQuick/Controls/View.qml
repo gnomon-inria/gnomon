@@ -246,6 +246,11 @@ Rectangle {
         function onSliceChanged(value) {
             _2d_slider.value = value;
         }
+
+        function onCurrentTimeChanged(value) {
+            _ts_slider.value = value
+        }
+
         function onBadFormDropped(badFormName, acceptedForms) {
             _badform_toast.badform_name = badFormName;
             _badform_toast.accepted_forms = acceptedForms;

@@ -32,6 +32,7 @@ Dragger 1.0 Dragger.qml
 Figure 1.0 Figure.qml
 DataDict 1.0 DataDict.qml
 LookupTable 1.0 LookupTable.qml
+GraphicalParameter 1.0 GraphicalParameter.qml
 Monaco 1.0 Monaco.qml
 MenuItemDelegate 1.0 MenuItemDelegate.qml
 MetadataExplorer 1.0 MetadataExplorer.qml

@@ -10,6 +10,7 @@ WorkspaceCellImageTracking       1.0 WorkspaceCellImageTracking.qml
 WorkspaceDialog                  1.0 WorkspaceDialog.qml
 WorkspaceDescriptionDelegate     1.0 WorkspaceDescriptionDelegate.qml
 WorkspaceLauncher                1.0 WorkspaceLauncher.qml
+WorkspaceLSystemModel               1.0 WorkspaceLSystemModel.qml
 WorkspaceMorphonet               1.0 WorkspaceMorphonet.qml
 WorkspacePointDetection          1.0 WorkspacePointDetection.qml
 WorkspacePreprocess              1.0 WorkspacePreprocess.qml
