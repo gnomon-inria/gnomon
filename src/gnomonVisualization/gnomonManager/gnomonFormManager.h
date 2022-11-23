@@ -40,7 +40,7 @@ public slots:
     void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image);
 
 public slots:
-    void saveAs(int id, const QString& filename) const;
+    void saveAs(int id, const QString& filename, bool add_to_pipeline = true) const;
     bool deleteForm(int id, bool force = false);
     void compose(int first, int second);
     void addToCache(int id) const;

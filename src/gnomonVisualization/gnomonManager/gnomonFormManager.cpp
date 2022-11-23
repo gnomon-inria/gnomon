@@ -57,6 +57,7 @@ public:
 
 public:
     static int item_counter;
+    QStringList cache_forms;
 
 public:
     QMetaObject::Connection connection;
@@ -79,6 +80,8 @@ gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
     for (auto command: this->commands)
         delete command;
     this->commands.clear();
+
+    delete tmpDir;
 }
 
 void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstractDynamicForm> form, const QImage& image)
@@ -210,9 +213,8 @@ void gnomonFormManager::compose(int first, int second) {
     this->addForm(output, {}, d->formData[first]);
 }
 
-void gnomonFormManager::saveAs(int id, const QString& f) const
+void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) const
 {
-    qDebug() << Q_FUNC_INFO << "################# file url: " << f;
     QString file_name = f;
     QUrl url(file_name);
     if (url.isLocalFile()){
@@ -223,21 +225,23 @@ void gnomonFormManager::saveAs(int id, const QString& f) const
         auto command = d->formWriterCommand[id];
         command->setPath(file_name);
         command->setForm(d->forms[id]);
-        command->redo();
-        gnomonPipelineManager::instance()->addWriter(command);
+
+        if (add_to_pipeline)
+        {
+            command->redo();
+            gnomonPipelineManager::instance()->addWriter(command);
+        }
     }
 }
 
 void gnomonFormManager::addToCache(int id) const
 {
-    // Add maybe a data structure (stack) to hold file names per order
-    QString f;
     gnomonAbstractWriterCommand* writer_command = d->formWriterCommand[id];
     QStringList extensions = writer_command->extensions();
-    f += "test."+extensions[0];
+    QString f = QString::number(id)+"."+extensions[0];
     auto filepath = d->tmpDir->filePath(f);
-    qDebug() << Q_FUNC_INFO << "################# file url: " << filepath;
-    this->saveAs(id, filepath);
+    this->saveAs(id, filepath, false);
+    d->cache_forms.append(filepath);
 }
 
 // ///////////////////////////////////////////////////////////////////
