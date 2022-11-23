@@ -250,7 +250,7 @@ Item {
                 GV.World.formWriterNameFilter(form_id)
                 // Write in Qt Temporary dir
                 let temp_file = "file:///Users/karamoko/Desktop/Buffer/tes_img"
-                GV.World.addToCache(form_id, temp_file)
+                GV.World.addToCache(form_id)
             }
         }
     }
