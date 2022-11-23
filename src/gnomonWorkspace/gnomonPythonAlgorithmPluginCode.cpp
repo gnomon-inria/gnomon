@@ -142,6 +142,8 @@ QJsonObject gnomonPythonAlgorithmPluginCode::parametersJson(void) const
         parameterDescription.insert("name", d->parameters[parameter_name].name);
         parameterDescription.insert("type", d->parameters[parameter_name].type);
         parameterDescription.insert("doc", d->parameters[parameter_name].doc);
+        parameterDescription.insert("value", d->parameters[parameter_name].value);
+        parameterDescription.insert("args", d->parameters[parameter_name].args);
         parameters.insert(parameter_name, parameterDescription);
     }
     return parameters;
@@ -244,7 +246,10 @@ void gnomonPythonAlgorithmPluginCode::addParameter(const QJsonObject& desc)
     QString name = desc.contains("name") ? desc["name"].toString() : "";
     QString type = desc.contains("type") ? desc["type"].toString() : "";
     QString doc = desc.contains("doc") ? desc["doc"].toString() : "";
-    this->addParameter(gnomonParameterDescription(name, type, doc), true);
+    QString value = desc.contains("value") ? desc["value"].toString() : "";
+    QJsonObject args  = desc.contains("args") ? desc["args"].toObject() : QJsonObject();
+
+    this->addParameter(gnomonParameterDescription(name, type, doc, value, args), true);
 }
 
 void gnomonPythonAlgorithmPluginCode::updateCode(void)
@@ -375,17 +380,33 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         gnomonParameterDescription desc = d->parameters[param];
         plugin_code += "        self._parameters['" + desc.name + "'] = ";
         plugin_code += d->parameter_types[desc.type] + "(";
-        plugin_code += "'" + desc.name + "', ";
+        plugin_code += "'" + desc.args["label"].toString() + "', ";
         if (desc.type == "Bool") {
-            plugin_code += "True";
+            plugin_code += desc.value;
         } else if (desc.type == "Int") {
-            plugin_code += "1, 0, 10";
+            if(!desc.args.isEmpty()) {
+                plugin_code += desc.value+", "+desc.args["min"].toString()+", "+desc.args["max"].toString();
+            } else {
+                plugin_code += "1, 0, 10";
+            }
         } else if (desc.type == "Double") {
-            plugin_code += "1., 0., 1., 2";
+            if (!desc.args.isEmpty()) {
+                plugin_code += desc.value+", "+desc.args["min"].toString()+", "+desc.args["max"].toString()+", "+desc.args["decimals"].toString();
+            } else {
+                plugin_code += "1., 0., 10., 1.";
+            }
         } else if (desc.type == "String") {
-            plugin_code += "'', ['']";
+            if (!desc.args.isEmpty()) {
+                plugin_code += desc.value+", "+desc.args["list"].toString();
+            } else {
+                plugin_code += "'', ['']";
+            }
         } else if (desc.type == "StringList") {
-            plugin_code += "[''], ['']";
+            if (!desc.args.isEmpty()) {
+                plugin_code += desc.value+", "+desc.args["list"].toString();
+            } else {
+                plugin_code += "[''], ['']";
+            }
         }
         plugin_code += ", '" + desc.doc + "' ";
         plugin_code += ")\n";
