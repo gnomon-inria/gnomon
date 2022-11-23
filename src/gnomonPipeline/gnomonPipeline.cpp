@@ -370,6 +370,28 @@ QStringList gnomonPipeline::nodeNames(void)
     return d->pipeline_node_names;
 }
 
+QStringList gnomonPipeline::inputNodeNames(void)
+{
+    QStringList node_names;
+    for (const auto& node_name : d->pipeline_node_names) {
+        auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(d->pipeline_nodes[node_name]);
+        if (node_reader) {
+            node_names.append(node_name);
+        }
+    }
+    return node_names;
+}
+
+QString gnomonPipeline::inputNodePath(const QString& node_name)
+{
+    auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(d->pipeline_nodes[node_name]);
+    if (node_reader) {
+        return node_reader->path();
+    } else {
+        return QString();
+    }
+}
+
 void gnomonPipeline::clear(void)
 {
     d->clear();
@@ -405,6 +427,10 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
     // this->updateLayout();
 
     emit nodeAdded(node);
+    emit nodeNamesChanged();
+    if (auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(node)) {
+        emit inputNodeNamesChanged();
+    }
 }
 
 void gnomonPipeline::removeNode(gnomonPipelineNode *node) 
@@ -416,8 +442,8 @@ void gnomonPipeline::removeNode(gnomonPipelineNode *node)
     }
     d->pipeline_nodes.remove(node->name());
     emit nodeRemoved(node);
+    emit nodeNamesChanged();
 }
-
 
 QStringList gnomonPipeline::scheduledNodeNames(bool recompute_form_indices)
 {

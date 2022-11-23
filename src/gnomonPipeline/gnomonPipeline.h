@@ -17,7 +17,9 @@ public:
 public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged);
-    Q_PROPERTY(QStringList nodeNames READ nodeNames);
+    Q_PROPERTY(QStringList nodeNames READ nodeNames NOTIFY nodeNamesChanged);
+
+    Q_PROPERTY(QStringList inputNodeNames READ inputNodeNames NOTIFY inputNodeNamesChanged);
 
 public:
     const QString& name(void);
@@ -34,6 +36,10 @@ public:
     QStringList nodeNames(void);
     Q_INVOKABLE gnomonPipelineNode *node(const QString& node_name);
 
+public:
+    QStringList inputNodeNames(void);
+    Q_INVOKABLE QString inputNodePath(const QString& node_name);
+
 public slots:
     void addNode(gnomonPipelineNode *node);
     void removeNode(gnomonPipelineNode *node);
@@ -44,6 +50,9 @@ signals:
     void nodeAdded(gnomonPipelineNode *);
     void pluginChanged(void);
     void nodeRemoved(gnomonPipelineNode *);
+
+    void nodeNamesChanged(void);
+    void inputNodeNamesChanged(void);
 
 public:
     QList<QStringList> scheduleGroups(void);
