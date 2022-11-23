@@ -43,7 +43,7 @@ public slots:
     void saveAs(int id, const QString& filename) const;
     bool deleteForm(int id, bool force = false);
     void compose(int first, int second);
-    void addToCache(int id, const QString& filename) const;
+    void addToCache(int id) const;
 
 public:
     Q_INVOKABLE bool contains(int id);

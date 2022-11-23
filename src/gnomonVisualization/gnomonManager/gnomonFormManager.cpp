@@ -53,6 +53,7 @@ public:
 
 public:
     gnomonViewForm *view = nullptr;
+    QTemporaryDir *tmpDir = nullptr;
 
 public:
     static int item_counter;
@@ -70,6 +71,7 @@ int gnomonFormManagerPrivate::item_counter = 0;
 gnomonFormManagerPrivate::gnomonFormManagerPrivate(QObject *parent) : QObject(parent)
 {
     gnomonAbstractCommand::gui_thread = this->thread();
+    tmpDir = new QTemporaryDir();
 }
 
 gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
@@ -226,11 +228,16 @@ void gnomonFormManager::saveAs(int id, const QString& f) const
     }
 }
 
-void gnomonFormManager::addToCache(int id, const QString& f) const
+void gnomonFormManager::addToCache(int id) const
 {
-    // Create a Qt Temp dir to save files
     // Add maybe a data structure (stack) to hold file names per order
-    this->saveAs(id, f);
+    QString f;
+    gnomonAbstractWriterCommand* writer_command = d->formWriterCommand[id];
+    QStringList extensions = writer_command->extensions();
+    f += "test."+extensions[0];
+    auto filepath = d->tmpDir->filePath(f);
+    qDebug() << Q_FUNC_INFO << "################# file url: " << filepath;
+    this->saveAs(id, filepath);
 }
 
 // ///////////////////////////////////////////////////////////////////
