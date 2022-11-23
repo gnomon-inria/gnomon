@@ -17,6 +17,8 @@
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
 #include <zip.h>
 
+#include <memory>
+
 class gnomonWorkspaceBrowserPrivate: public QObject
 {
     Q_OBJECT
@@ -41,6 +43,7 @@ public:
     QString filename;
     QString ext;
     QMap<QString, QMap<QString, QString> > fileReaderImagePath;
+    QList<gnomonAbstractReaderCommand *> commands;
 
 };
 
@@ -52,7 +55,6 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
 {
     this->q = q;
 
-    QList<gnomonAbstractReaderCommand*> commands;
     commands << new gnomonBinaryImageReaderCommand;
     commands << new gnomonCellImageReaderCommand;
     commands << new gnomonCellComplexReaderCommand;
@@ -92,6 +94,10 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
 
 gnomonWorkspaceBrowserPrivate::~gnomonWorkspaceBrowserPrivate(void)
 {
+    for(auto c : commands) {
+        delete c;
+    }
+    commands.clear();
 }
 
 void gnomonWorkspaceBrowserPrivate::findReaders(const QString &default_plugin)
@@ -160,7 +166,8 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     return true;
 }
 
-bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* command) {
+bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* command)
+{
     const auto &source = command->source();
     if (gnomonImageReaderCommand *imageCommand = dynamic_cast<gnomonImageReaderCommand *>(command))
     {
@@ -622,7 +629,7 @@ bool gnomonWorkspaceBrowser::readWith(const QString& reader)
     return d->readForm(reader);
 }
 
-gnomonViewForm *gnomonWorkspaceBrowser::view(void)
+gnomonViewForm *gnomonWorkspaceBrowser::view(void) const
 {
     return d->browse_view;
 }

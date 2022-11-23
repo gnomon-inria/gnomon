@@ -35,20 +35,20 @@ signals:
     void noReaderAvailable(QString);
 
 public:
+    gnomonViewForm *view(void) const;
     const QString& readerPath(void) const;
 
 public slots:
     void setReaderPath(const QString&);
     void requestReaders(QString default_reader);
     bool readWith(const QString&);
-    inline void saveState() {};  // nothing to be saved
-    void restoreState();
+    inline void saveState(void) {};  // nothing to be saved
+    void restoreState(void);
 
     void export_outputs(void) override;
 
 public:
-    Q_INVOKABLE QUrl defaultReadPath();
-    Q_INVOKABLE gnomonViewForm *view(void);
+    Q_INVOKABLE QUrl defaultReadPath(void);
     QStringList readerExtensions(void);
 
 private:
