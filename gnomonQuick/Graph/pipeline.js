@@ -22,36 +22,9 @@
 .import QtQuick          as Q
 .import QtQuick.Controls as Q
 
-/**
- * Springy v2.7.1
- *
- * Copyright (c) 2010-2013 Dennis Hotson
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
+var Pipeline = {};
 
-var Springy = {};
-
-var Graph = Springy.Graph = function() {
+var Graph = Pipeline.Graph = function() {
 	this.nodeSet = {};
 	this.nodes = [];
 	this.edges = [];
@@ -62,17 +35,18 @@ var Graph = Springy.Graph = function() {
 	this.eventListeners = [];
 };
 
-var Node = Springy.Node = function(id, data) {
+var Node = Pipeline.Node = function(id, data) {
 	this.id = id;
 	this.data = (data !== undefined) ? data : {};
+    this.isSink = (data.outputEdgeCount !== undefined) ? (data.outputEdgeCount === 0 && data.inputEdgeCount > 0) : false
+    this.isSource = (data.inputEdgeCount !== undefined) ? (data.outputEdgeCount > 0 && data.inputEdgeCount === 0) : false
 
 	// Data fields used by layout algorithm in this file:
-	// this.data.mass
-	// Data used by default renderer in springyui.js
-	// this.data.label
+	// this.isSink
+	// this.data.isSource
 };
 
-var Edge = Springy.Edge = function(id, source, target, data) {
+var Edge = Pipeline.Edge = function(id, source, target, data) {
 	this.id = id;
 	this.source = source;
 	this.target = target;
@@ -169,9 +143,9 @@ Graph.prototype.newEdge = function(source, target, data) {
 // add nodes and edges from JSON object
 Graph.prototype.loadJSON = function(json) {
 	/**
-	   Springy's simple JSON format for graphs.
+	   Pipeline's simple JSON format for graphs.
 
-	   historically, Springy uses separate lists
+	   historically, Pipeline uses separate lists
 	   of nodes and edges:
 
 	   {
@@ -333,15 +307,20 @@ Graph.prototype.notify = function() {
 	});
 };
 
-// -----------
-var Layout = Springy.Layout = {};
+// /////////////////////////////////////////////////////////////////////////////
+// LAYOUT
+// /////////////////////////////////////////////////////////////////////////////
+
+var Layout = Pipeline.Layout = {};
 Layout.ForceDirected = function(graph, stiffness, repulsion, damping, minEnergyThreshold, maxSpeed) {
-	this.graph = graph;
-	this.stiffness = stiffness; // spring stiffness constant
-	this.repulsion = repulsion; // repulsion constant
-	this.damping = damping; // velocity damping factor
-	this.minEnergyThreshold = minEnergyThreshold || 0.01; //threshold used to determine render stop
-	this.maxSpeed = maxSpeed || Infinity; // nodes aren't allowed to exceed this speed
+    this.graph = graph;
+    this.iterations = 1000;
+    this.target_distance = 200;
+    this.target_radius = 200;
+    this.max_deformation = 5;
+
+    this.node_distances = {};
+    this.node_vectors = {};
 
 	this.nodePoints = {}; // keep track of points associated with nodes
 	this.edgeSprings = {}; // keep track of springs associated with edges
@@ -349,8 +328,7 @@ Layout.ForceDirected = function(graph, stiffness, repulsion, damping, minEnergyT
 
 Layout.ForceDirected.prototype.point = function(node) {
 	if (!(node.id in this.nodePoints)) {
-		var mass = (node.data.mass !== undefined) ? node.data.mass : 1.0;
-		this.nodePoints[node.id] = new Layout.ForceDirected.Point(Vector.random(), mass);
+		this.nodePoints[node.id] = new Layout.ForceDirected.Point(Vector.random());
 	}
 
 	return this.nodePoints[node.id];
@@ -358,7 +336,6 @@ Layout.ForceDirected.prototype.point = function(node) {
 
 Layout.ForceDirected.prototype.spring = function(edge) {
 	if (!(edge.id in this.edgeSprings)) {
-		var length = (edge.data.length !== undefined) ? edge.data.length : 1.0;
 
 		var existingSpring = false;
 
@@ -370,7 +347,7 @@ Layout.ForceDirected.prototype.spring = function(edge) {
 		}, this);
 
 		if (existingSpring !== false) {
-			return new Layout.ForceDirected.Spring(existingSpring.point1, existingSpring.point2, 0.0, 0.0);
+			return new Layout.ForceDirected.Spring(existingSpring.point1, existingSpring.point2);
 		}
 
 		var to = this.graph.getEdges(edge.target, edge.source);
@@ -381,11 +358,11 @@ Layout.ForceDirected.prototype.spring = function(edge) {
 		}, this);
 
 		if (existingSpring !== false) {
-			return new Layout.ForceDirected.Spring(existingSpring.point2, existingSpring.point1, 0.0, 0.0);
+			return new Layout.ForceDirected.Spring(existingSpring.point2, existingSpring.point1);
 		}
 
 		this.edgeSprings[edge.id] = new Layout.ForceDirected.Spring(
-			this.point(edge.source), this.point(edge.target), length, this.stiffness
+			this.point(edge.source), this.point(edge.target)
 		);
 	}
 
@@ -416,125 +393,184 @@ Layout.ForceDirected.prototype.eachSpring = function(callback) {
 	});
 };
 
+Layout.ForceDirected.prototype.run = function () {
 
-// Physics stuff
-Layout.ForceDirected.prototype.applyCoulombsLaw = function() {
+    //calculate the target radius
+    this.target_radius = this.target_distance*Math.pow(this.graph.nodes.length, 0.5) + 0.00000001;
+
+
+    //debug
+    this.eachNode(function(node, point){
+        console.log("node: " + node.id + " isSink: " + node.isSink
+                    + " isSource: " + node.isSource + " force: (" + point.f.x + ", " + point.f.y
+                    + ") initialPosition: (" + point.p.x + ", " + point.p.y + ")")
+    })
+
+    //run the computation of the layout for the given number of iterations
+    for(let i = 0; i < this.iterations; i++) {
+
+        //run the calculations
+        this.step()
+
+        //update the positions
+	    this.updatePosition()
+    }
+
+    //center all the points
+    this.center()
+
+    //debug
+    this.eachNode(function(node, point){
+        console.log("node: " + node.id + " finalforce: (" + point.f.x + ", " + point.f.y
+                    + ") finalPosition: (" + point.p.x + ", " + point.p.y + ")"
+                    + " GUILLAUME VERSION: (" + node.data.position.x + ", " + node.data.position.y + ")")
+    })
+
+}
+
+Layout.ForceDirected.prototype.step = function () {
+
+    //first reinitialize the forces
+    this.eachNode(function(node, point){
+        point.f = new Vector(0, 0)
+    })
+
+    //And recompute them
+    this.computeRepulsion()
+    this.computeAttraction()
+    this.computeLeftDrift()
+    this.computeRightDrift()
+    this.centerVertically()
+    this.horizontalize()
+
+}
+
+Layout.ForceDirected.prototype.computeRepulsion = function() {
+
 	this.eachNode(function(n1, point1) {
 		this.eachNode(function(n2, point2) {
 			if (point1 !== point2)
 			{
-				var d = point1.p.subtract(point2.p);
-				var distance = d.magnitude() + 0.1; // avoid massive forces at small distances (and divide by zero)
-				var direction = d.normalise();
+				const d = point1.p.subtract(point2.p);
+				const distance = d.magnitude() + 0.1; // avoid massive forces at small distances (and divide by zero)
+				const direction = d.normalise();
+                const weight = 1.0
 
-				// apply force to each end point
-				point1.applyForce(direction.multiply(this.repulsion).divide(distance * distance * 0.5));
-				point2.applyForce(direction.multiply(this.repulsion).divide(distance * distance * -0.5));
+                const repulsion = direction.multiply(Math.pow(this.target_distance, 2)).divide(Math.pow(distance, 2) + 0.0000001).multiply(weight);
+
+				point1.applyForce(repulsion);
+				point2.applyForce(repulsion);
 			}
 		});
-	});
-};
+    })
 
-Layout.ForceDirected.prototype.applyHookesLaw = function() {
-	this.eachSpring(function(spring){
-		var d = spring.point2.p.subtract(spring.point1.p); // the direction of the spring
-		var displacement = spring.length - d.magnitude();
-		var direction = d.normalise();
+}
+
+Layout.ForceDirected.prototype.computeAttraction = function() {
+
+    this.eachSpring(function(spring){
+
+        const d1 = spring.point2.p.subtract(spring.point1.p);
+        const d2 = spring.point1.p.subtract(spring.point2.p);
+		const distance = d1.magnitude()+ 0.1; // avoid massive forces at small distances (and divide by zero)
+		const direction1 = d1.normalise();
+		const direction2 = d2.normalise();
+        const weight = 1.0
+        const attraction1 = direction1.multiply(this.target_distance - distance).divide(this.target_distance).multiply(weight);
+        const attraction2 = direction2.multiply(this.target_distance - distance).divide(this.target_distance).multiply(weight);
 
 		// apply force to each end point
-		spring.point1.applyForce(direction.multiply(spring.k * displacement * -0.5));
-		spring.point2.applyForce(direction.multiply(spring.k * displacement * 0.5));
-	});
-};
+		spring.point1.applyForce(attraction2);
+		spring.point2.applyForce(attraction1);
 
-Layout.ForceDirected.prototype.attractToCentre = function() {
+	});
+    
+}
+
+Layout.ForceDirected.prototype.computeLeftDrift = function() {
+
+    const weight = 0.5
+
 	this.eachNode(function(node, point) {
-		var direction = point.p.multiply(-1.0);
-		point.applyForce(direction.multiply(this.repulsion / 50.0));
-	});
-};
+        if(node.isSource) {
+            const x_drift = - this.target_radius - point.p.x
+            if(x_drift < 0) {
+                const force = new Vector((x_drift * Math.abs(x_drift) / Math.pow(this.target_distance, 2)), 0).multiply(weight)
+                point.applyForce(force)
+            }
+        }
+	})
 
+}
 
-Layout.ForceDirected.prototype.updateVelocity = function(timestep) {
+Layout.ForceDirected.prototype.computeRightDrift = function() {
+
+    const weight = 0.5
 	this.eachNode(function(node, point) {
-		// Is this, along with updatePosition below, the only places that your
-		// integration code exist?
-		point.v = point.v.add(point.a.multiply(timestep)).multiply(this.damping);
-		if (point.v.magnitude() > this.maxSpeed) {
-			point.v = point.v.normalise().multiply(this.maxSpeed);
-		}
-		point.a = new Vector(0,0);
-	});
-};
+        if(node.isSink) {
+            const x_drift = this.target_radius - point.p.x
+            if(x_drift > 0) {
+                const force = new Vector((x_drift * Math.abs(x_drift) / Math.pow(this.target_distance, 2)), 0).multiply(weight)
+                point.applyForce(force)
+            }
+        }
+	})
 
-Layout.ForceDirected.prototype.updatePosition = function(timestep) {
+}
+
+Layout.ForceDirected.prototype.centerVertically = function() {
+
+    const weight = 1.0
+	this.eachNode(function(node, point) {
+        const force = new Vector(0, (point.p.y * Math.abs(point.p.y) / Math.pow(this.target_radius, 2)))
+        point.applyForce(force.multiply(weight))
+	})
+
+}
+
+Layout.ForceDirected.prototype.horizontalize = function() {
+
+    const weight = 1.0
+    this.eachSpring(function(spring){
+
+        const d = spring.point2.p.subtract(spring.point1.p); // the direction of the spring
+		const distance = d.magnitude()+ 0.1; // avoid massive forces at small distances (and divide by zero)
+		const direction = d.normalise();
+        const edge_sinus = direction.y / distance
+        const force1 = Vector(-Math.abs(edge_sinus), -edge_sinus)
+        const force2 = Vector(Math.abs(edge_sinus), edge_sinus)
+
+		// apply force to each end point
+		spring.point1.applyForce(force1.multiply(weight));
+		spring.point2.applyForce(force2.multiply(weight));
+
+	});
+
+}
+
+Layout.ForceDirected.prototype.center = function() {
+    let center = new Vector(0, 0)
+    this.graph.nodes.map(node => {
+        const point = this.point(node).p
+        center = center.add(point)
+    })
+
+    center.divide(this.graph.nodes.length)
+    this.eachNode(function (node, point) {
+        point.p = point.p.subtract(center)
+    })
+}
+
+Layout.ForceDirected.prototype.updatePosition = function() {
 	this.eachNode(function(node, point) {
 		// Same question as above; along with updateVelocity, is this all of
 		// your integration code?
-		point.p = point.p.add(point.v.multiply(timestep));
+
+		const length = point.f.magnitude()
+        if(length > this.max_deformation) point.f = point.f.multiply(this.max_deformation / length)
+
+        point.p = point.p.add(point.f);
 	});
-};
-
-// Calculate the total kinetic energy of the system
-Layout.ForceDirected.prototype.totalEnergy = function(timestep) {
-	var energy = 0.0;
-	this.eachNode(function(node, point) {
-		var speed = point.v.magnitude();
-		energy += 0.5 * point.m * speed * speed;
-	});
-
-	return energy;
-};
-
-/**
- * Start simulation if it's not running already.
- * In case it's running then the call is ignored, and none of the callbacks passed is ever executed.
- */
-Layout.ForceDirected.prototype.start = function(render, onRenderStop, onRenderStart) {
-	var t = this;
-
-	if (this._started) return;
-	this._started = true;
-	this._stop = false;
-
-	if (onRenderStart !== undefined) { onRenderStart(); }
-
-    t.step(render, onRenderStop)
-};
-
-// /////////////////////////////////////////////////////////////////////////////
-// Had to add this to complete the animation
-// /////////////////////////////////////////////////////////////////////////////
-
-Layout.ForceDirected.prototype.step = function(render, onRenderStop) {
-    var t = this;
-
-	t.tick(0.03);
-
-	if (render !== undefined) {
-		render();
-	}
-
-	// stop simulation when energy of the system goes below a threshold
-	if (t._stop || t.totalEnergy() < t.minEnergyThreshold) {
-        console.log(t.totalEnergy(), t.minEnergyThreshold)
-		t._started = false;
-		if (onRenderStop !== undefined) { onRenderStop(); }
-	} else {
-        t.step()
-	};
-}
-
-Layout.ForceDirected.prototype.stop = function() {
-	this._stop = true;
-}
-
-Layout.ForceDirected.prototype.tick = function(timestep) {
-	this.applyCoulombsLaw();
-	this.applyHookesLaw();
-	this.attractToCentre();
-	this.updateVelocity(timestep);
-	this.updatePosition(timestep);
 };
 
 // Find the nearest point to a particular position
@@ -580,13 +616,13 @@ Layout.ForceDirected.prototype.getBoundingBox = function() {
 
 
 // Vector
-var Vector = Springy.Vector = function(x, y) {
+var Vector = Pipeline.Vector = function(x, y) {
 	this.x = x;
 	this.y = y;
 };
 
 Vector.random = function() {
-	return new Vector(10.0 * (Math.random() - 0.5), 10.0 * (Math.random() - 0.5));
+	return new Vector(Math.random(), Math.random());
 };
 
 Vector.prototype.add = function(v2) {
@@ -614,37 +650,24 @@ Vector.prototype.normal = function() {
 };
 
 Vector.prototype.normalise = function() {
-	return this.divide(this.magnitude());
+	return this.divide(this.magnitude() + 0.00000001);
 };
 
 // Point
-Layout.ForceDirected.Point = function(position, mass) {
+Layout.ForceDirected.Point = function(position) {
 	this.p = position; // position
-	this.m = mass; // mass
-	this.v = new Vector(0, 0); // velocity
-	this.a = new Vector(0, 0); // acceleration
+	this.f = new Vector(0, 0); // velocity
 };
 
 Layout.ForceDirected.Point.prototype.applyForce = function(force) {
-	this.a = this.a.add(force.divide(this.m));
+	this.f = this.f.add(force);
 };
 
 // Spring
-Layout.ForceDirected.Spring = function(point1, point2, length, k) {
+Layout.ForceDirected.Spring = function(point1, point2) {
 	this.point1 = point1;
 	this.point2 = point2;
-	this.length = length; // spring length at rest
-	this.k = k; // spring constant (See Hooke's law) .. how stiff the spring is
 };
-
-// Layout.ForceDirected.Spring.prototype.distanceToPoint = function(point)
-// {
-// 	// hardcore vector arithmetic.. ohh yeah!
-// 	// .. see http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment/865080#865080
-// 	var n = this.point2.p.subtract(this.point1.p).normalise().normal();
-// 	var ac = point.p.subtract(this.point1.p);
-// 	return Math.abs(ac.x * n.x + ac.y * n.y);
-// };
 
 var isEmpty = function(obj) {
 	for (var k in obj) {

@@ -13,6 +13,11 @@ Control {
 
     id: _self;
 
+    // these are used in case the window height or width
+    // are variable (as is the case for a collapsible menu)
+    property int windowHeight: _self.height
+    property int windowWidth: _self.width
+
     clip: true;
 
     MouseArea {
@@ -36,8 +41,8 @@ Control {
             let dy = (1 - scaleChange) * (wheel.y - _canvas.y);
 
             //pan lower bounds
-            let lx = _self.width - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
-            let ly = _self.height - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
+            let lx = _self.windowWidth - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
+            let ly = _self.windowHeight - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
 
             // update scale (zoom factor powered to the current zoom level)
             _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
@@ -52,10 +57,10 @@ Control {
 
         id: _canvas;
 
-        x: -_canvas.width / 2 + _self.width / 2;
-        y: -_canvas.height / 2+ _self.height / 2;
-        width: _self.width * Math.pow(_internal.factor, 5);
-        height: _self.height * Math.pow(_internal.factor, 5) + _self.height;
+        x: -_canvas.width / 2 + _self.windowWidth / 2;
+        y: -_canvas.height / 2+ _self.windowHeight / 2;
+        width: _self.windowWidth * Math.pow(_internal.factor, 5);
+        height: _self.windowHeight * Math.pow(_internal.factor, 5) + _self.windowHeight;
 
         color: G.Style.colors.gutterColor;
 
@@ -66,9 +71,9 @@ Control {
             anchors.fill: _canvas;
             drag.target: _canvas;
             drag.maximumX: 0;
-            drag.minimumX: _self.width - _canvas.width * _transform.xScale;
+            drag.minimumX: _self.windowWidth - _canvas.width * _transform.xScale;
             drag.maximumY: 0;
-            drag.minimumY: _self.height - _canvas.height * _transform.yScale;
+            drag.minimumY: _self.windowHeight - _canvas.height * _transform.yScale;
         }
 
 
@@ -96,7 +101,8 @@ Control {
             target: GP.PipelineManager.pipeline
             function onNodeAdded (node) {
 
-                var n = new G.Springy.Node(node.name, node)
+                console.log("NODE ADDDDEEEEEEED")
+                let n = new G.PipelineLayout.Node(node.name, node)
                 _self.addNode(n);
 
                 if(node.inputEdgeCount === 0) {
@@ -165,11 +171,20 @@ Control {
 
         if (edge_component.status == Component.Ready) {
 
-            for(let keys in _internal.layout.graph.nodeSet)
-                console.log(keys)
+            //update the status of nodes that now have outgoing edges just in case
+            _internal.layout.graph.nodeSet[edge.source.node.name].isSink = false;
+            if(_internal.layout.graph.nodeSet[edge.source.node.name].data.inputEdgeCount === 0) {
+                _internal.layout.graph.nodeSet[edge.source.node.name].isSource = true;
+                console.log("SHOULD BE MODIFIED")
+            }
+
+
             const src_node = _internal.layout.graph.nodeSet[edge.source.node.name];
             const src_component = _internal.nodeComponents[src_node.id];
             const src = src_component.outputPorts[edge.source];
+
+            console.log("INPUT NODE: " + src_node.id + " SINK: " + src_node.isSink + " SOURCE: " + src_node.isSource
+                        + " INPUT EDGES: " + src_node.data.inputEdgeCount)
 
             var tgt_node = _internal.layout.graph.nodeSet[edge.target.node.name];
             var tgt_component = _internal.nodeComponents[tgt_node.id];
@@ -224,32 +239,36 @@ Control {
 
         const currentBoundingBox = _internal.layout.getBoundingBox();
 
-        const toScreenCoords = (p) => {
-            const size = currentBoundingBox.topright.subtract(currentBoundingBox.bottomleft)
-            const sx = p.subtract(currentBoundingBox.bottomleft).divide(size.x).x * _self.width
-            const sy = p.subtract(currentBoundingBox.bottomleft).divide(size.y).y * _self.height
-            return new G.Springy.Vector(sx, sy)
-        }
+        // const toScreenCoords = (p) => {
+        //     const size = currentBoundingBox.bottomright.subtract(currentBoundingBox.topleft)
+        //     console.log("SIZE", size.x, size.y)
+        //     const sx = p.subtract(currentBoundingBox.topleft).divide(size.x).x * _self.windowWidth
+        //     const sy = p.subtract(currentBoundingBox.topleft).divide(size.y).y * _self.windowHeight
+        //     return new G.PipelineLayout.Vector(sx, sy)
+        // }
 
-        const offsetX = _internal.originX - _self.width / 2
-        const offsetY = _internal.originY - _self.height
+        // const debug = toScreenCoords(new G.PipelineLayout.Vector(0, 0))
+        // console.log("Debug for coords", debug.x, debug.y, _internal.originX, _internal.originY)
 
-        _internal.layout.start()
+        const offsetX = _internal.originX - _self.windowWidth / 2
+        const offsetY = _internal.originY - _self.windowHeight / 2
+
+        _internal.layout.run()
 
         for(let nodeId in _internal.layout.nodePoints) {
 
             const p = _internal.layout.nodePoints[nodeId].p
-            const sp = toScreenCoords(p)
+            // const sp = toScreenCoords(p)
 
             _internal.nodeComponents[nodeId].x = Qt.binding(
                 function() {
-                    return sp.x + offsetX
+                    return p.x + offsetX
                 }
             )
 
             _internal.nodeComponents[nodeId].y = Qt.binding(
                 function() {
-                    return sp.y + offsetY
+                    return p.y + offsetY
                 }
             )
         }
@@ -289,17 +308,22 @@ Control {
         readonly property real transitionDuration: 0;
         property double factor: 1.25
         property int zoomLevel: 0;
-        property double originX: (_self.width / 2 - _canvas.x) * Math.pow(_internal.factor, - _internal.zoomLevel);
-        property double originY: (_self.height / 2 - _canvas.y) * Math.pow(_internal.factor, - _internal.zoomLevel);
+        property double originX: (_self.windowWidth / 2 - _canvas.x) * Math.pow(_internal.factor, - _internal.zoomLevel);
+        property double originY: (_self.windowHeight / 2 - _canvas.y) * Math.pow(_internal.factor, - _internal.zoomLevel);
 
         // /////////////////////////////////////////////////////////////////////////////
         // Internal variables kept for the graph layout calculation
         // /////////////////////////////////////////////////////////////////////////////
-        property var layout: new G.Springy.Layout.ForceDirected(new G.Springy.Graph(), 10, 6, 0.2)
+        property var layout: new G.PipelineLayout.Layout.ForceDirected(new G.PipelineLayout.Graph(), 10, 6, 0.2)
         property var nodeComponents: new Object()
         property var edgeComponents: []
 
     }
 
+    Component.onCompleted: {
+        console.log("DIMENSIONS OF WINDOW", _self.windowWidth, _self.windowHeight)
+        console.log("DIMENSIONS OF CANVAS", _canvas.width, _canvas.height)
+        console.log("ORIGIN", _internal.originX, _internal.originY)
+    }
 
 }
