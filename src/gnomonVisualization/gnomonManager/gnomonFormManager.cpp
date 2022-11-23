@@ -61,6 +61,9 @@ public:
 
 public:
     QMetaObject::Connection connection;
+
+public:
+    bool deleteFormFromMemory(int id);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -99,6 +102,35 @@ void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstra
     }
     this->formCounter[form_name]++;
 }
+
+bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
+{
+    // if (!this->forms.contains(id) || this->formDropped[id]) {
+    //     dtkWarn() << "Unknown forms id or form already dropped in other workspace" << id << "can't delete it ";
+    //     return false;
+    // }
+    // if(gnomonPipelineManager::instance()->removeForm(this->forms[id])) {
+        this->forms.remove(id);
+        if (this->formCameras.contains(id)) {
+            this->formCameras.remove(id);
+        }
+        if (this->formVisualizations.contains(id)) {
+            // TODO: to remove when destruction of visualizations will not cause a crash
+            this->removedVisualizations.append(this->formVisualizations[id]);
+            this->formVisualizations.remove(id);
+        } else if (this->formMatplotlibVisualizations.contains(id)) {
+            this->formMatplotlibVisualizations.remove(id);
+        }
+        this->formData.remove(id);
+        this->formWriterCommand.remove(id);
+        this->formDropped.remove(id);
+        // this->item_counter--;
+        // emit removed(id);
+        // return true;
+    // }
+    return false;
+}
+
 
 void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
 {
@@ -242,6 +274,7 @@ void gnomonFormManager::addToCache(int id) const
     auto filepath = d->tmpDir->filePath(f);
     this->saveAs(id, filepath, false);
     d->cache_forms.append(filepath);
+    d->deleteFormFromMemory(id);
 }
 
 // ///////////////////////////////////////////////////////////////////
