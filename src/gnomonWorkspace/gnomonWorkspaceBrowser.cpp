@@ -102,8 +102,8 @@ gnomonWorkspaceBrowserPrivate::~gnomonWorkspaceBrowserPrivate(void)
 
 void gnomonWorkspaceBrowserPrivate::findReaders(const QString &default_plugin)
 {
-    if (this->fileReaderCommands.contains(this->ext))
-    {
+    if (this->fileReaderCommands.contains(this->ext)) {
+
         auto available_plugins = this->fileReaderCommands[this->ext].keys();
 
         QJsonObject readers;

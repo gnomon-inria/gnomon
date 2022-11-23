@@ -2,8 +2,9 @@
 
 gnomonAbstractReaderCommand::~gnomonAbstractReaderCommand()
 {
-    for (auto algo: m_actions.values())
+    for (auto algo : m_actions) {
         delete algo;
+    }
 
     m_actions.clear();
 }
