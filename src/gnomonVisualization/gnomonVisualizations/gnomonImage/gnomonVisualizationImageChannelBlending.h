@@ -53,6 +53,7 @@ public:
 
 private:
 	class gnomonVisualizationImageChannelBlendingPrivate *dd;
+    friend gnomonVisualizationImageChannelBlendingPrivate;
 };
 
 inline gnomonAbstractVisualizationImage *gnomonVisualizationImageChannelBlendingCreator(void)
