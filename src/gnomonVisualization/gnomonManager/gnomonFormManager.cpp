@@ -210,6 +210,7 @@ void gnomonFormManager::compose(int first, int second) {
 
 void gnomonFormManager::saveAs(int id, const QString& f) const
 {
+    qDebug() << Q_FUNC_INFO << "################# file url: " << f;
     QString file_name = f;
     QUrl url(file_name);
     if (url.isLocalFile()){
@@ -223,6 +224,13 @@ void gnomonFormManager::saveAs(int id, const QString& f) const
         command->redo();
         gnomonPipelineManager::instance()->addWriter(command);
     }
+}
+
+void gnomonFormManager::addToCache(int id, const QString& f) const
+{
+    // Create a Qt Temp dir to save files
+    // Add maybe a data structure (stack) to hold file names per order
+    this->saveAs(id, f);
 }
 
 // ///////////////////////////////////////////////////////////////////
