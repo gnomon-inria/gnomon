@@ -305,10 +305,10 @@ void gnomonViewFormPrivate::updateOrientation(void)
 
 void gnomonViewFormPrivate::clear(void)
 {
-     for (const auto& key : this->formVisualization.keys()) {
-         this->formVisualization[key]->disconnect();
-         this->formVisualization[key]->clearConnections();
-         this->formVisualization[key]->clear(); //to remove the actors
+    for (auto fv : this->formVisualization) {
+        fv->disconnect();
+        fv->clearConnections();
+        fv->clear();
     }
 
     this->formVisualizationNames.clear();
