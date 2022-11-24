@@ -5,6 +5,7 @@ import QtQuick.Shapes 1.15
 import gnomonQuick.Controls 1.0 as G
 import gnomonQuick.Style    1.0 as G
 import gnomonQuick.Graph    1.0 as G
+import gnomonQuick.Icons    1.0 as G
 
 import gnomon.Pipeline 1.0 as GP
 import gnomon.Visualization 1.0 as GV
@@ -19,6 +20,79 @@ Control {
     property int windowWidth: _self.width
 
     clip: true;
+
+    // /////////////////////////////////////////////////////////////////////////////
+    // PIPELINE CONTROLS (SAVE AND EDIT)
+    // /////////////////////////////////////////////////////////////////////////////
+
+    G.IconButton {
+
+        id: _save_pipeline;
+
+        z: 1
+        anchors.top: _self.top;
+        anchors.topMargin: G.Style.smallPadding
+        anchors.right: _self.right;
+        anchors.rightMargin: G.Style.smallPadding
+
+        size: G.Style.iconMedium;
+
+        iconName: G.Icons.icons["content-save"];
+        tooltip: "Save the pipeline"
+
+        onClicked: {
+            console.log("saving pipeline");
+            //This is actually defined in main.qml
+            //at some point we need some serious cleanup
+            saveFileDialog.open()
+        }
+    }
+
+    Label {
+
+        z: 1
+        anchors.top: _self.top;
+        anchors.topMargin: G.Style.smallPadding
+        anchors.horizontalCenter: _self.horizontalCenter
+
+        height: G.Style.smallLabelHeight
+
+        text: GP.PipelineManager.pipeline.name != "" ? GP.PipelineManager.pipeline.name : "Enter pipeline name..."
+        color: GP.PipelineManager.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDeEmphasize
+        font: G.Style.fonts.value
+
+        G.Icon {
+            anchors.top: parent.top
+            anchors.left: parent.right
+            anchors.margins: G.Style.smallPadding;
+            visible: _edit_area.containsMouse
+
+            size: G.Style.iconSmall;
+            color: GP.PipelineManager.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDeEmphasize
+
+            icon: G.Icons.icons["pencil"]
+        }
+
+        MouseArea {
+            id: _edit_area
+            anchors.fill: parent
+            drag.target: parent
+            hoverEnabled: true
+
+            onClicked: {
+                _pipeline_info_dialog.open()
+            }
+        }
+    }
+
+    G.PipelineDialog {
+        id: _pipeline_info_dialog
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////
+    // ZOOM AND PAN
+    // /////////////////////////////////////////////////////////////////////////////
+
 
     MouseArea {
 
