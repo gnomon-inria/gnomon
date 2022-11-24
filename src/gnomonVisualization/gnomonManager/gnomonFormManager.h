@@ -44,6 +44,7 @@ public slots:
     bool deleteForm(int id, bool force = false);
     void compose(int first, int second);
     void addToCache(int id) const;
+    void loadFromCache(int id) const;
 
 public:
     Q_INVOKABLE bool contains(int id);

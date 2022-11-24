@@ -21,6 +21,9 @@
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
 
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
+
+
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 
@@ -108,7 +111,7 @@ void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstra
 bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 {
     qDebug()<<"########"<<cache_forms[id];
-    // retrieve formReaderCommand and store it in cache QMap
+
     if (!this->cache_forms.contains(cache_forms[id]))
     {
         this->forms.remove(id);
@@ -126,7 +129,7 @@ bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
             this->formMatplotlibVisualizations.remove(id);
         }
         this->formData.remove(id);
-        this->formWriterCommand.remove(id);
+        // this->formWriterCommand.remove(id);
         this->formDropped.remove(id);
         return true;
     }
@@ -136,14 +139,27 @@ bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 
 bool gnomonFormManagerPrivate::loadFormToMemory(int id)
 {
-    QString reader_plugin = 
-    gnomonAbstractReaderCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
+    qDebug()<<Q_FUNC_INFO<< "#####";
+    QString reader_plugin;
+    if(dynamic_cast<gnomonImageWriterCommand *>(this->formWriterCommand[id]))
+    {
+        qDebug() << "Inside image writer....";
+        this->formReaderCommand[id] = new gnomonImageReaderCommand();
+        reader_plugin = dynamic_cast<gnomonImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+        qDebug() << "Here is reader plugin" << reader_plugin;
+    }
+
+    gnomonAbstractReaderCommand *readerCommand = this->formReaderCommand[id];
 
     readerCommand->setAlgorithmName(reader_plugin);
-    readerCommand->setPath(path);
-    readerCommand->setSource(source);
+    readerCommand->setPath(this->cache_forms[id]);
+    // readerCommand->setSource(source);
     readerCommand->redo();
 
+    qDebug()<<Q_FUNC_INFO<< this->cache_forms[id];
+    qDebug()<<Q_FUNC_INFO<< "everything is ok";
+
+    return true;
 
 }
 
@@ -273,10 +289,9 @@ void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) c
         auto command = d->formWriterCommand[id];
         command->setPath(file_name);
         command->setForm(d->forms[id]);
-
+        command->redo();
         if (add_to_pipeline)
         {
-            command->redo();
             gnomonPipelineManager::instance()->addWriter(command);
         }
     }
@@ -284,6 +299,7 @@ void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) c
 
 void gnomonFormManager::addToCache(int id) const
 {
+    qDebug() << "adding file....";
     gnomonAbstractWriterCommand* writer_command = d->formWriterCommand[id];
     QStringList extensions = writer_command->extensions();
     QString f = QString::number(id)+"."+extensions[0];
@@ -293,6 +309,10 @@ void gnomonFormManager::addToCache(int id) const
     d->deleteFormFromMemory(id);
 }
 
+void gnomonFormManager::loadFromCache(int id) const
+{
+    d->loadFormToMemory(id);
+}
 // ///////////////////////////////////////////////////////////////////
 // gnomonFormManager
 // ///////////////////////////////////////////////////////////////////
