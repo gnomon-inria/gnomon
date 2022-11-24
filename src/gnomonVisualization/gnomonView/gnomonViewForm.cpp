@@ -37,9 +37,9 @@ QJsonObject visuParameters(std::shared_ptr<gnomonAbstractVisualization> visu)
     QJsonObject parameters;
 
     dtkCoreParameters visu_parameters = visu->parameters();
-    for (auto param_name: visu_parameters.keys()) {
-        QVariantHash param_value = visu_parameters[param_name]->toVariantHash();
-        parameters.insert(param_name, QJsonObject::fromVariantHash(param_value));
+    for (auto it = visu_parameters.begin(); it != visu_parameters.end(); ++it) {
+        QVariantHash param_value = it.value()->toVariantHash();
+        parameters.insert(it.key(), QJsonObject::fromVariantHash(param_value));
     }
 
     return parameters;
@@ -48,8 +48,8 @@ QJsonObject visuParameters(std::shared_ptr<gnomonAbstractVisualization> visu)
 void setVisuParameters(std::shared_ptr<gnomonAbstractVisualization> visu, QJsonObject parameters)
 {
     dtkCoreParameters visu_parameters;
-    for(auto& key: parameters.keys()) {
-        QVariantHash param = parameters[key].toObject().toVariantHash();
+    for(auto it = parameters.begin(); it != parameters.end(); ++it) {
+        QVariantHash param = it.value().toObject().toVariantHash();
         QString param_type = param["type"].toString();
         // TODO: Remove when fixed in dtk-core-python
         if (param_type.contains("dtkCoreParameterRange<") or param_type.contains("dtkCoreParameterNumeric<")) {
@@ -58,7 +58,7 @@ void setVisuParameters(std::shared_ptr<gnomonAbstractVisualization> visu, QJsonO
         }
         auto *parameter = dtkCoreParameter::create(param);
         if(parameter) {
-            visu_parameters[key] = parameter;
+            visu_parameters[it.key()] = parameter;
         } else {
             dtkWarn() << Q_FUNC_INFO << "this parameter is not handled properly: " << param_type << param;
         }
@@ -401,19 +401,21 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
         return;
     }
 
-    this->formVisualization[name]->clearConnections();
-    this->formVisualization[name]->clear();
-    this->formVisualization[name]->setView(q);
-    setVisuParameters(this->formVisualization[name], parameters);
-    this->formVisualization[name]->update();
-    this->formVisualization[name]->setVisible(true);
+    auto&& form_visu = this->formVisualization[name];
+
+    form_visu->clearConnections();
+    form_visu->clear();
+    form_visu->setView(q);
+    setVisuParameters(form_visu, parameters);
+    form_visu->update();
+    form_visu->setVisible(true);
 
     this->formVisualizationNames[name] = visu_name;
     if (!this->formVisibility.contains(name)) {
         this->formVisibility[name] = true;
     }
 
-    connect(this->formVisualization[name].get(), &gnomonAbstractVisualization::parametersChanged, [=] () {
+    connect(form_visu.get(), &gnomonAbstractVisualization::parametersChanged, [=] () {
         emit q->formVisuParametersChanged();
     });
 

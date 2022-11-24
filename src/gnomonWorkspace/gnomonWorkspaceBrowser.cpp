@@ -222,7 +222,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             return false;
         } else {
             int form_count = gnomonFormManager::instance()->formCount(binaryImage_series->formName());
-            binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));        QStringList sources;
+            binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             binaryImage_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonBinaryImage",binaryImage_series);
             gnomonPipelineManager::instance()->addForm(binaryImage_series);
