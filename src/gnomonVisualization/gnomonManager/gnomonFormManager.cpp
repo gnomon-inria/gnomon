@@ -42,6 +42,7 @@ public:
     QHash<int, std::shared_ptr<gnomonAbstractVisualization> > formVisualizations;
     QHash<int, std::shared_ptr<gnomonAbstractMatplotlibVisualization> > formMatplotlibVisualizations;
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
+    QHash<int, gnomonAbstractReaderCommand *> formReaderCommand;
     QHash<int, QImage> formData;
     QHash<int, vtkCamera *> formCameras;
     QHash<QString, gnomonAbstractWriterCommand *> commands;
@@ -64,6 +65,7 @@ public:
 
 public:
     bool deleteFormFromMemory(int id);
+    bool loadFormToMemory(int id);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -105,30 +107,44 @@ void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstra
 
 bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 {
-    // if (!this->forms.contains(id) || this->formDropped[id]) {
-    //     dtkWarn() << "Unknown forms id or form already dropped in other workspace" << id << "can't delete it ";
-    //     return false;
-    // }
-    // if(gnomonPipelineManager::instance()->removeForm(this->forms[id])) {
+    qDebug()<<"########"<<cache_forms[id];
+    // retrieve formReaderCommand and store it in cache QMap
+    if (!this->cache_forms.contains(cache_forms[id]))
+    {
         this->forms.remove(id);
-        if (this->formCameras.contains(id)) {
+        if (this->formCameras.contains(id))
+        {
             this->formCameras.remove(id);
         }
-        if (this->formVisualizations.contains(id)) {
-            // TODO: to remove when destruction of visualizations will not cause a crash
+        if (this->formVisualizations.contains(id))
+        {
             this->removedVisualizations.append(this->formVisualizations[id]);
             this->formVisualizations.remove(id);
-        } else if (this->formMatplotlibVisualizations.contains(id)) {
+        }
+        else if (this->formMatplotlibVisualizations.contains(id))
+        {
             this->formMatplotlibVisualizations.remove(id);
         }
         this->formData.remove(id);
         this->formWriterCommand.remove(id);
         this->formDropped.remove(id);
-        // this->item_counter--;
-        // emit removed(id);
-        // return true;
-    // }
+        return true;
+    }
+
     return false;
+}
+
+bool gnomonFormManagerPrivate::loadFormToMemory(int id)
+{
+    QString reader_plugin = 
+    gnomonAbstractReaderCommand *readerCommand = this->fileReaderCommands[this->ext][reader_plugin];
+
+    readerCommand->setAlgorithmName(reader_plugin);
+    readerCommand->setPath(path);
+    readerCommand->setSource(source);
+    readerCommand->redo();
+
+
 }
 
 
