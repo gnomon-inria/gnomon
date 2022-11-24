@@ -17,7 +17,7 @@ public:
     static gnomonImageDataChannelBlending *New(void);
 
 public:
-	void setImageChannels(QMap<QString, vtkImageData *> imageChannels);
+	void setImageChannels(QMap<QString, vtkSmartPointer<vtkImageData>> imageChannels);
     void setChannelLookupTables(const QMap<QString, gnomonLookupTable>&);
 
 public slots:
