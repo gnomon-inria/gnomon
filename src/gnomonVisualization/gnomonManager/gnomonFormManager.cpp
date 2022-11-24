@@ -110,27 +110,25 @@ void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstra
 
 bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 {
-    qDebug()<<"########"<<cache_forms[id];
-
     if (!this->cache_forms.contains(cache_forms[id]))
     {
         this->forms.remove(id);
-        if (this->formCameras.contains(id))
-        {
-            this->formCameras.remove(id);
-        }
-        if (this->formVisualizations.contains(id))
-        {
-            this->removedVisualizations.append(this->formVisualizations[id]);
-            this->formVisualizations.remove(id);
-        }
-        else if (this->formMatplotlibVisualizations.contains(id))
-        {
-            this->formMatplotlibVisualizations.remove(id);
-        }
+        // if (this->formCameras.contains(id))
+        // {
+        //     this->formCameras.remove(id);
+        // }
+        // if (this->formVisualizations.contains(id))
+        // {
+        //     this->removedVisualizations.append(this->formVisualizations[id]);
+        //     this->formVisualizations.remove(id);
+        // }
+        // else if (this->formMatplotlibVisualizations.contains(id))
+        // {
+        //     this->formMatplotlibVisualizations.remove(id);
+        // }
         this->formData.remove(id);
         // this->formWriterCommand.remove(id);
-        this->formDropped.remove(id);
+        // this->formDropped.remove(id);
         return true;
     }
 
@@ -139,22 +137,24 @@ bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 
 bool gnomonFormManagerPrivate::loadFormToMemory(int id)
 {
-    qDebug()<<Q_FUNC_INFO<< "#####";
     QString reader_plugin;
     if(dynamic_cast<gnomonImageWriterCommand *>(this->formWriterCommand[id]))
     {
-        qDebug() << "Inside image writer....";
         this->formReaderCommand[id] = new gnomonImageReaderCommand();
         reader_plugin = dynamic_cast<gnomonImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-        qDebug() << "Here is reader plugin" << reader_plugin;
     }
 
     gnomonAbstractReaderCommand *readerCommand = this->formReaderCommand[id];
 
     readerCommand->setAlgorithmName(reader_plugin);
     readerCommand->setPath(this->cache_forms[id]);
-    // readerCommand->setSource(source);
+    QString source = QUrl(this->cache_forms[id]).fileName();
+    readerCommand->setSource(source);
     readerCommand->redo();
+
+    // this->forms.insert(item, form);
+    // this->formData.insert(id, readerCommand->outputs()["image"]);
+    // this->formDropped.insert(item, false);
 
     qDebug()<<Q_FUNC_INFO<< this->cache_forms[id];
     qDebug()<<Q_FUNC_INFO<< "everything is ok";
