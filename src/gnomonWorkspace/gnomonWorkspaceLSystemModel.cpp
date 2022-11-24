@@ -105,7 +105,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     });
 
     connect(d->view, &gnomonViewForm::formAdded, [=](const QString &name) {
-        const QString plugin_name = "lStringVisualizationPglScene";
+        const QString plugin_name = "lStringVisualizationVtkTurtle";
         if (name == "gnomonLString") {
             if (gnomonVisualization::visualizationLString::pluginFactory().keys().contains(plugin_name)) {
                 d->view->setFormVisuName(name, plugin_name);
