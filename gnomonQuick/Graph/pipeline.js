@@ -315,12 +315,9 @@ var Layout = Pipeline.Layout = {};
 Layout.ForceDirected = function(graph, stiffness, repulsion, damping, minEnergyThreshold, maxSpeed) {
     this.graph = graph;
     this.iterations = 1000;
-    this.target_distance = 200;
+    this.target_distance = 150;
     this.target_radius = 200;
     this.max_deformation = 5;
-
-    this.node_distances = {};
-    this.node_vectors = {};
 
 	this.nodePoints = {}; // keep track of points associated with nodes
 	this.edgeSprings = {}; // keep track of springs associated with edges
@@ -328,7 +325,12 @@ Layout.ForceDirected = function(graph, stiffness, repulsion, damping, minEnergyT
 
 Layout.ForceDirected.prototype.point = function(node) {
 	if (!(node.id in this.nodePoints)) {
-		this.nodePoints[node.id] = new Layout.ForceDirected.Point(Vector.random());
+		let point = new Layout.ForceDirected.Point(Vector.random());
+        this.nodePoints[node.id] = point
+        if(node.isSink) {
+            const bb = this.getBoundingBox()
+            this.nodePoints[node.id].p.x += bb.topright.x
+        }
 	}
 
 	return this.nodePoints[node.id];
@@ -396,14 +398,11 @@ Layout.ForceDirected.prototype.eachSpring = function(callback) {
 Layout.ForceDirected.prototype.run = function () {
 
     //calculate the target radius
-    this.target_radius = this.target_distance*Math.pow(this.graph.nodes.length, 0.5) + 0.00000001;
-
+    this.target_radius = this.target_distance*Math.pow(this.graph.nodes.length - 1, 0.5) + 0.00000001;
 
     //debug
-    this.eachNode(function(node, point){
-        console.log("node: " + node.id + " isSink: " + node.isSink
-                    + " isSource: " + node.isSource + " force: (" + point.f.x + ", " + point.f.y
-                    + ") initialPosition: (" + point.p.x + ", " + point.p.y + ")")
+    this.eachNode(function(node, point) {
+        console.log("NODE: " + node.data.name + ", INITIAL POSITION: (" + point.p.x + ", " + point.p.y + ")")
     })
 
     //run the computation of the layout for the given number of iterations
@@ -420,10 +419,8 @@ Layout.ForceDirected.prototype.run = function () {
     this.center()
 
     //debug
-    this.eachNode(function(node, point){
-        console.log("node: " + node.id + " finalforce: (" + point.f.x + ", " + point.f.y
-                    + ") finalPosition: (" + point.p.x + ", " + point.p.y + ")"
-                    + " GUILLAUME VERSION: (" + node.data.position.x + ", " + node.data.position.y + ")")
+    this.eachNode(function(node, point) {
+        console.log("NODE: " + node.data.name + ", FINAL POSITION: (" + point.p.x + ", " + point.p.y + ")")
     })
 
 }
@@ -452,14 +449,13 @@ Layout.ForceDirected.prototype.computeRepulsion = function() {
 			if (point1 !== point2)
 			{
 				const d = point1.p.subtract(point2.p);
-				const distance = d.magnitude() + 0.1; // avoid massive forces at small distances (and divide by zero)
+				const distance = d.magnitude(); // avoid massive forces at small distances (and divide by zero)
 				const direction = d.normalise();
                 const weight = 1.0
 
                 const repulsion = direction.multiply(Math.pow(this.target_distance, 2)).divide(Math.pow(distance, 2) + 0.0000001).multiply(weight);
 
 				point1.applyForce(repulsion);
-				point2.applyForce(repulsion);
 			}
 		});
     })
@@ -510,7 +506,7 @@ Layout.ForceDirected.prototype.computeRightDrift = function() {
         if(node.isSink) {
             const x_drift = this.target_radius - point.p.x
             if(x_drift > 0) {
-                const force = new Vector((x_drift * Math.abs(x_drift) / Math.pow(this.target_distance, 2)), 0).multiply(weight)
+                const force = new Vector((x_drift * x_drift / Math.pow(this.target_distance, 2)), 0).multiply(weight)
                 point.applyForce(force)
             }
         }
@@ -522,7 +518,7 @@ Layout.ForceDirected.prototype.centerVertically = function() {
 
     const weight = 1.0
 	this.eachNode(function(node, point) {
-        const force = new Vector(0, (point.p.y * Math.abs(point.p.y) / Math.pow(this.target_radius, 2)))
+        const force = new Vector(0, (-point.p.y * Math.abs(point.p.y) / Math.pow(this.target_radius, 2)))
         point.applyForce(force.multiply(weight))
 	})
 
@@ -536,7 +532,7 @@ Layout.ForceDirected.prototype.horizontalize = function() {
         const d = spring.point2.p.subtract(spring.point1.p); // the direction of the spring
 		const distance = d.magnitude()+ 0.1; // avoid massive forces at small distances (and divide by zero)
 		const direction = d.normalise();
-        const edge_sinus = direction.y / distance
+        const edge_sinus = direction.y / direction.magnitude()
         const force1 = Vector(-Math.abs(edge_sinus), -edge_sinus)
         const force2 = Vector(Math.abs(edge_sinus), edge_sinus)
 
@@ -589,29 +585,29 @@ Layout.ForceDirected.prototype.nearest = function(pos) {
 	return min;
 };
 
-// returns [topleft, bottomright] (to follow qml specs)
+// returns [bottomleft, topright] (to follow qml specs)
 Layout.ForceDirected.prototype.getBoundingBox = function() {
-	var topleft = new Vector(-2,2);
-	var bottomright = new Vector(2,-2);
+	var bottomleft = new Vector(-2, -2);
+	var topright = new Vector(2,2);
 
 	this.eachNode(function(n, point) {
-		if (point.p.x < topleft.x) {
-			topleft.x = point.p.x;
+		if (point.p.x < bottomleft.x) {
+			bottomleft.x = point.p.x;
 		}
-		if (point.p.y > topleft.y) {
-			topleft.y = point.p.y;
+		if (point.p.y < bottomleft.y) {
+			bottomleft.y = point.p.y;
 		}
-		if (point.p.x > bottomright.x) {
-			bottomright.x = point.p.x;
+		if (point.p.x > topright.x) {
+			topright.x = point.p.x;
 		}
-		if (point.p.y < bottomright.y) {
-			bottomright.y = point.p.y;
+		if (point.p.y > topright.y) {
+			topright.y = point.p.y;
 		}
 	});
 
-	var padding = bottomright.subtract(topleft).multiply(0.07); // ~5% padding
+	var padding = topright.subtract(bottomleft).multiply(0.07); // ~5% padding
 
-	return {topleft: topleft.subtract(padding), bottomright: bottomright.add(padding)};
+	return {bottomleft: bottomleft.subtract(padding), topright: topright.add(padding)};
 };
 
 

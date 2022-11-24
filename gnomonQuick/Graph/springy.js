@@ -555,27 +555,27 @@ Layout.ForceDirected.prototype.nearest = function(pos) {
 
 // returns [topleft, bottomright] (to follow qml specs)
 Layout.ForceDirected.prototype.getBoundingBox = function() {
-	var topleft = new Vector(-2,2);
-	var bottomright = new Vector(2,-2);
+	var bottomleft = new Vector(-2, -2);
+	var topright = new Vector(2,2);
 
 	this.eachNode(function(n, point) {
-		if (point.p.x < topleft.x) {
-			topleft.x = point.p.x;
+		if (point.p.x < bottomleft.x) {
+			bottomleft.x = point.p.x;
 		}
-		if (point.p.y > topleft.y) {
+		if (point.p.y < bottomleft.y) {
 			topleft.y = point.p.y;
 		}
-		if (point.p.x > bottomright.x) {
-			bottomright.x = point.p.x;
+		if (point.p.x > topright.x) {
+			topright.x = point.p.x;
 		}
-		if (point.p.y < bottomright.y) {
-			bottomright.y = point.p.y;
+		if (point.p.y > topright.y) {
+			topright.y = point.p.y;
 		}
 	});
 
-	var padding = bottomright.subtract(topleft).multiply(0.07); // ~5% padding
+	var padding = topright.subtract(bottomleft).multiply(0.07); // ~5% padding
 
-	return {topleft: topleft.subtract(padding), bottomright: bottomright.add(padding)};
+	return {bottomleft: bottomleft.subtract(padding), topright: topright.add(padding)};
 };
 
 

@@ -101,13 +101,8 @@ Control {
             target: GP.PipelineManager.pipeline
             function onNodeAdded (node) {
 
-                console.log("NODE ADDDDEEEEEEED")
                 let n = new G.PipelineLayout.Node(node.name, node)
                 _self.addNode(n);
-
-                if(node.inputEdgeCount === 0) {
-                    _internal.layout.graph.nodeSet[node.name].mass = 2.0
-                }
 
                 if (node.inputEdgeCount > 0) {
                     for (var i=0; i<node.inputEdgeCount; i++) {
@@ -116,7 +111,7 @@ Control {
                     }
                 }
 
-                _self.computeLayout()
+                _self.computeLayout(n.id)
             }
         }
 
@@ -154,7 +149,7 @@ Control {
                         return _internal.originY
                     }
                 ),
-                workspaceIndex: window.current_workspace_index()
+                workspaceIndex: window.current_workspace_index(),
             });
 
             _internal.nodeComponents[node.id] = n;
@@ -175,16 +170,12 @@ Control {
             _internal.layout.graph.nodeSet[edge.source.node.name].isSink = false;
             if(_internal.layout.graph.nodeSet[edge.source.node.name].data.inputEdgeCount === 0) {
                 _internal.layout.graph.nodeSet[edge.source.node.name].isSource = true;
-                console.log("SHOULD BE MODIFIED")
             }
 
 
             const src_node = _internal.layout.graph.nodeSet[edge.source.node.name];
             const src_component = _internal.nodeComponents[src_node.id];
             const src = src_component.outputPorts[edge.source];
-
-            console.log("INPUT NODE: " + src_node.id + " SINK: " + src_node.isSink + " SOURCE: " + src_node.isSource
-                        + " INPUT EDGES: " + src_node.data.inputEdgeCount)
 
             var tgt_node = _internal.layout.graph.nodeSet[edge.target.node.name];
             var tgt_component = _internal.nodeComponents[tgt_node.id];
@@ -235,44 +226,50 @@ Control {
         delete _internal.nodeComponents[node]
     }
 
-    function computeLayout() {
+    function computeLayout(newNodeId) {
 
         const currentBoundingBox = _internal.layout.getBoundingBox();
 
-        // const toScreenCoords = (p) => {
-        //     const size = currentBoundingBox.bottomright.subtract(currentBoundingBox.topleft)
-        //     console.log("SIZE", size.x, size.y)
-        //     const sx = p.subtract(currentBoundingBox.topleft).divide(size.x).x * _self.windowWidth
-        //     const sy = p.subtract(currentBoundingBox.topleft).divide(size.y).y * _self.windowHeight
-        //     return new G.PipelineLayout.Vector(sx, sy)
-        // }
+        const offsetX = _internal.originX// - _self.windowWidth / 2
+        const offsetY = _internal.originY// - _self.windowHeight / 2
 
-        // const debug = toScreenCoords(new G.PipelineLayout.Vector(0, 0))
-        // console.log("Debug for coords", debug.x, debug.y, _internal.originX, _internal.originY)
+        //in case of drag actions by the user
+        _self.initializePositions(newNodeId)
 
-        const offsetX = _internal.originX - _self.windowWidth / 2
-        const offsetY = _internal.originY - _self.windowHeight / 2
-
+        // use the javascript backend to compute a layout
         _internal.layout.run()
 
+        //upadte the components
         for(let nodeId in _internal.layout.nodePoints) {
 
             const p = _internal.layout.nodePoints[nodeId].p
-            // const sp = toScreenCoords(p)
 
             _internal.nodeComponents[nodeId].x = Qt.binding(
                 function() {
-                    return p.x + offsetX
+
+                    return p.x + offsetX - _internal.nodeComponents[nodeId].width / 2
                 }
             )
 
             _internal.nodeComponents[nodeId].y = Qt.binding(
                 function() {
-                    return p.y + offsetY
+                    return p.y + offsetY - _internal.nodeComponents[nodeId].height / 2
                 }
             )
         }
 
+    }
+
+    //Dynamic object creation in qml does not let us use onXChanged and onYChanged properly
+    //so I have to do this to check that the current internal positions are correct (in
+    //case the user has done some drags)
+    function initializePositions(newNodeId) {
+        for(let nodeId in _internal.nodeComponents) {
+            if(nodeId !== newNodeId) {
+                _internal.layout.nodePoints[nodeId].p.x = _internal.nodeComponents[nodeId].x -_internal.originX + _internal.nodeComponents[nodeId].width / 2
+                _internal.layout.nodePoints[nodeId].p.y = _internal.nodeComponents[nodeId].y -_internal.originY + _internal.nodeComponents[nodeId].height / 2
+            }
+        }
     }
 
     function _getNodeColor(node) {
@@ -318,12 +315,6 @@ Control {
         property var nodeComponents: new Object()
         property var edgeComponents: []
 
-    }
-
-    Component.onCompleted: {
-        console.log("DIMENSIONS OF WINDOW", _self.windowWidth, _self.windowHeight)
-        console.log("DIMENSIONS OF CANVAS", _canvas.width, _canvas.height)
-        console.log("ORIGIN", _internal.originX, _internal.originY)
     }
 
 }
