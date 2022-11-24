@@ -248,9 +248,14 @@ Item {
             shortcut: StandardKey.Open
             onTriggered: {
                 GV.World.formWriterNameFilter(form_id)
-                // Write in Qt Temporary dir
-                let temp_file = "file:///Users/karamoko/Desktop/Buffer/tes_img"
                 GV.World.addToCache(form_id)
+            }
+        }
+        Action {
+            text: qsTr("Load Cache")
+            shortcut: StandardKey.Open
+            onTriggered: {
+                GV.World.loadFromCache(form_id)
             }
         }
     }
