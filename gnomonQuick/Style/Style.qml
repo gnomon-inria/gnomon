@@ -79,6 +79,7 @@ QtObject {
     property int mediumRowSpacing: S.spacing["4"]
     property int largeRowSpacing: S.spacing["6"]
 
+    property int xSmallPadding: S.spacing["0"]
     property int smallPadding: S.spacing["2"]
     property int mediumPadding: S.spacing["4"]
     property int largePadding: S.spacing["6"]

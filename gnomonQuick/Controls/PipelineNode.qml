@@ -141,30 +141,6 @@ Rectangle {
         horizontalAlignment: Text.AlignRight;
     }
 
-    Rectangle {
-        id: _thumbnail
-
-        anchors.right: parent.right;
-        anchors.top: parent.top;
-        anchors.margins: G.Style.borderWidth + 1;
-        height: parent.height - 2*G.Style.panelRadius;
-        width: this.height;
-
-        color: G.Style.colors.lightBlue
-        radius: G.Style.borderWidth;
-
-        border.color: G.Style.colors.baseColor;
-        border.width: _self.workspaceIndex === window.current_workspace_index() ? 2 : 0;
-
-        Image {
-            id: _img
-            anchors.fill: parent
-            fillMode: Image.PreserveAspectFit;
-            source: "image://thumbnails/" + workspaceIndex
-        }
-
-    }
-
     Column {
         spacing: G.Style.smallPadding;
         anchors.horizontalCenter: parent.left
