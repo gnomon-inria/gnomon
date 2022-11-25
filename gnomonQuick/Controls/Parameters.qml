@@ -71,6 +71,11 @@ Item {
     }
 
     Component {
+        id: _colortable_component
+        G.ColorTableParameter {param: lparam}
+    }
+
+    Component {
         id: _graphical_component
         G.GraphicalParameter {param: lparam}
     }
@@ -108,6 +113,9 @@ Item {
         }
         if (type == "gnomonCoreParameterLookupTable") {
             return _lookuptable_component
+        }
+        if (type == "gnomonCoreParameterColorTable") {
+            return _colortable_component
         }
         if (type == "gnomonCoreParameterGraphical") {
             return _graphical_component
