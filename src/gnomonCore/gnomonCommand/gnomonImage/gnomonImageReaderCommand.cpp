@@ -52,9 +52,11 @@ void gnomonImageReaderCommand::predo(void)
 
 void gnomonImageReaderCommand::postdo(void)
 {
+    qDebug()<<"!!!!!! in postdo";
     std::shared_ptr<gnomonImageSeries> image = ((gnomonAbstractImageReader *) this->action)->image();
 
     if ((!image)||(image->times().empty())||(image->current()->channels().empty())) {
+        qDebug() << "There is no image";
         d->image = nullptr;
         QString str = "pb reading Image " + this->m_path;
         if(!image) str += "  image is empty";
@@ -64,7 +66,11 @@ void gnomonImageReaderCommand::postdo(void)
         dtkWarn() << Q_FUNC_INFO << str;
 
     } else {
+       
+        qDebug() << "there is an image";
         d->image = image;
+
+
     }
 }
 
@@ -75,6 +81,7 @@ void gnomonImageReaderCommand::undo()
 
 std::shared_ptr<gnomonImageSeries> gnomonImageReaderCommand::image()
 {
+    std::cout << "the image is" << d->image << std::endl;
     return d->image;
 }
 
@@ -82,6 +89,7 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageReaderComm
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["image"] = this->image();
+    std::cout << "###the image from outputs" << outputs["image"] << std::endl;
     return outputs;
 }
 

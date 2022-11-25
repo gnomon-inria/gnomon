@@ -46,6 +46,8 @@ void gnomonImageWriterCommand::predo(void)
 {
     ((gnomonAbstractImageWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractImageWriter *) this->action)->setImage(d->image);
+    // TODO: to be removed once saveAs segfault is fixed
+    ((gnomonAbstractImageWriter *) this->action)->run();
 }
 
 void gnomonImageWriterCommand::postdo(void)

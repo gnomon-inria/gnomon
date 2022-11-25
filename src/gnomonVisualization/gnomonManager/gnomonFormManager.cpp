@@ -110,9 +110,10 @@ void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstra
 
 bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 {
-    if (!this->cache_forms.contains(cache_forms[id]))
+    if (this->cache_forms.contains(cache_forms[id]))
     {
-        this->forms.remove(id);
+        
+        this->forms[id] = nullptr;
         // if (this->formCameras.contains(id))
         // {
         //     this->formCameras.remove(id);
@@ -126,7 +127,7 @@ bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
         // {
         //     this->formMatplotlibVisualizations.remove(id);
         // }
-        this->formData.remove(id);
+        // this->formData[id] = QImage();
         // this->formWriterCommand.remove(id);
         // this->formDropped.remove(id);
         return true;
@@ -137,6 +138,7 @@ bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 
 bool gnomonFormManagerPrivate::loadFormToMemory(int id)
 {
+
     QString reader_plugin;
     if(dynamic_cast<gnomonImageWriterCommand *>(this->formWriterCommand[id]))
     {
@@ -150,17 +152,14 @@ bool gnomonFormManagerPrivate::loadFormToMemory(int id)
     readerCommand->setPath(this->cache_forms[id]);
     QString source = QUrl(this->cache_forms[id]).fileName();
     readerCommand->setSource(source);
+
+    // Find a proper way to fix the segfault below
+    // readerCommand->setNoAsync();
     readerCommand->redo();
 
-    // this->forms.insert(item, form);
-    // this->formData.insert(id, readerCommand->outputs()["image"]);
-    // this->formDropped.insert(item, false);
-
-    qDebug()<<Q_FUNC_INFO<< this->cache_forms[id];
-    qDebug()<<Q_FUNC_INFO<< "everything is ok";
-
-    return true;
-
+    connect(readerCommand, &gnomonAbstractCommand::finished, [=]() {
+            this->forms[id] = readerCommand->outputs()["image"];
+        });
 }
 
 
@@ -289,10 +288,16 @@ void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) c
         auto command = d->formWriterCommand[id];
         command->setPath(file_name);
         command->setForm(d->forms[id]);
-        command->redo();
+        // TODO: this is a workround
+        // change if statement once the bug due to save is solved    
         if (add_to_pipeline)
         {
+            command->redo();
             gnomonPipelineManager::instance()->addWriter(command);
+        }
+        else
+        {
+            command->predo();
         }
     }
 }
@@ -305,6 +310,9 @@ void gnomonFormManager::addToCache(int id) const
     QString f = QString::number(id)+"."+extensions[0];
     auto filepath = d->tmpDir->filePath(f);
     this->saveAs(id, filepath, false);
+
+    qDebug() << "######" << filepath;
+
     d->cache_forms.append(filepath);
     d->deleteFormFromMemory(id);
 }
