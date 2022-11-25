@@ -400,11 +400,6 @@ Layout.ForceDirected.prototype.run = function () {
     //calculate the target radius
     this.target_radius = this.target_distance*Math.pow(this.graph.nodes.length - 1, 0.5) + 0.00000001;
 
-    //debug
-    this.eachNode(function(node, point) {
-        console.log("NODE: " + node.data.name + ", INITIAL POSITION: (" + point.p.x + ", " + point.p.y + ")")
-    })
-
     //run the computation of the layout for the given number of iterations
     for(let i = 0; i < this.iterations; i++) {
 
@@ -417,11 +412,6 @@ Layout.ForceDirected.prototype.run = function () {
 
     //center all the points
     this.center()
-
-    //debug
-    this.eachNode(function(node, point) {
-        console.log("NODE: " + node.data.name + ", FINAL POSITION: (" + point.p.x + ", " + point.p.y + ")")
-    })
 
 }
 

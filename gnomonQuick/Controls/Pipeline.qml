@@ -210,6 +210,7 @@ Control {
 
             const node = _internal.layout.graph.addNode(nodeData)
 
+
             const n = node_component.createObject(_canvas, {
                 node: node,
                 color: _getNodeColor(node.data),

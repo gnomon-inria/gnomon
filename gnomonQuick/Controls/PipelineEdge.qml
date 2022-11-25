@@ -5,6 +5,7 @@ import QtQuick.Shapes 1.15
 import xQuick.Style       1.0 as X
 
 import gnomonQuick.Style  1.0 as G
+import gnomonQuick.Controls  1.0 as G
 
 Shape {
 
@@ -52,36 +53,49 @@ Shape {
     }
 
 
-    Control {
-
+    G.Thumbnail {
         id: _thumbnail
 
         x: _self.stt.x + _self.width / 2 -_thumbnail.width /2
         y: _self.stt.y + _self.height / 2 -_thumbnail.height /2
 
-        height: G.Style.thumbnailLarge + _thumbnail.padding
-        width: _thumbnail.height
-        padding: G.Style.xSmallPadding
-
-        background: Rectangle {
-            color: window.world.currentIndex === _self.formIndex
+        bgColor: window.world.currentIndex === _self.formIndex
                 ? G.Style.colors.highlightColor
                 : G.Style.colors.neutralColor
-            radius: G.Style.borderWidth;
-        }
-
-        contentItem: Image {
-            fillMode: Image.PreserveAspectFit;
-            source: "image://thumbnails/" + _self.formIndex
-        }
-
-        MouseArea {
-            id: _form_selector_area
-
-            anchors.fill: parent
-
-            onDoubleClicked: window.world.currentIndex = _self.formIndex;
-        }
+        url: "image://thumbnails/" + _self.formIndex
+        onDoubleClicked: window.world.currentIndex = _self.formIndex;
     }
+
+    // Control {
+
+    //     id: _thumbnail
+
+    //     x: _self.stt.x + _self.width / 2 -_thumbnail.width /2
+    //     y: _self.stt.y + _self.height / 2 -_thumbnail.height /2
+
+    //     height: G.Style.thumbnailLarge + _thumbnail.padding
+    //     width: _thumbnail.height
+    //     padding: G.Style.xSmallPadding
+
+    //     background: Rectangle {
+    //         color: window.world.currentIndex === _self.formIndex
+    //             ? G.Style.colors.highlightColor
+    //             : G.Style.colors.neutralColor
+    //         radius: G.Style.borderWidth;
+    //     }
+
+    //     contentItem: Image {
+    //         fillMode: Image.PreserveAspectFit;
+    //         source: "image://thumbnails/" + _self.formIndex
+    //     }
+
+    //     MouseArea {
+    //         id: _form_selector_area
+
+    //         anchors.fill: parent
+
+    //         onDoubleClicked: window.world.currentIndex = _self.formIndex;
+    //     }
+    // }
 
 }

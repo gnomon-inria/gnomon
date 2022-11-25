@@ -14,7 +14,7 @@ MenuItem {
 
     implicitHeight: G.Style.formDelegateHeight
     highlighted: false
-    font: G.Style.fonts.formLabel
+    font: G.Style.fonts.menu
 
     contentItem: Item {
 
@@ -23,7 +23,7 @@ MenuItem {
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignLeft
 
-            leftPadding: G.Style.smallPadding;
+            leftPadding: G.Style.xSmallPadding;
 
             text: self.text;
             visible: text;
@@ -38,13 +38,6 @@ MenuItem {
         implicitHeight: 60
         opacity: enabled ? 0.8 : 0.3
         color: getBgColor()
-
-        Rectangle {
-            width: parent.width
-            height: 1
-            color: G.Style.colors.embossColorNeutral
-            anchors.bottom: parent.bottom
-        }
     }
 
     function getTextColor() {

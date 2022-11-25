@@ -266,6 +266,12 @@ QtObject {
             pointSize: S.fontScale["50"],
         })
 
+        property font menu: Qt.font({
+            family: "Poppins",
+            weight: "Regular",
+            pointSize: S.fontScale["50"],
+        })
+
         property font value: Qt.font({
             family: "Poppins",
             weight: "Regular",

@@ -17,15 +17,15 @@ import gnomonQuick.Icons     1.0 as G
 
 Item {
 
-    id: _world_delegate;
+    id: _self;
 
-    width: _world.height-6;
-    height: _world.height-6;
-
-    property var flickable: null;
+    //a reference to the parent container, the world
+    property var world: null;
     property alias ref: _thumbnail.ref;
-
     property bool containsMouse : (_dragger.containsMouse || _save_icon.containsMouse || _delete_icon.containsMouse || _edit_icon.containsMouse)
+
+    width: _self.world.height - 6;
+    height: _self.world.height - 6;
 
     Repeater {
         id: _frame
@@ -34,18 +34,18 @@ Item {
         Rectangle {
             id: _indicator;
 
-             width: _world_delegate.width
-            height: _world_delegate.height
+            width: _self.width
+            height: _self.height
             radius: G.Style.panelRadius;
 
-            anchors.left: _world_delegate.left
-            anchors.top: _world_delegate.top
+            anchors.left: _self.left
+            anchors.top: _self.top
             anchors.margins: 3*modelData
 
             color: G.Style.colors.gutterColor
 
             border.width: G.Style.borderWidth;
-            border.color: _world.currentIndex == _world_delegate.ref ? G.Style.colors.highlightColor : G.Style.colors.gutterColor;
+            border.color: world.currentIndex == _self.ref ? G.Style.colors.highlightColor : G.Style.colors.gutterColor;
 
             visible: modelData == 0? true : GV.World.timeKeys(form_id).length > 1;
         }
@@ -62,7 +62,7 @@ Item {
 
         Drag.active: _dragger.drag.active
         Drag.dragType: Drag.Automatic
-        Drag.hotSpot: Qt.point(_world.height/2, _world.height/2);
+        Drag.hotSpot: Qt.point(world.height/2, world.height/2);
         property int ref: form_id
 
         signal droppedFromManager(int index)
@@ -92,6 +92,7 @@ Item {
             id: _dragger;
 
             anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
 
             hoverEnabled: true;
 
@@ -101,21 +102,28 @@ Item {
 
             onPressed: parent.grabToImage(function(result) {
                 parent.Drag.imageSource = result.url
-            }, Qt.size(_world.height,_world.height));
+            }, Qt.size(world.height, world.height));
 
             onClicked: {
-                _world.currentIndex = model.index;
-                _world.currentRef = _world_delegate.ref;
+
+                if (mouse.button === Qt.LeftButton) {
+                    world.currentIndex = model.index;
+                    world.currentRef = _self.ref;
+                }
+
+                if (mouse.button === Qt.RightButton) {
+                    if(_formMenu.opened)
+                        _formMenu.close()
+                    else
+                        _formMenu.open()
+                }
+
             }
 
             onContainsMouseChanged: {
-                flickable.interactive = !containsMouse;
+                _self.world.interactive = !containsMouse;
             }
 
-            onEntered: {
-                _formMenu.popup(0,height)
-                _formMenu.open();
-            }
         }
 
         DropArea {
@@ -140,7 +148,7 @@ Item {
         }
 
         G.ToolTip {
-            visible: _dragger.containsMouse
+            visible: _dragger.containsMouse && !_formMenu.opened
             text: GV.World.getDynamicFormMetadata(form_id).data["name"]
         }
 
@@ -156,7 +164,7 @@ Item {
             anchors.right: _thumbnail.right
             anchors.rightMargin: G.Style.borderWidth
 
-            visible: _world_delegate.containsMouse && _world.height > G.Style.smallDelegateHeight
+            visible: _self.containsMouse && world.height > G.Style.smallDelegateHeight
 
             onClicked: {
                 metadata_edit.open()
@@ -174,11 +182,11 @@ Item {
             anchors.topMargin: G.Style.borderWidth
             anchors.left: _thumbnail.left
             anchors.leftMargin: G.Style.borderWidth
-            visible: _world_delegate.containsMouse && _world.height > G.Style.smallDelegateHeight
+            visible: _self.containsMouse && world.height > G.Style.smallDelegateHeight
 
             onClicked: {
                 if(GV.World.deleteForm(form_id)) {
-                    _world_model.remove(model.index)
+                    world.getIdAndRemove(model.index)
                 } else {
                     _delete_form_toast.open()
                 }
@@ -196,15 +204,20 @@ Item {
             anchors.topMargin: G.Style.borderWidth
             anchors.right: _thumbnail.right
             anchors.rightMargin: G.Style.borderWidth
-            visible: _world_delegate.containsMouse && _world.height > G.Style.smallDelegateHeight
+            visible: _self.containsMouse && world.height > G.Style.smallDelegateHeight
 
             onClicked: _file_dialog.open()
         }
     }
 
-    Menu {
+    G.Menu {
         id: _formMenu
-        width: _world_delegate.width;
+
+        y: _self.height + G.Style.smallPadding
+        width: _self.width;
+
+        title: GV.World.getDynamicFormMetadata(form_id).data["name"]
+
         Action {
             text: qsTr("Save")
             shortcut: StandardKey.Save
@@ -224,12 +237,13 @@ Item {
             shortcut: StandardKey.Open
             onTriggered: {
                 if(GV.World.deleteForm(form_id)) {
-                    _world_model.remove(model.index)
+                    world.getIdAndRemove(model.index)
                 } else {
                     _delete_form_toast.open()
                 }
             }
         }
+
     }
 
     G.MetadataDialog {

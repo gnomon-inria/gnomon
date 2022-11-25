@@ -34,6 +34,7 @@ DataDict 1.0 DataDict.qml
 LookupTable 1.0 LookupTable.qml
 GraphicalParameter 1.0 GraphicalParameter.qml
 Monaco 1.0 Monaco.qml
+Menu 1.0 Menu.qml
 MenuItemDelegate 1.0 MenuItemDelegate.qml
 MetadataExplorer 1.0 MetadataExplorer.qml
 PathParameter 1.0 PathParameter.qml
@@ -61,3 +62,4 @@ MetadataDialog 1.0 MetadataDialog.qml
 TabButton 1.0 TabButton.qml
 TextArea 1.0 TextArea.qml
 ToolTip 1.0 ToolTip.qml
+Thumbnail 1.0 Thumbnail.qml
