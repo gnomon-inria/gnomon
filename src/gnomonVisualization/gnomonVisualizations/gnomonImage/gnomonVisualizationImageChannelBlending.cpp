@@ -64,8 +64,7 @@ void gnomonVisualizationImageChannelBlendingPrivate::reset(void)
     auto it = this->qq->d->parameters.begin();
     auto it_end = this->qq->d->parameters.end();
     while (it != it_end) {
-        if (it.key().contains("lookuptable")) {
-            auto&& p = it.value();
+        if (auto p = dynamic_cast<gnomonCoreParameterLookupTable*>(it.value())) {
             p->disconnect();
             delete p;
             it = this->qq->d->parameters.erase(it);
