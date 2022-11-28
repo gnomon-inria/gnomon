@@ -370,7 +370,7 @@ QStringList gnomonPipeline::nodeNames(void)
     return d->pipeline_node_names;
 }
 
-QStringList gnomonPipeline::inputNodeNames(void)
+QStringList gnomonPipeline::inputNodeNames(void) const
 {
     QStringList node_names;
     for (const auto& node_name : d->pipeline_node_names) {
@@ -382,11 +382,34 @@ QStringList gnomonPipeline::inputNodeNames(void)
     return node_names;
 }
 
-QString gnomonPipeline::inputNodePath(const QString& node_name)
+QString gnomonPipeline::inputNodePath(const QString& node_name) const
 {
     auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(d->pipeline_nodes[node_name]);
     if (node_reader) {
         return node_reader->path();
+    } else {
+        return QString();
+    }
+}
+
+QStringList gnomonPipeline::outputNodeNames(void) const
+{
+    QStringList node_names;
+    for (const auto& node_name : d->pipeline_node_names) {
+        auto *node_writer = dynamic_cast<gnomonPipelineNodeWriter *>(d->pipeline_nodes[node_name]);
+        if (node_writer) {
+            node_names.append(node_name);
+        }
+    }
+    return node_names;
+
+}
+
+Q_INVOKABLE QString gnomonPipeline::outputNodePath(const QString& node_name) const
+{
+    auto *node_writer = dynamic_cast<gnomonPipelineNodeWriter *>(d->pipeline_nodes[node_name]);
+    if (node_writer) {
+        return node_writer->path();
     } else {
         return QString();
     }
@@ -431,6 +454,9 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
     if (auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(node)) {
         emit inputNodeNamesChanged();
     }
+    if (auto *node_writer = dynamic_cast<gnomonPipelineNodeWriter *>(node)) {
+        emit outputNodeNamesChanged();
+    }
 }
 
 void gnomonPipeline::removeNode(gnomonPipelineNode *node) 
@@ -443,6 +469,12 @@ void gnomonPipeline::removeNode(gnomonPipelineNode *node)
     d->pipeline_nodes.remove(node->name());
     emit nodeRemoved(node);
     emit nodeNamesChanged();
+    if (auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(node)) {
+        emit inputNodeNamesChanged();
+    }
+    if (auto *node_writer = dynamic_cast<gnomonPipelineNodeWriter *>(node)) {
+        emit outputNodeNamesChanged();
+    }
 }
 
 QStringList gnomonPipeline::scheduledNodeNames(bool recompute_form_indices)
