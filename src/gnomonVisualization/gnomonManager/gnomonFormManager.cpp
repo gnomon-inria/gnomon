@@ -80,7 +80,7 @@ int gnomonFormManagerPrivate::item_counter = 0;
 gnomonFormManagerPrivate::gnomonFormManagerPrivate(QObject *parent) : QObject(parent)
 {
     gnomonAbstractCommand::gui_thread = this->thread();
-    tmpDir = new QTemporaryDir();
+    tmpDir = new QTemporaryDir("TEMP_CACHE_DIR");
 }
 
 gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
@@ -110,29 +110,21 @@ void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstra
 
 bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 {
-    if (this->cache_forms.contains(cache_forms[id]))
+    if(this->cache_forms.contains(this->cache_forms[id]))
     {
-        
-        this->forms[id] = nullptr;
-        // if (this->formCameras.contains(id))
-        // {
-        //     this->formCameras.remove(id);
-        // }
-        // if (this->formVisualizations.contains(id))
-        // {
-        //     this->removedVisualizations.append(this->formVisualizations[id]);
-        //     this->formVisualizations.remove(id);
-        // }
-        // else if (this->formMatplotlibVisualizations.contains(id))
-        // {
-        //     this->formMatplotlibVisualizations.remove(id);
-        // }
-        // this->formData[id] = QImage();
-        // this->formWriterCommand.remove(id);
-        // this->formDropped.remove(id);
-        return true;
+    this->forms[id] = nullptr;
+    if (this->formVisualizations.contains(id))
+    {
+        this->removedVisualizations.append(this->formVisualizations[id]);
+        this->formVisualizations[id] = nullptr;
     }
-
+    else if (this->formMatplotlibVisualizations.contains(id))
+    {
+        this->formMatplotlibVisualizations[id] = nullptr;
+    }
+    this->formData[id] = QImage();
+    return true;
+    }
     return false;
 }
 
@@ -140,6 +132,7 @@ bool gnomonFormManagerPrivate::loadFormToMemory(int id)
 {
 
     QString reader_plugin;
+    // We need to do this for other forms (cellImage, binaryImage,...)
     if(dynamic_cast<gnomonImageWriterCommand *>(this->formWriterCommand[id]))
     {
         this->formReaderCommand[id] = new gnomonImageReaderCommand();
@@ -304,15 +297,11 @@ void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) c
 
 void gnomonFormManager::addToCache(int id) const
 {
-    qDebug() << "adding file....";
-    gnomonAbstractWriterCommand* writer_command = d->formWriterCommand[id];
+    gnomonAbstractWriterCommand *writer_command = d->formWriterCommand[id];
     QStringList extensions = writer_command->extensions();
-    QString f = QString::number(id)+"."+extensions[0];
+    QString f = QString::number(id) + "." + extensions[0];
     auto filepath = d->tmpDir->filePath(f);
     this->saveAs(id, filepath, false);
-
-    qDebug() << "######" << filepath;
-
     d->cache_forms.append(filepath);
     d->deleteFormFromMemory(id);
 }
