@@ -22,8 +22,8 @@ ComboBox {
     implicitWidth: G.Style.smallPanelWidth
     implicitHeight: G.Style.comboBoxHeight
 
-    model: _control.param.availableCluts
-    currentIndex: _control.lut ? _control.model.indexOf(param.colorMapName) : _control.model.indexOf(param.identifier)
+    model: param ? _control.param.availableCluts: [""]
+    currentIndex: param ? _control.lut ? _control.model.indexOf(param.colorMapName) : _control.model.indexOf(param.identifier): -1
 
     background: Rectangle {
         color: "transparent" //G.Style.colors.bgColor
@@ -59,7 +59,7 @@ ComboBox {
         anchors.left: _control.left
         //anchors.right: _indicator.left
 
-      
+
         height: _control.height
         radius: G.Style.panelRadius
 

@@ -21,7 +21,7 @@ Control {
 
     G.ToolTip {
         visible: _cluts.hovered && !_cluts.pressed
-        text: param.doc
+        text: param ? param.doc : ""
     }
 
 	Label {
@@ -31,7 +31,7 @@ Control {
         anchors.left: parent.left
         anchors.top: parent.top
 
-        text: param.label.toUpperCase()
+        text: param ? param.label.toUpperCase() : ""
         font: G.Style.fonts.label
         color: G.Style.colors.textColorBase
     }
@@ -47,7 +47,7 @@ Control {
         lut: true
         param: _control.param
 
-        onCurrentValueChanged: _control.param.colorMapName = _cluts.currentValue
+        onCurrentValueChanged: param ? _control.param.colorMapName = _cluts.currentValue : _cluts.currentValue
 
     }
 
@@ -65,10 +65,10 @@ Control {
 
             Layout.fillWidth: true;
 
-            first.value: param.valueMin
-            second.value: param.valueMax
-            from: param.from
-            to: param.to
+            first.value: param ? param.valueMin: 0
+            second.value: param ? param.valueMax: 1
+            from: param ? param.from: 0
+            to: param ? param.to: 1
 
             first.onMoved: {
                 param.valueMin = first.value
@@ -84,7 +84,7 @@ Control {
             //Layout.fillWidth: true;
             width: G.Style.sizes.s6
 
-            checked: !param.visibility
+            checked: param ? !param.visibility: false
 
             onClicked: {
                 param.visibility = !_visible.checked

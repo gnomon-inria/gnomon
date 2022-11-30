@@ -398,6 +398,13 @@ G.Workspace {
                             clip: true;
                             focus: true;
 
+                            ScrollIndicator.vertical: ScrollIndicator {
+                                id: _scroll_indicator;
+
+                                width: 8;
+                                visible: _project_grid.contentHeight > _project_grid.height;
+                            }
+
                             delegate: G.Card {
                                 height: _project_grid.cellHeight - G.Style.smallPadding
                                 width: _project_grid.cellWidth - G.Style.smallPadding
@@ -452,13 +459,6 @@ G.Workspace {
                                     onClicked: {
                                         remove_from_history(source)
                                     }
-                                }
-
-                                ScrollIndicator.vertical: ScrollIndicator {
-                                    id: _scroll_indicator;
-
-                                    width: 8;
-                                    visible: _project_grid.contentHeight > _project_grid.height;
                                 }
                             }
                         }
