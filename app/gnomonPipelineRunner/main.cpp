@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
             QStringList io_options = parser->values("ios");
             for(QString io: io_options) {
                 QStringList io_list = io.split(QRegularExpression("[, ]"), Qt::SkipEmptyParts);
-                dtkInfo() << "Io " << io_list[0] << ":" << io_list[1];
+                dtkInfo() << "Ios option:  " << io_list[0] << ":" << io_list[1];
                 PyObject *val = PyUnicode_FromString(io_list[1].toStdString().c_str()); 
                 PyDict_SetItemString(ios_dict, io_list[0].toStdString().c_str(), val);
                 Py_DECREF(val);

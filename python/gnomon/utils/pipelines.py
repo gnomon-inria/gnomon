@@ -331,14 +331,17 @@ def run_pipeline(path: str, data_dir: str = "", ios: Dict[str, str]= None):
     if not pipeline_runner:
         return
 
+    is_ok = True
     if ios:
-        print("has ios")
-        print(ios)
-        nodes = ios[::2]
-        paths = ios[1::2]
-        for node_name, path in zip(nodes, paths):
-            pipeline_runner.path_dict[node_name] = path
-    pipeline_runner.run()
+        for node_name, path in ios.items():
+            if node_name in pipeline_runner.path_dict: 
+                pipeline_runner.path_dict[node_name] = path
+            else:
+                print("wrong key: ", node_name , " available nodes are :",  pipeline_runner.path_dict.keys())
+                is_ok = False
+
+    if is_ok:
+        pipeline_runner.run()
 
 
 def install_missing_package():
