@@ -146,12 +146,15 @@ bool gnomonFormManagerPrivate::loadFormToMemory(int id)
     QString source = QUrl(this->cache_forms[id]).fileName();
     readerCommand->setSource(source);
 
-    // Find a proper way to fix the segfault below
-    // readerCommand->setNoAsync();
     readerCommand->redo();
 
     connect(readerCommand, &gnomonAbstractCommand::finished, [=]() {
             this->forms[id] = readerCommand->outputs()["image"];
+            QString form_name = this->forms[id]->formName();
+            gnomonPipelineManager::instance()->setFormIndex(this->forms[id], id);
+            gnomonPipelineManager::instance()->addForm(dynamic_cast<gnomonImageReaderCommand *>(readerCommand)->image());
+            // gnomonPipelineManager::instance()->addAlgorithm(readerCommand);
+            gnomonPipelineManager::instance()->addReader(readerCommand);
         });
 }
 
@@ -281,16 +284,10 @@ void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) c
         auto command = d->formWriterCommand[id];
         command->setPath(file_name);
         command->setForm(d->forms[id]);
-        // TODO: this is a workround
-        // change if statement once the bug due to save is solved    
+        command->redo(); 
         if (add_to_pipeline)
         {
-            command->redo();
             gnomonPipelineManager::instance()->addWriter(command);
-        }
-        else
-        {
-            command->predo();
         }
     }
 }
