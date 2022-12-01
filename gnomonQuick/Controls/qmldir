@@ -38,6 +38,7 @@ Monaco 1.0 Monaco.qml
 Menu 1.0 Menu.qml
 MenuItemDelegate 1.0 MenuItemDelegate.qml
 MetadataExplorer 1.0 MetadataExplorer.qml
+NurbsParameter 1.0 NurbsParameter.qml
 PathParameter 1.0 PathParameter.qml
 Pipeline 1.0 Pipeline.qml
 PipelineDialog 1.0 PipelineDialog.qml

@@ -27,7 +27,7 @@ G.Workspace {
 
     workspace_title: "L-System Model";
 
-    property string current_file: "";
+    property string _current_file: "";
 
     fill: () => {
         if(world.currentRef < 0)
@@ -51,18 +51,18 @@ G.Workspace {
         }
     }
 
-    property string _read_path: d.defaultReadPath()
+    property string _path: d.defaultReadPath()
 
     Settings {
         category: "lpy"
-        property alias read_path: _self._read_path
+        property alias path: _self._path
     }
 
     P.FileDialog {
         id: _file_dialog;
 
         currentFile: _self._current_file;
-        folder: _self._read_path;
+        folder: _self._path;
         fileMode: P.FileDialog.OpenFile;
 
         modality: Qt.NonModal;
@@ -72,7 +72,7 @@ G.Workspace {
             d.read(decodeURIComponent(_file_dialog.file));
             _editor.contents = d.text
             _self._current_file = _file_dialog.file;
-            _self._read_path = folder;
+            _self._path = folder;
         }
     }
 
@@ -81,7 +81,7 @@ G.Workspace {
 
         title: "Save L-System model"
 
-        folder: _read_path;
+        folder: _self._path;
         fileMode: P.FileDialog.SaveFile
 
         modality: Qt.WindowModal;
@@ -90,7 +90,7 @@ G.Workspace {
         onAccepted: {
             d.save(decodeURIComponent(_file_dialog_save.file));
             _self._current_file = _file_dialog_save.file;
-            _self._read_path = folder;
+            _self._path = folder;
         }
     }
 

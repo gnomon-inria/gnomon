@@ -76,6 +76,11 @@ Item {
     }
 
     Component {
+        id: _nurbs_component
+        G.NurbsParameter {param: lparam}
+    }
+
+    Component {
         id: _graphical_component
         G.GraphicalParameter {param: lparam}
     }
@@ -116,6 +121,9 @@ Item {
         }
         if (type == "gnomonCoreParameterColorTable") {
             return _colortable_component
+        }
+        if (type == "gnomonCoreParameterNurbs") {
+            return _nurbs_component
         }
         if (type == "gnomonCoreParameterGraphical") {
             return _graphical_component
