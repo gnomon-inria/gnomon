@@ -75,6 +75,7 @@
 #include <gnomonVisualization/gnomonLookupTable.h>
 #include <gnomonVisualization/gnomonCoreParameterLookupTable.h>
 #include <gnomonVisualization/gnomonCoreParameterGraphical.h>
+#include <gnomonVisualization/gnomonCoreParameterNurbs.h>
 
 %}
 
@@ -426,6 +427,50 @@
 }
 
 
+// /////////////////////////////////////////////////////////////////
+// Map List_list_double to Qlist(std::array<double, 3>) 
+//     using ctrls_type = QList<std::array<double, 3>>;
+// for gnomonCoreParameterNurbs
+// /////////////////////////////////////////////////////////////////
+//%feature("novaluewrapper") std::array<double, 3>;
+//%feature("novaluewrapper") QList<std::array<double, 3>>;
+
+%typemap(in) QList<std::array<double, 3>> {
+    $1 = QList<std::array<double, 3>>();    
+    if (PyList_Check($input)) {
+        int nb_points = PyList_Size($input);
+
+        for(int i=0; i<nb_points; ++i) {
+            PyObject *p_point = PyList_GET_ITEM($input, i);
+            double x,y,z;
+            x = PyFloat_AsDouble(PyList_GET_ITEM(p_point, 0));
+            y = PyFloat_AsDouble(PyList_GET_ITEM(p_point, 1));
+            if(PyList_Size(p_point) == 3) {
+                z = PyFloat_AsDouble(PyList_GET_ITEM(p_point, 2));
+            } else {
+                z = 1.0;
+            }
+            std::array<double, 3> arr = {x,y,z};
+            $1.append(arr);
+        }
+    } else {
+        qWarning() << "List of List of double is expected ad input. empty list is returned";
+    }    
+}
+
+%typemap(out) QList<std::array<double, 3>> {
+    int nb_elem = $1.size();
+    $result = PyList_New(nb_elem);
+    for(int i=0; i<nb_elem; ++i) {
+        PyObject * p_point = PyList_New(3);
+        PyList_SET_ITEM(p_point, 0, PyFloat_FromDouble($1.at(i)[0]));
+        PyList_SET_ITEM(p_point, 1, PyFloat_FromDouble($1.at(i)[1]));
+        PyList_SET_ITEM(p_point, 2, PyFloat_FromDouble($1.at(i)[2]));
+        PyList_SET_ITEM($result, i, p_point);
+    }
+}
+
+
 /* **************************************************************************
  *
  * ************************************************************************** */
@@ -745,6 +790,10 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterColorMap, ParameterLookupT
 
 WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterGraphical, ParameterGraphical)
 %include <gnomonVisualization/gnomonCoreParameterGraphical.h>
+
+WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterNurbs, ParameterNurbs)
+%include <gnomonVisualization/gnomonCoreParameterNurbs.h>
+
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
@@ -773,6 +822,6 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterGraphical, ParameterGraphi
 %include <gnomonVisualization/gnomonCoreParameterColor.h>
 %include <gnomonVisualization/gnomonLookupTable.h>
 %include <gnomonVisualization/gnomonCoreParameterGraphical.h>
-
+%include <gnomonVisualization/gnomonCoreParameterNurbs.h>
 //
 // gnomonVisualization.i.in ends here
