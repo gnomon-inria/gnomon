@@ -36,6 +36,9 @@ set(${PROJECT_NAME}_HEADERS
     gnomonCoreParameterGraphical.h
     gnomonCoreParameterGraphicalObject
     gnomonCoreParameterGraphicalObject.h
+    gnomonCoreParameterNurbs.h
+    gnomonCoreParameterNurbsObject.h
+
 
     ${${PROJECT_NAME}_ACTOR_HEADERS}
 #   ${${PROJECT_NAME}_INSPECTOR_HEADERS}
@@ -56,6 +59,9 @@ set(${PROJECT_NAME}_SOURCES
     gnomonCoreParameterLookupTableObject.cpp # NOTE: Transitional ?
     gnomonCoreParameterGraphical.cpp
     gnomonCoreParameterGraphicalObject.cpp
+    gnomonCoreParameterNurbs.cpp
+    gnomonCoreParameterNurbsObject.cpp
+
 
     ${${PROJECT_NAME}_ACTOR_SOURCES}
 #   ${${PROJECT_NAME}_INSPECTOR_SOURCES}

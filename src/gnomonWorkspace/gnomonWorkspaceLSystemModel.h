@@ -48,6 +48,9 @@ public:
     int derivationLength(void);
     void setDerivationLength(int l);
 
+public:
+    Q_INVOKABLE QUrl defaultReadPath();
+
 public slots:
     void read(const QString& file_url);
     void save(const QString& file_url) const;

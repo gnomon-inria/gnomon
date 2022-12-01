@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.ndimage as nd
 
-from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist
+from dtkcore import d_real
 
 import gnomon.core
 
@@ -19,7 +19,7 @@ class imageAlgorithm(gnomon.core.gnomonAbstractFormAlgorithm):
         super().__init__()
 
         self._parameters = {}
-        self._parameters['sigma'] = d_real("The sigma parameter", 1., 0., 5., 2)
+        self._parameters['sigma'] = d_real("The sigma parameter", 1., 0., 5., 2, "the doc of sigma")
 
         self.in_img = {}
         self.out_img = {}

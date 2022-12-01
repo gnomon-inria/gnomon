@@ -238,9 +238,11 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
                 QString parameter_doc = "";
                 QString parameter_args = "";
                 if (parameter_matches.size() > 3) {
-
-                    parameter_doc = stripQuotes(parameter_matches[3]).split(QRegularExpression("[\'\"]"))[2];
-                    parameter_args = stripQuotes(parameter_matches[3]).split(QRegularExpression("[\'\"]"))[1];
+                    auto split = stripQuotes(parameter_matches[3]).split(QRegularExpression("[\'\"]")); 
+                    if(split.size() > 2)
+                        parameter_doc = split[2];
+                    if(split.size() > 1 )
+                    parameter_args = split[1];
                 }
                 QStringList param_arguments = parameter_args.split(QRegularExpression(","));
                 QString parameter_value = "";

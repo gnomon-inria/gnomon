@@ -242,6 +242,12 @@ void gnomonWorkspaceLSystemModel::reset()
     emit finished();
 }
 
+QUrl gnomonWorkspaceLSystemModel::defaultReadPath(void)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    return settings.value("lsystem/path").toString();
+}
+
 void gnomonWorkspaceLSystemModel::setInitialState()
 {
     // TODO: drop axiom into a different view?
