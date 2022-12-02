@@ -30,6 +30,8 @@ public:
     std::shared_ptr<gnomonImageSeries> input(void) const override{ return nullptr;};
     std::shared_ptr<gnomonPointCloudSeries> cellPoints(void) const override{ return nullptr;};
     std::shared_ptr<gnomonCellImageSeries> output(void) const override{ return nullptr;};
+    void clearInputs(void) override {};
+    void clearOutputs(void) override {};
 
     };
 

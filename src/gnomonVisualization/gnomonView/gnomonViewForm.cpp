@@ -325,6 +325,7 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
     bool new_visu = !this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu_name;
 
     if (this->formVisualizationNames.contains(name) && this->formVisualization[name] && new_visu) {
+        // clear before replacing
         this->formVisualization[name]->clearConnections();
         this->formVisualization[name]->clear();
     }

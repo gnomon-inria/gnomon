@@ -182,6 +182,25 @@ def default_output_accessors(algo_class, form_class) -> str:
     return bound_method
 
 
+def register_input(cls: type, attribute: str):
+    """
+    Register attribute of cls as input storage for cleaning later.
+    """
+    if hasattr(cls, "_input_storage_list"):
+        getattr(cls, "_input_storage_list").append(attribute)
+    else:
+        setattr(cls, "_input_storage_list", [attribute])
+
+
+def register_output(cls: type, attribute: str):
+    """
+    Register attribute of cls as output storage for cleaning later.
+    """
+    if hasattr(cls, "_output_storage_list"):
+        getattr(cls, "_output_storage_list").append(attribute)
+    else:
+        setattr(cls, "_output_storage_list", [attribute])
+
 def gnomon_declare_plugins(path: str) -> dict[str, list[str]]:
     """
     Returns the entry_points dict used to declare the plugins in plugin groups.
@@ -568,6 +587,34 @@ def algorithmPlugin(version: str, coreversion: str, base_class=None):
         if not issubclass(cls, gnomon.core.gnomonAbstractAlgorithm):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractAlgorithm interface."
                             f" Otherwise try using formDataPlugin or visualizationPlugin")
+        # setting clearing methods
+        if not hasattr(cls, "_input_storage_list"):
+            setattr(cls, "_input_storage_list", [])
+        if not hasattr(cls, "_output_storage_list"):
+            setattr(cls, "_output_storage_list", [])
+
+        def clearInputs(self):
+            # logging.info(f"Clearing inputs of {cls.__name__}")
+            for attr in getattr(cls, "_input_storage_list"):
+                setattr(self, attr, {})
+
+        def clearOutputs(self):
+            # logging.info(f"Clearing outputs of {cls.__name__}")
+            for attr in getattr(cls, "_output_storage_list"):
+                setattr(self, attr, {})
+
+        def run_decorator(run):
+            def run_wrapper(self):
+                # clear outputs before run
+                self.clearOutputs()
+                run(self)
+            return run_wrapper
+
+        setattr(cls, "clearInputs", clearInputs)
+        setattr(cls, "clearOutputs", clearOutputs)
+        setattr(cls, "run", run_decorator(getattr(cls, "run")))
+
+        # other decorators
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
         return cls
@@ -682,7 +729,7 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
 
 def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     # -----------------------------------------------------
-    # Doc and Version
+    # Doc and Version and Name
     # -----------------------------------------------------
 
     def documentation(self):
@@ -708,6 +755,23 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
         return self.__version__
 
     cls.version = _version
+
+    def _name(self: cls) -> str:
+        return self._name if hasattr(self, "_name") and self._name else cls.__name__
+
+    cls.name = _name
+
+    # -----------------------------------------------------
+    # Debugging
+    # -----------------------------------------------------
+    if DEBUG:
+        def destructor_decorator(f):
+            def destructor_wrapper(self):
+                print(f"{cls.__name__} is dying")
+                f(self)
+            return destructor_wrapper
+        original_del = getattr(cls, "__del__") if hasattr(cls, "__del__") else lambda self: None
+        setattr(cls, "__del__", destructor_decorator(original_del))
 
     # -----------------------------------------------------
     # TCP Logging
@@ -746,6 +810,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
                 return f(self, *args, **kwargs)
             except Exception as e:
                 if DEBUG:  # if debug let it throw
+                    traceback.print_exc()
                     raise
                 traceback.print_exc()
                 print(e)
