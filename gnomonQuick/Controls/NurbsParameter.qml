@@ -52,6 +52,10 @@ Control {
         implicitHeight: 200
         onWidthChanged: _view.setGeom(_view.width, _view.height);
         onHeightChanged: _view.setGeom(_view.width, _view.height);
+
+        onHoverChanged : {
+            window.insideParamFigure()
+        }
     }
 
     RowLayout {

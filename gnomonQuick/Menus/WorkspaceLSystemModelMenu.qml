@@ -82,6 +82,13 @@ Item {
             ScrollIndicator.vertical: ScrollIndicator {
                 visible: _control.contentHeight > _control.height;
             }
+
+            Connections {
+                target: window
+                function onInsideParamFigure() {
+                    _control.interactive = !_control.interactive;
+                }
+            }
         }
 
         Item {
