@@ -26,7 +26,9 @@ class GNOMONCORE_EXPORT gnomonAbstractForm
 {
 public:
              gnomonAbstractForm(void) = default;
-    virtual ~gnomonAbstractForm(void) = default;
+    virtual ~gnomonAbstractForm(void) {
+        qDebug() << Q_FUNC_INFO << "Form " << this << " is dying";
+    };
 
     virtual gnomonAbstractForm* clone() = 0;
 //public:
