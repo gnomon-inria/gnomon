@@ -18,6 +18,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
 
     dpi_ratio_changed = QtCore.Signal()
     numberChanged = QtCore.Signal()
+    hoverChanged = QtCore.Signal()
 
     # map Qt button codes to MouseEvent's ones:
     buttond = {QtCore.Qt.LeftButton: MouseButton.LEFT,
@@ -205,6 +206,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         return QtCore.QSize(10, 10)
 
     def hoverEnterEvent(self, event):
+        self.hoverChanged.emit()
         try:
             x, y = self.mouseEventCoords(event.pos())
         except AttributeError:
@@ -213,8 +215,14 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         FigureCanvasBase.enter_notify_event(self, guiEvent=event, xy=(x, y))
 
     def hoverLeaveEvent(self, event):
+        self.hoverChanged.emit()
         QtWidgets.QApplication.restoreOverrideCursor()
         FigureCanvasBase.leave_notify_event(self, guiEvent=event)
+    
+    QtCore.Property(bool,
+                    hoverEnterEvent,
+                    hoverLeaveEvent,
+                    notify=hoverChanged)
 
     def mouseEventCoords(self, pos):
         """Calculate mouse coordinates in physical pixels
