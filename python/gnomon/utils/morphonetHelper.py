@@ -609,29 +609,25 @@ class MorphonetHelper(gnomonMorphonetHelper):
             int: the id of the created dataset or -1 if there is an error
         """
         times = np.sort(list(form_series.keys()))
-
+        print("times " , times)
         cell_img_data = {}
         for i_t, time in enumerate(times):
             cell_img_data[time] = form_series[time].data().get_tissue_image().get_array() 
-        print(cell_img_data.keys())
-        print(cell_img_data.values())
         
         context = zmq.Context()
         m_socket = context.socket(zmq.REQ)
-        m_socket.connect("tcp://localhost:5050")
+        m_socket.connect("tcp://127.0.0.1:5555")
 
-        m_socket.send_string("Hello!")
-        message = pickle.loads(m_socket.recv())
-        print(f"Received reply 0[ {message} ]")
-
+        print("sending data through socket")
+        print("np array: ndim" , cell_img_data[0.0].ndim, " size:", cell_img_data[0.0].size, " dtype:", cell_img_data[0.0].dtype)
+        # TODO send data + time 
         m_socket.send(pickle.dumps(cell_img_data[0.0]))
 
-        message = pickle.loads(m_socket.recv())
-        print(f"Received reply 1 [ {message} ]")
+        print("data send")
+        #message = pickle.loads(m_socket.recv())
+        #print(f"Received reply 1 [ {message} ]")
 
         return True
-
-
 
     
     def deleteDataset(self, id: int) -> bool:

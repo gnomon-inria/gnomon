@@ -418,32 +418,56 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
     }
 
     delete d->morphoplot_tmp_dir;
-    d->morphoplot_tmp_dir = new QTemporaryDir();
-    auto filepath = d->morphoplot_tmp_dir->filePath(MORPHOPLOT_TMP_FILE);
+    //d->morphoplot_tmp_dir = new QTemporaryDir();
+    //auto filepath = d->morphoplot_tmp_dir->filePath(MORPHOPLOT_TMP_FILE);
 
-    auto writer = gnomonCellImageWriterCommand();
-    writer.setCellImage(image);
-    writer.setAlgorithmName("cellImageWriterTissueImage");
-    writer.setPath(filepath);
-    writer.setNoAsync();
+    //auto writer = gnomonCellImageWriterCommand();
+    //writer.setCellImage(image);
+    //writer.setAlgorithmName("cellImageWriterTissueImage");
+    //writer.setPath(filepath);
+    //writer.setNoAsync();
 
-    writer.predo();
-    writer.redo();
-    writer.postdo();
+    //writer.predo();
+    //writer.redo();
+    //writer.postdo();
 
-   if(QFile(filepath).exists()) {
+   //if(QFile(filepath).exists()) {
         d->morphoplot_process = new QProcess();
-        // d->morphoplot_process->startCommand(QString("_morphoplot_server"));
+        qDebug() << "starting process morpho server";
+        QObject::connect(d->morphoplot_process, &QProcess::readyReadStandardOutput, [&]() {
+            QString data = d->morphoplot_process->readAllStandardOutput();
+            dtkInfo() << "morphoplot: " << data;
+            qDebug() << "morphoplot: " << data;
+        });
+
+        QObject::connect(d->morphoplot_process, &QProcess::readyReadStandardError, [&]() {
+            QString data = d->morphoplot_process->readAllStandardError();
+            dtkWarn() << "morphoplot: " << QString(data);
+            qWarning() << "morphoplot: " << data;
+
+        });
+
+        // TODO add back
+        d->morphoplot_process->start(QString("_morphoplot_server"));
+        if(!d->morphoplot_process->waitForStarted(3000) ) {
+            dtkWarn() << "Cannot start process _morphoplot_server";
+            message("error starting morphonet Plot");
+            return 1;
+        }
+
+        qDebug() << "4 before sendDataset ";
         bool server_found = gnomonMorphonetHelper::instance()->sendDataset("name", image, 1, 3, "description");
+            qDebug() << "5";
+
         if(!server_found) {
             message("Morphonet Server not found!");
             return 1;
         }
-        // dtkInfo() << "MorphoNet plot launched: " << d->morphoplot_process->state();
+        dtkInfo() << "MorphoNet plot launched: " << d->morphoplot_process->state();
         return 0;
-    }
-    message("Error: cannot create temporary file. No MorphoPlot launched");
-    return 1;
+    //}
+    //message("Error: cannot create temporary file. No MorphoPlot launched");
+    //return 1;
 }
 
 void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
@@ -451,6 +475,8 @@ void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
     if(d->morphoplot_process) {
         // terminate morphoplot server
         kill((pid_t)d->morphoplot_process->processId(), SIGINT);
+
+        //TODO collect from memory
 
         // collecting file
         auto reader = gnomonCellImageReaderCommand();

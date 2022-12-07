@@ -470,10 +470,8 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
                     container = zipfile.ZipFile(Path(path).with_suffix(".zip"), "w", compression=zipfile.ZIP_DEFLATED,
                                                 compresslevel=5)
                     ext = Path(path).suffixes if Path(path).suffix != ".zip" else self.extensions()[0]
-                    if len(ext) > 1:
-                        ext = ext[0] + ext[1]
-                    print(ext)
-                    manifest = {"extension": ext[1:], "series": {}}
+                    ext = "".join(ext)
+                    manifest = {"extension": ext, "series": {}}
                     for t, form in forms.items():
                         path = path.split(".")[0]
                         filename = path + "_t" + "%05.2f" % t + ext
@@ -483,13 +481,14 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
                         setattr(self, form_attr, {t: form})
                         f(self)
                         container.write(str(filepath), str(filename))
+                    
                     # writing manifest
                     filepath = Path(tmpdirname).joinpath("manifest.json")
                     with open(filepath, "w") as file:
                         dump(manifest, file)
                     container.write(filepath, "manifest.json")
-
                     container.close()
+
                     # resetting
                     setattr(self, form_attr, forms)
                     setattr(self, path_attr, paths)
