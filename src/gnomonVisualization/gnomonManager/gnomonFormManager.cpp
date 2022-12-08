@@ -159,8 +159,11 @@ void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
     this->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 }
 
-bool gnomonFormManager::deleteForm(int id)
+bool gnomonFormManager::deleteForm(int id, bool force)
 {
+    if(force) {
+        d->formDropped[id] = false; // usefull when we do a reset!
+    }
     if (!d->forms.contains(id) || d->formDropped[id]) {
         dtkWarn() << "Unknown forms id or form already dropped in other workspace" << id << "can't delete it ";
         return false;
