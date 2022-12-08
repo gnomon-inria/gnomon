@@ -297,8 +297,9 @@ Control {
             _internal.edgeComponents.splice(edge_index, 1)
         }
 
-        _internal.nodeComponents[node].destroy()
-        delete _internal.nodeComponents[node]
+        _internal.layout.graph.removeNode(node)
+        _internal.nodeComponents[node.name].destroy()
+        delete _internal.nodeComponents[node.name]
     }
 
     function computeLayout(newNodeId) {
