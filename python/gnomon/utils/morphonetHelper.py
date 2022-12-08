@@ -621,15 +621,38 @@ class MorphonetHelper(gnomonMorphonetHelper):
         print("sending data through socket")
         print("np array: ndim" , cell_img_data[0.0].ndim, " size:", cell_img_data[0.0].size, " dtype:", cell_img_data[0.0].dtype)
         # TODO send data + time 
-        m_socket.send(pickle.dumps(cell_img_data[0.0]))
-
-        print("data send")
-        #message = pickle.loads(m_socket.recv())
-        #print(f"Received reply 1 [ {message} ]")
+        #message = {"request": "set", "data": pickle.dumps(cell_img_data[0.0]), "time": 0}
+        message = {"request": "set", "data": cell_img_data[0.0].tolist(), "time": 0}
+        m_socket.send_json(message)
+        message = m_socket.recv()
+        print("data status: ", message)
 
         return True
 
     
+    def collectDataset(self, image):
+        print("I want data")
+        context = zmq.Context()
+        m_socket = context.socket(zmq.REQ)
+        m_socket.connect("tcp://127.0.0.1:5555")
+        m_socket.send_json({"request" : "collect"})
+        message = m_socket.recv_json()
+        print(f"Received reply  data")
+        data = np.asarray(message["data"], dtype=np.uint16)
+        print("np array: ndim" , data.ndim, " size:", data.size, " dtype:", data.dtype)
+
+        tissue_image = image[0.].data().get_tissue_image()
+        tissue_image[:, :, :] = 3*data
+        m_socket.send_json({"request" : "kill"})
+
+        #print(dir(tissue_image))
+        #print(tissue_image)
+        #tissue_image.set_array(data)
+        #for i_t, time in enumerate(times):
+        #    cell_img_data[time] = form_series[time].data().get_tissue_image().get_array() 
+
+
+
     def deleteDataset(self, id: int) -> bool:
         """Delete a dataset by id
         """
@@ -721,13 +744,38 @@ def visu_debug(polydata=None, img=None):
     renderWindow.Render()
     renderWindowInteractor.Start()
 
-
-# if __name__ == "__main__":
-    # import gnomon.utils.morphonetHelper as helper
-    # mn = helper.MorphonetHelper()
-    # mn.connect("trcabel", "....")
+#def test_createdataset():
+    #mn = MorphonetHelper()
+    #mn.connect("trcabel", "....")
     # mn.selectDataset(204)
     # cell_img = mn.loadMnDataAtTime(1, 100, 100, 100)  
     # mesh = mn.transform_to_mn_mesh(cell_img, 1)
     # new_id = mn.createDataset("test1", {1: cell_img}, 0, 0, "mydesc")
     # mn.deleteDataset(new_id)
+
+
+def test_plot():
+    import gnomon.core
+    from gnomon.core import gnomonCellImage
+    from gnomon.utils import load_plugin_group
+    import time 
+
+    load_plugin_group("cellImageReader")
+    filename = "/home/trcabel/Dev/naviscope/test_data/0hrs_plant1_seg_small.inr"
+    reader = gnomon.core.cellImageReader_pluginFactory().create("cellImageReaderTimagetk")
+    reader.setPath(filename)
+    reader.run()
+    cellImage = reader.cellImage()
+
+    # import gnomon.utils.morphonetHelper as helper
+    # mn = helper.MorphonetHelper()
+    mn = MorphonetHelper()
+    mn.connect("trcabel", "----")
+    mn.sendDataset("toto", cellImage, 1, 3, "description")
+    print(" END SEND DDDDDD")
+
+    time.sleep(10)
+    mn.collectDataset(cellImage)
+
+if __name__ == "__main__":
+    test_plot()

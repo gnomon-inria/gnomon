@@ -18,15 +18,14 @@ class MorphoPlot():
         self.m_socket.bind("tcp://127.0.0.1:5555")
         self.mc = morphonet.Plot(clear_temp=True)
         self.mc.set_dataset(begin=0,end=0, background=1)
-        self.config = False
-        self.launch_ready = True
+        self.readyToCurate = False
         
-    @staticmethod
-    def parent_death_handler(self,sig, frame):
-        print("in death method")
-        if self.mc is not None:
-            self.mc.quit_and_exit()
-            exit(0) 
+    #@staticmethod
+    ##def parent_death_handler(self,sig, frame):
+    #    print("in death method")
+    #    if self.mc is not None:
+    #        self.mc.quit_and_exit()
+    #        exit(0) 
 
     def _set_morpho_data(self, t: int, data): #data np.Array
         if t > self.mc.dataset.end:
@@ -35,36 +34,67 @@ class MorphoPlot():
         self.mc.dataset.seg_from_disk[t] = False
         self.mc.dataset.set_seg(t, data)
         self.config = True
-        self.mc.curate()
+        #self.mc.curate()
+
     
-    def local_server(self):
+    def data_handler(self):
         """ test server
         """
         test_time = 0
         print("launching server, listening on 5555 for data")
         while True:
-            data_received = pickle.loads(self.m_socket.recv())
-            self._set_morpho_data(test_time, data_received)
-            break
+            data_json = self.m_socket.recv_json()
+            if data_json["request"] == "set":
+                print("set data!")
+                data_received = np.asarray(data_json["data"], dtype=np.uint16)
+                self._set_morpho_data(test_time, data_received)
+                print("sending response")
+                self.m_socket.send_json({"response": "data received"})
+                print("response ok")
+                self.readyToCurate = True
 
-    #def run_morphoplot(self):
-    ##    while self.launch_ready:
-    #        if self.config:
-    #            self.mc.curate()
+            if data_json["request"] == "launch":
+                print("launch curate!") # if necessary
+
+            if data_json["request"] == "collect":
+                print("collect data!")
+                datas = self.mc.dataset.seg_datas[0] # time 0 , TODO multiple times
+                self.m_socket.send_json({"response": "ok", "data": datas.tolist()})
+
+            if data_json["request"] == "kill":
+                print("kill!") # if necessary
+                exit(0)
+                break
+
+    def run_morphoplot(self):
+        while True:
+            if self.readyToCurate:
+                self.mc.curate()
     #            self.mc.wait_for_servers()
-    ##            self.config = False
-    #        time.sleep(1)
+                self.readyToCurate = False
+            time.sleep(1)
 
-    
+
 
 def main():
     print("startint morphoplt server")
-    signal.signal(signal.SIGHUP, MorphoPlot.parent_death_handler)
-
     mplot = MorphoPlot()
-    localServer = threading.Thread(target=mplot.local_server)
-    localServer.start()
-    #mplot.run_morphoplot()
+
+    #def collect_data(sig, frame):
+    #    print("signal: ", sig, "frame:", frame)
+    #    print(mplot)
+
+    #signal.signal(signal.SIGTERM, collect_data)
+    #signal.signal(signal.SIGHUP, collect_data)
+    #signal.signal(signal.SIGHINT, collect_data)
+
+    #signal.signal(signal.SIGHUP, MorphoPlot.parent_death_handler)
+
+    dataHandler = threading.Thread(target=mplot.data_handler)
+    dataHandler.start()
+    #mplot.mc.curate()
+
+    mplot.run_morphoplot()
 
 if __name__ == "__main__":
     main()
