@@ -48,6 +48,15 @@ Control {
     clip: true;
     focus: true;
 
+    onCountChanged: {  // tried on model changed but triggered before count was updated
+        if(count>=1 && currentIndex ==-1) {
+            currentIndex = 0;
+            _control.currentIndex = 0;
+            _control.currentValue = _list_view.itemAtIndex(0);
+        }
+    }
+
+
     delegate: G.FormSelectorDelegate {
 
       //make space for the scroll indicator as well as spacing
