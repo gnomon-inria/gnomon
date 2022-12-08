@@ -33,13 +33,13 @@ signals:
     void valueChanged(const QVariantMap&);
 
 public:
-    Q_INVOKABLE QColor color(long i) const;
-    Q_INVOKABLE void setColor(long i, const QColor& color);
+    Q_INVOKABLE QJsonValue color(long i) const;
+    Q_INVOKABLE void setColor(long i, const QJsonValue& color);
 
     void clearColors(void);
 
     int colorIndexCount(void) const;
-    QList<long> colorIndices(void) const;
+    QList<QString> colorIndices(void) const;
     Q_INVOKABLE long colorIndexAt(int index) const;
 
 public:

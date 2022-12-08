@@ -75,13 +75,15 @@ gnomonCoreParameterColorTable& gnomonCoreParameterColorTable::operator = (const 
     } else if (v.canConvert<QVariantHash>()) {
         auto map = v.toHash();
 
-        m_c.clear();
+        m_c = QJsonObject::fromVariantHash(map);
 
-        auto keys = map["keys"].toList();
-        auto colors = map["colors"].toList();
-        for(int i=0; i< keys.size(); ++i) {
-            m_c[keys[i].toInt()] = colors[i].value<QColor>();
-        }
+        // m_c.clear();
+
+        // auto keys = map["keys"].toList();
+        // auto colors = map["colors"].toList();
+        // for(int i=0; i< keys.size(); ++i) {
+        //     m_c[keys[i].toInt()] = colors[i].value<QColor>();
+        // }
         m_object->notifyColorTable(m_c);
 
     } else if (v.canConvert<gnomonColorTable>()) {
@@ -93,15 +95,16 @@ gnomonCoreParameterColorTable& gnomonCoreParameterColorTable::operator = (const 
         m_label = hash["label"].toString();
         m_doc = hash["doc"].toString();
 
-        gnomonColorTable cmap;
-        auto keys = hash["keys"].toList();
-        auto colors = hash["colors"].toList();
-        int i = 0;
-        for (auto key : keys) {
-            cmap[key.value<double>()] = colors[i].value<QColor>();
-            ++i;
-        }
+        // gnomonColorTable cmap;
+        // auto keys = hash["keys"].toList();
+        // auto colors = hash["colors"].toList();
+        // int i = 0;
+        // for (auto key : keys) {
+        //     cmap[key.value<double>()] = colors[i].value<QColor>();
+        //     ++i;
+        // }
 
+        gnomonColorTable cmap(QJsonObject::fromVariantHash(hash));
         m_c = cmap;
 
         m_object->notifyLabel(m_label);
@@ -147,19 +150,21 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
     if (v.canConvert<gnomonCoreParameterColorTable>()) {
         *this = v.value<gnomonCoreParameterColorTable>();
 
-    } else if (v.canConvert<QVariantHash>()) {
-        auto map = v.toHash();
+    } 
+    // else if (v.canConvert<QVariantHash>()) {
+    //     auto map = v.toHash();
 
-        this->m_c.clear();
+    //     this->m_c.clear();
 
-        auto keys = map["keys"].toList();
-        auto colors = map["colors"].toList();
-        for(int i=0; i< keys.size(); ++i) {
-            this->m_c[keys[i].toDouble()] = colors[i].value<QColor>();
-        }
-        m_object->notifyColorTable(m_c);
+    //     auto keys = map["keys"].toList();
+    //     auto colors = map["colors"].toList();
+    //     for(int i=0; i< keys.size(); ++i) {
+    //         this->m_c[keys[i].toDouble()] = colors[i].value<QColor>();
+    //     }
+    //     m_object->notifyColorTable(m_c);
 
-    } else if (v.canConvert<gnomonColorTable>()) {
+    // }
+    else if (v.canConvert<gnomonColorTable>()) {
         this->setValue(v.value<gnomonColorTable>());
 
     } else if (v.canConvert<QVariantHash>()) {
@@ -168,14 +173,14 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
         m_label = hash["label"].toString();
         m_doc = hash["doc"].toString();
 
-        gnomonColorTable cmap;
-        auto keys = hash["keys"].toList();
-        auto colors = hash["colors"].toList();
-        int i = 0;
-        for (auto key : keys) {
-            cmap[key.value<double>()] = colors[i].value<QColor>();
-            ++i;
-        }
+        gnomonColorTable cmap(QJsonObject::fromVariantHash(hash));
+        // auto keys = hash["keys"].toList();
+        // auto colors = hash["colors"].toList();
+        // int i = 0;
+        // for (auto key : keys) {
+        //     cmap[key.value<double>()] = colors[i].value<QColor>();
+        //     ++i;
+        // }
 
         m_c = cmap;
 
@@ -193,23 +198,24 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
     return;
 }
 
-QColor gnomonCoreParameterColorTable::color(long i) const
+QJsonValue gnomonCoreParameterColorTable::color(long i) const
 {
-    if (m_c.contains(i)) {
-        return m_c[i];
+    if (m_c.contains(QString::number(i))) {
+        return m_c[QString::number(i)];
     } else {
-        return QColor();
+        return QJsonValue();
     }
 }
 
-void gnomonCoreParameterColorTable::setColor(long i, const QColor& color)
+void gnomonCoreParameterColorTable::setColor(long i, const QJsonValue& color)
 {
-    m_c[i] = color;
+    m_c[QString::number(i)] = color;
 }
 
 void gnomonCoreParameterColorTable::clearColors(void)
 {
-    m_c.clear();
+    // m_c.clear();
+    m_c = QJsonObject();
 }
 
 int gnomonCoreParameterColorTable::colorIndexCount(void) const
@@ -217,17 +223,17 @@ int gnomonCoreParameterColorTable::colorIndexCount(void) const
     return m_c.size();
 }
 
-QList<long> gnomonCoreParameterColorTable::colorIndices(void) const
+QList<QString> gnomonCoreParameterColorTable::colorIndices(void) const
 {
     return m_c.keys();
 }
 
-long gnomonCoreParameterColorTable::colorIndexAt(int index) const
+QString gnomonCoreParameterColorTable::colorIndexAt(int index) const
 {
     if (index < m_c.size()) {
         return m_c.keys()[index];
     } else {
-        return -1;
+        return QString::number(-1);
     }
 }
 

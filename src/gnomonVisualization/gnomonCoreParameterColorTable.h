@@ -11,7 +11,8 @@
 // gnomonCoreParameterColorTable declaration
 // ///////////////////////////////////////////////////////////////////
 
-using gnomonColorTable = QMap<long, QColor>;
+// using gnomonColorTable = QMap<long, QColor>;
+using gnomonColorTable = QJsonObject;
 
 class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterColorTable : public dtkCoreParameterBase<gnomonCoreParameterColorTable>
 {
@@ -37,14 +38,17 @@ public:
     gnomonColorTable value(void) const;
 
 public:
-    QColor color(long i) const;
-    void setColor(long i, const QColor& color);
+    QJsonValue color(long i) const;
+    void setColor(long i, const QJsonValue& color);
+
+    // QString texture(long i) const;
+    // void setTexture(long i, const QString& texture);
 
     void clearColors(void);
 
     int colorIndexCount(void) const;
-    QList<long> colorIndices(void) const;
-    long colorIndexAt(int index) const;
+    QList<QString> colorIndices(void) const;
+    QString colorIndexAt(int index) const;
 
 public:
     QVariantHash toVariantHash(void) const override;
