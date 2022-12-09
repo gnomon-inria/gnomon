@@ -10,6 +10,7 @@ Slider {
     id: _control
 
     readonly property alias gaugeWidth: _gauge.width
+    property bool useRadius: false
 
     implicitWidth: G.Style.controlWidth
     implicitHeight: G.Style.gutterHeight
@@ -66,6 +67,7 @@ Slider {
     background: Rectangle {
         id: _gutter
 
+        radius: _control.useRadius ? _gauge.radius + _control.padding : 0
         color: G.Style.colors.gutterColor
     }
 
