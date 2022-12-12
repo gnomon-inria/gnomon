@@ -25,6 +25,7 @@ G.Dialog {
         property var workspace_groups: []
         property var workspace_plugins: []
         property var plugin_workspace: []
+        property string algoName: ""
 
     }
     property alias plugin_workspace: _internal.plugin_workspace
@@ -44,20 +45,31 @@ G.Dialog {
 
     onAccepted: {
         if (_internal.selected_workspace) {
+            _internal.algoName = ""
             if(!window.check_if_forms_in_world()) {
                 no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
                 no_form_exported_dialog.open()
+                no_form_exported_dialog.forceActiveFocus()
+                _self.close()
                 return
             }
-            window.add_workspace(_internal.selected_workspace.source);
-            _self.close();
+            openWorkspaceAndClose(_internal.selected_workspace.source)
         }
     }
 
     onOpened: {
         _list_view.currentIndex = 0;
-        _workspace_search_bar.text = "";
-        _workspace_search_bar.forceActiveFocus();
+        _workspace_search_bar.text = ""
+        _workspace_search_bar.forceActiveFocus()
+        _internal.algoName = ""
+    }
+
+    function openWorkspaceAndClose(source) {
+        window.add_workspace(source)
+        if(_internal.algoName != "") {
+            window.current_workspace().d.algoName = _internal.algoName
+        }
+        _self.close()
     }
 
     G.Gutter {
@@ -197,10 +209,15 @@ G.Dialog {
         plugins : _internal.selected_workspace ? _internal.workspace_plugins[_internal.selected_workspace.type] : []
 
         onOpenWithAlgo : (algo_name) => {
-            let selected_workspace = _internal.selected_workspace
-            window.add_workspace(selected_workspace.source)
-            window.current_workspace().d.algoName = algo_name
-            _self.close()
+            _internal.algoName = algo_name
+            if(!window.check_if_forms_in_world()) {
+                no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
+                no_form_exported_dialog.open()
+                no_form_exported_dialog.forceActiveFocus()
+                _self.close()
+                return
+            }
+            openWorkspaceAndClose(_internal.selected_workspace.source)
         }
     }
 
@@ -217,8 +234,11 @@ G.Dialog {
         title: "No form exported yet."
 
         onAccepted: {
-            window.add_workspace(workspace_source);
+            openWorkspaceAndClose(workspace_source)
+            no_form_exported_dialog.close()
         }
+
+
 
         ColumnLayout {
             anchors.fill: parent
