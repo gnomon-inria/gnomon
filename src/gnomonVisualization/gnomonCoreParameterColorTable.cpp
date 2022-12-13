@@ -28,8 +28,9 @@ gnomonCoreParameterColorTable::gnomonCoreParameterColorTable(const dtkCoreParame
     *this = p->variant();
 }
 
-gnomonCoreParameterColorTable::gnomonCoreParameterColorTable(const QString& label, const gnomonColorTable& cm, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorTable>(), m_c(cm)
+gnomonCoreParameterColorTable::gnomonCoreParameterColorTable(const QString& label, const gnomonColorTable& cm, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterColorTable>()
 {
+    m_c = cm;
     m_object = new gnomonCoreParameterColorTableObject(this);
     m_label = label;
     m_doc = doc;
@@ -209,6 +210,7 @@ QJsonValue gnomonCoreParameterColorTable::color(long i) const
 
 void gnomonCoreParameterColorTable::setColor(long i, const QJsonValue& color)
 {
+    qDebug() << Q_FUNC_INFO << "######";
     m_c[QString::number(i)] = color;
 }
 

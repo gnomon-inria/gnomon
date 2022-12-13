@@ -772,6 +772,159 @@
 }
 
 // /////////////////////////////////////////////////////////////////
+// QJsonObject for Lpy  colors and texture
+// /////////////////////////////////////////////////////////////////
+%fragment("Gnomon_QJsonValue", "header") {
+    QJsonValue Gnomon_QJsonValue(PyObject *obj) {
+        QJsonValue result = 0;
+        if(PyList_Check(obj)) {
+            int r, g, b;
+            r = PyLong_AsLong(PyList_GET_ITEM(obj, 0));
+            g = PyLong_AsLong(PyList_GET_ITEM(obj, 1));
+            b = PyLong_AsLong(PyList_GET_ITEM(obj, 2));
+            QList<QVariant> color;
+            color << r << g << b;
+            QJsonArray t = QJsonArray::fromVariantList(color);
+            result =  QJsonValue(t);
+        } else if(PyString_Check(obj)) {
+            result =  QJsonValue(QString(PyUnicode_AsUTF8(obj)));
+        }
+
+        return result;
+    } 
+}
+
+%typemap(in, fragment="Gnomon_QJsonValue") const QJsonValue& {
+    $1 = new QJsonValue(Gnomon_QJsonValue($input));
+
+}
+
+// TODO: Implement out, directorin and directorout of QJsonValue
+
+%typemap(freearg) const QJsonValue& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(in, fragment="Gnomon_QJsonValue") QJsonObject {
+    if (PyDict_Check($input)) {
+        $1 = new QJsonObject();
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QJsonValue v;
+        QString k;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            k = QString(PyUnicode_AsUTF8(key));
+            v = Gnomon_QJsonValue(value);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QJsonObject is returned.");
+    }
+
+}
+
+%typemap(in, fragment="Gnomon_QJsonValue") const QJsonObject& {
+    if (PyDict_Check($input)) {
+        $1 = new QJsonObject();
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QJsonValue v;
+        QString k;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            k = QString(PyUnicode_AsUTF8(key));
+            v = Gnomon_QJsonValue(value);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QJsonObject is returned.");
+    }
+}
+
+%typemap(freearg) const QJsonObject& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorin) QJsonObject {
+    if (PyDict_Check($input)) {
+        $1 = new QJsonObject();
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QJsonValue v;
+        QString k;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            k = QString(PyUnicode_AsUTF8(key));
+            v = Gnomon_QJsonValue(value);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QJsonObject is returned.");
+    }
+}
+
+%typemap(directorout) QJsonObject {
+    $result = PyDict_New();
+    QJsonValue c;
+    QString k;
+    PyObject *value = 0;
+
+    QStringList keys = $1.keys();
+    for (auto it = keys.begin(); it != keys.end(); ++it) {
+        k = *it;
+        c = $1[k];
+        if(c.isArray()) {
+            auto cm = c.toArray();
+            std::cout<<cm[1].toInt();
+
+            value = PyList_New(3);
+            PyList_SET_ITEM(value, 0, PyLong_FromLong(cm[0].toInt()));
+            PyList_SET_ITEM(value, 1, PyLong_FromLong(cm[1].toInt()));
+            PyList_SET_ITEM(value, 2, PyLong_FromLong(cm[2].toInt()));
+
+        } else if(c.isString()) {
+            auto t_s = c.toString().toStdString();
+            value = PyString_FromString(t_s.c_str());
+        }
+        
+        std::string k_str = k.toStdString();
+
+        PyDict_SetItemString($result, k_str.c_str(), value);
+    }
+}
+
+%typemap(out) QJsonObject {
+    $result = PyDict_New();
+    QJsonValue c;
+    QString k;
+    PyObject *value = 0;
+
+    QStringList keys = $1.keys();
+    for (auto it = keys.begin(); it != keys.end(); ++it) {
+        k = *it;
+        c = $1[k];
+        if(c.isArray()) {
+            auto cm = c.toArray();
+
+            value = PyList_New(3);
+            PyList_SET_ITEM(value, 0, PyLong_FromLong(cm[0].toInt()));
+            PyList_SET_ITEM(value, 1, PyLong_FromLong(cm[1].toInt()));
+            PyList_SET_ITEM(value, 2, PyLong_FromLong(cm[2].toInt()));
+
+        } else if(c.isString()) {
+            auto t_s = c.toString().toStdString();
+            value = PyString_FromString(t_s.c_str());
+        }
+
+        std::string k_str = k.toStdString();
+
+        PyDict_SetItemString($result, k_str.c_str(), value);
+    }
+}
+
+// /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
