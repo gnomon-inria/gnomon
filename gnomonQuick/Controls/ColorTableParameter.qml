@@ -44,18 +44,26 @@ Control {
             text: "Color " + param.colorIndexAt(index)
 
             background: Rectangle {
-               color: param.color(param.colorIndexAt(index))
+            //    color: param.color(param.colorIndexAt(index))
+               color: Qt.rgba(param.color(param.colorIndexAt(index))[0], param.color(param.colorIndexAt(index))[1], param.color(param.colorIndexAt(index))[2], 1)
             }
         }
 
         background: Rectangle {
             id: _color_bg
 
-            color: param.color(param.colorIndexAt(_colors.currentValue))
+            // color: param.color(param.colorIndexAt(_colors.currentValue))
+            color: Qt.rgba(param.color(param.colorIndexAt(_colors.currentValue))[0], param.color(param.colorIndexAt(_colors.currentValue))[1], param.color(param.colorIndexAt(_colors.currentValue))[2], 1)
 
             radius: G.Style.buttonRadius
             border.color: G.Style.colors.gutterColor
             border.width: 1
+
+            Image {
+                anchors.fill: _color_bg
+                fillMode: Image.PreserveAspectFit
+                // source: param.color(param.colorIndexAt(2))
+            }
         }
     }
 
@@ -110,7 +118,23 @@ Control {
     Connections {
         target: _control.param
         function onColorTableChanged(color_table) {
-            _color_bg.color = Qt.binding(function() {return param.color(param.colorIndexAt(_colors.currentValue))})
+            _color_bg.color = Qt.binding(function() {return Qt.rgba(param.color(param.colorIndexAt(_colors.currentValue))[0], param.color(param.colorIndexAt(_colors.currentValue))[1], param.color(param.colorIndexAt(_colors.currentValue))[2])})
         }
+    }
+
+    Component.onCompleted: {
+        console.log("#######.....onCompleted.......########")
+        var variant_hash = param.value
+        console.log(variant_hash)
+        for(let v in variant_hash)
+        {
+            console.log(variant_hash[v].toVariant)
+        }
+        for(let t in variant_hash[0]) {
+            console.log(t);
+        }
+        _color_bg.color = Qt.binding(function() {
+            return variant_hash[0]
+        })   
     }
 }
