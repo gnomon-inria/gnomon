@@ -13,8 +13,8 @@
 #include <gnomonPipeline/gnomonPipelineNodeReader.h>
 
 #include <gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageWriterCommand>
-#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataDict/gnomonDataDictWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
@@ -23,7 +23,16 @@
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
 
+#include <gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonDataDict/gnomonDataDictReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
 
 
 #include <vtkCamera.h>
@@ -140,15 +149,50 @@ void gnomonFormManagerPrivate::loadFormToMemory(int id)
     qDebug() << Q_FUNC_INFO << id;
 
     QString reader_plugin;
-    // We need to do this for other forms (cellImage, binaryImage,...)
-    if(dynamic_cast<gnomonImageWriterCommand *>(this->formWriterCommand[id]))
+
+    if(dynamic_cast<gnomonBinaryImageWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonBinaryImageReaderCommand();
+        reader_plugin = dynamic_cast<gnomonBinaryImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonCellComplexReaderCommand();
+        reader_plugin = dynamic_cast<gnomonCellComplexReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonCellImageReaderCommand();
+        reader_plugin = dynamic_cast<gnomonCellImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonDataDictWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonDataDictReaderCommand();
+        reader_plugin = dynamic_cast<gnomonDataDictReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonDataFrameReaderCommand();
+        reader_plugin = dynamic_cast<gnomonDataFrameReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonImageWriterCommand *>(this->formWriterCommand[id]))
     {
         this->formReaderCommand[id] = new gnomonImageReaderCommand();
         reader_plugin = dynamic_cast<gnomonImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    }
+    } else if(dynamic_cast<gnomonLStringWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonLStringReaderCommand();
+        reader_plugin = dynamic_cast<gnomonLStringReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonMeshReaderCommand();
+        reader_plugin = dynamic_cast<gnomonMeshReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonPointCloudWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonPointCloudReaderCommand();
+        reader_plugin = dynamic_cast<gnomonPointCloudReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonTreeReaderCommand();
+        reader_plugin = dynamic_cast<gnomonTreeReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } 
 
     gnomonAbstractReaderCommand *readerCommand = this->formReaderCommand[id];
-
     if(!readerCommand) {
         qWarning() << "cannot create reader to read file from cache!";
         qWarning() << "file " << this->cache_forms[id];
@@ -161,7 +205,7 @@ void gnomonFormManagerPrivate::loadFormToMemory(int id)
     readerCommand->setSource(source);
 
     connect(readerCommand, &gnomonAbstractCommand::finished, [=]() {
-            this->forms[id] = readerCommand->outputs()["image"];
+            this->forms[id] = readerCommand->outputs().first();
             this->forms[id]->metadata()->deserialize(this->cache_metadatas.take(id));
             QString form_name = this->forms[id]->formName();
             gnomonPipelineManager::instance()->decachNode(this->forms[id], this->cache_pipeline_nodes.take(id));
@@ -303,13 +347,11 @@ void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) c
 
 void gnomonFormManager::addToCache(int id) const
 {
-    qDebug() << "add To cache";
     gnomonAbstractWriterCommand *writer_command = d->formWriterCommand[id];
     QStringList extensions = writer_command->extensions();
     QString f = QString::number(id) + "." + extensions[0];
     auto filepath = d->tmpDir->filePath(f);
     this->saveAs(id, filepath, false);
-    qDebug() << "saved in " << filepath;
 
     d->cache_forms[id] = filepath;
     d->cache_pipeline_nodes[id] = gnomonPipelineManager::instance()->cacheNode(d->forms[id]);
