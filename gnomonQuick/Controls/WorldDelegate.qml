@@ -247,7 +247,7 @@ Item {
             text: qsTr("Cache")
             shortcut: StandardKey.Open
             onTriggered: {
-                GV.World.formWriterNameFilter(form_id)
+                //GV.World.formWriterNameFilter(form_id)
                 GV.World.addToCache(form_id)
             }
         }
