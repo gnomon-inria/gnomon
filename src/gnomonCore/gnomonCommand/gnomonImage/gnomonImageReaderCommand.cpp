@@ -62,12 +62,8 @@ void gnomonImageReaderCommand::postdo(void)
         else str += "  no channels availables";
         
         dtkWarn() << Q_FUNC_INFO << str;
-
     } else {
-       
         d->image = image;
-
-
     }
 }
 

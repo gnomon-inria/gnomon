@@ -21,10 +21,12 @@ public:
 
 public:
     std::shared_ptr<gnomonAbstractForm> at(double t) {
+        qWarning() << Q_FUNC_INFO << "MAKING A CLONE";
         return std::shared_ptr<gnomonAbstractForm>(this->at_impl(t)->clone());
     };
     std::shared_ptr<gnomonAbstractForm> current(void) const {
-        return std::shared_ptr<gnomonAbstractForm>(this->current()->clone());
+        qWarning() << Q_FUNC_INFO << "MAKING A CLONE";
+        return std::shared_ptr<gnomonAbstractForm>(this->current_impl()->clone());
     };
 
     virtual QMap<QString,QString> metadataAtT(double t) const = 0;

@@ -8,7 +8,7 @@ public:
     ~gnomonLogConnectionPrivate();
 
 public:
-    QTcpSocket *socket;
+    QTcpSocket *socket = nullptr;
     QString text;
     bool *server_alive = nullptr;
 };
@@ -21,6 +21,7 @@ gnomonLogConnectionPrivate::gnomonLogConnectionPrivate(QTcpSocket *socket, bool 
 gnomonLogConnectionPrivate::~gnomonLogConnectionPrivate() {
     if(*server_alive && socket->isOpen()) {
         socket->close();
+        socket = nullptr;
     }
 }
 

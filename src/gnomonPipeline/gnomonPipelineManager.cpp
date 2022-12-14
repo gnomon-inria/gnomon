@@ -197,9 +197,6 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
     for (auto it = forms.begin(); it != forms.end(); ++it) {
         auto&& form_name = it.key();
         std::shared_ptr<gnomonAbstractDynamicForm> form = forms[form_name];
-        //if (std::shared_ptr<gnomonAbstractDynamicForm> clone = d->form_clones.key(form,nullptr)) {
-        //    form = clone;
-        //}
         d->reader_nodes[form] = node;
         d->reader_output[form] = form_name;
     }
@@ -429,6 +426,7 @@ bool gnomonPipelineManager::removeForm(std::shared_ptr<gnomonAbstractDynamicForm
                 edge->source()->node()->removeOutputEdge(edge);
                 node->removeInputEdge(edge);
             }
+            d->node_input_forms.remove(node);
             d->pipeline->removeNode(node);
             d->pipeline_nodes.remove(node->name());
             return true;
@@ -436,32 +434,55 @@ bool gnomonPipelineManager::removeForm(std::shared_ptr<gnomonAbstractDynamicForm
         return false;
     };
     
+    bool res = false;
     if (d->reader_nodes.contains(form)) {
         auto *node = d->reader_nodes[form];
-        if(removeNodeFromPipeline(node))
-            return true;
+        res = removeNodeFromPipeline(node);
+        if(res) d->reader_output.remove(form);
     } else if (d->adapter_nodes.contains(form)) {
         auto *node = d->adapter_nodes[form];
-        if(removeNodeFromPipeline(node))
-            return true;
+        res = removeNodeFromPipeline(node);
+        if(res) d->adapter_output.remove(form);
     } else if (d->constructor_nodes.contains(form)) {
         auto *node = d->constructor_nodes[form];
-        if(removeNodeFromPipeline(node))
-            return true;
+        res = removeNodeFromPipeline(node);
+        if(res) d->constructor_output.remove(form);
     } else if (d->algorithm_nodes.contains(form)) {
         auto *node = d->algorithm_nodes[form];
-        if(removeNodeFromPipeline(node))
-            return true;
+        res = removeNodeFromPipeline(node);
+        if(res) d->algorithm_output.remove(form);
     } else if (d->task_nodes.contains(form)) {
         auto *node = d->task_nodes[form];
-        if(removeNodeFromPipeline(node))
-            return true;
+        res = removeNodeFromPipeline(node);
+        if(res) d->task_output.remove(form);
     } else if (d->morphonet_nodes.contains(form)) {
         auto *node = d->morphonet_nodes[form];
-        if(removeNodeFromPipeline(node))
-            return true;
+        res = removeNodeFromPipeline(node);
+        if(res) d->morphonet_output.remove(form);
     }
-    return false;
+
+    if(res) {
+        d->form_manager_index.remove(form);
+    }
+    return res;
+}
+
+std::pair<QString, gnomonPipelineNodeReader *> gnomonPipelineManager::cacheNode(std::shared_ptr<gnomonAbstractDynamicForm> form)
+{
+    if (d->reader_nodes.contains(form)) {
+        auto *node = d->reader_nodes.take(form);
+        QString name = d->reader_output.take(form);
+        return std::make_pair(name, node);
+    } else {
+        qWarning() << "only reader_nodes can be cached! form " << form->formName();
+        return std::make_pair("", nullptr);
+    }
+}
+
+void gnomonPipelineManager::decachNode(std::shared_ptr<gnomonAbstractDynamicForm> form, std::pair<QString, gnomonPipelineNodeReader *> name_and_node)
+{
+        d->reader_output[form] = name_and_node.first;
+        d->reader_nodes[form] = name_and_node.second;
 }
 
 gnomonPipelineManager *gnomonPipelineManager::s_instance = nullptr;
