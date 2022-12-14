@@ -31,6 +31,8 @@ public:
     ~gnomonAbstractMatplotlibVisualization(void);
 
 public:
+    virtual const QString name(void) = 0;
+
     void setView(gnomonViewMatplotlib *view);
     virtual void setParameter(const QString&, const QVariant&) = 0;
     virtual void setParameters(const dtkCoreParameters&) = 0;
