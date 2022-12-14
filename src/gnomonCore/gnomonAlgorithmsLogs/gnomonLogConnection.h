@@ -17,6 +17,10 @@ public:
     explicit gnomonLogConnection(QObject *parent, QTcpSocket* socket, bool *server_alive);
     virtual ~gnomonLogConnection() override;
 
+public:
+    Q_INVOKABLE void close(); // to be called by the UI
+    bool isClosed(); // for logCaptureServer to delete old connections
+    
 signals:
     void textChanged();
 
