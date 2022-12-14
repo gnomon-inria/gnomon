@@ -327,10 +327,8 @@ void gnomonFormManager::loadFromCache(int id) const
 
 gnomonFormManager *gnomonFormManager::instance(void)
 {
-    if(!s_instance) {
-        s_instance = new gnomonFormManager;
-    }
-    return s_instance;
+    static gnomonFormManager s_instance;
+    return &s_instance;
 }
 
 void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,  std::shared_ptr<gnomonAbstractVisualization> visualization, const QImage& image,  vtkCamera *cam)
@@ -403,8 +401,6 @@ gnomonFormManager::~gnomonFormManager(void)
 {
     delete d;
 }
-
-gnomonFormManager *gnomonFormManager::s_instance = nullptr;
 
 gnomonDynamicFormMetadata *gnomonFormManager::getDynamicFormMetadata(int id) {
     if(contains(id)) {

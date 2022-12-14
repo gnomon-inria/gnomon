@@ -77,8 +77,6 @@ protected:
 private:
     class gnomonFormManagerPrivate *d;
 
-private:
-    static gnomonFormManager *s_instance;
 };
 
 //
