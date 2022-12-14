@@ -757,7 +757,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     cls.version = _version
 
     def _name(self: cls) -> str:
-        return self._name if hasattr(self, "_name") and self._name else cls.__name__
+        return self._name if hasattr(self, "_name") and self._name else f"PLACEHOLDER: {cls.__name__}"
 
     cls.name = _name
 
