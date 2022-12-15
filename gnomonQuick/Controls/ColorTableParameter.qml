@@ -44,25 +44,31 @@ Control {
             text: "Color " + param.colorIndexAt(index)
 
             background: Rectangle {
-            //    color: param.color(param.colorIndexAt(index))
-               color: Qt.rgba(param.color(param.colorIndexAt(index))[0], param.color(param.colorIndexAt(index))[1], param.color(param.colorIndexAt(index))[2], 1)
+               color: param.isColor(param.colorIndexAt(index))? param.color(param.colorIndexAt(index)) : G.Style.colors.transparent
+            }
+
+            Image {
+                anchors.fill: parent
+                fillMode: Image.Stretch
+                visible: param.isTexture(param.colorIndexAt(index))
+                source: param.isTexture(param.colorIndexAt(index))? "file://" + param.texture(param.colorIndexAt(index)) : ""
             }
         }
 
         background: Rectangle {
             id: _color_bg
 
-            // color: param.color(param.colorIndexAt(_colors.currentValue))
-            color: Qt.rgba(param.color(param.colorIndexAt(_colors.currentValue))[0], param.color(param.colorIndexAt(_colors.currentValue))[1], param.color(param.colorIndexAt(_colors.currentValue))[2], 1)
+            color: param.isColor(param.colorIndexAt(_colors.currentValue))? param.color(param.colorIndexAt(_colors.currentValue)) : G.Style.colors.transparent
 
             radius: G.Style.buttonRadius
             border.color: G.Style.colors.gutterColor
             border.width: 1
 
             Image {
-                anchors.fill: _color_bg
-                fillMode: Image.PreserveAspectFit
-                // source: param.color(param.colorIndexAt(2))
+                anchors.fill: parent
+                fillMode: Image.Stretch
+                visible: param.isTexture(param.colorIndexAt(_colors.currentValue))
+                source: param.isTexture(param.colorIndexAt(_colors.currentValue))? "file://" + param.texture(param.colorIndexAt(_colors.currentValue)) : ""
             }
         }
     }
@@ -115,26 +121,7 @@ Control {
         }
     }
 
-    Connections {
-        target: _control.param
-        function onColorTableChanged(color_table) {
-            _color_bg.color = Qt.binding(function() {return Qt.rgba(param.color(param.colorIndexAt(_colors.currentValue))[0], param.color(param.colorIndexAt(_colors.currentValue))[1], param.color(param.colorIndexAt(_colors.currentValue))[2])})
-        }
-    }
 
     Component.onCompleted: {
-        console.log("#######.....onCompleted.......########")
-        var variant_hash = param.value
-        console.log(variant_hash)
-        for(let v in variant_hash)
-        {
-            console.log(variant_hash[v].toVariant)
-        }
-        for(let t in variant_hash[0]) {
-            console.log(t);
-        }
-        _color_bg.color = Qt.binding(function() {
-            return variant_hash[0]
-        })   
     }
 }
