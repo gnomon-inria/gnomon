@@ -5,6 +5,91 @@
 #include <QtXml>
 
 // ///////////////////////////////////////////////////////////////////
+// gnomonColorTable
+// ///////////////////////////////////////////////////////////////////
+
+gnomonColorTable::gnomonColorTable(const gnomonColorTable& o) : colors(o.colors) ,textures(o.textures)
+{
+}
+
+gnomonColorTable& gnomonColorTable::operator = (const gnomonColorTable& o)
+{
+    if(this != &o) {
+        this->colors = o.colors;
+        this->textures = o.textures;
+    }
+
+    return *this;
+}
+
+bool gnomonColorTable::operator != (const gnomonColorTable& o)
+{
+    return (this->colors == o.colors) && (this->textures == o.textures);
+}
+
+int gnomonColorTable::size(void) const
+{
+    return this->indices().size();
+}
+
+QList<long> gnomonColorTable::gnomonColorTable::indices(void) const
+{
+    QList<long> indices;
+    indices.append(this->colors.keys());
+    indices.append(this->textures.keys());
+    std::sort(indices.begin(), indices.end());
+    return indices;
+}
+
+long gnomonColorTable::indexAt(int pos) const
+{
+    return this->indices()[pos];
+}
+
+void gnomonColorTable::clear(void)
+{
+    this->colors.clear();
+    this->textures.clear();
+}
+
+bool gnomonColorTable::isTexture(long index) const
+{
+    return this->textures.contains(index);
+}
+
+QString gnomonColorTable::textureFile(long index) const
+{
+    return this->textures[index];
+}
+
+bool gnomonColorTable::isColor(long index) const
+{
+    return this->colors.contains(index);
+}
+
+QColor gnomonColorTable::color(long index) const
+{
+    return this->colors[index];
+}
+
+void gnomonColorTable::setColor(long index, const QColor& color)
+{
+    if (this->textures.contains(index)) {
+        this->textures.remove(index);
+    }
+    this->colors[index] = color;
+}
+
+void gnomonColorTable::setTexture(long index, const QString& texture)
+{
+    if (this->colors.contains(index)) {
+        this->colors.remove(index);
+    }
+    this->textures[index] = texture;
+}
+
+
+// ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterColorTable
 // ///////////////////////////////////////////////////////////////////
 
@@ -76,15 +161,17 @@ gnomonCoreParameterColorTable& gnomonCoreParameterColorTable::operator = (const 
     } else if (v.canConvert<QVariantHash>()) {
         auto map = v.toHash();
 
-        m_c = QJsonObject::fromVariantHash(map);
+        m_c.clear();
 
-        // m_c.clear();
-
-        // auto keys = map["keys"].toList();
-        // auto colors = map["colors"].toList();
-        // for(int i=0; i< keys.size(); ++i) {
-        //     m_c[keys[i].toInt()] = colors[i].value<QColor>();
-        // }
+        auto keys = map["keys"].toList();
+        auto colors = map["colors"].toList();
+        for(int i=0; i< keys.size(); ++i) {
+            if (colors[i].canConvert<QColor>()) {
+                m_c.setColor(keys[i].toInt(), colors[i].value<QColor>());
+            } else if (colors[i].canConvert<QString>()) {
+                m_c.setTexture(keys[i].toInt(), colors[i].value<QString>());
+            }
+        }
         m_object->notifyColorTable(m_c);
 
     } else if (v.canConvert<gnomonColorTable>()) {
@@ -96,16 +183,19 @@ gnomonCoreParameterColorTable& gnomonCoreParameterColorTable::operator = (const 
         m_label = hash["label"].toString();
         m_doc = hash["doc"].toString();
 
-        // gnomonColorTable cmap;
-        // auto keys = hash["keys"].toList();
-        // auto colors = hash["colors"].toList();
-        // int i = 0;
-        // for (auto key : keys) {
-        //     cmap[key.value<double>()] = colors[i].value<QColor>();
-        //     ++i;
-        // }
+        gnomonColorTable cmap;
+        auto keys = hash["keys"].toList();
+        auto colors = hash["colors"].toList();
+        int i = 0;
+        for (auto key : keys) {
+            if (colors[i].canConvert<QColor>()) {
+                m_c.setColor(key.value<long>(), colors[i].value<QColor>());
+            } else if (colors[i].canConvert<QString>()) {
+                m_c.setTexture(key.value<long>(), colors[i].value<QString>());
+            }
+            ++i;
+        }
 
-        gnomonColorTable cmap(QJsonObject::fromVariantHash(hash));
         m_c = cmap;
 
         m_object->notifyLabel(m_label);
@@ -152,19 +242,23 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
         *this = v.value<gnomonCoreParameterColorTable>();
 
     } 
-    // else if (v.canConvert<QVariantHash>()) {
-    //     auto map = v.toHash();
+     else if (v.canConvert<QVariantHash>()) {
+         auto map = v.toHash();
 
-    //     this->m_c.clear();
+         this->m_c.clear();
 
-    //     auto keys = map["keys"].toList();
-    //     auto colors = map["colors"].toList();
-    //     for(int i=0; i< keys.size(); ++i) {
-    //         this->m_c[keys[i].toDouble()] = colors[i].value<QColor>();
-    //     }
-    //     m_object->notifyColorTable(m_c);
+         auto keys = map["keys"].toList();
+         auto colors = map["colors"].toList();
+         for(int i=0; i< keys.size(); ++i) {
+             if (colors[i].canConvert<QColor>()) {
+                 m_c.setColor(keys[i].toInt(), colors[i].value<QColor>());
+             } else if (colors[i].canConvert<QString>()) {
+                 m_c.setTexture(keys[i].toInt(), colors[i].value<QString>());
+             }
+         }
+         m_object->notifyColorTable(m_c);
 
-    // }
+    }
     else if (v.canConvert<gnomonColorTable>()) {
         this->setValue(v.value<gnomonColorTable>());
 
@@ -174,15 +268,18 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
         m_label = hash["label"].toString();
         m_doc = hash["doc"].toString();
 
-        gnomonColorTable cmap(QJsonObject::fromVariantHash(hash));
-        // auto keys = hash["keys"].toList();
-        // auto colors = hash["colors"].toList();
-        // int i = 0;
-        // for (auto key : keys) {
-        //     cmap[key.value<double>()] = colors[i].value<QColor>();
-        //     ++i;
-        // }
-
+        gnomonColorTable cmap;
+        auto keys = hash["keys"].toList();
+        auto colors = hash["colors"].toList();
+        int i = 0;
+        for (auto key : keys) {
+            if (colors[i].canConvert<QColor>()) {
+                m_c.setColor(key.value<long>(), colors[i].value<QColor>());
+            } else if (colors[i].canConvert<QString>()) {
+                m_c.setTexture(key.value<long>(), colors[i].value<QString>());
+            }
+            ++i;
+        }
         m_c = cmap;
 
         m_object->notifyLabel(m_label);
@@ -199,25 +296,35 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
     return;
 }
 
-QJsonValue gnomonCoreParameterColorTable::color(long i) const
+QColor gnomonCoreParameterColorTable::color(long i) const
 {
-    if (m_c.contains(QString::number(i))) {
-        return m_c[QString::number(i)];
+    if (m_c.isColor(i)) {
+        return m_c.color(i);
     } else {
-        return QJsonValue();
+        return QColor();
     }
 }
 
-void gnomonCoreParameterColorTable::setColor(long i, const QJsonValue& color)
+void gnomonCoreParameterColorTable::setColor(long i, const QColor& color) {
+    m_c.setColor(i, color);
+}
+
+QString gnomonCoreParameterColorTable::texture(long i) const
 {
-    qDebug() << Q_FUNC_INFO << "######";
-    m_c[QString::number(i)] = color;
+    if (m_c.isTexture(i)) {
+        return m_c.textureFile(i);
+    } else {
+        return QString();
+    }
+}
+
+void gnomonCoreParameterColorTable::setTexture(long i, const QString& texture) {
+    m_c.setTexture(i, texture);
 }
 
 void gnomonCoreParameterColorTable::clearColors(void)
 {
-    // m_c.clear();
-    m_c = QJsonObject();
+    m_c.clear();
 }
 
 int gnomonCoreParameterColorTable::colorIndexCount(void) const
@@ -225,17 +332,17 @@ int gnomonCoreParameterColorTable::colorIndexCount(void) const
     return m_c.size();
 }
 
-QList<QString> gnomonCoreParameterColorTable::colorIndices(void) const
+QList<long> gnomonCoreParameterColorTable::colorIndices(void) const
 {
-    return m_c.keys();
+    return m_c.indices();
 }
 
-QString gnomonCoreParameterColorTable::colorIndexAt(int index) const
+long gnomonCoreParameterColorTable::colorIndexAt(int index) const
 {
     if (index < m_c.size()) {
-        return m_c.keys()[index];
+        return m_c.indices()[index];
     } else {
-        return QString::number(-1);
+        return -1;
     }
 }
 
@@ -245,10 +352,14 @@ QVariantHash gnomonCoreParameterColorTable::toVariantHash(void) const
 
     QList<QVariant> keys; keys.reserve(m_c.size());
     QList<QVariant> colors; colors.reserve(m_c.size());
-    gnomonColorTable::const_iterator i = m_c.constBegin();
-    while (i != m_c.constEnd()) {
-        keys << QVariant::fromValue(i.key());
-        colors << QVariant::fromValue(i.value());
+    for (auto i : m_c.indices())
+    {
+        keys << QVariant::fromValue(i);
+        if (m_c.isColor(i)) {
+            colors << QVariant::fromValue(m_c.color(i));
+        } else if (m_c.isTexture(i)) {
+            colors << QVariant::fromValue(m_c.textureFile(i));
+        }
         ++i;
     }
     hash.insert("keys", keys);
