@@ -74,7 +74,7 @@ Control {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        model: view ? view.viewLogic.formNames : null
+        model: view ? view.viewLogic.formNamesAndId : null
 
         onToggleVisibility: view.viewLogic.setFormVisible(view.viewLogic.formNames[index], flag)
 

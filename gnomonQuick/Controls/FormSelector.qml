@@ -62,11 +62,12 @@ Control {
       //make space for the scroll indicator as well as spacing
       width: parent.width;
       highlighted: _control.currentIndex == index
-      text: modelData ? modelData.replace('gnomon', '') :""
+      text: modelData ? modelData.split(',')[0] : ""
+      thumbnailIndex: modelData ? modelData.split(',')[1] : "-1"
 
       onClicked: {
         _control.currentIndex = index;
-        _control.currentValue = modelData;
+        _control.currentValue = modelData.split(',')[0];
       }
 
       onToggleVisibility: _control.toggleVisibility(index, flag);
