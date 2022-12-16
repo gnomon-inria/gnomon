@@ -39,6 +39,14 @@ public:
 
     virtual QString formName(void) = 0; //TODO CRTP to be able to put that as virtual static
 
+    int thumbnailId(void) {
+        return m_thumbnail_id;
+    }
+
+    void setThumbnailId(int id) {
+        m_thumbnail_id = id;
+    }
+
     virtual QJsonObject serialize(void) {
         QJsonObject json;
         json["metadata"] = p_metadata->serialize();
@@ -59,6 +67,7 @@ protected:
 
 protected:
     gnomonDynamicFormMetadata *p_metadata = nullptr;
+    int m_thumbnail_id=-1;
 };
 //
 // gnomonAbstractDynamicForm.h ends here

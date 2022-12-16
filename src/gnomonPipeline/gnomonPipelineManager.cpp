@@ -49,7 +49,6 @@ public:
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> morphonet_output;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , gnomonPipelineNodeConstructor *> constructor_nodes;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> constructor_output;
-    QMap<std::shared_ptr<gnomonAbstractDynamicForm> , int> form_manager_index;
 
     QMap<gnomonPipelineNode *, QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > > node_input_forms;
     //QMap<std::shared_ptr<gnomonAbstractDynamicForm> , std::shared_ptr<gnomonAbstractDynamicForm> > form_clones; //TODO check what is it used for
@@ -106,10 +105,7 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
                     edge->setTarget(task_node->inputPorts()[input]);
                 }
                 edge->link();
-
-                if (this->form_manager_index.contains(input_form)) {
-                    edge->setFormIndex(this->form_manager_index[input_form]);
-                }
+                edge->setFormIndex(it.value()->thumbnailId());
             }
         }
     }
@@ -385,19 +381,11 @@ void gnomonPipelineManager::addClonedForm(std::shared_ptr<gnomonAbstractDynamicF
 {
     qDebug() << Q_FUNC_INFO << "nothing is done";
     //d->form_clones[clone] = form;
-    //if (d->form_manager_index.contains(form)) {
-    //    d->form_manager_index[clone] = d->form_manager_index[form];
-    //}
 }
 
 void gnomonPipelineManager::setFormIndex(std::shared_ptr<gnomonAbstractDynamicForm> form, int index)
 {
     if (index > -1) {
-        d->form_manager_index[form] = index;
-        //if (d->form_clones.contains(form)) {
-        //   this->setFormIndex(d->form_clones[form], index);
-        //}
-
         gnomonPipelinePort *output_port = nullptr;
         if (d->reader_nodes.contains(form)) {
             output_port= d->reader_nodes[form]->outputPorts()[d->reader_output[form]];
@@ -413,7 +401,7 @@ void gnomonPipelineManager::setFormIndex(std::shared_ptr<gnomonAbstractDynamicFo
             output_port = d->morphonet_nodes[form]->outputPorts()[d->morphonet_output[form]];
         }
         if (output_port) {
-            output_port->setFormIndex(d->form_manager_index[form]);
+            output_port->setFormIndex(index);
         }
     }
 }
@@ -461,9 +449,6 @@ bool gnomonPipelineManager::removeForm(std::shared_ptr<gnomonAbstractDynamicForm
         if(res) d->morphonet_output.remove(form);
     }
 
-    if(res) {
-        d->form_manager_index.remove(form);
-    }
     return res;
 }
 

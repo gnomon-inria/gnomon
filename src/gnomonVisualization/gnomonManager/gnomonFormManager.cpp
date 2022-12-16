@@ -57,7 +57,7 @@ public:
     QHash<int, std::shared_ptr<gnomonAbstractMatplotlibVisualization> > formMatplotlibVisualizations;
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
     QHash<int, gnomonAbstractReaderCommand *> formReaderCommand;
-    QHash<int, QImage> formData;
+    QHash<int, QImage> formThumbnail;
     QHash<int, vtkCamera *> formCameras;
     QHash<QString, gnomonAbstractWriterCommand *> commands;
     QHash<QString, int> formCounter;
@@ -108,8 +108,9 @@ gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
 
 void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstractDynamicForm> form, const QImage& image)
 {
+    form->setThumbnailId(item);
     this->forms.insert(item, form);
-    this->formData.insert(item, image);
+    this->formThumbnail.insert(item, image);
     this->formDropped.insert(item, false);
 
     gnomonPipelineManager::instance()->setFormIndex(form, item);
@@ -124,20 +125,27 @@ void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstra
 
 bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 {
-    qDebug() << Q_FUNC_INFO;
-    qDebug() << "DELETE form thread " << this->forms[id]->metadata()->thread() ; 
     if(this->cache_forms.contains(id)) {
         this->forms[id] = nullptr;
-        qDebug() << "deleted ??? ";
+        // TOCHECK
+        //Do we decide to clear the visu here, which means that 
+        // the visu won't work in the workspace that created this form ?
+        // If so, we need to add the mecanismto re-create the visu when needed
+        // from it's parameters.
+        // ------
+
         //if (this->formVisualizations.contains(id))
         //{
+        //    this->formVisualizations[id]->disconnect();
+        //    this->formVisualizations[id]->clearConnections();
+        //    this->formVisualizations[id]->clear();
         //    this->formVisualizations[id] = nullptr;
         //}
         //else if (this->formMatplotlibVisualizations.contains(id))
         //{
         //    this->formMatplotlibVisualizations[id] = nullptr;
         //}
-        //this->formData[id] = QImage(); TODO "griser"
+        //this->formThumbnail[id] = QImage(); TODO "griser"
         return true;
     }
 
@@ -206,6 +214,7 @@ void gnomonFormManagerPrivate::loadFormToMemory(int id)
 
     connect(readerCommand, &gnomonAbstractCommand::finished, [=]() {
             this->forms[id] = readerCommand->outputs().first();
+            this->forms[id]->setThumbnailId(id);
             this->forms[id]->metadata()->deserialize(this->cache_metadatas.take(id));
             QString form_name = this->forms[id]->formName();
             gnomonPipelineManager::instance()->decachNode(this->forms[id], this->cache_pipeline_nodes.take(id));
@@ -297,7 +306,7 @@ bool gnomonFormManager::deleteForm(int id, bool force)
         } else if (d->formMatplotlibVisualizations.contains(id)) {
             d->formMatplotlibVisualizations.remove(id);
         }
-        d->formData.remove(id);
+        d->formThumbnail.remove(id);
         d->formWriterCommand.remove(id);
         d->formDropped.remove(id);
         d->item_counter--;
@@ -322,7 +331,7 @@ void gnomonFormManager::compose(int first, int second) {
     gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
     gnomonPipelineManager::instance()->addForm(output);
 
-    this->addForm(output, {}, d->formData[first]);
+    this->addForm(output, {}, d->formThumbnail[first]);
 }
 
 void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) const
@@ -431,7 +440,7 @@ vtkCamera *gnomonFormManager::getCamera(int index)
 
 QImage gnomonFormManager::thumbnail(int index)
 {
-    return d->formData.value(index, QImage());
+    return d->formThumbnail.value(index, QImage());
 }
 
 gnomonFormManager::gnomonFormManager(QObject *parent) : QObject(parent)
