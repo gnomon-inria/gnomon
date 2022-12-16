@@ -46,6 +46,7 @@ public:
 
 public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
+    Q_PROPERTY(QStringList formNamesAndId READ formNamesAndId NOTIFY formsChanged);
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
@@ -135,6 +136,7 @@ public:
 
 public:
     QStringList formNames(void);
+    QStringList formNamesAndId(void);
     QStringList acceptedForms(void);
     QStringList nodePortNames(void);
     bool empty(void);

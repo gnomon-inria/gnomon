@@ -8,9 +8,10 @@ public:
     ~gnomonLogConnectionPrivate();
 
 public:
-    QTcpSocket *socket;
+    QTcpSocket *socket = nullptr;
     QString text;
     bool *server_alive = nullptr;
+    bool is_closed = false;
 };
 
 gnomonLogConnectionPrivate::gnomonLogConnectionPrivate(QTcpSocket *socket, bool *server_alive):
@@ -19,9 +20,13 @@ gnomonLogConnectionPrivate::gnomonLogConnectionPrivate(QTcpSocket *socket, bool 
 }
 
 gnomonLogConnectionPrivate::~gnomonLogConnectionPrivate() {
-    if(*server_alive && socket->isOpen()) {
-        socket->close();
-    }
+    // it seems that the socket are already deleted by someone else ..
+    //if(*server_alive && socket && socket->isOpen()) {
+    //    socket->close();
+    //}
+
+    //delete socket;
+    socket = nullptr;
 }
 
 // --- gnomonLogConnection ---------------------------------------------------------------------------------------------
@@ -37,16 +42,29 @@ QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
                 emit this->textChanged();
             }
         });
-        connect(d->socket, &QAbstractSocket::errorOccurred, [=] (auto error) {
-            d->socket->close();
+        connect(d->socket, &QAbstractSocket::errorOccurred, [this] (auto error) {
+            if(error != QAbstractSocket::RemoteHostClosedError)
+                qWarning() << "socket error: " << error;
+            this->close();
         });
         connect(d->socket, &QTcpSocket::disconnected,
                 d->socket, &QTcpSocket::deleteLater);
+    } else {
+        qWarning() << "trying to create a gnomonLogConnection without a socket!";
     }
 }
 
 gnomonLogConnection::~gnomonLogConnection() {
     delete d;
+    d = nullptr;
+}
+
+void gnomonLogConnection::close() {
+    d->is_closed = true;
+}
+
+bool gnomonLogConnection::isClosed() {
+    return d->is_closed;
 }
 
 QString gnomonLogConnection::text() {

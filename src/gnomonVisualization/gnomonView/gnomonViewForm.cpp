@@ -878,7 +878,19 @@ void gnomonViewForm::setExportColor(const QColor& color)
 
 QStringList gnomonViewForm::formNames(void)
 {
-     return d->forms.keys();
+    return d->forms.keys();
+}
+
+QStringList gnomonViewForm::formNamesAndId(void) 
+{
+    QStringList formNamesAndIndex;
+    auto it = d->forms.constBegin();
+    while (it != d->forms.constEnd()) {
+        int id =  it.value()->thumbnailId();
+        formNamesAndIndex.append(it.key() + "," + QString::number(id));
+        ++it;
+    }
+    return formNamesAndIndex;
 }
 
 std::shared_ptr<gnomonAbstractDynamicForm> gnomonViewForm::form(const QString& name)
