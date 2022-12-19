@@ -39,6 +39,28 @@
 //%import(module="gnomon.core") <gnomonCore/gnomonForm/gnomonAbstractForm.h>
 */
 
+
+// /////////////////////////////////////////////////////////////////
+// Macro redefinition
+// /////////////////////////////////////////////////////////////////
+
+#undef  GNOMON_DECLARE_PLUGIN_FACTORY(type, Export)
+%define GNOMON_DECLARE_PLUGIN_FACTORY(type, Export)
+%extend QVariant {
+        void setValue(type *value) {
+            $self->setValue(dtk::variantFromValue(value));
+        }
+        type* to##type() const {
+            return $self->value<type *>();
+        }
+}
+%include <gnomonCore/gnomonPluginFactory.h>
+%template(type##DtkCorePluginFactorySwigTemplate) dtkCorePluginFactory<type>;
+%template(type##PluginFactorySwigTemplate) gnomonPluginFactory<type>;
+class Export type##PluginFactory : public gnomonPluginFactory<type> {};
+%enddef
+
+
 %{
     #include <dtkCore>
     //#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
@@ -49,6 +71,9 @@
     #include <gnomonPipelineNode.h>
     #include <gnomonPipelineNodeTask.h>
     #include <gnomonPipelinePort.h>
+
+    #include <gnomonCore/gnomonPluginFactory.h>
+    #include <gnomonCore/gnomonCorePlugin.h>
 %}
 
 %include <gnomonCore/gnomonForm.i>

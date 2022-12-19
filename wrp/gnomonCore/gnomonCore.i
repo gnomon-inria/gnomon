@@ -89,10 +89,12 @@
 #include <gnomonCore/gnomonModel/gnomonSystem.h>
 
 #include <gnomonCore/gnomonCore.h>
+#include <gnomonCore/gnomonCorePlugin.h>
 #include <gnomonCore/gnomonDataManager.h>
 #include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonLandmark.h>
+#include <gnomonCore/gnomonPluginFactory.h>
 #include <gnomonCore/gnomonTime.h>
 #include <gnomonCore/gnomonTypeDef.h>
 #include <vtkPythonUtil.h>
@@ -295,6 +297,8 @@
     }
 %}
 %enddef
+
+%include <gnomonCore/gnomonPluginFactory.h>
  
 %include <gnomonCore/gnomonAbstractDataDriver.h>
 %include <gnomonCore/gnomonMorphonetHelper.h>
