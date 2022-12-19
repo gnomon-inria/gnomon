@@ -4,6 +4,7 @@
 
 #include <dtkCore>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAlgorithm/gnomonAbstractFormAdapter.h"
 
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
@@ -20,7 +21,7 @@ typedef gnomonAbstractFormAdapter<gnomonCellComplexSeries> gnomonAbstractCellCom
 
 DTK_DECLARE_OBJECT        (gnomonAbstractCellComplexAdapter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractCellComplexAdapter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexAdapter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexAdapter, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexAdapter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

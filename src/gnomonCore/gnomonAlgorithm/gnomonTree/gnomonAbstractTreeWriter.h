@@ -3,6 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAlgorithm/gnomonAbstractFormWriter.h"
 
@@ -44,7 +45,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractTreeWriter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractTreeWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeWriter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeWriter, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

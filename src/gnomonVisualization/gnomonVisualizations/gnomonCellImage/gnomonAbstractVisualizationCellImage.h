@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gnomonVisualizationExport.h>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
@@ -37,7 +38,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationCellImage *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationCellImage, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationCellImage, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationCellImage, GNOMONVISUALIZATION_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationCellImage, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

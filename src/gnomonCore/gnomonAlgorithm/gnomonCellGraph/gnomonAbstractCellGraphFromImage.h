@@ -5,6 +5,7 @@
 #include <gnomonCoreExport.h> // enables the visibility of the concept
 
 #include <dtkCore/dtkCorePlugin>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 class dtkImage;
 class gnomonCellGraph;
@@ -33,7 +34,7 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellGraphFromImage *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellGraphFromImage, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellGraphFromImage, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellGraphFromImage, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellGraphFromImage, GNOMONCORE_EXPORT)
 
 

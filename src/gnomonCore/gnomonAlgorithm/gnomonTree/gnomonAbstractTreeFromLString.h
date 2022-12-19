@@ -3,6 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
@@ -52,7 +53,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractTreeFromLString *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractTreeFromLString, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeFromLString, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeFromLString, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeFromLString, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

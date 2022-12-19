@@ -5,6 +5,8 @@
 #include <QtCore>
 
 #include <dtkCore>
+
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
@@ -47,7 +49,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataDictData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

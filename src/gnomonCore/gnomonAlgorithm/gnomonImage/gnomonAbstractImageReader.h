@@ -54,7 +54,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractImageReader *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractImageReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageReader, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageReader, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

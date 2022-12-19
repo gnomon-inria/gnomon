@@ -3,6 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -24,7 +25,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonFormVisitor *)
 DTK_DECLARE_PLUGIN        (gnomonFormVisitor, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonFormVisitor, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonFormVisitor, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonFormVisitor, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

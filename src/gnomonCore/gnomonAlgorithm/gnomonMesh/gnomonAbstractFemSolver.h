@@ -2,6 +2,7 @@
 
 #include <dtkCore>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include <gnomonCoreExport>
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
@@ -54,7 +55,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractFemSolver *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

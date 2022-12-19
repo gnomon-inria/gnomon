@@ -4,7 +4,7 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore/dtkCorePlugin>
+#include "gnomonCore/gnomonCorePlugin.h"
 #include <dtkCore/dtkCoreParameters>
 
 #include <gnomonVisualizations/gnomonAbstractVisualization.h>
@@ -43,7 +43,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationMesh *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

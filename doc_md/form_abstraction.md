@@ -99,6 +99,7 @@ public:
 
 #include <gnomonCoreExport.h>
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 //  ///////////////////////////////////////////////////////////////////
 //  gnomonAbstractNewFormData
@@ -117,7 +118,7 @@ class GNOMONCORE_EXPORT gnomonAbstractNewFormData
 
 DTK_DECLARE_OBJECT        (gnomonAbstractNewFormData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

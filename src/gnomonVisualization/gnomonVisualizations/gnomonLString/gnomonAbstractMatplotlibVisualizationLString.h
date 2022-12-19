@@ -5,6 +5,7 @@
 #include <gnomonVisualizationExport.h>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
@@ -42,7 +43,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractMatplotlibVisualizationLString *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

@@ -4,6 +4,7 @@
 
 #include <dtkCore>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
@@ -53,7 +54,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataFrameReader *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataFrameReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataFrameReader, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataFrameReader, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataFrameReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

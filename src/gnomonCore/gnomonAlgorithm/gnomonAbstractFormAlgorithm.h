@@ -3,7 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <QtCore>
-#include <dtkCore/dtkCorePlugin>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAbstractAlgorithm.h"
 
@@ -102,7 +102,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractFormAlgorithm *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

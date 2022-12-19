@@ -7,6 +7,8 @@
 #include <dtkCore/dtkCorePlugin>
 #include <dtkCore/dtkCoreParameters>
 
+#include "gnomonCore/gnomonCorePlugin.h"
+
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -44,7 +46,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractAlgorithm *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractAlgorithm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractAlgorithm, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractAlgorithm, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractAlgorithm, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

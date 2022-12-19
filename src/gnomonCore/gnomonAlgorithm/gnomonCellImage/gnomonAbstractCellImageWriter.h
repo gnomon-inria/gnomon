@@ -4,6 +4,7 @@
 
 #include <dtkCore>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAlgorithm/gnomonAbstractFormWriter.h"
 
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
@@ -44,7 +45,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractCellImageWriter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

@@ -3,6 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAlgorithm/gnomonAbstractFormAdapter.h"
 
@@ -20,7 +21,7 @@ typedef gnomonAbstractFormAdapter<gnomonLStringSeries> gnomonAbstractLStringAdap
 
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringAdapter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

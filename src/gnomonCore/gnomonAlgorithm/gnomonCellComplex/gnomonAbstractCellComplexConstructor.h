@@ -6,6 +6,7 @@
 
 #include <dtkCore>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
 
@@ -34,7 +35,7 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellComplexConstructor *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellComplexConstructor, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexConstructor, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexConstructor, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexConstructor, GNOMONCORE_EXPORT)
 
 

@@ -3,6 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAlgorithm/gnomonAbstractFormAdapter.h"
 
@@ -20,7 +21,7 @@ typedef gnomonAbstractFormAdapter<gnomonTreeSeries> gnomonAbstractTreeAdapter;
 
 DTK_DECLARE_OBJECT        (gnomonAbstractTreeAdapter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractTreeAdapter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeAdapter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeAdapter, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeAdapter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

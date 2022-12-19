@@ -5,6 +5,7 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonLandmark.h"
 
@@ -58,7 +59,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractImageFusion *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractImageFusion, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageFusion, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageFusion, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageFusion, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

@@ -2,8 +2,8 @@
 
 #include <gnomonCoreExport>
 
-#include <dtkCore/dtkCorePlugin>
 #include <dtkCore/dtkCoreParameters>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
@@ -48,7 +48,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringReader *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringReader, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringReader, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

@@ -4,7 +4,7 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore/dtkCorePlugin>
+#include "gnomonCore/gnomonCorePlugin.h"
 #include <dtkCore/dtkCoreParameters>
 
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
@@ -42,7 +42,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationPointCloud *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationPointCloud, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationPointCloud, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationPointCloud, GNOMONVISUALIZATION_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationPointCloud, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

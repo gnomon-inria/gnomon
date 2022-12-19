@@ -4,7 +4,7 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore/dtkCorePlugin>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
@@ -41,7 +41,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractMatplotlibVisualizationTree *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractMatplotlibVisualizationTree, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMatplotlibVisualizationTree, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMatplotlibVisualizationTree, GNOMONVISUALIZATION_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMatplotlibVisualizationTree, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

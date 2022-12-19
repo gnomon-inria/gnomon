@@ -3,6 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
@@ -66,7 +67,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractImageFilter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractImageFilter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageFilter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageFilter, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageFilter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

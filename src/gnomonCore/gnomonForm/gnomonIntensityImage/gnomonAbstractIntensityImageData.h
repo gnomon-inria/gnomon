@@ -5,6 +5,7 @@ class dtkImage;
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <gnomonCoreExport.h>
 #include "gnomonForm/gnomonAbstractFormData"
@@ -43,7 +44,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractIntensityImageData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

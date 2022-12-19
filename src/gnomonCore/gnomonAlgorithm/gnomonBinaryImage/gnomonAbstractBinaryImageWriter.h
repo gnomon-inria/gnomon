@@ -4,6 +4,7 @@
 
 #include <dtkCore>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAlgorithm/gnomonAbstractFormWriter.h"
 
 #include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
@@ -43,7 +44,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractBinaryImageWriter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

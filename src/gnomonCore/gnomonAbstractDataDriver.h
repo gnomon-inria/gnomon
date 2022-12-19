@@ -3,6 +3,7 @@
 #include <QtCore>
 #include <dtkCore>
 #include <gnomonCoreExport>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractDataDriver
 {
@@ -20,7 +21,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataDriver *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataDriver, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDriver, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDriver, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDriver, GNOMONCORE_EXPORT)
 
 namespace gnomonCore {

@@ -3,6 +3,7 @@
 #include <gnomonCoreExport.h>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 class dtkCoreParameter;
 
@@ -24,7 +25,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractModel *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractModel, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractModel, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractModel, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

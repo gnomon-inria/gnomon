@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gnomonCoreExport>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAbstractImageData.h"
 #include "gnomonForm/gnomonAbstractForm.h"

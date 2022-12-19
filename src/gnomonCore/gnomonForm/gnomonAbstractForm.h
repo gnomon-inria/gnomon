@@ -2,6 +2,7 @@
 
 #include <gnomonCoreExport>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include <dtkCore>
 
 class gnomonBinaryImage;
@@ -66,7 +67,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractForm *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractForm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractForm, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractForm, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractForm, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

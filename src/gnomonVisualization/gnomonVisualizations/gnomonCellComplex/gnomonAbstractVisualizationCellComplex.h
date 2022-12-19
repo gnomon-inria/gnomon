@@ -16,7 +16,7 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore/dtkCorePlugin>
+#include "gnomonCore/gnomonCorePlugin.h"
 #include <dtkCore/dtkCoreParameters>
 
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
@@ -54,7 +54,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationCellComplex *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationCellComplex, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationCellComplex, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationCellComplex, GNOMONVISUALIZATION_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationCellComplex, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////

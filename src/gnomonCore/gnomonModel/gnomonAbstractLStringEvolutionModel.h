@@ -3,6 +3,7 @@
 #include <gnomonCoreExport.h>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAbstractModel.h"
 
@@ -51,7 +52,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringEvolutionModel *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
 DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
