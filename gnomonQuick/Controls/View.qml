@@ -278,8 +278,8 @@ Rectangle {
     }
 
     Keys.onPressed: (event) => {
-        console.log(event.key)
         event.accepted = false
+        // ctrl + E
         if (event.key == Qt.Key_E && event.modifiers & Qt.ControlModifier) {
             event.accepted = true
             if(event.modifiers & Qt.ShiftModifier) {
@@ -289,6 +289,13 @@ Rectangle {
                 _form_export_dialog.reset();
             }
         }
+
+        if (event.key == Qt.Key_R || event.key == Qt.Key_S || event.key == Qt.Key_W) {
+        // if(viewLogic.acceptKey() // can do like this to restrict to certain views only
+        event.accepted = _view.keyPressed(event.key)
+        //event.accepted = viewLogic.keyPressed(event.key)
+        }
+
     }
 
     G.IconButton { id: _export_icon;
