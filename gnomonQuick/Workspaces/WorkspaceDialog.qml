@@ -25,6 +25,7 @@ G.Dialog {
         property var workspace_groups: []
         property var workspace_plugins: []
         property var plugin_workspace: []
+        property var workspace_forms: []
         property string algoName: ""
 
     }
@@ -163,6 +164,17 @@ G.Dialog {
                         anchors.right: parent.right;
                         anchors.rightMargin: G.Style.smallPadding;
                         anchors.verticalCenter: parent.verticalCenter;
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        visible: model.highlightElement
+                        z: -0.1
+                        color: G.Style.colors.gutterColor;
+                        border {
+                            width: G.Style.borderWidth;
+                            color: G.Style.colors.baseColor;
+                        }
                     }
                 }
 
@@ -320,66 +332,77 @@ G.Dialog {
             title: "Binarization"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceBinarization.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceBrowser"
             title: "Browsing"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceCellImageQuantification"
             title: "Cell Image Quantification"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageQuantification.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceCellImageTracking"
             title: "Cell Image Tracking"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceLSystemModel"
             title: "L-System Model"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceMorphonet"
             title: "MorphoNet"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspacePointDetection"
             title: "Point Detection"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePointDetection.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspacePreprocess"
             title: "Preprocessing"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspacePythonAlgorithm"
             title: "Python Algorithm"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePythonAlgorithm.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceRegistration"
             title: "Registration"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceRegistration.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceSegmentation"
             title: "Segmentation"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceSegmentation.qml"
             available: true
+            highlightElement: false
         }
     }
 
@@ -387,6 +410,23 @@ G.Dialog {
         const workspace = _available_workspaces.get(index)
         const plugins = _internal.workspace_plugins[workspace.type]
         return plugins.length > 0;
+    }
+
+    function update_highlight() {
+        if(window.world.count > 0) {
+            for (var i=0; i<_available_workspaces.count; i++) {
+                _available_workspaces.setProperty(i, "highlightElement", false)
+                let w = _available_workspaces.get(i)
+                if(w.type in _internal.workspace_forms && window.world.count > 0) {
+                    let temp_forms = _internal.workspace_forms[w.type]
+                    for(let f in temp_forms) {
+                        if(temp_forms[f] == window.world.getFormName(window.world.currentIndex)) {
+                            _available_workspaces.setProperty(i, "highlightElement", true)
+                        } 
+                    }
+                }
+            }
+        }
     }
 
     Component.onCompleted: {
@@ -401,6 +441,18 @@ G.Dialog {
         _internal.workspace_groups["gnomonWorkspacePythonAlgorithm"] = "formAlgorithm"
         _internal.workspace_groups["gnomonWorkspaceRegistration"] = "imageRegistration"
         _internal.workspace_groups["gnomonWorkspaceSegmentation"] = "cellImageFromImage"
+
+        _internal.workspace_forms["gnomonWorkspaceBinarization"] = ["gnomonImage", "gnomonBinaryImage"]
+        _internal.workspace_forms["gnomonWorkspaceCellImageQuantification"] = ["gnomonCellImage"]
+        _internal.workspace_forms["gnomonWorkspaceLSystemModel"] = ["gnomonLString", "gnomonTree"]
+        _internal.workspace_forms["gnomonWorkspaceMorphonet"] = ""
+        _internal.workspace_forms["gnomonWorkspaceCellImageTracking"] = ["gnomonCellImage", "gnomonDataDict", "gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspacePointDetection"] = ["gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspacePreprocess"] = ["gnomonImage", "gnomonBinaryImage"]
+        _internal.workspace_forms["gnomonWorkspacePythonAlgorithm"] = ["gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspaceRegistration"] = ["gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspaceSegmentation"] = ["gnomonImage", "gnomonBinaryImage", "gnomonPointCloud"]
+        
 
         for (var i=0; i<_available_workspaces.count; i++) {
             let w = _available_workspaces.get(i)
