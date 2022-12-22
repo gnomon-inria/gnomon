@@ -389,7 +389,7 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
         d->insertForm(item, form, image);
         d->formVisualizations.insert(item, visualization);
         d->formCameras.insert(item, cam);
-        emit added(item);
+        emit added(item, form->formName());
     } else {
         emit alreadyAdded();
     }
@@ -403,7 +403,7 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
         form->metadata()->moveToThread(QThread::currentThread());
         d->insertForm(item, form, image);
         d->formMatplotlibVisualizations.insert(item, visualization);
-        emit added(item);
+        emit added(item, form->formName());
     } else {
         emit alreadyAdded();
     }
@@ -417,7 +417,7 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
         form->metadata()->moveToThread(QThread::currentThread());
         d->insertForm(item, form, image);
         d->formMatplotlibVisualizations.insert(item, nullptr);
-        emit added(item);
+        emit added(item, form->formName());
     } else {
         emit alreadyAdded();
     }
