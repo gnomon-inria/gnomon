@@ -206,6 +206,7 @@ G.Dialog {
 
         title: _internal.selected_workspace ? _internal.selected_workspace.title : ""
         description: _internal.selected_workspace ? _internal.selected_workspace.description : ""
+        preview: _internal.selected_workspace ? _internal.selected_workspace.preview : ""
         plugins : _internal.selected_workspace ? _internal.workspace_plugins[_internal.selected_workspace.type] : []
 
         onOpenWithAlgo : (algo_name) => {
@@ -407,6 +408,8 @@ G.Dialog {
             _available_workspaces.setProperty(i, "section", w.title[0])
             let desc = GM.MetaData.workspaceMetaData(w.type, "description")
             _available_workspaces.setProperty(i, "description", desc)
+            let preview = GM.MetaData.workspaceMetaData(w.type, "preview")
+            _available_workspaces.setProperty(i, "preview", preview)
             let plugins = []
             if (w.type in _internal.workspace_groups) {
                 plugins = GM.MetaData.pluginGroupMetaData(_internal.workspace_groups[w.type])

@@ -18,6 +18,7 @@ Item {
     property bool show_description: true
     property var title: ""
     property var description: ""
+    property var preview: ""
     property var plugins: []
     signal openWithAlgo(string algo_name)
 
@@ -67,20 +68,31 @@ Item {
 
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
             ScrollBar.vertical: ScrollBar {
-                visible: _description.contentHeight > _description_view.height;
+                visible: _desc_label.contentHeight + _desc_image.sourceSize.height > _description_view.height;
                 anchors.right: _description_view.right;
             }
+            ColumnLayout {
+                spacing: G.Style.smallPadding
+                anchors.fill: parent
 
-            Label {
-                id: _description;
+                Label {
+                    id: _desc_label
+                    Layout.preferredWidth: _description_view.width;
 
-                width: _description_view.width;
+                    visible: _self.show_description
+                    text: _self.description
+                    wrapMode: Text.Wrap
 
-                visible: _self.show_description
-                text: _self.description
-                wrapMode: Text.Wrap
+                    font: G.Style.fonts.value;
+                }
 
-                font: G.Style.fonts.value;
+                Image {
+                    id: _desc_image
+                    visible: _self.show_description
+                    source: "file:qml/gnomonQuick/assets/" + _self.preview
+                    Layout.preferredWidth: _description_view.width;
+                    Layout.preferredHeight: G.Style.sizes.s11 - G.Style.smallPadding;
+                }
             }
         }
 
