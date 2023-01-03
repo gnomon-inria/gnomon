@@ -34,7 +34,7 @@ G.Dialog {
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
     width: G.Style.largeDialogWidth
-    height: G.Style.largeDialogHeight
+    height: 1.5*G.Style.largeDialogHeight
 
     padding: 0;
 
