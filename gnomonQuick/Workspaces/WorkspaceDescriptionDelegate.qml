@@ -50,7 +50,8 @@ Item {
 
                     onClicked: {
                         // use _self.title  to choseen workspace page, once it's available
-                        Qt.openUrlExternally("https://gnomon.gitlabpages.inria.fr/gnomon/");
+                        let formatted_title = _self.title.toLowerCase().replace(/\s+/g,'_')  + ".html";
+                        Qt.openUrlExternally("https://gnomon.gitlabpages.inria.fr/gnomon/workspace/" + formatted_title);
                     }
                 }
             }
@@ -75,6 +76,15 @@ Item {
                 spacing: G.Style.smallPadding
                 anchors.fill: parent
 
+                Image {
+                    id: _desc_image
+                    visible: _self.show_description
+                    source: "file:qml/gnomonQuick/assets/" + _self.preview
+                    Layout.preferredWidth: _description_view.width;
+                    fillMode: Image.PreserveAspectFit
+                    Layout.preferredHeight: G.Style.sizes.s11 - G.Style.smallPadding;
+                }
+
                 Label {
                     id: _desc_label
                     Layout.preferredWidth: _description_view.width;
@@ -86,13 +96,6 @@ Item {
                     font: G.Style.fonts.value;
                 }
 
-                Image {
-                    id: _desc_image
-                    visible: _self.show_description
-                    source: "file:qml/gnomonQuick/assets/" + _self.preview
-                    Layout.preferredWidth: _description_view.width;
-                    Layout.preferredHeight: G.Style.sizes.s11 - G.Style.smallPadding;
-                }
             }
         }
 
