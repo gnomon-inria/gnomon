@@ -30,7 +30,7 @@ public:
     static gnomonFormManager *instance(void);
 
 signals:
-    void added(int id);
+    void added(int id, QString name);
     void removed(int id);
     void alreadyAdded(void);
 
