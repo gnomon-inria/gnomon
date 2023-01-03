@@ -44,6 +44,7 @@ G.Dialog {
 
             onClicked: {
                 self.reject();
+                _workspace_dialog.update_highlight();
                 _workspace_dialog.open();
             }
         }
