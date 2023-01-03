@@ -90,7 +90,7 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
             } else if (this->task_nodes.contains(input_form)) {
                 edge = new gnomonPipelineEdge();
                 edge->setSource(this->task_nodes[input_form]->outputPorts()[this->task_output[input_form]]);
-            } else if (this-morphonet_nodes.contains(input_form)) {
+            } else if (this->morphonet_nodes.contains(input_form)) {
                 edge = new gnomonPipelineEdge();
                 edge->setSource(this->morphonet_nodes[input_form]->outputPorts()[this->morphonet_output[input_form]]);
             }
@@ -272,7 +272,6 @@ void gnomonPipelineManager::addTask(const QString &task,
 
 }
 
-
 void gnomonPipelineManager::addConstructor(gnomonAbstractConstructorCommand *command)
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > output_forms = command->outputs();
@@ -286,6 +285,21 @@ void gnomonPipelineManager::addConstructor(gnomonAbstractConstructorCommand *com
         d->constructor_nodes[output_forms[output]] = node;
         d->constructor_output[output_forms[output]] = output;
     }
+}
+
+void gnomonPipelineManager::addEvolutionModel(gnomonAbstractEvolutionModelCommand *command)
+{
+    /*QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > output_forms = command->outputs();
+
+    QJsonObject parameter_json = d->parameterJson(command->parameters());
+    gnomonPipelineNodeConstructor *node = new gnomonPipelineNodeConstructor(command->factoryName(), command->algorithmName(), parameter_json, output_forms.keys());
+    node->setVersion(command->version());
+
+    for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
+        auto&& output = it.key();
+        d->constructor_nodes[output_forms[output]] = node;
+        d->constructor_output[output_forms[output]] = output;
+    }*/
 }
 
 void gnomonPipelineManager::addAdaptedForm(std::shared_ptr<gnomonAbstractDynamicForm> form)

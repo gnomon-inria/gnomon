@@ -4,6 +4,8 @@
 #include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringEvolutionModelCommand>
 #include <gnomonCore/gnomonPythonPluginLoader>
 
+#include <gnomonPipeline/gnomonPipelineManager.h>
+
 #include <gnomonVisualization/gnomonView/gnomonViewForm>
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString"
 
@@ -221,7 +223,7 @@ void gnomonWorkspaceLSystemModel::step()
 
     // TODO: make the commannd async
     emit started();
-    auto lString = d->command->state();
+    auto lString = d->command->lString();
     if (!lString || lString->times().size() == 0) {
         this->setInitialState();
         d->command->undo();
@@ -251,20 +253,22 @@ QUrl gnomonWorkspaceLSystemModel::defaultReadPath(void)
 void gnomonWorkspaceLSystemModel::setInitialState()
 {
     // TODO: drop axiom into a different view?
-    // d->command->setInitialState(d->view->lString());
-    d->command->setInitialState(nullptr);
+    // d->command->setAxiom(d->view->lString());
+    d->command->setAxiom(nullptr);
 }
 
 void gnomonWorkspaceLSystemModel::viewState()
 {
     // TODO: pass lsystem to visu plugin
-    auto lString = d->command->state();
+    auto lString = d->command->lString();
     if (lString) {
         d->view->setLString(lString);
         if (lString->times().size() != 0) {
             d->view->setCurrentTime(lString->times().last());
         }
         d->view->render();
+
+        gnomonPipelineManager::instance()->addEvolutionModel(d->command);
     }
 }
 
