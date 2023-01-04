@@ -22,6 +22,8 @@ public:
     inline virtual const QString& modelName(void) { return this->model_name; };
     inline virtual void setModelName(const QString& name) = 0;
 
+    inline QString version(void) { return "0.1.0"; };
+
     inline virtual const QString& factoryName(void) { return this->factory_name; }
 
 public:

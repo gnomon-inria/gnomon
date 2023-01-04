@@ -26,6 +26,7 @@ public:
 
 public:
     void setLSystem(const QString& code);
+    const QString& lSystemCode(void) const;
 
 public:
     virtual void setModelName(const QString& name) override;

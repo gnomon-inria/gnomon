@@ -23,7 +23,8 @@ public:
         NODE_CONVERTER = 5,
         NODE_ADAPTER = 6,
         NODE_TASK = 7,
-        NODE_MORPHONET = 8
+        NODE_MORPHONET = 8,
+        NODE_EVOLUTION_MODEL = 9
     };
 
 public:

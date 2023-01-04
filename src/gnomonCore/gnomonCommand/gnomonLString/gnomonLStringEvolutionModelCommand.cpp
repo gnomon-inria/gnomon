@@ -103,6 +103,11 @@ void gnomonLStringEvolutionModelCommand::setLSystem(const QString& code)
     ((gnomonAbstractLStringEvolutionModel *) this->model)->setLSystem(code);
 }
 
+const QString& gnomonLStringEvolutionModelCommand::lSystemCode(void) const
+{
+    return ((gnomonAbstractLStringEvolutionModel *) this->model)->lSystemCode();
+}
+
 void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)
 {
     this->model_name = model_name;

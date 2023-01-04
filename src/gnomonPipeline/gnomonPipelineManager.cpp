@@ -8,6 +8,7 @@
 #include "gnomonPipelineNodeAdapter.h"
 #include "gnomonPipelineNodeAlgorithm.h"
 #include "gnomonPipelineNodeConstructor.h"
+#include "gnomonPipelineNodeEvolutionModel.h"
 #include "gnomonPipelineNodeReader.h"
 #include "gnomonPipelineNodeTask.h"
 #include "gnomonPipelineNodeWriter.h"
@@ -16,9 +17,11 @@
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractEvolutionModelCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonFormAlgorithmCommand>
+#include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringEvolutionModelCommand>
 
 #include <dtkCore>
 
@@ -49,6 +52,8 @@ public:
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> morphonet_output;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , gnomonPipelineNodeConstructor *> constructor_nodes;
     QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> constructor_output;
+    QMap<std::shared_ptr<gnomonAbstractDynamicForm> , gnomonPipelineNodeEvolutionModel *> evolution_model_nodes;
+    QMap<std::shared_ptr<gnomonAbstractDynamicForm> , QString> evolution_model_output;
 
     QMap<gnomonPipelineNode *, QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > > node_input_forms;
     //QMap<std::shared_ptr<gnomonAbstractDynamicForm> , std::shared_ptr<gnomonAbstractDynamicForm> > form_clones; //TODO check what is it used for
@@ -87,6 +92,9 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
             } else if (this->algorithm_nodes.contains(input_form)) {
                 edge = new gnomonPipelineEdge();
                 edge->setSource(this->algorithm_nodes[input_form]->outputPorts()[this->algorithm_output[input_form]]);
+            }  else if (this->evolution_model_nodes.contains(input_form)) {
+                edge = new gnomonPipelineEdge();
+                edge->setSource(this->evolution_model_nodes[input_form]->outputPorts()[this->evolution_model_output[input_form]]);
             } else if (this->task_nodes.contains(input_form)) {
                 edge = new gnomonPipelineEdge();
                 edge->setSource(this->task_nodes[input_form]->outputPorts()[this->task_output[input_form]]);
@@ -289,17 +297,26 @@ void gnomonPipelineManager::addConstructor(gnomonAbstractConstructorCommand *com
 
 void gnomonPipelineManager::addEvolutionModel(gnomonAbstractEvolutionModelCommand *command)
 {
-    /*QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > output_forms = command->outputs();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > input_forms = command->initialState();
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > output_forms = command->state();
 
     QJsonObject parameter_json = d->parameterJson(command->parameters());
-    gnomonPipelineNodeConstructor *node = new gnomonPipelineNodeConstructor(command->factoryName(), command->algorithmName(), parameter_json, output_forms.keys());
+    if (auto lsystem_command = dynamic_cast<gnomonLStringEvolutionModelCommand *>(command)) {
+        QString code = lsystem_command->lSystemCode();
+        parameter_json.insert("lsystem_code", QJsonValue(code));
+    }
+
+    gnomonPipelineNodeEvolutionModel *node = new gnomonPipelineNodeEvolutionModel(command->factoryName(), command->modelName(), parameter_json, output_forms.keys());
+    qDebug()<<Q_FUNC_INFO<<node;
     node->setVersion(command->version());
+
+    d->node_input_forms[node] = input_forms;
 
     for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
         auto&& output = it.key();
-        d->constructor_nodes[output_forms[output]] = node;
-        d->constructor_output[output_forms[output]] = output;
-    }*/
+        d->evolution_model_nodes[output_forms[output]] = node;
+        d->evolution_model_output[output_forms[output]] = output;
+    }
 }
 
 void gnomonPipelineManager::addAdaptedForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
@@ -365,6 +382,16 @@ void gnomonPipelineManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> f
         if (!d->hasNode(node))
         {
             d->linkNodeInputs(node);
+            d->pipeline->addNode(node);
+            d->pipeline_nodes[node->name()] = node;
+
+        }
+    } else if (d->evolution_model_nodes.contains(form)) {
+        gnomonPipelineNodeEvolutionModel *node = d->evolution_model_nodes[form];
+
+        if (!d->hasNode(node))
+        {
+            //d->linkNodeInputs(node);
             d->pipeline->addNode(node);
             d->pipeline_nodes[node->name()] = node;
 

@@ -121,6 +121,10 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
         }
     });
 
+    connect(d->view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+        gnomonPipelineManager::instance()->addForm(f);
+    });
+
     d->model_file = new QTemporaryFile();
     if (d->model_file->open()) {
         d->command->setLSystem(d->model_file->fileName());
