@@ -175,6 +175,8 @@ Control {
             target: GP.PipelineManager.pipeline
             function onNodeAdded (node) {
 
+                console.log(node)
+
                 let n = new G.PipelineLayout.Node(node.name, node)
                 _self.addNode(n);
 
@@ -365,6 +367,8 @@ Control {
             return G.Style.colors.lightBlue
         if (node.type == GP.PipelineNode.NODE_MORPHONET)
             return G.Style.colors.baseColor
+        if (node.type == GP.PipelineNode.NODE_EVOLUTION_MODEL)
+            return G.Style.colors.noteColor
         return G.Style.colors.neutralColor
     }
 
