@@ -13,9 +13,10 @@ import xQuick.Style      1.0 as X
 import crossQuick        1.0 as C
 import crossParameters   1.0 as C
 
-import gnomonQuick.Workspaces 1.0 as G
-import gnomonQuick.Controls   1.0 as G
-import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Workspaces as G
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
 
 import gnomon.Workspaces 1.0 as GW
 
@@ -24,6 +25,7 @@ G.Workspace {
     id: _self;
 
     workspace_title: "Tracking";
+    property bool is_picking: false;
 
     fill: () => {
         if(world.currentRef < 0)
@@ -54,38 +56,172 @@ G.Workspace {
         Layout.fillWidth: true;
         Layout.fillHeight: true;
 
-        G.DataDict {
-            id: _data_source_view;
+        SwipeView {
+            id: _swipe
 
             Layout.fillWidth: true;
             height: window.height/8;
+            currentIndex: 0;
+            //interactive: false;
 
-            onDroppedFromManager: (index) => {
-                console.info('Retrieving from manager');
-                d.sourceDict.drop(index);
-            }
+            Item  {
+                id: transfo_view
+                G.DataDict {
+                    id: _data_source_view;
 
-            X.Label {
-                anchors.top: parent.top
-                anchors.left: parent.left
+                    anchors.fill: parent
 
-                text: "Transformation matrix"
-                color: X.Style.foregroundColor
-            }
+                    onDroppedFromManager: (index) => {
+                        console.info('Retrieving from manager');
+                        d.sourceDict.drop(index);
+                    }
 
-            X.Label {
-                anchors.centerIn: parent
+                    X.Label {
+                        anchors.top: parent.top
+                        anchors.left: parent.left
 
-                text: d.sourceDict.dataDict
-                horizontalAlignment: Text.AlignRight
-                color: X.Style.foregroundColor
-                font {
-                    pointSize: 14
-                    bold: true
+                        text: "Transformation matrix"
+                        color: X.Style.foregroundColor
+                    }
+
+                    X.Label {
+                        anchors.centerIn: parent
+
+                        text: d.sourceDict.dataDict
+                        horizontalAlignment: Text.AlignRight
+                        color: X.Style.foregroundColor
+                        font {
+                            pointSize: 14
+                            bold: true
+                        }
+                    }
+
+                    G.IconButton {
+                        id: _enable_picking;
+
+                        anchors.top: parent.top
+                        anchors.topMargin: G.Style.smallPadding
+                        anchors.right: parent.right
+                        anchors.rightMargin: G.Style.largePadding
+
+                        size: G.Style.iconMedium;
+                        color: G.Style.colors.textColorBase
+
+                        iconName: G.Icons.icons["pencil"];
+
+                        onClicked: {
+                            _swipe.currentIndex = 1;
+                        }
+
+                    }
+
+                    viewLogic: d.sourceDict;
                 }
             }
+            Item {
+                id: picker_view
 
-            viewLogic: d.sourceDict;
+                Label {
+                    id: _lineage_label
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.leftMargin: G.Style.smallPadding
+
+                    text: "Manual lineage"
+                    font: G.Style.fonts.value
+                    color: G.Style.colors.textColorBase
+                }
+
+                TextField {
+                    id: _lineage_values
+
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.left: _lineage_label.right
+                    anchors.margins: G.Style.smallPadding
+
+                    text: ""
+                    color: G.Style.colors.hoveredBaseColor
+                    font: G.Style.fonts.value
+                }
+
+                G.Button {
+                    id: _new_picking;
+
+                    anchors.left: parent.left;
+                    anchors.bottom: parent.bottom;
+                    anchors.bottomMargin: G.Style.smallPadding;
+                    anchors.leftMargin: G.Style.mediumPadding;
+
+                    implicitWidth: G.Style.longButtonWidth
+
+                    type: G.Style.ButtonType.Base
+                    text: "New Picking"
+                    hoverEnabled: !is_picking
+
+                    onClicked: {
+                        console.log("picking enabled !");
+                        is_picking = true;
+                    }
+                }
+
+                G.Button {
+                    id: _finish_picking;
+
+                    anchors.right: parent.right;
+                    anchors.top:  _new_picking.top;
+
+                    implicitWidth: G.Style.longButtonWidth
+
+                    type: G.Style.ButtonType.Neutral
+                    text: "Finish Picking"
+                    visible: !is_picking;
+
+                    onClicked: {
+                        console.log("picking finished !");
+                        _swipe.currentIndex = 0;
+                    }
+                }
+
+                G.Button {
+                    id: _picking_cancel;
+
+                    anchors.right: parent.right;
+                    anchors.top:  _new_picking.top;
+
+                    implicitWidth: G.Style.buttonWidth
+
+                    type: G.Style.ButtonType.Warning
+                    text: "Cancel"
+
+                    visible: is_picking;
+
+                    onClicked: {
+                        console.log("picking cancelled");
+                        is_picking = false;
+                    }
+                }
+
+                G.Button {
+                    id: _picking_ok;
+
+                    anchors.right: _picking_cancel.left;
+                    anchors.top: _new_picking.top;
+                    anchors.rightMargin: G.Style.smallPadding
+
+                    implicitWidth: G.Style.shortButtonWidth
+
+                    type: G.Style.ButtonType.OK
+                    text: "OK"
+
+                    visible: is_picking;
+
+                    onClicked: {
+                        console.log("picking OK!");
+                        is_picking = false;
+                    }
+                }
+            }
         }
 
         Control {

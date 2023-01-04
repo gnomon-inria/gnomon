@@ -66,17 +66,20 @@ Rectangle {
     }
 
 
-    G.IconButton { id: _export_icon;
+    G.IconButton {
+        id: _export_icon;
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.right: _view.right
+        anchors.rightMargin: G.Style.smallPadding
+
         iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
         enabled: !viewLogic.inputView
         size: G.Style.iconLarge;
         color: viewLogic.inputView ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
         tooltip: viewLogic.inputView? "" : "Export"
 
-        anchors.top: _view.top
-        anchors.topMargin: G.Style.smallPadding
-        anchors.right: _view.right
-        anchors.rightMargin: G.Style.smallPadding
 
         onClicked: {
             viewLogic.transmit()
