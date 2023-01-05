@@ -204,6 +204,7 @@ QtObject {
         property color warningColor: S.colors.orange["500"]
         property color okColor: S.colors.green["500"]
         property color noteColor: S.colors.yellow["500"]
+        property color exampleColor: S.colors.purple["500"]
 
         //hovered color theme
         property color hoveredBaseColor: S.colors.blue["400"]
@@ -239,6 +240,7 @@ QtObject {
         property color lightRed: S.colors.red["200"]
         property color lightOrange: S.colors.orange["200"]
         property color lightYellow: S.colors.yellow["200"]
+        property color lightPurple: S.colors.purple["200"]
 
         property color transparent: "#00000000"
     }
