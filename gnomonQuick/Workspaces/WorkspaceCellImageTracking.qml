@@ -162,6 +162,8 @@ G.Workspace {
                     onClicked: {
                         console.log("picking enabled !");
                         is_picking = true;
+                        _new_picking.text = "( ? , ? )"
+                        d.source.startPicking()
                     }
                 }
 
@@ -179,6 +181,7 @@ G.Workspace {
 
                     onClicked: {
                         console.log("picking finished !");
+                        _new_picking.text = "New Picking"
                         _swipe.currentIndex = 0;
                     }
                 }
@@ -198,6 +201,8 @@ G.Workspace {
 
                     onClicked: {
                         console.log("picking cancelled");
+                        _new_picking.text = "New Picking"
+                        d.source.stopPicking()
                         is_picking = false;
                     }
                 }
@@ -218,6 +223,9 @@ G.Workspace {
 
                     onClicked: {
                         console.log("picking OK!");
+                        _lineage_values.text += _new_picking.text + " , "
+                        _new_picking.text = "New Picking"
+                        d.source.stopPicking()
                         is_picking = false;
                     }
                 }
@@ -240,7 +248,7 @@ G.Workspace {
                     Layout.fillWidth: true;
                     Layout.fillHeight: true;
 
-                    onDroppedFromManager: {
+                    onDroppedFromManager: (index) => {
                         console.info('Retrieving from manager');
                         window.currentView = _source_view
                         d.source.drop(index);
@@ -271,6 +279,17 @@ G.Workspace {
                 }
             }
         }
+    }
+
+    Connections {
+        target: d.source
+        function onPickedCell(cell_id) {
+            console.log("cell picked from source " , cell_id);
+            _new_picking.text = "(" + cell_id + ", " + _new_picking.text.split(',')[1]
+        }
+
+        //TODO target
+
     }
 
     Component.onCompleted: {
