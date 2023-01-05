@@ -15,11 +15,14 @@
 #include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
-#include "gnomonInteractorStyle/gnomonInteractorStyle.h"
-#include "gnomonInteractorStyle/gnomonInteractorStyleXYZ.h"
+#include "gnomonInteractorStyle/gnomonInteractorStyleCellImagePicking.h"
+//#include "gnomonInteractorStyle/gnomonInteractorStyle.h"
+//#include "gnomonInteractorStyle/gnomonInteractorStyleXYZ.h"
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkInteractorObserver.h>
+#include <vtkInteractorStyle.h>
 #include <vtkInteractorStyleImage.h>
 #include <vtkPNGWriter.h>
 #include <vtkRenderer.h>
@@ -120,7 +123,7 @@ public:
     QVariantMap parameters;
 public:
     QMap<QString, bool> acceptForms;
-    QStringList nodePortNames; 
+    QStringList nodePortNames;
 
 public:
     QMetaObject::Connection connect3D;
@@ -130,16 +133,14 @@ public:
     QMetaObject::Connection connectYZ;
     QMetaObject::Connection connectSlice;
     QMetaObject::Connection connectTime;
-    
+
 public:
     void clearConnections(void);
-    
-public:
-    gnomonInteractorStyle *default_style = nullptr;
-    gnomonInteractorStyle *xyz_style = nullptr;
-    QList<gnomonInteractorStyle *> available_styles;
 
-    gnomonInteractorStyle *style = nullptr;
+public:
+    vtkSmartPointer<vtkInteractorObserver> old_style = nullptr;
+    vtkSmartPointer<gnomonInteractorStyleCellImagePicking> picking_style = nullptr;
+    QMetaObject::Connection connectPicked;
 
 public:
     int syncing_count = 0; QTimer *syncing_timer = nullptr; bool synced = false; bool syncing = false;
@@ -193,27 +194,18 @@ gnomonViewFormPrivate::gnomonViewFormPrivate(QObject *parent) : QObject(parent)
     this->renderer3D = vtkSmartPointer<vtkRenderer>::New();
     this->renderer3D->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
 
-    this->default_style = new gnomonInteractorStyle();
-    this->xyz_style = new gnomonInteractorStyleXYZ();
-
-    this->available_styles.push_back(this->default_style);
-    this->available_styles.push_back(this->xyz_style);
-
     static int count = 0;
 }
 
 gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
 {
     this->clearConnections();
-    delete this->default_style;
-    delete this->xyz_style;
 }
 
 void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys()) {
         QImage image = this->formVisualization[key]->imageRendering();
-        //gnomonFormManager::instance()->addForm(this->forms[key], this->export_color, this->visualization_description[key],image, this->renderer3D->GetActiveCamera());
         gnomonFormManager::instance()->addForm(this->forms[key], this->formVisualization[key],image, this->renderer3D->GetActiveCamera());
         q->emit exportedForm(this->forms[key]);
     }
@@ -567,14 +559,8 @@ void gnomonViewForm::restoreState(void) {
 void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 {
     d->window = window;
-//     d->window->SetInteractor(d->window->MakeRenderWindowInteractor());
-// #if defined(Q_OS_LINUX)
-//     d->window->GetInteractor()->Initialize();
-// #endif
     d->window->AddRenderer(d->renderer2D);
     d->window->AddRenderer(d->renderer3D);
-
-    this->setInteractorStyle(d->default_style);
 
     this->switchTo2D();
     this->switchTo2DXY();
@@ -626,9 +612,6 @@ void gnomonViewForm::switchTo2D(void)
         emit switchedTo2D();
         emit modeChanged();
     }
-
-    // d->slice_slider->setVisible(true);
-    // d->slice_slider->setEnabled(true);
 }
 
 void gnomonViewForm::switchTo2DXY(void)
@@ -642,27 +625,16 @@ void gnomonViewForm::switchTo2DXY(void)
         emit switchedTo2DXY();
         emit orientationChanged();
     }
-    
+
 }
 
 void gnomonViewForm::switchTo2DXZ(void)
 {
     emit sliceOrientationChanged(gnomonViewForm::SLICE_ORIENTATION_XZ);
-
-    // TODO: Call the slider's callback directly
-    // d->slice_slider->blockSignals(true);
-    // d->slice_slider->setMinimum(d->yBounds[0]);
-    // d->slice_slider->setMaximum(d->yBounds[1]);
-    // d->slice_slider->blockSignals(false);
-    // d->slice_slider->setValue(d->c_y);
     emit sliceChanged(d->c_y);
 
     bool hasChanged = d->ori != gnomonViewForm::SLICE_ORIENTATION_XZ;
     d->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_XZ);
-
-    // d->renderer2D_XY->toggle(false);
-    // d->renderer2D_XZ->toggle(true);
-    // d->renderer2D_YZ->toggle(false);
 
     if (hasChanged)
         emit switchedTo2DXZ();
@@ -673,20 +645,8 @@ void gnomonViewForm::switchTo2DYZ(void)
 {
     emit sliceOrientationChanged(gnomonViewForm::SLICE_ORIENTATION_YZ);
 
-    // TODO: Call the slider's callback directly
-    // d->slice_slider->blockSignals(true);
-    // d->slice_slider->setMinimum(d->xBounds[0]);
-    // d->slice_slider->setMaximum(d->xBounds[1]);
-    // d->slice_slider->blockSignals(false);
-    // d->slice_slider->setValue(d->c_x);
-    // emit sliceChanged(d->c_x);
-
     bool hasChanged = d->ori != gnomonViewForm::SLICE_ORIENTATION_YZ;
     d->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_YZ);
-
-    // d->renderer2D_XY->toggle(false);
-    // d->renderer2D_XZ->toggle(false);
-    // d->renderer2D_YZ->toggle(true);
 
     if (hasChanged)
         emit switchedTo2DYZ();
@@ -720,11 +680,6 @@ void gnomonViewForm::sliceChange(int value)
         default:
             break;
     };
-
-    // TODO: Call the slider's callback directly
-    // d->slice_slider->blockSignals(true);
-    // d->slice_slider->setValue(value);
-    // d->slice_slider->blockSignals(false);
 
     if (valueChanged)
         emit sliceChanged(value);
@@ -881,7 +836,7 @@ QStringList gnomonViewForm::formNames(void)
     return d->forms.keys();
 }
 
-QStringList gnomonViewForm::formNamesAndId(void) 
+QStringList gnomonViewForm::formNamesAndId(void)
 {
     QStringList formNamesAndIndex;
     auto it = d->forms.constBegin();
@@ -1240,10 +1195,10 @@ QString gnomonViewForm::formVisuName(const QString& name)
 }
 
 QStringList gnomonViewForm::formVisualizations(const QString& name)
-{   
+{
     QStringList visu_names;
-    
-    if (d->forms.contains(name)) {  
+
+    if (d->forms.contains(name)) {
         if (name == "gnomonBinaryImage") {
              visu_names = gnomonVisualization::visualizationBinaryImage::pluginFactory().keys();
         } else if (name == "gnomonCellComplex") {
@@ -1364,40 +1319,6 @@ void gnomonViewForm::setBounds(double bounds[6])
 
     if (changed) {
         emit boundsChanged();
-
-//         d->c_x = (d->xBounds[0]+d->xBounds[1])/2;
-//         d->c_y = (d->yBounds[0]+d->yBounds[1])/2;
-//         d->c_z = (d->zBounds[0]+d->zBounds[1])/2;
-
-//         d->cameras.clear();
-
-//         switch(d->ori)
-//         {
-//             case gnomonViewFormPrivate::SLICE_ORIENTATION_XY:
-//                 d->slice_slider->blockSignals(true);
-//                 d->slice_slider->setMinimum(d->zBounds[0]);
-//                 d->slice_slider->setMaximum(d->zBounds[1]);
-//                 d->slice_slider->setValue(d->c_z);
-//                 d->slice_slider->blockSignals(false);
-//                 break;
-//             case gnomonViewFormPrivate::SLICE_ORIENTATION_XZ:
-//                 d->slice_slider->blockSignals(true);
-//                 d->slice_slider->setMinimum(d->yBounds[0]);
-//                 d->slice_slider->setMaximum(d->yBounds[1]);
-//                 d->slice_slider->setValue(d->c_y);
-//                 d->slice_slider->blockSignals(false);
-//                 break;
-//             case gnomonViewFormPrivate::SLICE_ORIENTATION_YZ:
-//                 d->slice_slider->blockSignals(true);
-//                 d->slice_slider->setMinimum(d->xBounds[0]);
-//                 d->slice_slider->setMaximum(d->xBounds[1]);
-//                 d->slice_slider->setValue(d->c_x);
-//                 d->slice_slider->blockSignals(false);
-//                 break;
-//             default:
-//                 break;
-//         };
-
         d->renderer2D->ResetCamera();
         d->renderer3D->ResetCamera();
     }
@@ -1487,7 +1408,7 @@ QStringList gnomonViewForm::acceptedForms(void)
     return forms;
 }
 
-QStringList gnomonViewForm::nodePortNames(void) 
+QStringList gnomonViewForm::nodePortNames(void)
 {
     return d->nodePortNames;
 }
@@ -1534,7 +1455,7 @@ void gnomonViewForm::update(void)
 {
     for (const auto& key : d->formVisualization.keys()) {
         d->formVisualization[key]->update();
-        d->formVisualization[key]->setVisible(d->formVisibility[key]); 
+        d->formVisualization[key]->setVisible(d->formVisibility[key]);
     }
 }
 
@@ -1544,6 +1465,33 @@ void gnomonViewForm::clear(void)
     d->updateFormsTimes();
     d->empty = true;
     emit formsChanged();
+}
+
+void gnomonViewForm::startPicking() {
+    //only in 3d for now !
+    qDebug() << "Start picking";
+    // backup old interactor style
+    d->old_style = d->interactor()->GetInteractorStyle();
+
+    // set interactor style to gnomonInteratorStyleCellMarchingCubes
+    if(!d->picking_style) {
+        d->picking_style = vtkSmartPointer<gnomonInteractorStyleCellImagePicking>::New();
+        d->picking_style->SetDefaultRenderer(d->renderer3D);
+    }
+    d->interactor()->SetInteractorStyle(d->picking_style);
+
+        qDebug() << "Start picking style set";
+    d->connectPicked = connect(d->picking_style, &gnomonInteractorStyleCellImagePicking::pickedCell, this, &gnomonViewForm::pickedCell);
+
+}
+void gnomonViewForm::stopPicking() {
+        qDebug() << "Stop picking";
+    // disconnect pickedCell connection
+    disconnect(d->connectPicked);
+
+    // set interactorstyle to old style
+    d->interactor()->SetInteractorStyle(d->old_style);
+    d->old_style = nullptr;
 }
 
 void gnomonViewForm::onSliceChanged(int slice)
@@ -1595,41 +1543,6 @@ bool gnomonViewForm::synced(void)
 bool gnomonViewForm::syncing(void)
 {
     return d->syncing;
-}
-
-void gnomonViewForm::setInteractorStyle(gnomonInteractorStyle *style)
-{
-    gnomonInteractorStyle *new_style;
-
-    if (style) {
-        new_style = style;
-    } else {
-        new_style = d->default_style;
-    }
-
-    if (d->style) {
-        d->style->disable();
-    }
-
-    d->style = new_style;
-
-    this->interactor()->SetInteractorStyle(d->style);
-
-    d->style->setView(this);
-
-    // if (d->renderer3D_button->isToggled()) {
-         d->style->setMode("3D");
-         d->style->SetDefaultRenderer(this->renderer3D());
-    // } else {
-    //     d->style->setMode("2D");
-    //     d->style->SetDefaultRenderer(this->renderer2D());
-    // }
-
-#if !defined(Q_OS_LINUX)
-    this->interactor()->Enable();
-#endif
-
-    // d->updateKeys();
 }
 
 void gnomonViewForm::updateShortcutKeys(void)

@@ -16,7 +16,7 @@
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 
 class gnomonAbstractVisualization;
-class gnomonInteractorStyle;
+//class gnomonInteractorStyle;
 
 class vtkCamera;
 class vtkRenderer;
@@ -65,6 +65,9 @@ public:
     Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
     Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
 
+    Q_INVOKABLE void startPicking();
+    Q_INVOKABLE void stopPicking();
+
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
 // /////////////////////////////////////////////////////////////////////////////
@@ -98,6 +101,8 @@ signals:
     void   linking(void);
     void unlinking(void);
 
+ signals:
+    void pickedCell(int);
 signals:
     void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm>);
 
@@ -247,7 +252,6 @@ public slots:
     void setEnableMenus(bool);
 
 public slots:
-    void setInteractorStyle(gnomonInteractorStyle *);
     void updateShortcutKeys(void);
 
 public slots:

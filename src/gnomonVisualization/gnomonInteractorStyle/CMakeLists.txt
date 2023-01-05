@@ -25,6 +25,7 @@ add_subdirectory(gnomonCellImage)
 ADD_GNOMON_HEADERS(
     gnomonInteractorStyle
     gnomonInteractorStyle.h
+    gnomonInteractorStyleCellImagePicking.h
     gnomonInteractorStyleXYZ
     gnomonInteractorStyleXYZ.h
     ${${PROJECT_NAME}_INTERACTORSTYLE_CELLIMAGE_HEADERS})
@@ -32,6 +33,7 @@ ADD_GNOMON_HEADERS(
 
 ADD_GNOMON_SOURCES(
     gnomonInteractorStyle.cpp
+    gnomonInteractorStyleCellImagePicking.cpp
     gnomonInteractorStyleXYZ.cpp
     ${${PROJECT_NAME}_INTERACTORSTYLE_CELLIMAGE_SOURCES})
 

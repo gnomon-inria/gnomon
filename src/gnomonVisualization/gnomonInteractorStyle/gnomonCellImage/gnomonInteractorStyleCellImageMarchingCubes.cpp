@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonInteractorStyleCellImageMarchingCubes.h"
 #include "gnomonInteractorStyle/gnomonInteractorStyle_p.h"
 
@@ -210,4 +196,3 @@ int gnomonInteractorStyleCellImageMarchingCubes::icon(void) const
 {
     return 0; // fa::crosshairs;
 }
-
