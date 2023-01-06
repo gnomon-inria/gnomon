@@ -304,10 +304,12 @@ void gnomonPipelineManager::addEvolutionModel(gnomonAbstractEvolutionModelComman
     if (auto lsystem_command = dynamic_cast<gnomonLStringEvolutionModelCommand *>(command)) {
         QString code = lsystem_command->lSystemCode();
         parameter_json.insert("lsystem_code", QJsonValue(code));
+
+        int derivation_length = lsystem_command->derivationLength();
+        parameter_json.insert("derivation_length", QJsonValue(derivation_length));
     }
 
     gnomonPipelineNodeEvolutionModel *node = new gnomonPipelineNodeEvolutionModel(command->factoryName(), command->modelName(), parameter_json, output_forms.keys());
-    qDebug()<<Q_FUNC_INFO<<node;
     node->setVersion(command->version());
 
     d->node_input_forms[node] = input_forms;

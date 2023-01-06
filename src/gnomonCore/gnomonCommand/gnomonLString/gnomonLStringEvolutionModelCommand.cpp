@@ -12,6 +12,8 @@ class gnomonLStringEvolutionModelCommandPrivate
 public:
     std::shared_ptr<gnomonLStringSeries> init_lString = nullptr;
     std::shared_ptr<gnomonLStringSeries> lString = nullptr;
+
+    int derivationLength = 0;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -106,6 +108,16 @@ void gnomonLStringEvolutionModelCommand::setLSystem(const QString& code)
 const QString& gnomonLStringEvolutionModelCommand::lSystemCode(void) const
 {
     return ((gnomonAbstractLStringEvolutionModel *) this->model)->lSystemCode();
+}
+
+int gnomonLStringEvolutionModelCommand::derivationLength(void) const
+{
+    return d->derivationLength;
+}
+
+void gnomonLStringEvolutionModelCommand::setDerivationLength(int l)
+{
+    d->derivationLength = l;
 }
 
 void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)

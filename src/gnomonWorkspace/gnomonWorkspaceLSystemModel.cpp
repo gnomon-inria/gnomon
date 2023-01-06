@@ -55,6 +55,8 @@ public:
     QString text;
     int derivationLength = 1;
 
+    int derivations = 0;
+
 public:
     QString workspace;
     QStringList keys;
@@ -217,6 +219,7 @@ void gnomonWorkspaceLSystemModel::run()
     for (int t=0; t<d->derivationLength; t++) {
         d->command->redo();
     }
+    d->derivations = d->derivationLength;
     this->viewState();
     emit finished();
 }
@@ -231,8 +234,10 @@ void gnomonWorkspaceLSystemModel::step()
     if (!lString || lString->times().size() == 0) {
         this->setInitialState();
         d->command->undo();
+        d->derivations = 0;
     }
     d->command->redo();
+    d->derivations += 1;
     this->viewState();
     emit finished();
 }
@@ -244,6 +249,7 @@ void gnomonWorkspaceLSystemModel::reset()
     emit started();
     this->setInitialState();
     d->command->undo();
+    d->derivations = 0;
     this->viewState();
     emit finished();
 }
@@ -264,6 +270,7 @@ void gnomonWorkspaceLSystemModel::setInitialState()
 void gnomonWorkspaceLSystemModel::viewState()
 {
     // TODO: pass lsystem to visu plugin
+    d->command->setDerivationLength(d->derivations);
     auto lString = d->command->lString();
     if (lString) {
         d->view->setLString(lString);

@@ -28,6 +28,9 @@ public:
     void setLSystem(const QString& code);
     const QString& lSystemCode(void) const;
 
+    int derivationLength(void) const;
+    void setDerivationLength(int);
+
 public:
     virtual void setModelName(const QString& name) override;
 

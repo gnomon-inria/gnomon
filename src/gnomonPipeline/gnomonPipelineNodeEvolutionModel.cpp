@@ -82,7 +82,7 @@ const QJsonObject gnomonPipelineNodeEvolutionModel::toJson(void)
     QJsonObject parameters;
     for (auto it = dd->parameters.begin(); it != dd->parameters.end(); ++it) {
         auto&& param = it.key();
-        if (param == "lsystem_code") {
+        if ((param == "lsystem_code") || (param == "derivation_length"))  {
             parameters.insert(param, dd->parameters[param]);
         } else {
             QVariantHash parameter = dd->parameters[param].toObject().toVariantHash();
