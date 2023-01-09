@@ -46,7 +46,7 @@
 %import <dtkImagingCore/dtkImagingCore.i>
 
 %{
- 
+
 #include <dtkCore>
 #include <dtkImagingCore>
 
@@ -428,7 +428,7 @@
 
 
 // /////////////////////////////////////////////////////////////////
-// Map List_list_double to Qlist(std::array<double, 3>) 
+// Map List_list_double to Qlist(std::array<double, 3>)
 //     using ctrls_type = QList<std::array<double, 3>>;
 // for gnomonCoreParameterNurbs
 // /////////////////////////////////////////////////////////////////
@@ -436,7 +436,7 @@
 //%feature("novaluewrapper") QList<std::array<double, 3>>;
 
 %typemap(in) QList<std::array<double, 3>> {
-    $1 = QList<std::array<double, 3>>();    
+    $1 = QList<std::array<double, 3>>();
     if (PyList_Check($input)) {
         int nb_points = PyList_Size($input);
 
@@ -455,7 +455,7 @@
         }
     } else {
         qWarning() << "List of List of double is expected ad input. empty list is returned";
-    }    
+    }
 }
 
 %typemap(out) QList<std::array<double, 3>> {

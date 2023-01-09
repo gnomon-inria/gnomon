@@ -18,17 +18,17 @@
 #include <gnomonVisualizationExport>
 
 #include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkRenderWindowInteractor.h>
 
 class gnomonViewForm;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInteractorStyle : public QObject, public vtkInteractorStyleTrackballCamera
 {
+    Q_OBJECT
+
 public:
      gnomonInteractorStyle(void);
     ~gnomonInteractorStyle(void);
-
-public:
-    virtual QMap<int, QString> keyMap(void) const;
 
 public:
     virtual void OnMouseMove(void) override;
@@ -56,8 +56,8 @@ public slots:
     virtual void disable(void);
 
 public:
+    virtual QMap<int, QString> keyMap(void) const;
     virtual QString description(void) const;
-    virtual int icon(void) const;
 
 protected:
     class gnomonInteractorStylePrivate *d;

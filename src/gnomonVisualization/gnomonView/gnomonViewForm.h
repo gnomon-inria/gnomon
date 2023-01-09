@@ -101,8 +101,8 @@ signals:
     void   linking(void);
     void unlinking(void);
 
- signals:
-    void pickedCell(int);
+signals:
+    void pickedCell(long);
 signals:
     void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm>);
 

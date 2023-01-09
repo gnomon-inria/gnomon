@@ -14,8 +14,8 @@ public:
     virtual ~gnomonAbstractVisualizationCellImage(void) = default;
 
 public:
-	virtual void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) = 0;
-	virtual std::shared_ptr<gnomonCellImageSeries> cellImage(void) = 0;
+    virtual void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) = 0;
+    virtual std::shared_ptr<gnomonCellImageSeries> cellImage(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonCellImage") {
@@ -29,6 +29,9 @@ public:
         }
         return {};
     };
+
+signals:
+    void pickedCell(long);
 };
 
 // /////////////////    //////////////////////////////////////////////////

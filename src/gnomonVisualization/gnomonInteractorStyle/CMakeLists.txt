@@ -1,23 +1,3 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
-## #################################################################
-## Inputs
-## #################################################################
-
-add_subdirectory(gnomonCellImage)
-
 ## #################################################################
 ## Sources
 ## #################################################################
@@ -25,17 +5,13 @@ add_subdirectory(gnomonCellImage)
 ADD_GNOMON_HEADERS(
     gnomonInteractorStyle
     gnomonInteractorStyle.h
-    gnomonInteractorStyleCellImagePicking.h
     gnomonInteractorStyleXYZ
-    gnomonInteractorStyleXYZ.h
-    ${${PROJECT_NAME}_INTERACTORSTYLE_CELLIMAGE_HEADERS})
+    gnomonInteractorStyleXYZ.h)
 
 
 ADD_GNOMON_SOURCES(
     gnomonInteractorStyle.cpp
-    gnomonInteractorStyleCellImagePicking.cpp
-    gnomonInteractorStyleXYZ.cpp
-    ${${PROJECT_NAME}_INTERACTORSTYLE_CELLIMAGE_SOURCES})
+    gnomonInteractorStyleXYZ.cpp)
 
 ######################################################################
 ### CMakeLists.txt ends here

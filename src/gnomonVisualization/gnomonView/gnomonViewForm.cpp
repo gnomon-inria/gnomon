@@ -15,10 +15,9 @@
 #include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
-#include "gnomonInteractorStyle/gnomonInteractorStyleCellImagePicking.h"
-//#include "gnomonInteractorStyle/gnomonInteractorStyle.h"
-//#include "gnomonInteractorStyle/gnomonInteractorStyleXYZ.h"
+#include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
+#include <memory>
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorObserver.h>
@@ -139,7 +138,7 @@ public:
 
 public:
     vtkSmartPointer<vtkInteractorObserver> old_style = nullptr;
-    vtkSmartPointer<gnomonInteractorStyleCellImagePicking> picking_style = nullptr;
+    std::shared_ptr<gnomonAbstractVisualizationCellImage> picking_visu = nullptr;
     QMetaObject::Connection connectPicked;
 
 public:
@@ -1468,30 +1467,43 @@ void gnomonViewForm::clear(void)
 }
 
 void gnomonViewForm::startPicking() {
-    //only in 3d for now !
+    if(!d->formVisualization["gnomonCellImage"] ||
+       d->formVisualization["gnomonCellImage"]->pluginName() != "visualizationCellImageMarchingCubes") {
+        qWarning() << "Picking not implemented for : "
+                   << d->formVisualizationNames["gnomonCellImage"]
+                   << " only visualizationCellImageMarchingCubes has picking";
+        return;
+    }
+
+
     qDebug() << "Start picking";
+
     // backup old interactor style
     d->old_style = d->interactor()->GetInteractorStyle();
 
-    // set interactor style to gnomonInteratorStyleCellMarchingCubes
-    if(!d->picking_style) {
-        d->picking_style = vtkSmartPointer<gnomonInteractorStyleCellImagePicking>::New();
-        d->picking_style->SetDefaultRenderer(d->renderer3D);
-    }
-    d->interactor()->SetInteractorStyle(d->picking_style);
+    d->picking_visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationCellImage>(d->formVisualization["gnomonCellImage"]);
 
-        qDebug() << "Start picking style set";
-    d->connectPicked = connect(d->picking_style, &gnomonInteractorStyleCellImagePicking::pickedCell, this, &gnomonViewForm::pickedCell);
+    d->picking_visu->interactorStyle()->SetDefaultRenderer(d->renderer3D);
+    d->interactor()->SetInteractorStyle(d->picking_visu->interactorStyle());
 
+    qDebug() << "Start picking style set";
+    d->connectPicked = connect(d->picking_visu.get(), &gnomonAbstractVisualizationCellImage::pickedCell, this, &gnomonViewForm::pickedCell);
 }
+
 void gnomonViewForm::stopPicking() {
-        qDebug() << "Stop picking";
+    if(!d->old_style)
+        return;
+
+    qDebug() << "Stop picking";
+    //d->picking_visu->stopPicking()
     // disconnect pickedCell connection
+
     disconnect(d->connectPicked);
 
     // set interactorstyle to old style
     d->interactor()->SetInteractorStyle(d->old_style);
     d->old_style = nullptr;
+    d->picking_visu = nullptr;
 }
 
 void gnomonViewForm::onSliceChanged(int slice)
