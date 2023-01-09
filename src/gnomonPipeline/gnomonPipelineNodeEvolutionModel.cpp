@@ -135,5 +135,13 @@ void gnomonPipelineNodeEvolutionModel::configureParameter(const QString &name, d
     param->setValue(QVariant(dd->parameters[name].toObject().toVariantHash()));
 }
 
+QString gnomonPipelineNodeEvolutionModel::getParameterAsString(const QString &name) {
+    return dd->parameters[name].toString();
+}
+
+double gnomonPipelineNodeEvolutionModel::getParameterAsDouble(const QString &name) {
+    return dd->parameters[name].toDouble();
+}
+
 //
 // gnomonPipelineNodeEvolutionModel.cpp ends here

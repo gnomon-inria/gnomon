@@ -69,6 +69,7 @@ public:
     virtual QStringList parametersName(void);
     virtual void configureParameter(const QString &name, dtkCoreParameter *param);
     virtual QString getParameterAsString(const QString &name);
+    virtual double getParameterAsDouble(const QString &name);
     virtual QMap<QString, QString> getPluginMetadata(void);
 
     Type type(void);
