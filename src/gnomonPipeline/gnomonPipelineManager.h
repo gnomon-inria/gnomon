@@ -2,11 +2,13 @@
 
 #include <gnomonPipelineExport.h>
 
+#include <utility>
 #include <QtCore>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 
 class gnomonPipeline;
 class gnomonPipelineNode;
+class gnomonPipelineNodeReader;
 
 class gnomonAbstractAdapterCommand;
 class gnomonAbstractCommand;
@@ -47,6 +49,9 @@ public slots:
 public:
     void setFormIndex(std::shared_ptr<gnomonAbstractDynamicForm> form, int index=-1);
 
+public: 
+    std::pair<QString, gnomonPipelineNodeReader *> cacheNode(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    void decachNode(std::shared_ptr<gnomonAbstractDynamicForm> form, std::pair<QString, gnomonPipelineNodeReader *> name_and_node);
 private:
     class gnomonPipelineManagerPrivate *d;
 

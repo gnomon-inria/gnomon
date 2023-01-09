@@ -1,6 +1,7 @@
 #include "gnomonFormManager.h"
 
 #include <memory> 
+#include <utility>
 
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
@@ -9,10 +10,11 @@
 #include "gnomonView/gnomonViewForm.h"
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
+#include <gnomonPipeline/gnomonPipelineNodeReader.h>
 
 #include <gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageWriterCommand>
-#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexWriterCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataDict/gnomonDataDictWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageWriterCommand>
@@ -20,6 +22,18 @@
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudWriterCommand>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeWriterCommand>
+
+#include <gnomonCore/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonDataDict/gnomonDataDictReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudReaderCommand>
+#include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
+
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
@@ -42,23 +56,30 @@ public:
     QHash<int, std::shared_ptr<gnomonAbstractVisualization> > formVisualizations;
     QHash<int, std::shared_ptr<gnomonAbstractMatplotlibVisualization> > formMatplotlibVisualizations;
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
-    QHash<int, QImage> formData;
+    QHash<int, gnomonAbstractReaderCommand *> formReaderCommand;
+    QHash<int, QImage> formThumbnail;
     QHash<int, vtkCamera *> formCameras;
     QHash<QString, gnomonAbstractWriterCommand *> commands;
     QHash<QString, int> formCounter;
     QHash<int, bool> formDropped;
 
-    // TODO: to remove when destruction of visualizations will not cause a crash
-    QList<std::shared_ptr<gnomonAbstractVisualization> > removedVisualizations;
-
 public:
     gnomonViewForm *view = nullptr;
+    QTemporaryDir *tmpDir = nullptr;
 
 public:
     static int item_counter;
+    QMap<int, QString> cache_forms;
+    QMap<int, std::pair<QString, gnomonPipelineNodeReader *> > cache_pipeline_nodes;
+    QMap<int, QJsonObject > cache_metadatas;
+
 
 public:
     QMetaObject::Connection connection;
+
+public:
+    bool deleteFormFromMemory(int id);
+    void loadFormToMemory(int id);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -70,6 +91,7 @@ int gnomonFormManagerPrivate::item_counter = 0;
 gnomonFormManagerPrivate::gnomonFormManagerPrivate(QObject *parent) : QObject(parent)
 {
     gnomonAbstractCommand::gui_thread = this->thread();
+    tmpDir = new QTemporaryDir("TEMP_CACHE_DIR");
 }
 
 gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
@@ -77,12 +99,18 @@ gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
     for (auto command: this->commands)
         delete command;
     this->commands.clear();
+
+    tmpDir->remove();
+    delete tmpDir;
+
+    this->cache_pipeline_nodes.clear();
 }
 
 void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstractDynamicForm> form, const QImage& image)
 {
+    form->setThumbnailId(item);
     this->forms.insert(item, form);
-    this->formData.insert(item, image);
+    this->formThumbnail.insert(item, image);
     this->formDropped.insert(item, false);
 
     gnomonPipelineManager::instance()->setFormIndex(form, item);
@@ -94,6 +122,106 @@ void gnomonFormManagerPrivate::insertForm(int item, std::shared_ptr<gnomonAbstra
     }
     this->formCounter[form_name]++;
 }
+
+bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
+{
+    if(this->cache_forms.contains(id)) {
+        this->forms[id] = nullptr;
+        // TOCHECK
+        //Do we decide to clear the visu here, which means that 
+        // the visu won't work in the workspace that created this form ?
+        // If so, we need to add the mecanismto re-create the visu when needed
+        // from it's parameters.
+        // ------
+
+        //if (this->formVisualizations.contains(id))
+        //{
+        //    this->formVisualizations[id]->disconnect();
+        //    this->formVisualizations[id]->clearConnections();
+        //    this->formVisualizations[id]->clear();
+        //    this->formVisualizations[id] = nullptr;
+        //}
+        //else if (this->formMatplotlibVisualizations.contains(id))
+        //{
+        //    this->formMatplotlibVisualizations[id] = nullptr;
+        //}
+        //this->formThumbnail[id] = QImage(); TODO "griser"
+        return true;
+    }
+
+    return false;
+}
+
+void gnomonFormManagerPrivate::loadFormToMemory(int id)
+{
+    qDebug() << Q_FUNC_INFO << id;
+
+    QString reader_plugin;
+
+    if(dynamic_cast<gnomonBinaryImageWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonBinaryImageReaderCommand();
+        reader_plugin = dynamic_cast<gnomonBinaryImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonCellComplexReaderCommand();
+        reader_plugin = dynamic_cast<gnomonCellComplexReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonCellImageReaderCommand();
+        reader_plugin = dynamic_cast<gnomonCellImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonDataDictWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonDataDictReaderCommand();
+        reader_plugin = dynamic_cast<gnomonDataDictReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonDataFrameReaderCommand();
+        reader_plugin = dynamic_cast<gnomonDataFrameReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonImageWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonImageReaderCommand();
+        reader_plugin = dynamic_cast<gnomonImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonLStringWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonLStringReaderCommand();
+        reader_plugin = dynamic_cast<gnomonLStringReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonMeshReaderCommand();
+        reader_plugin = dynamic_cast<gnomonMeshReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonPointCloudWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonPointCloudReaderCommand();
+        reader_plugin = dynamic_cast<gnomonPointCloudReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } else if(dynamic_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[id]))
+    {
+        this->formReaderCommand[id] = new gnomonTreeReaderCommand();
+        reader_plugin = dynamic_cast<gnomonTreeReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
+    } 
+
+    gnomonAbstractReaderCommand *readerCommand = this->formReaderCommand[id];
+    if(!readerCommand) {
+        qWarning() << "cannot create reader to read file from cache!";
+        qWarning() << "file " << this->cache_forms[id];
+        return;
+    }
+    QString path = this->cache_forms.take(id);
+    readerCommand->setAlgorithmName(reader_plugin);
+    readerCommand->setPath(path);
+    QString source = QUrl(path).fileName();
+    readerCommand->setSource(source);
+
+    connect(readerCommand, &gnomonAbstractCommand::finished, [=]() {
+            this->forms[id] = readerCommand->outputs().first();
+            this->forms[id]->setThumbnailId(id);
+            this->forms[id]->metadata()->deserialize(this->cache_metadatas.take(id));
+            QString form_name = this->forms[id]->formName();
+            gnomonPipelineManager::instance()->decachNode(this->forms[id], this->cache_pipeline_nodes.take(id));
+    });
+    readerCommand->redo();
+}
+
 
 void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
 {
@@ -174,13 +302,11 @@ bool gnomonFormManager::deleteForm(int id, bool force)
             d->formCameras.remove(id);
         }
         if (d->formVisualizations.contains(id)) {
-            // TODO: to remove when destruction of visualizations will not cause a crash
-            d->removedVisualizations.append(d->formVisualizations[id]);
             d->formVisualizations.remove(id);
         } else if (d->formMatplotlibVisualizations.contains(id)) {
             d->formMatplotlibVisualizations.remove(id);
         }
-        d->formData.remove(id);
+        d->formThumbnail.remove(id);
         d->formWriterCommand.remove(id);
         d->formDropped.remove(id);
         d->item_counter--;
@@ -205,10 +331,10 @@ void gnomonFormManager::compose(int first, int second) {
     gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
     gnomonPipelineManager::instance()->addForm(output);
 
-    this->addForm(output, {}, d->formData[first]);
+    this->addForm(output, {}, d->formThumbnail[first]);
 }
 
-void gnomonFormManager::saveAs(int id, const QString& f) const
+void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) const
 {
     QString file_name = f;
     QUrl url(file_name);
@@ -220,21 +346,40 @@ void gnomonFormManager::saveAs(int id, const QString& f) const
         auto command = d->formWriterCommand[id];
         command->setPath(file_name);
         command->setForm(d->forms[id]);
-        command->redo();
-        gnomonPipelineManager::instance()->addWriter(command);
+        command->redo(); 
+        if (add_to_pipeline)
+        {
+            gnomonPipelineManager::instance()->addWriter(command);
+        }
     }
 }
 
+void gnomonFormManager::addToCache(int id) const
+{
+    gnomonAbstractWriterCommand *writer_command = d->formWriterCommand[id];
+    QStringList extensions = writer_command->extensions();
+    QString f = QString::number(id) + "." + extensions[0];
+    auto filepath = d->tmpDir->filePath(f);
+    this->saveAs(id, filepath, false);
+
+    d->cache_forms[id] = filepath;
+    d->cache_pipeline_nodes[id] = gnomonPipelineManager::instance()->cacheNode(d->forms[id]);
+    d->cache_metadatas[id] = d->forms[id]->metadata()->serialize();
+    d->deleteFormFromMemory(id);
+}
+
+void gnomonFormManager::loadFromCache(int id) const
+{
+    d->loadFormToMemory(id);
+}
 // ///////////////////////////////////////////////////////////////////
 // gnomonFormManager
 // ///////////////////////////////////////////////////////////////////
 
 gnomonFormManager *gnomonFormManager::instance(void)
 {
-    if(!s_instance) {
-        s_instance = new gnomonFormManager;
-    }
-    return s_instance;
+    static gnomonFormManager s_instance;
+    return &s_instance;
 }
 
 void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,  std::shared_ptr<gnomonAbstractVisualization> visualization, const QImage& image,  vtkCamera *cam)
@@ -244,7 +389,7 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
         d->insertForm(item, form, image);
         d->formVisualizations.insert(item, visualization);
         d->formCameras.insert(item, cam);
-        emit added(item);
+        emit added(item, form->formName());
     } else {
         emit alreadyAdded();
     }
@@ -258,7 +403,7 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
         form->metadata()->moveToThread(QThread::currentThread());
         d->insertForm(item, form, image);
         d->formMatplotlibVisualizations.insert(item, visualization);
-        emit added(item);
+        emit added(item, form->formName());
     } else {
         emit alreadyAdded();
     }
@@ -272,7 +417,7 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
         form->metadata()->moveToThread(QThread::currentThread());
         d->insertForm(item, form, image);
         d->formMatplotlibVisualizations.insert(item, nullptr);
-        emit added(item);
+        emit added(item, form->formName());
     } else {
         emit alreadyAdded();
     }
@@ -295,7 +440,7 @@ vtkCamera *gnomonFormManager::getCamera(int index)
 
 QImage gnomonFormManager::thumbnail(int index)
 {
-    return d->formData.value(index, QImage());
+    return d->formThumbnail.value(index, QImage());
 }
 
 gnomonFormManager::gnomonFormManager(QObject *parent) : QObject(parent)
@@ -307,8 +452,6 @@ gnomonFormManager::~gnomonFormManager(void)
 {
     delete d;
 }
-
-gnomonFormManager *gnomonFormManager::s_instance = nullptr;
 
 gnomonDynamicFormMetadata *gnomonFormManager::getDynamicFormMetadata(int id) {
     if(contains(id)) {
@@ -387,6 +530,8 @@ int gnomonFormManager::formCount(const QString& form_name)
 
 void gnomonFormManager::setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form) 
 {
+    //once dropped, a form cannot be deleted anymore. Otherwise, it will cause
+    // onconsistency in the pipeline
     int index = d->forms.key(form);
     d->formDropped[index] = true;
 }
