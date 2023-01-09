@@ -886,7 +886,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
     # check plugin gnomon_version to actual version before registering it
     # register plugin_version to be able to get it ?
     if checkVersion(coreversion):
-        factory.recordPlugin(plugin_key, __PLUGINS__[-1], name, inspect.cleandoc(cls.__doc__))
+        factory.recordPlugin(plugin_key, __PLUGINS__[-1], name, inspect.cleandoc(cls.__doc__) if cls.__doc__ else "")
         if plugin_key in factory.keys():
             logging.info("Python plugin " + str(plugin_key) + " has been successfully loaded!")
     else:
