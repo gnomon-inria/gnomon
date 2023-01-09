@@ -59,11 +59,11 @@ void initialize(const QString& path)
     for(const QString& v_path : pathslist) {
         manager().initialize(v_path);
     }
-    gnomonVisualization::visualizationCellComplex::pluginFactory().record("gnomonVisualizationCellComplex", gnomonVisualizationCellComplexCreator);
+    gnomonVisualization::visualizationCellComplex::pluginFactory().record("gnomonVisualizationCellComplex", gnomonVisualizationCellComplexCreator, "Cell Complex Visualization", "");
     // gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageMarchingCubes", gnomonVisualizationCellImageMarchingCubesCreator);
-    gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageVolume", gnomonVisualizationCellImageVolumeCreator);
-    gnomonVisualization::visualizationImage::pluginFactory().record("gnomonVisualizationImageChannelBlending", gnomonVisualizationImageChannelBlendingCreator);
-    gnomonVisualization::visualizationMesh::pluginFactory().record("gnomonVisualizationMesh", gnomonVisualizationMeshCreator);
+    gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageVolume", gnomonVisualizationCellImageVolumeCreator, "Cell Image Volume", "");
+    gnomonVisualization::visualizationImage::pluginFactory().record("gnomonVisualizationImageChannelBlending", gnomonVisualizationImageChannelBlendingCreator, "Channel Blending", "");
+    gnomonVisualization::visualizationMesh::pluginFactory().record("gnomonVisualizationMesh", gnomonVisualizationMeshCreator, "Mesh Visualization", "");
 }
 
 void uninitialize(void)
