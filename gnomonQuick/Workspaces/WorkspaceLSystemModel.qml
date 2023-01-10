@@ -28,6 +28,7 @@ G.Workspace {
     workspace_title: "L-System Model";
 
     property string _current_file: "";
+    property alias editor: _editor;
 
     fill: () => {
         if(world.currentRef < 0)
