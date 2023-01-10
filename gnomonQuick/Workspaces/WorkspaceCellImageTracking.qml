@@ -160,10 +160,10 @@ G.Workspace {
                     hoverEnabled: !is_picking
 
                     onClicked: {
-                        console.log("picking enabled !");
                         is_picking = true;
-                        _new_picking.text = "( ? , ? )"
+                        _new_picking.text = "[ ? || ? ]"
                         d.source.startPicking()
+                        d.target.startPicking()
                     }
                 }
 
@@ -200,9 +200,9 @@ G.Workspace {
                     visible: is_picking;
 
                     onClicked: {
-                        console.log("picking cancelled");
                         _new_picking.text = "New Picking"
                         d.source.stopPicking()
+                        d.target.stopPicking()
                         is_picking = false;
                     }
                 }
@@ -222,10 +222,17 @@ G.Workspace {
                     visible: is_picking;
 
                     onClicked: {
-                        console.log("picking OK!");
-                        _lineage_values.text += _new_picking.text + " , "
+                        if(!_lineage_values.text) {
+                            _lineage_values.text += "[ "
+                        } else {
+                            _lineage_values.text += ", "
+                        }
+                        _lineage_values.text +=  _new_picking.text.replace('||', ',')
                         _new_picking.text = "New Picking"
                         d.source.stopPicking()
+                        d.target.stopPicking()
+                        updateCustomLineageInVisu()
+
                         is_picking = false;
                     }
                 }
@@ -283,16 +290,58 @@ G.Workspace {
 
     Connections {
         target: d.source
-        function onPickedCell(cell_id) {
-            console.log("cell picked from source " , cell_id);
-            _new_picking.text = "(" + cell_id + ", " + _new_picking.text.split(',')[1]
+        function onPickedCellsChanged() {
+            if(d.source.pickedCells.length == 0) {
+                _new_picking.text = "[ ? ||" + _new_picking.text.split('||')[1]
+            } else if(d.source.pickedCells.length > 1) {
+                 _new_picking.text = "[" + d.source.pickedCells + " ||" + _new_picking.text.split('||')[1]
+            } else {
+                _new_picking.text = "[" + d.source.pickedCells[0] + " ||" + _new_picking.text.split('||')[1]
+            }
         }
+    }
 
-        //TODO target
-
+    Connections {
+        target: d.target
+        function onPickedCellsChanged() {
+            _new_picking.text = _new_picking.text.split(',')[0] + ", TODO !!"  + "]"
+        }
     }
 
     Component.onCompleted: {
         d.onParametersChanged();
     }
+
+        //"[ [4,5] , [11, [17, 18]] , [ [22], [23,24]]]"
+    function updateCustomLineageInVisu()
+    {
+        let lineage_text = "[ " + _lineage_value.text + " ]"
+        console.log(lineage_text)
+        const values_array = JSON.parse(lineage_text)
+        let source_lineage_idx = []
+        let target_lineage_idx = []
+
+        for(const lineage of message) {
+          if(Array.isArray(lineage[0])) {
+            for(const idx of lineage[0]) {
+              source_lineage_idx.push(idx)
+            }
+          } else {
+            source_lineage_idx.push(lineage[0])
+          }
+          if(Array.isArray(lineage[1])) {
+            for(const idx of lineage[1]) {
+              target_lineage_idx.push(idx)
+            }
+          } else {
+            target_lineage_idx.push(lineage[1])
+          }
+        }
+
+        console.log("source", source_lineage_idx)
+        console.log("target", target_lineage_idx)
+
+        // TODO set visu param
+    }
+
 }
