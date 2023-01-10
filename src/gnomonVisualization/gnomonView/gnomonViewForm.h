@@ -64,6 +64,7 @@ public:
     Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
     Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
     Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
+    Q_PROPERTY(QList<long> pickedCells READ pickedCells NOTIFY pickedCellsChanged)
 
     Q_INVOKABLE void startPicking();
     Q_INVOKABLE void stopPicking();
@@ -102,7 +103,12 @@ signals:
     void unlinking(void);
 
 signals:
-    void pickedCell(long);
+    void pickedCellsChanged();
+
+ public:
+    QList<long> pickedCells();
+    void setPickedCells(QList<long>);
+
 signals:
     void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm>);
 

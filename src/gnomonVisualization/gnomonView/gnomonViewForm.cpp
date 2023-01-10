@@ -155,6 +155,7 @@ public:
 public:
     QColor export_color = QColor("#cccccc");
     QSet<double> forms_times;
+    QList<long> picked_cells;
 
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
@@ -728,6 +729,17 @@ QList<double> gnomonViewForm::times(void)
     std::sort(sorted_times.begin(), sorted_times.end());
 
     return sorted_times;
+}
+
+void gnomonViewForm::setPickedCells(QList<long> new_list)
+{
+    d->picked_cells = new_list;
+    emit pickedCellsChanged();
+}
+
+QList<long> gnomonViewForm::pickedCells(void)
+{
+    return d->picked_cells;
 }
 
 void gnomonViewForm::tryLinking(void)
@@ -1475,9 +1487,6 @@ void gnomonViewForm::startPicking() {
         return;
     }
 
-
-    qDebug() << "Start picking";
-
     // backup old interactor style
     d->old_style = d->interactor()->GetInteractorStyle();
 
@@ -1485,25 +1494,21 @@ void gnomonViewForm::startPicking() {
 
     d->picking_visu->interactorStyle()->SetDefaultRenderer(d->renderer3D);
     d->interactor()->SetInteractorStyle(d->picking_visu->interactorStyle());
-
-    qDebug() << "Start picking style set";
-    d->connectPicked = connect(d->picking_visu.get(), &gnomonAbstractVisualizationCellImage::pickedCell, this, &gnomonViewForm::pickedCell);
+    d->connectPicked = connect(d->picking_visu.get(), &gnomonAbstractVisualizationCellImage::pickedCells, this, &gnomonViewForm::setPickedCells);
 }
 
 void gnomonViewForm::stopPicking() {
     if(!d->old_style)
         return;
 
-    qDebug() << "Stop picking";
-    //d->picking_visu->stopPicking()
-    // disconnect pickedCell connection
-
+    d->picking_visu->stopPicking();
     disconnect(d->connectPicked);
 
     // set interactorstyle to old style
     d->interactor()->SetInteractorStyle(d->old_style);
     d->old_style = nullptr;
     d->picking_visu = nullptr;
+    this->render();
 }
 
 void gnomonViewForm::onSliceChanged(int slice)

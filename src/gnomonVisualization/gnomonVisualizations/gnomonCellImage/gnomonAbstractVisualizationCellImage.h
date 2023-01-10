@@ -30,8 +30,10 @@ public:
         return {};
     };
 
+    virtual void stopPicking() { qDebug() << Q_FUNC_INFO << "not implemented"; };
+
 signals:
-    void pickedCell(long);
+    void pickedCells(QList<long>);
 };
 
 // /////////////////    //////////////////////////////////////////////////
