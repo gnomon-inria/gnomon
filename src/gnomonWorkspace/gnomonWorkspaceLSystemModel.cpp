@@ -237,9 +237,11 @@ void gnomonWorkspaceLSystemModel::step()
         d->derivations = 0;
     }
     d->command->redo();
-    d->derivations += 1;
-    this->viewState();
-    emit finished();
+    connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
+        d->derivations += 1;
+        this->viewState();
+        emit finished();
+    });
 }
 
 void gnomonWorkspaceLSystemModel::reset()

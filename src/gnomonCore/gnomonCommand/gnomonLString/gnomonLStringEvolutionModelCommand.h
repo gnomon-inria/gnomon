@@ -7,6 +7,7 @@
 
 class GNOMONCORE_EXPORT gnomonLStringEvolutionModelCommand : public gnomonAbstractEvolutionModelCommand
 {
+    Q_OBJECT
 
 public:
      gnomonLStringEvolutionModelCommand(void);
@@ -17,6 +18,9 @@ public slots:
     virtual void postdo(void) override;
     virtual void   undo(void) override;
     virtual void   redo(void) override;
+
+signals:
+    void finished(void);
 
 public:
     void setAxiom(std::shared_ptr<gnomonLStringSeries> lstring);

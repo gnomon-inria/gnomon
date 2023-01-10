@@ -3,6 +3,8 @@
 #include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
+#include <QtConcurrent>
+#include <QtCore>
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -10,11 +12,27 @@
 class gnomonLStringEvolutionModelCommandPrivate
 {
 public:
+    void clearWatcher(void);
+public:
     std::shared_ptr<gnomonLStringSeries> init_lString = nullptr;
     std::shared_ptr<gnomonLStringSeries> lString = nullptr;
 
     int derivationLength = 0;
+
+    QFutureWatcher<void> *watcher = nullptr;
 };
+
+void gnomonLStringEvolutionModelCommandPrivate::clearWatcher(void) {
+    if(watcher){
+        watcher->disconnect();
+        if(watcher->isRunning()) {
+            watcher->cancel();
+            watcher->waitForFinished();
+        }
+    }
+    delete watcher;
+    watcher = nullptr;
+}
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -69,15 +87,22 @@ void gnomonLStringEvolutionModelCommand::redo(void)
 {
     Q_ASSERT(this->model);
 
-    this->predo();
+    d->clearWatcher();
+    d->watcher = new QFutureWatcher<void>();
+    connect(d->watcher, &QFutureWatcher<void>::finished, this, &gnomonLStringEvolutionModelCommand::finished);
 
-    int t = 0;
-    std::shared_ptr<gnomonLStringSeries> lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
-    if (lString) {
-        t = int(lString->times().last());
-    }
-    this->model->step(t, 1);
-    this->postdo();
+    auto future = QtConcurrent::run([=](){
+        this->predo();
+
+        int t = 0;
+        std::shared_ptr<gnomonLStringSeries> lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
+        if (lString) {
+            t = int(lString->times().last());
+        }
+        this->model->step(t, 1);
+        this->postdo(); 
+    });
+    d->watcher->setFuture(future);
 }
 
 void gnomonLStringEvolutionModelCommand::setAxiom(std::shared_ptr<gnomonLStringSeries> lString)
