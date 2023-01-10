@@ -39,6 +39,8 @@ ADD_GNOMON_HEADERS(
   gnomonAbstractCommand.h
   gnomonAbstractConstructorCommand
   gnomonAbstractConstructorCommand.h
+  gnomonAbstractEvolutionModelCommand
+  gnomonAbstractEvolutionModelCommand.h
   gnomonAbstractReaderCommand
   gnomonAbstractReaderCommand.h
   gnomonAbstractWriterCommand

@@ -12,6 +12,8 @@ class gnomonLStringEvolutionModelCommandPrivate
 public:
     std::shared_ptr<gnomonLStringSeries> init_lString = nullptr;
     std::shared_ptr<gnomonLStringSeries> lString = nullptr;
+
+    int derivationLength = 0;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -78,7 +80,7 @@ void gnomonLStringEvolutionModelCommand::redo(void)
     this->postdo();
 }
 
-void gnomonLStringEvolutionModelCommand::setInitialState(std::shared_ptr<gnomonLStringSeries> lString)
+void gnomonLStringEvolutionModelCommand::setAxiom(std::shared_ptr<gnomonLStringSeries> lString)
 {
     if ((!lString)||(lString->times().empty())) {
         d->init_lString = nullptr;
@@ -88,12 +90,12 @@ void gnomonLStringEvolutionModelCommand::setInitialState(std::shared_ptr<gnomonL
     ((gnomonAbstractLStringEvolutionModel *) this->model)->setInitialState(d->init_lString);
 }
 
-std::shared_ptr<gnomonLStringSeries> gnomonLStringEvolutionModelCommand::initialState(void)
+std::shared_ptr<gnomonLStringSeries> gnomonLStringEvolutionModelCommand::axiom(void)
 {
     return d->init_lString;
 }
 
-std::shared_ptr<gnomonLStringSeries> gnomonLStringEvolutionModelCommand::state(void)
+std::shared_ptr<gnomonLStringSeries> gnomonLStringEvolutionModelCommand::lString(void)
 {
     return d->lString;
 }
@@ -103,6 +105,21 @@ void gnomonLStringEvolutionModelCommand::setLSystem(const QString& code)
     ((gnomonAbstractLStringEvolutionModel *) this->model)->setLSystem(code);
 }
 
+const QString& gnomonLStringEvolutionModelCommand::lSystemCode(void) const
+{
+    return ((gnomonAbstractLStringEvolutionModel *) this->model)->lSystemCode();
+}
+
+int gnomonLStringEvolutionModelCommand::derivationLength(void) const
+{
+    return d->derivationLength;
+}
+
+void gnomonLStringEvolutionModelCommand::setDerivationLength(int l)
+{
+    d->derivationLength = l;
+}
+
 void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)
 {
     this->model_name = model_name;
@@ -110,6 +127,39 @@ void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)
     this->model = gnomonCore::lStringEvolutionModel::pluginFactory().create(this->model_name);
 }
 
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringEvolutionModelCommand::initialState()
+{
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > initial_state;
+    initial_state["axiom"] = this->axiom();
+    return initial_state;
+}
+
+gnomonAbstractCommand::orderedMap gnomonLStringEvolutionModelCommand::initialStateTypes() {
+    gnomonAbstractCommand::orderedMap types;
+    types.emplace_back(std::make_pair("axiom", "gnomonLString"));
+    return types;
+}
+
+void gnomonLStringEvolutionModelCommand::setInitialState(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
+    if (name == "axiom") {
+        this->setAxiom(std::dynamic_pointer_cast<gnomonLStringSeries>(form));
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown initial state "<< name;
+    }
+}
+
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringEvolutionModelCommand::state()
+{
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > state;
+    state["lString"] = this->lString();
+    return state;
+}
+
+gnomonAbstractCommand::orderedMap gnomonLStringEvolutionModelCommand::stateTypes() {
+    gnomonAbstractCommand::orderedMap types;
+    types.emplace_back(std::make_pair("lString", "gnomonLString"));
+    return types;
+}
 
 bool gnomonLStringEvolutionModelCommand::isEmpty()
 {

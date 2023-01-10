@@ -13,6 +13,7 @@ class gnomonPipelineNodeReader;
 class gnomonAbstractAdapterCommand;
 class gnomonAbstractCommand;
 class gnomonAbstractConstructorCommand;
+class gnomonAbstractEvolutionModelCommand;
 class gnomonAbstractReaderCommand;
 class gnomonAbstractWriterCommand;
 
@@ -40,6 +41,7 @@ public slots:
     void addAdaptedForm(std::shared_ptr<gnomonAbstractDynamicForm> form); //todo delete ?
     void addMorphoForm(std::shared_ptr<gnomonAbstractDynamicForm> form, int id, double voxelsize, int time_start, int time_end);
     void addAlgorithm(gnomonAbstractCommand *command);
+    void addEvolutionModel(gnomonAbstractEvolutionModelCommand *command);
     void addTask(const QString &task, QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs,
                  QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs);
     void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
