@@ -99,12 +99,8 @@ void gnomonLStringEvolutionModelCommand::redo(void)
         if (lString) {
             t = int(lString->times().last());
         }
-        if(this->simulationType == SimulationType::step) {
-            this->model->step(t, 1);
-        } else {
-            this->model->run(0, 0, 0);
-        }
-        this->postdo(); 
+        this->model->step(t, 1);
+        this->postdo();
     });
     d->watcher->setFuture(future);
 }
