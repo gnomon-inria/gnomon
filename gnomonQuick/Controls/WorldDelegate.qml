@@ -243,7 +243,21 @@ Item {
                 }
             }
         }
-
+        Action {
+            text: qsTr("Cache")
+            shortcut: StandardKey.Open
+            onTriggered: {
+                //GV.World.formWriterNameFilter(form_id)
+                GV.World.addToCache(form_id)
+            }
+        }
+        Action {
+            text: qsTr("Load Cache")
+            shortcut: StandardKey.Open
+            onTriggered: {
+                GV.World.loadFromCache(form_id)
+            }
+        }
     }
 
     G.MetadataDialog {

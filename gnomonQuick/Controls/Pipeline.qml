@@ -175,6 +175,8 @@ Control {
             target: GP.PipelineManager.pipeline
             function onNodeAdded (node) {
 
+                console.log(node)
+
                 let n = new G.PipelineLayout.Node(node.name, node)
                 _self.addNode(n);
 
@@ -297,8 +299,9 @@ Control {
             _internal.edgeComponents.splice(edge_index, 1)
         }
 
-        _internal.nodeComponents[node].destroy()
-        delete _internal.nodeComponents[node]
+        _internal.layout.graph.removeNode(node)
+        _internal.nodeComponents[node.name].destroy()
+        delete _internal.nodeComponents[node.name]
     }
 
     function computeLayout(newNodeId) {
@@ -364,6 +367,8 @@ Control {
             return G.Style.colors.lightBlue
         if (node.type == GP.PipelineNode.NODE_MORPHONET)
             return G.Style.colors.baseColor
+        if (node.type == GP.PipelineNode.NODE_EVOLUTION_MODEL)
+            return G.Style.colors.noteColor
         return G.Style.colors.neutralColor
     }
 

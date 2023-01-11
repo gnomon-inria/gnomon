@@ -102,23 +102,25 @@ Rectangle {
         type: G.Style.ButtonType.Warning
     }
 
-    Slider { id: _2d_slider
+    G.Slider {
+
+        id: _2d_slider
+
+        x: _2d_yz.x + _2d_slider.height / 2
+        y: _2d_yz.y + _2d_slider.width + G.Style.mediumPadding + _2d_slider.height / 2
+
+        transformOrigin: Item.Left
+        rotation: -90
+        visible: _2d_icon.active;
+
         from: _2d_xy.active? viewLogic.zMin : _2d_xz.active? viewLogic.yMin : viewLogic.xMin;
         to:   _2d_xy.active? viewLogic.zMax : _2d_xz.active? viewLogic.yMax : viewLogic.xMax;
+
         value: 10
         stepSize: 1
         snapMode: Slider.SnapAlways
 
-        rotation: 90
-        visible: _2d_icon.active;
-        width: _view.height
-
-        anchors.verticalCenter: _view.verticalCenter
-        anchors.left: _view.left
-        anchors.leftMargin: G.Style.smallPadding / 2 - _view.height / 2
-
-        handle.implicitWidth: G.Style.smallPadding
-        handle.implicitHeight: G.Style.smallPadding
+        useRadius: true
 
         onValueChanged: {
             self.sliceChange(value);
@@ -276,8 +278,8 @@ Rectangle {
     }
 
     Keys.onPressed: (event) => {
-        console.log(event.key)
         event.accepted = false
+        // ctrl + E
         if (event.key == Qt.Key_E && event.modifiers & Qt.ControlModifier) {
             event.accepted = true
             if(event.modifiers & Qt.ShiftModifier) {
@@ -287,6 +289,13 @@ Rectangle {
                 _form_export_dialog.reset();
             }
         }
+
+        if (event.key == Qt.Key_R || event.key == Qt.Key_S || event.key == Qt.Key_W) {
+        // if(viewLogic.acceptKey() // can do like this to restrict to certain views only
+        event.accepted = _view.keyPressed(event.key)
+        //event.accepted = viewLogic.keyPressed(event.key)
+        }
+
     }
 
     G.IconButton { id: _export_icon;

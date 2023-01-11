@@ -11,6 +11,7 @@ ItemDelegate {
 
   id: _control;
 
+  property string thumbnailIndex;
   signal toggleVisibility(bool flag);
   signal deleteForm();
 
@@ -26,7 +27,7 @@ ItemDelegate {
   }
 
   contentItem: G.FormIdentifier {
-    formId: index
+    formId: _control.thumbnailIndex
     formName: _control.text
   }
 

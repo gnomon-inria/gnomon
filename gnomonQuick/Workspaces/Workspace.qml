@@ -107,15 +107,19 @@ G.Page {
         function close_console() {
             _logs_control.visible = false;
             _logs_control.enabled = false;
+            if(_logs_control.log_connection) {
+                _logs_control.log_connection.close()
+            }
+            _logs_control.log_connection = undefined
         }
 
         function new_connection() {
             _logs_control.log_connection = GV.LogServer.getPendingConnection();
-            if(_logs_control.log_connection.alive) {
+            GV.LogServer.newPendingLogConnection.disconnect(_logs_control.new_connection)
+            if(_logs_control.log_connection && _logs_control.log_connection.alive) {
                 if(_logs_control.show){
                     _logs_control.display_console()
                 }
-                GV.LogServer.newPendingLogConnection.disconnect(_logs_control.new_connection)
             }
         }
     }

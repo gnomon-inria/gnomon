@@ -43,8 +43,8 @@ ListView {
 
     Connections {
         target: GV.World
-        function onAdded(id) {
-            _world_model.append({"form_id": id })
+        function onAdded(id, form_name) {
+            _world_model.append({"form_id": id , "form_name": form_name})
             _control.currentIndex = _world_model.count - 1;
             _control.currentRef = id;
             updateContainsMouse();
@@ -86,5 +86,12 @@ ListView {
         let res = _world_model.get(i).form_id
         _world_model.remove(i)
         return res
+    }
+
+    function getFormName(i) {
+        let name = "None"
+        if(_world_model.get(i))
+            name = _world_model.get(i).form_name
+        return name
     }
 }

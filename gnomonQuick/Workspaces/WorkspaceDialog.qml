@@ -25,6 +25,8 @@ G.Dialog {
         property var workspace_groups: []
         property var workspace_plugins: []
         property var plugin_workspace: []
+        property var workspace_forms: []
+        property string algoName: ""
 
     }
     property alias plugin_workspace: _internal.plugin_workspace
@@ -33,7 +35,7 @@ G.Dialog {
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
     width: G.Style.largeDialogWidth
-    height: G.Style.largeDialogHeight
+    height: 1.5*G.Style.largeDialogHeight
 
     padding: 0;
 
@@ -44,20 +46,31 @@ G.Dialog {
 
     onAccepted: {
         if (_internal.selected_workspace) {
+            _internal.algoName = ""
             if(!window.check_if_forms_in_world()) {
                 no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
                 no_form_exported_dialog.open()
+                no_form_exported_dialog.forceActiveFocus()
+                _self.close()
                 return
             }
-            window.add_workspace(_internal.selected_workspace.source);
-            _self.close();
+            openWorkspaceAndClose(_internal.selected_workspace.source)
         }
     }
 
     onOpened: {
         _list_view.currentIndex = 0;
-        _workspace_search_bar.text = "";
-        _workspace_search_bar.forceActiveFocus();
+        _workspace_search_bar.text = ""
+        _workspace_search_bar.forceActiveFocus()
+        _internal.algoName = ""
+    }
+
+    function openWorkspaceAndClose(source) {
+        window.add_workspace(source)
+        if(_internal.algoName != "") {
+            window.current_workspace().d.algoName = _internal.algoName
+        }
+        _self.close()
     }
 
     G.Gutter {
@@ -152,6 +165,17 @@ G.Dialog {
                         anchors.rightMargin: G.Style.smallPadding;
                         anchors.verticalCenter: parent.verticalCenter;
                     }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        visible: model.highlightElement
+                        z: -0.1
+                        color: G.Style.colors.gutterColor;
+                        border {
+                            width: G.Style.borderWidth;
+                            color: G.Style.colors.baseColor;
+                        }
+                    }
                 }
 
                 filterAccepts: function(item) {
@@ -194,13 +218,19 @@ G.Dialog {
 
         title: _internal.selected_workspace ? _internal.selected_workspace.title : ""
         description: _internal.selected_workspace ? _internal.selected_workspace.description : ""
+        preview: _internal.selected_workspace ? _internal.selected_workspace.preview : ""
         plugins : _internal.selected_workspace ? _internal.workspace_plugins[_internal.selected_workspace.type] : []
 
         onOpenWithAlgo : (algo_name) => {
-            let selected_workspace = _internal.selected_workspace
-            window.add_workspace(selected_workspace.source)
-            window.current_workspace().d.algoName = algo_name
-            _self.close()
+            _internal.algoName = algo_name
+            if(!window.check_if_forms_in_world()) {
+                no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
+                no_form_exported_dialog.open()
+                no_form_exported_dialog.forceActiveFocus()
+                _self.close()
+                return
+            }
+            openWorkspaceAndClose(_internal.selected_workspace.source)
         }
     }
 
@@ -217,8 +247,11 @@ G.Dialog {
         title: "No form exported yet."
 
         onAccepted: {
-            window.add_workspace(workspace_source);
+            openWorkspaceAndClose(workspace_source)
+            no_form_exported_dialog.close()
         }
+
+
 
         ColumnLayout {
             anchors.fill: parent
@@ -300,66 +333,77 @@ G.Dialog {
             title: "Binarization"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceBinarization.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceBrowser"
             title: "Browsing"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceCellImageQuantification"
             title: "Cell Image Quantification"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageQuantification.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceCellImageTracking"
             title: "Cell Image Tracking"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceLSystemModel"
             title: "L-System Model"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceMorphonet"
             title: "MorphoNet"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspacePointDetection"
             title: "Point Detection"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePointDetection.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspacePreprocess"
             title: "Preprocessing"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspacePythonAlgorithm"
             title: "Python Algorithm"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePythonAlgorithm.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceRegistration"
             title: "Registration"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceRegistration.qml"
             available: true
+            highlightElement: false
         }
         ListElement {
             type: "gnomonWorkspaceSegmentation"
             title: "Segmentation"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceSegmentation.qml"
             available: true
+            highlightElement: false
         }
     }
 
@@ -367,6 +411,23 @@ G.Dialog {
         const workspace = _available_workspaces.get(index)
         const plugins = _internal.workspace_plugins[workspace.type]
         return plugins.length > 0;
+    }
+
+    function update_highlight() {
+        if(window.world.count > 0) {
+            for (var i=0; i<_available_workspaces.count; i++) {
+                _available_workspaces.setProperty(i, "highlightElement", false)
+                let w = _available_workspaces.get(i)
+                if(w.type in _internal.workspace_forms && window.world.count > 0) {
+                    let temp_forms = _internal.workspace_forms[w.type]
+                    for(let f in temp_forms) {
+                        if(temp_forms[f] == window.world.getFormName(window.world.currentIndex)) {
+                            _available_workspaces.setProperty(i, "highlightElement", true)
+                        } 
+                    }
+                }
+            }
+        }
     }
 
     Component.onCompleted: {
@@ -382,11 +443,25 @@ G.Dialog {
         _internal.workspace_groups["gnomonWorkspaceRegistration"] = "imageRegistration"
         _internal.workspace_groups["gnomonWorkspaceSegmentation"] = "cellImageFromImage"
 
+        _internal.workspace_forms["gnomonWorkspaceBinarization"] = ["gnomonImage", "gnomonBinaryImage"]
+        _internal.workspace_forms["gnomonWorkspaceCellImageQuantification"] = ["gnomonCellImage"]
+        _internal.workspace_forms["gnomonWorkspaceLSystemModel"] = ["gnomonLString", "gnomonTree"]
+        _internal.workspace_forms["gnomonWorkspaceMorphonet"] = ""
+        _internal.workspace_forms["gnomonWorkspaceCellImageTracking"] = ["gnomonCellImage", "gnomonDataDict", "gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspacePointDetection"] = ["gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspacePreprocess"] = ["gnomonImage", "gnomonBinaryImage"]
+        _internal.workspace_forms["gnomonWorkspacePythonAlgorithm"] = ["gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspaceRegistration"] = ["gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspaceSegmentation"] = ["gnomonImage", "gnomonBinaryImage", "gnomonPointCloud"]
+        
+
         for (var i=0; i<_available_workspaces.count; i++) {
             let w = _available_workspaces.get(i)
             _available_workspaces.setProperty(i, "section", w.title[0])
             let desc = GM.MetaData.workspaceMetaData(w.type, "description")
             _available_workspaces.setProperty(i, "description", desc)
+            let preview = w.type + ".png"
+            _available_workspaces.setProperty(i, "preview", preview)
             let plugins = []
             if (w.type in _internal.workspace_groups) {
                 plugins = GM.MetaData.pluginGroupMetaData(_internal.workspace_groups[w.type])
