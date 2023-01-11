@@ -72,7 +72,6 @@ G.Workspace {
                     anchors.fill: parent
 
                     onDroppedFromManager: (index) => {
-                        console.info('Retrieving from manager');
                         d.sourceDict.drop(index);
                     }
 
@@ -143,6 +142,10 @@ G.Workspace {
                     text: ""
                     color: G.Style.colors.hoveredBaseColor
                     font: G.Style.fonts.value
+
+                    onTextEdited: {
+                        updateCustomLineageInVisu()
+                    }
                 }
 
                 G.Button {
@@ -180,7 +183,6 @@ G.Workspace {
                     visible: !is_picking;
 
                     onClicked: {
-                        console.log("picking finished !");
                         _new_picking.text = "New Picking"
                         _swipe.currentIndex = 0;
                     }
@@ -222,17 +224,14 @@ G.Workspace {
                     visible: is_picking;
 
                     onClicked: {
-                        if(!_lineage_values.text) {
-                            _lineage_values.text += "[ "
-                        } else {
+                        if(_lineage_values.text) {
                             _lineage_values.text += ", "
                         }
                         _lineage_values.text +=  _new_picking.text.replace('||', ',')
                         _new_picking.text = "New Picking"
+                        updateCustomLineageInVisu()
                         d.source.stopPicking()
                         d.target.stopPicking()
-                        updateCustomLineageInVisu()
-
                         is_picking = false;
                     }
                 }
@@ -256,7 +255,6 @@ G.Workspace {
                     Layout.fillHeight: true;
 
                     onDroppedFromManager: (index) => {
-                        console.info('Retrieving from manager');
                         window.currentView = _source_view
                         d.source.drop(index);
                     }
@@ -294,7 +292,7 @@ G.Workspace {
             if(d.source.pickedCells.length == 0) {
                 _new_picking.text = "[ ? ||" + _new_picking.text.split('||')[1]
             } else if(d.source.pickedCells.length > 1) {
-                 _new_picking.text = "[" + d.source.pickedCells + " ||" + _new_picking.text.split('||')[1]
+                _new_picking.text = "[ [" + d.source.pickedCells + "] ||" + _new_picking.text.split('||')[1]
             } else {
                 _new_picking.text = "[" + d.source.pickedCells[0] + " ||" + _new_picking.text.split('||')[1]
             }
@@ -304,7 +302,14 @@ G.Workspace {
     Connections {
         target: d.target
         function onPickedCellsChanged() {
-            _new_picking.text = _new_picking.text.split(',')[0] + ", TODO !!"  + "]"
+            _new_picking.text =  _new_picking.text.split('||')[0] + "||"
+            if(d.target.pickedCells.length == 0) {
+                _new_picking.text += " ? ]"
+            } else if(d.target.pickedCells.length > 1) {
+                _new_picking.text += " [" + d.target.pickedCells + "] ]"
+            } else {
+                _new_picking.text += " " + d.target.pickedCells[0] + "]"
+            }
         }
     }
 
@@ -315,13 +320,19 @@ G.Workspace {
         //"[ [4,5] , [11, [17, 18]] , [ [22], [23,24]]]"
     function updateCustomLineageInVisu()
     {
-        let lineage_text = "[ " + _lineage_value.text + " ]"
-        console.log(lineage_text)
-        const values_array = JSON.parse(lineage_text)
+        let lineage_text = "[ " + _lineage_values.text.replace(/\?/g, '-1') + " ]"
+        //console.log(lineage_text)
+        let lineage_array
+        try {
+            lineage_array = JSON.parse(lineage_text)
+        } catch (e) {
+            console.log("bad parsing catched! ", e)
+            return
+        }
         let source_lineage_idx = []
         let target_lineage_idx = []
 
-        for(const lineage of message) {
+        for(const lineage of lineage_array) {
           if(Array.isArray(lineage[0])) {
             for(const idx of lineage[0]) {
               source_lineage_idx.push(idx)
@@ -338,10 +349,13 @@ G.Workspace {
           }
         }
 
-        console.log("source", source_lineage_idx)
-        console.log("target", target_lineage_idx)
+        //console.log("source", source_lineage_idx)
+        //console.log("target", target_lineage_idx)
 
-        // TODO set visu param
+        // TODO set visu param for target
+        d.source.setFormVisuParameter("gnomonCellImage", "manual_lineage", source_lineage_idx.toString())
+        d.target.setFormVisuParameter("gnomonCellImage", "manual_lineage", target_lineage_idx.toString())
+
     }
 
 }
