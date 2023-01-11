@@ -27,6 +27,7 @@ public:
 // TODO: Not sure the model abstraction should know about LSystem code :/
 public:
     virtual void setLSystem(const QString& code) = 0;
+    virtual const QString& lSystemCode(void) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {

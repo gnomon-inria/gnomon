@@ -23,7 +23,8 @@ public:
         NODE_CONVERTER = 5,
         NODE_ADAPTER = 6,
         NODE_TASK = 7,
-        NODE_MORPHONET = 8
+        NODE_MORPHONET = 8,
+        NODE_EVOLUTION_MODEL = 9
     };
 
 public:
@@ -68,6 +69,7 @@ public:
     virtual QStringList parametersName(void);
     virtual void configureParameter(const QString &name, dtkCoreParameter *param);
     virtual QString getParameterAsString(const QString &name);
+    virtual double getParameterAsDouble(const QString &name);
     virtual QMap<QString, QString> getPluginMetadata(void);
 
     Type type(void);

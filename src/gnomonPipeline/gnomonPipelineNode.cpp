@@ -147,6 +147,10 @@ QString gnomonPipelineNode::getParameterAsString(const QString &name) {
     return {};
 }
 
+double gnomonPipelineNode::getParameterAsDouble(const QString &name) {
+    return {};
+}
+
 const QPointF& gnomonPipelineNode::position(void)
 {
     return d->position;

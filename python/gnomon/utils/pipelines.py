@@ -2,6 +2,7 @@ from typing import Tuple, List, Dict, Callable
 from threading import Thread
 from functools import partial
 import pathlib
+import tempfile
 
 import gnomon.utils.gnomonPlugin
 from gnomon.utils.gnomonPlugin import load_plugin_group, get_factory
@@ -41,6 +42,7 @@ class PNodeRunner:
     data_dir: pathlib.Path
     _has_path: bool
     _is_task: bool
+    _is_lsystem: bool
     _node: gnomonPipelineNode
 
     def __init__(self, node: gnomonPipelineNode, data_dir: str = ""):
@@ -67,6 +69,9 @@ class PNodeRunner:
                 source: gnomonPipelinePort = edge.source()
                 self.inputs_connections[input_name] = (source.node().name(), source.name())
 
+        self._is_task = False
+        self._is_lsystem = False
+
         if algo_class == "task":
             self._is_task = True
             self._node = gnomonPipelineNodeTask._dynamic_cast(self._node)
@@ -86,13 +91,14 @@ class PNodeRunner:
             for output_name in node.outputPortsNames():
                 self.outputs[output_name] = partial(_getter, self._outputs_storage, output_name)
         else:
-            self._is_task = False
             # instantiating algorithm
             if algo_class == "formAlgorithm":
                 tmp = {}
                 exec(node.getParameterAsString("python_code") + f"\nalgo = {node.algorithmPlugin()}()", tmp)  # Oh no D:
                 self.algo = tmp["algo"]
             else:
+                if algo_class == "lStringEvolutionModel":
+                    self._is_lsystem = True
                 load_plugin_group(algo_class)
                 factory = get_factory(algo_class)
                 self.algo = factory().create(node.algorithmPlugin())
@@ -116,9 +122,17 @@ class PNodeRunner:
                 self._has_path = True
                 self.algo.setPath(node.path())
 
+            # if lsystem set code
+            if self._is_lsystem:
+                lsys_file = tempfile.NamedTemporaryFile(mode='w+t', delete=False)
+                lsys_file.writelines(node.getParameterAsString("lsystem_code"))
+                lsys_file.close()
+                self.algo.setLSystem(lsys_file.name)
+
             # setting parameters
             for param_name in node.parametersName():
-                if param_name not in ("python_code",):
+                print(param_name)
+                if param_name not in ("python_code", "lsystem_code", "derivation_length"):
                     param = self.algo._parameters[param_name]
                     node.configureParameter(param_name, param)
                     self.algo.setParameter(param_name, param)
@@ -130,6 +144,11 @@ class PNodeRunner:
         print(f" -- running {self.name}")
         if self._is_task:
             self._outputs_storage.update(self._node.runTask(self._inputs_storage))
+        elif self._is_lsystem:
+            self.algo.reset()
+            derivation_length = int(self._node.getParameterAsDouble("derivation_length"))
+            for t in range(derivation_length):
+                self.algo.step(t, 1)
         else:
             self.algo.run()
 
