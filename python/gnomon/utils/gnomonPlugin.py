@@ -110,7 +110,7 @@ def plugin_metadata(group_name: str, plugin_name: str) -> dict[str, str]:
         ep = next(iter_entry_points(group_name, name=plugin_name))
     except StopIteration:
         raise ValueError(f"No entry point found names {plugin_name} in group {group_name}")
-    
+
     root_module = importlib.import_module(ep.module_name.split(".")[0])
     try:
         out["package"] = root_module.package
@@ -292,7 +292,6 @@ def gnomonParametric(cls):
     cls.__getitem__ = __getitem__
 
     def setParameter(self, parameter_name, parameter_value):
-        logging.info(f"{parameter_name}: {parameter_value}")
         if parameter_name in self._parameters:
             if isinstance(parameter_value, dtkCoreParameter):
                 self._parameters[parameter_name] = parameter_value
@@ -380,7 +379,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
         Name of the form attribute where the form read are stored.
     path_attr: str
         Name of the attribute containing the path to be read.
-        
+
     Returns
     -------
     Class
@@ -428,7 +427,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
 
         def preview(self):
             return f"{os.path.splitext(inspect.getfile(cls))[0]}.png"
-    
+
         setattr(cls, "preview", preview)
 
         return cls
