@@ -233,8 +233,11 @@ void gnomonWorkspaceLSystemModel::run()
     emit started();
     this->setInitialState();
     d->command->undo();
-    d->command->simulationType = SimulationType::run;
-    d->command->redo();
+
+    for (int t=0; t<d->derivationLength; t++) {
+        d->command->redo();
+    }
+
     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
         d->derivations = d->derivationLength;
         this->viewState();
