@@ -4,6 +4,10 @@
 template <typename T> class gnomonPluginFactory: public dtkCorePluginFactory<T> {
 
 public:
+    gnomonPluginFactory();
+    virtual ~gnomonPluginFactory(void) = default;
+
+public:
     typedef T *(*creator) ();
     typedef std::function<QWidget *()> widget_creator;
 

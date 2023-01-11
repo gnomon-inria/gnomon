@@ -4,6 +4,12 @@
 #pragma once
 #include "gnomonPluginFactory.h"
 
+template <typename T> inline gnomonPluginFactory<T>::gnomonPluginFactory(void) : dtkCorePluginFactory<T>()
+{
+
+}
+
+
 template<typename T>
 void gnomonPluginFactory<T>::record(const QString &key, gnomonPluginFactory::creator func, const QString &name,
                                     const QString &doc) {
