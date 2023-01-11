@@ -33,8 +33,13 @@ signals:
     void valueChanged(const QVariantMap&);
 
 public:
+    Q_INVOKABLE bool isColor(long i) const;
     Q_INVOKABLE QColor color(long i) const;
     Q_INVOKABLE void setColor(long i, const QColor& color);
+
+    Q_INVOKABLE bool isTexture(long i) const;
+    Q_INVOKABLE QString texture(long i) const;
+    Q_INVOKABLE void setTexture(long i, const QString& texture);
 
     void clearColors(void);
 
