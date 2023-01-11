@@ -14,6 +14,7 @@
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
+#include "gnomonPluginData"
 
 class gnomonAbstractVisualization;
 class gnomonInteractorStyle;
@@ -162,7 +163,7 @@ public:
 
 public:
     Q_INVOKABLE QString formVisuName(const QString& name);
-    Q_INVOKABLE QStringList formVisualizations(const QString& name);
+    Q_INVOKABLE QList<gnomonPluginData *> formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
     void setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value);
