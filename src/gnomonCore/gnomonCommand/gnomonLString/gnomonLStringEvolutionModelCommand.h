@@ -5,6 +5,7 @@
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
 #include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel>
 
+enum class SimulationType {step = 1, run = 2};
 class GNOMONCORE_EXPORT gnomonLStringEvolutionModelCommand : public gnomonAbstractEvolutionModelCommand
 {
     Q_OBJECT
@@ -34,6 +35,7 @@ public:
 
     int derivationLength(void) const;
     void setDerivationLength(int);
+    SimulationType simulationType;
 
 public:
     virtual void setModelName(const QString& name) override;
