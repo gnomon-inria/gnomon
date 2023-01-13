@@ -7,6 +7,7 @@
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 #include "gnomonManager/gnomonFormManager.h"
+#include "gnomonPluginFactory.h"
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
 #include "gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h"
@@ -120,7 +121,7 @@ public:
     QVariantMap parameters;
 public:
     QMap<QString, bool> acceptForms;
-    QStringList nodePortNames; 
+    QStringList nodePortNames;
 
 public:
     QMetaObject::Connection connect3D;
@@ -130,10 +131,10 @@ public:
     QMetaObject::Connection connectYZ;
     QMetaObject::Connection connectSlice;
     QMetaObject::Connection connectTime;
-    
+
 public:
     void clearConnections(void);
-    
+
 public:
     gnomonInteractorStyle *default_style = nullptr;
     gnomonInteractorStyle *xyz_style = nullptr;
@@ -642,7 +643,7 @@ void gnomonViewForm::switchTo2DXY(void)
         emit switchedTo2DXY();
         emit orientationChanged();
     }
-    
+
 }
 
 void gnomonViewForm::switchTo2DXZ(void)
@@ -881,7 +882,7 @@ QStringList gnomonViewForm::formNames(void)
     return d->forms.keys();
 }
 
-QStringList gnomonViewForm::formNamesAndId(void) 
+QStringList gnomonViewForm::formNamesAndId(void)
 {
     QStringList formNamesAndIndex;
     auto it = d->forms.constBegin();
@@ -1239,31 +1240,24 @@ QString gnomonViewForm::formVisuName(const QString& name)
     return visu_name;
 }
 
-QList<gnomonPluginData *> gnomonViewForm::formVisualizations(const QString& name)
+QVariantList gnomonViewForm::formVisualizations(const QString& name)
+//QList<gnomonPluginData *> gnomonViewForm::formVisualizations(const QString& name)
 {
-    
-    if (d->forms.contains(name)) {  
+    if (d->forms.contains(name)) {
         if (name == "gnomonBinaryImage") {
-            auto & factory = gnomonVisualization::visualizationBinaryImage::pluginFactory();
-            return gnomonPluginDataListFromFactory<gnomonAbstractVisualizationBinaryImagePluginFactory>(factory);
+            return gnomonVisualization::visualizationBinaryImage::pluginFactory().dataList();
         } else if (name == "gnomonCellComplex") {
-            auto & factory = gnomonVisualization::visualizationCellComplex::pluginFactory();
-            return gnomonPluginDataListFromFactory<gnomonAbstractVisualizationCellComplexPluginFactory>(factory);
+            return gnomonVisualization::visualizationCellComplex::pluginFactory().dataList();
         } else if (name == "gnomonCellImage") {
-            auto & factory = gnomonVisualization::visualizationCellImage::pluginFactory();
-            return gnomonPluginDataListFromFactory<gnomonAbstractVisualizationCellImagePluginFactory>(factory);
+             return gnomonVisualization::visualizationCellImage::pluginFactory().dataList();
         } else if (name == "gnomonImage") {
-            auto & factory = gnomonVisualization::visualizationImage::pluginFactory();
-            return gnomonPluginDataListFromFactory<gnomonAbstractVisualizationImagePluginFactory>(factory);
+            return gnomonVisualization::visualizationImage::pluginFactory().dataList();
         } else if (name == "gnomonLString") {
-            auto & factory = gnomonVisualization::visualizationLString::pluginFactory();
-            return gnomonPluginDataListFromFactory<gnomonAbstractVisualizationLStringPluginFactory>(factory);
+            return gnomonVisualization::visualizationLString::pluginFactory().dataList();
         } else if (name == "gnomonMesh") {
-            auto & factory = gnomonVisualization::visualizationMesh::pluginFactory();
-            return gnomonPluginDataListFromFactory<gnomonAbstractVisualizationMeshPluginFactory>(factory);
+            return gnomonVisualization::visualizationMesh::pluginFactory().dataList();
         } else if (name == "gnomonPointCloud") {
-            auto & factory = gnomonVisualization::visualizationPointCloud::pluginFactory();
-            return gnomonPluginDataListFromFactory<gnomonAbstractVisualizationPointCloudPluginFactory>(factory);
+            return gnomonVisualization::visualizationPointCloud::pluginFactory().dataList();
         }
     }
     return {};
@@ -1493,7 +1487,7 @@ QStringList gnomonViewForm::acceptedForms(void)
     return forms;
 }
 
-QStringList gnomonViewForm::nodePortNames(void) 
+QStringList gnomonViewForm::nodePortNames(void)
 {
     return d->nodePortNames;
 }
@@ -1540,7 +1534,7 @@ void gnomonViewForm::update(void)
 {
     for (const auto& key : d->formVisualization.keys()) {
         d->formVisualization[key]->update();
-        d->formVisualization[key]->setVisible(d->formVisibility[key]); 
+        d->formVisualization[key]->setVisible(d->formVisibility[key]);
     }
 }
 

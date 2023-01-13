@@ -17,13 +17,13 @@ class GNOMONCORE_EXPORT gnomonAbstractTissueGrowthModel : public QRunnable
 {
 
 public: // setters definition
-	virtual void setCellComplex(gnomonCellComplex *gnomon) = 0;
+    virtual void setCellComplex(gnomonCellComplex *gnomon) = 0;
 
 public: // getters defintion
-	virtual gnomonCellComplex *grownCellComplex(void) const = 0;
+    virtual gnomonCellComplex *grownCellComplex(void) const = 0;
 
 public: //run from QVariant makes sure that the implementation will be performed.
-	virtual void run(void) = 0;
+    virtual void run(void) = 0;
 
 };
 
@@ -31,19 +31,19 @@ public: //run from QVariant makes sure that the implementation will be performed
 //  Adding the dtk macros for the visibility of the abstraction
 //  ///////////////////////////////////////////////////////////////////
 
-DTK_DECLARE_OBJECT 		  (gnomonAbstractTissueGrowthModel *)
+DTK_DECLARE_OBJECT        (gnomonAbstractTissueGrowthModel *)
 
 
-DTK_DECLARE_PLUGIN    	  (gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT) 		  // The following lines
+DTK_DECLARE_PLUGIN        (gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT)        // The following lines
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT)  // are not needed right now
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT)  // for we won't define plugins first
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT)  // for we won't define plugins first
 
 //  ///////////////////////////////////////////////////////////////////
 //  Register gnomonAbstractTissueGrowthModel to the layer
 //  ///////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-	DTK_DECLARE_CONCEPT(gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT, growthmodel)
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT, growthmodel)
 }
 
 //

@@ -22,14 +22,14 @@ typedef gnomonAbstractFormAdapter<gnomonLStringSeries> gnomonAbstractLStringAdap
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringAdapter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT, lStringAdapter);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractLStringAdapter, GNOMONCORE_EXPORT, lStringAdapter);
 }
 
 //

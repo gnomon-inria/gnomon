@@ -22,7 +22,7 @@ public:
     virtual QString documentation(void) override = 0;
 
 public:
-	virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) = 0;
+    virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) = 0;
 
 public:
     virtual std::shared_ptr<gnomonMeshSeries> updatedMesh(void) const = 0;
@@ -56,14 +56,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractFemSolver *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractFemSolver, GNOMONCORE_EXPORT, femSolver);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractFemSolver, GNOMONCORE_EXPORT, femSolver);
 }
 
 //

@@ -53,14 +53,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractTreeReader *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractTreeReader, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeReader, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractTreeReader, GNOMONCORE_EXPORT, treeReader);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractTreeReader, GNOMONCORE_EXPORT, treeReader);
 }
 
 //

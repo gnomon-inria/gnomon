@@ -2,7 +2,7 @@
 #include "gnomonAbstractVisualizationImage.h"
 
 namespace gnomonVisualization {
-    DTK_DEFINE_CONCEPT(gnomonAbstractVisualizationImage, visualizationImage, gnomonVisualization);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractVisualizationImage, visualizationImage, gnomonVisualization);
 }
 
 //

@@ -49,11 +49,11 @@ DTK_DECLARE_OBJECT(gnomonAbstractCellImageFilter *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT)
 
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT, cellImageFilter);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT, cellImageFilter);
 }
 
 //

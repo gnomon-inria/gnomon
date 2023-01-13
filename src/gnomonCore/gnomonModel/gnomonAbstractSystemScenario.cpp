@@ -3,7 +3,7 @@
 #include "gnomonCore.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractSystemScenario, abstractSystemScenario, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractSystemScenario, abstractSystemScenario, gnomonCore);
 }
 
 //

@@ -46,14 +46,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractCellImageWriter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT, cellImageWriter);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageWriter, GNOMONCORE_EXPORT, cellImageWriter);
 }
 
 //

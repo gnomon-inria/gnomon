@@ -45,14 +45,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractBinaryImageWriter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT, binaryImageWriter);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractBinaryImageWriter, GNOMONCORE_EXPORT, binaryImageWriter);
 }
 
 //

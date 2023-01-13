@@ -74,14 +74,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringData, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringData, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringData, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractLStringData, GNOMONCORE_EXPORT, lStringData);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractLStringData, GNOMONCORE_EXPORT, lStringData);
 }
 
 // gnomonAbstractLStringData.h ends here

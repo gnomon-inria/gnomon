@@ -2,7 +2,7 @@
 #include "gnomonAbstractPointCloudFromImage.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractPointCloudFromImage, pointCloudFromImage, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractPointCloudFromImage, pointCloudFromImage, gnomonCore);
 }
 
 

@@ -20,8 +20,8 @@ public:
     virtual ~gnomonAbstractVisualizationLString(void) = default;
 
 public:
-	virtual void setLString(std::shared_ptr<gnomonLStringSeries> lString) = 0;
-	virtual std::shared_ptr<gnomonLStringSeries> lString(void) = 0;
+    virtual void setLString(std::shared_ptr<gnomonLStringSeries> lString) = 0;
+    virtual std::shared_ptr<gnomonLStringSeries> lString(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonLString") {
@@ -44,14 +44,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationLString *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationLString, GNOMONVISUALIZATION_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationLString, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationLString, GNOMONVISUALIZATION_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationLString, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonVisualization layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonVisualization {
-    DTK_DECLARE_CONCEPT(gnomonAbstractVisualizationLString, GNOMONVISUALIZATION_EXPORT, visualizationLString);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractVisualizationLString, GNOMONVISUALIZATION_EXPORT, visualizationLString);
 }
 
 //

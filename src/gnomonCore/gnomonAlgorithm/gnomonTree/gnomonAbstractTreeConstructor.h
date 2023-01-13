@@ -34,11 +34,11 @@ DTK_DECLARE_OBJECT(gnomonAbstractTreeConstructor *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractTreeConstructor, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeConstructor, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeConstructor, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeConstructor, GNOMONCORE_EXPORT)
 
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractTreeConstructor, GNOMONCORE_EXPORT, treeConstructor);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractTreeConstructor, GNOMONCORE_EXPORT, treeConstructor);
 }
 
 //

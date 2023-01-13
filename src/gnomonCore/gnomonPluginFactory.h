@@ -1,30 +1,47 @@
 #pragma once
-#include <dtkCorePluginFactory>
 
-template <typename T> class gnomonPluginFactory: public dtkCorePluginFactory<T> {
+#include <QtCore>
+#include <functional>
+
+//#include <dtkCorePluginFactory>
+#include <dtkCore/dtkCorePluginBase.h>
+
+template <typename T> class gnomonPluginFactory
+{
 
 public:
-    gnomonPluginFactory();
-    virtual ~gnomonPluginFactory(void) = default;
+    gnomonPluginFactory(const gnomonPluginFactory&) = delete;
+    gnomonPluginFactory(gnomonPluginFactory&&) = delete;
+    gnomonPluginFactory& operator=(const gnomonPluginFactory&) = delete;
+    gnomonPluginFactory& operator=(gnomonPluginFactory&&) = delete;
 
 public:
     typedef T *(*creator) ();
-    typedef std::function<QWidget *()> widget_creator;
 
 public:
-    virtual void record(const QString& key, creator func);
-    virtual void record(const QString& key, creator func, const QString& name, const QString& doc);
-    virtual void recordPlugin(const QString& key, class dtkCorePluginBase *plugin, const QString& name, const QString& doc, bool force = false);
-    virtual void record(const QString& key, widget_creator func);
-    virtual void record(const QString& key, widget_creator func, const QString& name, const QString& doc);
+    T *create(const QString& key) const;
+    void clear(void);
+
+public:
+    virtual void record(const QString& key, creator func, const QString& name="", const QString& doc="");
+    virtual void recordPlugin(const QString& key, dtkCorePluginBase *plugin, const QString& name="", const QString& doc="", bool force = false);
+    QStringList keys(void) const;
 
 public:
     virtual QString name(const QString& key) const;
     virtual QString doc(const QString& key) const;
+    virtual QVariantList dataList() const;
 
 protected:
     QHash<QString, QString> names;
     QHash<QString, QString> docs;
+    QHash<QString, creator> creators;
+    QHash<QString, dtkCorePluginBase *> creators_plugins;
+
+protected:
+    gnomonPluginFactory();
+    virtual ~gnomonPluginFactory(void);
+
 };
 
 #include "gnomonPluginFactory.tpp"

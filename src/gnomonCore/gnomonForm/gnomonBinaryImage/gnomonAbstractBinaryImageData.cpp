@@ -6,5 +6,5 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractBinaryImageData, binaryImageData, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractBinaryImageData, binaryImageData, gnomonCore);
 }

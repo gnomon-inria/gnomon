@@ -39,7 +39,7 @@ public:
 public:
     virtual QStringList keys() const = 0;
 
-    virtual QVariant get(const QString& key) = 0; 
+    virtual QVariant get(const QString& key) = 0;
     //virtual QVariantMap get() const = 0;
 };
 
@@ -50,14 +50,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractDataDictData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractDataDictData, GNOMONCORE_EXPORT, dataDictData);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractDataDictData, GNOMONCORE_EXPORT, dataDictData);
 }
 
 //

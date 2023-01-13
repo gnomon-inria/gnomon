@@ -110,7 +110,7 @@ def plugin_metadata(group_name: str, plugin_name: str) -> dict[str, str]:
         ep = next(iter_entry_points(group_name, name=plugin_name))
     except StopIteration:
         raise ValueError(f"No entry point found names {plugin_name} in group {group_name}")
-    
+
     root_module = importlib.import_module(ep.module_name.split(".")[0])
     try:
         out["package"] = root_module.package
@@ -380,7 +380,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
         Name of the form attribute where the form read are stored.
     path_attr: str
         Name of the attribute containing the path to be read.
-        
+
     Returns
     -------
     Class
@@ -428,7 +428,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
 
         def preview(self):
             return f"{os.path.splitext(inspect.getfile(cls))[0]}.png"
-    
+
         setattr(cls, "preview", preview)
 
         return cls
@@ -655,6 +655,8 @@ def corePlugin(version: str, coreversion: str, name: str="", base_class=None):
         Version of the plugin.
     coreversion: str
         Exact version of gnomon to check for API compatibility.
+    name: str
+        Name of the plugin. Used for the UI
     base_class
 
     Returns
@@ -706,6 +708,8 @@ def visualizationPlugin(version: str, coreversion: str, name="", base_class=None
         Version of the plugin.
     coreversion: str
         Exact version of gnomon to check for API compatibility.
+    name: str
+        Name of the plugin. Used for the UI
     base_class
 
     Returns
@@ -888,7 +892,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
     if checkVersion(coreversion):
         factory.recordPlugin(plugin_key, __PLUGINS__[-1], name, inspect.cleandoc(cls.__doc__) if cls.__doc__ else "")
         if plugin_key in factory.keys():
-            logging.info("Python plugin " + str(plugin_key) + " has been successfully loaded!")
+            logging.info("Python plugin " + str(plugin_key) + ":" + name +" has been successfully loaded!")
     else:
         logging.warn("Python plugin" + str(plugin_key) + "defined for core version " + str(
             coreversion) + " but actual version is ${gnomon_VERSION}")

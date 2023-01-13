@@ -26,7 +26,7 @@ class GNOMONCORE_EXPORT gnomonAbstractFormAlgorithm : public gnomonAbstractAlgor
 public:
              gnomonAbstractFormAlgorithm(void) = default;
     virtual ~gnomonAbstractFormAlgorithm(void) = default;
-    
+
     // BinaryImage
 public:
     virtual void setInputBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binaryImage) { return; };
@@ -34,7 +34,7 @@ public:
     virtual std::shared_ptr<gnomonBinaryImageSeries> inputBinaryImage(bool update=true) const { return nullptr; };
     virtual std::shared_ptr<gnomonBinaryImageSeries> outputBinaryImage(bool update=true) const { return nullptr; };
 
-    
+
     // CellComplex
 public:
     virtual void setInputCellComplex(std::shared_ptr<gnomonCellComplexSeries> cellComplex) { return; };
@@ -103,14 +103,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractFormAlgorithm *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT, formAlgorithm);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractFormAlgorithm, GNOMONCORE_EXPORT, formAlgorithm);
 }
 
 //

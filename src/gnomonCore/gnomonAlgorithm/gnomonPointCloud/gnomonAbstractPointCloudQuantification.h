@@ -62,11 +62,11 @@ DTK_DECLARE_OBJECT(gnomonAbstractPointCloudQuantification *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT)
 
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT, pointCloudQuantification);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT, pointCloudQuantification);
 }
 
 //

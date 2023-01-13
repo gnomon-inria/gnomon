@@ -46,14 +46,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractPointCloudWriter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractPointCloudWriter, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudWriter, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudWriter, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudWriter, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractPointCloudWriter, GNOMONCORE_EXPORT, pointCloudWriter);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractPointCloudWriter, GNOMONCORE_EXPORT, pointCloudWriter);
 }
 
 //

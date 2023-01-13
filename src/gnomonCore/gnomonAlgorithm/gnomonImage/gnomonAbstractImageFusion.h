@@ -60,14 +60,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractImageFusion *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractImageFusion, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageFusion, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageFusion, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageFusion, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImageFusion, GNOMONCORE_EXPORT, imageFusion);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractImageFusion, GNOMONCORE_EXPORT, imageFusion);
 }
 
 //

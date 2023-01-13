@@ -28,14 +28,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractSystemScenario *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractSystemScenario, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractSystemScenario, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractSystemScenario, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractSystemScenario, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractSystemScenario, GNOMONCORE_EXPORT, abstractSystemScenario);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractSystemScenario, GNOMONCORE_EXPORT, abstractSystemScenario);
 }
 
 //

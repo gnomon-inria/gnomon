@@ -68,14 +68,14 @@ public:
 DTK_DECLARE_OBJECT        (gnomonAbstractPointCloudData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractPointCloudData, GNOMONCORE_EXPORT)
 GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudData, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudData, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractPointCloudData, GNOMONCORE_EXPORT, pointCloudData);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractPointCloudData, GNOMONCORE_EXPORT, pointCloudData);
 }
 
 //
