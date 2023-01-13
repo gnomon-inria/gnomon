@@ -209,23 +209,6 @@ void gnomonWorkspaceLSystemModel::save(const QString& file_url) const
 }
 
 // animate will replace this run method
-// void gnomonWorkspaceLSystemModel::run()
-// {
-//     Q_ASSERT(d->command);
-
-//     emit started();
-//     this->setInitialState();
-//     d->command->undo();
-//     d->command->simulationType = SimulationType::step;
-//     for (int t=0; t < 100; t++) {
-//         d->command->redo();
-//     }
-//     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
-//         d->derivations = d->derivationLength;
-//         this->viewState();
-//         emit finished();
-//     });
-// }
 void gnomonWorkspaceLSystemModel::run()
 {
     Q_ASSERT(d->command);
@@ -233,17 +216,31 @@ void gnomonWorkspaceLSystemModel::run()
     emit started();
     this->setInitialState();
     d->command->undo();
-
-    for (int t=0; t<d->derivationLength; t++) {
-        d->command->redo();
-    }
-
+    d->command->simulationType = SimulationType::step;
+    d->command->redo();
+    d->derivations = 0;
     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
-        d->derivations = d->derivationLength;
         this->viewState();
+        if(d->derivations < d->derivationLength) d->command->redo();
+        d->derivations++;
         emit finished();
     });
 }
+// void gnomonWorkspaceLSystemModel::run()
+// {
+//     Q_ASSERT(d->command);
+
+//     emit started();
+//     this->setInitialState();
+//     d->command->undo();
+//     d->command->simulationType = SimulationType::run;
+//     d->command->redo();
+//     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
+//         d->derivations = d->derivationLength;
+//         this->viewState();
+//         emit finished();
+//     });
+// }
 
 void gnomonWorkspaceLSystemModel::step()
 {
