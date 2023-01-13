@@ -116,7 +116,7 @@ Item {
                 anchors.right:  parent.right
 
                 from: 0
-                to: 10
+                to: 1000
                 value: 1
 		        stepSize: 1
 		        snapMode: Slider.SnapAlways
@@ -139,64 +139,110 @@ Item {
                 color: G.Style.colors.hoveredBaseColor
             }
         }
+        ColumnLayout {
+            anchors.margins: G.Style.smallPadding;
 
-        Item {
-            id: _button_container
+            Item {
+                id: _suspend_button_container
 
-            height: G.Style.largeButtonHeight
-            Layout.fillWidth: true;
+                height: G.Style.largeButtonHeight
+                Layout.fillWidth: true;
 
-            G.Button {
-                id: _run
 
-                anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
+                G.Button {
+                    id: _stop
 
-                implicitWidth: G.Style.shortButtonWidth
-                text: "Run"
-                iconName: G.Icons.icons["play"]
+                    anchors.right: _suspend_button_container.right;
+                    anchors.verticalCenter: _suspend_button_container.verticalCenter
+                    anchors.margins: G.Style.smallPadding
 
-                onClicked: {
-                    console.info('launching Run!')
-                    d.run();
+                    implicitWidth: G.Style.shortButtonWidth
+                    text: "Stop"
+                    empty: true
+                    type: G.Style.ButtonType.Danger
+                    iconName: G.Icons.icons["stop"]
+
+                    onClicked: {
+                        console.info('launching stop.')
+                    }
+                }
+
+                G.Button {
+                    id: _reset
+
+                    anchors.right: _stop.left;
+                    anchors.verticalCenter: _suspend_button_container.verticalCenter
+                    anchors.margins: G.Style.smallPadding
+
+                    implicitWidth: G.Style.shortButtonWidth
+                    text: "Reset"
+                    empty: true
+                    iconName: G.Icons.icons["replay"]
+
+                    onClicked: {
+                        console.info('launching Reset?')
+                        d.reset();
+                    }
                 }
             }
+            Item {
+                id: _button_container
 
-            G.Button {
-                id: _step
+                height: G.Style.largeButtonHeight
+                Layout.fillWidth: true;
 
-                anchors.right: _run.left;
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
+                G.Button {
+                    id: _run
 
-                implicitWidth: G.Style.shortButtonWidth
-                text: "Step"
-                empty: true
-                iconName: G.Icons.icons["step-forward"]
+                    anchors.right: _button_container.right;
+                    anchors.verticalCenter: _button_container.verticalCenter
+                    anchors.margins: G.Style.smallPadding
 
-                onClicked: {
-                    console.info('launching Step.')
-                    d.step();
+                    implicitWidth: G.Style.shortButtonWidth
+                    text: "Run"
+                    iconName: G.Icons.icons["play"]
+
+                    onClicked: {
+                        console.info('launching Run!')
+                        d.run();
+                    }
                 }
-            }
+                G.Button {
+                    id: _animate
 
-            G.Button {
-                id: _reset
+                    anchors.right: _run.left;
+                    anchors.verticalCenter: _button_container.verticalCenter
+                    anchors.margins: G.Style.smallPadding
 
-                anchors.right: _step.left;
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
+                    implicitWidth: G.Style.buttonWidth
+                    text: "Animate"
+                    empty: true
+                    iconName: G.Icons.icons["animation-play"]
 
-                implicitWidth: G.Style.shortButtonWidth
-                text: "Reset"
-                empty: true
-                iconName: G.Icons.icons["replay"]
-
-                onClicked: {
-                    console.info('launching Reset?')
-                    d.reset();
+                    onClicked: {
+                        console.info('launching animation...')
+                        d.animate();
+                    }
                 }
+
+                G.Button {
+                    id: _step
+
+                    anchors.right: _animate.left;
+                    anchors.verticalCenter: _button_container.verticalCenter
+                    anchors.margins: G.Style.smallPadding
+
+                    implicitWidth: G.Style.shortButtonWidth
+                    text: "Step"
+                    empty: true
+                    iconName: G.Icons.icons["step-forward"]
+
+                    onClicked: {
+                        console.info('launching Step.')
+                        d.step();
+                    }
+                }
+
             }
         }
     }
