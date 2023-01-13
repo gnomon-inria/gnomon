@@ -14,7 +14,6 @@
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
-#include "gnomonPluginData"
 
 class gnomonAbstractVisualization;
 class gnomonInteractorStyle;
