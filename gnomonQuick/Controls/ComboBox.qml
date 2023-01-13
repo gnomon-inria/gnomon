@@ -13,7 +13,6 @@ ComboBox {
   id: _control;
 
   property color textColor: G.Style.colors.textColorBase;
-  property bool pluginList: false;
 
   implicitWidth: G.Style.smallPanelWidth;
   implicitHeight: G.Style.comboBoxHeight;
@@ -26,7 +25,7 @@ ComboBox {
   delegate: G.ComboBoxDelegate {
     width: _control.width;
     text: modelData[textRole] ? modelData[textRole] : modelData
-    ToolTip.text: pluginList ? modelData.key + "\n" + modelData.doc : null
+    ToolTip.text: modelData.doc ? modelData.key + "\n" + modelData.doc : null
     ToolTip.delay: 1000
     ToolTip.timeout: 5000
     ToolTip.visible: ToolTip.text ? hovered : false
