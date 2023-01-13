@@ -342,5 +342,9 @@ void gnomonVisualizationMesh::onTimeChanged(double value)
     this->render();
 }
 
+const QString gnomonVisualizationMesh::name(void) {
+    return "Mesh Visualization";
+}
+
 //
 // gnomonVisualizationMesh.cpp ends here

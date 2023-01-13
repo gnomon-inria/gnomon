@@ -8,5 +8,5 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractDataDictData, dataDictData, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractDataDictData, dataDictData, gnomonCore);
 }

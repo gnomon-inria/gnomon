@@ -16,7 +16,7 @@
 #include "gnomonAbstractVisualizationCellComplex.h"
 
 namespace gnomonVisualization {
-    DTK_DEFINE_CONCEPT(gnomonAbstractVisualizationCellComplex, visualizationCellComplex, gnomonVisualization);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractVisualizationCellComplex, visualizationCellComplex, gnomonVisualization);
 }
 
 //

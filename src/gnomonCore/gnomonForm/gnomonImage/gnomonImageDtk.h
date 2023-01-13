@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gnomonCoreExport>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonForm/gnomonAbstractForm.h"
 #include "gnomonForm/gnomonTimeSeries.h"

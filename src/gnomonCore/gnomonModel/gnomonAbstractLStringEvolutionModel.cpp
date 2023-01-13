@@ -4,7 +4,7 @@
 #include "gnomonCore.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractLStringEvolutionModel, lStringEvolutionModel, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractLStringEvolutionModel, lStringEvolutionModel, gnomonCore);
 }
 
 //

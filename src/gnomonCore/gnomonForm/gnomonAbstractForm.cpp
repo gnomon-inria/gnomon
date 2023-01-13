@@ -60,7 +60,7 @@ gnomonTree *gnomonAbstractForm::asTree()
 
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractForm, abstractForm, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractForm, abstractForm, gnomonCore);
 }
 
 //

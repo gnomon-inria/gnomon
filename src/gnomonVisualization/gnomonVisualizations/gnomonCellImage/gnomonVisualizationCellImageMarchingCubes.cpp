@@ -411,3 +411,6 @@ void gnomonVisualizationCellImageMarchingCubes::onTimeChanged(double value)
 
 //
 // gnomonVisualizationCellImageMarchingCubes.cpp ends here
+const QString name(void) {
+    return "Marching Cubes";
+}

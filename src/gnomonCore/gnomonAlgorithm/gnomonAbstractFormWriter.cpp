@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractFormWriter, formWriter, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractFormWriter, formWriter, gnomonCore);
 }
 
 //

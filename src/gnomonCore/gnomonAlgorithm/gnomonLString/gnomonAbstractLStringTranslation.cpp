@@ -2,7 +2,7 @@
 #include "gnomonAbstractLStringTranslation.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractLStringTranslation, lStringTranslation, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractLStringTranslation, lStringTranslation, gnomonCore);
 }
 
 

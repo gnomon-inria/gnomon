@@ -7,6 +7,7 @@
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 #include "gnomonManager/gnomonFormManager.h"
+#include "gnomonPluginFactory.h"
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
 #include "gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h"
@@ -120,7 +121,7 @@ public:
     QVariantMap parameters;
 public:
     QMap<QString, bool> acceptForms;
-    QStringList nodePortNames; 
+    QStringList nodePortNames;
 
 public:
     QMetaObject::Connection connect3D;
@@ -130,10 +131,10 @@ public:
     QMetaObject::Connection connectYZ;
     QMetaObject::Connection connectSlice;
     QMetaObject::Connection connectTime;
-    
+
 public:
     void clearConnections(void);
-    
+
 public:
     gnomonInteractorStyle *default_style = nullptr;
     gnomonInteractorStyle *xyz_style = nullptr;
@@ -642,7 +643,7 @@ void gnomonViewForm::switchTo2DXY(void)
         emit switchedTo2DXY();
         emit orientationChanged();
     }
-    
+
 }
 
 void gnomonViewForm::switchTo2DXZ(void)
@@ -881,7 +882,7 @@ QStringList gnomonViewForm::formNames(void)
     return d->forms.keys();
 }
 
-QStringList gnomonViewForm::formNamesAndId(void) 
+QStringList gnomonViewForm::formNamesAndId(void)
 {
     QStringList formNamesAndIndex;
     auto it = d->forms.constBegin();
@@ -1239,28 +1240,27 @@ QString gnomonViewForm::formVisuName(const QString& name)
     return visu_name;
 }
 
-QStringList gnomonViewForm::formVisualizations(const QString& name)
-{   
-    QStringList visu_names;
-    
-    if (d->forms.contains(name)) {  
+QVariantList gnomonViewForm::formVisualizations(const QString& name)
+//QList<gnomonPluginData *> gnomonViewForm::formVisualizations(const QString& name)
+{
+    if (d->forms.contains(name)) {
         if (name == "gnomonBinaryImage") {
-             visu_names = gnomonVisualization::visualizationBinaryImage::pluginFactory().keys();
+            return gnomonVisualization::visualizationBinaryImage::pluginFactory().dataList();
         } else if (name == "gnomonCellComplex") {
-             visu_names = gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
+            return gnomonVisualization::visualizationCellComplex::pluginFactory().dataList();
         } else if (name == "gnomonCellImage") {
-             visu_names = gnomonVisualization::visualizationCellImage::pluginFactory().keys();
+             return gnomonVisualization::visualizationCellImage::pluginFactory().dataList();
         } else if (name == "gnomonImage") {
-             visu_names = gnomonVisualization::visualizationImage::pluginFactory().keys();
+            return gnomonVisualization::visualizationImage::pluginFactory().dataList();
         } else if (name == "gnomonLString") {
-            visu_names = gnomonVisualization::visualizationLString::pluginFactory().keys();
+            return gnomonVisualization::visualizationLString::pluginFactory().dataList();
         } else if (name == "gnomonMesh") {
-             visu_names = gnomonVisualization::visualizationMesh::pluginFactory().keys();
+            return gnomonVisualization::visualizationMesh::pluginFactory().dataList();
         } else if (name == "gnomonPointCloud") {
-             visu_names = gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
+            return gnomonVisualization::visualizationPointCloud::pluginFactory().dataList();
         }
     }
-    return visu_names;
+    return {};
 }
 
 void gnomonViewForm::setFormVisuName(const QString& name, const QString& visu_name)
@@ -1487,7 +1487,7 @@ QStringList gnomonViewForm::acceptedForms(void)
     return forms;
 }
 
-QStringList gnomonViewForm::nodePortNames(void) 
+QStringList gnomonViewForm::nodePortNames(void)
 {
     return d->nodePortNames;
 }
@@ -1534,7 +1534,7 @@ void gnomonViewForm::update(void)
 {
     for (const auto& key : d->formVisualization.keys()) {
         d->formVisualization[key]->update();
-        d->formVisualization[key]->setVisible(d->formVisibility[key]); 
+        d->formVisualization[key]->setVisible(d->formVisibility[key]);
     }
 }
 

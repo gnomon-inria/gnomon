@@ -3,6 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
@@ -52,15 +53,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractMeshReader *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractMeshReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshReader, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshReader, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMeshReader, GNOMONCORE_EXPORT, meshReader);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractMeshReader, GNOMONCORE_EXPORT, meshReader);
 }
 
 //

@@ -350,5 +350,9 @@ void gnomonVisualizationImageChannelBlending::onTimeChanged(double value)
     this->render();
 }
 
+const QString gnomonVisualizationImageChannelBlending::name(void) {
+    return "Channel Blending";
+}
+
 //
 // gnomonVisualizationImageChannelBlending.cpp ends here

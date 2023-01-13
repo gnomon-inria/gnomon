@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractPointCloudWriter, pointCloudWriter, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractPointCloudWriter, pointCloudWriter, gnomonCore);
 }
 
 //

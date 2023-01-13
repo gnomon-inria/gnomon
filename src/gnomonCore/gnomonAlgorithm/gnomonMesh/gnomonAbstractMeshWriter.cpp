@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMeshWriter, meshWriter, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractMeshWriter, meshWriter, gnomonCore);
 }
 
 //

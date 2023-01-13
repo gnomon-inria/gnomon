@@ -7,7 +7,7 @@
 //  ///////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-  DTK_DEFINE_CONCEPT(gnomonAbstractTissueGrowthModel, growthmodel, gnomonCore);
+  GNOMON_DEFINE_CONCEPT(gnomonAbstractTissueGrowthModel, growthmodel, gnomonCore);
 }
 
 //

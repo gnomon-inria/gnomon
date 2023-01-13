@@ -16,6 +16,7 @@ public:
 
 public:
     virtual const QString pluginName(void) override;
+    virtual const QString name(void) override;
 
 public:
 	void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) override;

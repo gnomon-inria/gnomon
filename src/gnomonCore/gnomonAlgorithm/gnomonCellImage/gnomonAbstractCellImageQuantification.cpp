@@ -2,7 +2,7 @@
 #include "gnomonAbstractCellImageQuantification.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellImageQuantification, cellImageQuantification, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractCellImageQuantification, cellImageQuantification, gnomonCore);
 }
 
 

@@ -8,7 +8,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractIntensityImageData, intensityimagedata, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractIntensityImageData, intensityimagedata, gnomonCore);
 }
 
 //

@@ -2,7 +2,7 @@
 #include "gnomonAbstractCellComplexConstructor.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellComplexConstructor, cellComplexConstructor, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractCellComplexConstructor, cellComplexConstructor, gnomonCore);
 }
 
 

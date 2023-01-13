@@ -2,7 +2,7 @@
 #include "gnomonAbstractCellImageTracking.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellImageTracking, cellImageTracking, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractCellImageTracking, cellImageTracking, gnomonCore);
 }
 
 

@@ -4,6 +4,7 @@
 #pragma once
 
 #include <gnomonVisualizationExport>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <QtCore>
 #include <QtGui>

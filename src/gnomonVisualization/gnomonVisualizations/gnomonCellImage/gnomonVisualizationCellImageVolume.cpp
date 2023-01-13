@@ -316,5 +316,9 @@ void gnomonVisualizationCellImageVolume::onTimeChanged(double value)
     this->render();
 }
 
+const QString gnomonVisualizationCellImageVolume::name(void) {
+    return "Cell Image Volume";
+}
+
 //
 // gnomonVisualizationCellImageVolume.cpp ends here

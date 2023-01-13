@@ -2,7 +2,7 @@
 #include "gnomonAbstractPointCloudQuantification.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractPointCloudQuantification, pointCloudQuantification, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractPointCloudQuantification, pointCloudQuantification, gnomonCore);
 }
 
 

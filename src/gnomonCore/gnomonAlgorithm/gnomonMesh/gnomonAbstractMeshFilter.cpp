@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMeshFilter, meshFilter, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractMeshFilter, meshFilter, gnomonCore);
 }
 
 //
