@@ -25,7 +25,7 @@ from gnomon.utils.logCapture import StreamCapture
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
-DEBUG = False
+DEBUG = True if os.environ.get('DEBUG') else False
 
 
 def get_factory(plugin_group: str):
