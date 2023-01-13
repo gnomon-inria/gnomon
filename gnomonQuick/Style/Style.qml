@@ -49,7 +49,7 @@ QtObject {
     }
 
     // TODO: Define light theme and make the colors in colorTheme object conditional
-    property int mode: Style.Mode.Dark
+    property int mode: Style.Mode ? Style.Mode.Dark : 0
     // property alias colors: _colorTheme
     // property alias fonts: _fonts
     property int panelRadius: S.spacing["1"]

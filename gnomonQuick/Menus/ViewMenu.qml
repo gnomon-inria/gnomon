@@ -113,6 +113,8 @@ Control {
             id: _visu_combobox;
 
             label: "Type:"
+            textRole: "name"
+            valueRole: "counter"
             model: view? view.viewLogic.formVisualizations(_form_selector.currentValue) : null;
             currentIndex: 0
 
@@ -121,23 +123,14 @@ Control {
             /* Layout.rightMargin: 20 */
             visible: view? view.viewLogic.formNames.length > 0 : false
 
-            onCurrentIndexChanged: {
-                if(view && _visu_combobox.currentValue) {
-                    view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex]);
-                }
-            }
-
             onCurrentValueChanged: {
-                let index = view ? model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue)) : -1
-                if(index > -1) {
-                    _visu_combobox.currentIndex = model.indexOf(view.viewLogic.formVisuName(_form_selector.currentValue))
+                if(view) {
+                    view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex].key)
+                    //_auto_render.checked = false
+                    _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
+                    _params.updateParametersModel();
+                    _control.update_menu(_visu_combobox.currentValue.key);
                 }
-
-                //_auto_render.checked = false
-                _params.parameters =  view?  view.viewLogic.formVisuParameters(_form_selector.currentValue) : null;
-                _params.updateParametersModel();
-
-                _control.update_menu(_visu_combobox.currentValue);
             }
         }
 

@@ -24,7 +24,11 @@ ComboBox {
 
   delegate: G.ComboBoxDelegate {
     width: _control.width;
-    text: model[textRole] ? model[textRole] : model.modelData
+    text: modelData[textRole] ? modelData[textRole] : modelData
+    ToolTip.text: modelData.doc ? modelData.key + "\n" + modelData.doc : null
+    ToolTip.delay: 1000
+    ToolTip.timeout: 5000
+    ToolTip.visible: ToolTip.text ? hovered : false
     highlighted: _control.highlightedIndex === index
   }
 
