@@ -59,6 +59,7 @@ public slots:
     void run(void);
     void step(void);
     void reset(void);
+    void animate(void);
 
     void setInitialState(void);
     void viewState(void);
