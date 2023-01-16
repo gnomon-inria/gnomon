@@ -58,10 +58,5 @@ gnomonSphereForm *gnomonAbstractForm::asSphere()
 gnomonTree *gnomonAbstractForm::asTree()
 { return dynamic_cast<gnomonTree *>(this); }
 
-
-namespace gnomonCore {
-    GNOMON_DEFINE_CONCEPT(gnomonAbstractForm, abstractForm, gnomonCore);
-}
-
 //
 // gnomonAbstractForm.cpp ends here
