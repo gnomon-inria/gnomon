@@ -25,7 +25,7 @@ from gnomon.utils.logCapture import StreamCapture
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
-DEBUG = False
+DEBUG = True if os.environ.get('DEBUG') else False
 
 
 def get_factory(plugin_group: str):
@@ -497,7 +497,7 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
     return seriesWriterDecorator
 
 
-def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter: str, base_class=None):
+def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter: str, name: str="", base_class=None):
     """
     Registers form data plugins to the plugin factory.
 
@@ -534,13 +534,13 @@ def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter
 
         cls.__data_setter = getattr(cls, data_setter)
         cls.__data_getter = getattr(cls, data_getter)
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, name=name, base_class=base_class)
         return cls
 
     return decorator
 
 
-def algorithmPlugin(version: str, coreversion: str, base_class=None):
+def algorithmPlugin(version: str, coreversion: str, name: str="", base_class=None):
     """
     Registers algorithm plugins to the plugin factory.
 
@@ -615,13 +615,13 @@ def algorithmPlugin(version: str, coreversion: str, base_class=None):
 
         # other decorators
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, name=name, base_class=base_class)
         return cls
 
     return decorator
 
 
-def corePlugin(version: str, coreversion: str, base_class=None):
+def corePlugin(version: str, coreversion: str, name: str="", base_class=None):
     """
     Registers gnomon plugins which implements an interface from gnomon.core to the plugin factory.
 
@@ -654,6 +654,8 @@ def corePlugin(version: str, coreversion: str, base_class=None):
         Version of the plugin.
     coreversion: str
         Exact version of gnomon to check for API compatibility.
+    name: str
+        Name of the plugin. Used for the UI
     base_class
 
     Returns
@@ -663,13 +665,13 @@ def corePlugin(version: str, coreversion: str, base_class=None):
 
     def decorator(cls):
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, name=name, base_class=base_class)
         return cls
 
     return decorator
 
 
-def visualizationPlugin(version: str, coreversion: str, base_class=None):
+def visualizationPlugin(version: str, coreversion: str, name="", base_class=None):
     """
     Registers visualization plugins to the plugin factory.
 
@@ -705,6 +707,8 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
         Version of the plugin.
     coreversion: str
         Exact version of gnomon to check for API compatibility.
+    name: str
+        Name of the plugin. Used for the UI
     base_class
 
     Returns
@@ -720,13 +724,13 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractVisualization interface."
                             f" Otherwise try using corePlugin or formDataPlugin")
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.visualization, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.visualization, name=name, base_class=base_class)
         return cls
 
     return decorator
 
 
-def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
+def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None):
     # -----------------------------------------------------
     # Doc and Version and Name
     # -----------------------------------------------------
@@ -756,7 +760,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     cls.version = _version
 
     def _name(self: cls) -> str:
-        return self._name if hasattr(self, "_name") and self._name else cls.__name__
+        return name if name else f"PLACEHOLDER: {cls.__name__}"
 
     cls.name = _name
 
@@ -878,18 +882,18 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     plugin_factory_name += '_pluginFactory'
     factory = getattr(namespace, plugin_factory_name)()
 
-    plugin_name = cls.__name__
-    plugin_name = plugin_name[0].lower() + plugin_name[1:]
+    plugin_key = cls.__name__
+    plugin_key = plugin_key[0].lower() + plugin_key[1:]
 
     # TODO
     # check plugin gnomon_version to actual version before registering it
     # register plugin_version to be able to get it ?
     if checkVersion(coreversion):
-        factory.recordPlugin(plugin_name, __PLUGINS__[-1])
-        if plugin_name in factory.keys():
-            logging.info("Python plugin " + str(plugin_name) + " has been successfully loaded!")
+        factory.recordPlugin(plugin_key, __PLUGINS__[-1], name, inspect.cleandoc(cls.__doc__) if cls.__doc__ else "")
+        if plugin_key in factory.keys():
+            logging.info("Python plugin " + str(plugin_key) + ":" + name +" has been successfully loaded!")
     else:
-        logging.warn("Python plugin" + str(plugin_name) + "defined for core version " + str(
+        logging.warn("Python plugin" + str(plugin_key) + "defined for core version " + str(
             coreversion) + " but actual version is ${gnomon_VERSION}")
         logging.warn("plugin not loaded")
     return cls

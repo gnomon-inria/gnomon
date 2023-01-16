@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractImageFusion, imageFusion, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractImageFusion, imageFusion, gnomonCore);
 }
 
 //

@@ -2,7 +2,7 @@
 #include "gnomonAbstractTreeData.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractTreeData, treeData, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractTreeData, treeData, gnomonCore);
 }
 
 // gnomonAbstractTreeData.cpp ends here

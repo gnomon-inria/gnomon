@@ -16,6 +16,7 @@ public:
 
 public:
     virtual const QString pluginName(void) override;
+    virtual const QString name(void) override;
 
 public:
 	void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) override;

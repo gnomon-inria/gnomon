@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractPointCloudReader, pointCloudReader, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractPointCloudReader, pointCloudReader, gnomonCore);
 }
 
 //

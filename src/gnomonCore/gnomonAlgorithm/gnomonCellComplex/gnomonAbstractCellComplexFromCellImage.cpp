@@ -2,7 +2,7 @@
 #include "gnomonAbstractCellComplexFromCellImage.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellComplexFromCellImage, cellComplexFromCellImage, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractCellComplexFromCellImage, cellComplexFromCellImage, gnomonCore);
 }
 
 

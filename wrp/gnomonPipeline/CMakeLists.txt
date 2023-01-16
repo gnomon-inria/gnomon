@@ -23,8 +23,9 @@ set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i PROPERTI
 set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/${LAYER_NAME}PYTHON_wrap.cxx PROPERTY SKIP_AUTOMOC ON)
 
 set(SWIG_MODULE_NAME ${PROJECT_NAME})
- 
+
 list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++  -threads)
+#list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++  -threads -E > ~/pipeline.cpp)
 swig_add_library(${PROJECT_NAME} LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${LAYER_NAME}.i OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 swig_link_libraries(${PROJECT_NAME}

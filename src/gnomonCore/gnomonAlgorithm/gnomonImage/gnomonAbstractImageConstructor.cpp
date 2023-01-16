@@ -2,7 +2,7 @@
 #include "gnomonAbstractImageConstructor.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractImageConstructor, imageConstructor, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractImageConstructor, imageConstructor, gnomonCore);
 }
 
 

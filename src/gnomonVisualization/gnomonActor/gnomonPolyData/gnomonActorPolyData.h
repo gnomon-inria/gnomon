@@ -30,8 +30,8 @@ public:
     static gnomonActorPolyData *New(void);
 
 public:
-    void setInteractor(void *interactor) override;
-	void setPolyData(gnomonPolyData *polydata);
+    void setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor) override;
+    void setPolyData(gnomonPolyData *polydata);
 
 public slots:
     void update(void) override;
@@ -55,7 +55,7 @@ private:
     void operator = (const gnomonActorPolyData&);
 
 private:
-	class gnomonActorPolyDataPrivate *d;
+    class gnomonActorPolyDataPrivate *d;
 };
 
 

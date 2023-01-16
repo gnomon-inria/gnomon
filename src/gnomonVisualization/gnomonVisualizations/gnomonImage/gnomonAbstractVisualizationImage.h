@@ -2,7 +2,7 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore/dtkCorePlugin>
+#include "gnomonCore/gnomonCorePlugin.h"
 #include <dtkCore/dtkCoreParameters>
 
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
@@ -40,15 +40,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationImage *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonVisualization layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonVisualization {
-    DTK_DECLARE_CONCEPT(gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT, visualizationImage);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractVisualizationImage, GNOMONVISUALIZATION_EXPORT, visualizationImage);
 }
 
 //

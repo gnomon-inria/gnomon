@@ -31,14 +31,14 @@ gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(const dtkCoreParameter *p):  
     }
     *this = p->variant();
     m_object = new gnomonCoreParameterNurbsObject(this);
-} 
+}
 
 gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(const QVariant& v) : dtkCoreParameterBase<gnomonCoreParameterNurbs>()
 {
     if(v.canConvert<gnomonCoreParameterNurbs>()) {
         auto o(v.value<gnomonCoreParameterNurbs>());
         *this = o;
-    } else if(v.canConvert(QMetaType::QVariantList)) {
+    } else if(v.canConvert<QVariantList>()) {
         this->setValue(v);
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
@@ -64,7 +64,7 @@ gnomonCoreParameterNurbs::~gnomonCoreParameterNurbs(void)
     delete m_object;
 }
 
-gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const ctrls_type& ctrl_points) 
+gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const ctrls_type& ctrl_points)
 {
     this->m_ctrl_points = ctrl_points;
     return *this;
@@ -74,7 +74,7 @@ gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const QVariant& 
 {
     if(v.canConvert<gnomonCoreParameterNurbs>()) {
         *this = v.value<gnomonCoreParameterNurbs>();
-    } else if(v.canConvert(QMetaType::QVariantList)) {
+    } else if(v.canConvert<QVariantList>()) {
         this->setValue(v);
     } else if(v.canConvert<QVariantHash>()) {
         auto hash = v.toHash();
@@ -86,7 +86,7 @@ gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const QVariant& 
 
         this->setValue(hash["ctrl_points"]);
     }
-   
+
    return *this;
 }
 
@@ -154,7 +154,7 @@ void gnomonCoreParameterNurbs::setDimension(int dimension)
 
 void gnomonCoreParameterNurbs::setValue(const QVariant &v)
 {
-    if(v.canConvert(QMetaType::QVariantList)) {
+    if(v.canConvert<QVariantList>()) {
         m_ctrl_points.clear();
         auto list_ctrl_points = v.toList();
         for(auto point : list_ctrl_points) {
@@ -167,7 +167,7 @@ void gnomonCoreParameterNurbs::setValue(const QVariant &v)
 
         }
     } else {
-        dtkWarn() << Q_FUNC_INFO << "cannot convert variant to list" 
+        dtkWarn() << Q_FUNC_INFO << "cannot convert variant to list"
         << v.metaType().name() << v;
     }
 }
@@ -233,7 +233,7 @@ GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug dbg, gnomonCoreParameterNu
                   << "degree " << p.degree() << ", "
                   << "delta " << p.delta() << ", "
                   << "control_points: { ";
-                  
+
     for(auto point: p.controlPoints()) {
         dbg.nospace() << "(" << point[0] << " , " << point[1] << " , " << point[2] << "), ";
     }

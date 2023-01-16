@@ -2,7 +2,7 @@
 #include "gnomonAbstractCellComplexReader.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellComplexReader, cellComplexReader, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractCellComplexReader, cellComplexReader, gnomonCore);
 }
 
 

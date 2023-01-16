@@ -2,7 +2,7 @@
 #include "gnomonAbstractBinaryImageFromImage.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractBinaryImageFromImage, binaryImageFromImage, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractBinaryImageFromImage, binaryImageFromImage, gnomonCore);
 }
 
 

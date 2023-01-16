@@ -39,7 +39,7 @@ template <typename T> std::shared_ptr<T> gnomonTimeSeries<T>::at(double t)
     if(m_forms.contains(t)) {
         m_current_time = t;
         return this->current();
-    } else { 
+    } else {
         dtkWarn() << Q_FUNC_INFO << "Invalid time position : the form is not defined at this time:" << t;
         return nullptr;
     }
@@ -75,7 +75,7 @@ template <typename T> QList<double> gnomonTimeSeries<T>::times(void) const
 template <typename T> QMap<QString,QString> gnomonTimeSeries<T>::metadataAtT(double t) const
 {
     if(this->times().contains(t))
-        return m_forms[t]->metadata(); 
+        return m_forms[t]->metadata();
     else
         return QMap<QString, QString>();
 }
@@ -158,7 +158,7 @@ void gnomonTimeSeries<T>::compose(std::shared_ptr<gnomonAbstractDynamicForm> pFo
 // /////////////////////////////////////////////////////////////////
 
 //namespace gnomonCore {
-//    DTK_DEFINE_CONCEPT(gnomonTimeSeries, discreteDynamicForm, gnomonCore);
+//    GNOMON_DEFINE_CONCEPT(gnomonTimeSeries, discreteDynamicForm, gnomonCore);
 //}
 
 //

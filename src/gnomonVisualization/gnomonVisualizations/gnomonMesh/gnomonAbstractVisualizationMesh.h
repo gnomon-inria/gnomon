@@ -4,7 +4,7 @@
 
 #include <gnomonVisualizationExport.h>
 
-#include <dtkCore/dtkCorePlugin>
+#include "gnomonCore/gnomonCorePlugin.h"
 #include <dtkCore/dtkCoreParameters>
 
 #include <gnomonVisualizations/gnomonAbstractVisualization.h>
@@ -20,8 +20,8 @@ public:
     virtual ~gnomonAbstractVisualizationMesh(void) = default;
 
 public:
-	virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) = 0;
-	virtual std::shared_ptr<gnomonMeshSeries> mesh(void) = 0;
+    virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) = 0;
+    virtual std::shared_ptr<gnomonMeshSeries> mesh(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonMesh") {
@@ -43,15 +43,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationMesh *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonVisualization layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonVisualization {
-    DTK_DECLARE_CONCEPT(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT, visualizationMesh);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractVisualizationMesh, GNOMONVISUALIZATION_EXPORT, visualizationMesh);
 }
 
 //

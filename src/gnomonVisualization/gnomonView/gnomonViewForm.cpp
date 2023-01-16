@@ -7,6 +7,7 @@
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 #include "gnomonManager/gnomonFormManager.h"
+#include "gnomonPluginFactory.h"
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h"
 #include "gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h"
@@ -572,6 +573,11 @@ void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 
 gnomonViewForm::~gnomonViewForm(void)
 {
+    for(auto&& form_visu : d->formVisualization) {
+        if(form_visu->view() == this)
+            form_visu->clear();
+    }
+    d->formVisualization.clear();
     delete d;
 }
 
@@ -1205,28 +1211,26 @@ QString gnomonViewForm::formVisuName(const QString& name)
     return visu_name;
 }
 
-QStringList gnomonViewForm::formVisualizations(const QString& name)
+QVariantList gnomonViewForm::formVisualizations(const QString& name)
 {
-    QStringList visu_names;
-
     if (d->forms.contains(name)) {
         if (name == "gnomonBinaryImage") {
-             visu_names = gnomonVisualization::visualizationBinaryImage::pluginFactory().keys();
+            return gnomonVisualization::visualizationBinaryImage::pluginFactory().dataList();
         } else if (name == "gnomonCellComplex") {
-             visu_names = gnomonVisualization::visualizationCellComplex::pluginFactory().keys();
+            return gnomonVisualization::visualizationCellComplex::pluginFactory().dataList();
         } else if (name == "gnomonCellImage") {
-             visu_names = gnomonVisualization::visualizationCellImage::pluginFactory().keys();
+             return gnomonVisualization::visualizationCellImage::pluginFactory().dataList();
         } else if (name == "gnomonImage") {
-             visu_names = gnomonVisualization::visualizationImage::pluginFactory().keys();
+            return gnomonVisualization::visualizationImage::pluginFactory().dataList();
         } else if (name == "gnomonLString") {
-            visu_names = gnomonVisualization::visualizationLString::pluginFactory().keys();
+            return gnomonVisualization::visualizationLString::pluginFactory().dataList();
         } else if (name == "gnomonMesh") {
-             visu_names = gnomonVisualization::visualizationMesh::pluginFactory().keys();
+            return gnomonVisualization::visualizationMesh::pluginFactory().dataList();
         } else if (name == "gnomonPointCloud") {
-             visu_names = gnomonVisualization::visualizationPointCloud::pluginFactory().keys();
+            return gnomonVisualization::visualizationPointCloud::pluginFactory().dataList();
         }
     }
-    return visu_names;
+    return {};
 }
 
 void gnomonViewForm::setFormVisuName(const QString& name, const QString& visu_name)

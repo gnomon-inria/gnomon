@@ -32,7 +32,7 @@ public:
     static gnomonActorVolume *New(void);
 
 public:
-    void setInteractor(void *interactor) override;
+    void setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>*interactor) override;
     void setVolume(vtkImageData *volume);
 
 public slots:

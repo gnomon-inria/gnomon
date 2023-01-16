@@ -3,6 +3,7 @@
 #include <gnomonCoreExport.h>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAbstractModel.h"
 
@@ -27,6 +28,7 @@ public:
 // TODO: Not sure the model abstraction should know about LSystem code :/
 public:
     virtual void setLSystem(const QString& code) = 0;
+    virtual const QString& lSystemCode(void) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -51,15 +53,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringEvolutionModel *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT, lStringEvolutionModel);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT, lStringEvolutionModel);
 }
 
 //

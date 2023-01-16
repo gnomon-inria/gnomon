@@ -5,6 +5,7 @@
 #include <gnomonVisualizationExport.h>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h>
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
@@ -45,15 +46,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractVisualizationBinaryImage *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonVisualization layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonVisualization {
-    DTK_DECLARE_CONCEPT(gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT, visualizationBinaryImage);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractVisualizationBinaryImage, GNOMONVISUALIZATION_EXPORT, visualizationBinaryImage);
 }
 
 //

@@ -2,6 +2,7 @@
 
 %include "std_shared_ptr.i"
 %include <dtkBase/dtkBase.i>
+%include <gnomonMacro.i>
 %import  <dtkCore/dtkCore.i>
 
 %shared_ptr(gnomonAbstractForm)
@@ -35,6 +36,10 @@
 
 %{
 #include <QtCore>
+
+#include <gnomonCore/gnomonPluginFactory.h>
+#include <gnomonCore/gnomonCorePlugin.h>
+
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractFormData.h>
 #include <gnomonCore/gnomonForm/gnomonAbstractForm.h>
@@ -325,7 +330,7 @@ WRAP_GNOMONCORE_FORM_SERIES(PointCloud)
 WRAP_GNOMONCORE_FORM_SERIES(Tree)
 //WRAP_GNOMONCORE_FORM_SERIES(Sphere)
 //WRAP_GNOMONCORE_FORM_SERIES(Wall)
- 
+
 // /////////////////////////////////////////////////////////////////
 
 %extend QVariant {
@@ -342,7 +347,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
     gnomonCellComplex* tognomonCellComplex() const {
         return $self->value<gnomonCellComplex *>();
     }
-   
+
     void setValue(gnomonCellImage *value) {
         $self->setValue(dtk::variantFromValue(value));
     }
@@ -546,7 +551,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 }
 
 
- 
+
 // /////////////////////////////////////////////////////////////////
 // String dictionary
 // /////////////////////////////////////////////////////////////////
@@ -631,8 +636,8 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
 %include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 %extend gnomonCellComplex {
-	const char* __repr__()
-	{
+    const char* __repr__()
+    {
         static std::string s;
         auto&& cellComplex = $self;
         QString str("<gnomoncore.gnomonCellComplex");
@@ -640,14 +645,14 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         str += QString(" at 0x%1>").arg((quintptr)cellComplex, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 
 %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonAbstractCellGraphData.h>
 %include <gnomonCore/gnomonForm/gnomonCellGraph/gnomonCellGraph.h>
 %extend gnomonCellGraph {
     const char* __repr__()
-	{
+    {
         static std::string s;
         auto&& cellGraph = $self;
         QString str("<gnomoncore.gnomonCellGraph");
@@ -655,13 +660,13 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         //str += QString(" at 0x%1>").arg((quintptr)cellComplex, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonAbstractCellImageData.h>
 %include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 %extend gnomonCellImage {
-	const char* __repr__()
-	{
+    const char* __repr__()
+    {
         static std::string s;
         auto&& cellImage = $self;
         QString str("<gnomoncore.gnomonCellImage");
@@ -669,14 +674,14 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         str += QString(" at 0x%1>").arg((quintptr)cellImage, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 
 %include <gnomonCore/gnomonForm/gnomonDataDict/gnomonAbstractDataDictData.h>
 %include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict.h>
 %extend gnomonDataDict {
-	const char* __repr__()
-	{
+    const char* __repr__()
+    {
         static std::string s;
         auto&& dataDict = $self;
         QString str("<gnomoncore.gnomonDataDict");
@@ -684,14 +689,14 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         str += QString(" at 0x%1>").arg((quintptr)dataDict, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonAbstractDataFrameData.h>
 %include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame.h>
 %extend gnomonDataFrame {
-	const char* __repr__()
-	{
+    const char* __repr__()
+    {
         static std::string s;
         auto&& dataFrame = $self;
         QString str("<gnomoncore.gnomonDataFrame");
@@ -699,14 +704,14 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         str += QString(" at 0x%1>").arg((quintptr)dataFrame, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 
 %include <gnomonCore/gnomonForm/gnomonImage/gnomonAbstractImageData.h>
 %include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
 %extend gnomonImage {
-	const char* __repr__()
-	{
+    const char* __repr__()
+    {
         static std::string s;
         auto&& image = $self;
         QString str("<gnomoncore.gnomonImage");
@@ -714,14 +719,14 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         str += QString(" at 0x%1>").arg((quintptr)image, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
 %extend gnomonLString {
-	const char* __repr__()
-	{
+    const char* __repr__()
+    {
         static std::string s;
         auto&& lString = $self;
         QString str("<gnomoncore.gnomonLString");
@@ -729,14 +734,14 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         str += QString(" at 0x%1>").arg((quintptr)lString, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 %extend gnomonMesh {
-	const char* __repr__()
-	{
+    const char* __repr__()
+    {
         static std::string s;
         auto&& mesh = $self;
         QString str("<gnomoncore.gnomonMesh");
@@ -744,14 +749,14 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         str += QString(" at 0x%1>").arg((quintptr)mesh, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 
 %include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData.h>
 %include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 %extend gnomonPointCloud {
-	const char* __repr__()
-	{
+    const char* __repr__()
+    {
         static std::string s;
         auto&& pointCloud = $self;
         QString str("<gnomoncore.gnomonPointCloud");
@@ -759,14 +764,14 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         str += QString(" at 0x%1>").arg((quintptr)pointCloud, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 %include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
 %extend gnomonTree {
-	const char* __repr__()
-	{
+    const char* __repr__()
+    {
         static std::string s;
         auto&& tree = $self;
         QString str("<gnomoncore.gnomonTree");
@@ -774,7 +779,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         str += QString(" at 0x%1>").arg((quintptr)tree, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
-	}
+    }
 }
 
 // %template(gnomonCellComplexSeries) gnomonTimeSeries<gnomonCellComplex>;

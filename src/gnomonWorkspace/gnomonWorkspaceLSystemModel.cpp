@@ -4,6 +4,8 @@
 #include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringEvolutionModelCommand>
 #include <gnomonCore/gnomonPythonPluginLoader>
 
+#include <gnomonPipeline/gnomonPipelineManager.h>
+
 #include <gnomonVisualization/gnomonView/gnomonViewForm>
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString"
 
@@ -52,6 +54,8 @@ public:
 public:
     QString text;
     int derivationLength = 1;
+
+    int derivations = 0;
 
 public:
     QString workspace;
@@ -117,6 +121,10 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
                 it.next();
             }
         }
+    });
+
+    connect(d->view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+        gnomonPipelineManager::instance()->addForm(f);
     });
 
     d->model_file = new QTemporaryFile();
@@ -211,6 +219,7 @@ void gnomonWorkspaceLSystemModel::run()
     for (int t=0; t<d->derivationLength; t++) {
         d->command->redo();
     }
+    d->derivations = d->derivationLength;
     this->viewState();
     emit finished();
 }
@@ -221,12 +230,14 @@ void gnomonWorkspaceLSystemModel::step()
 
     // TODO: make the commannd async
     emit started();
-    auto lString = d->command->state();
+    auto lString = d->command->lString();
     if (!lString || lString->times().size() == 0) {
         this->setInitialState();
         d->command->undo();
+        d->derivations = 0;
     }
     d->command->redo();
+    d->derivations += 1;
     this->viewState();
     emit finished();
 }
@@ -238,6 +249,7 @@ void gnomonWorkspaceLSystemModel::reset()
     emit started();
     this->setInitialState();
     d->command->undo();
+    d->derivations = 0;
     this->viewState();
     emit finished();
 }
@@ -251,20 +263,23 @@ QUrl gnomonWorkspaceLSystemModel::defaultReadPath(void)
 void gnomonWorkspaceLSystemModel::setInitialState()
 {
     // TODO: drop axiom into a different view?
-    // d->command->setInitialState(d->view->lString());
-    d->command->setInitialState(nullptr);
+    // d->command->setAxiom(d->view->lString());
+    d->command->setAxiom(nullptr);
 }
 
 void gnomonWorkspaceLSystemModel::viewState()
 {
     // TODO: pass lsystem to visu plugin
-    auto lString = d->command->state();
+    d->command->setDerivationLength(d->derivations);
+    auto lString = d->command->lString();
     if (lString) {
         d->view->setLString(lString);
         if (lString->times().size() != 0) {
             d->view->setCurrentTime(lString->times().last());
         }
         d->view->render();
+
+        gnomonPipelineManager::instance()->addEvolutionModel(d->command);
     }
 }
 

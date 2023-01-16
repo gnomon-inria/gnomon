@@ -43,7 +43,7 @@ public:
 
     vtkSmartPointer<vtkImagePlaneWidget> planeWidget[3];
 
-    vtkRenderWindowInteractor *interactor;
+    vtkSmartPointer<vtkRenderWindowInteractor> interactor;
 
 public:
     int orientation;
@@ -68,7 +68,7 @@ void gnomonActor2DImageRGBAWidgetPrivate::updateOpacity(void)
 
 vtkStandardNewMacro(gnomonActor2DImageRGBAWidget);
 
-void gnomonActor2DImageRGBAWidget::setInteractor(void *interactor)
+void gnomonActor2DImageRGBAWidget::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
     for(int i = 0; i < 3; i++) {
