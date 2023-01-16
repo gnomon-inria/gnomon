@@ -52,7 +52,7 @@ Control {
         if(count>=1 && currentIndex ==-1) {
             currentIndex = 0;
             _control.currentIndex = 0;
-            _control.currentValue = _list_view.itemAtIndex(0);
+            _control.currentValue = _list_view.itemAtIndex(0).text;
         }
     }
 

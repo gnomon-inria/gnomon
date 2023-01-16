@@ -35,7 +35,7 @@ G.Dialog {
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
     width: G.Style.largeDialogWidth
-    height: G.Style.largeDialogHeight
+    height: 1.5*G.Style.largeDialogHeight
 
     padding: 0;
 
@@ -218,6 +218,7 @@ G.Dialog {
 
         title: _internal.selected_workspace ? _internal.selected_workspace.title : ""
         description: _internal.selected_workspace ? _internal.selected_workspace.description : ""
+        preview: _internal.selected_workspace ? _internal.selected_workspace.preview : ""
         plugins : _internal.selected_workspace ? _internal.workspace_plugins[_internal.selected_workspace.type] : []
 
         onOpenWithAlgo : (algo_name) => {
@@ -459,6 +460,8 @@ G.Dialog {
             _available_workspaces.setProperty(i, "section", w.title[0])
             let desc = GM.MetaData.workspaceMetaData(w.type, "description")
             _available_workspaces.setProperty(i, "description", desc)
+            let preview = w.type + ".png"
+            _available_workspaces.setProperty(i, "preview", preview)
             let plugins = []
             if (w.type in _internal.workspace_groups) {
                 plugins = GM.MetaData.pluginGroupMetaData(_internal.workspace_groups[w.type])

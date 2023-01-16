@@ -49,7 +49,7 @@ QtObject {
     }
 
     // TODO: Define light theme and make the colors in colorTheme object conditional
-    property int mode: Style.Mode.Dark
+    property int mode: Style.Mode ? Style.Mode.Dark : 0
     // property alias colors: _colorTheme
     // property alias fonts: _fonts
     property int panelRadius: S.spacing["1"]
@@ -203,6 +203,8 @@ QtObject {
         property color dangerColor: S.colors.red["500"]
         property color warningColor: S.colors.orange["500"]
         property color okColor: S.colors.green["500"]
+        property color noteColor: S.colors.yellow["500"]
+        property color exampleColor: S.colors.purple["500"]
 
         //hovered color theme
         property color hoveredBaseColor: S.colors.blue["400"]
@@ -237,6 +239,8 @@ QtObject {
         property color lightGreen: S.colors.green["200"]
         property color lightRed: S.colors.red["200"]
         property color lightOrange: S.colors.orange["200"]
+        property color lightYellow: S.colors.yellow["200"]
+        property color lightPurple: S.colors.purple["200"]
 
         property color transparent: "#00000000"
     }

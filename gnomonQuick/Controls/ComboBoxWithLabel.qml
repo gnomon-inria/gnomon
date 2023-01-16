@@ -14,6 +14,8 @@ Control {
   property alias label: _label.text;
   property alias currentIndex: _combobox.currentIndex;
   property alias currentValue: _combobox.currentValue;
+  property alias textRole: _combobox.textRole;
+  property alias valueRole: _combobox.valueRole;
 
   implicitHeight: G.Style.comboBoxHeight;
   implicitWidth: G.Style.smallPanelWidth;
