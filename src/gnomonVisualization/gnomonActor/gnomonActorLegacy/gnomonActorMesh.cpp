@@ -48,7 +48,7 @@ public:
 
 vtkStandardNewMacro(gnomonActorMesh);
 
-void gnomonActorMesh::setInteractor(void *interactor)
+void gnomonActorMesh::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>s*interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
 }

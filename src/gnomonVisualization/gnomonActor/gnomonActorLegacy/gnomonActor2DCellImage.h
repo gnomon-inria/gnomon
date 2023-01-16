@@ -34,7 +34,7 @@ public:
     static gnomonActor2DCellImage *New(void);
 
 public:
-    void setInteractor(void *interactor) override;
+    void setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>*interactor) override;
     void hide(void) override;
     void show(void) override;
 

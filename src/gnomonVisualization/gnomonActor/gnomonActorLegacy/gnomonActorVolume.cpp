@@ -130,7 +130,7 @@ void gnomonActorVolume::setVolume(vtkImageData *volume)
     d->computeHistogram();
 }
 
-void gnomonActorVolume::setInteractor(void *interactor)
+void gnomonActorVolume::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>s*interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
 }

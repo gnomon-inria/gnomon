@@ -33,7 +33,7 @@ public:
     vtkSmartPointer<vtkImageMapToColors> colors = nullptr;
     vtkSmartPointer<vtkPiecewiseFunction> opacity = nullptr;
 
-    vtkRenderWindowInteractor *interactor;
+    vtkSmartPointer<vtkRenderWindowInteractor> interactor = nullptr;
 
 public:
     int orientation;
@@ -92,9 +92,9 @@ void gnomonActor2DImagePrivate::updateColorFunction(void)
 
 vtkStandardNewMacro(gnomonActor2DImage);
 
-void gnomonActor2DImage::setInteractor(void *interactor)
+void gnomonActor2DImage::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor)
 {
-    d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
+    d->interactor = interactor;
 //    for(int i = 0; i < 3; i++) {
 //
 //        if(d->plane[i])

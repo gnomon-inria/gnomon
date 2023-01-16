@@ -31,7 +31,7 @@ public:
     static gnomonActorMesh *New(void);
 
 public:
-    void setInteractor(void *interactor) override;
+    void setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>*interactor) override;
     void setMesh(vtkPolyData *mesh);
 
     virtual void hide(void) override;
