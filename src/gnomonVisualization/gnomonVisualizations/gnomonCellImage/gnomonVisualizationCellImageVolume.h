@@ -19,8 +19,8 @@ public:
     virtual const QString name(void) override;
 
 public:
-	void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) override;
-	std::shared_ptr<gnomonCellImageSeries> cellImage(void) override;
+    void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) override;
+    std::shared_ptr<gnomonCellImageSeries> cellImage(void) override;
 
 public slots:
     void updateOpacity(void);
@@ -54,7 +54,7 @@ public:
     QMap<QString, QString> parameterGroups(void) override;
 
 private:
-	class gnomonVisualizationCellImageVolumePrivate *dd;
+    class gnomonVisualizationCellImageVolumePrivate *dd;
 };
 
 

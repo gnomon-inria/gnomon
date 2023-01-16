@@ -128,7 +128,7 @@
 
 
 %typemap(out) QVariant gnomonDataDict::get {
-    int type = $1.type(); //TODO typeId ?
+    int type = $1.typeId();
     QString name($1.typeName());
     name = name.remove(' ');
 
@@ -299,7 +299,6 @@
 %enddef
 
 %include <gnomonCore/gnomonPluginFactory.h>
-
 %include <gnomonCore/gnomonAbstractDataDriver.h>
 %include <gnomonCore/gnomonMorphonetHelper.h>
 

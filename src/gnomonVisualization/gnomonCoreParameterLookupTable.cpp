@@ -30,6 +30,7 @@ gnomonCoreParameterLookupTable::gnomonCoreParameterLookupTable(void) : dtkCorePa
 gnomonCoreParameterLookupTable::~gnomonCoreParameterLookupTable(void)
 {
     delete m_object;
+    m_object = nullptr;
 }
 
 gnomonCoreParameterLookupTable::gnomonCoreParameterLookupTable(const dtkCoreParameter *p) : dtkCoreParameterBase<gnomonCoreParameterLookupTable>()
