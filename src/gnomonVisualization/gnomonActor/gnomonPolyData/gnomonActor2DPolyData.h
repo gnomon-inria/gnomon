@@ -43,7 +43,7 @@ public:
     static gnomonActor2DPolyData *New(void);
 
 public:
-    void setInteractor(void *interactor) override;
+    void setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor) override;
 
 public:
     virtual void hide(void) override;

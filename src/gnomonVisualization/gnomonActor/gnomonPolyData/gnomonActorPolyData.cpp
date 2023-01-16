@@ -45,7 +45,7 @@ public:
 
     vtkSmartPointer<vtkColorTransferFunction> colorFunction;
 
-    vtkRenderWindowInteractor *interactor;
+    vtkSmartPointer<vtkRenderWindowInteractor> interactor;
 
     double alpha;
     double value_range[2];
@@ -87,9 +87,9 @@ void gnomonActorPolyDataPrivate::updateColorFunction(void)
 
 vtkStandardNewMacro(gnomonActorPolyData);
 
-void gnomonActorPolyData::setInteractor(void *interactor)
+void gnomonActorPolyData::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor)
 {
-    d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
+    d->interactor = interactor;
 }
 
 void gnomonActorPolyData::setPolyData(gnomonPolyData *polydata)

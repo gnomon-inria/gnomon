@@ -38,7 +38,7 @@ public:
     static gnomonActorImage *New(void);
 
 public:
-    void setInteractor(void *interactor) override;
+    void setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>*interactor) override;
     void setImage(vtkImageData *image);
 
 public:
