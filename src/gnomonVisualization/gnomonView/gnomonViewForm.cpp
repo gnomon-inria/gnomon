@@ -587,6 +587,11 @@ void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 
 gnomonViewForm::~gnomonViewForm(void)
 {
+    for(auto&& form_visu : d->formVisualization) {
+        if(form_visu->view() == this)
+            form_visu->clear();
+    }
+    d->formVisualization.clear();
     delete d;
 }
 

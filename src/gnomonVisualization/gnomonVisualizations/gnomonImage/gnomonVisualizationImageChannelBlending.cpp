@@ -61,6 +61,7 @@ void gnomonVisualizationImageChannelBlendingPrivate::reset(void)
     this->dtk_img_by_channel.clear();
     this->vtk_img_by_channel.clear();
 
+    /*
     auto it = this->qq->d->parameters.begin();
     auto it_end = this->qq->d->parameters.end();
     while (it != it_end) {
@@ -72,6 +73,7 @@ void gnomonVisualizationImageChannelBlendingPrivate::reset(void)
             ++it;
         }
     }
+    */
 
     qq->clear();
 }
@@ -100,6 +102,7 @@ gnomonVisualizationImageChannelBlending::~gnomonVisualizationImageChannelBlendin
     dd->reset();
     dd->qq = nullptr;
     delete dd;
+    dd = nullptr;
 }
 
 const QString gnomonVisualizationImageChannelBlending::pluginName(void)

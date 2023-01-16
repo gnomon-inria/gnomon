@@ -1,6 +1,6 @@
 #include "gnomonFormManager.h"
 
-#include <memory> 
+#include <memory>
 #include <utility>
 
 #include "gnomonVisualizations/gnomonAbstractVisualization.h"
@@ -91,7 +91,6 @@ int gnomonFormManagerPrivate::item_counter = 0;
 gnomonFormManagerPrivate::gnomonFormManagerPrivate(QObject *parent) : QObject(parent)
 {
     gnomonAbstractCommand::gui_thread = this->thread();
-    tmpDir = new QTemporaryDir("TEMP_CACHE_DIR");
 }
 
 gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
@@ -100,7 +99,8 @@ gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
         delete command;
     this->commands.clear();
 
-    tmpDir->remove();
+    if(tmpDir)
+        tmpDir->remove();
     delete tmpDir;
 
     this->cache_pipeline_nodes.clear();
@@ -128,7 +128,7 @@ bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
     if(this->cache_forms.contains(id)) {
         this->forms[id] = nullptr;
         // TOCHECK
-        //Do we decide to clear the visu here, which means that 
+        //Do we decide to clear the visu here, which means that
         // the visu won't work in the workspace that created this form ?
         // If so, we need to add the mecanismto re-create the visu when needed
         // from it's parameters.
@@ -198,7 +198,7 @@ void gnomonFormManagerPrivate::loadFormToMemory(int id)
     {
         this->formReaderCommand[id] = new gnomonTreeReaderCommand();
         reader_plugin = dynamic_cast<gnomonTreeReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } 
+    }
 
     gnomonAbstractReaderCommand *readerCommand = this->formReaderCommand[id];
     if(!readerCommand) {
@@ -346,7 +346,7 @@ void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) c
         auto command = d->formWriterCommand[id];
         command->setPath(file_name);
         command->setForm(d->forms[id]);
-        command->redo(); 
+        command->redo();
         if (add_to_pipeline)
         {
             gnomonPipelineManager::instance()->addWriter(command);
@@ -359,6 +359,9 @@ void gnomonFormManager::addToCache(int id) const
     gnomonAbstractWriterCommand *writer_command = d->formWriterCommand[id];
     QStringList extensions = writer_command->extensions();
     QString f = QString::number(id) + "." + extensions[0];
+    if(!d->tmpDir)
+        d->tmpDir = new QTemporaryDir(".GNOMON_TEMP");
+
     auto filepath = d->tmpDir->filePath(f);
     this->saveAs(id, filepath, false);
 
@@ -487,7 +490,7 @@ QStringList gnomonFormManager::formMetadataKeysAtT(int id, double t) {
     } else {
         qWarning() << Q_FUNC_INFO << "Cannot get metadata for form " << id << " at time " << t;
         if(contains(id))
-            qWarning() << Q_FUNC_INFO << "available times: " << d->forms[id]->times(); 
+            qWarning() << Q_FUNC_INFO << "available times: " << d->forms[id]->times();
         return {};
     }
 }
@@ -528,7 +531,7 @@ int gnomonFormManager::formCount(const QString& form_name)
     }
 }
 
-void gnomonFormManager::setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form) 
+void gnomonFormManager::setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     //once dropped, a form cannot be deleted anymore. Otherwise, it will cause
     // onconsistency in the pipeline
