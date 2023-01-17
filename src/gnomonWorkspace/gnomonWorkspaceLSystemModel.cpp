@@ -215,13 +215,15 @@ void gnomonWorkspaceLSystemModel::animate()
     emit started();
     this->setInitialState();
     d->command->undo();
-    d->command->simulationType = SimulationType::step;
+    d->command->simulationType = SimulationType::animate;
     d->command->redo();
-    d->derivations = 0;
-    connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
+    connect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, [=](){
         this->viewState();
-        if(d->derivations < d->derivationLength) d->command->redo();
-        d->derivations++;
+        // if(d->derivations < d->derivationLength) d->command->redo();
+        // d->derivations++;
+        // emit finished();
+    });
+    connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
         emit finished();
     });
 }

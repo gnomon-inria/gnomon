@@ -19,7 +19,7 @@ public:
 
     int derivationLength = 0;
 
-    QFutureWatcher<void> *watcher = nullptr;
+    QFutureWatcher<int> *watcher = nullptr;
 };
 
 void gnomonLStringEvolutionModelCommandPrivate::clearWatcher(void) {
@@ -88,19 +88,34 @@ void gnomonLStringEvolutionModelCommand::redo(void)
     Q_ASSERT(this->model);
 
     d->clearWatcher();
-    d->watcher = new QFutureWatcher<void>();
+    d->watcher = new QFutureWatcher<int>();
     connect(d->watcher, &QFutureWatcher<void>::finished, this, &gnomonLStringEvolutionModelCommand::finished);
+    if(this->simulationType == SimulationType::animate)
+        connect(d->watcher, &QFutureWatcher<void>::progressValueChanged, this, &gnomonLStringEvolutionModelCommand::stepFinished);
 
-    auto future = QtConcurrent::run([=](){
-        this->predo();
+    auto future = QtConcurrent::run([=](QPromise<int> &promise){
+        promise.start();
+        // TODO: retrieve max derivation length from lsystem
+        int maxDerivationLength = this->simulationType == SimulationType::animate ? 100 : 1;
+        promise.setProgressRange(0, maxDerivationLength);
+        for(int i=0; i<maxDerivationLength; i++) {
+            this->predo();
 
-        int t = 0;
-        std::shared_ptr<gnomonLStringSeries> lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
-        if (lString) {
-            t = int(lString->times().last());
+            int t = 0;
+            std::shared_ptr<gnomonLStringSeries> lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
+            if (lString) {
+                t = int(lString->times().last());
+            }
+            if(this->simulationType == SimulationType::run) {
+                this->model->run(0, 0, 0);
+            } else {
+                this->model->step(t, 1);
+            }
+            this->postdo();
+            promise.setProgressValue(i);
+            promise.suspendIfRequested();
         }
-        this->model->step(t, 1);
-        this->postdo();
+        promise.finish();
     });
     d->watcher->setFuture(future);
 }

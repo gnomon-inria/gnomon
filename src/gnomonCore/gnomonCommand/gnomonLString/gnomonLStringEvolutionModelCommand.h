@@ -5,7 +5,7 @@
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
 #include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel>
 
-enum class SimulationType {step = 1, run = 2};
+enum class SimulationType {step = 1, run = 2, animate = 3};
 class GNOMONCORE_EXPORT gnomonLStringEvolutionModelCommand : public gnomonAbstractEvolutionModelCommand
 {
     Q_OBJECT
@@ -22,6 +22,7 @@ public slots:
 
 signals:
     void finished(void);
+    void stepFinished(void);
 
 public:
     void setAxiom(std::shared_ptr<gnomonLStringSeries> lstring);
