@@ -574,7 +574,7 @@ void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 gnomonViewForm::~gnomonViewForm(void)
 {
     for(auto&& form_visu : d->formVisualization) {
-        if(form_visu->view() == this)
+        if(form_visu && form_visu->view() == this)
             form_visu->clear();
     }
     d->formVisualization.clear();
@@ -1496,7 +1496,11 @@ void gnomonViewForm::startPicking() {
 
     d->picking_visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationCellImage>(d->formVisualization["gnomonCellImage"]);
 
-    d->picking_visu->interactorStyle()->SetDefaultRenderer(d->renderer3D);
+    if(d->mode == gnomonViewForm::VIEW_MODE_3D) {
+        d->picking_visu->on3D();
+    } else {
+        d->picking_visu->on2D();
+    }
     d->interactor()->SetInteractorStyle(d->picking_visu->interactorStyle());
     d->connectPicked = connect(d->picking_visu.get(), &gnomonAbstractVisualizationCellImage::pickedCells, this, &gnomonViewForm::setPickedCells);
 }

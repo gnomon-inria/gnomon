@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <QtCore>
@@ -46,7 +32,7 @@ public:
 
 public:
     virtual vtkRenderer *GetDefaultRenderer(void) override;
-//    virtual void SetDefaultRenderer(vtkRenderer *) override;
+    //virtual void SetDefaultRenderer(vtkRenderer *) override;
 
 public slots:
     virtual void setView(gnomonViewForm *);
