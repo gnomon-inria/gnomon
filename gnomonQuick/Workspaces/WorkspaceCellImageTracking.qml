@@ -13,9 +13,10 @@ import xQuick.Style      1.0 as X
 import crossQuick        1.0 as C
 import crossParameters   1.0 as C
 
-import gnomonQuick.Workspaces 1.0 as G
-import gnomonQuick.Controls   1.0 as G
-import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Workspaces as G
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
 
 import gnomon.Workspaces 1.0 as GW
 
@@ -24,6 +25,7 @@ G.Workspace {
     id: _self;
 
     workspace_title: "Tracking";
+    property bool is_picking: false;
 
     fill: () => {
         if(world.currentRef < 0)
@@ -54,38 +56,186 @@ G.Workspace {
         Layout.fillWidth: true;
         Layout.fillHeight: true;
 
-        G.DataDict {
-            id: _data_source_view;
+        SwipeView {
+            id: _swipe
 
             Layout.fillWidth: true;
             height: window.height/8;
+            currentIndex: 0;
+            //interactive: false;
 
-            onDroppedFromManager: (index) => {
-                console.info('Retrieving from manager');
-                d.sourceDict.drop(index);
-            }
+            Item  {
+                id: transfo_view
+                G.DataDict {
+                    id: _data_source_view;
 
-            X.Label {
-                anchors.top: parent.top
-                anchors.left: parent.left
+                    anchors.fill: parent
 
-                text: "Transformation matrix"
-                color: X.Style.foregroundColor
-            }
+                    onDroppedFromManager: (index) => {
+                        d.sourceDict.drop(index);
+                    }
 
-            X.Label {
-                anchors.centerIn: parent
+                    X.Label {
+                        anchors.top: parent.top
+                        anchors.left: parent.left
 
-                text: d.sourceDict.dataDict
-                horizontalAlignment: Text.AlignRight
-                color: X.Style.foregroundColor
-                font {
-                    pointSize: 14
-                    bold: true
+                        text: "Transformation matrix"
+                        color: X.Style.foregroundColor
+                    }
+
+                    X.Label {
+                        anchors.centerIn: parent
+
+                        text: d.sourceDict.dataDict
+                        horizontalAlignment: Text.AlignRight
+                        color: X.Style.foregroundColor
+                        font {
+                            pointSize: 14
+                            bold: true
+                        }
+                    }
+
+                    G.IconButton {
+                        id: _enable_picking;
+
+                        anchors.top: parent.top
+                        anchors.topMargin: G.Style.smallPadding
+                        anchors.right: parent.right
+                        anchors.rightMargin: G.Style.largePadding
+
+                        size: G.Style.iconMedium;
+                        color: G.Style.colors.textColorBase
+
+                        iconName: G.Icons.icons["pencil"];
+
+                        onClicked: {
+                            _swipe.currentIndex = 1;
+                        }
+
+                    }
+
+                    viewLogic: d.sourceDict;
                 }
             }
+            Item {
+                id: picker_view
 
-            viewLogic: d.sourceDict;
+                Label {
+                    id: _lineage_label
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.leftMargin: G.Style.smallPadding
+
+                    text: "Manual lineage"
+                    font: G.Style.fonts.value
+                    color: G.Style.colors.textColorBase
+                }
+
+                TextField {
+                    id: _lineage_values
+
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.left: _lineage_label.right
+                    anchors.margins: G.Style.smallPadding
+
+                    text: ""
+                    color: G.Style.colors.hoveredBaseColor
+                    font: G.Style.fonts.value
+
+                    onTextEdited: {
+                        updateCustomLineageInVisu()
+                    }
+                }
+
+                G.Button {
+                    id: _new_picking;
+
+                    anchors.left: parent.left;
+                    anchors.bottom: parent.bottom;
+                    anchors.bottomMargin: G.Style.smallPadding;
+                    anchors.leftMargin: G.Style.mediumPadding;
+
+                    implicitWidth: G.Style.longButtonWidth
+
+                    type: G.Style.ButtonType.Base
+                    text: "New Picking"
+                    hoverEnabled: !is_picking
+
+                    onClicked: {
+                        is_picking = true;
+                        _new_picking.text = "[ ? || ? ]"
+                        d.source.startPicking()
+                        d.target.startPicking()
+                    }
+                }
+
+                G.Button {
+                    id: _finish_picking;
+
+                    anchors.right: parent.right;
+                    anchors.top:  _new_picking.top;
+
+                    implicitWidth: G.Style.longButtonWidth
+
+                    type: G.Style.ButtonType.Neutral
+                    text: "Finish Picking"
+                    visible: !is_picking;
+
+                    onClicked: {
+                        _new_picking.text = "New Picking"
+                        _swipe.currentIndex = 0;
+                    }
+                }
+
+                G.Button {
+                    id: _picking_cancel;
+
+                    anchors.right: parent.right;
+                    anchors.top:  _new_picking.top;
+
+                    implicitWidth: G.Style.buttonWidth
+
+                    type: G.Style.ButtonType.Warning
+                    text: "Cancel"
+
+                    visible: is_picking;
+
+                    onClicked: {
+                        _new_picking.text = "New Picking"
+                        d.source.stopPicking()
+                        d.target.stopPicking()
+                        is_picking = false;
+                    }
+                }
+
+                G.Button {
+                    id: _picking_ok;
+
+                    anchors.right: _picking_cancel.left;
+                    anchors.top: _new_picking.top;
+                    anchors.rightMargin: G.Style.smallPadding
+
+                    implicitWidth: G.Style.shortButtonWidth
+
+                    type: G.Style.ButtonType.OK
+                    text: "OK"
+
+                    visible: is_picking;
+
+                    onClicked: {
+                        if(_lineage_values.text) {
+                            _lineage_values.text += ", "
+                        }
+                        _lineage_values.text +=  _new_picking.text.replace('||', ',')
+                        _new_picking.text = "New Picking"
+                        updateCustomLineageInVisu()
+                        d.source.stopPicking()
+                        d.target.stopPicking()
+                        is_picking = false;
+                    }
+                }
+            }
         }
 
         Control {
@@ -104,8 +254,7 @@ G.Workspace {
                     Layout.fillWidth: true;
                     Layout.fillHeight: true;
 
-                    onDroppedFromManager: {
-                        console.info('Retrieving from manager');
+                    onDroppedFromManager: (index) => {
                         window.currentView = _source_view
                         d.source.drop(index);
                     }
@@ -137,7 +286,76 @@ G.Workspace {
         }
     }
 
+    Connections {
+        target: d.source
+        function onPickedCellsChanged() {
+            if(d.source.pickedCells.length == 0) {
+                _new_picking.text = "[ ? ||" + _new_picking.text.split('||')[1]
+            } else if(d.source.pickedCells.length > 1) {
+                _new_picking.text = "[ [" + d.source.pickedCells + "] ||" + _new_picking.text.split('||')[1]
+            } else {
+                _new_picking.text = "[" + d.source.pickedCells[0] + " ||" + _new_picking.text.split('||')[1]
+            }
+        }
+    }
+
+    Connections {
+        target: d.target
+        function onPickedCellsChanged() {
+            _new_picking.text =  _new_picking.text.split('||')[0] + "||"
+            if(d.target.pickedCells.length == 0) {
+                _new_picking.text += " ? ]"
+            } else if(d.target.pickedCells.length > 1) {
+                _new_picking.text += " [" + d.target.pickedCells + "] ]"
+            } else {
+                _new_picking.text += " " + d.target.pickedCells[0] + "]"
+            }
+        }
+    }
+
     Component.onCompleted: {
         d.onParametersChanged();
     }
+
+        //"[ [4,5] , [11, [17, 18]] , [ [22], [23,24]]]"
+    function updateCustomLineageInVisu()
+    {
+        let lineage_text = "[ " + _lineage_values.text.replace(/\?/g, '-1') + " ]"
+        //console.log(lineage_text)
+        let lineage_array
+        try {
+            lineage_array = JSON.parse(lineage_text)
+        } catch (e) {
+            console.log("bad parsing catched! ", e)
+            return
+        }
+        let source_lineage_idx = []
+        let target_lineage_idx = []
+
+        for(const lineage of lineage_array) {
+          if(Array.isArray(lineage[0])) {
+            for(const idx of lineage[0]) {
+              source_lineage_idx.push(idx)
+            }
+          } else {
+            source_lineage_idx.push(lineage[0])
+          }
+          if(Array.isArray(lineage[1])) {
+            for(const idx of lineage[1]) {
+              target_lineage_idx.push(idx)
+            }
+          } else {
+            target_lineage_idx.push(lineage[1])
+          }
+        }
+
+        //console.log("source", source_lineage_idx)
+        //console.log("target", target_lineage_idx)
+
+        // TODO set visu param for target
+        d.source.setFormVisuParameter("gnomonCellImage", "manual_lineage", source_lineage_idx.toString())
+        d.target.setFormVisuParameter("gnomonCellImage", "manual_lineage", target_lineage_idx.toString())
+
+    }
+
 }
