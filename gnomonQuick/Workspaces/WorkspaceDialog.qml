@@ -47,7 +47,8 @@ G.Dialog {
     onAccepted: {
         if (_internal.selected_workspace) {
             _internal.algoName = ""
-            if(!window.check_if_forms_in_world()) {
+            if(!window.check_if_forms_in_world() &&
+                _internal.selected_workspace.title != "L-System Model") {
                 no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
                 no_form_exported_dialog.open()
                 no_form_exported_dialog.forceActiveFocus()
@@ -423,7 +424,7 @@ G.Dialog {
                     for(let f in temp_forms) {
                         if(temp_forms[f] == window.world.getFormName(window.world.currentIndex)) {
                             _available_workspaces.setProperty(i, "highlightElement", true)
-                        } 
+                        }
                     }
                 }
             }
@@ -453,7 +454,7 @@ G.Dialog {
         _internal.workspace_forms["gnomonWorkspacePythonAlgorithm"] = ["gnomonImage"]
         _internal.workspace_forms["gnomonWorkspaceRegistration"] = ["gnomonImage"]
         _internal.workspace_forms["gnomonWorkspaceSegmentation"] = ["gnomonImage", "gnomonBinaryImage", "gnomonPointCloud"]
-        
+
 
         for (var i=0; i<_available_workspaces.count; i++) {
             let w = _available_workspaces.get(i)
