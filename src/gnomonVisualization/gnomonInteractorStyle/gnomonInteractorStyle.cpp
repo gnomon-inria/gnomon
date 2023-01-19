@@ -177,10 +177,5 @@ QString gnomonInteractorStyle::description(void) const
     return "Default interactor";
 }
 
-int gnomonInteractorStyle::icon(void) const
-{
-    return 0; // fa::mousepointer;
-}
-
 //
 // gnomonInteractorStyle.cpp ends here

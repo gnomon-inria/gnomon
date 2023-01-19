@@ -292,7 +292,6 @@ def gnomonParametric(cls):
     cls.__getitem__ = __getitem__
 
     def setParameter(self, parameter_name, parameter_value):
-        logging.info(f"{parameter_name}: {parameter_value}")
         if parameter_name in self._parameters:
             if isinstance(parameter_value, dtkCoreParameter):
                 self._parameters[parameter_name] = parameter_value

@@ -9,4 +9,5 @@ from .gnomonPlugin import (
     serialize,
     seriesReader,
     seriesWriter,
+    DEBUG
 )

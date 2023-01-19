@@ -20,7 +20,6 @@
 #include <dtkLog>
 
 #include "gnomonVisualizations/gnomonCellComplex/gnomonVisualizationCellComplex.h"
-#include "gnomonVisualizations/gnomonCellImage/gnomonVisualizationCellImageMarchingCubes.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonVisualizationCellImageVolume.h"
 #include "gnomonVisualizations/gnomonImage/gnomonVisualizationImageChannelBlending.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVisualizationMesh.h"

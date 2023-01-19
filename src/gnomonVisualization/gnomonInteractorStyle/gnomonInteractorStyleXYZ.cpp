@@ -192,10 +192,5 @@ QString gnomonInteractorStyleXYZ::description(void) const
     return "XYZ axes";
 }
 
-int gnomonInteractorStyleXYZ::icon(void) const
-{
-    return 0; // fa::squareo;
-}
-
 //
 // gnomonInteractorStyleXYZ.cpp ends here

@@ -52,10 +52,9 @@ public:
 
 public:
     virtual QString description(void) const override;
-    virtual int icon(void) const override;
 
 protected:
-	class gnomonInteractorStyleXYZPrivate *dd;
+    class gnomonInteractorStyleXYZPrivate *dd;
 };
 
 //
