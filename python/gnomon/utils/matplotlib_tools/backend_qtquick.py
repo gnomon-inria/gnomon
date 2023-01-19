@@ -218,7 +218,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         self.hoverChanged.emit()
         QtWidgets.QApplication.restoreOverrideCursor()
         FigureCanvasBase.leave_notify_event(self, guiEvent=event)
-    
+
     QtCore.Property(bool,
                     hoverEnterEvent,
                     hoverLeaveEvent,
@@ -274,7 +274,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
                                                 guiEvent=event)
 
     def wheelEvent(self, event):
-        x, y = self.mouseEventCoords(event.pos())
+        x, y = self.mouseEventCoords(event.position())
         # from QWheelEvent::delta doc
         if event.pixelDelta().x() == 0 and event.pixelDelta().y() == 0:
             steps = event.angleDelta().y() / 120

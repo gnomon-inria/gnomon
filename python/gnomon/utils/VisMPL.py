@@ -140,8 +140,6 @@ class VisCurve2D(vis.VisAbstract):
     def setFigureNumber(self, fig_number):
         self.fig = gnomon_figure(fig_number)
         self.fig.clf()
-        print("fig set to ", self.fig , "  from ", fig_number)
-        #self.fig_number = fig_number
 
     def render(self, **kwargs):
         """ Plots the 2D curve and the control points polygon. """
@@ -181,10 +179,9 @@ class VisCurve2D(vis.VisAbstract):
             self.ax.axis('off')
 
         # Set aspect ratio
-        self.ax.set_aspect('equal')
-
+        self.ax.set_aspect('auto')
         ## interactor
-        
+
 
         def get_ind_under_point(event):
             'get the index of the vertex under point if within epsilon tolerance'
@@ -196,7 +193,6 @@ class VisCurve2D(vis.VisAbstract):
             d = np.hypot(xt - event.xdata, yt - event.ydata)
             indseq, = np.nonzero(d == d.min())
             ind = indseq[0]
-            #print('min_distance' , d[ind])
             if d[ind] >= epsilon:
                 ind = -1
 
@@ -206,23 +202,17 @@ class VisCurve2D(vis.VisAbstract):
             # get the x and y pixel coords
             x, y = event.x, event.y
             if event.inaxes and self.selected_ctrlpts_id != -1:
-                # TODO if movement greater than a distance then move
                 self.curve._control_points[self.selected_ctrlpts_id] = [event.xdata, event.ydata] # curve.set_ctrltpts
                 self.update()
-                #print(self.curve._control_points)
 
         def on_click(event):
             if event.button is MouseButton.LEFT:
-                #print('disconnecting callback')
-                #print('data coords %f %f' % (event.xdata, event.ydata))
                 self.selected_ctrlpts_id = get_ind_under_point(event)
-                #print(self.selected_ctrlpts_id)
-                #plt.disconnect(binding_id)
 
         def on_release(event):
             self.selected_ctrlpts_id = -1
 
-        
+
         self.fig.canvas.mpl_connect('motion_notify_event', on_move)
         self.fig.canvas.mpl_connect('button_press_event', on_click)
         self.fig.canvas.mpl_connect('button_release_event', on_release)
@@ -325,12 +315,11 @@ class VisCurve3D(vis.VisAbstract):
             #d = np.hypot(xt - event.xdata, yt - event.ydata)
             indseq, = np.nonzero(d == d.min())
             ind = indseq[0]
-            print('min_distance' , d[ind])
             if d[ind] >= epsilon:
                 ind = -1
 
             return ind
-        
+
         def line2d_seg_dist(p1, p2, p0):
             """distance(s) from line defined by p1 - p2 to point(s) p0
 
@@ -388,20 +377,13 @@ class VisCurve3D(vis.VisAbstract):
             # get the x and y pixel coords
             x, y, z = event.x, event.y, 1. #event.z
             if event.inaxes and self.selected_ctrlpts_id != -1:
-                # TODO if movement greater than a distance then move
                 self.curve._control_points[self.selected_ctrlpts_id] = [event.xdata, event.ydata, event.zdata] # curve.set_ctrltpts
                 self.update()
-                #print(self.curve._control_points)
 
         def on_click(event):
             if event.button is MouseButton.LEFT:
-                #print('disconnecting callback')
-                #print('data coords %f %f' % (event.xdata, event.ydata))
                 x,y,z = get_xyz_mouse_click(event, self.ax)
-                print(x,y,z)
                 self.selected_ctrlpts_id = get_ind_under_point(x,y,z)
-                #print(self.selected_ctrlpts_id)
-                #plt.disconnect(binding_id)
 
         def on_release(event):
             self.selected_ctrlpts_id = -1
