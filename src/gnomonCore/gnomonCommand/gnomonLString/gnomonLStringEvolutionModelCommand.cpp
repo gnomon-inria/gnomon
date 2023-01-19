@@ -83,7 +83,7 @@ void gnomonLStringEvolutionModelCommand::undo()
     }
 }
 
-void gnomonLStringEvolutionModelCommand::redo(void)
+void gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondition* synchro)
 {
     Q_ASSERT(this->model);
 
@@ -99,6 +99,7 @@ void gnomonLStringEvolutionModelCommand::redo(void)
         int maxDerivationLength = this->simulationType == SimulationType::animate ? 100 : 1;
         promise.setProgressRange(0, maxDerivationLength);
         for(int i=0; i<maxDerivationLength; i++) {
+            qDebug() <<"##################"<< i;
             this->predo();
 
             int t = 0;
@@ -114,6 +115,11 @@ void gnomonLStringEvolutionModelCommand::redo(void)
             this->postdo();
             promise.setProgressValue(i);
             promise.suspendIfRequested();
+            if(synchro && mutex) {
+                mutex->lock();
+                synchro->wait(mutex);
+                mutex->unlock();
+            }
         }
         promise.finish();
     });

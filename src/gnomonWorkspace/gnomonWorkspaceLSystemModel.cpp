@@ -64,6 +64,8 @@ public:
     int currentIndex = 0;
 
     QTemporaryFile *model_file = nullptr;
+    QMutex mutex;
+    QWaitCondition synchro;
 
 public:
     gnomonLStringEvolutionModelCommand *command = nullptr;
@@ -216,9 +218,10 @@ void gnomonWorkspaceLSystemModel::animate()
     this->setInitialState();
     d->command->undo();
     d->command->simulationType = SimulationType::animate;
-    d->command->redo();
     connect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, [=](){
         this->viewState();
+        d->synchro.wakeAll();
+        
         // if(d->derivations < d->derivationLength) d->command->redo();
         // d->derivations++;
         // emit finished();
@@ -226,6 +229,7 @@ void gnomonWorkspaceLSystemModel::animate()
     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
         emit finished();
     });
+    d->command->redo(&d->mutex, &d->synchro);
 }
 
 void gnomonWorkspaceLSystemModel::run()

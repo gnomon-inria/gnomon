@@ -18,7 +18,11 @@ public slots:
     virtual void  predo(void) override;
     virtual void postdo(void) override;
     virtual void   undo(void) override;
-    virtual void   redo(void) override;
+    // virtual void   redo() override;
+    virtual inline void redo(void) override{
+        this->redo(nullptr, nullptr);
+    }
+    virtual void redo(QMutex *mutex, QWaitCondition * synchro);
 
 signals:
     void finished(void);
