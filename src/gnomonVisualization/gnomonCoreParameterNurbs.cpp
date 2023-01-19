@@ -11,12 +11,13 @@ gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(void) : dtkCoreParameterBase<
     m_object = new gnomonCoreParameterNurbsObject(this);
 }
 
-gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterNurbs>()
+gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, bool is_function, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterNurbs>()
 {
     m_label = label;
     m_doc = doc;
     m_ctrl_points = control_points;
     m_dimension = dimension;
+    m_is_function = is_function;
 
     //set dimension before creating the object
     m_object = new gnomonCoreParameterNurbsObject(this);
@@ -56,6 +57,7 @@ gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(const gnomonCoreParameterNurb
     m_dimension = o.m_dimension;
     m_degree = o.m_degree;
     m_delta = o.m_delta;
+    m_is_function = o.m_is_function;
     m_object = new gnomonCoreParameterNurbsObject(this);
 }
 
@@ -83,6 +85,7 @@ gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const QVariant& 
         m_dimension = hash["dimension"].toInt();
         m_degree = hash["degree"].toInt();
         m_delta = hash["delta"].toDouble();
+        m_is_function = hash["is_function"].toBool();
 
         this->setValue(hash["ctrl_points"]);
     }
@@ -99,6 +102,7 @@ gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const gnomonCore
         m_dimension = o.m_dimension;
         m_degree = o.m_degree;
         m_delta = o.m_delta;
+        m_is_function = o.m_is_function;
     }
 
     return *this;
@@ -121,6 +125,11 @@ gnomonCoreParameterNurbs::ctrls_type gnomonCoreParameterNurbs::controlPoints(voi
 int gnomonCoreParameterNurbs::degree(void) const
 {
     return m_degree;
+}
+
+bool gnomonCoreParameterNurbs::is_function(void) const
+{
+    return m_is_function;
 }
 
 void gnomonCoreParameterNurbs::setDegree(int degree)
@@ -150,6 +159,11 @@ int gnomonCoreParameterNurbs::dimension(void) const
 void gnomonCoreParameterNurbs::setDimension(int dimension)
 {
     m_dimension = dimension;
+}
+
+void gnomonCoreParameterNurbs::setIs_function(bool is_function)
+{
+    m_is_function = is_function;
 }
 
 void gnomonCoreParameterNurbs::setValue(const QVariant &v)
@@ -187,6 +201,7 @@ QVariantHash gnomonCoreParameterNurbs::toVariantHash(void) const
     hash.insert("dimension", m_dimension);
     hash.insert("degree", m_degree);
     hash.insert("delta", m_delta);
+    hash.insert("is_function", m_is_function);
 
     return hash;
 }
@@ -204,6 +219,7 @@ GNOMONVISUALIZATION_EXPORT QDataStream& operator << (QDataStream& s, const gnomo
     s << "dimension" << p.dimension();
     s << "degree" << p.degree();
     s << "delta" << p.delta();
+    s << "is_function" << p.is_function();
     s << "control points: {";
     for(auto point: p.controlPoints()) {
         s << "(" << point[0] << " , " << point[1] << " , " << point[2] << ") ,";
@@ -219,8 +235,11 @@ GNOMONVISUALIZATION_EXPORT QDataStream& operator >> (QDataStream& s, gnomonCoreP
     int dimension; s >> dimension;
     int degree; s >> degree;
     double delta; s >> delta;
+    bool is_function; s >> is_function;
+
     qDebug() << Q_FUNC_INFO << " Not DONE TODO";
     p = gnomonCoreParameterNurbs(label);
+    //p = gnomonCoreParameterNurbs(label, .....  );
     return s;
 }
 
@@ -232,6 +251,7 @@ GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug dbg, gnomonCoreParameterNu
                   << "dimension " << p.dimension() << ", "
                   << "degree " << p.degree() << ", "
                   << "delta " << p.delta() << ", "
+                  << "is_function " << p.is_function() << ", "
                   << "control_points: { ";
 
     for(auto point: p.controlPoints()) {
