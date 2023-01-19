@@ -47,7 +47,7 @@ Control {
 
         anchors.top: _label.bottom
         //anchors.bottom: parent.bottom
-        
+
         width: parent.width
         implicitHeight: 200
         onWidthChanged: _view.setGeom(_view.width, _view.height);
@@ -85,14 +85,13 @@ Control {
                     _control.param.degree = parseInt(text)
                 }
             }
-        }   
+        }
         */
     }
 
 
     Component.onCompleted: {
         //d.onParametersChanged();
-        console.log("Setting figure number",_view.number)
         param.figureNumber = _view.number
     }
 }
