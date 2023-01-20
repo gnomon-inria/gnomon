@@ -126,7 +126,7 @@ class VisConfig(vis.VisConfigAbstract):
 
 class VisCurve2D(vis.VisAbstract):
     """ Matplotlib visualization module for 2D curves """
-    def __init__(self, curve, config=VisConfig(), **kwargs):
+    def __init__(self, curve, is_function = False, config=VisConfig(), **kwargs):
         super(VisCurve2D, self).__init__(config, **kwargs)
         self.curve = curve
         self.selected_ctrlpts_id = -1
@@ -135,6 +135,7 @@ class VisCurve2D(vis.VisAbstract):
         self.fig = None
         self.ax = None
         self.bg = None
+        self.is_function = is_function
         self.fig_number = -1
 
     def setFigureNumber(self, fig_number):
@@ -200,9 +201,12 @@ class VisCurve2D(vis.VisAbstract):
 
         def on_move(event):
             # get the x and y pixel coords
-            x, y = event.x, event.y
+            x, y = event.xdata, event.ydata
             if event.inaxes and self.selected_ctrlpts_id != -1:
-                self.curve._control_points[self.selected_ctrlpts_id] = [event.xdata, event.ydata] # curve.set_ctrltpts
+                if self.is_function:
+                    # do not move x if it's a function
+                    x = self.curve._control_points[self.selected_ctrlpts_id][0]
+                self.curve._control_points[self.selected_ctrlpts_id] = [x, y]
                 self.update()
 
         def on_click(event):
@@ -241,7 +245,7 @@ class VisCurve2D(vis.VisAbstract):
 
 class VisCurve3D(vis.VisAbstract):
     """ Matplotlib visualization module for 3D curves. """
-    def __init__(self, curve, config=VisConfig(), **kwargs):
+    def __init__(self, curve, is_function = False, config=VisConfig(), **kwargs):
         super(VisCurve3D, self).__init__(config, **kwargs)
         self.curve = curve
         self.selected_ctrlpts_id = -1
@@ -250,6 +254,7 @@ class VisCurve3D(vis.VisAbstract):
         self.fig = None
         self.ax = None
         self.bg = None
+        self.is_function = is_function
         self.fig_number = -1
 
     def setFigureNumber(self, fig_number):
@@ -377,6 +382,8 @@ class VisCurve3D(vis.VisAbstract):
             # get the x and y pixel coords
             x, y, z = event.x, event.y, 1. #event.z
             if event.inaxes and self.selected_ctrlpts_id != -1:
+                if self.is_function:
+                    print("is_function Not implemented for viscurve3d")
                 self.curve._control_points[self.selected_ctrlpts_id] = [event.xdata, event.ydata, event.zdata] # curve.set_ctrltpts
                 self.update()
 
