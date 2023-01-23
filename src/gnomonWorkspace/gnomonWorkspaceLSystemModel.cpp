@@ -105,16 +105,16 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     d->view = new gnomonViewForm({}, this);
     d->view->setAcceptForm("gnomonLString", true);
 
-    connect(d->view, &gnomonViewForm::formsChanged, [=] () {
-        this->setInitialState();
-        emit parametersChanged();
-    });
+    // connect(d->view, &gnomonViewForm::formsChanged, [=] () {
+    //     this->setInitialState();
+    //     emit parametersChanged();
+    // });
 
     connect(d->view, &gnomonViewForm::formAdded, [=](const QString &name) {
         const QString plugin_name = "lStringVisualizationVtkTurtle";
         if (name == "gnomonLString") {
             if (gnomonVisualization::visualizationLString::pluginFactory().keys().contains(plugin_name)) {
-                d->view->setFormVisuName(name, plugin_name);
+                // d->view->setFormVisuName(name, plugin_name);
                 d->view->setFormVisuParameter(name, "interpretation_lsystem", d->model_file->fileName());
             }
             auto visu_params = d->view->formVisuParameters(name);
@@ -220,11 +220,7 @@ void gnomonWorkspaceLSystemModel::animate()
     d->command->simulationType = SimulationType::animate;
     connect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, [=](){
         this->viewState();
-        d->synchro.wakeAll();
-        
-        // if(d->derivations < d->derivationLength) d->command->redo();
-        // d->derivations++;
-        // emit finished();
+        d->synchro.wakeAll();        
     });
     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
         emit finished();

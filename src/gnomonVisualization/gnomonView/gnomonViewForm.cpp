@@ -397,11 +397,11 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& name, const QStr
 
     auto&& form_visu = this->formVisualization[name];
 
-    form_visu->clearConnections();
-    form_visu->clear();
+    // form_visu->clearConnections();
+    // form_visu->clear();
     form_visu->setView(q);
     setVisuParameters(form_visu, parameters);
-    form_visu->update();
+    // form_visu->update();
     form_visu->setVisible(true);
 
     this->formVisualizationNames[name] = visu_name;
@@ -710,7 +710,7 @@ void gnomonViewForm::setCurrentTime(double value)
             emit timeChanged(time);
         }
 
-        d->interactor()->Render();
+        // d->interactor()->Render();
     }
 }
 
