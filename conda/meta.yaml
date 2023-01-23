@@ -12,8 +12,8 @@ requirements:
   build:
     - cmake >=3.17
     - make
-    - python =3.9
-    - numpy >=1.22
+    - python
+    - numpy {{numpy}}
     - {{ compiler('cxx') }}              # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('libglvnd-devel') }}        # [linux]
@@ -52,8 +52,8 @@ requirements:
     - dtk-imaging-python >=2.0
     - dtk-log >=2.5
     - dtk-script >=2.5
-    - python =3.9
-    - numpy >=1.22
+    - python
+    - numpy {{numpy}}
     - swig =4.0
     - vtk =9.1.0
 
@@ -66,8 +66,8 @@ requirements:
     - dtk-plugins-imaging >=2.0
     - dtk-log >=2.5
     - dtk-script >=2.5
-    - python =3.9
-    - numpy >=1.22
+    - python
+    - numpy {{numpy}}
     - pymongo
     - swig =4.0
     - vtk =9.1.0
