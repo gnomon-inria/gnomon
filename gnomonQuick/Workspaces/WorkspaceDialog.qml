@@ -141,6 +141,7 @@ G.Dialog {
                 model: _available_workspaces;
 
                 delegate: G.ListItemDelegate {
+                    id: _delegate
                     width: _list_view.width
                     highlighted: _list_view.currentIndex == index
 
@@ -169,13 +170,18 @@ G.Dialog {
 
                     Rectangle {
                         anchors.fill: parent
+                        anchors.topMargin: -1;
+                        anchors.bottomMargin: -1;
+
                         visible: model.highlightElement
-                        z: -0.1
-                        color: G.Style.colors.gutterColor;
-                        border {
-                            width: G.Style.borderWidth;
-                            color: G.Style.colors.baseColor;
-                        }
+                        z: -1
+                        color: G.Style.colors.hoveredOkColor;
+                    }
+
+                    contentItem: Text {
+                        text: _delegate.text
+                        font: _delegate.font
+                        color: model.highlightElement ? G.Style.colors.lightGreen : G.Style.colors.textColorNeutral
                     }
                 }
 
