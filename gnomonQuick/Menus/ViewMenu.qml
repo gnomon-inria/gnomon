@@ -74,9 +74,13 @@ Control {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        model: view ? view.viewLogic.formNamesAndId : null
+        //model: view ? view.viewLogic.formNamesAndId : null
+        view: _control.view
 
         onToggleVisibility: view.viewLogic.setFormVisible(view.viewLogic.formNames[index], flag)
+        onCurrentValueChanged: {
+            _visu_combobox.changeModel(currentValue)
+        }
 
         onDeleteForm: {
             view.viewLogic.removeForm(view.viewLogic.formNames[index]);
@@ -117,6 +121,26 @@ Control {
             valueRole: "counter"
             model: view? view.viewLogic.formVisualizations(_form_selector.currentValue) : null;
             currentIndex: 0
+
+            function changeModel(formType) {
+                let previousVisuSelected = ""
+                if(view) {
+                    previousVisuSelected = view.viewLogic.lastVisuSelected(formType)
+                }
+                model = view? view.viewLogic.formVisualizations(formType) : null;
+                let index = -1;
+                if(model) {
+                    index = model.findIndex(
+                        (element) => element.key == previousVisuSelected
+                    )
+                }
+                if(index>=0 && count>=1) {
+                    currentIndex = index
+                } else if(count>=1 && currentIndex ==-1) {
+                    currentIndex = 0
+                }
+            }
+
 
             Layout.fillWidth: true;
             /* Layout.leftMargin: 20 */
