@@ -59,7 +59,6 @@ void setVisuParameters(std::shared_ptr<gnomonAbstractVisualization> visu, QJsonO
             param_type = param_type.remove(",void");
             param.insert("type", param_type);
         }
-        qDebug() << "PARAM TYPE: " << param_type;
         auto *parameter = dtkCoreParameter::create(param);
         if(parameter) {
             visu_parameters[it.key()] = parameter;
