@@ -91,8 +91,8 @@ void gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondition* syn
         }
 
         for(; i<maxDerivationLength; i++) {
-            if( i % 10 == 0)
-                qDebug() <<"Step:"<< i;
+            if( i % 100 == 0)
+                qInfo() <<"Step:"<< i;
 
             this->predo();
             if(this->simulationType == SimulationType::run) {
@@ -105,11 +105,6 @@ void gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondition* syn
 
             promise.setProgressValue(i);
             promise.suspendIfRequested();
-            if(synchro && mutex) {
-                QMutexLocker locker(mutex);
-                synchro->wait(locker.mutex());
-            }
-            QThread::msleep(300);
         }
         promise.finish();
     });
