@@ -326,7 +326,9 @@ void gnomonViewFormPrivate::clear(void)
 
 void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const QString& visu_name, const QJsonObject& parameters)
 {
-    bool new_visu = !this->formVisualizationNames.contains(formType) || this->formVisualizationNames[formType] != visu_name;
+    bool new_visu = !this->formVisualizationNames.contains(formType)
+            || this->formVisualizationNames[formType] != visu_name;
+
 
     if (this->formVisualizationNames.contains(formType) && this->formVisualization[formType] && new_visu) {
         // clear before replacing
@@ -335,6 +337,7 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
     }
 
     auto&& form = this->forms[formType];
+    bool form_changed = false;
 
     if (formType == "gnomonBinaryImage") {
         std::shared_ptr<gnomonAbstractVisualizationBinaryImage> visu;
@@ -344,7 +347,11 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         } else {
             visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationBinaryImage>(this->formVisualization[formType]);
         }
-        visu->setBinaryImage(std::dynamic_pointer_cast<gnomonBinaryImageSeries>(form));
+        const auto &last_form = visu->binaryImage();
+        if(last_form != form){
+            visu->setBinaryImage(std::dynamic_pointer_cast<gnomonBinaryImageSeries>(form));
+            form_changed = true;
+        }
     } else if (formType == "gnomonCellComplex") {
         std::shared_ptr<gnomonAbstractVisualizationCellComplex> visu;
         if (new_visu) {
@@ -353,7 +360,11 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         } else {
             visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationCellComplex>(this->formVisualization[formType]);
         }
-        visu->setCellComplex(std::dynamic_pointer_cast<gnomonCellComplexSeries>(form));
+        const auto &last_form = visu->cellComplex();
+        if(last_form != form){
+            visu->setCellComplex(std::dynamic_pointer_cast<gnomonCellComplexSeries>(form));
+            form_changed = true;
+        }
     } else if (formType == "gnomonCellImage") {
         std::shared_ptr<gnomonAbstractVisualizationCellImage> visu;
         if (new_visu) {
@@ -362,7 +373,11 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         } else {
             visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationCellImage>(this->formVisualization[formType]);
         }
-        visu->setCellImage(std::dynamic_pointer_cast<gnomonCellImageSeries>(form));
+        const auto &last_form = visu->cellImage();
+        if(last_form != form){
+            visu->setCellImage(std::dynamic_pointer_cast<gnomonCellImageSeries>(form));
+            form_changed = true;
+        }
     } else if (formType == "gnomonImage") {
         std::shared_ptr<gnomonAbstractVisualizationImage> visu;
         if (new_visu) {
@@ -371,7 +386,11 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         } else {
             visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationImage>(this->formVisualization[formType]);
         }
-        visu->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
+        const auto &last_form = visu->image();
+        if(last_form != form){
+            visu->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
+            form_changed = true;
+        }
     } else if (formType == "gnomonLString") {
         std::shared_ptr<gnomonAbstractVisualizationLString> visu;
         if (new_visu) {
@@ -380,7 +399,11 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         } else {
             visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationLString>(this->formVisualization[formType]);
         }
-        visu->setLString(std::dynamic_pointer_cast<gnomonLStringSeries>(form));
+        const auto &last_form = visu->lString();
+        if(last_form != form){
+            visu->setLString(std::dynamic_pointer_cast<gnomonLStringSeries>(form));
+            form_changed = true;
+        }
     } else if (formType == "gnomonMesh") {
         std::shared_ptr<gnomonAbstractVisualizationMesh> visu;
         if (new_visu) {
@@ -389,7 +412,11 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         } else {
             visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationMesh>(this->formVisualization[formType]);
         }
-        visu->setMesh(std::dynamic_pointer_cast<gnomonMeshSeries>(form));
+        const auto &last_form = visu->mesh();
+        if(last_form != form){
+            visu->setMesh(std::dynamic_pointer_cast<gnomonMeshSeries>(form));
+            form_changed = true;
+        }
     } else if (formType == "gnomonPointCloud") {
         std::shared_ptr<gnomonAbstractVisualizationPointCloud> visu;
         if (new_visu) {
@@ -398,7 +425,11 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         } else {
             visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationPointCloud>(this->formVisualization[formType]);
         }
-        visu->setPointCloud(std::dynamic_pointer_cast<gnomonPointCloudSeries>(form));
+        const auto &last_form = visu->pointCloud();
+        if(last_form != form){
+            visu->setPointCloud(std::dynamic_pointer_cast<gnomonPointCloudSeries>(form));
+            form_changed = true;
+        }
     }
 
     if(!this->formVisualization[formType] ) {
@@ -408,12 +439,14 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
 
     auto&& form_visu = this->formVisualization[formType];
 
-    form_visu->clearConnections();
-    form_visu->clear();
-    form_visu->setView(q);
-    setVisuParameters(form_visu, parameters);
-    form_visu->update();
-    form_visu->setVisible(true);
+    if(form_changed) {
+        form_visu->clearConnections();
+        form_visu->clear();
+        form_visu->setView(q);
+        setVisuParameters(form_visu, parameters);
+        form_visu->update();
+        form_visu->setVisible(true);
+    }
 
     this->formVisualizationNames[formType] = visu_name;
     if (!this->formVisibility.contains(formType)) {
