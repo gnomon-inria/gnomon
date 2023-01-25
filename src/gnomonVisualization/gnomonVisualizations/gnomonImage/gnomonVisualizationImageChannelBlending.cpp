@@ -156,9 +156,7 @@ void gnomonVisualizationImageChannelBlending::setImage(std::shared_ptr<gnomonIma
     int channel_id = 0;
     auto img_channels = dd->image->channels();
     for (auto channel : img_channels) {
-
         auto dtk_img = dd->image->image(channel);
-        dd->dtk_img_by_channel[channel].reset(dtk_img);
 
         if (dtk_img->storageType() == QMetaType::UChar) {
             valueRange[1] = 255;
@@ -180,16 +178,32 @@ void gnomonVisualizationImageChannelBlending::setImage(std::shared_ptr<gnomonIma
             d->parameters[channel+"\nlookuptable"] = param;
         }
         ++channel_id;
-
-        // Fill vtk maps
-        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-        converter->setInput(dtk_img);
-        converter->convert();
-        dd->vtk_img_by_channel[channel] = static_cast<vtkImageData *>(converter->output());
-        delete converter;
     }
 
+    this->updateChannelImages();
+
     emit parametersChanged();
+}
+
+void gnomonVisualizationImageChannelBlending::updateChannelImages(void)
+{
+    if (dd->image) {
+        dd->dtk_img_by_channel.clear();
+        dd->vtk_img_by_channel.clear();
+
+        auto img_channels = dd->image->channels();
+        for (auto channel : img_channels) {
+            auto dtk_img = dd->image->image(channel);
+            dd->dtk_img_by_channel[channel].reset(dtk_img);
+
+            // Fill vtk maps
+            dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+            converter->setInput(dtk_img);
+            converter->convert();
+            dd->vtk_img_by_channel[channel] = static_cast<vtkImageData *>(converter->output());
+            delete converter;
+        }
+    }
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonVisualizationImageChannelBlending::image(void)
@@ -348,6 +362,7 @@ void gnomonVisualizationImageChannelBlending::onTimeChanged(double value)
 {
     if (dd->imageSeries->times().contains(value)) {
         dd->image = dd->imageSeries->at(value);
+        this->updateChannelImages();
         this->update();
     }
     this->render();
