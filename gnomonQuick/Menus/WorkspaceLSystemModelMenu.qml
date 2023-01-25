@@ -117,12 +117,11 @@ Item {
 
                 from: 0
                 to: 1000
-                value: 1
-		        stepSize: 1
-		        snapMode: Slider.SnapAlways
+                value: d ? d.derivationLength : 100
+                stepSize: 1
+                snapMode: Slider.SnapAlways
 
                 onValueChanged: {
-                    console.log("derivation length :", _slider.value)
                     d.derivationLength = _slider.value
                 }
             }
