@@ -709,8 +709,6 @@ void gnomonViewForm::setCurrentTime(double value)
         if (valueChanged) {
             emit timeChanged(time);
         }
-
-        // d->interactor()->Render();
     }
 }
 

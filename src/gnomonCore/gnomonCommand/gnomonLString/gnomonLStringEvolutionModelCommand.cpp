@@ -50,11 +50,9 @@ void gnomonLStringEvolutionModelCommand::predo(void)
 
 void gnomonLStringEvolutionModelCommand::postdo(void)
 {
-    std::shared_ptr<gnomonLStringSeries> lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
-    if ((!lString)||(lString->times().empty())) {
+    d->lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state(); // we get all the serie at each step, we only want the last one for animate
+    if ((!d->lString)||(d->lString->times().empty())) {
         d->lString = nullptr;
-    } else {
-        d->lString = lString;
     }
 }
 
@@ -81,23 +79,30 @@ void gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondition* syn
 
     auto future = QtConcurrent::run([=](QPromise<int> &promise){
         promise.start();
-        // TODO: retrieve max derivation length from lsystem
-        int maxDerivationLength = this->simulationType == SimulationType::animate ? 1400 : 1;
+        int maxDerivationLength = this->simulationType == SimulationType::animate ? d->derivationLength : 1;
         promise.setProgressRange(0, maxDerivationLength);
-        for(int i=0; i<maxDerivationLength; i++) {
-            qDebug() <<"Step:"<< i;
-            this->predo();
+        auto lstring_model = dynamic_cast<gnomonAbstractLStringEvolutionModel *>(this->model);
 
-            std::shared_ptr<gnomonLStringSeries> lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
-            if (lString) {
-                int t = int(lString->times().last());
-                if(this->simulationType == SimulationType::run) {
-                    this->model->run(0, 0, 0);
-                } else {
-                    this->model->step(t, 1);
-                }
+        //get current time
+        int i=0;
+        if(this->simulationType == SimulationType::step) {
+            d->lString = lstring_model->state();
+            i = int(d->lString->times().last());
+        }
+
+        for(; i<maxDerivationLength; i++) {
+            if( i % 10 == 0)
+                qDebug() <<"Step:"<< i;
+
+            this->predo();
+            if(this->simulationType == SimulationType::run) {
+                this->model->run(0, 0, 0);
+                this->postdo();
+            } else {
+                auto temp = lstring_model->stepAndReturn(i, 1);
+                d->lString->insert(i+1, temp );
             }
-            this->postdo();
+
             promise.setProgressValue(i);
             promise.suspendIfRequested();
             if(synchro && mutex) {
