@@ -101,7 +101,7 @@ G.Workspace {
                         anchors.top: parent.top
                         anchors.topMargin: G.Style.smallPadding
                         anchors.right: parent.right
-                        anchors.rightMargin: G.Style.largePadding
+                        anchors.rightMargin: G.Style.iconLarge + 2*G.Style.smallPadding
 
                         size: G.Style.iconMedium;
                         color: G.Style.colors.textColorBase
@@ -159,7 +159,7 @@ G.Workspace {
                     implicitWidth: G.Style.longButtonWidth
 
                     type: G.Style.ButtonType.Base
-                    text: "New Picking"
+                    text: "Add Cells"
                     hoverEnabled: !is_picking
 
                     onClicked: {
@@ -179,11 +179,11 @@ G.Workspace {
                     implicitWidth: G.Style.longButtonWidth
 
                     type: G.Style.ButtonType.Neutral
-                    text: "Finish Picking"
+                    text: "Finish"
                     visible: !is_picking;
 
                     onClicked: {
-                        _new_picking.text = "New Picking"
+                        _new_picking.text = "Add Cells"
                         _swipe.currentIndex = 0;
                     }
                 }
@@ -202,7 +202,7 @@ G.Workspace {
                     visible: is_picking;
 
                     onClicked: {
-                        _new_picking.text = "New Picking"
+                        _new_picking.text = "Add Cells"
                         d.source.stopPicking()
                         d.target.stopPicking()
                         is_picking = false;
@@ -228,7 +228,7 @@ G.Workspace {
                             _lineage_values.text += ", "
                         }
                         _lineage_values.text +=  _new_picking.text.replace('||', ',')
-                        _new_picking.text = "New Picking"
+                        _new_picking.text = "Add Cells"
                         updateCustomLineageInVisu()
                         d.source.stopPicking()
                         d.target.stopPicking()
@@ -317,11 +317,10 @@ G.Workspace {
         d.onParametersChanged();
     }
 
-        //"[ [4,5] , [11, [17, 18]] , [ [22], [23,24]]]"
+    //"[ [4,5] , [11, [17, 18]] , [ [22], [23,24]]]"
     function updateCustomLineageInVisu()
     {
         let lineage_text = "[ " + _lineage_values.text.replace(/\?/g, '-1') + " ]"
-        //console.log(lineage_text)
         let lineage_array
         try {
             lineage_array = JSON.parse(lineage_text)
@@ -329,33 +328,15 @@ G.Workspace {
             console.log("bad parsing catched! ", e)
             return
         }
+
         let source_lineage_idx = []
         let target_lineage_idx = []
-
         for(const lineage of lineage_array) {
-          if(Array.isArray(lineage[0])) {
-            for(const idx of lineage[0]) {
-              source_lineage_idx.push(idx)
-            }
-          } else {
             source_lineage_idx.push(lineage[0])
-          }
-          if(Array.isArray(lineage[1])) {
-            for(const idx of lineage[1]) {
-              target_lineage_idx.push(idx)
-            }
-          } else {
             target_lineage_idx.push(lineage[1])
-          }
         }
-
-        //console.log("source", source_lineage_idx)
-        //console.log("target", target_lineage_idx)
-
-        // TODO set visu param for target
-        d.source.setFormVisuParameter("gnomonCellImage", "manual_lineage", source_lineage_idx.toString())
-        d.target.setFormVisuParameter("gnomonCellImage", "manual_lineage", target_lineage_idx.toString())
-
+        d.source.setFormVisuParameter("gnomonCellImage", "manual_lineage", JSON.stringify(source_lineage_idx))
+        d.target.setFormVisuParameter("gnomonCellImage", "manual_lineage", JSON.stringify(target_lineage_idx))
     }
 
 }
