@@ -1562,6 +1562,7 @@ void gnomonViewForm::startPicking() {
         d->picking_visu->on2D();
     }
     d->interactor()->SetInteractorStyle(d->picking_visu->interactorStyle());
+    d->picking_visu->interactorStyle()->setView(this);
     d->connectPicked = connect(d->picking_visu.get(), &gnomonAbstractVisualizationCellImage::pickedCells, this, &gnomonViewForm::setPickedCells);
 }
 
