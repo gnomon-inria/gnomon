@@ -116,7 +116,7 @@ Item {
                 anchors.right:  parent.right
 
                 from: 0
-                to: 1000
+                to: 2000
                 value: d ? d.derivationLength : 100
                 stepSize: 1
                 snapMode: Slider.SnapAlways
@@ -138,110 +138,89 @@ Item {
                 color: G.Style.colors.hoveredBaseColor
             }
         }
-        ColumnLayout {
-            anchors.margins: G.Style.smallPadding;
+        Item {
+            id: _button_container
 
-            Item {
-                id: _suspend_button_container
+            height: G.Style.largeButtonHeight
+            Layout.fillWidth: true;
 
-                height: G.Style.largeButtonHeight
-                Layout.fillWidth: true;
+            G.Button {
+                id: _stop
 
+                anchors.horizontalCenter: _button_container.horizontalCenter;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
 
-                G.Button {
-                    id: _stop
+                implicitWidth: G.Style.shortButtonWidth
+                visible: d.running
+                text: "Stop"
+                empty: true
+                type: G.Style.ButtonType.Danger
+                iconName: G.Icons.icons["stop"]
 
-                    anchors.right: _suspend_button_container.right;
-                    anchors.verticalCenter: _suspend_button_container.verticalCenter
-                    anchors.margins: G.Style.smallPadding
-
-                    implicitWidth: G.Style.shortButtonWidth
-                    text: "Stop"
-                    empty: true
-                    type: G.Style.ButtonType.Danger
-                    iconName: G.Icons.icons["stop"]
-
-                    onClicked: {
-                        console.info('launching stop.')
-                    }
-                }
-
-                G.Button {
-                    id: _reset
-
-                    anchors.right: _stop.left;
-                    anchors.verticalCenter: _suspend_button_container.verticalCenter
-                    anchors.margins: G.Style.smallPadding
-
-                    implicitWidth: G.Style.shortButtonWidth
-                    text: "Reset"
-                    empty: true
-                    iconName: G.Icons.icons["replay"]
-
-                    onClicked: {
-                        console.info('launching Reset?')
-                        d.reset();
-                    }
+                onClicked: {
+                    console.info('Stopping the simulation.')
+                    d.stop();
                 }
             }
-            Item {
-                id: _button_container
 
-                height: G.Style.largeButtonHeight
-                Layout.fillWidth: true;
 
-                G.Button {
-                    id: _run
+            G.Button {
+                id: _run
 
-                    anchors.right: _button_container.right;
-                    anchors.verticalCenter: _button_container.verticalCenter
-                    anchors.margins: G.Style.smallPadding
+                anchors.right: _button_container.right;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
 
-                    implicitWidth: G.Style.shortButtonWidth
-                    text: "Run"
-                    iconName: G.Icons.icons["play"]
+                implicitWidth: G.Style.shortButtonWidth
+                visible: !d.running
+                text: "Run"
+                tooltip: "run the simulation from the beginning"
+                iconName: G.Icons.icons["play"]
 
-                    onClicked: {
-                        console.info('launching Run!')
-                        d.run();
-                    }
+                onClicked: {
+                    console.info('launching Run!')
+                    d.run();
                 }
-                G.Button {
-                    id: _animate
+            }
+            G.Button {
+                id: _animate
 
-                    anchors.right: _run.left;
-                    anchors.verticalCenter: _button_container.verticalCenter
-                    anchors.margins: G.Style.smallPadding
+                anchors.right: _run.left;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
 
-                    implicitWidth: G.Style.buttonWidth
-                    text: "Animate"
-                    empty: true
-                    iconName: G.Icons.icons["animation-play"]
+                implicitWidth: G.Style.shortButtonWidth
+                visible: !d.running
+                text: "A"
+                tooltip: "Animate: do " + _slider.value + " steps and display them"
+                empty: true
+                iconName: G.Icons.icons["animation-play"]
 
-                    onClicked: {
-                        console.info('launching animation...')
-                        d.animate();
-                    }
+                onClicked: {
+                    console.info('launching animation...')
+                    d.animate();
                 }
+            }
 
-                G.Button {
-                    id: _step
+            G.Button {
+                id: _step
 
-                    anchors.right: _animate.left;
-                    anchors.verticalCenter: _button_container.verticalCenter
-                    anchors.margins: G.Style.smallPadding
+                anchors.right: _animate.left;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
 
-                    implicitWidth: G.Style.shortButtonWidth
-                    text: "Step"
-                    empty: true
-                    iconName: G.Icons.icons["step-forward"]
+                implicitWidth: G.Style.shortButtonWidth
+                visible: !d.running
+                text: "S"
+                tooltip: "Step: do one more step and visualize it"
+                empty: true
+                iconName: G.Icons.icons["step-forward"]
 
-                    onClicked: {
-                        console.info('launching Step.')
-                        d.step();
-                    }
+                onClicked: {
+                    console.info('launching Step.')
+                    d.step();
                 }
-
             }
         }
     }
