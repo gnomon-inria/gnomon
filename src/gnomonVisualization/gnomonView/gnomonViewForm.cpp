@@ -1319,6 +1319,27 @@ QJSValue gnomonViewForm::formVisuParameters(const QString& name)
     }
 }
 
+QVariant gnomonViewForm::formVisuParameter(const QString& name, const QString& parameter_name)
+{
+    if (d->forms.contains(name)) {
+        auto params = d->formVisualization[name]->parameters();
+        if (params.keys().contains(parameter_name)) {
+            dtkCoreParameter *param = params.value(parameter_name);
+            // TODO: More specific cases to handle?
+            if (auto string_param = dynamic_cast<dtkCoreParameterSimple<QString> *>(param))
+            {
+                return QVariant(string_param->value());
+            } else {
+                return param->variant();
+            }
+        } else {
+            return QVariant();
+        }
+    } else {
+        return QVariant();
+    }
+}
+
 void gnomonViewForm::setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value)
 {
     if (d->forms.contains(name)) {
