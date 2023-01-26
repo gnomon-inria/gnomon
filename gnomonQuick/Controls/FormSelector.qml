@@ -11,10 +11,12 @@ Control {
 
   id: _control;
 
+  required property var view;
   property alias model: _list_view.model;
+  model: view ? view.viewLogic.formNamesAndId : null
 
-  property string currentValue;
-  property int currentIndex;
+  property string currentValue: ""
+  property alias currentIndex: _list_view.currentIndex;
 
   signal toggleVisibility(int index, bool flag);
   signal deleteForm(int index, bool deleteMenu);
@@ -49,11 +51,31 @@ Control {
     focus: true;
 
     onCountChanged: {  // tried on model changed but triggered before count was updated
-        if(count>=1 && currentIndex ==-1) {
-            currentIndex = 0;
-            _control.currentIndex = 0;
-            _control.currentValue = _list_view.itemAtIndex(0).text;
+        let index = -1
+        if(view) {
+            let previousFormSelected = view.viewLogic.lastFromTypeSelected()
+            index = view.viewLogic.formNames.indexOf(previousFormSelected)
         }
+        if(index>=0 && count>=1) {
+            currentIndex = index
+        } else if(count>=1 && currentIndex ==-1) {
+            currentIndex = 0
+        } else {
+            currentIndex = -1
+        }
+    }
+
+    onCurrentIndexChanged: {
+        if(currentIndex>=0 && currentIndex<_list_view.count) {
+            _control.currentValue = _list_view.itemAtIndex(currentIndex).text
+        } else {
+            _control.currentValue = ""
+        }
+        if(view && currentIndex>=0 && currentIndex<_list_view.count) {
+            //console.log("formSelected", currentIndex, view.viewLogic.formNames[currentIndex])
+            view.viewLogic.notifyFormSelected(currentIndex, view.viewLogic.formNames[currentIndex])
+        }
+
     }
 
 
@@ -67,7 +89,7 @@ Control {
 
       onClicked: {
         _control.currentIndex = index;
-        _control.currentValue = modelData.split(',')[0];
+        //_control.currentValue = modelData.split(',')[0];
       }
 
       onToggleVisibility: _control.toggleVisibility(index, flag);

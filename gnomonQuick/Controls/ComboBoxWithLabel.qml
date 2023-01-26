@@ -12,6 +12,7 @@ Control {
 
   property alias model: _combobox.model;
   property alias label: _label.text;
+  property alias count: _combobox.count;
   property alias currentIndex: _combobox.currentIndex;
   property alias currentValue: _combobox.currentValue;
   property alias textRole: _combobox.textRole;

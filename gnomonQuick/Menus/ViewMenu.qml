@@ -74,9 +74,13 @@ Control {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        model: view ? view.viewLogic.formNamesAndId : null
+        //model: view ? view.viewLogic.formNamesAndId : null
+        view: _control.view
 
         onToggleVisibility: view.viewLogic.setFormVisible(view.viewLogic.formNames[index], flag)
+        onCurrentValueChanged: {
+            _visu_combobox.changeModel(currentValue)
+        }
 
         onDeleteForm: {
             view.viewLogic.removeForm(view.viewLogic.formNames[index]);
@@ -118,18 +122,52 @@ Control {
             model: view? view.viewLogic.formVisualizations(_form_selector.currentValue) : null;
             currentIndex: 0
 
+            property bool _model_changing: true;
+
+            function changeModel(formType) {
+                let previousVisuSelected = ""
+                if(view) {
+                    previousVisuSelected = view.viewLogic.lastVisuSelected(formType)
+                }
+                _model_changing = true
+                model = view? view.viewLogic.formVisualizations(formType) : null;
+                let index = -1;
+                if(model) {
+                    index = model.findIndex(
+                        (element) => element.key == previousVisuSelected
+                    )
+                }
+                if(index>=0 && count>=1) {
+                    currentIndex = index
+                } else if(count>=1 && currentIndex ==-1) {
+                    currentIndex = 0
+                }
+                valueChangeHandler()
+                _model_changing = false;
+            }
+
+
             Layout.fillWidth: true;
             /* Layout.leftMargin: 20 */
             /* Layout.rightMargin: 20 */
             visible: view? view.viewLogic.formNames.length > 0 : false
 
-            onCurrentValueChanged: {
+            function valueChangeHandler() {
                 if(view) {
-                    view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex].key)
+                    let previousVisuSelected = view.viewLogic.lastVisuSelected(_form_selector.currentValue)
+                    if(previousVisuSelected!=model[_visu_combobox.currentIndex].key){
+                        view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex].key)
+                    }
                     //_auto_render.checked = false
                     _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
                     _params.updateParametersModel();
                     _control.update_menu(_visu_combobox.currentValue.key);
+                }
+            }
+
+            onCurrentValueChanged: {
+                if(!_model_changing){
+                    valueChangeHandler()
                 }
             }
         }
