@@ -110,8 +110,8 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
     }
     manual_lineage += ", ";
     QVariant target_lineage = this->target()->formVisuParameter("gnomonCellImage", "manual_lineage");
-    if (source_lineage.canConvert<QString>()) {
-        manual_lineage += source_lineage.toString();
+    if (target_lineage.canConvert<QString>()) {
+        manual_lineage += target_lineage.toString();
     } else {
         manual_lineage += "[]";
     }
