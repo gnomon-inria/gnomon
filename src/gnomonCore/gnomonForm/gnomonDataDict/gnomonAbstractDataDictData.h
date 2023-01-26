@@ -41,6 +41,7 @@ public:
 
     virtual QVariant get(const QString& key) = 0;
     //virtual QVariantMap get() const = 0;
+    virtual void set(const QString& key, QString& value) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

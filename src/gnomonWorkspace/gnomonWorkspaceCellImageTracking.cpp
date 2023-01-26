@@ -101,6 +101,12 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
 {
     gnomonAlgorithmWorkspace::setInputs();
 
+    QStringList cells;
+    for(double d: this->source()->pickedCells())
+        cells.append(QString::number(d));
+    QString picked_cells = cells.join(",");
+
     std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(dd->source_dict->form("gnomonDataDict"));
+    input_dict->current()->set("picked_cells", picked_cells);
     d->command->setInputForm("transformation", input_dict);
 }

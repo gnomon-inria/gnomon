@@ -82,6 +82,7 @@ public:
     QStringList keys() const { return m_data->keys(); }
     //QVariantMap get() { return m_data->get(); }
     QVariant get(const QString& key) { return m_data->get(key); }
+    void set(const QString& key, QString& value) { return m_data->set(key, value); }
 
 };
 
