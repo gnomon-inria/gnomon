@@ -1041,7 +1041,7 @@ void gnomonViewForm::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellIma
     }
 
     d->forms[name] = cellImage;
-    d->setFormVisualization(name, visu_name);
+    d->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonCellImage");
 }
 
@@ -1076,7 +1076,7 @@ void gnomonViewForm::setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cel
     }
 
     d->forms[name] = cellComplex;
-    d->setFormVisualization(name, visu_name);
+    d->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonCellComplex");
 }
 
@@ -1147,7 +1147,7 @@ void gnomonViewForm::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> ima
     }
 
     d->forms[name] = image;
-    d->setFormVisualization(name, visu_name);
+    d->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonBinaryImage");
 }
 
@@ -1182,7 +1182,7 @@ void gnomonViewForm::setLString(std::shared_ptr<gnomonLStringSeries> lString, st
     }
 
     d->forms[name] = lString;
-    d->setFormVisualization(name, visu_name);
+    d->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonLString");
 }
 
@@ -1217,7 +1217,7 @@ void gnomonViewForm::setMesh(std::shared_ptr<gnomonMeshSeries> mesh, std::shared
     }
 
     d->forms[name] = mesh;
-    d->setFormVisualization(name, visu_name);
+    d->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonMesh");
 }
 
@@ -1252,7 +1252,7 @@ void gnomonViewForm::setPointCloud(std::shared_ptr<gnomonPointCloudSeries> point
     }
 
     d->forms[name] = pointCloud;
-    d->setFormVisualization(name, visu_name);
+    d->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonPointCloud");
 }
 
