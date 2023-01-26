@@ -33,6 +33,9 @@ public slots:
     void render(void) override;
 
 public slots:
+    void updateChannelImages(void);
+
+public slots:
     void clear(void) override;
     virtual void setVisible(bool visible) override;
 

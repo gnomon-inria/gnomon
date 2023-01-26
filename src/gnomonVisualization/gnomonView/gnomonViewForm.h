@@ -258,6 +258,12 @@ public slots:
 public slots:
     void setEnableMenus(bool);
 
+public:
+    Q_INVOKABLE void notifyFormSelected(int index, QString formType);
+    Q_INVOKABLE int lastFormIndexSelected();
+    Q_INVOKABLE QString lastFromTypeSelected();
+    Q_INVOKABLE QString lastVisuSelected(QString formType);
+
 public slots:
     void updateShortcutKeys(void);
 
