@@ -68,22 +68,23 @@ void gnomonLStringEvolutionModelCommand::undo()
     }
 }
 
-void gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondition* synchro)
+QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondition* synchro)
 {
     Q_ASSERT(this->model);
 
     d->watcher = std::make_unique<QFutureWatcher<int>>();
-    connect(d->watcher.get(), &QFutureWatcher<void>::finished, this, &gnomonLStringEvolutionModelCommand::finished);
+    connect(d->watcher.get(), &QFutureWatcher<void>::finished,
+            this, &gnomonLStringEvolutionModelCommand::finished);
     if(this->simulationType == SimulationType::animate)
-        connect(d->watcher.get(), &QFutureWatcher<void>::progressValueChanged, this, &gnomonLStringEvolutionModelCommand::stepFinished);
+        connect(d->watcher.get(), &QFutureWatcher<void>::progressValueChanged,
+                this, &gnomonLStringEvolutionModelCommand::stepFinished);
 
-    auto future = QtConcurrent::run([=](QPromise<int> &promise){
+    QFuture<int> future = QtConcurrent::run([=](QPromise<int> &promise){
         promise.start();
         int maxDerivationLength = this->simulationType == SimulationType::animate ? d->derivationLength : 1;
         promise.setProgressRange(0, maxDerivationLength);
         auto lstring_model = dynamic_cast<gnomonAbstractLStringEvolutionModel *>(this->model);
 
-        //get current time
         int i=0;
         if(this->simulationType == SimulationType::step) {
             d->lString = lstring_model->state();
@@ -105,10 +106,16 @@ void gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondition* syn
 
             promise.setProgressValue(i);
             promise.suspendIfRequested();
+            if (promise.isCanceled())
+                return;
         }
         promise.finish();
-    });
+    }); //.onFailed([] {
+    // qWarning() << "Error running " << Q_FUNC_INFO;
+    //});
+
     d->watcher->setFuture(future);
+    return future;
 }
 
 void gnomonLStringEvolutionModelCommand::setAxiom(std::shared_ptr<gnomonLStringSeries> lString)

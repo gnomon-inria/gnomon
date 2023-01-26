@@ -22,7 +22,7 @@ public slots:
     virtual inline void redo(void) override{
         this->redo(nullptr, nullptr);
     }
-    virtual void redo(QMutex *mutex, QWaitCondition * synchro);
+    virtual QFuture<int> redo(QMutex *mutex, QWaitCondition * synchro);
 
 signals:
     void finished(void);

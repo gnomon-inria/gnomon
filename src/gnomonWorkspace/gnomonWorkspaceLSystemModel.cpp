@@ -65,8 +65,10 @@ public:
     int currentIndex = 0;
 
     QTemporaryFile *model_file = nullptr;
-    QMutex mutex;
-    QWaitCondition synchro;
+    QFuture<int> redo_future;
+
+    //QMutex mutex;
+    //QWaitCondition synchro;
 
 public:
     gnomonLStringEvolutionModelCommand *command = nullptr;
@@ -234,19 +236,20 @@ void gnomonWorkspaceLSystemModel::animate()
     emit started();
     this->setInitialState();
     d->command->undo();
+    d->derivations = 0;
     d->command->simulationType = SimulationType::animate;
     d->command->setDerivationLength(d->derivationLength);
     connect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, [=](){
         d->derivations += 1;
         this->viewNewStep();
-        d->synchro.wakeAll();
+        //d->synchro.wakeAll();
     });
     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
         disconnect(d->command, &gnomonLStringEvolutionModelCommand::finished, nullptr, nullptr);
         disconnect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, nullptr, nullptr);
         emit finished();
     });
-    d->command->redo(&d->mutex, &d->synchro);
+    d->redo_future = d->command->redo(nullptr, nullptr); //&d->mutex, &d->synchro);
 }
 
 void gnomonWorkspaceLSystemModel::run()
@@ -302,6 +305,13 @@ void gnomonWorkspaceLSystemModel::reset()
     emit finished();
 }
 
+void gnomonWorkspaceLSystemModel::stop()
+{
+    Q_ASSERT(d->command);
+    d->redo_future.cancel();
+    qDebug() << "cancel launched , only works on animate for now";
+}
+
 QUrl gnomonWorkspaceLSystemModel::defaultReadPath(void)
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
@@ -335,7 +345,7 @@ void gnomonWorkspaceLSystemModel::viewNewStep()
 {
     // get the current lstring from view
     auto lString = d->view->lString();
-    if(!lString) {
+    if(!lString || d->derivations == 1) {
         lString = d->command->lString();
         if(lString && lString->times().length() > 0) {
             d->view->setLString(lString);

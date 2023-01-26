@@ -56,10 +56,11 @@ public slots:
     void save(const QString& file_url) const;
 
 public slots:
-    void run(void);
     void step(void);
-    void reset(void);
     void animate(void);
+    void run(void);
+    void reset(void);
+    void stop(void);
 
     void setInitialState(void);
     void viewState(void);
