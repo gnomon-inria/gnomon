@@ -101,6 +101,36 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
 {
     gnomonAlgorithmWorkspace::setInputs();
 
+    QString manual_lineage;
+    QVariant source_lineage = this->source()->formVisuParameter("gnomonCellImage", "manual_lineage");
+    if (source_lineage.canConvert<QString>()) {
+        manual_lineage += source_lineage.toString();
+    } else {
+        manual_lineage += "[]";
+    }
+    manual_lineage += ", ";
+    QVariant target_lineage = this->target()->formVisuParameter("gnomonCellImage", "manual_lineage");
+    if (target_lineage.canConvert<QString>()) {
+        manual_lineage += target_lineage.toString();
+    } else {
+        manual_lineage += "[]";
+    }
+
     std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(dd->source_dict->form("gnomonDataDict"));
+    if (!input_dict) {
+        QStringList data_dict_plugins = gnomonCore::dataDictData::pluginFactory().keys();
+        if (data_dict_plugins.size() > 0) {
+            gnomonAbstractDataDictData *data_dict_data = gnomonCore::dataDictData::pluginFactory().create(data_dict_plugins[0]);
+            std::shared_ptr<gnomonDataDict> data_dict = std::make_shared<gnomonDataDict>();
+            data_dict->setData(data_dict_data);
+
+            input_dict = std::make_shared<gnomonDataDictSeries>();
+            input_dict->insert(0, data_dict);
+        }
+    }
+    if (input_dict) {
+        input_dict->current()->set("manual_lineage", manual_lineage);
+    }
+
     d->command->setInputForm("transformation", input_dict);
 }
