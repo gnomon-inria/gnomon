@@ -42,10 +42,8 @@ QVariantMap visuParameters(std::shared_ptr<gnomonAbstractVisualization> visu)
     dtkCoreParameters dtkParameters = visu->parameters();
     for(const auto& param_name : dtkParameters.keys()){
         QVariant param_value = dtkParameters[param_name]->variant();
-        qDebug() << "Saving parameter " << param_name << " to " << param_value;
         parameters.insert(param_name, param_value);
     }
-    qDebug() << "::" << parameters << "-->" << QJsonObject::fromVariantMap(parameters);
     return parameters;
 };
 
@@ -53,7 +51,6 @@ void setVisuParameters(std::shared_ptr<gnomonAbstractVisualization> visu, QVaria
 {
     for(const auto& param_name: parameters.keys()) {
         QVariant param = parameters[param_name];
-        qDebug() << "Setting parameter " << param_name << " to " << param;
         visu->setParameter(param_name, param);
     }
 };
@@ -442,7 +439,6 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         form_visu->clear();
         form_visu->setView(q);
         // taking saved parameters if none are provided and available
-        qDebug() << "======" << viewParameters.parameters.contains(visu_name) << parameters.size();
         if(viewParameters.parameters.contains(visu_name) && parameters.size()==0) {
             setVisuParameters(form_visu, viewParameters.parameters[visu_name]);
         } else {
