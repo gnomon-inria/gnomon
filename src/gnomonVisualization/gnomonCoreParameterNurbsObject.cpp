@@ -156,6 +156,40 @@ double gnomonCoreParameterNurbsObject::delta(void)
     return m_param->delta();
 }
 
+void gnomonCoreParameterNurbsObject::updateControlPointsFromPython(void)
+{
+    //get theupdated list of control points
+    // they may have changed with mouse interaction!
+    if(!d->pCurve)
+        return;
+
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
+    PyObject *p_ctrl_pts = PyObject_GetAttrString(d->pCurve, "_control_points");
+
+    gnomonCoreParameterNurbs::ctrls_type ctrl_points;
+    if(PyList_Check(p_ctrl_pts) ) {
+        int nb_points = PyList_Size(p_ctrl_pts);
+        int nb_elem = PyList_Size(PyList_GET_ITEM(p_ctrl_pts, 0));
+        for(int pt=0; pt < nb_points; ++pt) {
+            double x,y,z;
+            PyObject *p_pt = PyList_GET_ITEM(p_ctrl_pts, pt);
+            x = PyFloat_AsDouble(PyList_GET_ITEM(p_pt, 0));
+            y = PyFloat_AsDouble(PyList_GET_ITEM(p_pt, 1));
+            if(nb_elem == 3) {
+                z = PyFloat_AsDouble(PyList_GET_ITEM(p_pt, 2));
+            } else {
+                z = 0.;
+            }
+            ctrl_points.append({x,y,z});
+        }
+    }
+
+    Py_XDECREF(p_ctrl_pts);
+    PyGILState_Release(gstate);
+    m_param->setControlPoints(ctrl_points);
+}
+
 QStringList gnomonCoreParameterNurbsObject::controlPoints(void)
 {
     gnomonCoreParameterNurbs::ctrls_type ctrl_points = m_param->controlPoints();

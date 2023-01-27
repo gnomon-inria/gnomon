@@ -108,11 +108,6 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     d->view = new gnomonViewForm({}, this);
     d->view->setAcceptForm("gnomonLString", true);
 
-    // connect(d->view, &gnomonViewForm::formsChanged, [=] () {
-    //     this->setInitialState();
-    //     emit parametersChanged();
-    // });
-
     connect(d->view, &gnomonViewForm::formAdded, [=](const QString &name) {
         const QString plugin_name = "lStringVisualizationVtkTurtle";
         if (name == "gnomonLString") {
