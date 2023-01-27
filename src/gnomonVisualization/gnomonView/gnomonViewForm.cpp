@@ -600,14 +600,17 @@ void gnomonViewForm::transmit(void)
     d->exportToManager();
 }
 
-void gnomonViewForm::restoreState(void) {
-    for (const auto& key : d->formVisualization.keys()) {
-        d->formVisualization[key]->clearConnections();
-        d->formVisualization[key]->clear();
-        d->formVisualization[key]->setView(this);
-        //setVisuParameters(d->formVisualization[d->viewParameters.visuSelected[key]], d->viewParameters.parameters[key]);
-        d->formVisualization[key]->update();
-        d->formVisualization[key]->setVisible(d->formVisibility[key]);
+void gnomonViewForm::restoreState(void)
+{
+    if (!this->empty()) {
+        for (const auto &key : d->formVisualization.keys()) {
+            d->formVisualization[key]->clearConnections();
+            d->formVisualization[key]->clear();
+            d->formVisualization[key]->setView(this);
+            // setVisuParameters(d->formVisualization[d->viewParameters.visuSelected[key]], d->viewParameters.parameters[key]);
+            d->formVisualization[key]->update();
+            d->formVisualization[key]->setVisible(d->formVisibility[key]);
+        }
     }
 }
 
