@@ -38,7 +38,6 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
 {
     dd = new gnomonWorkspaceCellImageTrackingPrivate;
 
-
     loadPluginGroup("cellImageTracking");
     emit algorithmsLoaded();
 
@@ -74,6 +73,8 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
         gnomonVisualization::visualizationCellImage::pluginFactory().keys().contains(plugin_name))
         {
             this->target()->setFormVisuName(name, plugin_name);
+            this->target()->setFormVisuParameter("gnomonCellImage", "property_name", "ancestor");
+            this->target()->update();
         }
     });
     connect(this->source(), &gnomonViewForm::formAdded, [=](const QString &name) {
@@ -82,6 +83,12 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
            gnomonVisualization::visualizationCellImage::pluginFactory().keys().contains(plugin_name))
         {
             this->source()->setFormVisuName(name, plugin_name);
+            if (this->target()->empty()) {
+                this->target()->setForm("gnomonCellImage", this->source()->cellImage()->clone());
+                if (!this->target()->synced()) {
+                    this->target()->tryLinking();
+                }
+            }
         }
     });
 
