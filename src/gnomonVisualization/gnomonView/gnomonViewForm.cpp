@@ -1375,9 +1375,13 @@ void gnomonViewForm::removeForm(const QString& name)
         }
     }
     d->formVisualization.remove(name);
+    if (d->formVisualizationNames.contains(name)) {
+        d->viewParameters.parameters.remove(d->formVisualizationNames[name]);
+    }
     d->formVisualizationNames.remove(name);
     d->formVisibility.remove(name);
     d->forms.remove(name);
+    d->viewParameters.visuSelected.remove(name);
 
     d->updateFormsTimes();
     if (d->forms.isEmpty()) {

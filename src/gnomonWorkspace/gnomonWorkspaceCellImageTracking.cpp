@@ -6,6 +6,9 @@
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageTrackingCommand>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
+#include <gnomonPipeline/gnomonPipelineManager.h>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceCellImageTrackingPrivate
 // /////////////////////////////////////////////////////////////////////////////
@@ -140,4 +143,28 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
     }
 
     d->command->setInputForm("transformation", input_dict);
+}
+
+void gnomonWorkspaceCellImageTracking::viewOutputs()
+{
+    gnomonCellImageTrackingCommand * command = dynamic_cast<gnomonCellImageTrackingCommand *>(d->command);
+
+    if(command->cellImage()) {
+        this->target()->removeForm("gnomonCellImage");
+        auto cellImage = command->cellImage();
+        int count = gnomonFormManager::instance()->formCount(cellImage->formName());
+        cellImage->metadata()->set("name", cellImage->formName() + QString::number(count+1));
+        cellImage->metadata()->set("source", d->algorithm);
+        this->target()->setForm("gnomonCellImage", cellImage);
+        this->target()->render();
+    }
+
+    if (command->cellImage() != nullptr) {
+        d->registerPipeline();
+        if(!this->target()->synced()) {
+            this->target()->tryLinking();
+        } else {
+            this->target()->setCurrentTime(this->source()->currentTime()+1.0);
+        }
+    }
 }
