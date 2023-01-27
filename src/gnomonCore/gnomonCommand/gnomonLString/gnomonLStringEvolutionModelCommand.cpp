@@ -3,6 +3,8 @@
 #include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
+#include <QtConcurrent>
+#include <QtCore>
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +16,10 @@ public:
     std::shared_ptr<gnomonLStringSeries> lString = nullptr;
 
     int derivationLength = 0;
+
+    std::unique_ptr<QFutureWatcher<int>> watcher = nullptr;
 };
+
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -45,11 +50,9 @@ void gnomonLStringEvolutionModelCommand::predo(void)
 
 void gnomonLStringEvolutionModelCommand::postdo(void)
 {
-    std::shared_ptr<gnomonLStringSeries> lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
-    if ((!lString)||(lString->times().empty())) {
+    d->lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state(); // we get all the serie at each step, we only want the last one for animate
+    if ((!d->lString)||(d->lString->times().empty())) {
         d->lString = nullptr;
-    } else {
-        d->lString = lString;
     }
 }
 
@@ -65,19 +68,54 @@ void gnomonLStringEvolutionModelCommand::undo()
     }
 }
 
-void gnomonLStringEvolutionModelCommand::redo(void)
+QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondition* synchro)
 {
     Q_ASSERT(this->model);
 
-    this->predo();
+    d->watcher = std::make_unique<QFutureWatcher<int>>();
+    connect(d->watcher.get(), &QFutureWatcher<void>::finished,
+            this, &gnomonLStringEvolutionModelCommand::finished);
+    if(this->simulationType == SimulationType::animate)
+        connect(d->watcher.get(), &QFutureWatcher<void>::progressValueChanged,
+                this, &gnomonLStringEvolutionModelCommand::stepFinished);
 
-    int t = 0;
-    std::shared_ptr<gnomonLStringSeries> lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
-    if (lString) {
-        t = int(lString->times().last());
-    }
-    this->model->step(t, 1);
-    this->postdo();
+    QFuture<int> future = QtConcurrent::run([=](QPromise<int> &promise){
+        promise.start();
+        int maxDerivationLength = this->simulationType == SimulationType::animate ? d->derivationLength : 1;
+        promise.setProgressRange(0, maxDerivationLength);
+        auto lstring_model = dynamic_cast<gnomonAbstractLStringEvolutionModel *>(this->model);
+
+        int i=0;
+        if(this->simulationType == SimulationType::step) {
+            d->lString = lstring_model->state();
+            i = int(d->lString->times().last());
+        }
+
+        for(; i<maxDerivationLength; i++) {
+            if( i % 100 == 0)
+                qInfo() <<"Step:"<< i;
+
+            this->predo();
+            if(this->simulationType == SimulationType::run) {
+                this->model->run(0, 0, 0);
+                this->postdo();
+            } else {
+                auto temp = lstring_model->stepAndReturn(i, 1);
+                d->lString->insert(i+1, temp );
+            }
+
+            promise.setProgressValue(i);
+            promise.suspendIfRequested();
+            if (promise.isCanceled())
+                return;
+        }
+        promise.finish();
+    }); //.onFailed([] {
+    // qWarning() << "Error running " << Q_FUNC_INFO;
+    //});
+
+    d->watcher->setFuture(future);
+    return future;
 }
 
 void gnomonLStringEvolutionModelCommand::setAxiom(std::shared_ptr<gnomonLStringSeries> lString)

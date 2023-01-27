@@ -20,11 +20,13 @@ public:
     ~gnomonCoreParameterNurbsObject(void);
 
 public:
+    Q_INVOKABLE void updateControlPointsFromPython(void);
+
+public:
     int degree(void);
     double delta(void);
     QStringList controlPoints(void);
     int figureNumber(void);
-
 
     void setDegree(int);
     void setDelta(double);

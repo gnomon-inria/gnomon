@@ -31,7 +31,7 @@ public:
     Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
 
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
-    
+
 signals:
     void textChanged(const QString&);
     void derivationLengthChanged(int);
@@ -56,12 +56,15 @@ public slots:
     void save(const QString& file_url) const;
 
 public slots:
-    void run(void);
     void step(void);
+    void animate(void);
+    void run(void);
     void reset(void);
+    void stop(void);
 
     void setInitialState(void);
     void viewState(void);
+    void viewNewStep(void);
     virtual void export_outputs(void) override;
 
 public:
@@ -74,8 +77,7 @@ public:
     gnomonViewForm *view(void) const;
 
     QJSValue parameters(void);
-    
+
 protected:
     class gnomonWorkspaceLSystemModelPrivate *d = nullptr;
 };
-
