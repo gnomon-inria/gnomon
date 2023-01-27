@@ -312,8 +312,10 @@ G.Workspace {
             }
         }
 
-        function onFormAdded() {
-            updateCustomLineageInVisu()
+        function onFormAdded(formType) {
+            if (formType == "gnomonCellImage") {
+                updateCustomLineageInVisu()
+            }
         }
     }
 
