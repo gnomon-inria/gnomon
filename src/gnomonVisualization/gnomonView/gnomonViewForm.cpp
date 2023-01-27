@@ -35,38 +35,27 @@
 
 // ///////////////////////////////////////////////////////////////////
 
-QJsonObject visuParameters(std::shared_ptr<gnomonAbstractVisualization> visu)
+QVariantMap visuParameters(std::shared_ptr<gnomonAbstractVisualization> visu)
 {
-    QJsonObject parameters;
+    QVariantMap parameters;
 
-    dtkCoreParameters visu_parameters = visu->parameters();
-    for (auto it = visu_parameters.begin(); it != visu_parameters.end(); ++it) {
-        QVariantHash param_value = it.value()->toVariantHash();
-        parameters.insert(it.key(), QJsonObject::fromVariantHash(param_value));
+    dtkCoreParameters dtkParameters = visu->parameters();
+    for(const auto& param_name : dtkParameters.keys()){
+        QVariant param_value = dtkParameters[param_name]->variant();
+        qDebug() << "Saving parameter " << param_name << " to " << param_value;
+        parameters.insert(param_name, param_value);
     }
-
+    qDebug() << "::" << parameters << "-->" << QJsonObject::fromVariantMap(parameters);
     return parameters;
 };
 
-void setVisuParameters(std::shared_ptr<gnomonAbstractVisualization> visu, QJsonObject parameters)
+void setVisuParameters(std::shared_ptr<gnomonAbstractVisualization> visu, QVariantMap parameters)
 {
-    dtkCoreParameters visu_parameters;
-    for(auto it = parameters.begin(); it != parameters.end(); ++it) {
-        QVariantHash param = it.value().toObject().toVariantHash();
-        QString param_type = param["type"].toString();
-        // TODO: Remove when fixed in dtk-core-python
-        if (param_type.contains("dtkCoreParameterRange<") or param_type.contains("dtkCoreParameterNumeric<")) {
-            param_type = param_type.remove(",void");
-            param.insert("type", param_type);
-        }
-        auto *parameter = dtkCoreParameter::create(param);
-        if(parameter) {
-            visu_parameters[it.key()] = parameter;
-        } else {
-            dtkWarn() << Q_FUNC_INFO << "this parameter is not handled properly: " << param_type << param;
-        }
+    for(const auto& param_name: parameters.keys()) {
+        QVariant param = parameters[param_name];
+        qDebug() << "Setting parameter " << param_name << " to " << param;
+        visu->setParameter(param_name, param);
     }
-    visu->setParameters(visu_parameters);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -82,7 +71,7 @@ public:
         QString currentFormType;
         int currentFormIndex = -1;
         QMap<QString, QString> visuSelected;  // formType --> visu_name
-        QMap<QString, QJsonObject> parameters; // visu_name --> parameters
+        QMap<QString, QVariantMap> parameters; // visu_name --> parameters
 
     } viewFormParameters;
 
@@ -182,7 +171,7 @@ signals:
     void sliceOrientationChanged(int);
 
 public slots:
-    void setFormVisualization(const QString& formType, const QString& visu_name, const QJsonObject& parameters = {});
+    void setFormVisualization(const QString& formType, const QString& visu_name, const QVariantMap &parameters = {});
 
 public:
     QMap<QString, QMap<QString, gnomonAbstractAdapterCommand *> > adapterCommands;
@@ -324,10 +313,17 @@ void gnomonViewFormPrivate::clear(void)
     q->render();
 }
 
-void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const QString& visu_name, const QJsonObject& parameters)
+void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const QString& visu_name, const QVariantMap &parameters)
 {
     bool new_visu = !this->formVisualizationNames.contains(formType)
             || this->formVisualizationNames[formType] != visu_name;
+
+    // saving current parameters before change
+    QMap<QString, std::shared_ptr<gnomonAbstractVisualization>>::iterator i;
+    for (i = formVisualization.begin(); i != formVisualization.end(); ++i) {
+        const auto& _visu_name = formVisualizationNames[i.key()];
+        viewParameters.parameters[_visu_name] = visuParameters(i.value());
+    }
 
 
     if (this->formVisualizationNames.contains(formType) && this->formVisualization[formType] && new_visu) {
@@ -437,13 +433,21 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         return;
     }
 
+
+
     auto&& form_visu = this->formVisualization[formType];
 
     if(form_changed) {
         form_visu->clearConnections();
         form_visu->clear();
         form_visu->setView(q);
-        setVisuParameters(form_visu, parameters);
+        // taking saved parameters if none are provided and available
+        qDebug() << "======" << viewParameters.parameters.contains(visu_name) << parameters.size();
+        if(viewParameters.parameters.contains(visu_name) && parameters.size()==0) {
+            setVisuParameters(form_visu, viewParameters.parameters[visu_name]);
+        } else {
+            setVisuParameters(form_visu, parameters);
+        }
         form_visu->update();
         form_visu->setVisible(true);
     }
@@ -586,6 +590,8 @@ gnomonViewForm::gnomonViewForm(QStringList nodePortNames, QObject *parent) : QOb
          d->empty = false;
          emit formsChanged();
      });
+
+    // just need to find a signal that's actually emitted when a parameter changes :|
     connect(this, &gnomonViewForm::formVisuParametersChanged, [=] () {
         QMap<QString, std::shared_ptr<gnomonAbstractVisualization>>::iterator i;
         for (i = d->formVisualization.begin(); i != d->formVisualization.end(); ++i) {
@@ -1023,7 +1029,7 @@ void gnomonViewForm::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellIma
 {
     QString name = "gnomonCellImage";
     QString visu_name;
-    QJsonObject parameters;
+    QVariantMap parameters;
 
     if(visu) {
         visu_name = visu->pluginName();
@@ -1058,7 +1064,7 @@ void gnomonViewForm::setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cel
 {
     QString name = "gnomonCellComplex";
     QString visu_name;
-    QJsonObject parameters;
+    QVariantMap parameters;
 
     if(visu) {
         visu_name = visu->pluginName();
@@ -1093,7 +1099,7 @@ void gnomonViewForm::setImage(std::shared_ptr<gnomonImageSeries> image, std::sha
 {
     QString name = "gnomonImage";
     QString visu_name;
-    QJsonObject parameters;
+    QVariantMap parameters;
 
     if(visu) {
         visu_name = visu->pluginName();
@@ -1129,7 +1135,7 @@ void gnomonViewForm::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> ima
 {
     QString name = "gnomonBinaryImage";
     QString visu_name;
-    QJsonObject parameters;
+    QVariantMap parameters;
 
     if(visu) {
         visu_name = visu->pluginName();
@@ -1164,7 +1170,7 @@ void gnomonViewForm::setLString(std::shared_ptr<gnomonLStringSeries> lString, st
 {
     QString name = "gnomonLString";
     QString visu_name;
-    QJsonObject parameters;
+    QVariantMap parameters;
 
     if(visu) {
         visu_name = visu->pluginName();
@@ -1199,7 +1205,7 @@ void gnomonViewForm::setMesh(std::shared_ptr<gnomonMeshSeries> mesh, std::shared
 {
     QString name = "gnomonMesh";
     QString visu_name;
-    QJsonObject parameters;
+    QVariantMap parameters;
 
     if(visu) {
         visu_name = visu->pluginName();
@@ -1234,7 +1240,7 @@ void gnomonViewForm::setPointCloud(std::shared_ptr<gnomonPointCloudSeries> point
 {
     QString name = "gnomonPointCloud";
     QString visu_name;
-    QJsonObject parameters;
+    QVariantMap parameters;
 
     if(visu) {
         visu_name = visu->pluginName();
