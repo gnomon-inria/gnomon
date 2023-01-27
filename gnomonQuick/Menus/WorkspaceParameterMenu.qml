@@ -66,7 +66,6 @@ Control {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-
             spacing: G.Style.smallColumnSpacing;
             clip: true;
 
@@ -78,6 +77,7 @@ Control {
                 title: _menu.getTitleString(group);
                 model: parameters;
                 width: _control.width;
+                collapsed: title != "General";
 
                 onValueChanged: {
                     _control.valueChanged();

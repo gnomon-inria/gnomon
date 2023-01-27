@@ -311,6 +311,10 @@ G.Workspace {
                 _new_picking.text += " " + d.target.pickedCells[0] + "]"
             }
         }
+
+        function onFormAdded() {
+            updateCustomLineageInVisu()
+        }
     }
 
     Component.onCompleted: {
@@ -325,8 +329,7 @@ G.Workspace {
         try {
             lineage_array = JSON.parse(lineage_text)
         } catch (e) {
-            console.log("bad parsing catched! ", e)
-            return
+            lineage_array = []
         }
 
         let source_lineage_idx = []

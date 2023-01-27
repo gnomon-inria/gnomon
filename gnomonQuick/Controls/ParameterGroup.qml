@@ -10,6 +10,7 @@ G.CollapsiblePanel {
   id: _control
 
   property alias model: _parameters.model
+  property alias collapsed: _control.collapsed
 
   clip: true
   collapsed: false
