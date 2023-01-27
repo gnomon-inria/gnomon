@@ -74,9 +74,9 @@ Item {
                 model: parameters;
                 width: _control.width;
 
-                onValueChanged: {
-                    _control.valueChanged();
-                }
+                //onValueChanged: {
+                //    _control.valueChanged(); //to comment?
+                //}
             }
 
             ScrollIndicator.vertical: ScrollIndicator {

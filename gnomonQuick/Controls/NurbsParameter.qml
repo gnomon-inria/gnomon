@@ -56,6 +56,10 @@ Control {
         onHoverChanged : {
             window.insideParamFigure()
         }
+
+        onMouseReleased : {
+            param.updateControlPointsFromPython()
+        }
     }
 
     RowLayout {
