@@ -19,6 +19,7 @@ Button {
   property int size: G.Style.ButtonSize.Medium
   property bool empty: false
   property string iconName: ""
+  property string tooltip: "";
   property bool isHovered: (_control.hovered || _content.hovered || _icon_area.containsMouse) && _control.hoverEnabled && _control.enabled
 
   flat: false
@@ -99,6 +100,11 @@ Button {
 
         color: _control.flat || _control.empty ? _getBgColor() : _getTextColor()
     }
+  }
+
+  G.ToolTip {
+    text: _control.tooltip;
+    visible: _control.tooltip && _control.isHovered
   }
 
 // /////////////////////////////////////////////////////////////////////////////

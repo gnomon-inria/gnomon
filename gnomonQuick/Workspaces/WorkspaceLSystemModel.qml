@@ -43,9 +43,16 @@ G.Workspace {
 
     d: GW.WorkspaceLSystemModel {
         id: d;
+        property bool running: false
 
-        onStarted: idleStart();
-        onFinished: idleStop();
+        onStarted: {
+            d.running = true;
+            idleStart();
+        }
+        onFinished: {
+            d.running = false;
+            idleStop();
+        }
 
         onParametersChanged: {
             updateParametersModel(); //_self.updateParametersModel();

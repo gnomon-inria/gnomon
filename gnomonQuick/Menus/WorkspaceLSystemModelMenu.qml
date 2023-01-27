@@ -74,9 +74,9 @@ Item {
                 model: parameters;
                 width: _control.width;
 
-                onValueChanged: {
-                    _control.valueChanged();
-                }
+                //onValueChanged: {
+                //    _control.valueChanged(); //to comment?
+                //}
             }
 
             ScrollIndicator.vertical: ScrollIndicator {
@@ -116,13 +116,12 @@ Item {
                 anchors.right:  parent.right
 
                 from: 0
-                to: 10
-                value: 1
-		        stepSize: 1
-		        snapMode: Slider.SnapAlways
+                to: 2000
+                value: d ? d.derivationLength : 100
+                stepSize: 1
+                snapMode: Slider.SnapAlways
 
                 onValueChanged: {
-                    console.log("derivation length :", _slider.value)
                     d.derivationLength = _slider.value
                 }
             }
@@ -139,12 +138,32 @@ Item {
                 color: G.Style.colors.hoveredBaseColor
             }
         }
-
         Item {
             id: _button_container
 
             height: G.Style.largeButtonHeight
             Layout.fillWidth: true;
+
+            G.Button {
+                id: _stop
+
+                anchors.horizontalCenter: _button_container.horizontalCenter;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
+
+                implicitWidth: G.Style.shortButtonWidth
+                visible: d.running
+                text: "Stop"
+                empty: true
+                type: G.Style.ButtonType.Danger
+                iconName: G.Icons.icons["stop"]
+
+                onClicked: {
+                    console.info('Stopping the simulation.')
+                    d.stop();
+                }
+            }
+
 
             G.Button {
                 id: _run
@@ -154,7 +173,9 @@ Item {
                 anchors.margins: G.Style.smallPadding
 
                 implicitWidth: G.Style.shortButtonWidth
+                visible: !d.running
                 text: "Run"
+                tooltip: "run the simulation from the beginning"
                 iconName: G.Icons.icons["play"]
 
                 onClicked: {
@@ -162,40 +183,43 @@ Item {
                     d.run();
                 }
             }
-
             G.Button {
-                id: _step
+                id: _animate
 
                 anchors.right: _run.left;
                 anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
                 implicitWidth: G.Style.shortButtonWidth
-                text: "Step"
+                visible: !d.running
+                text: "A"
+                tooltip: "Animate: do " + _slider.value + " steps and display them"
+                empty: true
+                iconName: G.Icons.icons["animation-play"]
+
+                onClicked: {
+                    console.info('launching animation...')
+                    d.animate();
+                }
+            }
+
+            G.Button {
+                id: _step
+
+                anchors.right: _animate.left;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
+
+                implicitWidth: G.Style.shortButtonWidth
+                visible: !d.running
+                text: "S"
+                tooltip: "Step: do one more step and visualize it"
                 empty: true
                 iconName: G.Icons.icons["step-forward"]
 
                 onClicked: {
                     console.info('launching Step.')
                     d.step();
-                }
-            }
-
-            G.Button {
-                id: _reset
-
-                anchors.right: _step.left;
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                implicitWidth: G.Style.shortButtonWidth
-                text: "Reset"
-                empty: true
-                iconName: G.Icons.icons["replay"]
-
-                onClicked: {
-                    console.info('launching Reset?')
-                    d.reset();
                 }
             }
         }

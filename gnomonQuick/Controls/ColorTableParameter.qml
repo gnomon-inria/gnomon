@@ -41,17 +41,17 @@ Control {
 
         delegate: G.ComboBoxDelegate {
             width: _colors.width
-            text: "Appearance " + param.colorIndexAt(index)
-
+            property int colorIndex: param.colorIndexAt(index)
+            property bool isColor: param.isColor(colorIndex)
+            text: "Appearance " + colorIndex
             background: Rectangle {
-               color: param.isColor(param.colorIndexAt(index))? param.color(param.colorIndexAt(index)) : G.Style.colors.transparent
+               color: isColor? param.color(colorIndex) : G.Style.colors.transparent
             }
-
             Image {
                 anchors.fill: parent
                 fillMode: Image.Stretch
-                visible: param.isTexture(param.colorIndexAt(index))
-                source: param.isTexture(param.colorIndexAt(index))? "file://" + param.texture(param.colorIndexAt(index)) : ""
+                visible: param.isTexture(colorIndex)
+                source: visible ? "file://" + param.texture(colorIndex) : ""
             }
         }
 
