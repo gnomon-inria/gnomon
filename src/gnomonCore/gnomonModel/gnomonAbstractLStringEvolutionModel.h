@@ -16,11 +16,8 @@ public:
     virtual ~gnomonAbstractLStringEvolutionModel(void) = default;
 
 public:
-    virtual void reset(void) override = 0;
-    virtual void step(double time, double dt) override = 0;
-    virtual void run(double timeMin, double timeMax, double dt) override = 0;
-
-public:
+    void step(double time, double dt) override { stepAndReturn(time, dt); };
+    virtual std::shared_ptr<gnomonLString> stepAndReturn(double time, double dt) = 0;
     virtual std::shared_ptr<gnomonLStringSeries> state(void) = 0;
     virtual std::shared_ptr<gnomonLStringSeries> initialState(void) = 0;
     virtual void setInitialState(std::shared_ptr<gnomonLStringSeries>) = 0;

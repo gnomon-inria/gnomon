@@ -5,8 +5,10 @@
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
 #include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel>
 
+enum class SimulationType {step = 1, run = 2, animate = 3};
 class GNOMONCORE_EXPORT gnomonLStringEvolutionModelCommand : public gnomonAbstractEvolutionModelCommand
 {
+    Q_OBJECT
 
 public:
      gnomonLStringEvolutionModelCommand(void);
@@ -16,7 +18,15 @@ public slots:
     virtual void  predo(void) override;
     virtual void postdo(void) override;
     virtual void   undo(void) override;
-    virtual void   redo(void) override;
+    // virtual void   redo() override;
+    virtual inline void redo(void) override{
+        this->redo(nullptr, nullptr);
+    }
+    virtual QFuture<int> redo(QMutex *mutex, QWaitCondition * synchro);
+
+signals:
+    void finished(void);
+    void stepFinished(void);
 
 public:
     void setAxiom(std::shared_ptr<gnomonLStringSeries> lstring);
@@ -30,6 +40,7 @@ public:
 
     int derivationLength(void) const;
     void setDerivationLength(int);
+    SimulationType simulationType;
 
 public:
     virtual void setModelName(const QString& name) override;

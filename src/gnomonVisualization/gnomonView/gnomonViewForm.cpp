@@ -763,8 +763,6 @@ void gnomonViewForm::setCurrentTime(double value)
         if (valueChanged) {
             emit timeChanged(time);
         }
-
-        d->interactor()->Render();
     }
 }
 
@@ -1175,7 +1173,9 @@ void gnomonViewForm::setLString(std::shared_ptr<gnomonLStringSeries> lString, st
         if (d->formVisualization.contains(name) && d->formVisualization[name]) {
             std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
             visu_name = current_visu->pluginName();
-            parameters = visuParameters(current_visu);
+            //parameters = visuParameters(current_visu);
+            //already a visu, clear it
+            current_visu->clear();
         } else {
             visu_name = gnomonVisualization::visualizationLString::pluginFactory().keys()[0];
         }
