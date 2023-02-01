@@ -32,12 +32,12 @@ void gnomonPluginFactory<T>::record(const QString &key, gnomonPluginFactory::cre
 template<typename T>
 void gnomonPluginFactory<T>::recordPlugin(const QString &key, struct dtkCorePluginBase *plugin, const QString &name, const QString &doc, bool force) {
     if(!this->names.contains(key)) {
-        this->names.insert(key, name);
+        this->names.insert(key, !name.isEmpty() ? name: key);
         this->docs.insert(key, doc);
     } else if(force) {
         this->names.remove(key);
         this->docs.remove(key);
-        this->names.insert(key, name);
+        this->names.insert(key, !name.isEmpty() ? name: key);
         this->docs.insert(key, doc);
     }
 
