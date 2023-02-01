@@ -33,7 +33,9 @@ Control {
             id: _algos;
 
             label: "Algorithm:"
-            model: d ? d.algorithms : null;
+            textRole: "name"
+            valueRole: "counter"
+            model: d ? d.algorithmsData : null;
 
             Layout.fillWidth: true;
             /* Layout.leftMargin: 20 */
