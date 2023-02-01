@@ -104,6 +104,11 @@ QStringList gnomonAlgorithmWorkspace::algorithms(void) const
     return d->keys;
 }
 
+QVariantList gnomonAlgorithmWorkspace::algorithmsData(void) const
+{
+    return d->algorithmsData;
+}
+
 void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
 {
     if (d->setAlgorithm(algorithm)) {

@@ -33,6 +33,7 @@ public:
 public:
     QString workspace;
     QStringList keys;
+    QVariantList algorithmsData;
     QString algorithm;
     int currentIndex = 0;
     QJsonObject savedState;

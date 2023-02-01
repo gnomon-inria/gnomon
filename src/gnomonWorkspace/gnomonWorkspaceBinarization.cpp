@@ -8,12 +8,14 @@
 gnomonWorkspaceBinarization::gnomonWorkspaceBinarization(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
     loadPluginGroup("binaryImageFromImage");
-    emit algorithmsLoaded();
 
     d->workspace = "Binarization";
     d->command   = new gnomonBinaryImageFromImageCommand;
     d->keys = gnomonCore::binaryImageFromImage::pluginFactory().keys();
+    d->algorithmsData = gnomonCore::binaryImageFromImage::pluginFactory().dataList();
     d->algorithm = d->command->algorithmName();
+
+    emit algorithmsLoaded();
 
     //create the views
     this->addInputView();

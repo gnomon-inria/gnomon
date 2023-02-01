@@ -42,12 +42,14 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
     dd = new gnomonWorkspaceCellImageTrackingPrivate;
 
     loadPluginGroup("cellImageTracking");
-    emit algorithmsLoaded();
 
     d->workspace = "Cellular Tracking";
     d->command   = new gnomonCellImageTrackingCommand;
     d->keys = gnomonCore::cellImageTracking::pluginFactory().keys();
+    d->algorithmsData = gnomonCore::cellImageTracking::pluginFactory().dataList();
     d->algorithm = d->command->algorithmName();
+
+    emit algorithmsLoaded();
 
     //create the views
     this->addInputView();

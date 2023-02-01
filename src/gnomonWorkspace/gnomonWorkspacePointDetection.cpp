@@ -12,12 +12,14 @@
 gnomonWorkspacePointDetection::gnomonWorkspacePointDetection(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
     loadPluginGroup("pointCloudFromImage");
-    emit algorithmsLoaded();
 
     d->workspace = "Point Detection";
     d->command   = new gnomonPointCloudFromImageCommand;
     d->keys = gnomonCore::pointCloudFromImage::pluginFactory().keys();
+    d->algorithmsData = gnomonCore::pointCloudFromImage::pluginFactory().dataList();
     d->algorithm = d->command->algorithmName();
+
+    emit algorithmsLoaded();
 
 
     //create the views
