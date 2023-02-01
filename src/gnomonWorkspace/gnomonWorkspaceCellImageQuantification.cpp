@@ -65,6 +65,7 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
     }
 
     if(command->cellImage()) {
+        d->sources->views()[0]->removeForm("gnomonCellImage");
         d->sources->views()[0]->setForm("gnomonCellImage", command->cellImage());
         std::shared_ptr<gnomonCellImageSeries> out_cellimage = d->sources->views()[0]->cellImage();
         int form_count = gnomonFormManager::instance()->formCount(out_cellimage->formName());

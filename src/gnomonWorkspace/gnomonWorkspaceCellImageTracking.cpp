@@ -6,6 +6,9 @@
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageTrackingCommand>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
+#include <gnomonPipeline/gnomonPipelineManager.h>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceCellImageTrackingPrivate
 // /////////////////////////////////////////////////////////////////////////////
@@ -37,7 +40,6 @@ gnomonWorkspaceCellImageTrackingPrivate::~gnomonWorkspaceCellImageTrackingPrivat
 gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *parent): gnomonAlgorithmWorkspace(parent)
 {
     dd = new gnomonWorkspaceCellImageTrackingPrivate;
-
 
     loadPluginGroup("cellImageTracking");
     emit algorithmsLoaded();
@@ -74,6 +76,8 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
         gnomonVisualization::visualizationCellImage::pluginFactory().keys().contains(plugin_name))
         {
             this->target()->setFormVisuName(name, plugin_name);
+            this->target()->setFormVisuParameter("gnomonCellImage", "property_name", "ancestor");
+            this->target()->update();
         }
     });
     connect(this->source(), &gnomonViewForm::formAdded, [=](const QString &name) {
@@ -82,6 +86,12 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
            gnomonVisualization::visualizationCellImage::pluginFactory().keys().contains(plugin_name))
         {
             this->source()->setFormVisuName(name, plugin_name);
+            if (this->target()->empty()) {
+                this->target()->setForm("gnomonCellImage", this->source()->cellImage()->clone());
+                if (!this->target()->synced()) {
+                    this->target()->tryLinking();
+                }
+            }
         }
     });
 
@@ -133,4 +143,28 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
     }
 
     d->command->setInputForm("transformation", input_dict);
+}
+
+void gnomonWorkspaceCellImageTracking::viewOutputs()
+{
+    gnomonCellImageTrackingCommand * command = dynamic_cast<gnomonCellImageTrackingCommand *>(d->command);
+
+    if(command->cellImage()) {
+        this->target()->removeForm("gnomonCellImage");
+        auto cellImage = command->cellImage();
+        int count = gnomonFormManager::instance()->formCount(cellImage->formName());
+        cellImage->metadata()->set("name", cellImage->formName() + QString::number(count+1));
+        cellImage->metadata()->set("source", d->algorithm);
+        this->target()->setForm("gnomonCellImage", cellImage);
+        this->target()->render();
+    }
+
+    if (command->cellImage() != nullptr) {
+        d->registerPipeline();
+        if(!this->target()->synced()) {
+            this->target()->tryLinking();
+        } else {
+            this->target()->setCurrentTime(this->source()->currentTime()+1.0);
+        }
+    }
 }
