@@ -15,6 +15,7 @@ gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : gnom
 
     d->workspace = "Segmentation";
     d->command   = new gnomonCellImageFromImageCommand;
+    d->keys = gnomonCore::cellImageFromImage::pluginFactory().keys();
     d->algorithmsData = gnomonCore::cellImageFromImage::pluginFactory().dataList();
     d->algorithm = d->command->algorithmName();
 
