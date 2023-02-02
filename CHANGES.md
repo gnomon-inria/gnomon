@@ -1,6 +1,6 @@
 # ChangeLog
 
-## version 0.71.0 - 2022-09-15
+## version 0.72.0 - 2022-09-15
 * Facilitate Workspace navigation (dialog if no exported Forms, switch button visibility)
 * Display the log of running Algorithms within the application
 * More information when reading a Form (reader description images, error toasts)
