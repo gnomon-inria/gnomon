@@ -15,12 +15,14 @@
 gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
     loadPluginGroup("cellImageQuantification");
-    emit algorithmsLoaded();
 
     d->workspace = "Cell Analysis";
     d->command = new gnomonCellImageQuantificationCommand;
     d->keys = gnomonCore::cellImageQuantification::pluginFactory().keys();
+    d->algorithmsData = gnomonCore::cellImageQuantification::pluginFactory().dataList();
     d->algorithm = d->command->algorithmName();
+
+    emit algorithmsLoaded();
 
     this->addInputView();
 
