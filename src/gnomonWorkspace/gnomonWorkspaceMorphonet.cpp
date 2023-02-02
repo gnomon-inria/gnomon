@@ -160,7 +160,7 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
     d = new gnomonWorkspaceMorphonetPrivate();
 
     d->pipeline_manager = gnomonPipelineManager::instance();
-    d->view = new gnomonViewForm(this);
+    d->view = new gnomonViewForm({}, this);
     d->img_series = std::make_shared<gnomonCellImageSeries>();
     d->img_series->metadata()->set("source", "MorphoNet");
 
@@ -353,7 +353,7 @@ void gnomonWorkspaceMorphonet::importDataset(int id, double voxelsize, int time_
     d->watcher = new QFutureWatcher<void>();
     connect(d->watcher, &QFutureWatcher<void>::finished, [this, t0, t_end]() {
         this->onDataLoaded(t0, t_end);
-        this->finished();
+        emit finished();
     });
     
     auto future = QtConcurrent::run([=](){

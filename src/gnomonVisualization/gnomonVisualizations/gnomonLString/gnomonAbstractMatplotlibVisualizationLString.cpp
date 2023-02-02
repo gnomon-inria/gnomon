@@ -2,7 +2,7 @@
 #include "gnomonAbstractMatplotlibVisualizationLString.h"
 
 namespace gnomonVisualization {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMatplotlibVisualizationLString, matplotlibVisualizationLString, gnomonVisualization);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractMatplotlibVisualizationLString, matplotlibVisualizationLString, gnomonVisualization);
 }
 
 //

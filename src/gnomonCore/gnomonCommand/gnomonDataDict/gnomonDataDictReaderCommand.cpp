@@ -35,6 +35,7 @@ gnomonDataDictReaderCommand::~gnomonDataDictReaderCommand()
 
 void gnomonDataDictReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractDataDictReader *) this->action)->setPath(this->m_path);
 }
 
@@ -79,4 +80,18 @@ gnomonAbstractCommand::orderedMap gnomonDataDictReaderCommand::outputTypes() {
 
 QStringList gnomonDataDictReaderCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+void gnomonDataDictReaderCommand::deserializeResults(QJsonObject &serialization) {
+    if(!d->dataDict) {
+        d->dataDict = std::make_shared<gnomonDataDictSeries>();
+    }
+    auto tmp = serialization["dataDict"].toObject();
+    d->dataDict->deserialize(tmp);
+}
+
+QJsonObject gnomonDataDictReaderCommand::serializeResults(void) {
+    QJsonObject out;
+    out["dataDict"] = d->dataDict->serialize();
+    return out;
 }

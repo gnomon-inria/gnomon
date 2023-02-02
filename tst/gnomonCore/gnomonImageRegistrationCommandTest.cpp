@@ -28,6 +28,8 @@ public:
     std::shared_ptr<gnomonImageSeries> image() override {return nullptr;};
     std::shared_ptr<gnomonImageSeries> output() override {return nullptr;};
     std::shared_ptr<gnomonDataDictSeries> outputTransformation() override {return nullptr;};
+    void clearInputs(void) override {};
+    void clearOutputs(void) override {};
 };
 
 inline gnomonAbstractImageRegistration* dummyImageRegistrationPluginCreator(void)  {

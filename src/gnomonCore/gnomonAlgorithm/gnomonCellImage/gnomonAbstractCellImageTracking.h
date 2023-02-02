@@ -6,6 +6,7 @@
 
 #include <dtkCore>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include "gnomonForm/gnomonDataDict/gnomonDataDict.h"
@@ -62,12 +63,12 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageTracking *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT)
 
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT, cellImageTracking);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT, cellImageTracking);
 }
 
 //

@@ -29,6 +29,8 @@ public:
     std::shared_ptr<gnomonImageSeries> output() override {return nullptr;};
     std::shared_ptr<gnomonBinaryImageSeries> mask() override {return nullptr;}
     void setMask(std::shared_ptr<gnomonBinaryImageSeries> init) override {filter::t_set_mask_called = true;};
+    void clearInputs(void) override {};
+    void clearOutputs(void) override {};
 };
 
 inline gnomonAbstractImageFilter* dummyImageFilterPluginCreator(void)  {

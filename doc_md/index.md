@@ -45,18 +45,17 @@ A computational platform to analyze and simulate the development of living forms
     :maxdepth: 2
     
     installation
-    concepts
-    packages
     getting_started
+    concepts
+    forms
+    packages
     shortcuts
     examples
     workspaces
     run_pipeline
     package
     existing_abstraction_existing_data_plugin
-    form_abstraction
     gnomon_utils
-
 ```
 
 ---

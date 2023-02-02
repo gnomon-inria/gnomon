@@ -94,14 +94,15 @@ void gnomonImageDataChannelBlendingPrivate::updateColorFunctions(void)
 
 vtkStandardNewMacro(gnomonImageDataChannelBlending);
 
-void gnomonImageDataChannelBlending::setImageChannels(QMap<QString, vtkImageData *> imageChannels)
+void gnomonImageDataChannelBlending::setImageChannels(QMap<QString, vtkSmartPointer<vtkImageData>> imageChannels)
 {
     d->imageChannels.clear();
     d->colorFunctions.clear();
     d->opacities.clear();
 
+    d->imageChannels = imageChannels;
+
     for (const auto& channelName : imageChannels.keys()) {
-        d->imageChannels[channelName] = imageChannels[channelName];
         d->colorFunctions[channelName] = vtkSmartPointer<vtkColorTransferFunction>::New();
         d->opacities[channelName] = vtkSmartPointer<vtkPiecewiseFunction>::New();
     }
@@ -193,7 +194,7 @@ gnomonImageDataChannelBlending::gnomonImageDataChannelBlending(void) : vtkImageD
 gnomonImageDataChannelBlending::~gnomonImageDataChannelBlending(void)
 {
     delete d;
-    d = NULL;
+    d = nullptr;
 }
 
 //

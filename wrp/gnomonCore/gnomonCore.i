@@ -11,6 +11,7 @@
 %include "std_vector.i"
 
 %include <dtkBase/dtkBase.i>
+%include <gnomonMacro.i>
 %import <dtkCore/dtkCore.i>
 %import <dtkImagingCore/dtkImagingCore.i>
 
@@ -81,17 +82,20 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeTransform.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeWriter.h>
- 
+
 #include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
 #include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
+#include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 #include <gnomonCore/gnomonModel/gnomonAbstractSystemScenario.h>
 #include <gnomonCore/gnomonModel/gnomonSystem.h>
 
 #include <gnomonCore/gnomonCore.h>
+#include <gnomonCore/gnomonCorePlugin.h>
 #include <gnomonCore/gnomonDataManager.h>
 #include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonLandmark.h>
+#include <gnomonCore/gnomonPluginFactory.h>
 #include <gnomonCore/gnomonTime.h>
 #include <gnomonCore/gnomonTypeDef.h>
 #include <vtkPythonUtil.h>
@@ -109,7 +113,6 @@
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
 
-
 //%apply_numpy_typemaps(signed char       )
 //%apply_numpy_typemaps(unsigned char     )
 //%apply_numpy_typemaps(short             )
@@ -125,7 +128,7 @@
 
 
 %typemap(out) QVariant gnomonDataDict::get {
-    int type = $1.type(); //TODO typeId ? 
+    int type = $1.typeId();
     QString name($1.typeName());
     name = name.remove(' ');
 
@@ -294,7 +297,8 @@
     }
 %}
 %enddef
- 
+
+%include <gnomonCore/gnomonPluginFactory.h>
 %include <gnomonCore/gnomonAbstractDataDriver.h>
 %include <gnomonCore/gnomonMorphonetHelper.h>
 
@@ -304,7 +308,7 @@
 %include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
 INCLUDE_GNOMON_CONCEPT(gnomonAbstractFormAlgorithm, FormAlgorithm, gnomonCore/gnomonAlgorithm)
 %include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageFromImage.h>
-%include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageReader.h>  
+%include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageReader.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageWriter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter.h>
 %include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexConstructor.h>
@@ -357,6 +361,7 @@ INCLUDE_GNOMON_CONCEPT(gnomonAbstractPointCloudWriter, PointCloudWriter, gnomonC
 
 %include <gnomonCore/gnomonModel/gnomonAbstractModel.h>
 %include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel.h>
+%include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 %include <gnomonCore/gnomonModel/gnomonAbstractSystemScenario.h>
 %include <gnomonCore/gnomonModel/gnomonSystem.h>
 

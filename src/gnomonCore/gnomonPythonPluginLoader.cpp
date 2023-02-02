@@ -1,4 +1,3 @@
-
 #include "gnomonPythonPluginLoader.h"
 
 #include <QtCore>
@@ -26,7 +25,8 @@ void loadPluginGroup (const QString& module)
 QStringList availablePluginsFromGroup(const QString & module) {
     QStringList available_plugins;
 
-    dtkScriptInterpreterPython::instance()->childAcquireLock(); // getting lock from main interpreter
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
 
     PyObject* pName = PyUnicode_FromString("gnomon.utils");
     PyObject* pModule = PyImport_Import(pName);
@@ -59,7 +59,54 @@ QStringList availablePluginsFromGroup(const QString & module) {
     }
     Py_DECREF(pModule);
     Py_DECREF(pName);
-    //Py_Finalize();
-    dtkScriptInterpreterPython::instance()->childReleaseLock();
+
+    PyGILState_Release(gstate);
     return available_plugins;
+}
+
+QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugin_name) {
+    QMap<QString, QString> metadata;
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure(); 
+    
+    PyObject* pName = PyUnicode_FromString("gnomon.utils.gnomonPlugin");
+    PyObject* pModule = PyImport_Import(pName);
+
+    if(pModule)
+    {   
+        PyObject* pFunc = PyObject_GetAttrString(pModule, "plugin_metadata");
+        if(pFunc && PyCallable_Check(pFunc))
+        {
+            PyObject* args = Py_BuildValue("(s, s)", group.toStdString().c_str(), plugin_name.toStdString().c_str());
+            PyObject* py_metadata = PyObject_CallObject(pFunc, args);
+
+            PyObject *key, *value;
+            Py_ssize_t pos = 0;
+
+            while (PyDict_Next(py_metadata, &pos, &key, &value)) {
+                Py_ssize_t size_key = 0;
+                Py_ssize_t size_val = 0;
+                metadata.insert(
+                        PyUnicode_AsUTF8AndSize(key, &size_key),
+                        PyUnicode_AsUTF8AndSize(value, &size_val)
+                );
+            }
+            Py_DECREF(args);
+            Py_DECREF(py_metadata);
+        }
+        else
+        {
+            dtkWarn() << Q_FUNC_INFO << "can't get plugins metadata for plugin " << plugin_name;
+        }
+        Py_DECREF(pFunc);
+    }
+    else
+    {
+        dtkWarn() << Q_FUNC_INFO << "Import gnomon.utils.gnomonPlugin failed. This is worrying";
+    }
+    Py_DECREF(pModule);
+    Py_DECREF(pName);
+
+    PyGILState_Release(gstate);
+    return metadata;
 }

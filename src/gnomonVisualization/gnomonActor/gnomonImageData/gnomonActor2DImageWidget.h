@@ -30,8 +30,8 @@ public:
     static gnomonActor2DImageWidget *New(void);
 
 public:
-    void setInteractor(void *interactor) override;
-	void setImage(vtkImageData *image);
+    void setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor) override;
+    void setImage(vtkImageData *image);
 
 public slots:
     void update(void) override;
@@ -60,7 +60,7 @@ private:
     void operator = (const gnomonActor2DImageWidget&);
 
 private:
-	class gnomonActor2DImageWidgetPrivate *d;
+    class gnomonActor2DImageWidgetPrivate *d;
 };
 
 

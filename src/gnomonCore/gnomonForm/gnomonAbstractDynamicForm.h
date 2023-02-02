@@ -21,10 +21,12 @@ public:
 
 public:
     std::shared_ptr<gnomonAbstractForm> at(double t) {
+        qWarning() << Q_FUNC_INFO << "MAKING A CLONE";
         return std::shared_ptr<gnomonAbstractForm>(this->at_impl(t)->clone());
     };
     std::shared_ptr<gnomonAbstractForm> current(void) const {
-        return std::shared_ptr<gnomonAbstractForm>(this->current()->clone());
+        qWarning() << Q_FUNC_INFO << "MAKING A CLONE";
+        return std::shared_ptr<gnomonAbstractForm>(this->current_impl()->clone());
     };
 
     virtual QMap<QString,QString> metadataAtT(double t) const = 0;
@@ -36,6 +38,14 @@ public:
     virtual void drop(double t) = 0;
 
     virtual QString formName(void) = 0; //TODO CRTP to be able to put that as virtual static
+
+    int thumbnailId(void) {
+        return m_thumbnail_id;
+    }
+
+    void setThumbnailId(int id) {
+        m_thumbnail_id = id;
+    }
 
     virtual QJsonObject serialize(void) {
         QJsonObject json;
@@ -57,6 +67,7 @@ protected:
 
 protected:
     gnomonDynamicFormMetadata *p_metadata = nullptr;
+    int m_thumbnail_id=-1;
 };
 //
 // gnomonAbstractDynamicForm.h ends here

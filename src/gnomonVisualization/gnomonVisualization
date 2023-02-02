@@ -10,4 +10,7 @@
 #include "gnomonCoreParameterColor.h"
 #include "gnomonCoreParameterLookupTable.h"
 #include "gnomonLookupTable.h"
-
+#include "gnomonCoreParameterGraphical.h"
+#include "gnomonCoreParameterGraphicalObject.h"
+#include "gnomonCoreParameterNurbs.h"
+#include "gnomonCoreParameterNurbsObject.h"

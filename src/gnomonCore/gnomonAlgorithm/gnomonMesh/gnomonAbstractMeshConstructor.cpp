@@ -2,7 +2,7 @@
 #include "gnomonAbstractMeshConstructor.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMeshConstructor, meshConstructor, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractMeshConstructor, meshConstructor, gnomonCore);
 }
 
 

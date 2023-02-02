@@ -35,6 +35,7 @@ gnomonPointCloudReaderCommand::~gnomonPointCloudReaderCommand()
 
 void gnomonPointCloudReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractPointCloudReader *) this->action)->setPath(this->m_path);
 }
 

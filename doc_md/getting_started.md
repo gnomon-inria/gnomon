@@ -14,6 +14,11 @@ These tutorials illustrate the basic usage of the Gnomon platform, and are a goo
 This section is under construction! Some information might be missing.
 :::
 
+# Overview Of a Gnomon workspace
+![Brief Description of  a gnomon Workspace](_static/typical_workspace_descpt.png)
+
+
+
 :::{card}
 :link: example/project
 :link-type: doc

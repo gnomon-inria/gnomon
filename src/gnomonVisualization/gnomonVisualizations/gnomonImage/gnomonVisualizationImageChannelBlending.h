@@ -16,6 +16,7 @@ public:
 
 public:
     virtual const QString pluginName(void) override;
+    virtual const QString name(void) override;
 
 public:
 	void setImage(std::shared_ptr<gnomonImageSeries> image) override;
@@ -30,6 +31,9 @@ public:
 public slots:
     void update(void) override;
     void render(void) override;
+
+public slots:
+    void updateChannelImages(void);
 
 public slots:
     void clear(void) override;
@@ -53,6 +57,7 @@ public:
 
 private:
 	class gnomonVisualizationImageChannelBlendingPrivate *dd;
+    friend gnomonVisualizationImageChannelBlendingPrivate;
 };
 
 inline gnomonAbstractVisualizationImage *gnomonVisualizationImageChannelBlendingCreator(void)

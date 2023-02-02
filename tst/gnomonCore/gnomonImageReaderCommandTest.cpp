@@ -25,6 +25,8 @@ public:
     void setPath(const QString& path) override {reader::t_set_path = true;};
     std::shared_ptr<gnomonImageSeries> image() override {return nullptr;};
     QStringList extensions(void) override {return QStringList();};
+    void clearInputs(void) override {};
+    void clearOutputs(void) override {};
 };
 
 inline gnomonAbstractImageReader* dummyImageReaderPluginCreator(void)  {
@@ -65,6 +67,7 @@ void gnomonImageReaderCommandTestCase::readInr(void)
     d->command->setPath(image_file_path);
     QVERIFY(!reader::t_set_path);
 
+    d->command->setNoAsync();
     d->command->redo();
     QVERIFY(reader::t_set_path && reader::t_run_called);
 }

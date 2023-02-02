@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.ndimage as nd
 
-from dtkcore import d_bool, d_int, d_real, d_inliststring, d_inliststringlist
+from dtkcore import d_real
 
 import gnomon.core
 
@@ -10,7 +10,7 @@ from gnomon.utils.decorators import imageInput, imageOutput
 
 from timagetk import SpatialImage, MultiChannelImage
 
-@algorithmPlugin(version='0.1.0', coreversion='0.71.0')
+@algorithmPlugin(version='0.1.0', coreversion='0.72.0')
 @imageInput(attr='in_img', data_plugin="gnomonImageDataMultiChannelImage")
 @imageOutput(attr='out_img', data_plugin="gnomonImageDataMultiChannelImage")
 class imageAlgorithm(gnomon.core.gnomonAbstractFormAlgorithm):
@@ -19,7 +19,7 @@ class imageAlgorithm(gnomon.core.gnomonAbstractFormAlgorithm):
         super().__init__()
 
         self._parameters = {}
-        self._parameters['sigma'] = d_real("The sigma parameter", 1., 0., 5., 2)
+        self._parameters['sigma'] = d_real("The sigma parameter", 1., 0., 5., 2, "the doc of sigma")
 
         self.in_img = {}
         self.out_img = {}

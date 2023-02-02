@@ -19,6 +19,7 @@ gnomonAbstractVisualization::gnomonAbstractVisualization(void) : d(new gnomonAbs
 
 gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
 {
+    this->clearConnections();
     delete d;
 
     d = NULL;

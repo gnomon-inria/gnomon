@@ -335,5 +335,9 @@ void gnomonVisualizationCellComplex::onTimeChanged(double value)
     this->render();
 }
 
+const QString gnomonVisualizationCellComplex::name(void) {
+    return "Cell Complex Visualization";
+}
+
 //
 // gnomonVisualizationCellComplex.cpp ends here

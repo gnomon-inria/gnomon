@@ -40,6 +40,8 @@ public:
     std::shared_ptr<gnomonTreeSeries> tree() const override {
         return nullptr;
     }
+    void clearInputs(void) override {};
+    void clearOutputs(void) override {};
 };
 
 inline gnomonAbstractCellImageTracking* dummyCellImageTrackingPluginCreator(void)  {

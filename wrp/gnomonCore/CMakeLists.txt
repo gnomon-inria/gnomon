@@ -29,6 +29,7 @@ set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/gnomonFormPYTHON_wrap.cxx PROPER
 set(SWIG_MODULE_NAME ${PROJECT_NAME})
 
 list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++ -threads)
+#list(APPEND CMAKE_SWIG_FLAGS -v -O -python -c++ -threads -E > ~/truc.cpp)
 
 ## #############################################################################
 ## Build rules

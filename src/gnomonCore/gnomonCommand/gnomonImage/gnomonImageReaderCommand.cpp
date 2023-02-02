@@ -46,6 +46,7 @@ gnomonImageReaderCommand::~gnomonImageReaderCommand()
 
 void gnomonImageReaderCommand::predo(void)
 {
+    this->action->is_async = true;
     ((gnomonAbstractImageReader *) this->action)->setPath(this->m_path);
 }
 
@@ -61,7 +62,6 @@ void gnomonImageReaderCommand::postdo(void)
         else str += "  no channels availables";
         
         dtkWarn() << Q_FUNC_INFO << str;
-
     } else {
         d->image = image;
     }

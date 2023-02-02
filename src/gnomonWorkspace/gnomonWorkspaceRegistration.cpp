@@ -53,17 +53,19 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     dd = new gnomonWorkspaceRegistrationPrivate;
 
     loadPluginGroup("imageRegistration");
-    emit algorithmsLoaded();
 
     d->workspace = "Time Registration";
     d->command = new gnomonImageRegistrationCommand;
     d->keys = gnomonCore::imageRegistration::pluginFactory().keys();
+    d->algorithmsData = gnomonCore::imageRegistration::pluginFactory().dataList();
     d->algorithm = d->command->algorithmName();
+
+    emit algorithmsLoaded();
     emit parametersChanged();
 
     //create the views
-    this->addInputView(); // reference
-    this->addInputView(); // floating
+    this->addInputView({}, {"reference", "image"}); // reference
+    this->addInputView({}, {"floating", "image"}); // floating
     this->addOutputView(); // registered
 
     this->m_target_dict = new gnomonViewData(this);

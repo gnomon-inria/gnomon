@@ -15,12 +15,14 @@
 gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
     loadPluginGroup("cellImageQuantification");
-    emit algorithmsLoaded();
 
     d->workspace = "Cell Analysis";
     d->command = new gnomonCellImageQuantificationCommand;
     d->keys = gnomonCore::cellImageQuantification::pluginFactory().keys();
+    d->algorithmsData = gnomonCore::cellImageQuantification::pluginFactory().dataList();
     d->algorithm = d->command->algorithmName();
+
+    emit algorithmsLoaded();
 
     this->addInputView();
 
@@ -65,6 +67,7 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
     }
 
     if(command->cellImage()) {
+        d->sources->views()[0]->removeForm("gnomonCellImage");
         d->sources->views()[0]->setForm("gnomonCellImage", command->cellImage());
         std::shared_ptr<gnomonCellImageSeries> out_cellimage = d->sources->views()[0]->cellImage();
         int form_count = gnomonFormManager::instance()->formCount(out_cellimage->formName());

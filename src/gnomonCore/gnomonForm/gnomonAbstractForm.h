@@ -1,7 +1,6 @@
 #pragma once
 
 #include <gnomonCoreExport>
-
 #include <dtkCore>
 
 class gnomonBinaryImage;
@@ -26,7 +25,9 @@ class GNOMONCORE_EXPORT gnomonAbstractForm
 {
 public:
              gnomonAbstractForm(void) = default;
-    virtual ~gnomonAbstractForm(void) = default;
+    virtual ~gnomonAbstractForm(void) {
+        qDebug() << Q_FUNC_INFO << "Form " << this << " is dying";
+    };
 
     virtual gnomonAbstractForm* clone() = 0;
 //public:
@@ -64,16 +65,5 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractForm *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractForm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractForm, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractForm, GNOMONCORE_EXPORT)
-
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractForm, GNOMONCORE_EXPORT, abstractForm);
-}
-
 //
 // gnomonAbstractForm.h ends here

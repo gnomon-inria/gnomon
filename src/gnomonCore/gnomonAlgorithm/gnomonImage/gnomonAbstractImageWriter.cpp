@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractImageWriter, imageWriter, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractImageWriter, imageWriter, gnomonCore);
 }
 
 //

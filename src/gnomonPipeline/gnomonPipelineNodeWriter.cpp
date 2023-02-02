@@ -1,22 +1,8 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonPipelineNodeWriter.h"
 
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
-
+#include "gnomonPythonPluginLoader.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeWriterPrivate
@@ -25,13 +11,14 @@
 class gnomonPipelineNodeWriterPrivate {
 public:
     QString path;
+    QJsonObject metadata;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeWriter
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeWriter::gnomonPipelineNodeWriter(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> inputs) : gnomonPipelineNode(), dd(new gnomonPipelineNodeWriterPrivate)
+gnomonPipelineNodeWriter::gnomonPipelineNodeWriter(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> inputs, QJsonObject metadata) : gnomonPipelineNode(), dd(new gnomonPipelineNodeWriterPrivate)
 {
     d->type = gnomonPipelineNode::NODE_WRITER;
 
@@ -43,7 +30,19 @@ gnomonPipelineNodeWriter::gnomonPipelineNodeWriter(const QString& algorithm_clas
     for (const auto& input : inputs) {
         this->addInputPort(input, new gnomonPipelinePort(gnomonPipelinePort::Input, input, this));
     }
-    // this->layout()();
+    
+    dd->metadata = metadata;
+    auto plugins = availablePluginsFromGroup(algorithm_class);
+    if(plugins.contains(algorithm)) {
+        auto localMetadata = pluginMetadata(algorithm_class, algorithm);
+        QMap<QString, QString>::key_value_iterator ptr;
+        for(ptr = localMetadata.keyValueBegin(); ptr!=localMetadata.keyValueEnd(); ptr++) {
+            dd->metadata.insert(ptr->first, ptr->second);
+        }
+    } else {
+        qWarning() << Q_FUNC_INFO << algorithm_class << " doesn't have algorithm " << algorithm << " available algorithms are: " << plugins;
+    }
+
 }
 
 gnomonPipelineNodeWriter::~gnomonPipelineNodeWriter(void)

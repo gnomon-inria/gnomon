@@ -5,6 +5,7 @@
 #include <gnomonCoreExport.h> // enables the visibility of the concept
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
@@ -34,12 +35,12 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractMeshConstructor *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT)
 
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT, meshConstructor);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT, meshConstructor);
 }
 
 //

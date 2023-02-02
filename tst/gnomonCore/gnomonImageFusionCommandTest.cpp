@@ -34,6 +34,8 @@ public:
     void removeLandmarks(void) override {fusion::t_remove_landmarks = true;};
 
     std::shared_ptr<gnomonImageSeries> output() override { return nullptr;};
+    void clearInputs(void) override {};
+    void clearOutputs(void) override {};
 };
 
 inline gnomonAbstractImageFusion* dummyImageFusionPluginCreator(void)  {

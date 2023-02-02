@@ -46,8 +46,9 @@ void gnomonAbstractCommand::redo(void)
         watcher->setFuture(future);
     } else {
         this->action->run();
-        this->postdo();
-        this->finished();
+        this->postdo(); // here, the output of the action is stored by the action. so we can now clear the action outputs.
+        this->action->clearOutputs();
+        emit finished();
     }
 }
 
@@ -76,6 +77,7 @@ extern void runner(gnomonAbstractCommand* command) {
                 command->outputs()[k]->metadata()->moveToThread(gnomonAbstractCommand::gui_thread);
         }
     }
+    command->action->clearOutputs();
 }
 
 QThread *gnomonAbstractCommand::gui_thread = nullptr;

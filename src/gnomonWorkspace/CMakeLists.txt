@@ -33,10 +33,12 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspaceFusion.h
   # gnomonWorkspaceImageConstructor
   # gnomonWorkspaceImageConstructor.h
-  # gnomonWorkspaceLSystemSimulator
-  # gnomonWorkspaceLSystemSimulator.h
   # gnomonWorkspaceLStringTranslation
   # gnomonWorkspaceLStringTranslation.h
+  gnomonWorkspaceLSystemModel
+  gnomonWorkspaceLSystemModel.h
+  # gnomonWorkspaceLSystemSimulator
+  # gnomonWorkspaceLSystemSimulator.h
   # gnomonWorkspaceMeshConstructor
   # gnomonWorkspaceMeshConstructor.h
   # gnomonWorkspaceMeshFromImage
@@ -88,8 +90,9 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceCellImageTracking.cpp
   # gnomonWorkspaceImageConstructor.cpp
   # gnomonWorkspaceFusion.cpp
-  # gnomonWorkspaceLSystemSimulator.cpp
   # gnomonWorkspaceLStringTranslation.cpp
+  gnomonWorkspaceLSystemModel.cpp
+  # gnomonWorkspaceLSystemSimulator.cpp
   # gnomonWorkspaceMeshConstructor.cpp
   # gnomonWorkspaceMeshFilter.cpp
   # gnomonWorkspaceMeshFromImage.cpp

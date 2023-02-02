@@ -19,6 +19,7 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 class dtkCoreParameter;
@@ -49,11 +50,11 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractLStringTranslation *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractLStringTranslation, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringTranslation, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringTranslation, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringTranslation, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringTranslation, GNOMONCORE_EXPORT)
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractLStringTranslation, GNOMONCORE_EXPORT, lStringTranslation);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractLStringTranslation, GNOMONCORE_EXPORT, lStringTranslation);
 }
 
 //

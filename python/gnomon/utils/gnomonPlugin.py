@@ -11,10 +11,10 @@ import zipfile
 
 from base64 import b64decode, b64encode
 from functools import wraps
-from typing import Tuple, Callable
+from typing import Callable
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from json import loads, dump
+from json import load, loads, dump
 
 from pkg_resources import iter_entry_points, resource_filename
 
@@ -25,7 +25,7 @@ from gnomon.utils.logCapture import StreamCapture
 from dtkcore import dtkCoreParameter
 
 __PLUGINS__ = []
-DEBUG = False
+DEBUG = True if os.environ.get('DEBUG') else False
 
 
 def get_factory(plugin_group: str):
@@ -81,27 +81,49 @@ def available_plugins(group_name: str) -> list[str]:
     list[str]
         list of the plugin names in the plugin group (keys of the related factory)
     """
-    print([ep.name for ep in iter_entry_points(group=group_name, name=None)])
     return [ep.name for ep in iter_entry_points(group=group_name, name=None)]
 
 
-def plugin_metadata(group_name):
+def plugin_metadata(group_name: str, plugin_name: str) -> dict[str, str]:
     """
-    ***Unused***
-    returns list of path to resource files associated with a plugin and sharing the name
+    Returns a dict of metadata regarding the plugin and its package.
+
+    Package information:
+        - package: the name of the package (in conda for instance as it may differ from the import statement)
+        - conda_channel: channel from which to pull this package
     Parameters
     ----------
-    group_name
+    group_name: str
+        Name of the plugin group (or entry_point group)
+
+    plugin_name: str
+        Name of the plugin
+
 
     Returns
     -------
+    Returns a dictionary of string to string containing metadata regarding the plugin and the package.
 
     """
-    out = []
-    for ep in iter_entry_points(group_name):
-        *module, resource = ep.module_name.split(".")
-        path = resource_filename(".".join(module), resource + ".json")
-        out.append((ep.name, path))
+    out = {}
+    try:
+        ep = next(iter_entry_points(group_name, name=plugin_name))
+    except StopIteration:
+        raise ValueError(f"No entry point found names {plugin_name} in group {group_name}")
+
+    root_module = importlib.import_module(ep.module_name.split(".")[0])
+    try:
+        out["package"] = root_module.package
+        out["conda_channel"] = root_module.conda_channel
+    except AttributeError as e:
+        print(f"Missing either 'package' or 'conda_channel' from root package {ep.module_name.split('.')[0]}")
+
+    # plugin metadata
+    *module, resource = ep.module_name.split(".")
+    path = resource_filename(".".join(module), resource + ".json")
+    if os.path.exists(path):
+        with open(path, "r") as file:
+            out.update(load(file))
     return out
 
 
@@ -159,6 +181,25 @@ def default_output_accessors(algo_class, form_class) -> str:
         raise KeyError(f"{algo_class.__name__} does not accept output form {form_class.__name__}")
     return bound_method
 
+
+def register_input(cls: type, attribute: str):
+    """
+    Register attribute of cls as input storage for cleaning later.
+    """
+    if hasattr(cls, "_input_storage_list"):
+        getattr(cls, "_input_storage_list").append(attribute)
+    else:
+        setattr(cls, "_input_storage_list", [attribute])
+
+
+def register_output(cls: type, attribute: str):
+    """
+    Register attribute of cls as output storage for cleaning later.
+    """
+    if hasattr(cls, "_output_storage_list"):
+        getattr(cls, "_output_storage_list").append(attribute)
+    else:
+        setattr(cls, "_output_storage_list", [attribute])
 
 def gnomon_declare_plugins(path: str) -> dict[str, list[str]]:
     """
@@ -251,7 +292,6 @@ def gnomonParametric(cls):
     cls.__getitem__ = __getitem__
 
     def setParameter(self, parameter_name, parameter_value):
-        logging.info(f"{parameter_name}: {parameter_value}")
         if parameter_name in self._parameters:
             if isinstance(parameter_value, dtkCoreParameter):
                 self._parameters[parameter_name] = parameter_value
@@ -339,7 +379,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
         Name of the form attribute where the form read are stored.
     path_attr: str
         Name of the attribute containing the path to be read.
-        
+
     Returns
     -------
     Class
@@ -387,7 +427,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
 
         def preview(self):
             return f"{os.path.splitext(inspect.getfile(cls))[0]}.png"
-    
+
         setattr(cls, "preview", preview)
 
         return cls
@@ -457,7 +497,7 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
     return seriesWriterDecorator
 
 
-def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter: str, base_class=None):
+def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter: str, name: str="", base_class=None):
     """
     Registers form data plugins to the plugin factory.
 
@@ -494,13 +534,13 @@ def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter
 
         cls.__data_setter = getattr(cls, data_setter)
         cls.__data_getter = getattr(cls, data_getter)
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, name=name, base_class=base_class)
         return cls
 
     return decorator
 
 
-def algorithmPlugin(version: str, coreversion: str, base_class=None):
+def algorithmPlugin(version: str, coreversion: str, name: str="", base_class=None):
     """
     Registers algorithm plugins to the plugin factory.
 
@@ -546,14 +586,42 @@ def algorithmPlugin(version: str, coreversion: str, base_class=None):
         if not issubclass(cls, gnomon.core.gnomonAbstractAlgorithm):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractAlgorithm interface."
                             f" Otherwise try using formDataPlugin or visualizationPlugin")
+        # setting clearing methods
+        if not hasattr(cls, "_input_storage_list"):
+            setattr(cls, "_input_storage_list", [])
+        if not hasattr(cls, "_output_storage_list"):
+            setattr(cls, "_output_storage_list", [])
+
+        def clearInputs(self):
+            # logging.info(f"Clearing inputs of {cls.__name__}")
+            for attr in getattr(cls, "_input_storage_list"):
+                setattr(self, attr, {})
+
+        def clearOutputs(self):
+            # logging.info(f"Clearing outputs of {cls.__name__}")
+            for attr in getattr(cls, "_output_storage_list"):
+                setattr(self, attr, {})
+
+        def run_decorator(run):
+            def run_wrapper(self):
+                # clear outputs before run
+                self.clearOutputs()
+                run(self)
+            return run_wrapper
+
+        setattr(cls, "clearInputs", clearInputs)
+        setattr(cls, "clearOutputs", clearOutputs)
+        setattr(cls, "run", run_decorator(getattr(cls, "run")))
+
+        # other decorators
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, name=name, base_class=base_class)
         return cls
 
     return decorator
 
 
-def corePlugin(version: str, coreversion: str, base_class=None):
+def corePlugin(version: str, coreversion: str, name: str="", base_class=None):
     """
     Registers gnomon plugins which implements an interface from gnomon.core to the plugin factory.
 
@@ -586,6 +654,8 @@ def corePlugin(version: str, coreversion: str, base_class=None):
         Version of the plugin.
     coreversion: str
         Exact version of gnomon to check for API compatibility.
+    name: str
+        Name of the plugin. Used for the UI
     base_class
 
     Returns
@@ -595,13 +665,13 @@ def corePlugin(version: str, coreversion: str, base_class=None):
 
     def decorator(cls):
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, name=name, base_class=base_class)
         return cls
 
     return decorator
 
 
-def visualizationPlugin(version: str, coreversion: str, base_class=None):
+def visualizationPlugin(version: str, coreversion: str, name="", base_class=None):
     """
     Registers visualization plugins to the plugin factory.
 
@@ -637,6 +707,8 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
         Version of the plugin.
     coreversion: str
         Exact version of gnomon to check for API compatibility.
+    name: str
+        Name of the plugin. Used for the UI
     base_class
 
     Returns
@@ -652,15 +724,15 @@ def visualizationPlugin(version: str, coreversion: str, base_class=None):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractVisualization interface."
                             f" Otherwise try using corePlugin or formDataPlugin")
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.visualization, base_class=base_class)
+        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.visualization, name=name, base_class=base_class)
         return cls
 
     return decorator
 
 
-def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
+def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None):
     # -----------------------------------------------------
-    # Doc and Version
+    # Doc and Version and Name
     # -----------------------------------------------------
 
     def documentation(self):
@@ -686,6 +758,23 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
         return self.__version__
 
     cls.version = _version
+
+    def _name(self: cls) -> str:
+        return name if name else f"PLACEHOLDER: {cls.__name__}"
+
+    cls.name = _name
+
+    # -----------------------------------------------------
+    # Debugging
+    # -----------------------------------------------------
+    if DEBUG:
+        def destructor_decorator(f):
+            def destructor_wrapper(self):
+                print(f"{cls.__name__} is dying")
+                f(self)
+            return destructor_wrapper
+        original_del = getattr(cls, "__del__") if hasattr(cls, "__del__") else lambda self: None
+        setattr(cls, "__del__", destructor_decorator(original_del))
 
     # -----------------------------------------------------
     # TCP Logging
@@ -724,6 +813,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
                 return f(self, *args, **kwargs)
             except Exception as e:
                 if DEBUG:  # if debug let it throw
+                    traceback.print_exc()
                     raise
                 traceback.print_exc()
                 print(e)
@@ -792,18 +882,18 @@ def _gnomonPlugin(version, coreversion, cls, namespace, base_class=None):
     plugin_factory_name += '_pluginFactory'
     factory = getattr(namespace, plugin_factory_name)()
 
-    plugin_name = cls.__name__
-    plugin_name = plugin_name[0].lower() + plugin_name[1:]
+    plugin_key = cls.__name__
+    plugin_key = plugin_key[0].lower() + plugin_key[1:]
 
     # TODO
     # check plugin gnomon_version to actual version before registering it
     # register plugin_version to be able to get it ?
     if checkVersion(coreversion):
-        factory.recordPlugin(plugin_name, __PLUGINS__[-1])
-        if plugin_name in factory.keys():
-            logging.info("Python plugin " + str(plugin_name) + " has been successfully loaded!")
+        factory.recordPlugin(plugin_key, __PLUGINS__[-1], name, inspect.cleandoc(cls.__doc__) if cls.__doc__ else "")
+        if plugin_key in factory.keys():
+            logging.info("Python plugin " + str(plugin_key) + ":" + name +" has been successfully loaded!")
     else:
-        logging.warn("Python plugin" + str(plugin_name) + "defined for core version " + str(
+        logging.warn("Python plugin" + str(plugin_key) + "defined for core version " + str(
             coreversion) + " but actual version is ${gnomon_VERSION}")
         logging.warn("plugin not loaded")
     return cls

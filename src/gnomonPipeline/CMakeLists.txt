@@ -16,6 +16,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonPipelineNodeAlgorithm.h
   gnomonPipelineNodeConstructor
   gnomonPipelineNodeConstructor.h
+  gnomonPipelineNodeEvolutionModel
+  gnomonPipelineNodeEvolutionModel.h
   gnomonPipelineNodeReader
   gnomonPipelineNodeReader.h
   gnomonPipelineNodeTask
@@ -34,6 +36,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonPipelineNodeAdapter.cpp
   gnomonPipelineNodeAlgorithm.cpp
   gnomonPipelineNodeConstructor.cpp
+  gnomonPipelineNodeEvolutionModel.cpp
   gnomonPipelineNodeReader.cpp
   gnomonPipelineNodeTask.cpp
   gnomonPipelineNodeWriter.cpp

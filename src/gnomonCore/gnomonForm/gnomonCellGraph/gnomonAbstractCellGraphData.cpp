@@ -6,7 +6,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellGraphData, cellGraphData, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractCellGraphData, cellGraphData, gnomonCore);
 }
 
 //

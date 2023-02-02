@@ -23,13 +23,15 @@ class GNOMONCORE_EXPORT gnomonParameterDescription
 {
 public:
      gnomonParameterDescription(void) = default;
-     gnomonParameterDescription(const QString& name, const QString& type, const QString& doc) : name(name), type(type), doc(doc) {};
+     gnomonParameterDescription(const QString& name, const QString& type, const QString& doc, const QString& value, const QJsonObject& args) : name(name), type(type), doc(doc), value(value), args(args) {};
     ~gnomonParameterDescription(void) = default;
 
 public:
     QString name;
     QString type;
     QString doc;
+    QString value;
+    QJsonObject args;
 };
 
 

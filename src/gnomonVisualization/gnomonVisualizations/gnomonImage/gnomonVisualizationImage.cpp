@@ -314,5 +314,9 @@ void gnomonVisualizationImage::onTimeChanged(double value)
     this->render();
 }
 
+const QString gnomonVisualizationImage::name(void) {
+    return "Image Visualization";
+}
+
 //
 // gnomonVisualizationImage.cpp ends here

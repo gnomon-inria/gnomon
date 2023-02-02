@@ -94,7 +94,7 @@ vtkImageData *gnomonActorImage::image(void)
     return d->image;
 }
 
-void gnomonActorImage::setInteractor(void *interactor)
+void gnomonActorImage::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>s*interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
 }

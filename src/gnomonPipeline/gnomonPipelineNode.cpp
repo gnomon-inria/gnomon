@@ -147,6 +147,10 @@ QString gnomonPipelineNode::getParameterAsString(const QString &name) {
     return {};
 }
 
+double gnomonPipelineNode::getParameterAsDouble(const QString &name) {
+    return {};
+}
+
 const QPointF& gnomonPipelineNode::position(void)
 {
     return d->position;
@@ -491,6 +495,10 @@ gnomonPipelineEdge *gnomonPipelineNode::inputEdgeFromPort(const QString& portNam
         return d->input_edges_map[portName];
     }
     return nullptr;
+}
+
+QMap<QString, QString> gnomonPipelineNode::getPluginMetadata() {
+    return QMap<QString, QString>();
 }
 
 //

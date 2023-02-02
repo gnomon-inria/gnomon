@@ -4,6 +4,7 @@
 
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
+#include "gnomonPythonPluginLoader"
 
 
 // /////////////////////////////////////////////////////////////////
@@ -13,13 +14,18 @@
 class gnomonPipelineNodeAlgorithmPrivate {
 public:
     QJsonObject parameters;
+    QJsonObject metadata;
 };
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeAlgorithm
 // /////////////////////////////////////////////////////////////////
 
-gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorithm_class, const QString& algorithm, QJsonObject parameters, QList<QString> inputs,  QList<QString> outputs) : gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
+gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString &algorithm_class, const QString &algorithm,
+                                                         QJsonObject &parameters,
+                                                         QList<QString> inputs, QList<QString> outputs,
+                                                         QJsonObject metadata) :
+                                                         gnomonPipelineNode(),dd(new gnomonPipelineNodeAlgorithmPrivate)
 {
     if (algorithm_class.contains("From")) {
         d->type = gnomonPipelineNode::NODE_CONVERTER;
@@ -36,7 +42,18 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString& algorith
     for (const auto& output : outputs) {
         this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, output, this));
     }
-    // this->layout()();
+
+    dd->metadata = metadata;
+    auto plugins = availablePluginsFromGroup(algorithm_class);
+    if(plugins.contains(algorithm)) {
+        auto localMetadata = pluginMetadata(algorithm_class, algorithm);
+        QMap<QString, QString>::key_value_iterator ptr;
+        for(ptr = localMetadata.keyValueBegin(); ptr!=localMetadata.keyValueEnd(); ptr++) {
+            dd->metadata.insert(ptr->first, ptr->second);
+        }
+    } else {
+        qWarning() << Q_FUNC_INFO << algorithm_class << " doesn't have algorithm " << algorithm << " available algorithms are: " << plugins;
+    }
 }
 
 gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
@@ -82,6 +99,7 @@ const QJsonObject gnomonPipelineNodeAlgorithm::toJson(void)
         }
     }
     json.insert("parameters", parameters);
+    json.insert("metadata", dd->metadata);
 
     return json;
 }
@@ -153,6 +171,14 @@ void gnomonPipelineNodeAlgorithm::configureParameter(const QString &name, dtkCor
 
 QString gnomonPipelineNodeAlgorithm::getParameterAsString(const QString &name) {
     return dd->parameters[name].toString();
+}
+
+QMap<QString, QString> gnomonPipelineNodeAlgorithm::getPluginMetadata(void) {
+    QMap<QString, QString> out;
+    for(const auto &key: dd->metadata.keys()) {
+        out.insert(key, dd->metadata[key].toString());
+    }
+    return out;
 }
 
 //

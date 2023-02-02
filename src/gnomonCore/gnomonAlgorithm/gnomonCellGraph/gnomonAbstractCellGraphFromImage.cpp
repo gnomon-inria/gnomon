@@ -2,7 +2,7 @@
 #include "gnomonAbstractCellGraphFromImage.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellGraphFromImage, cellGraphFromImage, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractCellGraphFromImage, cellGraphFromImage, gnomonCore);
 }
 
 

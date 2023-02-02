@@ -16,7 +16,7 @@
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 
 class gnomonAbstractVisualization;
-class gnomonInteractorStyle;
+//class gnomonInteractorStyle;
 
 class vtkCamera;
 class vtkRenderer;
@@ -27,7 +27,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QObject
 {
     Q_OBJECT
 public:
-     gnomonViewForm(QObject *parent = nullptr);
+     gnomonViewForm(QStringList nodePortNames, QObject *parent = nullptr);
     ~gnomonViewForm(void);
 
 public:
@@ -46,6 +46,7 @@ public:
 
 public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
+    Q_PROPERTY(QStringList formNamesAndId READ formNamesAndId NOTIFY formsChanged);
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
@@ -63,6 +64,10 @@ public:
     Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
     Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
     Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
+    Q_PROPERTY(QList<long> pickedCells READ pickedCells NOTIFY pickedCellsChanged)
+
+    Q_INVOKABLE void startPicking();
+    Q_INVOKABLE void stopPicking();
 
     Q_ENUM(Mode);
     Q_ENUM(Orientation);
@@ -96,6 +101,13 @@ signals:
 signals:
     void   linking(void);
     void unlinking(void);
+
+signals:
+    void pickedCellsChanged();
+
+ public:
+    QList<long> pickedCells();
+    void setPickedCells(QList<long>);
 
 signals:
     void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm>);
@@ -135,7 +147,9 @@ public:
 
 public:
     QStringList formNames(void);
+    QStringList formNamesAndId(void);
     QStringList acceptedForms(void);
+    QStringList nodePortNames(void);
     bool empty(void);
     bool inputView(void);
     bool synced(void);
@@ -159,9 +173,12 @@ public:
 
 public:
     Q_INVOKABLE QString formVisuName(const QString& name);
-    Q_INVOKABLE QStringList formVisualizations(const QString& name);
+    Q_INVOKABLE QVariantList formVisualizations(const QString& name);
+    //Q_INVOKABLE QList<gnomonPluginData *> formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
+    Q_INVOKABLE QVariant formVisuParameter(const QString& name, const QString& parameter_name);
+    Q_INVOKABLE void setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value);
 
     Q_INVOKABLE void setFormVisible(const QString& name, bool visible);
     Q_INVOKABLE void removeForm(const QString& name);
@@ -242,8 +259,13 @@ public slots:
 public slots:
     void setEnableMenus(bool);
 
+public:
+    Q_INVOKABLE void notifyFormSelected(int index, QString formType);
+    Q_INVOKABLE int lastFormIndexSelected();
+    Q_INVOKABLE QString lastFromTypeSelected();
+    Q_INVOKABLE QString lastVisuSelected(QString formType);
+
 public slots:
-    void setInteractorStyle(gnomonInteractorStyle *);
     void updateShortcutKeys(void);
 
 public slots:

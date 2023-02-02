@@ -44,7 +44,7 @@
 class gnomonActor2DPolyDataPrivate
 {
 public:
-    vtkRenderWindowInteractor *interactor;
+    vtkSmartPointer<vtkRenderWindowInteractor> interactor;
 
     vtkSmartPointer<gnomonPolyData> polydata;
     vtkSmartPointer<vtkColorTransferFunction> colorFunction;
@@ -187,9 +187,9 @@ void gnomonActor2DPolyDataPrivate::updateColorFunction(void)
 
 vtkStandardNewMacro(gnomonActor2DPolyData);
 
-void gnomonActor2DPolyData::setInteractor(void *interactor)
+void gnomonActor2DPolyData::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor)
 {
-    d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
+    d->interactor = interactor;
 }
 
 void gnomonActor2DPolyData::setPolyData(gnomonPolyData *polydata)

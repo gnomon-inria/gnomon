@@ -23,7 +23,9 @@ class gnomonPipelinePort;
 class GNOMONPIPELINE_EXPORT gnomonPipelineNodeReader : public gnomonPipelineNode
 {
 public:
-     gnomonPipelineNodeReader(const QString& algorithm_class, const QString& algorithm, const QString& path, QList<QString> outputs);
+     gnomonPipelineNodeReader(const QString &algorithm_class, const QString &algorithm,
+                              const QString &path, QList<QString> outputs,
+                              QJsonObject metadata={});
     ~gnomonPipelineNodeReader(void);
 
 public:

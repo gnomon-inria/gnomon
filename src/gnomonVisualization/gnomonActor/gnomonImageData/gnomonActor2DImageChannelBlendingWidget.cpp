@@ -43,7 +43,7 @@ public:
 
     vtkSmartPointer<vtkImagePlaneWidget> planeWidget[3];
 
-    vtkRenderWindowInteractor *interactor;
+    vtkSmartPointer<vtkRenderWindowInteractor> interactor;
 
 public:
     int orientation;
@@ -68,9 +68,9 @@ void gnomonActor2DImageChannelBlendingWidgetPrivate::updateOpacity(void)
 
 vtkStandardNewMacro(gnomonActor2DImageChannelBlendingWidget);
 
-void gnomonActor2DImageChannelBlendingWidget::setInteractor(void *interactor)
+void gnomonActor2DImageChannelBlendingWidget::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor)
 {
-    d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
+    d->interactor = interactor;
     for(int i = 0; i < 3; i++) {
 
         if(d->planeWidget[i])

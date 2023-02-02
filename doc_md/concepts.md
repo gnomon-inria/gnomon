@@ -11,7 +11,7 @@ This IME provides a *project manager*, a *session manager*, *workspaces* to appl
 
 ## Forms
 
-In Gnomon, a biological organism or organ is represented as *a form*. Formally, a form is a combinatorial object such as an image, a string, a tree, a graph, a matrix, a multiscale graph, a cell complex, an hyper-graph, *etc.*, representing the structure of a developing system in terms of its components and their arrangement at some scale(s) or a measure of this structure. These components may be overloaded with attributes representing geometric, biological or physical properties and often themselves represented as scalar or vectorial values. Altogether the form defines the state of the biological system or a measure of this state.
+In Gnomon, a biological organism or organ is represented as a [form](forms). Formally, a form is a combinatorial object such as an image, a string, a tree, a graph, a matrix, a multiscale graph, a cell complex, an hyper-graph, *etc.*, representing the structure of a developing system in terms of its components and their arrangement at some scale(s) or a measure of this structure. These components may be overloaded with attributes representing geometric, biological or physical properties and often themselves represented as scalar or vectorial values. Altogether the form defines the state of the biological system or a measure of this state.
 
 ![Different example of forms in Gnomon](_static/forms.png)
 

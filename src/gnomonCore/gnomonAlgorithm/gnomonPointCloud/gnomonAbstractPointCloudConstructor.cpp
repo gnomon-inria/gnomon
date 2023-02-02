@@ -2,7 +2,7 @@
 #include "gnomonAbstractPointCloudConstructor.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractPointCloudConstructor, pointCloudConstructor, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractPointCloudConstructor, pointCloudConstructor, gnomonCore);
 }
 
 

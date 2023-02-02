@@ -3,6 +3,7 @@
 #include <gnomonCoreExport>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
@@ -56,15 +57,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractImageRegistration *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractImageRegistration, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageRegistration, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageRegistration, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageRegistration, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageRegistration, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractImageRegistration, GNOMONCORE_EXPORT, imageRegistration);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractImageRegistration, GNOMONCORE_EXPORT, imageRegistration);
 }
 
 //

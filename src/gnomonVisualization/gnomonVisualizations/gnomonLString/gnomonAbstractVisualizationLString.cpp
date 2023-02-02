@@ -2,7 +2,7 @@
 #include "gnomonAbstractVisualizationLString.h"
 
 namespace gnomonVisualization {
-    DTK_DEFINE_CONCEPT(gnomonAbstractVisualizationLString, visualizationLString, gnomonVisualization);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractVisualizationLString, visualizationLString, gnomonVisualization);
 }
 
 //

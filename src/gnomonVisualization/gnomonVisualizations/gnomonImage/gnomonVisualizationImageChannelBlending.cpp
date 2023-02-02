@@ -23,14 +23,19 @@
 class gnomonVisualizationImageChannelBlendingPrivate
 {
 public:
+    gnomonVisualizationImageChannelBlending *qq = nullptr;
+
+public:
     std::shared_ptr<gnomonImageSeries> imageSeries;
     std::shared_ptr<gnomonImage> image;
+    QHash<QString, std::shared_ptr<dtkImage>> dtk_img_by_channel;
 
 public:
     int orientation = 2;
 
 public:
-    vtkSmartPointer<vtkImageData> image_data = nullptr;
+    QMap<QString, vtkSmartPointer<vtkImageData>> vtk_img_by_channel;
+    vtkImageData *vtk_img = nullptr;
 
     gnomonImageDataChannelBlending *blending = nullptr;
 
@@ -42,7 +47,36 @@ public:
 
 public:
     QMap<int, QString> defaultColormaps;
+
+public:
+    void reset(void);
 };
+
+void gnomonVisualizationImageChannelBlendingPrivate::reset(void)
+{
+    this->imageSeries.reset();
+    this->image.reset();
+
+    this->channelLookupTables.clear();
+    this->dtk_img_by_channel.clear();
+    this->vtk_img_by_channel.clear();
+
+    /*
+    auto it = this->qq->d->parameters.begin();
+    auto it_end = this->qq->d->parameters.end();
+    while (it != it_end) {
+        if (auto p = dynamic_cast<gnomonCoreParameterLookupTable*>(it.value())) {
+            p->disconnect();
+            delete p;
+            it = this->qq->d->parameters.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    */
+
+    qq->clear();
+}
 
 // /////////////////////////////////////////////////////////////////
 // gnomonVisualizationImageChannelBlending
@@ -50,9 +84,8 @@ public:
 
 gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending(void) : gnomonAbstractVisualizationImage(), dd(new gnomonVisualizationImageChannelBlendingPrivate)
 {
-    // d->parameters["channel"] = new dtk::d_inliststring("", {""}, "Image channel to be displayed");
-    // d->parameters["value_range"] = new dtk::d_range_int(0, 255, 0, 255, "Value range for display ramps");
-    // d->parameters["colormap"] = new gnomonCoreParameterLookupTable(new gnomonLookupTable("Greys"), "Colormap to apply to the image channel");
+    dd->qq = this;
+
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
 
     dd->defaultColormaps[0] = "gray";
@@ -66,8 +99,10 @@ gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending
 
 gnomonVisualizationImageChannelBlending::~gnomonVisualizationImageChannelBlending(void)
 {
-    this->clear();
+    dd->reset();
+    dd->qq = nullptr;
     delete dd;
+    dd = nullptr;
 }
 
 const QString gnomonVisualizationImageChannelBlending::pluginName(void)
@@ -84,18 +119,15 @@ void gnomonVisualizationImageChannelBlending::clear(void)
     }
 
     if (dd->actor2D) {
-//        disconnect(d->connectSliceOrientation);
-//        disconnect(d->connectSlice);
         d->view->renderer2D()->RemoveActor(dd->actor2D);
         dd->actor2D->Delete();
         dd->actor2D = nullptr;
     }
 
-//    disconnect(d->connect3D);
-//    disconnect(d->connect2D);
-//    disconnect(d->connectXY);
-//    disconnect(d->connectXZ);
-//    disconnect(d->connectYZ);
+    if (dd->blending) {
+        dd->blending->Delete();
+        dd->blending = nullptr;
+    }
 }
 
 void gnomonVisualizationImageChannelBlending::setVisible(bool visible)
@@ -111,63 +143,67 @@ void gnomonVisualizationImageChannelBlending::setVisible(bool visible)
 
 void gnomonVisualizationImageChannelBlending::setImage(std::shared_ptr<gnomonImageSeries> image)
 {
+    dd->reset();
+
     dd->imageSeries = image;
     dd->image = image->current();
 
-    this->setParameter("alpha",1.0);
+    this->setParameter("alpha", 1.0);
 
-    dd->channelLookupTables.clear();
+    // Fill all the maps
+    QList<double> valueRange = {0, 1};
+    QList<double> channelRange(2);
+    int channel_id = 0;
+    auto img_channels = dd->image->channels();
+    for (auto channel : img_channels) {
+        auto dtk_img = dd->image->image(channel);
 
-    QList<QString> parameterNames = d->parameters.keys();
-
-    for (const auto& parameterName : parameterNames) {
-        if(parameterName.contains("lookuptable")) {
-            // delete d->parameters[parameterName];
-            auto p = d->parameters.take(parameterName);
-            // p->disconnect();
-            // delete p;
+        if (dtk_img->storageType() == QMetaType::UChar) {
+            valueRange[1] = 255;
+        } else if (dtk_img->storageType() == QMetaType::UShort) {
+            valueRange[1] = 65535;
         }
+        channelRange[0] = dd->image->minValue(channel);
+        channelRange[1] = dd->image->maxValue(channel);
+
+        dd->channelLookupTables[channel] = gnomonLookupTable(dd->defaultColormaps[channel_id], channelRange, valueRange, true);
+        auto param = new gnomonCoreParameterLookupTable(channel+"\nLUT", dd->channelLookupTables[channel], "Lookuptable to apply to the " + channel + " image channel");
+
+        if (channel.isEmpty()) {
+            param->setLabel("LUT");
+            param->setDocumentation("Lookuptable to apply to the image");
+            d->parameters["lookuptable"] = param;
+
+        } else {
+            d->parameters[channel+"\nlookuptable"] = param;
+        }
+        ++channel_id;
     }
 
-    QString channel = dd->image->channels()[0];
-    QList<double> valueRange = {0,1};
-    if (dd->image->image(channel)->storageType() == QMetaType::UChar) {
-        valueRange[1] = 255;
-    } else if (dd->image->image(channel)->storageType() == QMetaType::UShort) {
-        valueRange[1] = 65535;
-    }
-
-    if(dd->image->channels().size()==1) {
-        if (dd->channelLookupTables.contains("")) {
-            dd->channelLookupTables.remove("");
-        }
-
-        QList<double> channelRange = {(double) dd->image->minValue(dd->image->channels()[0]), (double) dd->image->maxValue(dd->image->channels()[0])};
-        dd->channelLookupTables[""] = gnomonLookupTable("gray", channelRange, valueRange, true);
-        d->parameters["lookuptable"] = new gnomonCoreParameterLookupTable("LUT", dd->channelLookupTables[""], "Lookuptable to apply to the image");
-        /*d->parameters["lookuptable"]->connect([this](QVariant v) {
-              // this->update();
-        });*/
-
-    } else {
-        int iChannel = 0;
-        for (const auto& channelName : dd->image->channels()) {
-            if (dd->channelLookupTables.contains(channelName)) {
-                dd->channelLookupTables.remove(channelName);
-            }
-
-            QList<double> channelRange = {(double) dd->image->minValue(channelName), (double) dd->image->maxValue(channelName)};
-            dd->channelLookupTables[channelName] = gnomonLookupTable(dd->defaultColormaps[iChannel], channelRange, valueRange, true);
-            auto param = new gnomonCoreParameterLookupTable(channelName+"\nLUT", dd->channelLookupTables[channelName], "Lookuptable to apply to the "+channelName+" image channel");
-            /*param->connect( [this](QVariant v) {
-                // this->update();
-            });*/
-            d->parameters[channelName+"\nlookuptable"] = param;
-            iChannel++;
-        }
-    }
+    this->updateChannelImages();
 
     emit parametersChanged();
+}
+
+void gnomonVisualizationImageChannelBlending::updateChannelImages(void)
+{
+    if (dd->image) {
+        dd->dtk_img_by_channel.clear();
+        dd->vtk_img_by_channel.clear();
+
+        auto img_channels = dd->image->channels();
+        for (auto channel : img_channels) {
+            auto dtk_img = dd->image->image(channel);
+            dd->dtk_img_by_channel[channel].reset(dtk_img);
+
+            // Fill vtk maps
+            dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+            converter->setInput(dtk_img);
+            converter->convert();
+            dd->vtk_img_by_channel[channel] = static_cast<vtkImageData *>(converter->output());
+            delete converter;
+        }
+    }
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonVisualizationImageChannelBlending::image(void)
@@ -186,7 +222,7 @@ void gnomonVisualizationImageChannelBlending::updateOpacity(void)
 QImage gnomonVisualizationImageChannelBlending::imageRendering(void)
 {
     double bounds[6];
-    dd->image_data->GetBounds(bounds);
+    dd->vtk_img->GetBounds(bounds);
     this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
     this->offscreenRenderer()->AddActor(dd->volume);
@@ -200,19 +236,6 @@ void gnomonVisualizationImageChannelBlending::update(void)
         return;
 
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
-    // QList<int> value_range = ((dtk::d_range_int *)d->parameters["value_range"])->value();
-    // QMap<double, QColor> colormap = ((gnomonCoreParameterLookupTable *)d->parameters["colormap"])->value()->colorMap();
-
-
-    QMap<QString,vtkImageData *> channelImages;
-    for (const auto& channelName : dd->image->channels()) {
-        dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-        converter->setInput(dd->image->image(channelName));
-        converter->convert();
-        channelImages[channelName] = static_cast<vtkImageData *>(converter->output());
-        delete converter;
-    }
-
 
     dd->channelLookupTables.clear();
     if(dd->image->channels().size()==1) {
@@ -226,18 +249,17 @@ void gnomonVisualizationImageChannelBlending::update(void)
     if (!dd->blending) {
         dd->blending = gnomonImageDataChannelBlending::New();
     }
-    dd->blending->setImageChannels(channelImages);
+    dd->blending->setImageChannels(dd->vtk_img_by_channel);
     dd->blending->setChannelLookupTables(dd->channelLookupTables);
-    // blending->setColorMap(colormap);
-    // blending->setValueRange(value_range);
+
     dd->blending->update();
-    dd->image_data = dd->blending;
+    dd->vtk_img = dd->blending;
 
     if (!dd->actor2D) {
         dd->actor2D = gnomonActor2DImageRGBA::New();
         d->view->renderer2D()->AddActor(dd->actor2D);
     }
-    dd->actor2D->setImage(dd->image_data);
+    dd->actor2D->setImage(dd->vtk_img);
     dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
     dd->actor2D->setOpacity(alpha);
     dd->actor2D->update();
@@ -247,15 +269,15 @@ void gnomonVisualizationImageChannelBlending::update(void)
         d->view->renderer3D()->AddActor(dd->volume);
     }
     dd->volume->setInteractor(d->view->interactor());
-    dd->volume->setImage(dd->image_data);
+    dd->volume->setImage(dd->vtk_img);
 
     double bounds[6];
     bounds[0] = 0;
-    bounds[1] = (dd->image_data->GetDimensions()[0]-1)*dd->image_data->GetSpacing()[0];
+    bounds[1] = (dd->vtk_img->GetDimensions()[0]-1)*dd->vtk_img->GetSpacing()[0];
     bounds[2] = 0;
-    bounds[3] = (dd->image_data->GetDimensions()[1]-1)*dd->image_data->GetSpacing()[1];
+    bounds[3] = (dd->vtk_img->GetDimensions()[1]-1)*dd->vtk_img->GetSpacing()[1];
     bounds[4] = 0;
-    bounds[5] = (dd->image_data->GetDimensions()[2]-1)*dd->image_data->GetSpacing()[2];
+    bounds[5] = (dd->vtk_img->GetDimensions()[2]-1)*dd->vtk_img->GetSpacing()[2];
     d->view->setBounds(bounds);
 
     this->render();
@@ -340,9 +362,14 @@ void gnomonVisualizationImageChannelBlending::onTimeChanged(double value)
 {
     if (dd->imageSeries->times().contains(value)) {
         dd->image = dd->imageSeries->at(value);
+        this->updateChannelImages();
         this->update();
     }
     this->render();
+}
+
+const QString gnomonVisualizationImageChannelBlending::name(void) {
+    return "Channel Blending";
 }
 
 //

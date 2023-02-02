@@ -5,6 +5,7 @@
 #include <QtCore>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonForm/gnomonAbstractFormData"
 
 // ///////////////////////////////////////////////////////////////////
@@ -91,15 +92,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractMeshData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractMeshData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshData, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshData, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMeshData, GNOMONCORE_EXPORT, meshData);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractMeshData, GNOMONCORE_EXPORT, meshData);
 }
 
 //

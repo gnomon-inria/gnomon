@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractImageFilter, imageFilter, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractImageFilter, imageFilter, gnomonCore);
 }
 
 //

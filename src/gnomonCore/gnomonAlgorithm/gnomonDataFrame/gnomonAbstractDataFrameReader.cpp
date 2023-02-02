@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractDataFrameReader, dataFrameReader, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractDataFrameReader, dataFrameReader, gnomonCore);
 }
 
 //

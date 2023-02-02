@@ -20,6 +20,15 @@ gnomonAlgorithmWorkspacePrivate::gnomonAlgorithmWorkspacePrivate(void)
 
 gnomonAlgorithmWorkspacePrivate::~gnomonAlgorithmWorkspacePrivate(void)
 {
+    if(this->pool)
+        delete pool;
+
+    if(this->sources) 
+        delete this->sources;
+
+    if(this->targets)
+        delete this->targets;
+
 }
 
 bool gnomonAlgorithmWorkspacePrivate::setAlgorithm(const QString& algorithm)
@@ -81,7 +90,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
 }
 
 gnomonAlgorithmWorkspace::~gnomonAlgorithmWorkspace(void)
-{
+{    
     delete d;
 }
 
@@ -93,6 +102,11 @@ QString gnomonAlgorithmWorkspace::algoName(void) const
 QStringList gnomonAlgorithmWorkspace::algorithms(void) const
 {
     return d->keys;
+}
+
+QVariantList gnomonAlgorithmWorkspace::algorithmsData(void) const
+{
+    return d->algorithmsData;
 }
 
 void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
@@ -155,7 +169,7 @@ void gnomonAlgorithmWorkspace::run(bool no_async)
     if(!no_async) {
         d->connect_finished = connect(d->command, &gnomonAbstractCommand::finished, [this]() {
             this->viewOutputs();
-            this->finished();
+            emit finished();
         });
     }
 
@@ -208,13 +222,6 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     bool empty_output = true;
 
     int i=0;
-    std::shared_ptr<gnomonAbstractDynamicForm> inputForm = nullptr;
-    for(auto [name, output_type] : d->command->inputTypes()) {
-        if (d->command->inputs()[name]) {
-            inputForm = d->command->inputs()[name];
-            break;
-        }
-    }
 
     for(auto [name, output_type] : d->command->outputTypes()) {
         if(d->command->outputs()[name]) {
@@ -281,27 +288,35 @@ void gnomonAlgorithmWorkspace::restoreState(void) {
     }
 }
 
-void gnomonAlgorithmWorkspace::addInputView(const QVector<QString>& accepted_forms) {
+void gnomonAlgorithmWorkspace::addInputView(const QVector<QString>& accepted_forms, QStringList nodePortNames) {
+    if(nodePortNames.isEmpty()) {
+        nodePortNames = d->command->inputs().keys();
+    }
+
     if(accepted_forms.empty()) {
         QVector<QString> default_forms;
         for(auto [name, input_type] : d->command->inputTypes()) {
             default_forms.push_back(input_type);
         }
-        d->sources->addView(default_forms);
+        d->sources->addView(default_forms, nodePortNames);
     } else {
-        d->sources->addView(accepted_forms);
+        d->sources->addView(accepted_forms, nodePortNames);
     }
 }
 
-void gnomonAlgorithmWorkspace::addOutputView(const QVector<QString> &accepted_forms) {
+void gnomonAlgorithmWorkspace::addOutputView(const QVector<QString> &accepted_forms, QStringList nodePortNames) {
+    if(nodePortNames.isEmpty()) {
+        nodePortNames = d->command->outputs().keys();
+    }
+
     if(accepted_forms.empty()) {
         QVector<QString> default_forms;
         for(auto [name, input_type] : d->command->outputTypes()) {
             default_forms.push_back(input_type);
         }
-        d->targets->addView(default_forms);
+        d->targets->addView(default_forms, nodePortNames);
     } else {
-        d->targets->addView(accepted_forms);
+        d->targets->addView(accepted_forms, nodePortNames);
     }
 }
 

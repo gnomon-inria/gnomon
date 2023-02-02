@@ -21,6 +21,7 @@ public:
 public:
     Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName NOTIFY algorithmChanged);
     Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded);
+    Q_PROPERTY(QVariantList algorithmsData READ algorithmsData NOTIFY algorithmsLoaded);
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged);
     Q_PROPERTY(gnomonViewFormList* sources READ sources CONSTANT);
     Q_PROPERTY(gnomonViewFormList* targets READ targets CONSTANT);
@@ -46,6 +47,7 @@ public slots:
 public:
     QString algoName(void) const;
     QStringList algorithms(void) const;
+    QVariantList algorithmsData(void) const;
     void setAlgoName(const QString &);
     int currentIndex(void) const;
     void setCurrentIndex(int);
@@ -63,8 +65,8 @@ public:
     void unSerialize(QJsonObject&);
 
 protected:
-    void addInputView(const QVector<QString>& accepted_forms = {});
-    void addOutputView(const QVector<QString>& accepted_forms = {});
+    void addInputView(const QVector<QString>& accepted_forms = {}, QStringList nodePortNames = {});
+    void addOutputView(const QVector<QString>& accepted_forms = {}, QStringList nodePortNames = {});
 
 protected:
     class gnomonAlgorithmWorkspacePrivate *d = nullptr;

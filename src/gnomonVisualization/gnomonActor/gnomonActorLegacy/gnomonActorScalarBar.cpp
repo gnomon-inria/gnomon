@@ -75,7 +75,7 @@ void gnomonActorScalarBar::setData(vtkImageData *data)
     this->update();
 }
 
-void gnomonActorScalarBar::setInteractor(void *interactor)
+void gnomonActorScalarBar::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>s*interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
 }

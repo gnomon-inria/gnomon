@@ -28,6 +28,7 @@ public:
 
 public slots:
     virtual void setInputs(void) override;
+    virtual void viewOutputs(void) override;
 
 protected:
     class gnomonWorkspaceCellImageTrackingPrivate *dd = nullptr;

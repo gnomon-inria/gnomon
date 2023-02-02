@@ -4,6 +4,7 @@
 
 #include <dtkCore>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAbstractModel.h"
 
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
@@ -16,11 +17,6 @@ public:
     virtual ~gnomonAbstractEvolutionModel(void) = default;
 
 public:
-    virtual void reset(void) = 0;
-    virtual void step(double time, double dt) = 0;
-    virtual void run(double timeMin, double timeMax, double dt) = 0;
-
-public:
     virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms() = 0;
     virtual void setForm(QString, std::shared_ptr<gnomonMeshSeries>) = 0;
     virtual void setForm(QString, std::shared_ptr<gnomonCellComplexSeries>) = 0;
@@ -28,15 +24,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractEvolutionModel *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT, evolutionModel);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractEvolutionModel, GNOMONCORE_EXPORT, evolutionModel);
 }
 
 //

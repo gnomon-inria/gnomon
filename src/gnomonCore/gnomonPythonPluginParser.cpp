@@ -1,4 +1,3 @@
-
 #include "gnomonPythonPluginParser.h"
 
 #include <dtkScript>
@@ -166,6 +165,9 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
     QRegularExpression output_rx("@(.*)Output[(](.*)[)]");
     QRegularExpression parameter_rx("self._parameters\\[(.*)\\][ ]*=[ ]*([\\S]*)[(](.*)[)]");
 
+    QRegularExpression str_rx("[\'\"][^=\'\"\n]*[\'\"]");
+    QRegularExpression list_rx("\\[[\'\"][^=\'\"\n]*[\'\"]+\\]");
+
     for (const auto& line : code_lines) {
         if (init_rx.match(line).hasMatch()) {
             in_init = true;
@@ -224,11 +226,72 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
         if (in_init) {
             match = parameter_rx.match(line);
             if (match.hasMatch()) {
-                QString parameter_name = stripQuotes(match.capturedTexts()[1]);
-                QString parameter_type = d->parameter_types.key(match.capturedTexts()[2]);
-                QString parameter_args = match.captured()[3];
-                QString parameter_doc = stripQuotes(argumentValue(parameter_args, "documentation", 0));
-                d->parameters[parameter_name] = gnomonParameterDescription(parameter_name, parameter_type, parameter_doc);
+                QString parameter_name = "";
+                QStringList parameter_matches = match.capturedTexts();
+                if (parameter_matches.size() > 1) {
+                    parameter_name = stripQuotes(parameter_matches[1]);
+                }
+                QString parameter_type = "";
+                if (parameter_matches.size() > 2) {
+                    parameter_type = d->parameter_types.key(parameter_matches[2]);
+                }
+                QString parameter_doc = "";
+                QString parameter_args = "";
+                if (parameter_matches.size() > 3) {
+                    auto split = stripQuotes(parameter_matches[3]).split(QRegularExpression("[\'\"]")); 
+                    if(split.size() > 2)
+                        parameter_doc = split[2];
+                    if(split.size() > 1 )
+                    parameter_args = split[1];
+                }
+                QStringList param_arguments = parameter_args.split(QRegularExpression(","));
+                QString parameter_value = "";
+                if (parameter_type == "StringList") {
+                    parameter_value = "[]";
+                    if (parameter_matches.size() > 3) {
+                        auto list_match = list_rx.match(parameter_matches[3]);
+                        if (list_match.hasMatch()) {
+                            parameter_value = list_match.capturedTexts()[0];
+                        }
+                    }
+                } else {
+                    if (param_arguments.size() > 1) {
+                        parameter_value = param_arguments[1].simplified();
+                    }
+                }
+                QJsonObject args = QJsonObject();
+                if (parameter_matches.size() > 3) {
+                    auto str_match = str_rx.match(parameter_matches[3]);
+                    if (str_match.hasMatch()) {
+                        args["label"] = stripQuotes(str_match.capturedTexts()[0]);
+                    } else {
+                        if (param_arguments.size() > 0) {
+                            args["label"] = param_arguments[0].simplified();
+                        }
+                    }
+                    if (parameter_type == "Double" || parameter_type == "Int") {
+                        if (param_arguments.size() > 2) {
+                            args["min"] = param_arguments[2].simplified();
+                        }
+                        if (param_arguments.size() > 3) {
+                            args["max"] = param_arguments[3].simplified();
+                        }
+                        if (parameter_type == "Double") {
+                            if (param_arguments.size() > 4) {
+                                args["decimals"] = param_arguments[4].simplified();
+                            }
+                        }
+                    }
+                    if (parameter_type == "String" || parameter_type == "StringList") {
+                        auto list_match = list_rx.match(parameter_matches[3]);
+                        if (list_match.hasMatch()) {
+                            args["list"] = list_match.capturedTexts()[list_match.lastCapturedIndex()];
+                        } else {
+                            args["list"] = "[]";
+                        }
+                    }
+                }
+                d->parameters[parameter_name] = gnomonParameterDescription(parameter_name, parameter_type, parameter_doc, parameter_value, args);
             }
         }
     }

@@ -5,6 +5,7 @@
 #include <gnomonVisualizationExport.h>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
@@ -19,8 +20,8 @@ public:
     virtual ~gnomonAbstractMatplotlibVisualizationLString(void) = default;
 
 public:
-	virtual void setLString(std::shared_ptr<gnomonLString> lString) = 0;
-	virtual std::shared_ptr<gnomonLString> lString(void) = 0;
+    virtual void setLString(std::shared_ptr<gnomonLString> lString) = 0;
+    virtual std::shared_ptr<gnomonLString> lString(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonLString") {
@@ -42,15 +43,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractMatplotlibVisualizationLString *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonVisualization layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonVisualization {
-    DTK_DECLARE_CONCEPT(gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT, matplotlibVisualizationLString);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractMatplotlibVisualizationLString, GNOMONVISUALIZATION_EXPORT, matplotlibVisualizationLString);
 }
 
 //

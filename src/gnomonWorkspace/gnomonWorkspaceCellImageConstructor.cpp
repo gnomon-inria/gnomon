@@ -82,7 +82,7 @@ gnomonWorkspaceCellImageConstructor::gnomonWorkspaceCellImageConstructor(QWidget
 
     d = new gnomonWorkspaceCellImageConstructorPrivate;
 
-    d->target = new gnomonViewForm(this);
+    d->target = new gnomonViewForm({}, this);
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonCellImage",true);
 
