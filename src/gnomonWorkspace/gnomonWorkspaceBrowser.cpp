@@ -6,15 +6,25 @@
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+
 #include <gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand>
+#include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageReader.h>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageReaderCommand>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageReader.h>
 #include <gnomonCore/gnomonCommand/gnomonCellComplex/gnomonCellComplexReaderCommand>
+#include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexReader.h>
 #include <gnomonCore/gnomonCommand/gnomonDataFrame/gnomonDataFrameReaderCommand>
+#include <gnomonCore/gnomonAlgorithm/gnomonDataFrame/gnomonAbstractDataFrameReader.h>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageReaderCommand>
+#include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageReader.h>
 #include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringReaderCommand>
+#include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringReader.h>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshReaderCommand>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshReader.h>
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudReaderCommand>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudReader.h>
 #include <gnomonCore/gnomonCommand/gnomonTree/gnomonTreeReaderCommand>
+#include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeReader.h>
 #include <zip.h>
 
 #include <memory>
@@ -40,6 +50,7 @@ public:
     gnomonWorkspaceBrowser *q;
     QMap<QString, QMap<QString, gnomonAbstractReaderCommand *> > fileReaderCommands;
     QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
+    QMap<QString, QMap<QString, QVariant> > fileReaderMetadata;
     QString filename;
     QString ext;
     QMap<QString, QMap<QString, QString> > fileReaderImagePath;
@@ -54,16 +65,31 @@ public:
 gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrowser *q)
 {
     this->q = q;
+    QVariantList pluginsMetadata;
 
     commands << new gnomonBinaryImageReaderCommand;
+    pluginsMetadata += gnomonCore::binaryImageReader::pluginFactory().dataList();
     commands << new gnomonCellImageReaderCommand;
+    pluginsMetadata += gnomonCore::cellImageReader::pluginFactory().dataList();
     commands << new gnomonCellComplexReaderCommand;
+    pluginsMetadata += gnomonCore::cellComplexReader::pluginFactory().dataList();
     commands << new gnomonDataFrameReaderCommand;
+    pluginsMetadata += gnomonCore::dataFrameReader::pluginFactory().dataList();
     commands << new gnomonImageReaderCommand;
+    pluginsMetadata += gnomonCore::imageReader::pluginFactory().dataList();
     commands << new gnomonLStringReaderCommand;
+    pluginsMetadata += gnomonCore::lStringReader::pluginFactory().dataList();
     commands << new gnomonMeshReaderCommand;
+    pluginsMetadata += gnomonCore::meshReader::pluginFactory().dataList();
     commands << new gnomonPointCloudReaderCommand;
+    pluginsMetadata += gnomonCore::pointCloudReader::pluginFactory().dataList();
     commands << new gnomonTreeReaderCommand;
+    pluginsMetadata += gnomonCore::treeReader::pluginFactory().dataList();
+
+    QMap<QString, QVariant> pluginsMetadata2; // key -> variant
+    for(const auto & var: pluginsMetadata) {
+        pluginsMetadata2.insert(var.toMap()["key"].toString(), var);
+    }
 
     for (auto command: commands) {
         QMap<QString, QStringList> extensions = command->extensions();
@@ -83,6 +109,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
                 fileReaderDescriptions[ext][algo_name] = descriptions[algo_name].split("\n")[1];
                 fileReaderCommands[ext][algo_name] = command;
                 fileReaderImagePath[ext][algo_name] = preview[algo_name];
+                fileReaderMetadata[ext][algo_name] = pluginsMetadata2[algo_name];
             }
         }
         connect(command, &gnomonAbstractCommand::finished, [this, q, command]() {
@@ -111,11 +138,13 @@ void gnomonWorkspaceBrowserPrivate::findReaders(const QString &default_plugin)
         if(available_plugins.contains(default_plugin)) {
             reader_descs.insert("description", fileReaderDescriptions[ext][default_plugin]);
             reader_descs.insert("preview", fileReaderImagePath[ext][default_plugin]);
+            reader_descs.insert("metadata", QJsonValue::fromVariant(fileReaderMetadata[ext][default_plugin]));
             readers.insert(default_plugin, reader_descs);
         } else {
             for (const auto &plugin_name : available_plugins) {
                 reader_descs.insert("description", fileReaderDescriptions[ext][plugin_name]);
                 reader_descs.insert("preview", fileReaderImagePath[ext][plugin_name]);
+                reader_descs.insert("metadata", QJsonValue::fromVariant(fileReaderMetadata[ext][plugin_name]));
                 readers.insert(plugin_name, reader_descs);
             }
         }
