@@ -137,7 +137,7 @@ G.Dialog { id: self;
 
     onAccepted: {
         self.enabled = false;
-        self.readerSelected(self.availableReaders.get(listView.currentIndex).title);
+        self.readerSelected(self.availableReaders.get(listView.currentIndex).key);
         self.close();
     }
 }
