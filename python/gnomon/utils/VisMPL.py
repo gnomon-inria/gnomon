@@ -19,7 +19,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib import animation
 
 #from mpl_toolkits.mplot3d import Axes3D, proj3d
-from matplotlib.backend_bases import MouseButton
+from matplotlib.backend_bases import MouseButton, PickEvent
 from gnomon.utils.matplotlib_tools import gnomon_figure
 
 class VisConfig(vis.VisConfigAbstract):
@@ -163,7 +163,8 @@ class VisCurve2D(vis.VisAbstract):
             pts = np.array(plot['ptsarr'])
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o')
+                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o',
+                                            picker=True, pickradius=5)
                 legend_proxy.append(self.cpplot)
                 legend_names.append(plot['name'])
 
@@ -232,9 +233,17 @@ class VisCurve2D(vis.VisAbstract):
 
         def on_click(event):
             if event.button is MouseButton.LEFT:
-                self.selected_ctrlpts_id = get_ind_under_point(event)
+                # old picker
+                # self.selected_ctrlpts_id = get_ind_under_point(event)
                 if event.key == "shift" and event.inaxes:
                     self.press = event.xdata, event.ydata
+
+        def on_pick(event: PickEvent):
+            if event.artist == self.cpplot:
+                points_indices = event.ind
+                if not points_indices:  # no points
+                    return
+                self.selected_ctrlpts_id = points_indices[0]
 
         def on_release(event):
             self.selected_ctrlpts_id = -1
@@ -244,6 +253,7 @@ class VisCurve2D(vis.VisAbstract):
         self.fig.canvas.mpl_connect('scroll_event', on_scroll)
         self.fig.canvas.mpl_connect('button_press_event', on_click)
         self.fig.canvas.mpl_connect('button_release_event', on_release)
+        self.fig.canvas.mpl_connect('pick_event', on_pick)
         ## end interactor
 
         # Display 2D plot
