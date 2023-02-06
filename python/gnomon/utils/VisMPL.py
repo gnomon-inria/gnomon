@@ -7,6 +7,7 @@
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 .. moduleauthor:: tristan cabel tristan.cabel@inria.fr
 """
+from typing import Optional
 
 from geomdl import vis
 import numpy as np
@@ -132,11 +133,12 @@ class VisCurve2D(vis.VisAbstract):
         self.selected_ctrlpts_id = -1
         self.cpplot = None
         self.curveplt = None
-        self.fig = None
-        self.ax = None
+        self.fig: Optional[plt.Figure] = None
+        self.ax: Optional[plt.Axes] = None
         self.bg = None
         self.is_function = is_function
         self.fig_number = -1
+        self.press: Optional[tuple[float, float]] = None
 
     def setFigureNumber(self, fig_number):
         self.fig = gnomon_figure(fig_number)
@@ -202,22 +204,46 @@ class VisCurve2D(vis.VisAbstract):
         def on_move(event):
             # get the x and y pixel coords
             x, y = event.xdata, event.ydata
-            if event.inaxes and self.selected_ctrlpts_id != -1:
+            if self.press and event.inaxes:
+                x0, y0 = self.press
+                dx = x - x0
+                dy = y - y0
+                xmin, xmax, ymin, ymax = self.ax.axis()
+                self.ax.axis((xmin-dx, xmax-dx, ymin-dy, ymax-dy))
+                self.update()
+            elif event.inaxes and self.selected_ctrlpts_id != -1:
                 if self.is_function:
                     # do not move x if it's a function
                     x = self.curve._control_points[self.selected_ctrlpts_id][0]
                 self.curve._control_points[self.selected_ctrlpts_id] = [x, y]
                 self.update()
 
+        def on_scroll(event):
+            zoom_speed = 0.001
+            x, y = event.xdata, event.ydata
+            if event.inaxes:
+                xmin, xmax, ymin, ymax = self.ax.axis()
+                dx = xmax - xmin
+                dy = ymax - ymin
+                xmin2 = xmin - (x-xmin)*zoom_speed*event.step
+                xmax2 = xmax + (xmax-x)*zoom_speed*event.step
+                ymin2 = ymin - (y-ymin)*zoom_speed*event.step
+                ymax2 = ymax + (ymax-y)*zoom_speed*event.step
+                self.ax.axis((xmin2, xmax2, ymin2, ymax2))
+                self.update()
+
         def on_click(event):
             if event.button is MouseButton.LEFT:
                 self.selected_ctrlpts_id = get_ind_under_point(event)
+            elif event.button is MouseButton.RIGHT and event.inaxes:
+                self.press = event.xdata, event.ydata
 
         def on_release(event):
             self.selected_ctrlpts_id = -1
-
+            self.press = None
 
         self.fig.canvas.mpl_connect('motion_notify_event', on_move)
+        self.fig.canvas.mpl_connect('scroll_event', on_scroll)
         self.fig.canvas.mpl_connect('button_press_event', on_click)
         self.fig.canvas.mpl_connect('button_release_event', on_release)
         ## end interactor
