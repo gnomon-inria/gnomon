@@ -1,6 +1,20 @@
 # ChangeLog
 
-## version 0.72.0 - 2022-09-15
+## version 0.72.0 - 2023-02-03
+* L-Py modelling workspace
+* Semi-automatic cell tracking
+* Intelligible names for plugins in the interface
+* Close current project / remove recent projects
+* Graphical parameters + texture parameters
+* Highlight new workspaces compatible with active form
+* Better memory management
+* Description of forms in the documentation
+* Pre-loading of plugins before creating project
+* Active form by default in visu menu
+* Draggers and sliders more visible
+* A Gnomon icon on the launch bar! (linux)
+
+## version 0.71.0 - 2022-09-15
 * Facilitate Workspace navigation (dialog if no exported Forms, switch button visibility)
 * Display the log of running Algorithms within the application
 * More information when reading a Form (reader description images, error toasts)
