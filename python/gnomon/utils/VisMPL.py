@@ -223,20 +223,18 @@ class VisCurve2D(vis.VisAbstract):
             x, y = event.xdata, event.ydata
             if event.inaxes:
                 xmin, xmax, ymin, ymax = self.ax.axis()
-                dx = xmax - xmin
-                dy = ymax - ymin
-                xmin2 = xmin - (x-xmin)*zoom_speed*event.step
-                xmax2 = xmax + (xmax-x)*zoom_speed*event.step
-                ymin2 = ymin - (y-ymin)*zoom_speed*event.step
-                ymax2 = ymax + (ymax-y)*zoom_speed*event.step
+                xmin2 = xmin + (x-xmin)*zoom_speed*event.step
+                xmax2 = xmax - (xmax-x)*zoom_speed*event.step
+                ymin2 = ymin + (y-ymin)*zoom_speed*event.step
+                ymax2 = ymax - (ymax-y)*zoom_speed*event.step
                 self.ax.axis((xmin2, xmax2, ymin2, ymax2))
                 self.update()
 
         def on_click(event):
             if event.button is MouseButton.LEFT:
                 self.selected_ctrlpts_id = get_ind_under_point(event)
-            elif event.button is MouseButton.RIGHT and event.inaxes:
-                self.press = event.xdata, event.ydata
+                if event.key == "shift" and event.inaxes:
+                    self.press = event.xdata, event.ydata
 
         def on_release(event):
             self.selected_ctrlpts_id = -1
