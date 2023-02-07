@@ -9,6 +9,40 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
+int listItemsNumber(QString& cells_str) {
+    QList<QList<int> > converted_list;
+    QStringList result;
+    QRegularExpression rx("^\\[(.*)\\]$");
+    auto match = rx.match(cells_str);
+    QString matched_string = match.capturedTexts()[1];
+    QChar open_bracket = '[';
+    QChar close_bracket = ']';
+    QChar comma = ',';
+    bool bracket_opened = false;
+    bool bracket_closed = false;
+    int counter = 0;
+    for(auto ms: matched_string) {
+
+        if(ms == open_bracket) {
+            bracket_opened = true;
+        }
+
+        if(ms == close_bracket) {
+            bracket_closed = true;
+        }
+
+        if((bracket_opened && bracket_closed) || (comma == ms && !bracket_closed)){
+            counter++;
+            if(bracket_closed) {
+                bracket_opened = false;
+                bracket_closed = false;
+            }
+        }
+    }
+
+    return counter;
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceCellImageTrackingPrivate
 // /////////////////////////////////////////////////////////////////////////////
@@ -119,6 +153,9 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
         manual_lineage += source_lineage.toString();
     } else {
         manual_lineage += "[]";
+    }
+    if(listItemsNumber(manual_lineage) < 4) {
+        // generate signal to warn the user
     }
     manual_lineage += ", ";
     QVariant target_lineage = this->target()->formVisuParameter("gnomonCellImage", "manual_lineage");
