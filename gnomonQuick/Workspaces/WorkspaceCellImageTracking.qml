@@ -45,6 +45,18 @@ G.Workspace {
         }
     }
 
+    G.Toast {
+        id: _picked_cells_toast
+
+        property string picked_cells_number: "";
+
+        parent: Overlay.overlay
+        header: "Not enough cells !"
+        message: "Not enough cells picked, default transformation matrix will be used, you picekd " + picked_cells_number + " cells instead of at least 4 cells";
+
+        type: G.Style.ButtonType.Warning
+    }
+
     ColumnLayout {
 
         anchors.top: parent.top;
@@ -316,6 +328,14 @@ G.Workspace {
             if (formType == "gnomonCellImage") {
                 updateCustomLineageInVisu()
             }
+        }
+    }
+
+    Connections {
+        target: d
+        function onNotEnoughCells(picked_cells) {
+            _picked_cells_toast.picked_cells_number = picked_cells
+            _picked_cells_toast.open()
         }
     }
 
