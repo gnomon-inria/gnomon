@@ -150,7 +150,8 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
     } else {
         manual_lineage += "[]";
     }
-    if(listItemsNumber(manual_lineage) < 4) {
+    
+    if(listItemsNumber(manual_lineage) < 4 && !(manual_lineage == "[]")) {
         emit notEnoughCells(listItemsNumber(manual_lineage));
     }
     manual_lineage += ", ";
