@@ -26,6 +26,9 @@ public:
 
     gnomonViewData *sourceDict(void) const;
 
+signals:
+    void notEnoughCells(int);
+
 public slots:
     virtual void setInputs(void) override;
     virtual void viewOutputs(void) override;
