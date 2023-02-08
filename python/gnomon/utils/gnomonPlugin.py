@@ -470,8 +470,8 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
                                                 compresslevel=5)
                     ext = Path(path).suffix if Path(path).suffix != ".zip" else self.extensions()[0]
                     manifest = {"extension": ext[1:], "series": {}}
-                    for t, form in forms.items():
-                        filename = Path(path).stem + "_t" + "%05.2f" % t + ext
+                    for i, (t, form) in enumerate(forms.items()):
+                        filename = Path(path).stem + "_t" + str(i) + ext
                         manifest["series"][t] = filename
                         filepath = Path(tmpdirname).joinpath(filename)
                         self.setPath(str(filepath))

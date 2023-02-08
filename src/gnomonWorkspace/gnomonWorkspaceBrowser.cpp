@@ -588,13 +588,9 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
             }
         }
                     
-        if(ext.isEmpty()) {
-            dtkWarn() << Q_FUNC_INFO << "Extension not recognized";
-            d->ext = "";
-            return;
-        }
 
-        if(ext.endsWith("zip")) {
+
+        if(filename.endsWith(".zip")) {
             // reading the manifest
             int err = 0;
             zip *z = zip_open(filenames[0].remove("file://").toStdString().c_str(), 0, &err);
@@ -633,9 +629,13 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
                 d->ext = "";
                 return;
             }
-            d->ext = manifest["extension"].toString();
+            ext = manifest["extension"].toString();
+        }
 
-
+        if(ext.isEmpty()) {
+            dtkWarn() << Q_FUNC_INFO << "Extension not recognized";
+            d->ext = "";
+            return;
         } else {
             d->ext = ext;
         }
