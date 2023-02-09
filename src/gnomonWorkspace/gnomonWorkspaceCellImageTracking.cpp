@@ -9,30 +9,25 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
-int listItemsNumber(QString& cells_str) {
-    QList<QList<int> > converted_list;
-    QStringList result;
+int listItemsNumber(const QString& cells_str) {
     QRegularExpression rx("^\\[(.*)\\]$");
     auto match = rx.match(cells_str);
     if (match.hasMatch()){
         QString matched_string = match.capturedTexts()[1];
-        QChar comma = ',';
-        QChar preceededChar = ' ';
-        bool in_list = false;
+        int list_depth = 0;
         int counter = 0;
         for(auto ms: matched_string) {
-            if(preceededChar == comma && ms == '[') counter--;
-            if(ms == '[') {
-                in_list = true;
-            }
-            if(comma == ms ){
-                counter++;
-                if(in_list){
-                    in_list = false;
-                    counter++;                
+            if (ms == '[') {
+                list_depth += 1;
+            } else if (ms == ']') {
+                list_depth -= 1;
+            } else if (ms == ','){
+                if (list_depth == 0) {
+                    counter++;
                 }
+            } else if (ms != ' ' && counter == 0) {
+                counter = 1;
             }
-            preceededChar = ms;
         }
         return counter;
     }
