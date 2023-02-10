@@ -57,6 +57,16 @@ G.Workspace {
         type: G.Style.ButtonType.Warning
     }
 
+    G.Toast {
+        id: _init_trans_matrix
+
+        parent: Overlay.overlay
+        header: "Transformation Matrix not used!"
+        message: "You have picked cells manually, hence the transformation matrix is not used for cell tracking";
+
+        type: G.Style.ButtonType.Warning
+    }
+
     ColumnLayout {
 
         anchors.top: parent.top;
@@ -334,8 +344,12 @@ G.Workspace {
     Connections {
         target: d
         function onNotEnoughCells(picked_cells) {
+            
             _picked_cells_toast.picked_cells_number = picked_cells
             _picked_cells_toast.open()
+        }
+        function onNotInitTrans() {
+            _init_trans_matrix.open()
         }
     }
 
