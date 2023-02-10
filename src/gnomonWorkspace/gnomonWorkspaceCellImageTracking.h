@@ -28,6 +28,7 @@ public:
 
 signals:
     void notEnoughCells(int);
+    void notInitTrans(void);
 
 public slots:
     virtual void setInputs(void) override;
