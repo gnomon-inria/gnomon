@@ -141,18 +141,18 @@ Item {
         Item {
             id: _button_container
 
-            height: G.Style.largeButtonHeight
+            height: 2*G.Style.largeButtonHeight
             Layout.fillWidth: true;
 
             G.Button {
                 id: _stop
 
-                anchors.horizontalCenter: _button_container.horizontalCenter;
-                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.right: _animate.left;
+                anchors.verticalCenter: _animate.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
                 implicitWidth: G.Style.shortButtonWidth
-                visible: d.running
+                enabled: d.running
                 text: "Stop"
                 empty: true
                 type: G.Style.ButtonType.Danger
@@ -164,16 +164,15 @@ Item {
                 }
             }
 
-
             G.Button {
                 id: _run
 
                 anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.top: _button_container.top
                 anchors.margins: G.Style.smallPadding
 
                 implicitWidth: G.Style.shortButtonWidth
-                visible: !d.running
+                enabled: !d.running
                 text: "Run"
                 tooltip: "run the simulation from the beginning"
                 iconName: G.Icons.icons["play"]
@@ -183,18 +182,19 @@ Item {
                     d.run();
                 }
             }
+
             G.Button {
                 id: _animate
 
-                anchors.right: _run.left;
-                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.right: _button_container.right;
+                anchors.top: _run.bottom
                 anchors.margins: G.Style.smallPadding
 
-                implicitWidth: G.Style.shortButtonWidth
-                visible: !d.running
-                text: "A"
+                implicitWidth: 2*G.Style.shortButtonWidth + G.Style.smallPadding
+                enabled: !d.running
+                text: "Animate"
                 tooltip: "Animate: do " + _slider.value + " steps and display them"
-                empty: true
+                empty: false
                 iconName: G.Icons.icons["animation-play"]
 
                 onClicked: {
@@ -206,13 +206,13 @@ Item {
             G.Button {
                 id: _step
 
-                anchors.right: _animate.left;
-                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.right: _run.left;
+                anchors.verticalCenter: _run.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
                 implicitWidth: G.Style.shortButtonWidth
-                visible: !d.running
-                text: "S"
+                enabled: !d.running
+                text: "Step"
                 tooltip: "Step: do one more step and visualize it"
                 empty: true
                 iconName: G.Icons.icons["step-forward"]
@@ -220,6 +220,25 @@ Item {
                 onClicked: {
                     console.info('launching Step.')
                     d.step();
+                }
+            }
+
+            G.Button {
+                id: _reset
+
+                anchors.right: _step.left;
+                anchors.verticalCenter: _run.verticalCenter
+                anchors.margins: G.Style.smallPadding
+
+                implicitWidth: G.Style.shortButtonWidth
+                enabled: !d.running
+                text: "Reset"
+                empty: true
+                iconName: G.Icons.icons["replay"]
+
+                onClicked: {
+                    console.info('launching Reset?')
+                    d.reset();
                 }
             }
         }
