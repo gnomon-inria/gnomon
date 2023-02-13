@@ -89,6 +89,7 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
         if(this->simulationType == SimulationType::step) {
             d->lString = lstring_model->state();
             i = int(d->lString->times().last());
+            maxDerivationLength = i+1;
         }
 
         for(; i<maxDerivationLength; i++) {
