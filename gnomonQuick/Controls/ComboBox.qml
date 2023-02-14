@@ -24,7 +24,7 @@ ComboBox {
 
   delegate: G.ComboBoxDelegate {
     width: _control.width;
-    text: model[textRole] ? model[textRole] : modelData[textRole]
+    text: model[textRole] ? model[textRole] : modelData[textRole] ? modelData[textRole] : modelData
     ToolTip.text: modelData.doc ? modelData.key + "\n" + modelData.doc : null
     ToolTip.delay: 1000
     ToolTip.timeout: 5000
