@@ -151,12 +151,18 @@ void gnomonWorkspaceCellImageTracking::viewOutputs()
 {
     gnomonCellImageTrackingCommand * command = dynamic_cast<gnomonCellImageTrackingCommand *>(d->command);
 
+
     if(command->cellImage()) {
-        this->target()->removeForm("gnomonCellImage");
         auto cellImage = command->cellImage();
         int count = gnomonFormManager::instance()->formCount(cellImage->formName());
         cellImage->metadata()->set("name", cellImage->formName() + QString::number(count+1));
         cellImage->metadata()->set("source", d->algorithm);
+
+        this->source()->removeForm("gnomonCellImage");
+        this->source()->setForm("gnomonCellImage", cellImage);
+        this->source()->render();
+
+        this->target()->removeForm("gnomonCellImage");
         this->target()->setForm("gnomonCellImage", cellImage);
         this->target()->render();
     }
