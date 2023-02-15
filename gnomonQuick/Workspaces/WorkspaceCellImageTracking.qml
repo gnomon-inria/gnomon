@@ -51,7 +51,7 @@ G.Workspace {
         property string picked_cells_number: "";
 
         parent: Overlay.overlay
-        header: "Not enough cells!"
+        header: "Need at least 4 cell pairings!"
         message: "Not enough cell pairings were provided, the transformation matrix will be estimated from scratch. You added " + picked_cells_number + " cell pairings, but at least 4 are required";
 
         type: G.Style.ButtonType.Warning
@@ -339,6 +339,10 @@ G.Workspace {
             if (formType == "gnomonCellImage") {
                 updateCustomLineageInVisu()
             }
+        }
+
+        function onFormVisualizationChanged() {
+            updateCustomLineageInVisu()
         }
     }
 
