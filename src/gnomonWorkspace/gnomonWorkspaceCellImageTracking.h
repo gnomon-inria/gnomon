@@ -26,6 +26,7 @@ public:
 
     gnomonViewData *sourceDict(void) const;
 
+// TODO: have a more generic way for workspaces to signal warnings/errors to the GUI
 signals:
     void notEnoughCells(int);
     void notInitTrans(void);

@@ -266,8 +266,8 @@ QMap<QString, QString> gnomonVisualizationCellImageVolume::parameterGroups(void)
 {
     QMap<QString, QString> groups;
     groups["value_range"] = "rendering";
-    groups["colormap"] = "rendering";
-    groups["alpha"] = "rendering";
+    groups["colormap"] = "general";
+    groups["alpha"] = "general";
     return groups;
 }
 
