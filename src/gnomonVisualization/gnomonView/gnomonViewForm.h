@@ -159,6 +159,7 @@ public:
 signals:
     void formsChanged(void);
     void formVisuParametersChanged(void);
+    void formVisualizationChanged(void);
 
 
 public:

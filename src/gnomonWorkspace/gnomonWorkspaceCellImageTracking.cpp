@@ -9,6 +9,31 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
+int listItemsNumber(const QString& cells_str) {
+    QRegularExpression rx("^\\[(.*)\\]$");
+    auto match = rx.match(cells_str);
+    if (match.hasMatch()){
+        QString matched_string = match.capturedTexts()[1];
+        int list_depth = 0;
+        int counter = 0;
+        for(auto ms: matched_string) {
+            if (ms == '[') {
+                list_depth += 1;
+            } else if (ms == ']') {
+                list_depth -= 1;
+            } else if (ms == ','){
+                if (list_depth == 0) {
+                    counter++;
+                }
+            } else if (ms != ' ' && counter == 0) {
+                counter = 1;
+            }
+        }
+        return counter;
+    }
+    return 0;
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceCellImageTrackingPrivate
 // /////////////////////////////////////////////////////////////////////////////
@@ -112,6 +137,7 @@ gnomonViewData *gnomonWorkspaceCellImageTracking::sourceDict(void) const
 void gnomonWorkspaceCellImageTracking::setInputs(void)
 {
     gnomonAlgorithmWorkspace::setInputs();
+    std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(dd->source_dict->form("gnomonDataDict"));
 
     QString manual_lineage;
     QVariant source_lineage = this->source()->formVisuParameter("gnomonCellImage", "manual_lineage");
@@ -119,6 +145,14 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
         manual_lineage += source_lineage.toString();
     } else {
         manual_lineage += "[]";
+    }
+    if (manual_lineage != "[]") {
+        int manual_lineage_size = listItemsNumber(manual_lineage);
+        if (manual_lineage_size < 4) {
+            emit notEnoughCells(manual_lineage_size);
+        } else if (input_dict) {
+            emit notInitTrans();
+        }
     }
     manual_lineage += ", ";
     QVariant target_lineage = this->target()->formVisuParameter("gnomonCellImage", "manual_lineage");
@@ -128,7 +162,6 @@ void gnomonWorkspaceCellImageTracking::setInputs(void)
         manual_lineage += "[]";
     }
 
-    std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(dd->source_dict->form("gnomonDataDict"));
     if (!input_dict) {
         QStringList data_dict_plugins = gnomonCore::dataDictData::pluginFactory().keys();
         if (data_dict_plugins.size() > 0) {
