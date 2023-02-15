@@ -59,7 +59,8 @@ Control {
         delegate: G.ParameterGroup {
             title: _control.getTitleString(group)
             model: parameters
-            width: _list_view.width - 10
+            width: _list_view.width
+            collapsed: title != "General";
 
             onValueChanged: {
                 _control.valueChanged()
