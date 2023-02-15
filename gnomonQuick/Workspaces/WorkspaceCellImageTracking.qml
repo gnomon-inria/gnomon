@@ -51,8 +51,8 @@ G.Workspace {
         property string picked_cells_number: "";
 
         parent: Overlay.overlay
-        header: "Not enough cells !"
-        message: "Not enough cells picked, default transformation matrix will be used, you picekd " + picked_cells_number + " cells instead of at least 4 cells";
+        header: "Not enough cells!"
+        message: "Not enough cell pairings were provided, the transformation matrix will be estimated from scratch. You added " + picked_cells_number + " cell pairings, but at least 4 are required";
 
         type: G.Style.ButtonType.Warning
     }
@@ -61,10 +61,10 @@ G.Workspace {
         id: _init_trans_matrix
 
         parent: Overlay.overlay
-        header: "Transformation Matrix not used!"
-        message: "You have picked cells manually, hence the transformation matrix is not used for cell tracking";
+        header: "Transformation matrix not used!"
+        message: "You have provided manual cell pairings, hence the transformation matrix will not be used for cell tracking";
 
-        type: G.Style.ButtonType.Warning
+        type: G.Style.ButtonType.Base
     }
 
     ColumnLayout {
@@ -335,6 +335,7 @@ G.Workspace {
         }
 
         function onFormAdded(formType) {
+            console.log(formType)
             if (formType == "gnomonCellImage") {
                 updateCustomLineageInVisu()
             }
@@ -344,7 +345,6 @@ G.Workspace {
     Connections {
         target: d
         function onNotEnoughCells(picked_cells) {
-            
             _picked_cells_toast.picked_cells_number = picked_cells
             _picked_cells_toast.open()
         }
@@ -375,6 +375,7 @@ G.Workspace {
             target_lineage_idx.push(lineage[1])
         }
         d.source.setFormVisuParameter("gnomonCellImage", "manual_lineage", JSON.stringify(source_lineage_idx))
+        console.log(JSON.stringify(target_lineage_idx))
         d.target.setFormVisuParameter("gnomonCellImage", "manual_lineage", JSON.stringify(target_lineage_idx))
     }
 
