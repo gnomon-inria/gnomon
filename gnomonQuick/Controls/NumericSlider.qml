@@ -95,9 +95,10 @@ Control {
 	TextInput {
 		id: _value_input;
 
-
         anchors.topMargin: G.Style.sizes.s1
         anchors.top: _slider.bottom
+        anchors.left: _slider.left
+        anchors.right: _slider.horizontalCenter
         x: 0 //_slider.gaugeWidth
         visible: _internal.textEdit
 

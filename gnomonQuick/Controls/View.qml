@@ -132,7 +132,7 @@ Rectangle {
         visible: viewLogic.times.length > 1
 
         onValueChanged: {
-            viewLogic.currentTime = value
+            viewLogic.currentTime = times[value]
         }
     }
 
@@ -249,8 +249,10 @@ Rectangle {
             _2d_slider.value = value;
         }
 
-        function onCurrentTimeChanged(value) {
-            _ts_slider.value = value
+        function onCurrentTimeChanged(time) {
+            if (_ts_slider.times.includes(time)) {
+                _ts_slider.value = _ts_slider.times.indexOf(time)
+            }
         }
 
         function onBadFormDropped(badFormName, acceptedForms) {

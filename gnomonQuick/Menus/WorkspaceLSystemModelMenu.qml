@@ -92,7 +92,25 @@ Item {
         }
 
         G.NumericSlider {
-            id: _slider
+            id: _animation_slider
+
+            Layout.fillWidth: true;
+
+            value: 1
+            min: 1
+            max: 100
+            decimals: 0
+
+            label: "Animation step"
+            doc: "Number of steps between two displayed times for Animate"
+
+            onValueChanged: {
+                d.animationStep = _animation_slider.value
+            }
+        }
+
+        G.NumericSlider {
+            id: _derivation_slider
 
             Layout.fillWidth: true;
 
@@ -102,10 +120,10 @@ Item {
             decimals: 0
 
             label: "Derivation length"
-            doc: ""
+            doc: "Total number of derivation steps to compute for Animate"
 
             onValueChanged: {
-                d.derivationLength = _slider.value
+                d.derivationLength = _derivation_slider.value
             }
         }
 
@@ -126,7 +144,7 @@ Item {
                 enabled: d.running
                 text: "Stop"
                 empty: true
-                type: G.Style.ButtonType.Danger
+                type: d.running? G.Style.ButtonType.Danger : G.Style.ButtonType.Neutral
                 iconName: G.Icons.icons["stop"]
 
                 onClicked: {
@@ -145,6 +163,7 @@ Item {
                 implicitWidth: G.Style.shortButtonWidth
                 enabled: !d.running
                 text: "Run"
+                type: d.running? G.Style.ButtonType.Neutral : G.Style.ButtonType.Base
                 tooltip: "run the simulation from the beginning"
                 iconName: G.Icons.icons["play"]
 
@@ -164,8 +183,8 @@ Item {
                 implicitWidth: 2*G.Style.shortButtonWidth + G.Style.smallPadding
                 enabled: !d.running
                 text: "Animate"
-                tooltip: "Animate: do " + _slider.value + " steps and display them"
-                empty: false
+                type: d.running? G.Style.ButtonType.Neutral : G.Style.ButtonType.Base
+                tooltip: "Animate: do " + _derivation_slider.value + " steps and display them"
                 iconName: G.Icons.icons["animation-play"]
 
                 onClicked: {
@@ -186,6 +205,7 @@ Item {
                 text: "Step"
                 tooltip: "Step: do one more step and visualize it"
                 empty: true
+                type: d.running? G.Style.ButtonType.Neutral : G.Style.ButtonType.Base
                 iconName: G.Icons.icons["step-forward"]
 
                 onClicked: {
@@ -205,6 +225,7 @@ Item {
                 enabled: !d.running
                 text: "Reset"
                 empty: true
+                type: d.running? G.Style.ButtonType.Neutral : G.Style.ButtonType.Base
                 iconName: G.Icons.icons["replay"]
 
                 onClicked: {

@@ -40,7 +40,6 @@ Control {
         }
     }
 
-
     signal valueChanged()
 
     ListView {
@@ -59,7 +58,7 @@ Control {
         delegate: G.ParameterGroup {
             title: _control.getTitleString(group)
             model: parameters
-            width: _list_view.width
+            width: _list_view.width - 10
             collapsed: title != "General";
 
             onValueChanged: {

@@ -21,7 +21,7 @@ Control {
 
     G.NumericSlider {
         id: _slider
-        
+
         anchors.fill: parent
 
         value: _control.param ? _control.param.value : 0
