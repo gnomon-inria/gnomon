@@ -16,6 +16,7 @@ public:
     std::shared_ptr<gnomonLStringSeries> lString = nullptr;
 
     int derivationLength = 0;
+    int animation_step = 1;
 
     std::unique_ptr<QFutureWatcher<int>> watcher = nullptr;
 };
@@ -93,19 +94,20 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
         }
 
         for(; i<maxDerivationLength; i++) {
-            if( i % 100 == 0)
-                qInfo() <<"Step:"<< i;
-
             this->predo();
             if(this->simulationType == SimulationType::run) {
                 this->model->run(0, 0, 0);
                 this->postdo();
             } else {
+                // TODO: generalize the insertion of a new frame in the step method
                 auto temp = lstring_model->stepAndReturn(i, 1);
-                d->lString->insert(i+1, temp );
+                if ((i+1) % d->animation_step == 0) {
+                    d->lString->insert(i+1, temp);
+                }
             }
-
-            promise.setProgressValue(i);
+            if(this->simulationType != SimulationType::animate || ((i+1) % d->animation_step == 0)) {
+                promise.setProgressValue(i+1);
+            }
             promise.suspendIfRequested();
             if (promise.isCanceled())
                 return;
@@ -157,6 +159,16 @@ int gnomonLStringEvolutionModelCommand::derivationLength(void) const
 void gnomonLStringEvolutionModelCommand::setDerivationLength(int l)
 {
     d->derivationLength = l;
+}
+
+int gnomonLStringEvolutionModelCommand::animationStep(void) const
+{
+    return d->animation_step;
+}
+
+void gnomonLStringEvolutionModelCommand::setAnimationStep(int s)
+{
+    d->animation_step = s;
 }
 
 void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)

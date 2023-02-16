@@ -54,6 +54,7 @@ public:
 public:
     QString text;
     int derivationLength = 100;
+    int animation_step = 1;
 
     int derivations = 0;
     std::shared_ptr<gnomonLStringSeries> current_lString;
@@ -190,6 +191,19 @@ void gnomonWorkspaceLSystemModel::setDerivationLength(int l)
     }
 }
 
+int gnomonWorkspaceLSystemModel::animationStep(void)
+{
+    return d->animation_step;
+}
+
+void gnomonWorkspaceLSystemModel::setAnimationStep(int s)
+{
+    if (s != d->animation_step) {
+        d->animation_step = s;
+        emit animationStepChanged(d->animation_step);
+    }
+}
+
 void gnomonWorkspaceLSystemModel::read(const QString& file_url)
 {
     QString file_path = filePathFromUrl(file_url);
@@ -231,13 +245,15 @@ void gnomonWorkspaceLSystemModel::animate()
     emit started();
     this->setInitialState();
     d->command->undo();
+    this->viewState();
+
     d->derivations = 0;
     d->command->simulationType = SimulationType::animate;
     d->command->setDerivationLength(d->derivationLength);
-    connect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, [=](){
-        d->derivations += 1;
+    d->command->setAnimationStep(d->animation_step);
+    connect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, [=] (int s){
+        d->derivations = s;
         this->viewNewStep();
-        //d->synchro.wakeAll();
     });
     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
         disconnect(d->command, &gnomonLStringEvolutionModelCommand::finished, nullptr, nullptr);
@@ -350,8 +366,8 @@ void gnomonWorkspaceLSystemModel::viewNewStep()
     }
 
     if (lString->times().size() != 0) {
-        d->view->formAdded("miaou");
-        d->view->setCurrentTime(lString->times().last());
+        d->view->formAdded("gnomonLString");
+        d->view->setCurrentTime(d->derivations);
     }
     //gnomonPipelineManager::instance()->addEvolutionModel(d->command);
 }

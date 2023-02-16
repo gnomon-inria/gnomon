@@ -760,20 +760,13 @@ void gnomonViewForm::sliceChange(int value)
 }
 
 
-void gnomonViewForm::setCurrentTime(double value)
+void gnomonViewForm::setCurrentTime(double time)
 {
     QList<double> sorted_times = this->times();
-    if(sorted_times.contains(value)) {
-        double time = sorted_times[value];
-
-        bool valueChanged = false;
+    if(sorted_times.contains(time)) {
         if (d->c_t != time) {
-            valueChanged = true;
             d->c_t = time;
-        }
-
-        if (valueChanged) {
-            emit timeChanged(time);
+            emit timeChanged(d->c_t);
         }
     }
 }
@@ -1626,13 +1619,7 @@ void gnomonViewForm::onSliceChanged(int slice)
 
 void gnomonViewForm::onTimeChanged(double time)
 {
-    QList<double> sorted_times = QList<double>(d->forms_times.begin(), d->forms_times.end());
-
-    if (sorted_times.contains(time)) {
-        std::sort(sorted_times.begin(), sorted_times.end());
-        int value = sorted_times.indexOf(time);
-        this->setCurrentTime(value);
-    }
+    this->setCurrentTime(time);
 }
 
 void gnomonViewForm::setInputView(bool input)
