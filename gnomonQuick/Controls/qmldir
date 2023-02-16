@@ -21,6 +21,7 @@ ScrollIndicator 1.0 ScrollIndicator.qml
 RangeParameter 1.0 RangeParameter.qml
 RangeSlider 1.0 RangeSlider.qml
 NumericParameter 1.0 NumericParameter.qml
+NumericSlider 1.0 NumericSlider.qml
 ToolBar 1.0 ToolBar.qml
 Icon 1.0 Icon.qml
 IconButton 1.0 IconButton.qml

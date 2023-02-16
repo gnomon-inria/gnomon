@@ -9,7 +9,7 @@ import gnomonQuick.Icons as G
 Slider {
     id: _control
 
-    readonly property alias gaugeWidth: _gauge.width
+    //readonly property alias gaugeWidth: _gauge.width
     property bool useRadius: false
 
     implicitWidth: G.Style.controlWidth
@@ -75,7 +75,7 @@ Slider {
         id: _gauge
 
         x: _control.leftPadding
-        width: (_control.visualPosition) * _control.availableWidth
+        width: _control.visualPosition * _control.availableWidth
         height: _control.availableHeight
 
         radius: G.Style.panelRadius

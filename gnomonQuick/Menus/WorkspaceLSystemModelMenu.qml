@@ -91,53 +91,24 @@ Item {
             }
         }
 
-        Item {
-            id: _slider_container
+        G.NumericSlider {
+            id: _slider
 
-            height: G.Style.largeButtonHeight
             Layout.fillWidth: true;
 
-            Label {
-                id: _label
+            value: 100
+            min: 0
+            max: 2000
+            decimals: 0
 
-                anchors.left: parent.left
-                anchors.top: parent.top
+            label: "Derivation length"
+            doc: ""
 
-                text: "DERIVATION LENGTH"
-                font: G.Style.fonts.label
-                color: G.Style.colors.textColorBase
-            }
-
-            G.Slider {
-                id: _slider
-
-                anchors.top: _label.bottom
-                anchors.left:  parent.left
-                anchors.right:  parent.right
-
-                from: 0
-                to: 2000
-                value: d ? d.derivationLength : 100
-                stepSize: 1
-                snapMode: Slider.SnapAlways
-
-                onValueChanged: {
-                    d.derivationLength = _slider.value
-                }
-            }
-
-            Label {
-                id: _value
-
-                anchors.topMargin: G.Style.sizes.s1
-                anchors.top: _slider.bottom
-                x: 0
-
-                text: _slider.value.toFixed(0)
-                font: G.Style.fonts.value
-                color: G.Style.colors.hoveredBaseColor
+            onValueChanged: {
+                d.derivationLength = _slider.value
             }
         }
+
         Item {
             id: _button_container
 
