@@ -459,19 +459,23 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
         def writerDecorator(f):
             @wraps(f)
             def run_wrapper(self):
-                paths = getattr(self, path_attr).split(",")
-                path = paths[0]
+                paths: list[str] = getattr(self, path_attr).split(",")
+                path: str = paths[0]
+                stem, *extensions = os.path.basename(path).split(".")
                 forms = getattr(self, form_attr)
-                if len(forms) == 1:
+                if len(forms) == 1 and extensions[-1] != "zip":
                     return f(self)
                 # writing the series
                 with TemporaryDirectory() as tmpdirname:
                     container = zipfile.ZipFile(Path(path).with_suffix(".zip"), "w", compression=zipfile.ZIP_DEFLATED,
                                                 compresslevel=5)
-                    ext = Path(path).suffix if Path(path).suffix != ".zip" else self.extensions()[0]
-                    manifest = {"extension": ext[1:], "series": {}}
+                    suffix = "." + ".".join(extensions)
+                    ext: str = suffix if suffix != ".zip" else self.extensions()[0]
+                    ext = "." + ext if not ext.startswith(".") else ext
+                    filename_template = stem + "_t{:.0f}" + ext
+                    manifest = {"extension": ext[1:], "name_format": filename_template, "series": {}}
                     for i, (t, form) in enumerate(forms.items()):
-                        filename = Path(path).stem + "_t" + str(i) + ext
+                        filename = filename_template.format(i)
                         manifest["series"][t] = filename
                         filepath = Path(tmpdirname).joinpath(filename)
                         self.setPath(str(filepath))
