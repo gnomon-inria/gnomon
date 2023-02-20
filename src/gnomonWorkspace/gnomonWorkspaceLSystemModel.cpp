@@ -245,7 +245,6 @@ void gnomonWorkspaceLSystemModel::animate()
     emit started();
     this->setInitialState();
     d->command->undo();
-    this->viewState();
 
     d->derivations = 0;
     d->command->simulationType = SimulationType::animate;
@@ -356,7 +355,7 @@ void gnomonWorkspaceLSystemModel::viewNewStep()
 {
     // get the current lstring from view
     auto lString = d->view->lString();
-    if(!lString || d->derivations == 1) {
+    if(!lString || d->derivations == d->animation_step) {
         lString = d->command->lString();
         if(lString && lString->times().length() > 0) {
             d->view->setLString(lString);

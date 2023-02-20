@@ -99,15 +99,14 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
                 this->model->run(0, 0, 0);
                 this->postdo();
             } else {
-                // TODO: generalize the insertion of a new frame in the step method
-                auto temp = lstring_model->stepAndReturn(i, 1);
                 if ((i+1) % d->animation_step == 0) {
-                    d->lString->insert(i+1, temp);
+                    d->lString->insert(i+1, lstring_model->stepAndReturn(i, 1));
+                    promise.setProgressValue(i+1);
+                } else {
+                    lstring_model->step(i,1);
                 }
             }
-            if(this->simulationType != SimulationType::animate || ((i+1) % d->animation_step == 0)) {
-                promise.setProgressValue(i+1);
-            }
+
             promise.suspendIfRequested();
             if (promise.isCanceled())
                 return;
