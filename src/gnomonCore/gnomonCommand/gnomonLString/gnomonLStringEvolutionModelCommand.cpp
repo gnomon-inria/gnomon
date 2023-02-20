@@ -5,6 +5,7 @@
 
 #include <QtConcurrent>
 #include <QtCore>
+#include <qthread.h>
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -93,6 +94,9 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
             maxDerivationLength = i+1;
         }
 
+        //let's slow down the computation (10s)!
+        int sleeptime = int(10*1000*d->animation_step / d->derivationLength);
+
         for(; i<maxDerivationLength; i++) {
             this->predo();
             if(this->simulationType == SimulationType::run) {
@@ -102,6 +106,7 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
                 if ((i+1) % d->animation_step == 0) {
                     d->lString->insert(i+1, lstring_model->stepAndReturn(i, 1));
                     promise.setProgressValue(i+1);
+                    QThread::msleep(sleeptime);
                 } else {
                     lstring_model->step(i,1);
                 }
