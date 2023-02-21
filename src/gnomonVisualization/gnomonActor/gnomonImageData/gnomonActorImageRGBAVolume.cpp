@@ -44,7 +44,7 @@ public:
 
     vtkSmartPointer<vtkPiecewiseFunction> opacity = nullptr;
 
-    vtkRenderWindowInteractor *interactor;
+    vtkSmartPointer<vtkRenderWindowInteractor> interactor;
 
     double alpha;
 
@@ -70,9 +70,9 @@ void gnomonActorImageRGBAVolumePrivate::updateOpacity(void)
 
 vtkStandardNewMacro(gnomonActorImageRGBAVolume);
 
-void gnomonActorImageRGBAVolume::setInteractor(void *interactor)
+void gnomonActorImageRGBAVolume::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor)
 {
-    d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
+    d->interactor = interactor;
 }
 
 void gnomonActorImageRGBAVolume::setImage(vtkImageData *image)

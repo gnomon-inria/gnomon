@@ -2,7 +2,7 @@
 #include "gnomonAbstractCellImageFilter.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellImageFilter, cellImageFilter, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractCellImageFilter, cellImageFilter, gnomonCore);
 }
 
 

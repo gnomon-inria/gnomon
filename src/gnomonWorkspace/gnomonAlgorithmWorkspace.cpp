@@ -104,6 +104,11 @@ QStringList gnomonAlgorithmWorkspace::algorithms(void) const
     return d->keys;
 }
 
+QVariantList gnomonAlgorithmWorkspace::algorithmsData(void) const
+{
+    return d->algorithmsData;
+}
+
 void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
 {
     if (d->setAlgorithm(algorithm)) {
@@ -217,13 +222,6 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     bool empty_output = true;
 
     int i=0;
-    std::shared_ptr<gnomonAbstractDynamicForm> inputForm = nullptr;
-    for(auto [name, output_type] : d->command->inputTypes()) {
-        if (d->command->inputs()[name]) {
-            inputForm = d->command->inputs()[name];
-            break;
-        }
-    }
 
     for(auto [name, output_type] : d->command->outputTypes()) {
         if(d->command->outputs()[name]) {

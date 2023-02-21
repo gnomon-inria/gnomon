@@ -2,5 +2,5 @@
 #include "gnomonAbstractDataDictWriter.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractDataDictWriter, dataDictWriter, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractDataDictWriter, dataDictWriter, gnomonCore);
 }

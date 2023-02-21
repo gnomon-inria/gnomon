@@ -7,6 +7,7 @@
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 .. moduleauthor:: tristan cabel tristan.cabel@inria.fr
 """
+from typing import Optional
 
 from geomdl import vis
 import numpy as np
@@ -18,7 +19,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib import animation
 
 #from mpl_toolkits.mplot3d import Axes3D, proj3d
-from matplotlib.backend_bases import MouseButton
+from matplotlib.backend_bases import MouseButton, PickEvent
 from gnomon.utils.matplotlib_tools import gnomon_figure
 
 class VisConfig(vis.VisConfigAbstract):
@@ -126,22 +127,22 @@ class VisConfig(vis.VisConfigAbstract):
 
 class VisCurve2D(vis.VisAbstract):
     """ Matplotlib visualization module for 2D curves """
-    def __init__(self, curve, config=VisConfig(), **kwargs):
+    def __init__(self, curve, is_function = False, config=VisConfig(), **kwargs):
         super(VisCurve2D, self).__init__(config, **kwargs)
         self.curve = curve
         self.selected_ctrlpts_id = -1
         self.cpplot = None
         self.curveplt = None
-        self.fig = None
-        self.ax = None
+        self.fig: Optional[plt.Figure] = None
+        self.ax: Optional[plt.Axes] = None
         self.bg = None
+        self.is_function = is_function
         self.fig_number = -1
+        self.press: Optional[tuple[float, float]] = None
 
     def setFigureNumber(self, fig_number):
         self.fig = gnomon_figure(fig_number)
         self.fig.clf()
-        print("fig set to ", self.fig , "  from ", fig_number)
-        #self.fig_number = fig_number
 
     def render(self, **kwargs):
         """ Plots the 2D curve and the control points polygon. """
@@ -162,7 +163,8 @@ class VisCurve2D(vis.VisAbstract):
             pts = np.array(plot['ptsarr'])
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o')
+                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o',
+                                            picker=True, pickradius=5)
                 legend_proxy.append(self.cpplot)
                 legend_names.append(plot['name'])
 
@@ -181,10 +183,9 @@ class VisCurve2D(vis.VisAbstract):
             self.ax.axis('off')
 
         # Set aspect ratio
-        self.ax.set_aspect('equal')
-
+        self.ax.set_aspect('auto')
         ## interactor
-        
+
 
         def get_ind_under_point(event):
             'get the index of the vertex under point if within epsilon tolerance'
@@ -196,7 +197,6 @@ class VisCurve2D(vis.VisAbstract):
             d = np.hypot(xt - event.xdata, yt - event.ydata)
             indseq, = np.nonzero(d == d.min())
             ind = indseq[0]
-            #print('min_distance' , d[ind])
             if d[ind] >= epsilon:
                 ind = -1
 
@@ -204,28 +204,56 @@ class VisCurve2D(vis.VisAbstract):
 
         def on_move(event):
             # get the x and y pixel coords
-            x, y = event.x, event.y
-            if event.inaxes and self.selected_ctrlpts_id != -1:
-                # TODO if movement greater than a distance then move
-                self.curve._control_points[self.selected_ctrlpts_id] = [event.xdata, event.ydata] # curve.set_ctrltpts
+            x, y = event.xdata, event.ydata
+            if self.press and event.inaxes:
+                x0, y0 = self.press
+                dx = x - x0
+                dy = y - y0
+                xmin, xmax, ymin, ymax = self.ax.axis()
+                self.ax.axis((xmin-dx, xmax-dx, ymin-dy, ymax-dy))
                 self.update()
-                #print(self.curve._control_points)
+            elif event.inaxes and self.selected_ctrlpts_id != -1:
+                if self.is_function:
+                    # do not move x if it's a function
+                    x = self.curve._control_points[self.selected_ctrlpts_id][0]
+                self.curve._control_points[self.selected_ctrlpts_id] = [x, y]
+                self.update()
+
+        def on_scroll(event):
+            zoom_speed = 0.001
+            x, y = event.xdata, event.ydata
+            if event.inaxes:
+                xmin, xmax, ymin, ymax = self.ax.axis()
+                xmin2 = xmin + (x-xmin)*zoom_speed*event.step
+                xmax2 = xmax - (xmax-x)*zoom_speed*event.step
+                ymin2 = ymin + (y-ymin)*zoom_speed*event.step
+                ymax2 = ymax - (ymax-y)*zoom_speed*event.step
+                self.ax.axis((xmin2, xmax2, ymin2, ymax2))
+                self.update()
 
         def on_click(event):
             if event.button is MouseButton.LEFT:
-                #print('disconnecting callback')
-                #print('data coords %f %f' % (event.xdata, event.ydata))
-                self.selected_ctrlpts_id = get_ind_under_point(event)
-                #print(self.selected_ctrlpts_id)
-                #plt.disconnect(binding_id)
+                # old picker
+                # self.selected_ctrlpts_id = get_ind_under_point(event)
+                if event.key == "shift" and event.inaxes:
+                    self.press = event.xdata, event.ydata
+
+        def on_pick(event: PickEvent):
+            if event.artist == self.cpplot:
+                points_indices = event.ind
+                if not points_indices:  # no points
+                    return
+                self.selected_ctrlpts_id = points_indices[0]
 
         def on_release(event):
             self.selected_ctrlpts_id = -1
+            self.press = None
 
-        
         self.fig.canvas.mpl_connect('motion_notify_event', on_move)
+        self.fig.canvas.mpl_connect('scroll_event', on_scroll)
         self.fig.canvas.mpl_connect('button_press_event', on_click)
         self.fig.canvas.mpl_connect('button_release_event', on_release)
+        self.fig.canvas.mpl_connect('pick_event', on_pick)
         ## end interactor
 
         # Display 2D plot
@@ -251,7 +279,7 @@ class VisCurve2D(vis.VisAbstract):
 
 class VisCurve3D(vis.VisAbstract):
     """ Matplotlib visualization module for 3D curves. """
-    def __init__(self, curve, config=VisConfig(), **kwargs):
+    def __init__(self, curve, is_function = False, config=VisConfig(), **kwargs):
         super(VisCurve3D, self).__init__(config, **kwargs)
         self.curve = curve
         self.selected_ctrlpts_id = -1
@@ -260,6 +288,7 @@ class VisCurve3D(vis.VisAbstract):
         self.fig = None
         self.ax = None
         self.bg = None
+        self.is_function = is_function
         self.fig_number = -1
 
     def setFigureNumber(self, fig_number):
@@ -325,12 +354,11 @@ class VisCurve3D(vis.VisAbstract):
             #d = np.hypot(xt - event.xdata, yt - event.ydata)
             indseq, = np.nonzero(d == d.min())
             ind = indseq[0]
-            print('min_distance' , d[ind])
             if d[ind] >= epsilon:
                 ind = -1
 
             return ind
-        
+
         def line2d_seg_dist(p1, p2, p0):
             """distance(s) from line defined by p1 - p2 to point(s) p0
 
@@ -388,20 +416,15 @@ class VisCurve3D(vis.VisAbstract):
             # get the x and y pixel coords
             x, y, z = event.x, event.y, 1. #event.z
             if event.inaxes and self.selected_ctrlpts_id != -1:
-                # TODO if movement greater than a distance then move
+                if self.is_function:
+                    print("is_function Not implemented for viscurve3d")
                 self.curve._control_points[self.selected_ctrlpts_id] = [event.xdata, event.ydata, event.zdata] # curve.set_ctrltpts
                 self.update()
-                #print(self.curve._control_points)
 
         def on_click(event):
             if event.button is MouseButton.LEFT:
-                #print('disconnecting callback')
-                #print('data coords %f %f' % (event.xdata, event.ydata))
                 x,y,z = get_xyz_mouse_click(event, self.ax)
-                print(x,y,z)
                 self.selected_ctrlpts_id = get_ind_under_point(x,y,z)
-                #print(self.selected_ctrlpts_id)
-                #plt.disconnect(binding_id)
 
         def on_release(event):
             self.selected_ctrlpts_id = -1

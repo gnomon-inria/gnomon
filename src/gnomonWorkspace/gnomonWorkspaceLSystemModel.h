@@ -24,6 +24,7 @@ public:
 public:
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     Q_PROPERTY(int derivationLength READ derivationLength WRITE setDerivationLength NOTIFY derivationLengthChanged)
+    Q_PROPERTY(int animationStep READ animationStep WRITE setAnimationStep NOTIFY animationStepChanged)
 
     Q_PROPERTY(QString modelName READ modelName WRITE setModelName NOTIFY modelChanged);
     Q_PROPERTY(QStringList models READ models NOTIFY modelsLoaded);
@@ -31,10 +32,11 @@ public:
     Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
 
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
-    
+
 signals:
     void textChanged(const QString&);
     void derivationLengthChanged(int);
+    void animationStepChanged(int);
 
     void modelsLoaded(void);
     void modelChanged(const QString& model);
@@ -48,6 +50,9 @@ public:
     int derivationLength(void);
     void setDerivationLength(int l);
 
+    int animationStep(void);
+    void setAnimationStep(int s);
+
 public:
     Q_INVOKABLE QUrl defaultReadPath();
 
@@ -56,12 +61,15 @@ public slots:
     void save(const QString& file_url) const;
 
 public slots:
-    void run(void);
     void step(void);
+    void animate(void);
+    void run(void);
     void reset(void);
+    void stop(void);
 
     void setInitialState(void);
     void viewState(void);
+    void viewNewStep(void);
     virtual void export_outputs(void) override;
 
 public:
@@ -74,8 +82,7 @@ public:
     gnomonViewForm *view(void) const;
 
     QJSValue parameters(void);
-    
+
 protected:
     class gnomonWorkspaceLSystemModelPrivate *d = nullptr;
 };
-

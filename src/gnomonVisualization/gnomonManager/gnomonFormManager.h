@@ -30,7 +30,7 @@ public:
     static gnomonFormManager *instance(void);
 
 signals:
-    void added(int id);
+    void added(int id, QString name);
     void removed(int id);
     void alreadyAdded(void);
 
@@ -40,9 +40,11 @@ public slots:
     void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image);
 
 public slots:
-    void saveAs(int id, const QString& filename) const;
+    void saveAs(int id, const QString& filename, bool add_to_pipeline = true) const;
     bool deleteForm(int id, bool force = false);
     void compose(int first, int second);
+    void addToCache(int id) const;
+    void loadFromCache(int id) const;
 
 public:
     Q_INVOKABLE bool contains(int id);
@@ -75,8 +77,6 @@ protected:
 private:
     class gnomonFormManagerPrivate *d;
 
-private:
-    static gnomonFormManager *s_instance;
 };
 
 //

@@ -4,6 +4,7 @@
 
 #include <dtkCore>
 
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
@@ -51,15 +52,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractCellImageReader *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractCellImageReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageReader, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageReader, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractCellImageReader, GNOMONCORE_EXPORT, cellImageReader);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageReader, GNOMONCORE_EXPORT, cellImageReader);
 }
 
 //

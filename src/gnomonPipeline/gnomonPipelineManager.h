@@ -2,15 +2,18 @@
 
 #include <gnomonPipelineExport.h>
 
+#include <utility>
 #include <QtCore>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 
 class gnomonPipeline;
 class gnomonPipelineNode;
+class gnomonPipelineNodeReader;
 
 class gnomonAbstractAdapterCommand;
 class gnomonAbstractCommand;
 class gnomonAbstractConstructorCommand;
+class gnomonAbstractEvolutionModelCommand;
 class gnomonAbstractReaderCommand;
 class gnomonAbstractWriterCommand;
 
@@ -38,6 +41,7 @@ public slots:
     void addAdaptedForm(std::shared_ptr<gnomonAbstractDynamicForm> form); //todo delete ?
     void addMorphoForm(std::shared_ptr<gnomonAbstractDynamicForm> form, int id, double voxelsize, int time_start, int time_end);
     void addAlgorithm(gnomonAbstractCommand *command);
+    void addEvolutionModel(gnomonAbstractEvolutionModelCommand *command);
     void addTask(const QString &task, QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs,
                  QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs);
     void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
@@ -47,6 +51,9 @@ public slots:
 public:
     void setFormIndex(std::shared_ptr<gnomonAbstractDynamicForm> form, int index=-1);
 
+public: 
+    std::pair<QString, gnomonPipelineNodeReader *> cacheNode(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    void decachNode(std::shared_ptr<gnomonAbstractDynamicForm> form, std::pair<QString, gnomonPipelineNodeReader *> name_and_node);
 private:
     class gnomonPipelineManagerPrivate *d;
 

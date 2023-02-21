@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractTreeReader, treeReader, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractTreeReader, treeReader, gnomonCore);
 }
 
 //

@@ -106,7 +106,7 @@ void gnomonVisualizationCellImageVolume::updateOpacity(void)
 {
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
-    if(dd->actor) {
+    if(dd->actor && dd->actor->isVisible()) {
         dd->actor->setOpacity(alpha);
     }
 
@@ -129,6 +129,7 @@ QImage gnomonVisualizationCellImageVolume::imageRendering(void)
     dd->image->GetBounds(bounds);
     this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
+    dd->actor->show();
     d->view->renderer3D()->RemoveActor(dd->actor);
     this->offscreenRenderer()->AddActor(dd->actor);
 
@@ -211,7 +212,8 @@ void gnomonVisualizationCellImageVolume::update(void)
         d->view->renderer2D()->AddActor(dd->actor2D);
     }
     dd->actor2D->setImage(dd->image);
-    dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
+    dd->actor2D->setInteractor(d->view->interactor());
+    //dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
     dd->actor2D->setColorMap(colormap);
     dd->actor2D->setValueRange(value_range);
     dd->actor2D->setFlatRendering(true);
@@ -264,8 +266,8 @@ QMap<QString, QString> gnomonVisualizationCellImageVolume::parameterGroups(void)
 {
     QMap<QString, QString> groups;
     groups["value_range"] = "rendering";
-    groups["colormap"] = "rendering";
-    groups["alpha"] = "rendering";
+    groups["colormap"] = "general";
+    groups["alpha"] = "general";
     return groups;
 }
 
@@ -282,14 +284,16 @@ void gnomonVisualizationCellImageVolume::onSliceChanged(int value)
 
 void gnomonVisualizationCellImageVolume::on3D(void)
 {
+    dd->actor->show();
     dd->actor2D->hide();
-    this->render();
+    //this->render();
 }
 
 void gnomonVisualizationCellImageVolume::on2D(void)
 {
+    dd->actor->hide();
     dd->actor2D->show();
-    this->render();
+    //this->render();
 }
 
 void gnomonVisualizationCellImageVolume::onXY(void)
@@ -314,6 +318,10 @@ void gnomonVisualizationCellImageVolume::onTimeChanged(double value)
         this->update();
     }
     this->render();
+}
+
+const QString gnomonVisualizationCellImageVolume::name(void) {
+    return "Cell Image Volume";
 }
 
 //

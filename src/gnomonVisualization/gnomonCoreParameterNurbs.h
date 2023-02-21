@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gnomonVisualizationExport>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <QtCore>
 #include <QtGui>
@@ -16,7 +17,7 @@ public:
     using ctrls_type = QList<std::array<double, 3>>;
 
     gnomonCoreParameterNurbs(void);
-    gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, const QString& doc = QString());
+    gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, bool is_function, const QString& doc = QString());
     gnomonCoreParameterNurbs(const dtkCoreParameter *);
     gnomonCoreParameterNurbs(const QVariant&);
     gnomonCoreParameterNurbs(const gnomonCoreParameterNurbs&);
@@ -34,10 +35,14 @@ public:
     int degree(void) const;
     int dimension(void) const;
     double delta(void) const;
+    bool is_function(void) const;
+
     void setDegree(int);
     void setDelta(double);
     void setDimension(int);
+    void setIs_function(bool);
     void setValue(const QVariant&) override;
+
 
 
 public:
@@ -58,6 +63,7 @@ private:
     int m_dimension = 2;
     double m_delta = 0.01;
     ctrls_type m_ctrl_points;
+    bool m_is_function = false;
 
     QString m_n = QStringLiteral("no name");
 

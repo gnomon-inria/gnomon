@@ -32,7 +32,7 @@ public:
     static gnomonActorScalarBar *New(void);
 
 public:
-    void setInteractor(void *interactor) override;
+    void setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>*interactor) override;
     void setData(vtkImageData *data);
 
 public:

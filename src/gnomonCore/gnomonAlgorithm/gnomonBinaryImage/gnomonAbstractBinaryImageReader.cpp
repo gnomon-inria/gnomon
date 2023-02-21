@@ -2,7 +2,7 @@
 #include "gnomonAbstractBinaryImageReader.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractBinaryImageReader, binaryImageReader, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractBinaryImageReader, binaryImageReader, gnomonCore);
 }
 
 

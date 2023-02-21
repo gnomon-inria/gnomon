@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gnomonVisualizationExport>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <QtCore>
 #include <QtGui>
@@ -11,7 +12,45 @@
 // gnomonCoreParameterColorTable declaration
 // ///////////////////////////////////////////////////////////////////
 
-using gnomonColorTable = QMap<long, QColor>;
+
+class GNOMONVISUALIZATION_EXPORT gnomonColorTable: public QObject
+{
+    Q_OBJECT
+
+public:
+    gnomonColorTable(void) = default;
+    gnomonColorTable(const gnomonColorTable&);
+
+    ~gnomonColorTable(void) = default;
+
+    gnomonColorTable& operator = (const gnomonColorTable&);
+    bool operator != (const gnomonColorTable&);
+
+public:
+    int size(void) const;
+
+    QList<long> indices(void) const;
+    long indexAt(int pos) const;
+
+public:
+    void clear(void);
+
+public:
+    bool isTexture(long index) const;
+    QString textureFile(long index) const;
+
+    bool isColor(long index) const;
+    QColor color(long index) const;
+
+public:
+    void setColor(long index, const QColor& color);
+    void setTexture(long index, const QString& texture);
+
+private:
+    QMap<long, QString> textures;
+    QMap<long, QColor> colors;
+};
+
 
 class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterColorTable : public dtkCoreParameterBase<gnomonCoreParameterColorTable>
 {
@@ -39,6 +78,9 @@ public:
 public:
     QColor color(long i) const;
     void setColor(long i, const QColor& color);
+
+    QString texture(long i) const;
+    void setTexture(long i, const QString& texture);
 
     void clearColors(void);
 

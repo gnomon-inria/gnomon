@@ -6,7 +6,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractMeshData, meshData, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractMeshData, meshData, gnomonCore);
 }
 
 //

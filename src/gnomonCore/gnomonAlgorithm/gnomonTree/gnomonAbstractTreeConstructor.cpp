@@ -2,7 +2,7 @@
 #include "gnomonAbstractTreeConstructor.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractTreeConstructor, treeConstructor, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractTreeConstructor, treeConstructor, gnomonCore);
 }
 
 

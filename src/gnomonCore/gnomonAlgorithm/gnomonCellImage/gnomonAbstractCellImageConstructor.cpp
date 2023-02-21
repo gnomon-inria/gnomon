@@ -2,7 +2,7 @@
 #include "gnomonAbstractCellImageConstructor.h"
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractCellImageConstructor, cellImageConstructor, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractCellImageConstructor, cellImageConstructor, gnomonCore);
 }
 
 

@@ -99,6 +99,7 @@ public:
 
 #include <gnomonCoreExport.h>
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 //  ///////////////////////////////////////////////////////////////////
 //  gnomonAbstractNewFormData
@@ -117,15 +118,14 @@ class GNOMONCORE_EXPORT gnomonAbstractNewFormData
 
 DTK_DECLARE_OBJECT        (gnomonAbstractNewFormData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractNewFormData, GNOMONCORE_EXPORT, newFormData);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractNewFormData, GNOMONCORE_EXPORT, newFormData);
 }
 
 //
@@ -147,7 +147,7 @@ namespace gnomonCore {
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractNewFormData, newFormData, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractNewFormData, newFormData, gnomonCore);
 }
 
 //
@@ -503,12 +503,12 @@ from my_module import MyStructure
             self.set_data(form_data._data)
         else:
             self._data = MyStructure()
-            
+
             # fill in the structure using the Form API
             for eid in data.elementIds():
                 self._data.add_element(eid)
                 ...
-        
+
         return self
 ```
 
@@ -518,7 +518,7 @@ from my_module import MyStructure
     def metadata(self):
         metadata = {}
         metadata['Number of elements'] = str(self._data.nb_elements())
-        
+
         return metadata
 
     def dataName(self):
@@ -533,7 +533,7 @@ from my_module import MyStructure
 
     def elementCount(self):
         return self._data.nb_elements()
-    
+
     def elementPropertyNames(self):
         ...
 
@@ -550,11 +550,11 @@ from gnomon.core import gnomonAbstractNewFormData
 
 from gnomon.utils import corePlugin
 
-@corePlugin(version="0.1.0", coreversion="0.71.0")
+@corePlugin(version="0.1.0", coreversion="0.72.0")
 class newFormDataMyStructure(gnomonAbstractNewFormData):
 ```
 
-### Install the newly defined plugin 
+### Install the newly defined plugin
 
 * Install the package again to update the entry points
 
@@ -638,10 +638,10 @@ gnomon
             │   __init__.py
             │   ...
             │   new_data_decorator.py
-            │   ... 
+            │   ...
 ```
 
-* The module should declare an input and an output decorator as follows:  
+* The module should declare an input and an output decorator as follows:
 
 ```python
 import gnomon.core

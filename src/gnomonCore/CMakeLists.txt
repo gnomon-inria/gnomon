@@ -20,6 +20,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCore.h
   gnomonCoreSettings
   gnomonCoreSettings.h
+  gnomonCorePlugin.h
   gnomonDataDriver.h
   gnomonDataManager
   gnomonDataManager.h
@@ -28,6 +29,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonFormVisitor.h
   gnomonLandmark.h
   gnomonMorphonetHelper.h
+  gnomonPluginFactory.h
+  gnomonPluginFactory.tpp
   gnomonPythonPluginLoader
   gnomonPythonPluginLoader.h
   gnomonPythonPluginParser

@@ -33,7 +33,7 @@ public:
     vtkSmartPointer<vtkColorTransferFunction> colorFunction = nullptr;
     vtkSmartPointer<vtkPiecewiseFunction> opacity = nullptr;
 
-    vtkRenderWindowInteractor *interactor;
+    vtkSmartPointer<vtkRenderWindowInteractor> interactor = nullptr;
 
     double alpha;
     int value_range[2];
@@ -89,9 +89,9 @@ void gnomonActorImageVolumePrivate::updateColorFunction(void)
 
 vtkStandardNewMacro(gnomonActorImageVolume);
 
-void gnomonActorImageVolume::setInteractor(void *interactor)
+void gnomonActorImageVolume::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor> interactor)
 {
-    d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
+    d->interactor = interactor;
 }
 
 void gnomonActorImageVolume::setImage(vtkImageData *image)

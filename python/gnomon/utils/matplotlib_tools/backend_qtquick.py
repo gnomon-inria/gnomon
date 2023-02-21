@@ -19,6 +19,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     dpi_ratio_changed = QtCore.Signal()
     numberChanged = QtCore.Signal()
     hoverChanged = QtCore.Signal()
+    mouseReleased = QtCore.Signal()
 
     # map Qt button codes to MouseEvent's ones:
     buttond = {QtCore.Qt.LeftButton: MouseButton.LEFT,
@@ -218,7 +219,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         self.hoverChanged.emit()
         QtWidgets.QApplication.restoreOverrideCursor()
         FigureCanvasBase.leave_notify_event(self, guiEvent=event)
-    
+
     QtCore.Property(bool,
                     hoverEnterEvent,
                     hoverLeaveEvent,
@@ -264,6 +265,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         if button is not None:
             FigureCanvasBase.button_release_event(self, x, y, button,
                                                   guiEvent=event)
+            self.mouseReleased.emit()
 
     def mouseDoubleClickEvent(self, event):
         x, y = self.mouseEventCoords(event.pos())
@@ -274,7 +276,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
                                                 guiEvent=event)
 
     def wheelEvent(self, event):
-        x, y = self.mouseEventCoords(event.pos())
+        x, y = self.mouseEventCoords(event.position())
         # from QWheelEvent::delta doc
         if event.pixelDelta().x() == 0 and event.pixelDelta().y() == 0:
             steps = event.angleDelta().y() / 120

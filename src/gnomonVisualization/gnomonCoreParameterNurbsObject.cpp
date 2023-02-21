@@ -13,11 +13,11 @@ public:
     ~gnomonCoreParameterNurbsObjectPrivate() = default;
 
     void initPCurve(gnomonCoreParameterNurbs *param);
-    void initPVisCurve(int dimension);
+    void initPVisCurve(int dimension, bool is_function);
 
 public:
     int figureNumber=-1;
-  
+
     PyObject* pCurve = nullptr;
     PyObject* pVisCurve = nullptr;
 };
@@ -73,7 +73,7 @@ void gnomonCoreParameterNurbsObjectPrivate::initPCurve(gnomonCoreParameterNurbs 
             PyObject_SetAttrString(this->pCurve, "ctrlpts", p_ctrlpts);
             Py_DECREF(p_ctrlpts);
         }
-        
+
         //2.3 update knotvector
         PyObject* pFunc_knot = PyObject_GetAttrString(pModule_utilities, "generate_knot_vector");
         PyObject* args = Py_BuildValue("(i, i)", param->degree(), int(param->controlPoints().size()));
@@ -97,7 +97,7 @@ void gnomonCoreParameterNurbsObjectPrivate::initPCurve(gnomonCoreParameterNurbs 
     }
 }
 
-void gnomonCoreParameterNurbsObjectPrivate::initPVisCurve(int dimension)
+void gnomonCoreParameterNurbsObjectPrivate::initPVisCurve(int dimension, bool is_function)
 {
     if(!this->pVisCurve) {
         PyGILState_STATE gstate;
@@ -115,15 +115,18 @@ void gnomonCoreParameterNurbsObjectPrivate::initPVisCurve(int dimension)
         PyObject* pFunc2;
         if(dimension == 2)
             pFunc2 = PyObject_GetAttrString(pModule_vis, "VisCurve2D");
-        else 
+        else
             pFunc2 = PyObject_GetAttrString(pModule_vis, "VisCurve3D");
-        this->pVisCurve = PyObject_CallOneArg(pFunc2, this->pCurve);
+
+        PyObject* args = Py_BuildValue("OO", this->pCurve, is_function? Py_True : Py_False); //pis_function);
+        this->pVisCurve = PyObject_CallObject(pFunc2, args);
         if(!this->pVisCurve) {
             dtkWarn() << "Error making VisCurve, no NURBS visu";
         } else {
             PyObject_SetAttrString(this->pCurve, "vis", this->pVisCurve);
         }
 
+        Py_DECREF(args);
         Py_DECREF(pFunc2);
         Py_DECREF(pModule_vis);
 
@@ -132,7 +135,7 @@ void gnomonCoreParameterNurbsObjectPrivate::initPVisCurve(int dimension)
 
 }
 
-gnomonCoreParameterNurbsObject::gnomonCoreParameterNurbsObject(gnomonCoreParameterNurbs *p) : dtkCoreParameterObject(p), m_param(p) 
+gnomonCoreParameterNurbsObject::gnomonCoreParameterNurbsObject(gnomonCoreParameterNurbs *p) : dtkCoreParameterObject(p), m_param(p)
 {
     d = new gnomonCoreParameterNurbsObjectPrivate();
 }
@@ -153,16 +156,50 @@ double gnomonCoreParameterNurbsObject::delta(void)
     return m_param->delta();
 }
 
+void gnomonCoreParameterNurbsObject::updateControlPointsFromPython(void)
+{
+    //get theupdated list of control points
+    // they may have changed with mouse interaction!
+    if(!d->pCurve)
+        return;
+
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
+    PyObject *p_ctrl_pts = PyObject_GetAttrString(d->pCurve, "_control_points");
+
+    gnomonCoreParameterNurbs::ctrls_type ctrl_points;
+    if(PyList_Check(p_ctrl_pts) ) {
+        int nb_points = PyList_Size(p_ctrl_pts);
+        int nb_elem = PyList_Size(PyList_GET_ITEM(p_ctrl_pts, 0));
+        for(int pt=0; pt < nb_points; ++pt) {
+            double x,y,z;
+            PyObject *p_pt = PyList_GET_ITEM(p_ctrl_pts, pt);
+            x = PyFloat_AsDouble(PyList_GET_ITEM(p_pt, 0));
+            y = PyFloat_AsDouble(PyList_GET_ITEM(p_pt, 1));
+            if(nb_elem == 3) {
+                z = PyFloat_AsDouble(PyList_GET_ITEM(p_pt, 2));
+            } else {
+                z = 0.;
+            }
+            ctrl_points.append({x,y,z});
+        }
+    }
+
+    Py_XDECREF(p_ctrl_pts);
+    PyGILState_Release(gstate);
+    m_param->setControlPoints(ctrl_points);
+}
+
 QStringList gnomonCoreParameterNurbsObject::controlPoints(void)
 {
     gnomonCoreParameterNurbs::ctrls_type ctrl_points = m_param->controlPoints();
     QStringList res;
     for(auto point: ctrl_points) {
         QString p_str = "[" + QString::number(point[0], 'g', 2) + " , "
-              + QString::number(point[1], 'g', 2) + " , " 
+              + QString::number(point[1], 'g', 2) + " , "
               + QString::number(point[2], 'g', 2) + "]";
         res.append(p_str);
-    } 
+    }
     return res;
 }
 
@@ -276,7 +313,7 @@ void gnomonCoreParameterNurbsObject::setFigureNumber(int fig)
     }
 
     if(!d->pVisCurve) {
-        d->initPVisCurve(m_param->dimension());
+        d->initPVisCurve(m_param->dimension(), m_param->is_function());
     }
 
     if(d->pVisCurve && d->pCurve) {
@@ -289,7 +326,7 @@ void gnomonCoreParameterNurbsObject::setFigureNumber(int fig)
         Py_DECREF(p_fig);
         Py_DECREF(pFunc);
 
-        PyObject* pFunc2 = PyObject_GetAttrString(d->pCurve, "render");    
+        PyObject* pFunc2 = PyObject_GetAttrString(d->pCurve, "render");
         PyObject_CallNoArgs(pFunc2);
         Py_DECREF(pFunc2);
 

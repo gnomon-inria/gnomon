@@ -11,49 +11,19 @@
 
 %include "std_shared_ptr.i"
 
-/*
-%shared_ptr(gnomonAbstractForm)
-%shared_ptr(gnomonBinaryImage)
-%shared_ptr(gnomonCellComplex)
-%shared_ptr(gnomonCellGraph)
-%shared_ptr(gnomonCellImage)
-%shared_ptr(gnomonDataDict)
-%shared_ptr(gnomonDataFrame)
-%shared_ptr(gnomonImage)
-%shared_ptr(gnomonLString)
-%shared_ptr(gnomonMesh)
-%shared_ptr(gnomonPointCloud)
-%shared_ptr(gnomonTree)
-%shared_ptr(gnomonSphereForm)
-%shared_ptr(gnomonWallForm)
-
-%shared_ptr(gnomonAbstractDynamicForm)
-%shared_ptr(gnomonBinaryImageSeries)
-%shared_ptr(gnomonCellComplexSeries)
-%shared_ptr(gnomonCellGraphSeries)
-%shared_ptr(gnomonCellImageSeries)
-%shared_ptr(gnomonDataDictSeries)
-%shared_ptr(gnomonDataFrameSeries)
-%shared_ptr(gnomonImageSeries)
-%shared_ptr(gnomonLStringSeries)
-%shared_ptr(gnomonMeshSeries)
-%shared_ptr(gnomonPointCloudSeries)
-%shared_ptr(gnomonTreeSeries)
-*/
-
+%include <gnomonMacro.i>
 %import <dtkBase/dtkBase.i>
 %import <dtkCore/dtkCore.i>
 %import <dtkImagingCore/dtkImagingCore.i>
 
 %{
- 
+
 #include <dtkCore>
 #include <dtkImagingCore>
 
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
-//#include <gnomonVisualization/gnomonView/gnomonViewManager.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 #include <gnomonVisualization/gnomonView/gnomonViewData.h>
@@ -428,7 +398,7 @@
 
 
 // /////////////////////////////////////////////////////////////////
-// Map List_list_double to Qlist(std::array<double, 3>) 
+// Map List_list_double to Qlist(std::array<double, 3>)
 //     using ctrls_type = QList<std::array<double, 3>>;
 // for gnomonCoreParameterNurbs
 // /////////////////////////////////////////////////////////////////
@@ -436,7 +406,7 @@
 //%feature("novaluewrapper") QList<std::array<double, 3>>;
 
 %typemap(in) QList<std::array<double, 3>> {
-    $1 = QList<std::array<double, 3>>();    
+    $1 = QList<std::array<double, 3>>();
     if (PyList_Check($input)) {
         int nb_points = PyList_Size($input);
 
@@ -455,7 +425,7 @@
         }
     } else {
         qWarning() << "List of List of double is expected ad input. empty list is returned";
-    }    
+    }
 }
 
 %typemap(out) QList<std::array<double, 3>> {
@@ -470,64 +440,6 @@
     }
 }
 
-
-/* **************************************************************************
- *
- * ************************************************************************** */
-
-%inline
-%{
-
-/* void setupMatplotlib(qlonglong view_address, int num) */
-/* { */
-/*     QWidget *widget = reinterpret_cast<QWidget *>(view_address); */
-
-/*     foreach(QWidget *top, qApp->topLevelWidgets()) { */
-/*         foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) { */
-/*             if(view->figureNumber() == num) */
-/*             { */
-/*                 view->addWidget(widget); */
-/*             } */
-/*         } */
-/*     } */
-/* } */
-
-/* void addFormToFigure(gnomonAbstractDynamicForm * form, const QString& name, int figure_number) */
-/* { */
-/*     qDebug()<<Q_FUNC_INFO<<form<<figure_number; */
-/*     foreach(QWidget *top, qApp->topLevelWidgets()) { */
-/*         foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) { */
-/*             if(view->figureNumber() == figure_number) */
-/*             { */
-/*                 qDebug()<<Q_FUNC_INFO<<view<<"setForm"<<name; */
-/*                 view->setForm(name,form); */
-/*             } */
-/*         } */
-/*     } */
-/* } */
-
-/* gnomonAbstractDynamicForm *getFigureForm(const QString& name, int figure_number) */
-/* { */
-/*     foreach(QWidget *top, qApp->topLevelWidgets()) { */
-/*         foreach(gnomonViewMatplotlib *view, top->findChildren<gnomonViewMatplotlib *>()) { */
-/*             if(view->figureNumber() == figure_number) */
-/*             { */
-/*                 return view->form(name); */
-/*             } */
-/*         } */
-/*     } */
-/*     return nullptr; */
-/* } */
-
-%}
-
-/*%pythoncode %{
-    def _figure_func(self):
-        from gnomon.utils.matplotlib_tools import gnomon_figure
-        return gnomon_figure(self.figureNumber())
-
-    setattr(gnomonViewMatplotlib, "figure", _figure_func)
-%}*/
 
 // ///////////////////////////////////////////////////////////////////
 // Ignore rules
@@ -772,6 +684,159 @@
 }
 
 // /////////////////////////////////////////////////////////////////
+// QJsonObject for Lpy  colors and texture
+// /////////////////////////////////////////////////////////////////
+%fragment("Gnomon_QJsonValue", "header") {
+    QJsonValue Gnomon_QJsonValue(PyObject *obj) {
+        QJsonValue result = 0;
+        if(PyList_Check(obj)) {
+            int r, g, b;
+            r = PyLong_AsLong(PyList_GET_ITEM(obj, 0));
+            g = PyLong_AsLong(PyList_GET_ITEM(obj, 1));
+            b = PyLong_AsLong(PyList_GET_ITEM(obj, 2));
+            QList<QVariant> color;
+            color << r << g << b;
+            QJsonArray t = QJsonArray::fromVariantList(color);
+            result =  QJsonValue(t);
+        } else if(PyString_Check(obj)) {
+            result =  QJsonValue(QString(PyUnicode_AsUTF8(obj)));
+        }
+
+        return result;
+    } 
+}
+
+%typemap(in, fragment="Gnomon_QJsonValue") const QJsonValue& {
+    $1 = new QJsonValue(Gnomon_QJsonValue($input));
+
+}
+
+// TODO: Implement out, directorin and directorout of QJsonValue
+
+%typemap(freearg) const QJsonValue& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(in, fragment="Gnomon_QJsonValue") QJsonObject {
+    if (PyDict_Check($input)) {
+        $1 = new QJsonObject();
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QJsonValue v;
+        QString k;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            k = QString(PyUnicode_AsUTF8(key));
+            v = Gnomon_QJsonValue(value);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QJsonObject is returned.");
+    }
+
+}
+
+%typemap(in, fragment="Gnomon_QJsonValue") const QJsonObject& {
+    if (PyDict_Check($input)) {
+        $1 = new QJsonObject();
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QJsonValue v;
+        QString k;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            k = QString(PyUnicode_AsUTF8(key));
+            v = Gnomon_QJsonValue(value);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QJsonObject is returned.");
+    }
+}
+
+%typemap(freearg) const QJsonObject& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+%typemap(directorin) QJsonObject {
+    if (PyDict_Check($input)) {
+        $1 = new QJsonObject();
+        PyObject *key, *value;
+        Py_ssize_t pos = 0;
+        QJsonValue v;
+        QString k;
+        while (PyDict_Next($input, &pos, &key, &value)) {
+            k = QString(PyUnicode_AsUTF8(key));
+            v = Gnomon_QJsonValue(value);
+            $1->insert(k, v);
+        }
+    } else {
+        qDebug("PyDict is expected as input. Empty QJsonObject is returned.");
+    }
+}
+
+%typemap(directorout) QJsonObject {
+    $result = PyDict_New();
+    QJsonValue c;
+    QString k;
+    PyObject *value = 0;
+
+    QStringList keys = $1.keys();
+    for (auto it = keys.begin(); it != keys.end(); ++it) {
+        k = *it;
+        c = $1[k];
+        if(c.isArray()) {
+            auto cm = c.toArray();
+            std::cout<<cm[1].toInt();
+
+            value = PyList_New(3);
+            PyList_SET_ITEM(value, 0, PyLong_FromLong(cm[0].toInt()));
+            PyList_SET_ITEM(value, 1, PyLong_FromLong(cm[1].toInt()));
+            PyList_SET_ITEM(value, 2, PyLong_FromLong(cm[2].toInt()));
+
+        } else if(c.isString()) {
+            auto t_s = c.toString().toStdString();
+            value = PyString_FromString(t_s.c_str());
+        }
+        
+        std::string k_str = k.toStdString();
+
+        PyDict_SetItemString($result, k_str.c_str(), value);
+    }
+}
+
+%typemap(out) QJsonObject {
+    $result = PyDict_New();
+    QJsonValue c;
+    QString k;
+    PyObject *value = 0;
+
+    QStringList keys = $1.keys();
+    for (auto it = keys.begin(); it != keys.end(); ++it) {
+        k = *it;
+        c = $1[k];
+        if(c.isArray()) {
+            auto cm = c.toArray();
+
+            value = PyList_New(3);
+            PyList_SET_ITEM(value, 0, PyLong_FromLong(cm[0].toInt()));
+            PyList_SET_ITEM(value, 1, PyLong_FromLong(cm[1].toInt()));
+            PyList_SET_ITEM(value, 2, PyLong_FromLong(cm[2].toInt()));
+
+        } else if(c.isString()) {
+            auto t_s = c.toString().toStdString();
+            value = PyString_FromString(t_s.c_str());
+        }
+
+        std::string k_str = k.toStdString();
+
+        PyDict_SetItemString($result, k_str.c_str(), value);
+    }
+}
+
+// /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
@@ -798,6 +863,7 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterNurbs, ParameterNurbs)
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
 
+//%include <gnomonCore/gnomonPluginFactory.h>
 %include <gnomonVisualization/gnomonActor/gnomonActor.h>
 %include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 %include <gnomonVisualization/gnomonManager/gnomonFormManager.h>

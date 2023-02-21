@@ -7,7 +7,7 @@
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DEFINE_CONCEPT(gnomonAbstractTreeTransform, treeTransform, gnomonCore);
+    GNOMON_DEFINE_CONCEPT(gnomonAbstractTreeTransform, treeTransform, gnomonCore);
 }
 
 //

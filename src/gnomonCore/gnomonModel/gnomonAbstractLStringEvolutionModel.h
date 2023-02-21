@@ -3,6 +3,7 @@
 #include <gnomonCoreExport.h>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include "gnomonAbstractModel.h"
 
@@ -15,11 +16,8 @@ public:
     virtual ~gnomonAbstractLStringEvolutionModel(void) = default;
 
 public:
-    virtual void reset(void) override = 0;
-    virtual void step(double time, double dt) override = 0;
-    virtual void run(double timeMin, double timeMax, double dt) override = 0;
-
-public:
+    void step(double time, double dt) override { stepAndReturn(time, dt); };
+    virtual std::shared_ptr<gnomonLString> stepAndReturn(double time, double dt) = 0;
     virtual std::shared_ptr<gnomonLStringSeries> state(void) = 0;
     virtual std::shared_ptr<gnomonLStringSeries> initialState(void) = 0;
     virtual void setInitialState(std::shared_ptr<gnomonLStringSeries>) = 0;
@@ -27,6 +25,7 @@ public:
 // TODO: Not sure the model abstraction should know about LSystem code :/
 public:
     virtual void setLSystem(const QString& code) = 0;
+    virtual const QString& lSystemCode(void) = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -51,15 +50,15 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringEvolutionModel *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT, lStringEvolutionModel);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT, lStringEvolutionModel);
 }
 
 //

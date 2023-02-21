@@ -145,7 +145,7 @@ void gnomonActor2DCellImagePrivate::updateSlice(int orientation)
 
 vtkStandardNewMacro(gnomonActor2DCellImage);
 
-void gnomonActor2DCellImage::setInteractor(void *interactor)
+void gnomonActor2DCellImage::setInteractor(vtkSmartPointer<vtkRenderWindowInteractor>s*interactor)
 {
     d->interactor = static_cast<vtkRenderWindowInteractor *>(interactor);
 }

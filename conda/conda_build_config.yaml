@@ -1,3 +1,7 @@
+python:
+  - 3.9
+numpy:
+  - 1.22
 compiler_version:          # [linux]
     - 11.2.0               # [linux]
 cxx_compiler_version:      # [linux]
@@ -8,8 +12,7 @@ MACOSX_DEPLOYMENT_TARGET:  # [osx]
 MACOSX_SDK_VERSION:        # [osx and x86_64]
   - '10.12'                # [osx and x86_64]
 CONDA_BUILD_SYSROOT:                             # [osx]
+  # Modify here if you don't build on the CI machine
+  # For instance: - /Users/gcerutti/Development/MacOSX-SDKs/MacOSX10.12.sdk # [osx]
+  # Dowload the 10.12 SDK from https://github.com/phracker/MacOSX-SDKs
   - /Users/ci/Desktop/MacOSX-SDKs/MacOSX10.12.sdk # [osx]
-
-
-
-

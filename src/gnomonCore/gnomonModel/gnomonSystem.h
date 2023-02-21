@@ -5,6 +5,7 @@
 #include <functional>
 
 #include <dtkCore>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 class gnomonAbstractSystemScenario;
 

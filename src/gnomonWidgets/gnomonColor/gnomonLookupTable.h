@@ -3,6 +3,7 @@
 #include <gnomonWidgetsExport>
 
 #include <dtkCore/dtkCoreParameterSimple.h>
+#include "gnomonCore/gnomonCorePlugin.h"
 
 #include <QtCore>
 #include <QtWidgets>

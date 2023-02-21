@@ -21,10 +21,10 @@ class gnomonViewForm;
 class gnomonInteractorStylePrivate
 {
     public:
-        QString mode;
+        QString mode = "3D";
 
     public:
-        gnomonViewForm *view;
+        gnomonViewForm *view = nullptr;
 
     public:
         QMap<int, QString> keymap;

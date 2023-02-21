@@ -1,4 +1,5 @@
 from typing import Any
+import numpy as np
 
 from gnomon.utils.gnomonPlugin import register_input, register_output
 from .form_series import buildFormSeries, formDictFromSeries, getFormDataClass
@@ -9,7 +10,7 @@ def _is_form_dict_modified(old: dict[str, Any], new: dict[str, Any]) -> bool:
     modified = modified or any(key not in new for key in old)
     modified = modified or any(key not in old for key in new)
     if not modified:  # same length and same keys
-        modified = modified or any(old[key] != new[key] for key in old)
+        modified = modified or np.any(old[key] != new[key] for key in old)
     return modified
 
 

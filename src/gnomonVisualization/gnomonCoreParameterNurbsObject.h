@@ -13,18 +13,20 @@ class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterNurbsObject : public dtkCore
     Q_PROPERTY(int figureNumber READ figureNumber WRITE setFigureNumber NOTIFY figureNumberChanged);
     Q_PROPERTY(int degree READ degree WRITE setDegree NOTIFY degreeChanged)
     Q_PROPERTY(double delta READ delta WRITE setDelta NOTIFY deltaChanged)
-    Q_PROPERTY(QStringList controPoints READ controlPoints WRITE setControlPoints NOTIFY controlPointsChanged)
+    Q_PROPERTY(QStringList controlPoints READ controlPoints WRITE setControlPoints NOTIFY controlPointsChanged)
 
 public:
     gnomonCoreParameterNurbsObject(gnomonCoreParameterNurbs *p);
     ~gnomonCoreParameterNurbsObject(void);
 
 public:
+    Q_INVOKABLE void updateControlPointsFromPython(void);
+
+public:
     int degree(void);
     double delta(void);
     QStringList controlPoints(void);
     int figureNumber(void);
-
 
     void setDegree(int);
     void setDelta(double);

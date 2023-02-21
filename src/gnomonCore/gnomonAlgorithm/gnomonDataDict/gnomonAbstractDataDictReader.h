@@ -1,7 +1,9 @@
 #pragma once
 
-#include <gnomonCoreExport.h> 
+#include <gnomonCoreExport.h>
 #include <dtkCore>
+
+#include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonDataDict/gnomonDataDict.h"
 
@@ -47,15 +49,15 @@ public:
 
 DTK_DECLARE_OBJECT(gnomonAbstractDataDictReader *)
 DTK_DECLARE_PLUGIN(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT)
-DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT)
+//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT)
 
 // /////////////////////////////////////////////////////////////////
 // Register to gnomonCore layer
 // /////////////////////////////////////////////////////////////////
 
 namespace gnomonCore {
-    DTK_DECLARE_CONCEPT(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT, dataDictReader);
+    GNOMON_DECLARE_CONCEPT(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT, dataDictReader);
 }
 
 //

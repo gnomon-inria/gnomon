@@ -1,53 +1,66 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractEvolutionModelCommand>
 
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
 #include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel>
 
-class GNOMONCORE_EXPORT gnomonLStringEvolutionModelCommand : public QObject
+enum class SimulationType {step = 1, run = 2, animate = 3};
+class GNOMONCORE_EXPORT gnomonLStringEvolutionModelCommand : public gnomonAbstractEvolutionModelCommand
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
      gnomonLStringEvolutionModelCommand(void);
     ~gnomonLStringEvolutionModelCommand(void) override;
 
 public slots:
-    virtual void  predo(void);
-    virtual void postdo(void);
-    virtual void   undo(void);
-    virtual void   redo(void);
+    virtual void  predo(void) override;
+    virtual void postdo(void) override;
+    virtual void   undo(void) override;
+    // virtual void   redo() override;
+    virtual inline void redo(void) override{
+        this->redo(nullptr, nullptr);
+    }
+    virtual QFuture<int> redo(QMutex *mutex, QWaitCondition * synchro);
+
+signals:
+    void finished(void);
+    void stepFinished(int);
 
 public:
-    void setInitialState(std::shared_ptr<gnomonLStringSeries> lstring);
-    std::shared_ptr<gnomonLStringSeries> initialState(void);
+    void setAxiom(std::shared_ptr<gnomonLStringSeries> lstring);
+    std::shared_ptr<gnomonLStringSeries> axiom(void);
 
-    std::shared_ptr<gnomonLStringSeries> state(void);
+    std::shared_ptr<gnomonLStringSeries> lString(void);
 
 public:
     void setLSystem(const QString& code);
+    const QString& lSystemCode(void) const;
+
+    int derivationLength(void) const;
+    void setDerivationLength(int);
+
+    int animationStep(void) const;
+    void setAnimationStep(int);
+
+    SimulationType simulationType;
 
 public:
-    const QString& modelName(void) { return this->model_name; }
-    virtual void setModelName(const QString& name);
+    virtual void setModelName(const QString& name) override;
 
-    const QString& factoryName(void) { return this->factory_name; }
+public:
+    virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > initialState() override;
+    virtual gnomonAbstractCommand::orderedMap initialStateTypes() override;
+    virtual void setInitialState(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
+
+    virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > state() override;
+    virtual gnomonAbstractCommand::orderedMap stateTypes() override;
 
 public:
     static bool isEmpty();
     inline static const QString groupName = "lStringEvolutionModel";
     static QStringList availablePlugins();
-
-public:
-    inline virtual dtkCoreParameters parameters() const { return this->model->parameters(); };
-    inline virtual void setParameter(const QString& parameter, const QVariant& value) { this->model->setParameter(parameter, value); }
-    inline virtual QMap<QString, QString> parameterGroups() const { return this->model->parameterGroups(); };
-
-protected:
-    class gnomonAbstractModel *model = nullptr;
-    QString model_name = "";
-    QString factory_name = "";
 
 private:
     class gnomonLStringEvolutionModelCommandPrivate *d;
