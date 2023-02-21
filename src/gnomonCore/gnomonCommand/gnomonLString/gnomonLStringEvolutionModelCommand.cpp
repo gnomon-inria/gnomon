@@ -5,6 +5,7 @@
 
 #include <QtConcurrent>
 #include <QtCore>
+#include <qthread.h>
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +17,7 @@ public:
     std::shared_ptr<gnomonLStringSeries> lString = nullptr;
 
     int derivationLength = 0;
+    int animation_step = 1;
 
     std::unique_ptr<QFutureWatcher<int>> watcher = nullptr;
 };
@@ -92,20 +94,24 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
             maxDerivationLength = i+1;
         }
 
-        for(; i<maxDerivationLength; i++) {
-            if( i % 100 == 0)
-                qInfo() <<"Step:"<< i;
+        //let's slow down the computation (10s)!
+        int sleeptime = int(10*1000*d->animation_step / d->derivationLength);
 
+        for(; i<maxDerivationLength; i++) {
             this->predo();
             if(this->simulationType == SimulationType::run) {
                 this->model->run(0, 0, 0);
                 this->postdo();
             } else {
-                auto temp = lstring_model->stepAndReturn(i, 1);
-                d->lString->insert(i+1, temp );
+                if ((i+1) % d->animation_step == 0) {
+                    d->lString->insert(i+1, lstring_model->stepAndReturn(i, 1));
+                    promise.setProgressValue(i+1);
+                    QThread::msleep(sleeptime);
+                } else {
+                    lstring_model->step(i,1);
+                }
             }
 
-            promise.setProgressValue(i);
             promise.suspendIfRequested();
             if (promise.isCanceled())
                 return;
@@ -157,6 +163,16 @@ int gnomonLStringEvolutionModelCommand::derivationLength(void) const
 void gnomonLStringEvolutionModelCommand::setDerivationLength(int l)
 {
     d->derivationLength = l;
+}
+
+int gnomonLStringEvolutionModelCommand::animationStep(void) const
+{
+    return d->animation_step;
+}
+
+void gnomonLStringEvolutionModelCommand::setAnimationStep(int s)
+{
+    d->animation_step = s;
 }
 
 void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)

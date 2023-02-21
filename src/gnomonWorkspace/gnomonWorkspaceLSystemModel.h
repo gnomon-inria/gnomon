@@ -24,6 +24,7 @@ public:
 public:
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     Q_PROPERTY(int derivationLength READ derivationLength WRITE setDerivationLength NOTIFY derivationLengthChanged)
+    Q_PROPERTY(int animationStep READ animationStep WRITE setAnimationStep NOTIFY animationStepChanged)
 
     Q_PROPERTY(QString modelName READ modelName WRITE setModelName NOTIFY modelChanged);
     Q_PROPERTY(QStringList models READ models NOTIFY modelsLoaded);
@@ -35,6 +36,7 @@ public:
 signals:
     void textChanged(const QString&);
     void derivationLengthChanged(int);
+    void animationStepChanged(int);
 
     void modelsLoaded(void);
     void modelChanged(const QString& model);
@@ -47,6 +49,9 @@ public:
 
     int derivationLength(void);
     void setDerivationLength(int l);
+
+    int animationStep(void);
+    void setAnimationStep(int s);
 
 public:
     Q_INVOKABLE QUrl defaultReadPath();
