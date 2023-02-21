@@ -408,6 +408,11 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
                     if "manifest.json" not in container.namelist():
                         raise RuntimeError("Invalid series container, no manifest.json file found.")
                     manifest = loads(container.read("manifest.json").decode("utf-8"))
+                    # extracting misc files
+                    if "misc_files" in manifest:
+                        for filename in manifest["misc_files"]:
+                            container.extract(filename, tmpdirname)
+                    # extracting form files
                     for t, filename in manifest["series"].items():
                         new_paths.append(container.extract(filename, tmpdirname))
                         time_stamps.append(t)
@@ -473,7 +478,8 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
                     ext: str = suffix if suffix != ".zip" else self.extensions()[0]
                     ext = "." + ext if not ext.startswith(".") else ext
                     filename_template = stem + "_t{:.0f}" + ext
-                    manifest = {"extension": ext[1:], "name_format": filename_template, "series": {}}
+                    manifest = {"extension": ext[1:], "name_format": filename_template, "series": {}, "misc_files": []}
+                    not_misc_files = os.listdir(tmpdirname)  # ignore as not part of the form written
                     for i, (t, form) in enumerate(forms.items()):
                         filename = filename_template.format(i)
                         manifest["series"][t] = filename
@@ -481,6 +487,14 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
                         self.setPath(str(filepath))
                         setattr(self, form_attr, {t: form})
                         f(self)
+                        container.write(str(filepath), str(filename))
+                        not_misc_files.append(filename)  # ignore as already in zip
+                    # saving other files written by the plugins
+                    files_inventory = os.listdir(tmpdirname)
+                    misc_files = set(files_inventory) - set(not_misc_files)
+                    for filename in misc_files:
+                        manifest["misc_files"].append(filename)
+                        filepath = Path(tmpdirname).joinpath(filename)
                         container.write(str(filepath), str(filename))
                     # writing manifest
                     filepath = Path(tmpdirname).joinpath("manifest.json")
