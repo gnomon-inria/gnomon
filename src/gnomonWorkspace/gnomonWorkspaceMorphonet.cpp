@@ -149,7 +149,7 @@ void gnomonWorkspaceMorphonetPrivate::clearWatcherAndForms(void) {
 
 gnomonWorkspaceMorphonetPrivate::~gnomonWorkspaceMorphonetPrivate() {
     this->clearWatcherAndForms();
-    if(morphoplot_process->state()!=QProcess::NotRunning){
+    if(morphoplot_process && morphoplot_process->state()!=QProcess::NotRunning){
         morphoplot_process->kill();
     }
     delete morphoplot_process;
