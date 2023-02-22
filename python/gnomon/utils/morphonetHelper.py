@@ -665,8 +665,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
             for info_name, info_string in infos.items():
                 info_type, info_dict = _dict_from_info(info_string)
                 logging.info(f"  --> Found info {info_name} of type {info_type}")
-                print(info_dict)
-                add_cell_feature_from_info(tissue, i_t, info_name, info_type, info_dict)
+                add_cell_feature_from_info(tissue, int(i_t), info_name, info_type, info_dict)
             forms[t] = tissue
         m_socket.send_json({"request": "kill"})
         form_dict, data_dict = buildFormSeries(form_dict=forms, form_class=gnomonCellImage,
