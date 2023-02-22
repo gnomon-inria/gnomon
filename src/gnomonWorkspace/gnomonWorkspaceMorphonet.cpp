@@ -418,6 +418,7 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
     }
 
     d->morphoplot_process = new QProcess();
+    d->morphoplot_process->setProcessChannelMode(QProcess::ForwardedChannels);
     QObject::connect(d->morphoplot_process, &QProcess::readyReadStandardOutput, [&]() {
         QStringList data = QString(d->morphoplot_process->readAllStandardOutput()).split("\n");
         for(auto d : data) {
@@ -454,10 +455,11 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
 void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
 {
     if(d->morphoplot_process) {
-        auto image = this->view()->cellImage();
+        //auto image = this->view()->cellImage();
         qDebug() << "launch collect for image ";
-        gnomonMorphonetHelper::instance()->collectDataset(image);
+        auto image = gnomonMorphonetHelper::instance()->collectDataset();
         qDebug() << "collect done";
+        this->view()->setCellImage(image);
 
         //this->view()->setCellImage(imageSerie, {}); //same image, not needed?
         // just beed to refresh the view

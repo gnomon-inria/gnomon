@@ -17,7 +17,8 @@ class MorphoPlot():
         self.m_socket = self.context.socket(zmq.REP)
         self.m_socket.bind("tcp://127.0.0.1:5555")
         self.mc = morphonet.Plot(clear_temp=True)
-        self.mc.set_dataset(begin=0,end=0, background=1)
+        self.mc.set_dataset(begin=0, end=0, background=1)
+        self.timestamps = {}
         self.readyToCurate = False
         
     #@staticmethod
@@ -34,37 +35,42 @@ class MorphoPlot():
         self.mc.dataset.seg_from_disk[t] = False
         self.mc.dataset.set_seg(t, data)
         self.config = True
-        #self.mc.curate()
 
     
     def data_handler(self):
         """ test server
         """
-        test_time = 0
         print("launching server, listening on 5555 for data")
         while True:
             data_json = self.m_socket.recv_json()
+            request = data_json["request"]
             if data_json["request"] == "set":
                 print("set data!")
                 data_received = np.asarray(data_json["data"], dtype=np.uint16)
-                self._set_morpho_data(test_time, data_received)
+                self.timestamps[data_json["index"]] = data_json["time"]
+                self._set_morpho_data(data_json["index"], data_received)
                 print("sending response")
                 self.m_socket.send_json({"response": "data received"})
                 print("response ok")
-                self.readyToCurate = True
 
-            if data_json["request"] == "launch":
+            elif request == "set_infos":
+                infos = data_json["infos"]
+                #self.mc.dataset.infos = infos
+                self.m_socket.send_json({"response": "Dataset information set"})
+
+            elif data_json["request"] == "launch":
                 print("launch curate!") # if necessary
+                self.readyToCurate = True
+                self.m_socket.send_json({"response": "Curation started"})
 
-            if data_json["request"] == "collect":
+            elif data_json["request"] == "collect":
                 print("collect data!")
-                datas = self.mc.dataset.seg_datas[0] # time 0 , TODO multiple times
-                self.m_socket.send_json({"response": "ok", "data": datas.tolist()})
+                datas = {i_t: data.tolist() for i_t, data in self.mc.dataset.seg_datas.items()}
+                self.m_socket.send_json({"response": "ok", "data": datas, "timestamps": self.timestamps})
 
-            if data_json["request"] == "kill":
+            elif data_json["request"] == "kill":
                 print("kill!") # if necessary
                 exit(0)
-                break
 
     def run_morphoplot(self):
         while True:
@@ -92,9 +98,9 @@ def main():
 
     dataHandler = threading.Thread(target=mplot.data_handler)
     dataHandler.start()
-    #mplot.mc.curate()
-
     mplot.run_morphoplot()
+    dataHandler.join()
+
 
 if __name__ == "__main__":
     main()

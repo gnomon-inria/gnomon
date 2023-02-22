@@ -15,8 +15,10 @@ from vtk.util.numpy_support import numpy_to_vtk, vtk_to_numpy
 from gnomon.core import gnomonCellImage, cellImageData_pluginFactory, setMorphonetHelperCreator, gnomonMorphonetHelper, gnomonMorphonetHelperCreator
 from gnomon.utils import load_plugin_group
 
-from gnomon.utils.decorators.form_series import formDictFromSeries
+from gnomon.utils.decorators.form_series import formDictFromSeries, buildFormSeries
 from morphonet import Net, tools
+
+from gnomon_package_tissueimage.form.cellImageData.gnomonCellImageDataTissueImage import gnomonCellImageDataTissueImage
 
 from timagetk import TissueImage3D, LabelledImage, SpatialImage
 from timagetk.algorithms.resample import isometric_resampling
@@ -611,8 +613,9 @@ class MorphonetHelper(gnomonMorphonetHelper):
         times = np.sort(list(form_series.keys()))
         print("times " , times)
         cell_img_data = {}
+        infos = self.transform_to_mn_infos(form_series)
         for i_t, time in enumerate(times):
-            cell_img_data[time] = form_series[time].data().get_tissue_image().get_array() 
+            cell_img_data[time] = form_series[time].data().get_tissue_image().get_array()
         
         context = zmq.Context()
         m_socket = context.socket(zmq.REQ)
@@ -622,34 +625,40 @@ class MorphonetHelper(gnomonMorphonetHelper):
         print("np array: ndim" , cell_img_data[0.0].ndim, " size:", cell_img_data[0.0].size, " dtype:", cell_img_data[0.0].dtype)
         # TODO send data + time 
         #message = {"request": "set", "data": pickle.dumps(cell_img_data[0.0]), "time": 0}
-        message = {"request": "set", "data": cell_img_data[0.0].tolist(), "time": 0}
-        m_socket.send_json(message)
+        for i_t, (time, data) in enumerate(cell_img_data.items()):
+            message = {"request": "set", "data": data.tolist(), "index": i_t, "time": time}
+            m_socket.send_json(message)
+            message = m_socket.recv()
+            print("status: ", message)
+        m_socket.send_json({"request": "set_infos", "infos": infos})
         message = m_socket.recv()
-        print("data status: ", message)
-
+        print("status: ", message)
+        m_socket.send_json({"request": "launch"})
+        message = m_socket.recv()
+        print("status: ", message)
         return True
 
     
-    def collectDataset(self, image):
+    def collectDataset(self):
         print("I want data")
+        forms: dict[float, TissueImage3D] = {}
         context = zmq.Context()
         m_socket = context.socket(zmq.REQ)
         m_socket.connect("tcp://127.0.0.1:5555")
-        m_socket.send_json({"request" : "collect"})
-        message = m_socket.recv_json()
+        m_socket.send_json({"request": "collect"})
+        message: dict = m_socket.recv_json()
         print(f"Received reply  data")
-        data = np.asarray(message["data"], dtype=np.uint16)
-        print("np array: ndim" , data.ndim, " size:", data.size, " dtype:", data.dtype)
-
-        tissue_image = image[0.].data().get_tissue_image()
-        tissue_image[:, :, :] = 3*data
-        m_socket.send_json({"request" : "kill"})
-
-        #print(dir(tissue_image))
-        #print(tissue_image)
-        #tissue_image.set_array(data)
-        #for i_t, time in enumerate(times):
-        #    cell_img_data[time] = form_series[time].data().get_tissue_image().get_array() 
+        datas: dict[int, np.ndarray] = message["data"]
+        times: dict[int, float] = message["timestamps"]
+        for i_t, data in datas.items():
+            t = times[i_t]
+            data = np.asarray(data, dtype=np.uint16)
+            print("np array: ndim", data.ndim, " size:", data.size, " dtype:", data.dtype)
+            forms[t] = TissueImage3D(data)
+        m_socket.send_json({"request": "kill"})
+        form_dict, data_dict = buildFormSeries(form_dict=forms, form_class=gnomonCellImage,
+                                               data_plugin=gnomonCellImageDataTissueImage)
+        return form_dict
 
 
 
