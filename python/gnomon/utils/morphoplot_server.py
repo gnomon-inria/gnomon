@@ -1,12 +1,16 @@
 import sys
 import pickle
 import time
-import morphonet
 import signal
 import threading
 import zmq
 
 import numpy as np
+
+import morphonet
+from morphonet.plot import MorphoInfo
+
+from .morphonetHelper import _dict_from_info
 
 class MorphoPlot():
     """helper class to launch a morpho plot server and communicate with it.
@@ -19,6 +23,7 @@ class MorphoPlot():
         self.mc = morphonet.Plot(clear_temp=True)
         self.mc.set_dataset(begin=0, end=0, background=1)
         self.timestamps = {}
+        self.tissue_args = {}
         self.readyToCurate = False
         
     #@staticmethod
@@ -28,11 +33,12 @@ class MorphoPlot():
     #        self.mc.quit_and_exit()
     #        exit(0) 
 
-    def _set_morpho_data(self, t: int, data): #data np.Array
+    def _set_morpho_data(self, t: int, data: np.ndarray, voxelsize: tuple[float, float, float]):
         if t > self.mc.dataset.end:
             self.mc.dataset.end = t
 
         self.mc.dataset.seg_from_disk[t] = False
+        self.mc.dataset.voxel_size_by_t[t] = voxelsize
         self.mc.dataset.set_seg(t, data)
         self.config = True
 
@@ -47,15 +53,21 @@ class MorphoPlot():
             if data_json["request"] == "set":
                 print("set data!")
                 data_received = np.asarray(data_json["data"], dtype=np.uint16)
+                self.tissue_args[data_json["index"]] = data_json["tissue_args"]
+                voxelsize = self.tissue_args[data_json["index"]]["voxelsize"]
                 self.timestamps[data_json["index"]] = data_json["time"]
-                self._set_morpho_data(data_json["index"], data_received)
+                self._set_morpho_data(data_json["index"], data_received, voxelsize)
                 print("sending response")
                 self.m_socket.send_json({"response": "data received"})
                 print("response ok")
 
             elif request == "set_infos":
                 infos = data_json["infos"]
-                #self.mc.dataset.infos = infos
+                for info_name, info_string in infos.items():
+                    info_type, _ = _dict_from_info(info_string)
+                    info = MorphoInfo(self.mc.dataset, info_name, info_type)
+                    info.add_data(info_string)
+                    self.mc.dataset.infos[info_name] = info
                 self.m_socket.send_json({"response": "Dataset information set"})
 
             elif data_json["request"] == "launch":
@@ -66,7 +78,8 @@ class MorphoPlot():
             elif data_json["request"] == "collect":
                 print("collect data!")
                 datas = {i_t: data.tolist() for i_t, data in self.mc.dataset.seg_datas.items()}
-                self.m_socket.send_json({"response": "ok", "data": datas, "timestamps": self.timestamps})
+                infos = {info_name: info.get_txt() for info_name, infos in self.mc.dataset.infos.items()}
+                self.m_socket.send_json({"response": "ok", "data": datas, "infos": infos, "timestamps": self.timestamps, "tissue_args": self.tissue_args})
 
             elif data_json["request"] == "kill":
                 print("kill!") # if necessary

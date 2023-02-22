@@ -5,6 +5,7 @@ import re
 import traceback
 import zmq
 import pickle
+from typing import Any
 
 import numpy as np
 import scipy.ndimage as nd
@@ -115,6 +116,32 @@ def _dict_from_info(info_str):
                     info_dict[int(time)][int(label)] = int(previous_label)
 
     return info_type, info_dict
+
+
+def add_cell_feature_from_info(tissue: TissueImage3D, time: int, info_name: str, info_type: str, info_dict: dict[float, dict[int, Any]]):
+    if info_type == 'time':
+        feature_name = 'ancestor'
+        if time not in info_dict.keys():
+            feature_dict = {c: c for c in tissue.cell_ids()}
+        else:
+            feature_dict = {c: info_dict[time][c] for c in tissue.cell_ids() if c in info_dict[time]}
+    else:
+        feature_name = info_name
+        if time in info_dict:
+            if info_type == 'selection':
+                feature_dict = {
+                    c: info_dict[time][c] if c in info_dict[time] else 0 for c in tissue.cell_ids()
+                }
+            elif info_type == 'float':
+                feature_dict = {
+                    c: info_dict[time][c] if c in info_dict[time] else np.nan for c in tissue.cell_ids()
+                }
+            else:
+                feature_dict = {c: info_dict[time][c] for c in tissue.cell_ids() if c in info_dict[time]}
+        else:
+            feature_dict = {}
+    logging.info(f"  --> Add feature {feature_name} on {len(feature_dict)} cells")
+    tissue.cells.set_feature(feature_name, feature_dict)
 
 
 class MorphonetHelper(gnomonMorphonetHelper):
@@ -439,32 +466,8 @@ class MorphonetHelper(gnomonMorphonetHelper):
                 logging.info(f"  --> Found info {info_name} of type {info_type}")
 
         for info_type, info_name, info_dict in self.dataset_info:
-            if info_type == 'time':
-                feature_name = 'ancestor'
-                if time not in info_dict.keys():
-                    feature_dict = {c:c for c in tissue.cell_ids()}
-                else:
-                    feature_dict = {c:info_dict[time][c] for c in tissue.cell_ids() if c in info_dict[time]}
-            else:
-                feature_name = info_name
-                if time in info_dict:
-                    if info_type == 'selection':
-                        feature_dict = {c: info_dict[time][c]
-                                           if c in info_dict[time]
-                                           else 0
-                                        for c in tissue.cell_ids()}
-                    elif info_type == 'float':
-                        feature_dict = {c: info_dict[time][c]
-                                           if c in info_dict[time]
-                                           else np.nan
-                                        for c in tissue.cell_ids()}
-                    else:
-                        feature_dict = {c:info_dict[time][c] for c in tissue.cell_ids() if c in info_dict[time]}
-                else:
-                    feature_dict = {}
+            add_cell_feature_from_info(tissue, time, info_name, info_type, info_dict)
 
-            logging.info(f"  --> Add feature {feature_name} on {len(feature_dict)} cells")
-            tissue.cells.set_feature(feature_name, feature_dict)
 
     def transform_to_mn_mesh(self, seg_img, time, voxelsize, border):
         """
@@ -615,7 +618,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         cell_img_data = {}
         infos = self.transform_to_mn_infos(form_series)
         for i_t, time in enumerate(times):
-            cell_img_data[time] = form_series[time].data().get_tissue_image().get_array()
+            cell_img_data[time] = form_series[time].data().get_tissue_image()
         
         context = zmq.Context()
         m_socket = context.socket(zmq.REQ)
@@ -626,7 +629,8 @@ class MorphonetHelper(gnomonMorphonetHelper):
         # TODO send data + time 
         #message = {"request": "set", "data": pickle.dumps(cell_img_data[0.0]), "time": 0}
         for i_t, (time, data) in enumerate(cell_img_data.items()):
-            message = {"request": "set", "data": data.tolist(), "index": i_t, "time": time}
+            tissue_args = {"voxelsize": data.voxelsize, "not_a_label": data.not_a_label, "background": data.background}
+            message = {"request": "set", "data": data.tolist(), "index": i_t, "time": time, "tissue_args": tissue_args}
             m_socket.send_json(message)
             message = m_socket.recv()
             print("status: ", message)
@@ -650,11 +654,20 @@ class MorphonetHelper(gnomonMorphonetHelper):
         print(f"Received reply  data")
         datas: dict[int, np.ndarray] = message["data"]
         times: dict[int, float] = message["timestamps"]
+        tissue_args: dict[int, dict] = message["tissue_args"]
+        infos: dict[str, str] = message["infos"]
         for i_t, data in datas.items():
             t = times[i_t]
             data = np.asarray(data, dtype=np.uint16)
             print("np array: ndim", data.ndim, " size:", data.size, " dtype:", data.dtype)
-            forms[t] = TissueImage3D(data)
+            tissue = TissueImage3D(data, **tissue_args[i_t])
+
+            for info_name, info_string in infos.items():
+                info_type, info_dict = _dict_from_info(info_string)
+                logging.info(f"  --> Found info {info_name} of type {info_type}")
+                print(info_dict)
+                add_cell_feature_from_info(tissue, i_t, info_name, info_type, info_dict)
+            forms[t] = tissue
         m_socket.send_json({"request": "kill"})
         form_dict, data_dict = buildFormSeries(form_dict=forms, form_class=gnomonCellImage,
                                                data_plugin=gnomonCellImageDataTissueImage)
@@ -783,7 +796,7 @@ def test_plot():
     mn.sendDataset("toto", cellImage, 1, 3, "description")
     print(" END SEND DDDDDD")
 
-    time.sleep(10)
+    input()
     mn.collectDataset(cellImage)
 
 if __name__ == "__main__":
