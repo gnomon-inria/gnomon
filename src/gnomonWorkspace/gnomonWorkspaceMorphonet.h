@@ -16,7 +16,10 @@ class GNOMONWORKSPACE_EXPORT gnomonWorkspaceMorphonet : public gnomonAbstractWor
 {
     Q_OBJECT
     Q_CLASSINFO("description", "\
-This workspace allows to connect to MorphoNet and import/export datasets\
+This workspace allows to connect to MorphoNet and download/upload datasets on \
+the MorphoNet server. It also allows to use MorphoPlot to perform curation on \
+cell image series, for instance to manually correct the output of an image \
+segmentation.\
 \n")
 
 public:

@@ -169,9 +169,9 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
 
     d->view->setAcceptForm("gnomonCellImage",true);
 
-    connect(d->view, &gnomonViewForm::exportedForm, [=] () {
-        //TODO what to do in pipeline manager if data coming from morphonet? 
-        d->pipeline_manager->addForm(d->img_series);
+    connect(d->view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+        //TODO what to do in pipeline manager if data coming from morphonet?
+        d->pipeline_manager->addForm(f);
     });
 
     int stat;
@@ -461,8 +461,18 @@ void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
         //auto image = this->view()->cellImage();
         qDebug() << "launch collect for image ";
         auto image = gnomonMorphonetHelper::instance()->collectCuration();
+        image->metadata()->set("source", "MorphoPlot");
         qDebug() << "collect done";
+
+        auto input_image = this->view()->cellImage();
+        QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
+        inputs["cellImage"] = input_image;
+
+        QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
+        outputs["curatedCellImage"] = image;
+
         this->view()->setCellImage(image);
+        d->pipeline_manager->addTask("morphoPlotCuration", inputs, outputs);
 
         //this->view()->setCellImage(imageSerie, {}); //same image, not needed?
         // just beed to refresh the view
