@@ -1,7 +1,5 @@
-import sys
-import pickle
 import time
-import signal
+import logging
 import threading
 import zmq
 
@@ -9,6 +7,10 @@ import numpy as np
 
 import morphonet
 from morphonet.plot import MorphoInfo
+
+from timagetk import LabelledImage
+from timagetk.algorithms.resample import resample, isometric_resampling
+
 
 from .morphonetHelper import _dict_from_info
 
@@ -38,8 +40,23 @@ class MorphoPlot():
             self.mc.dataset.end = t
 
         self.mc.dataset.seg_from_disk[t] = False
-        self.mc.dataset.voxel_size_by_t[t] = voxelsize
-        self.mc.dataset.set_seg(t, data)
+
+        image_voxelsize = voxelsize[0]
+        if not all([v == image_voxelsize for v in voxelsize]):
+            seg_img = LabelledImage(data, voxelsize=voxelsize, not_a_label=0)
+            resampled_seg_img = isometric_resampling(seg_img, method='min', interpolation='nearest')
+            seg_data = resampled_seg_img.get_array()
+            image_voxelsize = resampled_seg_img.voxelsize[0]
+        else:
+            seg_data = data
+        logging.debug(f"--> Resampling: {voxelsize} -> {(image_voxelsize, image_voxelsize, image_voxelsize)}  ({data.shape} -> {seg_data.shape})")
+
+        meshing_voxelsize = 0.5
+        factor = int(np.round(meshing_voxelsize / image_voxelsize))
+        logging.debug(f"--> Setting factor {factor} for meshing")
+        self.mc.factor = factor
+        self.mc.dataset.voxel_size_by_t[t] = [image_voxelsize, image_voxelsize, image_voxelsize]
+        self.mc.dataset.set_seg(t, np.transpose(seg_data, (2,1,0)))
         self.config = True
 
     
@@ -77,8 +94,14 @@ class MorphoPlot():
 
             elif data_json["request"] == "collect":
                 print("collect data!")
-                datas = {i_t: data.tolist() for i_t, data in self.mc.dataset.seg_datas.items()}
-                infos = {info_name: info.get_txt() for info_name, infos in self.mc.dataset.infos.items()}
+                datas = {}
+                for i_t, data in self.mc.dataset.seg_datas.items():
+                    voxelsize = self.mc.dataset.voxel_size_by_t[i_t]
+                    resampled_seg_img = LabelledImage(np.transpose(data, (2,1,0)), voxelsize=voxelsize, not_a_label=0)
+                    seg_img = resample(resampled_seg_img, voxelsize=self.tissue_args[i_t]["voxelsize"], interpolation='nearest')
+                    logging.debug(f"--> De-resampling: {voxelsize} -> {seg_img.voxelsize} ({data.shape} -> {seg_img.shape})")
+                    datas[i_t] = seg_img.get_array().tolist()
+                infos = {info_name: infos.get_txt() for info_name, infos in self.mc.dataset.infos.items()}
                 self.m_socket.send_json({"response": "ok", "data": datas, "infos": infos, "timestamps": self.timestamps, "tissue_args": self.tissue_args})
 
             elif data_json["request"] == "kill":
@@ -96,7 +119,7 @@ class MorphoPlot():
 
 
 def main():
-    print("startint morphoplt server")
+    logging.info("Starting MorphoPlot server")
     mplot = MorphoPlot()
 
     #def collect_data(sig, frame):
