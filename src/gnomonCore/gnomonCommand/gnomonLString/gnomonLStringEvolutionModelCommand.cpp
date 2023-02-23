@@ -95,7 +95,7 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
         }
 
         //let's slow down the computation (10s)!
-        int sleeptime = int(10*1000*d->animation_step / d->derivationLength);
+        int sleeptime = int(10*1000*d->animation_step / maxDerivationLength);
 
         for(; i<maxDerivationLength; i++) {
             this->predo();
@@ -106,7 +106,9 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
                 if ((i+1) % d->animation_step == 0) {
                     d->lString->insert(i+1, lstring_model->stepAndReturn(i, 1));
                     promise.setProgressValue(i+1);
-                    QThread::msleep(sleeptime);
+                    if(this->simulationType == SimulationType::animate) {
+                        QThread::msleep(sleeptime);
+                    }
                 } else {
                     lstring_model->step(i,1);
                 }
