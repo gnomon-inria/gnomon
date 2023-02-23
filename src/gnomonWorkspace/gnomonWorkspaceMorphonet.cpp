@@ -445,7 +445,7 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
         return 1;
     }
 
-    bool server_found = gnomonMorphonetHelper::instance()->sendDataset("name", image, 1, 3, "description");
+    bool server_found = gnomonMorphonetHelper::instance()->startCuration("name", image, 1, 3, "description");
 
     if(!server_found) {
         message("Morphonet Server not found!");
@@ -460,7 +460,7 @@ void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
     if(d->morphoplot_process) {
         //auto image = this->view()->cellImage();
         qDebug() << "launch collect for image ";
-        auto image = gnomonMorphonetHelper::instance()->collectDataset();
+        auto image = gnomonMorphonetHelper::instance()->collectCuration();
         qDebug() << "collect done";
         this->view()->setCellImage(image);
 

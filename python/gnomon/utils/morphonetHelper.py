@@ -600,7 +600,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         return self._net.id_dataset
     
-    def sendDataset(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.8) -> bool:
+    def startCuration(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.8) -> bool:
         """send a dataset through socket 
 
         Args:
@@ -643,7 +643,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         return True
 
     
-    def collectDataset(self):
+    def collectCuration(self):
         print("I want data")
         forms: dict[float, TissueImage3D] = {}
         context = zmq.Context()
