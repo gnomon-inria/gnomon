@@ -21,8 +21,10 @@ G.Workspace {
 
     property alias mn_ds_info: mn_datasets_info;
 
-    fill: () => {}
-
+    fill: () => {
+        if(world.currentRef >= 0)
+            _view.droppedFromManager(world.currentRef);
+    }
     focus: true;
 
     d: GW.WorkspaceMorphonet {

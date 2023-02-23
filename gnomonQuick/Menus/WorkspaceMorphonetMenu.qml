@@ -42,7 +42,7 @@ Control {
             //Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
         G.TabButton {
-            text: "Plot API"
+            text: "Curate"
             //Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
     }
@@ -427,7 +427,7 @@ Control {
                     type: G.Style.ButtonType.Base
                     flat: !enabled
                     //hoverEnabled: enabled
-                    text: "Launch Plot";
+                    text: "Launch Curation";
                     onClicked: {
                         _launch_morphoplot.enabled = false;
                         let res = d.morphoPlot();
@@ -448,7 +448,7 @@ Control {
                     flat: !enabled
                     hoverEnabled: false
                     enabled: false;
-                    text: "Collect Plot Results";
+                    text: "Collect Results";
                     onClicked: {
                         d.morphoPlotCollect();
                         _launch_morphoplot.enabled = true;
