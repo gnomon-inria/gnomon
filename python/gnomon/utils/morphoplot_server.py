@@ -35,7 +35,7 @@ class MorphoPlot():
     #        self.mc.quit_and_exit()
     #        exit(0) 
 
-    def _set_morpho_data(self, t: int, data: np.ndarray, voxelsize: tuple[float, float, float]):
+    def _set_morpho_data(self, t: int, data: np.ndarray, voxelsize: tuple[float, float, float], meshing_voxelsize=0.5):
         if t > self.mc.dataset.end:
             self.mc.dataset.end = t
 
@@ -51,7 +51,6 @@ class MorphoPlot():
             seg_data = data
         logging.debug(f"--> Resampling: {voxelsize} -> {(image_voxelsize, image_voxelsize, image_voxelsize)}  ({data.shape} -> {seg_data.shape})")
 
-        meshing_voxelsize = 0.5
         factor = int(np.round(meshing_voxelsize / image_voxelsize))
         logging.debug(f"--> Setting factor {factor} for meshing")
         self.mc.factor = factor
@@ -73,7 +72,8 @@ class MorphoPlot():
                 self.tissue_args[data_json["index"]] = data_json["tissue_args"]
                 voxelsize = self.tissue_args[data_json["index"]]["voxelsize"]
                 self.timestamps[data_json["index"]] = data_json["time"]
-                self._set_morpho_data(data_json["index"], data_received, voxelsize)
+                meshing_voxelsize = data_json["meshing_voxelsize"]
+                self._set_morpho_data(data_json["index"], data_received, voxelsize, meshing_voxelsize)
                 print("sending response")
                 self.m_socket.send_json({"response": "data received"})
                 print("response ok")

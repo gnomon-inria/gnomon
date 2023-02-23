@@ -404,7 +404,7 @@ int gnomonWorkspaceMorphonet::exportDataset(QString name, int id_NCBI, int id_ty
     return res;
 }
 
-int gnomonWorkspaceMorphonet::morphoPlot(void)
+int gnomonWorkspaceMorphonet::morphoPlot(double voxelsize)
 {
     auto image = this->view()->cellImage();
     if(!image) {
@@ -445,7 +445,7 @@ int gnomonWorkspaceMorphonet::morphoPlot(void)
         return 1;
     }
 
-    bool server_found = gnomonMorphonetHelper::instance()->startCuration("name", image, 1, 3, "description");
+    bool server_found = gnomonMorphonetHelper::instance()->startCuration("name", image, 1, 3, "description", voxelsize);
 
     if(!server_found) {
         message("Morphonet Server not found!");

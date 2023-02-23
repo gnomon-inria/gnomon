@@ -51,7 +51,7 @@ public:
     Q_INVOKABLE QString importDatasetInfos(const QString& search = "");
     Q_INVOKABLE void importDataset(int id, double voxelsize, int time_start=-1, int time_end=-1);
     Q_INVOKABLE int exportDataset(QString name, int id_NCBI, int id_type, QString description, double voxelsize);
-    Q_INVOKABLE int morphoPlot(void);
+    Q_INVOKABLE int morphoPlot(double voxelsize);
     Q_INVOKABLE void morphoPlotCollect(void);
 
     Q_INVOKABLE gnomonViewForm *view(void);

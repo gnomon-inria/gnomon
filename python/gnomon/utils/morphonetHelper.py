@@ -600,7 +600,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         return self._net.id_dataset
     
-    def startCuration(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.8) -> bool:
+    def startCuration(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.5) -> bool:
         """send a dataset through socket 
 
         Args:
@@ -630,7 +630,14 @@ class MorphonetHelper(gnomonMorphonetHelper):
         #message = {"request": "set", "data": pickle.dumps(cell_img_data[0.0]), "time": 0}
         for i_t, (time, data) in enumerate(cell_img_data.items()):
             tissue_args = {"voxelsize": data.voxelsize, "not_a_label": data.not_a_label, "background": data.background}
-            message = {"request": "set", "data": data.tolist(), "index": i_t, "time": time, "tissue_args": tissue_args}
+            message = {
+                "request": "set",
+                "data": data.tolist(),
+                "index": i_t,
+                "time": time,
+                "tissue_args": tissue_args,
+                "meshing_voxelsize": voxelsize,
+            }
             m_socket.send_json(message)
             message = m_socket.recv()
             print("status: ", message)
