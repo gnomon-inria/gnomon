@@ -624,10 +624,6 @@ class MorphonetHelper(gnomonMorphonetHelper):
         m_socket = context.socket(zmq.REQ)
         m_socket.connect("tcp://127.0.0.1:5555")
 
-        print("sending data through socket")
-        print("np array: ndim" , cell_img_data[0.0].ndim, " size:", cell_img_data[0.0].size, " dtype:", cell_img_data[0.0].dtype)
-        # TODO send data + time 
-        #message = {"request": "set", "data": pickle.dumps(cell_img_data[0.0]), "time": 0}
         for i_t, (time, data) in enumerate(cell_img_data.items()):
             tissue_args = {"voxelsize": data.voxelsize, "not_a_label": data.not_a_label, "background": data.background}
             message = {
@@ -640,25 +636,20 @@ class MorphonetHelper(gnomonMorphonetHelper):
             }
             m_socket.send_json(message)
             message = m_socket.recv()
-            print("status: ", message)
         m_socket.send_json({"request": "set_infos", "infos": infos})
         message = m_socket.recv()
-        print("status: ", message)
         m_socket.send_json({"request": "launch"})
         message = m_socket.recv()
-        print("status: ", message)
         return True
 
     
     def collectCuration(self):
-        print("I want data")
         forms: dict[float, TissueImage3D] = {}
         context = zmq.Context()
         m_socket = context.socket(zmq.REQ)
         m_socket.connect("tcp://127.0.0.1:5555")
         m_socket.send_json({"request": "collect"})
         message: dict = m_socket.recv_json()
-        print(f"Received reply  data")
         datas: dict[int, np.ndarray] = message["data"]
         times: dict[int, float] = message["timestamps"]
         tissue_args: dict[int, dict] = message["tissue_args"]
@@ -666,7 +657,6 @@ class MorphonetHelper(gnomonMorphonetHelper):
         for i_t, data in datas.items():
             t = times[i_t]
             data = np.asarray(data, dtype=np.uint16)
-            print("np array: ndim", data.ndim, " size:", data.size, " dtype:", data.dtype)
             tissue = TissueImage3D(data, **tissue_args[i_t])
 
             for info_name, info_string in infos.items():

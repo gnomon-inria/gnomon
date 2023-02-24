@@ -30,7 +30,7 @@ class MorphoPlot():
         
     #@staticmethod
     ##def parent_death_handler(self,sig, frame):
-    #    print("in death method")
+    #    logging.debug("in death method")
     #    if self.mc is not None:
     #        self.mc.quit_and_exit()
     #        exit(0) 
@@ -62,21 +62,21 @@ class MorphoPlot():
     def data_handler(self):
         """ test server
         """
-        print("launching server, listening on 5555 for data")
+        logging.debug("launching server, listening on 5555 for data")
         while True:
             data_json = self.m_socket.recv_json()
             request = data_json["request"]
             if data_json["request"] == "set":
-                print("set data!")
+                logging.debug("set data!")
                 data_received = np.asarray(data_json["data"], dtype=np.uint16)
                 self.tissue_args[data_json["index"]] = data_json["tissue_args"]
                 voxelsize = self.tissue_args[data_json["index"]]["voxelsize"]
                 self.timestamps[data_json["index"]] = data_json["time"]
                 meshing_voxelsize = data_json["meshing_voxelsize"]
                 self._set_morpho_data(data_json["index"], data_received, voxelsize, meshing_voxelsize)
-                print("sending response")
+                logging.debug("sending response")
                 self.m_socket.send_json({"response": "data received"})
-                print("response ok")
+                logging.debug("response ok")
 
             elif request == "set_infos":
                 infos = data_json["infos"]
@@ -88,12 +88,12 @@ class MorphoPlot():
                 self.m_socket.send_json({"response": "Dataset information set"})
 
             elif data_json["request"] == "launch":
-                print("launch curate!") # if necessary
+                logging.debug("launch curate!") # if necessary
                 self.readyToCurate = True
                 self.m_socket.send_json({"response": "Curation started"})
 
             elif data_json["request"] == "collect":
-                print("collect data!")
+                logging.debug("collect data!")
                 datas = {}
                 for i_t, data in self.mc.dataset.seg_datas.items():
                     voxelsize = self.mc.dataset.voxel_size_by_t[i_t]
@@ -105,7 +105,7 @@ class MorphoPlot():
                 self.m_socket.send_json({"response": "ok", "data": datas, "infos": infos, "timestamps": self.timestamps, "tissue_args": self.tissue_args})
 
             elif data_json["request"] == "kill":
-                print("kill!") # if necessary
+                logging.debug("kill!") # if necessary
                 exit(0)
 
     def run_morphoplot(self):
@@ -123,8 +123,8 @@ def main():
     mplot = MorphoPlot()
 
     #def collect_data(sig, frame):
-    #    print("signal: ", sig, "frame:", frame)
-    #    print(mplot)
+    #    logging.debug("signal: ", sig, "frame:", frame)
+    #    logging.debug(mplot)
 
     #signal.signal(signal.SIGTERM, collect_data)
     #signal.signal(signal.SIGHUP, collect_data)
