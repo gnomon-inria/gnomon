@@ -31,11 +31,12 @@ public:
     void setDegree(int);
     void setDelta(double);
     void setControlPoints(const QStringList&);
+    void notifyControlPointsChanged(void);
 
 signals:
     void degreeChanged(int);
     void deltaChanged(double);
-    void controlPointsChanged(const QStringList&);
+    void controlPointsChanged(void);
     void figureNumberChanged(int);
 
 

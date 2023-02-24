@@ -304,6 +304,11 @@ void gnomonCoreParameterNurbsObject::setControlPoints(const QStringList &ctrl_po
     //emit controlPointsChanged(ctrl_points_list);
 }
 
+void gnomonCoreParameterNurbsObject::notifyControlPointsChanged()
+{
+    emit controlPointsChanged();
+}
+
 void gnomonCoreParameterNurbsObject::setFigureNumber(int fig)
 {
     d->figureNumber = fig;
