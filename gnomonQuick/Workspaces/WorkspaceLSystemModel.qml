@@ -176,7 +176,7 @@ G.Workspace {
                 anchors.right: parent.right
 
                 theme: X.Style.variant == 'LIGHT' ? 'vs-light' : 'vs-dark';
-                language: 'python';
+                language: 'lpy';
 
                 onModified: (contents) => {
                     d.text = eval(contents);
