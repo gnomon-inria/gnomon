@@ -42,7 +42,7 @@ Control {
             //Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
         G.TabButton {
-            text: "Plot API"
+            text: "Curate"
             //Component.onCompleted: { contentItem.color = X.Style.foregroundColor }
         }
     }
@@ -160,7 +160,7 @@ Control {
                         text: "1.0";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
-                        errorText: "bad Value";
+                        errorText: "Incorrect value";
                         Layout.fillWidth: true;
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
@@ -181,7 +181,7 @@ Control {
                         text: "";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
-                        errorText: "bad Value";
+                        errorText: "Incorrect value";
                         validator: IntValidator{bottom: 0; top: 10000;}
                     }
                     Label { text: "Time  End:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel;}
@@ -189,7 +189,7 @@ Control {
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
                         Layout.fillWidth: true;
-                        errorText: "bad Value";
+                        errorText: "Incorrect value";
                         validator: IntValidator{bottom: 0; top: 10000;}
                     }
                     G.ToolTip {
@@ -258,7 +258,7 @@ Control {
                         text: "0";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
-                        errorText: "bad Value";
+                        errorText: "Incorrect value";
                         validator: IntValidator{bottom: 0; top: 10000; }
                     }
                     G.ToolTip {
@@ -308,7 +308,7 @@ Control {
                         text: "1.0";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
-                        errorText: "bad Value";
+                        errorText: "Incorrect value";
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
 
@@ -415,6 +415,31 @@ Control {
 
                 spacing: G.Style.smallPadding
 
+
+                RowLayout {
+                    Layout.fillWidth: true;
+
+                    Label {
+                        text: "Voxel size:";
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.formLabel;
+                    }
+                    TextField {
+                        id: _curation_voxelsize;
+                        text: "0.5";
+                        color: G.Style.colors.textColorBase;
+                        font: G.Style.fonts.value;
+                        errorText: "Incorrect value";
+                        Layout.fillWidth: true;
+                        //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
+                    }
+
+                    G.ToolTip {
+                        visible: _curation_voxelsize.hovered
+                        text: "Voxel size (x,y,z) for mesh generation"
+                    }
+                }
+                
                 Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -427,10 +452,10 @@ Control {
                     type: G.Style.ButtonType.Base
                     flat: !enabled
                     //hoverEnabled: enabled
-                    text: "Launch Plot";
+                    text: "Launch Curation";
                     onClicked: {
                         _launch_morphoplot.enabled = false;
-                        let res = d.morphoPlot();
+                        let res = d.morphoPlot(Number(_curation_voxelsize.text));
                         if(res == 0) {
                             _launch_morphoplot.enabled = false;
                             _collect_morphoplot.enabled = true;
@@ -448,7 +473,7 @@ Control {
                     flat: !enabled
                     hoverEnabled: false
                     enabled: false;
-                    text: "Collect Plot Results";
+                    text: "Collect Results";
                     onClicked: {
                         d.morphoPlotCollect();
                         _launch_morphoplot.enabled = true;

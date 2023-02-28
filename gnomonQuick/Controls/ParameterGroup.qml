@@ -54,6 +54,9 @@ G.CollapsiblePanel {
         function onValueChanged() {
           _control.valueChanged()
         }
+        function onControlPointsChanged() {
+          _control.valueChanged()
+        }
       }
 
       Behavior on height {

@@ -453,7 +453,7 @@ G.Dialog {
         _internal.workspace_forms["gnomonWorkspaceBinarization"] = ["gnomonImage", "gnomonBinaryImage"]
         _internal.workspace_forms["gnomonWorkspaceCellImageQuantification"] = ["gnomonCellImage"]
         _internal.workspace_forms["gnomonWorkspaceLSystemModel"] = ["gnomonLString", "gnomonTree"]
-        _internal.workspace_forms["gnomonWorkspaceMorphonet"] = ""
+        _internal.workspace_forms["gnomonWorkspaceMorphonet"] = ["gnomonCellImage"]
         _internal.workspace_forms["gnomonWorkspaceCellImageTracking"] = ["gnomonCellImage", "gnomonDataDict", "gnomonImage"]
         _internal.workspace_forms["gnomonWorkspacePointDetection"] = ["gnomonImage"]
         _internal.workspace_forms["gnomonWorkspacePreprocess"] = ["gnomonImage", "gnomonBinaryImage"]
