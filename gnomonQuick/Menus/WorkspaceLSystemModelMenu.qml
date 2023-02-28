@@ -67,16 +67,18 @@ Item {
 
             model: _menu.parameters
 
-            signal valueChanged();
+            // signal valueChanged();
 
             delegate: G.ParameterGroup {
                 title: _menu.getTitleString(group);
                 model: parameters;
                 width: _control.width;
 
-                //onValueChanged: {
-                //    _control.valueChanged(); //to comment?
-                //}
+                onValueChanged: {
+                    if (_auto_apply.checked) {
+                        d.run();
+                    }
+                }
             }
 
             ScrollIndicator.vertical: ScrollIndicator {
@@ -231,6 +233,22 @@ Item {
                 onClicked: {
                     console.info('launching Reset?')
                     d.reset();
+                }
+            }
+        }
+
+        G.CheckBox{
+            id: _auto_apply
+
+            anchors.left: parent.left
+
+            text: "Auto apply"
+            checked: false
+
+
+            onClicked: {
+                if (_auto_apply.checked) {
+                    d.run();
                 }
             }
         }
