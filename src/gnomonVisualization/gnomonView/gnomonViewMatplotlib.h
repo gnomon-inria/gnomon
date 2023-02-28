@@ -19,6 +19,7 @@ public:
 public:
     Q_PROPERTY(int figureNumber READ figureNumber WRITE setFigureNumber NOTIFY figureNumberChanged);
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
+    Q_PROPERTY(QStringList formNamesAndId READ formNamesAndId NOTIFY formsChanged);
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
 
@@ -43,26 +44,39 @@ public slots:
 public:
     int figureNumber(void);
     QStringList formNames(void);
+    QStringList formNamesAndId(void);
     QStringList acceptedForms(void);
     bool inputView(void);
     bool empty(void);
 
 signals:
     void formsChanged(void);
+    void formVisuParametersChanged(void);
+    void formVisualizationChanged(void);
 
 public:
     void updateVisualizations(void);
 
 public:
     Q_INVOKABLE QString formVisuName(const QString& name);
-    Q_INVOKABLE QStringList formVisualizations(const QString& name);
+    Q_INVOKABLE QVariantList formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
+    Q_INVOKABLE QVariant formVisuParameter(const QString& name, const QString& parameter_name);
+    Q_INVOKABLE void setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value);
 
+    Q_INVOKABLE void setFormVisible(const QString& name, bool visible);
+    Q_INVOKABLE void removeForm(const QString& name);
 signals:
     void formAdded(const QString&);
     void formRemoved(const QString&);
     void figureNumberChanged(int);
+
+public:
+    Q_INVOKABLE void notifyFormSelected(int index, QString formType);
+    Q_INVOKABLE int lastFormIndexSelected();
+    Q_INVOKABLE QString lastFromTypeSelected();
+    Q_INVOKABLE QString lastVisuSelected(QString formType);
 
 public slots:
     void render(void);
