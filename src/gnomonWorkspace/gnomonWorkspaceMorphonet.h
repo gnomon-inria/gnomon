@@ -16,7 +16,10 @@ class GNOMONWORKSPACE_EXPORT gnomonWorkspaceMorphonet : public gnomonAbstractWor
 {
     Q_OBJECT
     Q_CLASSINFO("description", "\
-This workspace allows to connect to MorphoNet and import/export datasets\
+This workspace allows to connect to MorphoNet and download/upload datasets on \
+the MorphoNet server. It also allows to use MorphoPlot to perform curation on \
+cell image series, for instance to manually correct the output of an image \
+segmentation.\
 \n")
 
 public:
@@ -51,7 +54,7 @@ public:
     Q_INVOKABLE QString importDatasetInfos(const QString& search = "");
     Q_INVOKABLE void importDataset(int id, double voxelsize, int time_start=-1, int time_end=-1);
     Q_INVOKABLE int exportDataset(QString name, int id_NCBI, int id_type, QString description, double voxelsize);
-    Q_INVOKABLE int morphoPlot(void);
+    Q_INVOKABLE int morphoPlot(double voxelsize);
     Q_INVOKABLE void morphoPlotCollect(void);
 
     Q_INVOKABLE gnomonViewForm *view(void);
