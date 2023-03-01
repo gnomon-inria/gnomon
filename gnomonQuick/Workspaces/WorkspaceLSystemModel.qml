@@ -199,6 +199,7 @@ G.Workspace {
 
         _editor.contents = d.text;
         d.onParametersChanged();
+        d.reset();
         drawel.close();
     }
 }
