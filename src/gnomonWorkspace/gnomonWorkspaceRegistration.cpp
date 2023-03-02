@@ -90,6 +90,9 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
             this->sources()->views()[1]->disconnectTime();
         });
     }
+    connect(this->m_target_dict, &gnomonViewData::exportedForm, [=](auto form) {
+        gnomonPipelineManager::instance()->addForm(form);
+    });
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
@@ -116,16 +119,16 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
         dd->stack_level = level;
 
         if (dd->image_stack.contains(dd->stack_level)) {
+            m_target_dict->setForm("gnomonDataDict", dd->transformation_stack[dd->stack_level]);
             std::shared_ptr<gnomonImageSeries> input_image = dd->image_stack[dd->stack_level];
             if (input_image != this->sources()->views()[1]->image()) {
-                this->sources()->views()[1]->setImage(input_image);
-
-                if (dd->image_stack.contains(dd->stack_level+1)) {
-                    std::shared_ptr<gnomonImageSeries> output_image = dd->image_stack[dd->stack_level+1];
-                    this->targets()->views()[0]->setImage(output_image);
-                } else {
-                    this->targets()->views()[0]->clear();
-                }
+                //this->sources()->views()[1]->setImage(input_image);
+            }
+            if (dd->image_stack.contains(dd->stack_level+1)) {
+                std::shared_ptr<gnomonImageSeries> output_image = dd->image_stack[dd->stack_level+1];
+                this->targets()->views()[0]->setImage(output_image);
+            } else {
+                this->targets()->views()[0]->clear();
             }
         }
 
@@ -140,6 +143,9 @@ void gnomonWorkspaceRegistration::setInputs(void)
 
     //gnomonAlgorithmWorkspace::setInputs();
     d->command->setInputForm("image", d->sources->views()[1]->image());
+    if(dd->stack_level>=1) {
+        d->command->setInputForm("initialTransformation", dd->transformation_stack[dd->stack_level]);
+    }
 
     if (empty_input || !d->command->inputs()["image"]) {
         dd->image_stack.clear();
@@ -183,23 +189,22 @@ void gnomonWorkspaceRegistration::iterate(void)
 {
     std::shared_ptr<gnomonImageSeries> output_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->outputs()["output"]);
     if (output_image) {
-        auto input_image = output_image;
-        dd->image_stack.insert(dd->stack_level+1, input_image);
-        std::shared_ptr<gnomonDataDictSeries> transformation = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->command->outputs()["transformation"]);
+        dd->image_stack.insert(dd->stack_level+1, output_image);
+        std::shared_ptr<gnomonDataDictSeries> transformation = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->command->outputs()["outputTransformation"]);
         dd->transformation_stack.insert(dd->stack_level+1, transformation);
         emit stackSizeChanged();
 
         this->setStackLevel(dd->stack_level+1);
 
         gnomonPipelineManager::instance()->addForm(output_image);
+        gnomonPipelineManager::instance()->addForm(transformation);
         //gnomonPipelineManager::instance()->addClonedForm(output_image, input_image);
     }
 }
 
 void gnomonWorkspaceRegistration::viewOutputs()
 {   
-    gnomonAlgorithmWorkspace::viewOutputs();
-    gnomonImageRegistrationCommand * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
+    auto * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["outputTransformation"]) {
         this->m_target_dict->setForm("gnomonDataDict", command->outputs()["outputTransformation"]->clone());
 
@@ -207,6 +212,7 @@ void gnomonWorkspaceRegistration::viewOutputs()
         command->outputs()["outputTransformation"]->metadata()->set("name", command->outputs()["outputTransformation"]->formName().remove("gnomon") + QString::number(form_count+1));
         command->outputs()["outputTransformation"]->metadata()->set("source", d->algorithm);
     }
+    gnomonAlgorithmWorkspace::viewOutputs();
 }
 
 
