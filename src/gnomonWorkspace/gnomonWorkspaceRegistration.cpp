@@ -70,6 +70,10 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
 
     this->m_target_dict = new gnomonViewData(this);
     this->m_target_dict->setAcceptForm("gnomonDataDict", true);
+
+    QVector<QVector<double>> eye4 = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+    m_target_dict->setDataDict(transformMatrixString(eye4));
+
     
     if(!d->pool)
         d->pool = new gnomonViewFormPool(this);
@@ -120,12 +124,9 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
 
         if (dd->image_stack.contains(dd->stack_level)) {
             m_target_dict->setForm("gnomonDataDict", dd->transformation_stack[dd->stack_level]);
-            std::shared_ptr<gnomonImageSeries> input_image = dd->image_stack[dd->stack_level];
-            if (input_image != this->sources()->views()[1]->image()) {
-                //this->sources()->views()[1]->setImage(input_image);
-            }
-            if (dd->image_stack.contains(dd->stack_level+1)) {
-                std::shared_ptr<gnomonImageSeries> output_image = dd->image_stack[dd->stack_level+1];
+            std::shared_ptr<gnomonImageSeries> input_image = dd->image_stack[0];
+            if (dd->image_stack.contains(dd->stack_level) && level>=1) {
+                std::shared_ptr<gnomonImageSeries> output_image = dd->image_stack[dd->stack_level];
                 this->targets()->views()[0]->setImage(output_image);
             } else {
                 this->targets()->views()[0]->clear();
@@ -143,8 +144,8 @@ void gnomonWorkspaceRegistration::setInputs(void)
 
     //gnomonAlgorithmWorkspace::setInputs();
     d->command->setInputForm("image", d->sources->views()[1]->image());
-    if(dd->stack_level>=1) {
-        d->command->setInputForm("initialTransformation", dd->transformation_stack[dd->stack_level]);
+    if(m_target_dict->contains("gnomonDataDict")) {
+        d->command->setInputForm("initialTransformation", m_target_dict->form("gnomonDataDict"));
     }
 
     if (empty_input || !d->command->inputs()["image"]) {
@@ -206,11 +207,12 @@ void gnomonWorkspaceRegistration::viewOutputs()
 {   
     auto * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["outputTransformation"]) {
-        this->m_target_dict->setForm("gnomonDataDict", command->outputs()["outputTransformation"]->clone());
 
         int form_count = gnomonFormManager::instance()->formCount(command->outputs()["outputTransformation"]->formName());
         command->outputs()["outputTransformation"]->metadata()->set("name", command->outputs()["outputTransformation"]->formName().remove("gnomon") + QString::number(form_count+1));
         command->outputs()["outputTransformation"]->metadata()->set("source", d->algorithm);
+        iterate();
+        this->m_target_dict->setForm("gnomonDataDict", command->outputs()["outputTransformation"]->clone());
     }
     gnomonAlgorithmWorkspace::viewOutputs();
 }

@@ -213,6 +213,14 @@ void gnomonViewData::setDataDict(QString dict)
     d->data_dict = dict;
     emit dictChanged();
 }
+
+bool gnomonViewData::contains(const QString& key) {
+    return d->forms.contains(key);
+}
+
+bool gnomonViewData::empty() {
+    return d->forms.empty();
+}
 // ///////////////////////////////////////////////////////////////////
 
 #include "gnomonViewData.moc"
