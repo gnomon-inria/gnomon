@@ -137,6 +137,10 @@ G.Workspace {
                     }
 
                     viewLogic: d.targetDict;
+
+                    onDroppedFromManager: (index) => {
+                        d.targetDict.drop(index);
+                    }
                 }
 
                 Label {
@@ -170,6 +174,7 @@ G.Workspace {
                     text: "Iterate";
                     type: G.Style.ButtonType.Base
                     empty: true
+                    enabled: false;
 
                     onClicked: {
                         d.iterate();
