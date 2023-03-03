@@ -428,6 +428,36 @@
     }
 }
 
+%typemap(in) const QList<std::array<double, 3>>& {
+    $1 = new QList<std::array<double, 3>>;
+    if (PyList_Check($input)) {
+        int nb_points = PyList_Size($input);
+
+        for(int i=0; i<nb_points; ++i) {
+            PyObject *p_point = PyList_GET_ITEM($input, i);
+            double x,y,z;
+            x = PyFloat_AsDouble(PyList_GET_ITEM(p_point, 0));
+            y = PyFloat_AsDouble(PyList_GET_ITEM(p_point, 1));
+            if(PyList_Size(p_point) == 3) {
+                z = PyFloat_AsDouble(PyList_GET_ITEM(p_point, 2));
+            } else {
+                z = 1.0;
+            }
+            std::array<double, 3> arr = {x,y,z};
+            $1->append(arr);
+        }
+    } else {
+        qWarning() << "List of List of double is expected ad input. empty list is returned";
+    }
+}
+
+%typemap(freearg) const const QList<std::array<double, 3>>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+
 %typemap(out) QList<std::array<double, 3>> {
     int nb_elem = $1.size();
     $result = PyList_New(nb_elem);
@@ -703,7 +733,7 @@
         }
 
         return result;
-    } 
+    }
 }
 
 %typemap(in, fragment="Gnomon_QJsonValue") const QJsonValue& {
@@ -800,7 +830,7 @@
             auto t_s = c.toString().toStdString();
             value = PyString_FromString(t_s.c_str());
         }
-        
+
         std::string k_str = k.toStdString();
 
         PyDict_SetItemString($result, k_str.c_str(), value);

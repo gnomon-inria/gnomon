@@ -17,6 +17,7 @@ public:
 
 public:
     int figureNumber=-1;
+    double z_buffer = 0.;
 
     PyObject* pCurve = nullptr;
     PyObject* pVisCurve = nullptr;
@@ -67,6 +68,7 @@ void gnomonCoreParameterNurbsObjectPrivate::initPCurve(gnomonCoreParameterNurbs 
                 if(param->dimension() == 3) {
                     PyList_SetItem(p_point, 2, PyFloat_FromDouble(point[2]));
                 }
+                z_buffer = point[2];
 
                 PyList_SetItem(p_ctrlpts, i++, p_point);
             }
@@ -179,7 +181,7 @@ void gnomonCoreParameterNurbsObject::updateControlPointsFromPython(void)
             if(nb_elem == 3) {
                 z = PyFloat_AsDouble(PyList_GET_ITEM(p_pt, 2));
             } else {
-                z = 0.;
+                z = d->z_buffer;
             }
             ctrl_points.append({x,y,z});
         }
@@ -262,6 +264,9 @@ void gnomonCoreParameterNurbsObject::setControlPoints(const QStringList &ctrl_po
         ctrl_points.append(arr);
     }
     m_param->setControlPoints(ctrl_points);
+
+    if(!ctrl_points.empty())
+        d->z_buffer = ctrl_points.first()[2];
 
     if(!d->pCurve) {
         d->initPCurve(m_param);
