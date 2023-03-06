@@ -141,6 +141,7 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
     }
 
     if(d->model_file) {
+        d->model_file->remove();
         delete d->model_file;
         d->model_file = nullptr;
     }
