@@ -121,6 +121,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
             while (it.hasNext()) {
                 it.next();
             }
+            d->view->setBounds(-100., 100., -100., 100., -1., 10.);
         }
     });
 
@@ -219,6 +220,7 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url)
         QString temp_file = finfo.absolutePath() + QDir::separator() + ".XXXXXX" + finfo.fileName();
         d->model_file = new QTemporaryFile(temp_file);
         this->setText(in.readAll());
+        this->reset();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }
