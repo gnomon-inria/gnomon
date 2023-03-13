@@ -1,4 +1,6 @@
 #include "gnomonLStringEvolutionModelCommand.h"
+#include "gnomonCommand/gnomonAbstractEvolutionModelCommand.h"
+#include "gnomonModel/gnomonAbstractModel.h"
 
 #include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
@@ -36,6 +38,7 @@ gnomonLStringEvolutionModelCommand::gnomonLStringEvolutionModelCommand() : d(new
     if (!keys.empty()) {
         this->model_name = keys[0];
         this->model = gnomonCore::lStringEvolutionModel::pluginFactory().create(this->model_name);
+        connect(this->model, &gnomonAbstractModel::modelMessage, this, &gnomonAbstractEvolutionModelCommand::modelMessage);
     }
 }
 
@@ -182,6 +185,7 @@ void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)
     this->model_name = model_name;
     delete this->model;
     this->model = gnomonCore::lStringEvolutionModel::pluginFactory().create(this->model_name);
+    connect(this->model, &gnomonAbstractModel::modelMessage, this, &gnomonAbstractEvolutionModelCommand::modelMessage);
 }
 
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringEvolutionModelCommand::initialState()

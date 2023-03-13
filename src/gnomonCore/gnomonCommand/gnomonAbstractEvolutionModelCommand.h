@@ -18,6 +18,9 @@ public slots:
     virtual void   undo(void) = 0;
     virtual void   redo(void) = 0;
 
+signals:
+    void modelMessage(QString);
+
 public:
     inline virtual const QString& modelName(void) { return this->model_name; };
     inline virtual void setModelName(const QString& name) = 0;

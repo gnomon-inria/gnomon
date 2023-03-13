@@ -30,13 +30,14 @@ public:
     Q_PROPERTY(QStringList models READ models NOTIFY modelsLoaded);
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged);
     Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
-
+    Q_PROPERTY(QString message READ message NOTIFY messageChanged)
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
     void textChanged(const QString&);
     void derivationLengthChanged(int);
     void animationStepChanged(int);
+    void messageChanged();
 
     void modelsLoaded(void);
     void modelChanged(const QString& model);
@@ -44,6 +45,8 @@ signals:
     void currentIndexChanged(void);
 
 public:
+    QString message(void) const;
+
     QString text(void);
     void setText(const QString& text);
 

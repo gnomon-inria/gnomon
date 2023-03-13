@@ -7,6 +7,8 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonView/gnomonViewForm>
+#include "gnomonCommand/gnomonLString/gnomonLStringEvolutionModelCommand.h"
+#include "gnomonForm/gnomonLString/gnomonLString.h"
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString"
 
 QString vonKochLSystem(void)
@@ -53,6 +55,7 @@ public:
 
 public:
     QString text;
+    QString message;
     int derivationLength = 100;
     int animation_step = 1;
 
@@ -129,6 +132,12 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
         gnomonPipelineManager::instance()->addForm(f);
     });
 
+
+    connect(d->command, &gnomonAbstractEvolutionModelCommand::modelMessage, [=](QString msg) {
+            d->message = msg;
+            this->messageChanged();
+        });
+
     this->setText(vonKochLSystem());
 }
 
@@ -152,6 +161,11 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
 QString gnomonWorkspaceLSystemModel::text(void)
 {
     return d->text;
+}
+
+QString gnomonWorkspaceLSystemModel::message(void)
+{
+    return d->message;
 }
 
 void gnomonWorkspaceLSystemModel::setText(const QString& text)
