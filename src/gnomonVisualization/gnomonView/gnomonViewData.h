@@ -2,14 +2,13 @@
 
 #include <gnomonVisualizationExport>
 
-#include <QtCore>
-#include <QtQml>
-
 #include "gnomonForm/gnomonDataDict/gnomonDataDict.h"
+
+#include "gnomonAbstractView.h"
 
 class gnomonAbstractDynamicForm;
 
-class GNOMONVISUALIZATION_EXPORT gnomonViewData : public QObject
+class GNOMONVISUALIZATION_EXPORT gnomonViewData : public gnomonAbstractView
 {
     Q_OBJECT
 
@@ -18,39 +17,32 @@ public:
     ~gnomonViewData(void);
 
 public:
-    Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
-    Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
-    Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
     Q_PROPERTY(QString dataDict READ dataDict WRITE setDataDict NOTIFY dictChanged);
 
 public:
-    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> );
-    std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&) ;
-    void clearForm(const QString&);
+    virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ) override;
+    virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&) override;
+    virtual void clearForm(const QString&) override;
 
 public slots:
-    void drop(int);
+    virtual void drop(int) override;
 
 public slots:
-    void setAcceptForm(const QString&, bool);
-    void setInputView(bool);
+    virtual void setAcceptForm(const QString&, bool) override;
+    virtual void setInputView(bool) override;
     void setDataDict(QString);
 
 public:
-    QStringList formNames(void);
-    QStringList acceptedForms(void);
-    bool inputView(void);
+    virtual QStringList formNames(void) override;
+    virtual QStringList acceptedForms(void) override;
+    virtual bool inputView(void) override;
     QString dataDict(void);
 
 
 public slots:
-    void transmit(void);
+    virtual void transmit(void) override;
 
 signals:
-    void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm> );
-    void inputViewChanged(bool);
-    void formAdded(const QString&);
-    void formsChanged(void);
     void dictChanged(void);
 
 private:

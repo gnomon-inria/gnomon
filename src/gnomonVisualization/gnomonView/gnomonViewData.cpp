@@ -113,7 +113,7 @@ void gnomonViewDataPrivate::removeForm(const QString& key)
 // gnomonViewData
 // ///////////////////////////////////////////////////////////////////
 
-gnomonViewData::gnomonViewData(QObject *parent): QObject(parent)
+gnomonViewData::gnomonViewData(QObject *parent): gnomonAbstractView(parent)
 {
     d = new gnomonViewDataPrivate(this);
     d->q  = this;

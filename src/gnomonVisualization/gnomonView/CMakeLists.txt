@@ -1,4 +1,6 @@
 ADD_GNOMON_HEADERS(
+    gnomonAbstractView
+    gnomonAbstractView.h
     # gnomonFormAdapterMenu
     # gnomonFormAdapterMenu.h
     gnomonViewForm
