@@ -76,6 +76,7 @@ Item {
 
                 onValueChanged: {
                     if (_auto_apply.checked) {
+                        d.reset()
                         d.run();
                     }
                 }
@@ -248,6 +249,7 @@ Item {
 
             onClicked: {
                 if (_auto_apply.checked) {
+                    d.reset()
                     d.run();
                 }
             }
