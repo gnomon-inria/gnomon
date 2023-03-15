@@ -1,4 +1,5 @@
 #include "gnomonViewData.h"
+#include "gnomonAbstractView_p.h"
 
 #include <gnomonVisualization/gnomonManager/gnomonFormManager>
 
@@ -39,22 +40,9 @@ public:
     ~gnomonViewDataPrivate(void);
 
 public:
-    gnomonViewData *q = nullptr;
-
-public:
     QColor export_color = QColor("#cccccc");
 
-public slots:
-    void exportToManager(void);
-    void removeForm(const QString& key);
-public: 
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
-
 public:
-    QMap<QString, bool> acceptForms;
-
-public:
-    bool input_view = false;
     QString data_dict;
 };
 
@@ -65,7 +53,8 @@ gnomonViewDataPrivate::~gnomonViewDataPrivate(void)
 {
 }
 
-void gnomonViewDataPrivate::exportToManager(void)
+// TODO: move this into a data dict visualization
+/*void gnomonViewDataPrivate::exportToManager(void)
 {
     for(const auto& key: this->forms.keys()) {
         QImage image(1500, 1500, QImage::Format_RGB32);
@@ -102,12 +91,7 @@ void gnomonViewDataPrivate::exportToManager(void)
         gnomonFormManager::instance()->addForm(this->forms[key],image);
         q->emit exportedForm(this->forms[key]);
     }
-}
-
-void gnomonViewDataPrivate::removeForm(const QString& key)
-{
-    this->forms.remove(key);
-}
+}*/
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonViewData
@@ -115,22 +99,29 @@ void gnomonViewDataPrivate::removeForm(const QString& key)
 
 gnomonViewData::gnomonViewData(QObject *parent): gnomonAbstractView(parent)
 {
-    d = new gnomonViewDataPrivate(this);
+    dd = new gnomonViewDataPrivate(this);
     d->q  = this;
 
     d->acceptForms["gnomonDataDict"] = false;
 
-    connect(this, &gnomonViewData::formAdded, [=]() {
-        emit formsChanged();
+    connect(this, &gnomonAbstractView::formAdded, [=] (const QString& name) {
+        auto form = d->forms[name];
+        if(std::shared_ptr<gnomonDataDictSeries> dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(form)) {
+            if (dict->current()->keys().contains("transform")) {
+                QVariant transform = dict->current()->get("transform");
+                QVector<QVector<double>> transform_matrix = transform.value<QVector<QVector<double> > >();
+                this->setDataDict(transformMatrixString(transform_matrix));
+            }
+        }
     });
 }
 
 gnomonViewData::~gnomonViewData(void)
 {
-    delete d;
+    delete dd;
 }
 
-void gnomonViewData::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
+/*void gnomonViewData::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     if(std::shared_ptr<gnomonDataDictSeries> dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(form)) {
         if(d->acceptForms["gnomonDataDict"]) {
@@ -143,74 +134,19 @@ void gnomonViewData::setForm(const QString& name, std::shared_ptr<gnomonAbstract
 
             emit formAdded("gnomonDataDict");
         }       
-    }    
-}
-
-std::shared_ptr<gnomonAbstractDynamicForm> gnomonViewData::form(const QString& name)
-{
-    return d->forms[name];
-}
-
-void gnomonViewData::clearForm(const QString& name)
-{
-    return d->removeForm(name);
-}
-
-void gnomonViewData::drop(int index)
-{
-    std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
-    this->setForm("formManager", form);
-    gnomonFormManager::instance()->setFormDropped(form);
-}
-
-void gnomonViewData::transmit(void)
-{
-    d->exportToManager();
-}
-
-void gnomonViewData::setAcceptForm(const QString& name, bool accept)
-{
-    if(d->acceptForms.contains(name)) {
-        d->acceptForms[name] = accept;
     }
-}
+}*/
 
-void gnomonViewData::setInputView(bool input)
-{
-    if (input != d->input_view) {
-        d->input_view = input;
-        emit inputViewChanged(input);
-    }
-}
-
-QStringList gnomonViewData::formNames()
-{
-    return d->forms.keys();
-}
-
-QStringList gnomonViewData::acceptedForms()
-{
-    QStringList forms;
-    for(const auto& name : d->acceptForms.keys()){
-        if(d->acceptForms[name])
-            forms << name; 
-    }
-    return forms;
-}
-
-bool gnomonViewData::inputView()
-{
-    return d->input_view;
-}
 
 QString gnomonViewData::dataDict(void)
 {
-    return d->data_dict;
+    return dd->data_dict;
 }
 
 void gnomonViewData::setDataDict(QString dict)
 {
-    d->data_dict = dict;
+    dd->data_dict = dict;
+    qDebug()<<Q_FUNC_INFO<<dict;
     emit dictChanged();
 }
 // ///////////////////////////////////////////////////////////////////

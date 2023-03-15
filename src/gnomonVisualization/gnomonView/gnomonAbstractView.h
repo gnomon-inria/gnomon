@@ -4,6 +4,7 @@
 
 #include <QtCore>
 #include <QtQml>
+#include <QtGui>
 
 class gnomonAbstractDynamicForm;
 
@@ -21,24 +22,24 @@ public:
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
 
 public:
-    virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ) = 0;
-    virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&)  = 0;
-    virtual void clearForm(const QString&) = 0;
+    virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> );
+    virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
+    virtual void clearForm(const QString&);
 
 public slots:
-    virtual void drop(int) = 0;
+    virtual void drop(int);
 
 public slots:
-    virtual void setAcceptForm(const QString&, bool) = 0;
-    virtual void setInputView(bool) = 0;
+    virtual void setAcceptForm(const QString&, bool);
+    virtual void setInputView(bool);
 
 public:
-    virtual QStringList formNames(void) = 0;
-    virtual QStringList acceptedForms(void) = 0;
-    virtual bool inputView(void) = 0;
+    virtual QStringList formNames(void);
+    virtual QStringList acceptedForms(void);
+    virtual bool inputView(void);
 
 public slots:
-    virtual void transmit(void) = 0;
+    virtual void transmit(void);
 
 signals:
     void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm> );
@@ -46,6 +47,8 @@ signals:
     void formAdded(const QString&);
     void formsChanged(void);
 
+protected:
+    class gnomonAbstractViewPrivate *d;
 };
 
 // Q_DECLARE_METATYPE(gnomonAbstractView *);
