@@ -66,7 +66,7 @@ public:
 public slots:
     void render(void);
     void update(void);
-    void clear(void);
+    void clear(void) override;
 
 private:
     class gnomonViewMatplotlibPrivate *dd;

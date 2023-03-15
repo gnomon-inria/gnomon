@@ -26,6 +26,7 @@ public:
     virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> );
     virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
     virtual void removeForm(const QString& name);
+    virtual void clear(void);
 
 public slots:
     virtual void drop(int);
@@ -51,6 +52,8 @@ signals:
     void formAdded(const QString&);
     void formRemoved(const QString&);
     void formsChanged(void);
+
+    void badFormDropped(QString badFormName, QString acceptedForms);
 
 protected:
     class gnomonAbstractViewPrivate *d;

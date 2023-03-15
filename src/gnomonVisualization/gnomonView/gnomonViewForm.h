@@ -2,10 +2,6 @@
 
 #include <gnomonVisualizationExport>
 
-#include <QtCore>
-#include <QtQml>
-#include <QtGui>
-
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 #include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
@@ -15,6 +11,8 @@
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 
+#include "gnomonAbstractView.h"
+
 class gnomonAbstractVisualization;
 //class gnomonInteractorStyle;
 
@@ -23,7 +21,7 @@ class vtkRenderer;
 class vtkRenderWindowInteractor;
 class vtkGenericOpenGLRenderWindow;
 
-class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public QObject
+class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public gnomonAbstractView
 {
     Q_OBJECT
 public:
@@ -45,10 +43,6 @@ public:
 
 
 public:
-    Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
-    Q_PROPERTY(QStringList formNamesAndId READ formNamesAndId NOTIFY formsChanged);
-    Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
-    Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
     Q_PROPERTY(bool syncing READ syncing NOTIFY syncingChanged);
 
@@ -92,11 +86,9 @@ signals:
     void modeChanged(void);
     void orientationChanged(void);
     void inPoolChanged(void);
-    void badFormDropped(QString badFormName, QString acceptedForms);
 
     void syncedChanged(void);
     void syncingChanged(void);
-    void inputViewChanged(void);
 
 signals:
     void   linking(void);
@@ -108,9 +100,6 @@ signals:
  public:
     QList<long> pickedCells();
     void setPickedCells(QList<long>);
-
-signals:
-    void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm>);
 
 public slots:
     void switchTo3D  (void);
@@ -126,12 +115,6 @@ public slots:
     void unlink(gnomonViewForm *other);
     void disconnectTime();
 
-public slots:
-    void drop(int);
-
-public slots:
-    void setExportColor(const QColor& color);
-
 public:
     void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ,std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
     void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> , std::shared_ptr<gnomonAbstractVisualization> visualization=nullptr);
@@ -146,24 +129,18 @@ public:
     void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>);
 
 public:
-    QStringList formNames(void);
-    QStringList formNamesAndId(void);
-    QStringList acceptedForms(void);
     QStringList nodePortNames(void);
-    bool empty(void);
-    bool inputView(void);
+
     bool synced(void);
     bool syncing(void);
     bool inPool(void);
 
 signals:
-    void formsChanged(void);
     void formVisuParametersChanged(void);
     void formVisualizationChanged(void);
 
 
 public:
-    std::shared_ptr<gnomonAbstractDynamicForm> form(const QString&);
     std::shared_ptr<gnomonBinaryImageSeries> binaryImage(void);
     std::shared_ptr<gnomonCellComplexSeries> cellComplex(void);
     std::shared_ptr<gnomonCellImageSeries> cellImage(void);
@@ -171,6 +148,10 @@ public:
     std::shared_ptr<gnomonLStringSeries> lString(void);
     std::shared_ptr<gnomonMeshSeries> mesh(void);
     std::shared_ptr<gnomonPointCloudSeries> pointCloud(void);
+
+public slots:
+    void drop(int) override;
+    void removeForm(const QString& name) override;
 
 public:
     Q_INVOKABLE QString formVisuName(const QString& name);
@@ -182,10 +163,8 @@ public:
     Q_INVOKABLE void setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value);
 
     Q_INVOKABLE void setFormVisible(const QString& name, bool visible);
-    Q_INVOKABLE void removeForm(const QString& name);
 
     Q_INVOKABLE gnomonDynamicFormMetadata* formMetadata(const QString& name);
-
 
 public:
     vtkRenderer *renderer2D(void);
@@ -218,10 +197,7 @@ public:
 public slots:
     void render(void);
     void update(void);
-    void clear(void);
-
-public slots:
-    void setAcceptForm(const QString&, bool);
+    void clear(void) override;
 
 public slots:
     void setEnableLinking(bool);
@@ -235,9 +211,6 @@ public slots:
 signals:
     void sliceOrientationChanged(int);
     void sliceChanged(int);
-
-signals:
-    void formAdded(const QString&);
 
 signals:
     void timeChanged(double);
@@ -254,7 +227,6 @@ public slots:
     void onTimeChanged(double);
 
 public slots:
-    void setInputView(bool);
     void setInPool(bool);
 
 public slots:
@@ -270,11 +242,10 @@ public slots:
     void updateShortcutKeys(void);
 
 public slots:
-    void transmit(void);
     void restoreState(void);
 
 private:
-    class gnomonViewFormPrivate *d;
+    class gnomonViewFormPrivate *dd;
 };
 
 //Q_DECLARE_METATYPE(gnomonViewForm *)

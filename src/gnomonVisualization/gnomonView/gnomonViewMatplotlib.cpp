@@ -68,7 +68,6 @@ public:
 public slots:
     void saveFigure(const QString& path);
 
-    void removeForm(const QString&);
     void clear(void);
 
 public:
@@ -83,9 +82,6 @@ public:
 
 public:
     int figureNumber;
-
-public:
-    QColor export_color = QColor("#cccccc");
 
 public slots:
     void setFormVisualization(const QString& name, const QString& visu, const QVariantMap &parameters = {});
@@ -145,18 +141,8 @@ void gnomonViewMatplotlibPrivate::saveFigure(const QString& path)
 
 }
 
-void gnomonViewMatplotlibPrivate::removeForm(const QString& key)
-{
-    this->formVisualization.remove(key);
-    this->formModified.remove(key);
-    this->render();
-}
-
 void gnomonViewMatplotlibPrivate::clear(void)
 {
-    for (const auto& key : this->formVisualization.keys()) {
-        this->removeForm(key);
-    }
     if (this->figureNumber != -1) {
         int stat;
         QString clearStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.clf()\nfigure.canvas.draw()";
@@ -254,8 +240,8 @@ void gnomonViewMatplotlibPrivate::render(void)
 {
     if (this->figureNumber != -1) {
         int stat;
-        QString clearStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
-        dtkScriptInterpreterPython::instance()->interpret(clearStatement, &stat);
+        QString renderStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
+        dtkScriptInterpreterPython::instance()->interpret(renderStatement, &stat);
     }
 }
 
@@ -399,7 +385,7 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QObject *parent) : gnomonAbstractView
 
 gnomonViewMatplotlib::~gnomonViewMatplotlib(void)
 {
-    delete d;
+    delete dd;
 }
 
 // TODO: introduce a command pattern
@@ -598,18 +584,17 @@ void gnomonViewMatplotlib::removeForm(const QString& name)
         }
     }
     dd->formVisualization.remove(name);
+
     if (dd->formVisualizationNames.contains(name)) {
         dd->viewParameters.parameters.remove(dd->formVisualizationNames[name]);
     }
-    dd->formVisualizationNames.remove(name);
-    dd->formVisibility.remove(name);
     dd->viewParameters.visuSelected.remove(name);
 
+    dd->formVisualizationNames.remove(name);
+    dd->formVisibility.remove(name);
+    dd->formModified.remove(name);
+
     gnomonAbstractView::removeForm(name);
-
-    this->render();
-
-    emit formsChanged();
 }
 
 void gnomonViewMatplotlib::render(void)
@@ -626,8 +611,26 @@ void gnomonViewMatplotlib::update(void)
 
 void gnomonViewMatplotlib::clear(void)
 {
+    for (auto name : dd->formVisualization.keys()) {
+        if (dd->formVisualization[name]) {
+            dd->formVisualization[name]->disconnect();
+            dd->formVisualization[name]->clear();
+        }
+    }
+    dd->formVisualization.clear();
+
+    for (auto name : dd->formVisualizationNames) {
+        dd->viewParameters.parameters.remove(dd->formVisualizationNames[name]);
+    }
+    dd->viewParameters.visuSelected.clear();
+
+    dd->formVisualizationNames.clear();
+    dd->formVisibility.clear();
+    dd->formModified.clear();
+
     dd->clear();
-    emit formsChanged();
+
+    gnomonAbstractView::clear();
 }
 
 int gnomonViewMatplotlib::figureNumber(void)

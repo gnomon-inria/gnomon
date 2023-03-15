@@ -1,4 +1,5 @@
 #include "gnomonViewForm.h"
+#include "gnomonAbstractView_p.h"
 
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshAdapter>
 #include <gnomonCore/gnomonAlgorithm/gnomonCellComplex/gnomonAbstractCellComplexAdapter>
@@ -82,11 +83,6 @@ public:
         return this->window->GetInteractor();
     }
 
-public slots:
-    void exportToManager(void);
-    void clear(void);
-
-
 public:
     void setViewMode(gnomonViewForm::Mode mode);
     void setSliceOrientation(gnomonViewForm::Orientation orientation);
@@ -109,7 +105,6 @@ public:
     QMap<gnomonViewForm::Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > to_export;
 
     QMap<QString, QString> formVisualizationNames;
@@ -117,8 +112,8 @@ public:
     QMap<QString, QJsonObject > visualization_description;
     QMap<QString, bool > formVisibility;
     viewFormParameters viewParameters;
+    
 public:
-    QMap<QString, bool> acceptForms;
     QStringList nodePortNames;
 
 public:
@@ -146,11 +141,9 @@ public:
     bool enableMenus = true;
 
 public:
-    bool input_view = false;
     bool in_pool = false;
 
 public:
-    QColor export_color = QColor("#cccccc");
     QSet<double> forms_times;
     QList<long> picked_cells;
 
@@ -160,9 +153,6 @@ public:
 
 public:
     double c_t = 0;
-
-public:
-    bool empty = true;
 
 signals:
     void sliceOrientationChanged(int);
@@ -183,6 +173,7 @@ public slots:
 
 gnomonViewFormPrivate::gnomonViewFormPrivate(QObject *parent) : QObject(parent)
 {
+    // TODO: expose as a view parameter
     QColor background_color = QColor("#00000000");
 
     this->renderer2D = vtkSmartPointer<vtkRenderer>::New();
@@ -200,14 +191,14 @@ gnomonViewFormPrivate::~gnomonViewFormPrivate(void)
     this->clearConnections();
 }
 
-void gnomonViewFormPrivate::exportToManager(void)
+/* void gnomonViewFormPrivate::exportToManager(void)
 {
     for (const auto& key : this->forms.keys()) {
         QImage image = this->formVisualization[key]->imageRendering();
         gnomonFormManager::instance()->addForm(this->forms[key], this->formVisualization[key],image, this->renderer3D->GetActiveCamera());
         q->emit exportedForm(this->forms[key]);
     }
-}
+} */
 
 void gnomonViewFormPrivate::clearConnections(void)
 {
@@ -293,23 +284,6 @@ void gnomonViewFormPrivate::updateOrientation(void)
     this->interactor()->Render();
 }
 
-void gnomonViewFormPrivate::clear(void)
-{
-    for (auto fv : this->formVisualization) {
-        fv->disconnect();
-        fv->clearConnections();
-        fv->clear();
-    }
-
-    this->formVisualizationNames.clear();
-    this->formVisibility.clear();
-    this->formVisualization.clear();
-    this->forms.clear();
-    this->empty = true;
-
-    q->render();
-}
-
 void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const QString& visu_name, const QVariantMap &parameters)
 {
     bool new_visu = !this->formVisualizationNames.contains(formType)
@@ -329,7 +303,7 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         this->formVisualization[formType]->clear();
     }
 
-    auto&& form = this->forms[formType];
+    auto&& form = q->form(formType);
     bool form_changed = false;
 
     if (formType == "gnomonBinaryImage") {
@@ -437,8 +411,6 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         return;
     }
 
-
-
     auto&& form_visu = this->formVisualization[formType];
 
     if(form_changed) {
@@ -474,8 +446,8 @@ void gnomonViewFormPrivate::updateFormsTimes(void)
 {
     this->forms_times.clear();
 
-    for (const auto& key : this->forms.keys()) {
-        for(auto time : this->forms[key]->times()) {
+    for (const auto& key : q->formNames()) {
+        for(auto time : q->form(key)->times()) {
             this->forms_times.insert(time);
         }
     }
@@ -522,11 +494,11 @@ void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
 // gnomonViewForm
 // ///////////////////////////////////////////////////////////////////
 
-gnomonViewForm::gnomonViewForm(QStringList nodePortNames, QObject *parent) : QObject(parent)
+gnomonViewForm::gnomonViewForm(QStringList nodePortNames, QObject *parent) : gnomonAbstractView(parent)
 {
-    d = new gnomonViewFormPrivate;
-    d->q = this;
-    d->nodePortNames = nodePortNames;
+    dd = new gnomonViewFormPrivate;
+    dd->q = this;
+    dd->nodePortNames = nodePortNames;
 
     loadPluginGroup("visualizationBinaryImage");
     loadPluginGroup("visualizationCellComplex");
@@ -550,19 +522,19 @@ gnomonViewForm::gnomonViewForm(QStringList nodePortNames, QObject *parent) : QOb
             for (const auto& key : gnomonCore::meshAdapter::pluginFactory().keys())
             {
                 gnomonAbstractMeshAdapter *adapter = dynamic_cast<gnomonAbstractMeshAdapter *>(gnomonCore::meshAdapter::pluginFactory().create(key));
-                if (!d->adapterCommands.contains(form))
+                if (! dd->adapterCommands.contains(form))
                 {
                     QMap<QString, QString> empty_target;
-                    d->adapterTargets[form] = empty_target;
+                     dd->adapterTargets[form] = empty_target;
                     QMap<QString, QString> empty_desc;
-                    d->adapterDescriptions[form] = empty_desc;
+                     dd->adapterDescriptions[form] = empty_desc;
                     QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
-                    d->adapterCommands[form] = empty_list;
+                     dd->adapterCommands[form] = empty_list;
                 }
-                d->adapterTargets[form][key] = adapter->target();
-                d->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                d->adapterCommands[form][key] = new gnomonMeshAdapterCommand;
-                d->adapterCommands[form][key]->setAlgorithmName(key);
+                 dd->adapterTargets[form][key] = adapter->target();
+                 dd->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
+                 dd->adapterCommands[form][key] = new gnomonMeshAdapterCommand;
+                 dd->adapterCommands[form][key]->setAlgorithmName(key);
                 delete adapter;
             }
         } else if (form=="gnomonCellComplex") {
@@ -570,87 +542,86 @@ gnomonViewForm::gnomonViewForm(QStringList nodePortNames, QObject *parent) : QOb
             for (const auto& key : gnomonCore::cellComplexAdapter::pluginFactory().keys())
             {
                 gnomonAbstractCellComplexAdapter *adapter = dynamic_cast<gnomonAbstractCellComplexAdapter *>(gnomonCore::cellComplexAdapter::pluginFactory().create(key));
-                if (!d->adapterCommands.contains(form))
+                if (! dd->adapterCommands.contains(form))
                 {
                     QMap<QString, QString> empty_target;
-                    d->adapterTargets[form] = empty_target;
+                     dd->adapterTargets[form] = empty_target;
                     QMap<QString, QString> empty_desc;
-                    d->adapterDescriptions[form] = empty_desc;
+                     dd->adapterDescriptions[form] = empty_desc;
                     QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
-                    d->adapterCommands[form] = empty_list;
+                     dd->adapterCommands[form] = empty_list;
                 }
-                d->adapterTargets[form][key] = adapter->target();
-                d->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                d->adapterCommands[form][key] = new gnomonCellComplexAdapterCommand;
-                d->adapterCommands[form][key]->setAlgorithmName(key);
+                 dd->adapterTargets[form][key] = adapter->target();
+                 dd->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
+                 dd->adapterCommands[form][key] = new gnomonCellComplexAdapterCommand;
+                 dd->adapterCommands[form][key]->setAlgorithmName(key);
                 delete adapter;
             }
         }
     }
 
      connect(this, &gnomonViewForm::formAdded, [=] (const QString& key) {
-         d->updateFormsTimes();
-         d->empty = false;
+         dd->updateFormsTimes();
          emit formsChanged();
      });
 
     // just need to find a signal that's actually emitted when a parameter changes :|
     connect(this, &gnomonViewForm::formVisuParametersChanged, [=] () {
         QMap<QString, std::shared_ptr<gnomonAbstractVisualization>>::iterator i;
-        for (i = d->formVisualization.begin(); i != d->formVisualization.end(); ++i) {
-            const auto& visu_name = d->formVisualizationNames[i.key()];
-            d->viewParameters.parameters[visu_name] = visuParameters(i.value());
+        for (i =  dd->formVisualization.begin(); i !=  dd->formVisualization.end(); ++i) {
+            const auto& visu_name =  dd->formVisualizationNames[i.key()];
+            dd->viewParameters.parameters[visu_name] = visuParameters(i.value());
         }
     });
 }
 
-void gnomonViewForm::transmit(void)
+/*void gnomonViewForm::transmit(void)
 {
     d->exportToManager();
-}
+}*/
 
 void gnomonViewForm::restoreState(void)
 {
     if (!this->empty()) {
-        for (const auto &key : d->formVisualization.keys()) {
-            d->formVisualization[key]->clearConnections();
-            d->formVisualization[key]->clear();
-            d->formVisualization[key]->setView(this);
-            // setVisuParameters(d->formVisualization[d->viewParameters.visuSelected[key]], d->viewParameters.parameters[key]);
-            d->formVisualization[key]->update();
-            d->formVisualization[key]->setVisible(d->formVisibility[key]);
+        for (const auto &key :  dd->formVisualization.keys()) {
+             dd->formVisualization[key]->clearConnections();
+             dd->formVisualization[key]->clear();
+             dd->formVisualization[key]->setView(this);
+            // setVisuParameters( dd->formVisualization[d->viewParameters.visuSelected[key]], d->viewParameters.parameters[key]);
+             dd->formVisualization[key]->update();
+             dd->formVisualization[key]->setVisible( dd->formVisibility[key]);
         }
     }
 }
 
 void gnomonViewForm::associate(vtkGenericOpenGLRenderWindow *window)
 {
-    d->window = window;
-    d->window->AddRenderer(d->renderer2D);
-    d->window->AddRenderer(d->renderer3D);
+    dd->window = window;
+    dd->window->AddRenderer(dd->renderer2D);
+    dd->window->AddRenderer(dd->renderer3D);
 
     this->switchTo2D();
     this->switchTo2DXY();
     this->switchTo3D();
 
-    d->updateOrientation();
-    d->updateFormsTimes();
+    dd->updateOrientation();
+    dd->updateFormsTimes();
 }
 
 gnomonViewForm::~gnomonViewForm(void)
 {
-    for(auto&& form_visu : d->formVisualization) {
+    for(auto&& form_visu :  dd->formVisualization) {
         if(form_visu && form_visu->view() == this)
             form_visu->clear();
     }
-    d->formVisualization.clear();
-    delete d;
+     dd->formVisualization.clear();
+    delete dd;
 }
 
 void gnomonViewForm::switchTo3D(void)
 {
-    bool hasChanged = d->mode != gnomonViewForm::VIEW_MODE_3D;
-    d->setViewMode(gnomonViewForm::VIEW_MODE_3D);
+    bool hasChanged = dd->mode != gnomonViewForm::VIEW_MODE_3D;
+    dd->setViewMode(gnomonViewForm::VIEW_MODE_3D);
 
     if (hasChanged){
         emit switchedTo3D();
@@ -660,11 +631,11 @@ void gnomonViewForm::switchTo3D(void)
 
 void gnomonViewForm::switchTo2D(void)
 {
-    bool hasChanged = d->mode != gnomonViewForm::VIEW_MODE_2D;
-    d->setViewMode(gnomonViewForm::VIEW_MODE_2D);
+    bool hasChanged = dd->mode != gnomonViewForm::VIEW_MODE_2D;
+    dd->setViewMode(gnomonViewForm::VIEW_MODE_2D);
 
     if (hasChanged) {
-        switch(d->ori) {
+        switch(dd->ori) {
             case gnomonViewForm::SLICE_ORIENTATION_XY:
                 this->switchTo2DXY();
                 break;
@@ -689,9 +660,10 @@ void gnomonViewForm::switchTo2D(void)
 void gnomonViewForm::switchTo2DXY(void)
 {
     emit sliceOrientationChanged(gnomonViewForm::SLICE_ORIENTATION_XY);
+    emit sliceChanged(dd->c_z);
 
-    bool hasChanged = d->ori != gnomonViewForm::SLICE_ORIENTATION_XY;
-    d->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_XY);
+    bool hasChanged = dd->ori != gnomonViewForm::SLICE_ORIENTATION_XY;
+    dd->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_XY);
 
     if (hasChanged) {
         emit switchedTo2DXY();
@@ -703,10 +675,10 @@ void gnomonViewForm::switchTo2DXY(void)
 void gnomonViewForm::switchTo2DXZ(void)
 {
     emit sliceOrientationChanged(gnomonViewForm::SLICE_ORIENTATION_XZ);
-    emit sliceChanged(d->c_y);
+    emit sliceChanged(dd->c_y);
 
-    bool hasChanged = d->ori != gnomonViewForm::SLICE_ORIENTATION_XZ;
-    d->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_XZ);
+    bool hasChanged = dd->ori != gnomonViewForm::SLICE_ORIENTATION_XZ;
+    dd->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_XZ);
 
     if (hasChanged)
         emit switchedTo2DXZ();
@@ -716,9 +688,10 @@ void gnomonViewForm::switchTo2DXZ(void)
 void gnomonViewForm::switchTo2DYZ(void)
 {
     emit sliceOrientationChanged(gnomonViewForm::SLICE_ORIENTATION_YZ);
+    emit sliceChanged(dd->c_x);
 
-    bool hasChanged = d->ori != gnomonViewForm::SLICE_ORIENTATION_YZ;
-    d->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_YZ);
+    bool hasChanged = dd->ori != gnomonViewForm::SLICE_ORIENTATION_YZ;
+    dd->setSliceOrientation(gnomonViewForm::SLICE_ORIENTATION_YZ);
 
     if (hasChanged)
         emit switchedTo2DYZ();
@@ -729,23 +702,23 @@ void gnomonViewForm::sliceChange(int value)
 {
     bool valueChanged = false;
 
-    switch(d->ori)
+    switch(dd->ori)
     {
         case gnomonViewForm::SLICE_ORIENTATION_XY:
-            if (d->c_z != value) {
-                d->c_z = value;
+            if (dd->c_z != value) {
+                dd->c_z = value;
                 valueChanged = true;
             }
             break;
         case gnomonViewForm::SLICE_ORIENTATION_XZ:
-            if (d->c_y != value) {
-                d->c_y = value;
+            if (dd->c_y != value) {
+                dd->c_y = value;
                 valueChanged = true;
             }
             break;
         case gnomonViewForm::SLICE_ORIENTATION_YZ:
-            if (d->c_x != value){
-                d->c_x = value;
+            if (dd->c_x != value){
+                dd->c_x = value;
                 valueChanged = true;
             }
             break;
@@ -756,7 +729,7 @@ void gnomonViewForm::sliceChange(int value)
     if (valueChanged)
         emit sliceChanged(value);
 
-    d->interactor()->Render();
+    dd->interactor()->Render();
 }
 
 
@@ -764,16 +737,16 @@ void gnomonViewForm::setCurrentTime(double time)
 {
     QList<double> sorted_times = this->times();
     if(sorted_times.contains(time)) {
-        if (d->c_t != time) {
-            d->c_t = time;
-            emit timeChanged(d->c_t);
+        if (dd->c_t != time) {
+            dd->c_t = time;
+            emit timeChanged(dd->c_t);
         }
     }
 }
 
 double gnomonViewForm::currentTime(void) const
 {
-    return d->c_t;
+    return dd->c_t;
 }
 
 double gnomonViewForm::timeMax(void)
@@ -788,7 +761,7 @@ double gnomonViewForm::timeMax(void)
 
 QList<double> gnomonViewForm::times(void)
 {
-    QList<double> sorted_times = QList<double>(d->forms_times.begin(), d->forms_times.end());
+    QList<double> sorted_times = QList<double>(dd->forms_times.begin(), dd->forms_times.end());
     std::sort(sorted_times.begin(), sorted_times.end());
 
     return sorted_times;
@@ -796,20 +769,20 @@ QList<double> gnomonViewForm::times(void)
 
 void gnomonViewForm::setPickedCells(QList<long> new_list)
 {
-    d->picked_cells = new_list;
+    dd->picked_cells = new_list;
     emit pickedCellsChanged();
 }
 
 QList<long> gnomonViewForm::pickedCells(void)
 {
-    return d->picked_cells;
+    return dd->picked_cells;
 }
 
 void gnomonViewForm::tryLinking(void)
 {
-    d->syncing = !d->syncing;
+    dd->syncing = !dd->syncing;
 
-    if (d->syncing) {
+    if (dd->syncing) {
         emit linking();
     } else {
         emit unlinking();
@@ -820,59 +793,59 @@ void gnomonViewForm::tryLinking(void)
 
 void gnomonViewForm::link(gnomonViewForm *other)
 {
-    d->synced = true;
+    dd->synced = true;
 
-    if (d->mode == gnomonViewForm::VIEW_MODE_3D) {
+    if (dd->mode == gnomonViewForm::VIEW_MODE_3D) {
         other->switchTo3D();
-    } else if (d->mode == gnomonViewForm::VIEW_MODE_2D) {
+    } else if (dd->mode == gnomonViewForm::VIEW_MODE_2D) {
         other->switchTo2D();
-        if (d->ori == gnomonViewForm::SLICE_ORIENTATION_XY) {
+        if (dd->ori == gnomonViewForm::SLICE_ORIENTATION_XY) {
             other->switchTo2DXY();
-        } else if (d->ori == gnomonViewForm::SLICE_ORIENTATION_XZ) {
+        } else if (dd->ori == gnomonViewForm::SLICE_ORIENTATION_XZ) {
             other->switchTo2DXZ();
-        } else if (d->ori == gnomonViewForm::SLICE_ORIENTATION_YZ) {
+        } else if (dd->ori == gnomonViewForm::SLICE_ORIENTATION_YZ) {
             other->switchTo2DYZ();
         }
     }
 
-    d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
-    d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
+    dd->renderer2D->SetActiveCamera(other->dd->renderer2D->GetActiveCamera());
+    dd->renderer3D->SetActiveCamera(other->dd->renderer3D->GetActiveCamera());
 
-    other->d->window->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
+    other->dd->window->AddObserver(vtkCommand::RenderEvent, this, &gnomonViewForm::render);
     this->render();
 
-    d->clearConnections();
-    d->connect3D = connect(other, &gnomonViewForm::switchedTo3D, [=] () {
+    dd->clearConnections();
+    dd->connect3D = connect(other, &gnomonViewForm::switchedTo3D, [=] () {
         this->switchTo3D();
-        d->renderer3D->SetActiveCamera(other->d->renderer3D->GetActiveCamera());
+        dd->renderer3D->SetActiveCamera(other->dd->renderer3D->GetActiveCamera());
     });
-    d->connect2D = connect(other, &gnomonViewForm::switchedTo2D, [=] () {
+    dd->connect2D = connect(other, &gnomonViewForm::switchedTo2D, [=] () {
         this->switchTo2D();
-        if (other->d->ori == gnomonViewForm::SLICE_ORIENTATION_XY) {
+        if (other->dd->ori == gnomonViewForm::SLICE_ORIENTATION_XY) {
             this->switchTo2DXY();
-        } else if (other->d->ori == gnomonViewForm::SLICE_ORIENTATION_XZ) {
+        } else if (other->dd->ori == gnomonViewForm::SLICE_ORIENTATION_XZ) {
             this->switchTo2DXZ();
-        } else if (other->d->ori == gnomonViewForm::SLICE_ORIENTATION_YZ) {
+        } else if (other->dd->ori == gnomonViewForm::SLICE_ORIENTATION_YZ) {
             this->switchTo2DYZ();
         }
-        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+        dd->renderer2D->SetActiveCamera(other->dd->renderer2D->GetActiveCamera());
     });
-    d->connectXY = connect(other, &gnomonViewForm::switchedTo2DXY, [=] () {
+    dd->connectXY = connect(other, &gnomonViewForm::switchedTo2DXY, [=] () {
         this->switchTo2DXY();
-        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+        dd->renderer2D->SetActiveCamera(other->dd->renderer2D->GetActiveCamera());
     });
-    d->connectXZ = connect(other, &gnomonViewForm::switchedTo2DXZ, [=] () {
+    dd->connectXZ = connect(other, &gnomonViewForm::switchedTo2DXZ, [=] () {
         this->switchTo2DXZ();
-        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+        dd->renderer2D->SetActiveCamera(other->dd->renderer2D->GetActiveCamera());
     });
-    d->connectYZ = connect(other, &gnomonViewForm::switchedTo2DYZ, [=] () {
+    dd->connectYZ = connect(other, &gnomonViewForm::switchedTo2DYZ, [=] () {
         this->switchTo2DYZ();
-        d->renderer2D->SetActiveCamera(other->d->renderer2D->GetActiveCamera());
+        dd->renderer2D->SetActiveCamera(other->dd->renderer2D->GetActiveCamera());
     });
-    d->connectSlice = connect(other, &gnomonViewForm::sliceChanged, [=] (int value) {
+    dd->connectSlice = connect(other, &gnomonViewForm::sliceChanged, [=] (int value) {
         this->sliceChange(value);
     });
-    d->connectTime = connect(other, &gnomonViewForm::timeChanged, [=] (double value) {
+    dd->connectTime = connect(other, &gnomonViewForm::timeChanged, [=] (double value) {
         this->onTimeChanged(value);
     });
 
@@ -881,54 +854,23 @@ void gnomonViewForm::link(gnomonViewForm *other)
 
 void gnomonViewForm::unlink(gnomonViewForm *other)
 {
-    d->synced = false;
+    dd->synced = false;
 
     vtkSmartPointer<vtkCamera> camera2D = vtkCamera::New();
-    camera2D->ShallowCopy(d->renderer2D->GetActiveCamera());
-    d->renderer2D->SetActiveCamera(camera2D);
+    camera2D->ShallowCopy(dd->renderer2D->GetActiveCamera());
+    dd->renderer2D->SetActiveCamera(camera2D);
 
     vtkSmartPointer<vtkCamera> camera3D = vtkCamera::New();
-    camera3D->ShallowCopy(d->renderer3D->GetActiveCamera());
-    d->renderer3D->SetActiveCamera(camera3D);
+    camera3D->ShallowCopy(dd->renderer3D->GetActiveCamera());
+    dd->renderer3D->SetActiveCamera(camera3D);
 
-    d->clearConnections();
+    dd->clearConnections();
 
     emit syncedChanged();
 }
 
 void gnomonViewForm::disconnectTime() {
-    disconnect(d->connectTime);
-}
-
-void gnomonViewForm::setExportColor(const QColor& color)
-{
-    d->export_color = color;
-}
-
-QStringList gnomonViewForm::formNames(void)
-{
-    return d->forms.keys();
-}
-
-QStringList gnomonViewForm::formNamesAndId(void)
-{
-    QStringList formNamesAndIndex;
-    auto it = d->forms.constBegin();
-    while (it != d->forms.constEnd()) {
-        int id =  it.value()->thumbnailId();
-        formNamesAndIndex.append(it.key() + "," + QString::number(id));
-        ++it;
-    }
-    return formNamesAndIndex;
-}
-
-std::shared_ptr<gnomonAbstractDynamicForm> gnomonViewForm::form(const QString& name)
-{
-    if (d->forms.contains(name)) {
-        return d->forms[name];
-    } else {
-        return nullptr;
-    }
+    disconnect(dd->connectTime);
 }
 
 void gnomonViewForm::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVisualization> visualization)
@@ -982,11 +924,11 @@ void gnomonViewForm::setForm(const QString& name, std::shared_ptr<gnomonAbstract
 void gnomonViewForm::setAdaptedForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     bool adapter_found = false;
-    if (d->adapterCommands.contains(name)) {
+    if ( dd->adapterCommands.contains(name)) {
         QVariantMap adapter_descs;
-        for (const auto &key : d->adapterCommands[name].keys()) {
-            if (d->acceptForms[d->adapterTargets[name][key]]) {
-                adapter_descs[key] = d->adapterDescriptions[name][key];
+        for (const auto &key :  dd->adapterCommands[name].keys()) {
+            if (d->acceptForms[ dd->adapterTargets[name][key]]) {
+                adapter_descs[key] =  dd->adapterDescriptions[name][key];
                 adapter_found = true;
             }
         }
@@ -995,16 +937,16 @@ void gnomonViewForm::setAdaptedForm(const QString& name, std::shared_ptr<gnomonA
         // TODO: Bind that to QML
         // if (adapter_descs.size() > 0) {
         //     d->form_to_adapt = form;
-        //     d->adapter_menu = new gnomonFormAdapterMenu(adapter_descs);
-        //     d->adapter_menu->setAttribute(Qt::WA_DeleteOnClose, true);
-        //     d->adapter_menu->resize(dtkApp->window()->width() * 2/5, dtkApp->window()->height() - 40);
-        //     d->adapter_menu->move(dtkApp->window()->frameGeometry().topLeft() + QPoint(86,0));
-        //     d->adapter_menu->show();
+        //      dd->adapter_menu = new gnomonFormAdapterMenu(adapter_descs);
+        //      dd->adapter_menu->setAttribute(Qt::WA_DeleteOnClose, true);
+        //      dd->adapter_menu->resize(dtkApp->window()->width() * 2/5, dtkApp->window()->height() - 40);
+        //      dd->adapter_menu->move(dtkApp->window()->frameGeometry().topLeft() + QPoint(86,0));
+        //      dd->adapter_menu->show();
 
-        //     QObject *context = d->adapter_menu->rootObject();
+        //     QObject *context =  dd->adapter_menu->rootObject();
         //     connect(context, SIGNAL(clicked(const QString&)), d, SLOT(adaptForm(const QString&)));
 
-        //     QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(d->adapter_menu);
+        //     QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect( dd->adapter_menu);
         // }
     }
 
@@ -1031,11 +973,11 @@ void gnomonViewForm::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellIma
     if(visu) {
         visu_name = visu->pluginName();
         parameters = visuParameters(visu);
-        //d->formVisualization[name] = visu;
-        //d->formVisualizationNames[name] = visu_name;
+        // dd->formVisualization[name] = visu;
+        // dd->formVisualizationNames[name] = visu_name;
     } else {
-        if (d->formVisualization.contains(name) && d->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
+        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
+            std::shared_ptr<gnomonAbstractVisualization> current_visu =  dd->formVisualization[name];
             visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
@@ -1044,7 +986,7 @@ void gnomonViewForm::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellIma
     }
 
     d->forms[name] = cellImage;
-    d->setFormVisualization(name, visu_name, parameters);
+    dd->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonCellImage");
 }
 
@@ -1066,11 +1008,11 @@ void gnomonViewForm::setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cel
     if(visu) {
         visu_name = visu->pluginName();
         parameters = visuParameters(visu);
-        //d->formVisualization[name] = visu;
-        //d->formVisualizationNames[name] = visu_name;
+        // dd->formVisualization[name] = visu;
+        // dd->formVisualizationNames[name] = visu_name;
     } else {
-        if (d->formVisualization.contains(name) && d->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
+        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
+            std::shared_ptr<gnomonAbstractVisualization> current_visu =  dd->formVisualization[name];
             visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
@@ -1079,7 +1021,7 @@ void gnomonViewForm::setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cel
     }
 
     d->forms[name] = cellComplex;
-    d->setFormVisualization(name, visu_name, parameters);
+    dd->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonCellComplex");
 }
 
@@ -1101,11 +1043,11 @@ void gnomonViewForm::setImage(std::shared_ptr<gnomonImageSeries> image, std::sha
     if(visu) {
         visu_name = visu->pluginName();
         parameters = visuParameters(visu);
-        //d->formVisualization[name] = visu;
-        //d->formVisualizationNames[name] = visu_name;
+        // dd->formVisualization[name] = visu;
+        // dd->formVisualizationNames[name] = visu_name;
     } else {
-        if (d->formVisualization.contains(name) && d->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
+        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
+            std::shared_ptr<gnomonAbstractVisualization> current_visu =  dd->formVisualization[name];
             visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
@@ -1114,7 +1056,7 @@ void gnomonViewForm::setImage(std::shared_ptr<gnomonImageSeries> image, std::sha
     }
 
     d->forms[name] = image;
-    d->setFormVisualization(name, visu_name, parameters);
+    dd->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonImage");
 }
 
@@ -1137,11 +1079,11 @@ void gnomonViewForm::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> ima
     if(visu) {
         visu_name = visu->pluginName();
         parameters = visuParameters(visu);
-        //d->formVisualization[name] = visu;
-        //d->formVisualizationNames[name] = visu_name;
+        // dd->formVisualization[name] = visu;
+        // dd->formVisualizationNames[name] = visu_name;
     } else {
-        if (d->formVisualization.contains(name) && d->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
+        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
+            std::shared_ptr<gnomonAbstractVisualization> current_visu =  dd->formVisualization[name];
             visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
@@ -1150,7 +1092,7 @@ void gnomonViewForm::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> ima
     }
 
     d->forms[name] = image;
-    d->setFormVisualization(name, visu_name, parameters);
+    dd->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonBinaryImage");
 }
 
@@ -1172,11 +1114,11 @@ void gnomonViewForm::setLString(std::shared_ptr<gnomonLStringSeries> lString, st
     if(visu) {
         visu_name = visu->pluginName();
         parameters = visuParameters(visu);
-        //d->formVisualization[name] = visu;
-        //d->formVisualizationNames[name] = visu_name;
+        // dd->formVisualization[name] = visu;
+        // dd->formVisualizationNames[name] = visu_name;
     } else {
-        if (d->formVisualization.contains(name) && d->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
+        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
+            std::shared_ptr<gnomonAbstractVisualization> current_visu =  dd->formVisualization[name];
             visu_name = current_visu->pluginName();
             //parameters = visuParameters(current_visu);
             //already a visu, clear it
@@ -1187,7 +1129,7 @@ void gnomonViewForm::setLString(std::shared_ptr<gnomonLStringSeries> lString, st
     }
 
     d->forms[name] = lString;
-    d->setFormVisualization(name, visu_name, parameters);
+    dd->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonLString");
 }
 
@@ -1209,11 +1151,11 @@ void gnomonViewForm::setMesh(std::shared_ptr<gnomonMeshSeries> mesh, std::shared
     if(visu) {
         visu_name = visu->pluginName();
         parameters = visuParameters(visu);
-        //d->formVisualization[name] = visu;
-        //d->formVisualizationNames[name] = visu_name;
+        // dd->formVisualization[name] = visu;
+        // dd->formVisualizationNames[name] = visu_name;
     } else {
-        if (d->formVisualization.contains(name) && d->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
+        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
+            std::shared_ptr<gnomonAbstractVisualization> current_visu =  dd->formVisualization[name];
             visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
@@ -1222,7 +1164,7 @@ void gnomonViewForm::setMesh(std::shared_ptr<gnomonMeshSeries> mesh, std::shared
     }
 
     d->forms[name] = mesh;
-    d->setFormVisualization(name, visu_name, parameters);
+    dd->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonMesh");
 }
 
@@ -1244,11 +1186,11 @@ void gnomonViewForm::setPointCloud(std::shared_ptr<gnomonPointCloudSeries> point
     if(visu) {
         visu_name = visu->pluginName();
         parameters = visuParameters(visu);
-        //d->formVisualization[name] = visu;
-        //d->formVisualizationNames[name] = visu_name;
+        // dd->formVisualization[name] = visu;
+        // dd->formVisualizationNames[name] = visu_name;
     } else {
-        if (d->formVisualization.contains(name) && d->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractVisualization> current_visu = d->formVisualization[name];
+        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
+            std::shared_ptr<gnomonAbstractVisualization> current_visu =  dd->formVisualization[name];
             visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
@@ -1257,7 +1199,7 @@ void gnomonViewForm::setPointCloud(std::shared_ptr<gnomonPointCloudSeries> point
     }
 
     d->forms[name] = pointCloud;
-    d->setFormVisualization(name, visu_name, parameters);
+    dd->setFormVisualization(name, visu_name, parameters);
     emit formAdded("gnomonPointCloud");
 }
 
@@ -1265,7 +1207,7 @@ QString gnomonViewForm::formVisuName(const QString& name)
 {
     QString visu_name;
     if (d->forms.contains(name)) {
-        visu_name = d->formVisualizationNames[name];
+        visu_name =  dd->formVisualizationNames[name];
     }
     return visu_name;
 }
@@ -1295,12 +1237,12 @@ QVariantList gnomonViewForm::formVisualizations(const QString& name)
 void gnomonViewForm::setFormVisuName(const QString& name, const QString& visu_name)
 {
     if (d->forms.contains(name)  && !visu_name.isEmpty()) {
-        if(d->viewParameters.parameters.contains(visu_name)) {
+        if(dd->viewParameters.parameters.contains(visu_name)) {
             // setting the parameters does not work so ignoring it for now
-            //d->setFormVisualization(name, visu_name, d->viewParameters.parameters[visu_name]);
-            d->setFormVisualization(name, visu_name);
+            //dd->setFormVisualization(name, visu_name, d->viewParameters.parameters[visu_name]);
+            dd->setFormVisualization(name, visu_name);
         } else {
-            d->setFormVisualization(name, visu_name);
+            dd->setFormVisualization(name, visu_name);
         }
     }
 }
@@ -1308,8 +1250,8 @@ void gnomonViewForm::setFormVisuName(const QString& name, const QString& visu_na
 QJSValue gnomonViewForm::formVisuParameters(const QString& name)
 {
     if (d->forms.contains(name)) {
-        QJSValue parameters = dtkCoreParameterCollection(d->formVisualization[name]->parameters()).toJSValue(this->parent());
-        QMap<QString, QString> parameter_groups = d->formVisualization[name]->parameterGroups();
+        QJSValue parameters = dtkCoreParameterCollection( dd->formVisualization[name]->parameters()).toJSValue(this->parent());
+        QMap<QString, QString> parameter_groups =  dd->formVisualization[name]->parameterGroups();
 
         QJSValueIterator it(parameters);
         while (it.hasNext()) {
@@ -1327,7 +1269,7 @@ QJSValue gnomonViewForm::formVisuParameters(const QString& name)
 QVariant gnomonViewForm::formVisuParameter(const QString& name, const QString& parameter_name)
 {
     if (d->forms.contains(name)) {
-        auto params = d->formVisualization[name]->parameters();
+        auto params =  dd->formVisualization[name]->parameters();
         if (params.keys().contains(parameter_name)) {
             dtkCoreParameter *param = params.value(parameter_name);
             // TODO: More specific cases to handle?
@@ -1348,17 +1290,17 @@ QVariant gnomonViewForm::formVisuParameter(const QString& name, const QString& p
 void gnomonViewForm::setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value)
 {
     if (d->forms.contains(name)) {
-        auto visu = d->formVisualization[name];
+        auto visu =  dd->formVisualization[name];
         visu->setParameter(parameter_name, value);
     }
 }
 
 void gnomonViewForm::setFormVisible(const QString& name, bool visible)
 {
-    if (d->formVisualization.contains(name)) {
-        if (d->formVisualization[name]) {
-            d->formVisualization[name]->setVisible(visible);
-            d->formVisibility[name] = visible;
+    if ( dd->formVisualization.contains(name)) {
+        if ( dd->formVisualization[name]) {
+             dd->formVisualization[name]->setVisible(visible);
+             dd->formVisibility[name] = visible;
         }
     }
 
@@ -1367,26 +1309,23 @@ void gnomonViewForm::setFormVisible(const QString& name, bool visible)
 
 void gnomonViewForm::removeForm(const QString& name)
 {
-    if (d->formVisualization.contains(name)) {
-        if (d->formVisualization[name]) {
-            d->formVisualization[name]->disconnect();
-            d->formVisualization[name]->clearConnections();
-            d->formVisualization[name]->clear();
+    if ( dd->formVisualization.contains(name)) {
+        if ( dd->formVisualization[name]) {
+             dd->formVisualization[name]->disconnect();
+             dd->formVisualization[name]->clearConnections();
+             dd->formVisualization[name]->clear();
         }
     }
-    d->formVisualization.remove(name);
-    if (d->formVisualizationNames.contains(name)) {
-        d->viewParameters.parameters.remove(d->formVisualizationNames[name]);
+     dd->formVisualization.remove(name);
+    if ( dd->formVisualizationNames.contains(name)) {
+        dd->viewParameters.parameters.remove( dd->formVisualizationNames[name]);
     }
-    d->formVisualizationNames.remove(name);
-    d->formVisibility.remove(name);
+     dd->formVisualizationNames.remove(name);
+     dd->formVisibility.remove(name);
     d->forms.remove(name);
-    d->viewParameters.visuSelected.remove(name);
+    dd->viewParameters.visuSelected.remove(name);
 
-    d->updateFormsTimes();
-    if (d->forms.isEmpty()) {
-        d->empty = true;
-    }
+    dd->updateFormsTimes();
 
     this->render();
 
@@ -1397,35 +1336,35 @@ void gnomonViewForm::setBounds(double bounds[6])
 {
     bool changed = false;
 
-    if (bounds[0] != d->xBounds[0]) {
-        d->xBounds[0] = bounds[0];
+    if (bounds[0] != dd->xBounds[0]) {
+        dd->xBounds[0] = bounds[0];
         changed = true;
     }
-    if (bounds[1] != d->xBounds[1]) {
-        d->xBounds[1] = bounds[1];
+    if (bounds[1] != dd->xBounds[1]) {
+        dd->xBounds[1] = bounds[1];
         changed = true;
     }
-    if (bounds[2] != d->yBounds[0]) {
-        d->yBounds[0] = bounds[2];
+    if (bounds[2] != dd->yBounds[0]) {
+        dd->yBounds[0] = bounds[2];
         changed = true;
     }
-    if (bounds[3] != d->yBounds[1]) {
-        d->yBounds[1] = bounds[3];
+    if (bounds[3] != dd->yBounds[1]) {
+        dd->yBounds[1] = bounds[3];
         changed = true;
     }
-    if (bounds[4] != d->zBounds[0]) {
-        d->zBounds[0] = bounds[4];
+    if (bounds[4] != dd->zBounds[0]) {
+        dd->zBounds[0] = bounds[4];
         changed = true;
     }
-    if (bounds[5] != d->zBounds[1]) {
-        d->zBounds[1] = bounds[5];
+    if (bounds[5] != dd->zBounds[1]) {
+        dd->zBounds[1] = bounds[5];
         changed = true;
     }
 
     if (changed) {
         emit boundsChanged();
-        d->renderer2D->ResetCamera();
-        d->renderer3D->ResetCamera();
+        dd->renderer2D->ResetCamera();
+        dd->renderer3D->ResetCamera();
     }
 }
 
@@ -1443,170 +1382,161 @@ void gnomonViewForm::setBounds(double xMin, double xMax, double yMin, double yMa
 
 void gnomonViewForm::getBounds(double bounds[6])
 {
-    bounds[0] = d->xBounds[0];
-    bounds[1] = d->xBounds[1];
-    bounds[2] = d->yBounds[0];
-    bounds[3] = d->yBounds[1];
-    bounds[4] = d->zBounds[0];
-    bounds[5] = d->zBounds[1];
+    bounds[0] = dd->xBounds[0];
+    bounds[1] = dd->xBounds[1];
+    bounds[2] = dd->yBounds[0];
+    bounds[3] = dd->yBounds[1];
+    bounds[4] = dd->zBounds[0];
+    bounds[5] = dd->zBounds[1];
 }
 
 double gnomonViewForm::xMin(void) const
 {
-    return d->xBounds[0];
+    return dd->xBounds[0];
 }
 
 double gnomonViewForm::xMax(void) const
 {
-    return d->xBounds[1];
+    return dd->xBounds[1];
 }
 
 double gnomonViewForm::yMin(void) const
 {
-    return d->yBounds[0];
+    return dd->yBounds[0];
 }
 
 double gnomonViewForm::yMax(void) const
 {
-    return d->yBounds[1];
+    return dd->yBounds[1];
 }
 
 double gnomonViewForm::zMin(void) const
 {
-    return d->zBounds[0];
+    return dd->zBounds[0];
 }
 
 double gnomonViewForm::zMax(void) const
 {
-    return d->zBounds[1];
+    return dd->zBounds[1];
 }
 
 gnomonViewForm::Mode gnomonViewForm::mode(void) const
 {
-    return d->mode;
+    return dd->mode;
 }
 
 void gnomonViewForm::setCamera(vtkCamera *cam)
 {
-    vtkSmartPointer<vtkCamera> camera3D = d->renderer3D->GetActiveCamera();
+    vtkSmartPointer<vtkCamera> camera3D = dd->renderer3D->GetActiveCamera();
 //    camera3D->DeepCopy(cam);
     camera3D->SetFocalPoint(cam->GetFocalPoint());
     camera3D->SetViewUp(cam->GetViewUp());
     camera3D->SetPosition(cam->GetPosition());
 }
 
-void gnomonViewForm::setAcceptForm(const QString& name, bool accept)
-{
-    if (d->acceptForms.contains(name)) {
-        d->acceptForms[name] = accept;
-    }
-}
-
-QStringList gnomonViewForm::acceptedForms(void)
-{
-    QStringList forms;
-    for (const auto& name : d->acceptForms.keys()) {
-        if (d->acceptForms[name]) {
-            forms << name;
-        }
-    }
-    return forms;
-}
-
 QStringList gnomonViewForm::nodePortNames(void)
 {
-    return d->nodePortNames;
+    return dd->nodePortNames;
 }
 
 void gnomonViewForm::setEnableLinking(bool enable)
 {
-    d->enableLink = enable;
+    dd->enableLink = enable;
     // d->refresh();
 }
 
 void gnomonViewForm::setEnableMenus(bool enable)
 {
-    d->enableMenus = enable;
+    dd->enableMenus = enable;
     // d->refresh();
 }
 
 vtkRenderWindowInteractor *gnomonViewForm::interactor(void)
 {
-    return d->interactor();
+    return dd->interactor();
 }
 
 vtkRenderer *gnomonViewForm::renderer2D(void)
 {
-    return d->renderer2D;
+    return dd->renderer2D;
 }
 
 vtkRenderer *gnomonViewForm::renderer3D(void)
 {
-    return d->renderer3D;
+    return dd->renderer3D;
 }
 
 gnomonViewForm::Orientation gnomonViewForm::orientation(void)
 {
-    return d->ori;
+    return dd->ori;
 }
 
 void gnomonViewForm::render(void)
 {
-    d->renderer2D->ResetCameraClippingRange();
-    d->interactor()->Render();
+    dd->renderer2D->ResetCameraClippingRange();
+    dd->interactor()->Render();
 }
 
 void gnomonViewForm::update(void)
 {
-    for (const auto& key : d->formVisualization.keys()) {
-        d->formVisualization[key]->update();
-        d->formVisualization[key]->setVisible(d->formVisibility[key]);
+    for (const auto& key :  dd->formVisualization.keys()) {
+         dd->formVisualization[key]->update();
+         dd->formVisualization[key]->setVisible( dd->formVisibility[key]);
     }
 }
 
 void gnomonViewForm::clear(void)
 {
-    d->clear();
-    d->updateFormsTimes();
-    d->empty = true;
-    emit formsChanged();
+    for (auto fv : dd->formVisualization) {
+        fv->disconnect();
+        fv->clearConnections();
+        fv->clear();
+    }
+    dd->formVisualizationNames.clear();
+    dd->formVisibility.clear();
+    dd->formVisualization.clear();
+
+    dd->updateFormsTimes();
+    this->render();
+
+    gnomonAbstractView::clear();
 }
 
 void gnomonViewForm::startPicking() {
-    if(!d->formVisualization["gnomonCellImage"] ||
-       d->formVisualization["gnomonCellImage"]->pluginName() != "visualizationCellImageMarchingCubes") {
+    if(! dd->formVisualization["gnomonCellImage"] ||
+        dd->formVisualization["gnomonCellImage"]->pluginName() != "visualizationCellImageMarchingCubes") {
         qWarning() << "Picking not implemented for : "
-                   << d->formVisualizationNames["gnomonCellImage"]
+                   <<  dd->formVisualizationNames["gnomonCellImage"]
                    << " only visualizationCellImageMarchingCubes has picking";
         return;
     }
 
     // backup old interactor style
-    d->old_style = d->interactor()->GetInteractorStyle();
+    dd->old_style = dd->interactor()->GetInteractorStyle();
 
-    d->picking_visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationCellImage>(d->formVisualization["gnomonCellImage"]);
+    dd->picking_visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationCellImage>( dd->formVisualization["gnomonCellImage"]);
 
-    if(d->mode == gnomonViewForm::VIEW_MODE_3D) {
-        d->picking_visu->on3D();
+    if(dd->mode == gnomonViewForm::VIEW_MODE_3D) {
+        dd->picking_visu->on3D();
     } else {
-        d->picking_visu->on2D();
+        dd->picking_visu->on2D();
     }
-    d->interactor()->SetInteractorStyle(d->picking_visu->interactorStyle());
-    d->picking_visu->interactorStyle()->setView(this);
-    d->connectPicked = connect(d->picking_visu.get(), &gnomonAbstractVisualizationCellImage::pickedCells, this, &gnomonViewForm::setPickedCells);
+    dd->interactor()->SetInteractorStyle(dd->picking_visu->interactorStyle());
+    dd->picking_visu->interactorStyle()->setView(this);
+    dd->connectPicked = connect(dd->picking_visu.get(), &gnomonAbstractVisualizationCellImage::pickedCells, this, &gnomonViewForm::setPickedCells);
 }
 
 void gnomonViewForm::stopPicking() {
-    if(!d->old_style)
+    if(!dd->old_style)
         return;
 
-    d->picking_visu->stopPicking();
-    disconnect(d->connectPicked);
+    dd->picking_visu->stopPicking();
+    disconnect(dd->connectPicked);
 
     // set interactorstyle to old style
-    d->interactor()->SetInteractorStyle(d->old_style);
-    d->old_style = nullptr;
-    d->picking_visu = nullptr;
+    dd->interactor()->SetInteractorStyle(dd->old_style);
+    dd->old_style = nullptr;
+    dd->picking_visu = nullptr;
     this->render();
 }
 
@@ -1622,37 +1552,24 @@ void gnomonViewForm::onTimeChanged(double time)
     this->setCurrentTime(time);
 }
 
-void gnomonViewForm::setInputView(bool input)
-{
-    if (input != d->input_view) {
-        d->input_view = input;
-        emit inputViewChanged();
-    }
-}
-
 void gnomonViewForm::setInPool(bool inpool)
 {
-    d->in_pool = inpool;
-}
-
-bool gnomonViewForm::inputView(void)
-{
-    return d->input_view;
+    dd->in_pool = inpool;
 }
 
 bool gnomonViewForm::inPool(void)
 {
-    return d->in_pool;
+    return dd->in_pool;
 }
 
 bool gnomonViewForm::synced(void)
 {
-    return d->synced;
+    return dd->synced;
 }
 
 bool gnomonViewForm::syncing(void)
 {
-    return d->syncing;
+    return dd->syncing;
 }
 
 void gnomonViewForm::updateShortcutKeys(void)
@@ -1664,14 +1581,14 @@ void gnomonViewForm::drop(int index)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
 
-    if (d->empty) {
+    if (this->empty()) {
         if (vtkCamera *cam = gnomonFormManager::instance()->getCamera(index)) {
             this->setCamera(cam);
         }
     }
     this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
 
-    d->interactor()->Render();
+    dd->interactor()->Render();
     gnomonFormManager::instance()->setFormDropped(form);
 }
 
@@ -1681,25 +1598,21 @@ gnomonDynamicFormMetadata* gnomonViewForm::formMetadata(const QString &name) {
     return ptr;
 }
 
-bool gnomonViewForm::empty(void) {
-    return d->forms.empty();
-}
-
 void gnomonViewForm::notifyFormSelected(int index, QString formType) {
-    d->viewParameters.currentFormIndex = index;
-    d->viewParameters.currentFormType = std::move(formType);
+    dd->viewParameters.currentFormIndex = index;
+    dd->viewParameters.currentFormType = std::move(formType);
 }
 
 int gnomonViewForm::lastFormIndexSelected() {
-    return d->viewParameters.currentFormIndex;
+    return dd->viewParameters.currentFormIndex;
 }
 
 QString gnomonViewForm::lastFromTypeSelected() {
-    return d->viewParameters.currentFormType;
+    return dd->viewParameters.currentFormType;
 }
 
 QString gnomonViewForm::lastVisuSelected(QString formType) {
-    return d->viewParameters.visuSelected[formType];
+    return dd->viewParameters.visuSelected[formType];
 }
 
 // ///////////////////////////////////////////////////////////////////

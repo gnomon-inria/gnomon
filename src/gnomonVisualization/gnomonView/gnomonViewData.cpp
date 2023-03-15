@@ -40,9 +40,6 @@ public:
     ~gnomonViewDataPrivate(void);
 
 public:
-    QColor export_color = QColor("#cccccc");
-
-public:
     QString data_dict;
 };
 

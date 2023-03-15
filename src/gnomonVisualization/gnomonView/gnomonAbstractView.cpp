@@ -60,7 +60,11 @@ void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbst
 
 std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractView::form(const QString& name)
 {
-    return d->forms[name];
+    if (d->forms.contains(name)) {
+        return d->forms[name];
+    } else {
+        return nullptr;
+    }
 }
 
 void gnomonAbstractView::removeForm(const QString& name)
@@ -68,12 +72,20 @@ void gnomonAbstractView::removeForm(const QString& name)
     if (d->forms.contains(name)) {
         d->forms.remove(name);
         emit formRemoved(name);
+        emit formsChanged();
     }
+}
+
+void gnomonAbstractView::clear(void)
+{
+    d->forms.clear();
+    emit formsChanged();
 }
 
 void gnomonAbstractView::drop(int index)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
+    // this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
     this->setForm("formManager", form);
     gnomonFormManager::instance()->setFormDropped(form);
 }
@@ -102,7 +114,6 @@ QStringList gnomonAbstractView::formNames()
 {
     return d->forms.keys();
 }
-
 
 QStringList gnomonAbstractView::formNamesAndId(void)
 {
