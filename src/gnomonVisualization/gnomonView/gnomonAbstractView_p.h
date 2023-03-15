@@ -18,7 +18,7 @@ public:
 
 public slots:
     void exportToManager(void);
-    void removeForm(const QString& key);
+
 public:
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
 

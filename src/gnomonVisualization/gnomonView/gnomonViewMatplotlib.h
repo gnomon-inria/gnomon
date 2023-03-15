@@ -5,10 +5,12 @@
 #include <QtCore>
 #include <QtQml>
 
-#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
+#include "gnomonAbstractView.h"
+
+class gnomonAbstractDynamicForm;
 class gnomonAbstractMatplotlibVisualization;
 
-class GNOMONVISUALIZATION_EXPORT gnomonViewMatplotlib  : public QObject
+class GNOMONVISUALIZATION_EXPORT gnomonViewMatplotlib  : public gnomonAbstractView
 {
     Q_OBJECT
 
@@ -18,39 +20,24 @@ public:
 
 public:
     Q_PROPERTY(int figureNumber READ figureNumber WRITE setFigureNumber NOTIFY figureNumberChanged);
-    Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
-    Q_PROPERTY(QStringList formNamesAndId READ formNamesAndId NOTIFY formsChanged);
-    Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
-    Q_PROPERTY(bool inputView READ inputView WRITE setInputView);
 
 public:
-    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>);
-    std::shared_ptr<gnomonAbstractDynamicForm> form (const QString&);
-    void clearForm(const QString&);
+    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ) override;
+    void removeForm(const QString& name) override;
 
 public:
     void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> , gnomonAbstractMatplotlibVisualization * = nullptr);
-
-public slots:
-    void setAcceptForm(const QString&, bool);
 
 public:
     void setIsModifiedForm(const QString&);
 
 public slots:
     void setFigureNumber(int num);
-    void setInputView(bool);
 
 public:
     int figureNumber(void);
-    QStringList formNames(void);
-    QStringList formNamesAndId(void);
-    QStringList acceptedForms(void);
-    bool inputView(void);
-    bool empty(void);
 
 signals:
-    void formsChanged(void);
     void formVisuParametersChanged(void);
     void formVisualizationChanged(void);
 
@@ -66,10 +53,8 @@ public:
     Q_INVOKABLE void setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value);
 
     Q_INVOKABLE void setFormVisible(const QString& name, bool visible);
-    Q_INVOKABLE void removeForm(const QString& name);
+
 signals:
-    void formAdded(const QString&);
-    void formRemoved(const QString&);
     void figureNumberChanged(int);
 
 public:
@@ -82,13 +67,9 @@ public slots:
     void render(void);
     void update(void);
     void clear(void);
-    void transmit(void);
-
-signals:
-    void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm> );
 
 private:
-    class gnomonViewMatplotlibPrivate *d;
+    class gnomonViewMatplotlibPrivate *dd;
 };
 
 Q_DECLARE_METATYPE(gnomonViewMatplotlib *);

@@ -29,11 +29,6 @@ void gnomonAbstractViewPrivate::exportToManager(void)
     }
 }
 
-void gnomonAbstractViewPrivate::removeForm(const QString& key)
-{
-    this->forms.remove(key);
-}
-
 // ///////////////////////////////////////////////////////////////////
 // gnomonAbstractView
 // ///////////////////////////////////////////////////////////////////
@@ -68,9 +63,12 @@ std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractView::form(const QStrin
     return d->forms[name];
 }
 
-void gnomonAbstractView::clearForm(const QString& name)
+void gnomonAbstractView::removeForm(const QString& name)
 {
-    return d->removeForm(name);
+    if (d->forms.contains(name)) {
+        d->forms.remove(name);
+        emit formRemoved(name);
+    }
 }
 
 void gnomonAbstractView::drop(int index)
@@ -105,6 +103,19 @@ QStringList gnomonAbstractView::formNames()
     return d->forms.keys();
 }
 
+
+QStringList gnomonAbstractView::formNamesAndId(void)
+{
+    QStringList formNamesAndIndex;
+    auto it = d->forms.constBegin();
+    while (it != d->forms.constEnd()) {
+        int id =  it.value()->thumbnailId();
+        formNamesAndIndex.append(it.key() + "," + QString::number(id));
+        ++it;
+    }
+    return formNamesAndIndex;
+}
+
 QStringList gnomonAbstractView::acceptedForms()
 {
     QStringList forms;
@@ -118,4 +129,8 @@ QStringList gnomonAbstractView::acceptedForms()
 bool gnomonAbstractView::inputView()
 {
     return d->input_view;
+}
+
+bool gnomonAbstractView::empty(void) {
+    return d->forms.empty();
 }

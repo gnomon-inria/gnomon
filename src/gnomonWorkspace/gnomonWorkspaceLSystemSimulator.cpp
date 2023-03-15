@@ -221,7 +221,7 @@ void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
         this->axiom->setForm("gnomonLString",lstring_series);
     } else {
         if (this->axiom->form("gnomonLString")) {
-            this->axiom->clearForm("gnomonLString");
+            this->axiom->removeForm("gnomonLString");
         }
     }
 }
