@@ -1,53 +1,35 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonAbstractMatplotlibVisualization.h"
-#include "gnomonAbstractMatplotlibVisualization_p.h"
+#include "gnomonAbstractVisualization_p.h"
 
 #include "gnomonView/gnomonViewMatplotlib.h"
-
-
-// /////////////////////////////////////////////////////////////////
-// gnomonAbstractMatplotlibVisualizationPrivate
-// /////////////////////////////////////////////////////////////////
 
 
 // /////////////////////////////////////////////////////////////////
 // gnomonAbstractMatplotlibVisualization
 // /////////////////////////////////////////////////////////////////
 
-gnomonAbstractMatplotlibVisualization::gnomonAbstractMatplotlibVisualization(void) : d(new gnomonAbstractMatplotlibVisualizationPrivate)
+gnomonAbstractMatplotlibVisualization::gnomonAbstractMatplotlibVisualization(void) : gnomonAbstractVisualization()
 {
 }
 
 gnomonAbstractMatplotlibVisualization::~gnomonAbstractMatplotlibVisualization(void)
 {
-    delete d;
-
-    d = NULL;
 }
 
-void gnomonAbstractMatplotlibVisualization::setView(gnomonViewMatplotlib* view)
+void gnomonAbstractMatplotlibVisualization::setView(gnomonAbstractView* view)
 {
-    d->view = view;
+    if (auto mpl_view = dynamic_cast<gnomonViewMatplotlib *>(view)) {
+        gnomonAbstractVisualization::setView(mpl_view);
+    }
 }
 
-gnomonViewMatplotlib* gnomonAbstractMatplotlibVisualization::view(void)
-{
-    return d->view;
+int gnomonAbstractMatplotlibVisualization::figureNumber(void) {
+    if (auto mpl_view = dynamic_cast<gnomonViewMatplotlib *>(d->view)) {
+        return mpl_view->figureNumber();
+    } else {
+        return -1;
+    }
 }
-
 
 //
 // gnomonAbstractMatplotlibVisualization.cpp ends here

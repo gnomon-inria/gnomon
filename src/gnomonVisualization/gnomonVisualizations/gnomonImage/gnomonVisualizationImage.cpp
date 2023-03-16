@@ -1,5 +1,6 @@
 #include "gnomonVisualizationImage.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
+#include "gnomonVisualizations/gnomonAbstractFormVisualization_p.h"
 
 #include <gnomonVisualization/gnomonCoreParameterColor.h>
 
@@ -46,7 +47,7 @@ public:
 // gnomonVisualizationImage
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisualizationImage(), dd(new gnomonVisualizationImagePrivate)
+gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisualizationImage(), ddd(new gnomonVisualizationImagePrivate)
 {
     d->parameters["channel"] = new dtk::d_inliststring("", {""}, "Image channel to be displayed");
     d->parameters["value_range"] = new dtk::d_range_int("value_range", {0, 255}, 0, 255, "Value range for display ramps");
@@ -54,7 +55,7 @@ gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisuali
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
 
     d->parameters["channel"]->connect([=] (QVariant v) {
-        if(!dd->image)
+        if(!ddd->image)
             return;
         this->updateChannelColorMap();
         emit parametersChanged();
@@ -65,7 +66,7 @@ gnomonVisualizationImage::gnomonVisualizationImage(void) : gnomonAbstractVisuali
 gnomonVisualizationImage::~gnomonVisualizationImage(void)
 {
     this->clear();
-    delete dd;
+    delete ddd;
 }
 
 const QString gnomonVisualizationImage::pluginName(void)
@@ -75,18 +76,18 @@ const QString gnomonVisualizationImage::pluginName(void)
 
 void gnomonVisualizationImage::clear(void)
 {
-    if (dd->volume) {
-        d->view->renderer3D()->RemoveActor(dd->volume);
-        dd->volume->Delete();
-        dd->volume = nullptr;
+    if (ddd->volume) {
+        ((gnomonViewForm *) d->view)->renderer3D()->RemoveActor(ddd->volume);
+        ddd->volume->Delete();
+        ddd->volume = nullptr;
     }
 
-    if (dd->actor2D) {
+    if (ddd->actor2D) {
 //        disconnect(d->connectSliceOrientation);
 //        disconnect(d->connectSlice);
-        d->view->renderer2D()->RemoveActor(dd->actor2D);
-        dd->actor2D->Delete();
-        dd->actor2D = nullptr;
+        ((gnomonViewForm *) d->view)->renderer2D()->RemoveActor(ddd->actor2D);
+        ddd->actor2D->Delete();
+        ddd->actor2D = nullptr;
     }
 
 //    disconnect(d->connect3D);
@@ -98,24 +99,24 @@ void gnomonVisualizationImage::clear(void)
 
 void gnomonVisualizationImage::setVisible(bool visible)
 {
-    if (dd->volume) {
-        dd->volume->SetVisibility(visible);
+    if (ddd->volume) {
+        ddd->volume->SetVisibility(visible);
     }
 
-    if (dd->actor2D) {
-        dd->actor2D->SetVisibility(visible);
+    if (ddd->actor2D) {
+        ddd->actor2D->SetVisibility(visible);
     }
 }
 
 void gnomonVisualizationImage::setImage(std::shared_ptr<gnomonImageSeries> image)
 {
-    dd->imageSeries = image;
-    dd->image = image->current();
+    ddd->imageSeries = image;
+    ddd->image = image->current();
 
     this->setParameter("alpha",1.0);
 
-    dd->channelColormaps.clear();
-    if(dd->image->channels().size()==1) {
+    ddd->channelColormaps.clear();
+    if(ddd->image->channels().size()==1) {
         //delete d->parameters["channel"];
         d->parameters.remove("channel");
     } else {
@@ -124,18 +125,18 @@ void gnomonVisualizationImage::setImage(std::shared_ptr<gnomonImageSeries> image
         }
         qDebug()<<Q_FUNC_INFO<<d->parameters["channel"];
         dtk::d_inliststring *channelParam = (dtk::d_inliststring *)d->parameters["channel"];
-        channelParam->setValues(dd->image->channels());
-        channelParam->setValue(dd->image->channels()[0]);
+        channelParam->setValues(ddd->image->channels());
+        channelParam->setValue(ddd->image->channels()[0]);
     }
 
     dtk::d_range_int *valueRangeParam = (dtk::d_range_int *)d->parameters["value_range"];
     valueRangeParam->setMin(0);
 
-    QString channel = dd->image->channels()[0];
-    if (dd->image->image(channel)->storageType() == QMetaType::UChar) {
+    QString channel = ddd->image->channels()[0];
+    if (ddd->image->image(channel)->storageType() == QMetaType::UChar) {
         valueRangeParam->setMax(255);
         valueRangeParam->setValue({0,255});
-    } else if (dd->image->image(channel)->storageType() == QMetaType::UShort) {
+    } else if (ddd->image->image(channel)->storageType() == QMetaType::UShort) {
         valueRangeParam->setMax(65535);
         valueRangeParam->setValue({0,65535});
      }
@@ -143,24 +144,24 @@ void gnomonVisualizationImage::setImage(std::shared_ptr<gnomonImageSeries> image
 
 std::shared_ptr<gnomonImageSeries> gnomonVisualizationImage::image(void)
 {
-    return dd->imageSeries;
+    return ddd->imageSeries;
 }
 
 void gnomonVisualizationImage::updateOpacity(void)
 {
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
-    dd->actor2D->setOpacity(alpha);
-    dd->volume->setOpacity(alpha);
+    ddd->actor2D->setOpacity(alpha);
+    ddd->volume->setOpacity(alpha);
 }
 
 void gnomonVisualizationImage::updateChannelColorMap(void)
 {
-    if(dd->image->channels().size()>1) {
+    if(ddd->image->channels().size()>1) {
         QString channel = ((dtk::d_inliststring *)d->parameters["channel"])->value();
 
-        if(dd->channelColormaps.contains(channel)) {
-            ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->setValue(dd->channelColormaps[channel]);
+        if(ddd->channelColormaps.contains(channel)) {
+            ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->setValue(ddd->channelColormaps[channel]);
         }
     }
 }
@@ -168,17 +169,17 @@ void gnomonVisualizationImage::updateChannelColorMap(void)
 QImage gnomonVisualizationImage::imageRendering(void)
 {
     double bounds[6];
-    dd->image_data->GetBounds(bounds);
+    ddd->image_data->GetBounds(bounds);
     this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
-    this->offscreenRenderer()->AddActor(dd->volume);
+    this->offscreenRenderer()->AddActor(ddd->volume);
 
     return this->offscreenImageRendering();
 }
 
 void gnomonVisualizationImage::update(void)
 {
-    if(!dd->image)
+    if(!ddd->image)
         return;
 
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
@@ -186,46 +187,46 @@ void gnomonVisualizationImage::update(void)
     QMap<double, QColor> colormap = ((gnomonCoreParameterColorMap *)d->parameters["colormap"])->value();
 
     QString channel;
-    if(dd->image->channels().size()>1) {
+    if(ddd->image->channels().size()>1) {
         channel = ((dtk::d_inliststring *)d->parameters["channel"])->value();
-        dd->channelColormaps[channel] = colormap;
+        ddd->channelColormaps[channel] = colormap;
     } else {
         channel = "";
     }
 
     dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(dd->image->image(channel));
+    converter->setInput(ddd->image->image(channel));
     converter->convert();
-    dd->image_data = static_cast<vtkImageData *>(converter->output());
+    ddd->image_data = static_cast<vtkImageData *>(converter->output());
     delete converter;
 
-    if (!dd->actor2D) {
-        dd->actor2D = gnomonActor2DImageWidget::New();
+    if (!ddd->actor2D) {
+        ddd->actor2D = gnomonActor2DImageWidget::New();
     }
-    dd->actor2D->setImage(dd->image_data);
-    dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
-    dd->actor2D->setColorMap(colormap);
-    dd->actor2D->setValueRange(value_range);
-    dd->actor2D->setOpacity(alpha);
-    dd->actor2D->update();
+    ddd->actor2D->setImage(ddd->image_data);
+    ddd->actor2D->setInteractor(((gnomonViewForm *) d->view)->renderer2D()->GetRenderWindow()->GetInteractor());
+    ddd->actor2D->setColorMap(colormap);
+    ddd->actor2D->setValueRange(value_range);
+    ddd->actor2D->setOpacity(alpha);
+    ddd->actor2D->update();
 
-    if (!dd->volume) {
-        dd->volume = gnomonActorImageVolume::New();
-        d->view->renderer3D()->AddActor(dd->volume);
+    if (!ddd->volume) {
+        ddd->volume = gnomonActorImageVolume::New();
+        ((gnomonViewForm *) d->view)->renderer3D()->AddActor(ddd->volume);
     }
-    dd->volume->setInteractor(d->view->interactor());
-    dd->volume->setImage(dd->image_data);
-    dd->volume->setColorMap(colormap);
-    dd->volume->setValueRange(value_range);
+    ddd->volume->setInteractor(((gnomonViewForm *) d->view)->interactor());
+    ddd->volume->setImage(ddd->image_data);
+    ddd->volume->setColorMap(colormap);
+    ddd->volume->setValueRange(value_range);
 
     double bounds[6];
     bounds[0] = 0;
-    bounds[1] = (dd->image_data->GetDimensions()[0]-1)*dd->image_data->GetSpacing()[0];
+    bounds[1] = (ddd->image_data->GetDimensions()[0]-1)*ddd->image_data->GetSpacing()[0];
     bounds[2] = 0;
-    bounds[3] = (dd->image_data->GetDimensions()[1]-1)*dd->image_data->GetSpacing()[1];
+    bounds[3] = (ddd->image_data->GetDimensions()[1]-1)*ddd->image_data->GetSpacing()[1];
     bounds[4] = 0;
-    bounds[5] = (dd->image_data->GetDimensions()[2]-1)*dd->image_data->GetSpacing()[2];
-    d->view->setBounds(bounds);
+    bounds[5] = (ddd->image_data->GetDimensions()[2]-1)*ddd->image_data->GetSpacing()[2];
+    ((gnomonViewForm *) d->view)->setBounds(bounds);
 
     this->render();
 }
@@ -233,7 +234,7 @@ void gnomonVisualizationImage::update(void)
 void gnomonVisualizationImage::render(void)
 {
     this->updateOpacity();
-    d->view->render();
+    ((gnomonViewForm *) d->view)->render();
 }
 
 dtkCoreParameters gnomonVisualizationImage::parameters(void) const
@@ -271,25 +272,25 @@ QMap<QString, QString> gnomonVisualizationImage::parameterGroups(void)
 
 void gnomonVisualizationImage::onSliceOrientationChanged(int value)
 {
-    dd->actor2D->setSliceOrientation(value);
+    ddd->actor2D->setSliceOrientation(value);
 }
 
 
 void gnomonVisualizationImage::onSliceChanged(int value)
 {
-    dd->actor2D->setSlice(value);
+    ddd->actor2D->setSlice(value);
     this->render();
 }
 
 void gnomonVisualizationImage::on3D(void)
 {
-    dd->actor2D->hide();
+    ddd->actor2D->hide();
     this->render();
 }
 
 void gnomonVisualizationImage::on2D(void)
 {
-    dd->actor2D->show();
+    ddd->actor2D->show();
     this->render();
 }
 

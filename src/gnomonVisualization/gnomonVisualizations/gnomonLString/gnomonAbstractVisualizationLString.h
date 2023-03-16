@@ -7,16 +7,16 @@
 #include "gnomonCore/gnomonCorePlugin.h"
 #include <dtkCore/dtkCoreParameters>
 
-#include <gnomonVisualizations/gnomonAbstractVisualization.h>
+#include <gnomonVisualizations/gnomonAbstractFormVisualization.h>
 
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationLString : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationLString : public gnomonAbstractFormVisualization
 {
     Q_OBJECT
 
 public:
-    gnomonAbstractVisualizationLString(void) : gnomonAbstractVisualization() {}
+    gnomonAbstractVisualizationLString(void) : gnomonAbstractFormVisualization() {}
     virtual ~gnomonAbstractVisualizationLString(void) = default;
 
 public:

@@ -8,14 +8,14 @@
 #include <dtkCore/dtkCoreParameters>
 
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include "gnomonVisualizations/gnomonAbstractFormVisualization.h"
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationPointCloud : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationPointCloud : public gnomonAbstractFormVisualization
 {
     Q_OBJECT
 
 public:
-    gnomonAbstractVisualizationPointCloud(void) : gnomonAbstractVisualization() {}
+    gnomonAbstractVisualizationPointCloud(void) : gnomonAbstractFormVisualization() {}
     virtual ~gnomonAbstractVisualizationPointCloud(void) = default;
 
 public:

@@ -4,14 +4,14 @@
 #include "gnomonCore/gnomonCorePlugin.h"
 
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include "gnomonVisualizations/gnomonAbstractFormVisualization.h"
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationCellImage : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationCellImage : public gnomonAbstractFormVisualization
 {
     Q_OBJECT
 
 public:
-    gnomonAbstractVisualizationCellImage(void) : gnomonAbstractVisualization() {}
+    gnomonAbstractVisualizationCellImage(void) : gnomonAbstractFormVisualization() {}
     virtual ~gnomonAbstractVisualizationCellImage(void) = default;
 
 public:

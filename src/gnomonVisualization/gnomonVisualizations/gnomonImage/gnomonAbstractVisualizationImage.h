@@ -6,14 +6,14 @@
 #include <dtkCore/dtkCoreParameters>
 
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage.h>
-#include <gnomonVisualizations/gnomonAbstractVisualization.h>
+#include <gnomonVisualizations/gnomonAbstractFormVisualization.h>
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationImage : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationImage : public gnomonAbstractFormVisualization
 {
     Q_OBJECT
 
 public:
-             gnomonAbstractVisualizationImage(void) : gnomonAbstractVisualization() {}
+             gnomonAbstractVisualizationImage(void) : gnomonAbstractFormVisualization() {}
     virtual ~gnomonAbstractVisualizationImage(void) = default;
 
 public:

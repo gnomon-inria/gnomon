@@ -20,14 +20,14 @@
 #include <dtkCore/dtkCoreParameters>
 
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include "gnomonVisualizations/gnomonAbstractFormVisualization.h"
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationCellComplex : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationCellComplex : public gnomonAbstractFormVisualization
 {
     Q_OBJECT
 
 public:
-             gnomonAbstractVisualizationCellComplex(void) : gnomonAbstractVisualization() {}
+             gnomonAbstractVisualizationCellComplex(void) : gnomonAbstractFormVisualization() {}
     virtual ~gnomonAbstractVisualizationCellComplex(void) = default;
 
 public:

@@ -737,8 +737,7 @@ def visualizationPlugin(version: str, coreversion: str, name="", base_class=None
     def decorator(cls):
         import gnomon.visualization
 
-        if not (issubclass(cls, gnomon.visualization.gnomonAbstractVisualization) or
-                issubclass(cls, gnomon.visualization.gnomonAbstractMatplotlibVisualization)):
+        if not issubclass(cls, gnomon.visualization.gnomonAbstractVisualization):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractVisualization interface."
                             f" Otherwise try using corePlugin or formDataPlugin")
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper

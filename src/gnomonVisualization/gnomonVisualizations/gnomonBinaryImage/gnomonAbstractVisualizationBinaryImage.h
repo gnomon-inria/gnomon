@@ -8,18 +8,18 @@
 #include "gnomonCore/gnomonCorePlugin.h"
 
 #include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h>
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include "gnomonVisualizations/gnomonAbstractFormVisualization.h"
 
 class gnomonViewForm;
 
 class dtkCoreParameter;
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationBinaryImage : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationBinaryImage : public gnomonAbstractFormVisualization
 {
     Q_OBJECT
 
 public:
-    gnomonAbstractVisualizationBinaryImage(void) : gnomonAbstractVisualization() {}
+    gnomonAbstractVisualizationBinaryImage(void) : gnomonAbstractFormVisualization() {}
     virtual ~gnomonAbstractVisualizationBinaryImage(void) = default;
 
 public:

@@ -67,7 +67,7 @@ public:
     QMap<QString, QString> parameterGroups(void) override;
 
 private:
-	class gnomonVisualizationCellComplexPrivate *dd;
+	class gnomonVisualizationCellComplexPrivate *ddd;
 };
 
 

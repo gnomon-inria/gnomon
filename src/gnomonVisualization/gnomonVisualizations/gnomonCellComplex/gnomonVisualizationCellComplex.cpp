@@ -3,6 +3,7 @@
 #include <gnomonVisualization/gnomonCoreParameterColor>
 
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
+#include "gnomonVisualizations/gnomonAbstractFormVisualization_p.h"
 
 #include "gnomonView/gnomonViewForm.h"
 
@@ -77,10 +78,10 @@ void gnomonVisualizationCellComplexPrivate::updateValueRange(void)
 // gnomonVisualizationCellComplex
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbstractVisualizationCellComplex(), dd(new gnomonVisualizationCellComplexPrivate)
+gnomonVisualizationCellComplex::gnomonVisualizationCellComplex(void) : gnomonAbstractVisualizationCellComplex(), ddd(new gnomonVisualizationCellComplexPrivate)
 {
 
-    dd->q = this;
+    ddd->q = this;
 
     d->parameters["property_name"] = new dtk::d_inliststring("property", "", {""}, "CellComplex property to be displayed");
     d->parameters["value_range"] = new dtk::d_range_real("value_range", {0., 1.}, 0., 1., "Value range for color adjustment");
@@ -93,8 +94,8 @@ gnomonVisualizationCellComplex::~gnomonVisualizationCellComplex(void)
 {
     this->clear();
 
-    delete dd;
-    dd = NULL;
+    delete ddd;
+    ddd = NULL;
 }
 
 const QString gnomonVisualizationCellComplex::pluginName(void)
@@ -104,40 +105,40 @@ const QString gnomonVisualizationCellComplex::pluginName(void)
 
 void gnomonVisualizationCellComplex::clear(void)
 {
-    if (dd->actor) {
-        d->view->renderer3D()->RemoveActor(dd->actor);
-        dd->actor->Delete();
-        dd->actor = nullptr;
+    if (ddd->actor) {
+        ((gnomonViewForm *) d->view)->renderer3D()->RemoveActor(ddd->actor);
+        ddd->actor->Delete();
+        ddd->actor = nullptr;
     }
 
-    if (dd->actor2D) {
-        d->view->renderer2D()->RemoveActor(dd->actor2D);
-        dd->actor2D->Delete();
-        dd->actor2D = nullptr;
+    if (ddd->actor2D) {
+        ((gnomonViewForm *) d->view)->renderer2D()->RemoveActor(ddd->actor2D);
+        ddd->actor2D->Delete();
+        ddd->actor2D = nullptr;
     }
 }
 
 void gnomonVisualizationCellComplex::setVisible(bool visible)
 {
-    if (dd->actor) {
-        dd->actor->SetVisibility(visible);
+    if (ddd->actor) {
+        ddd->actor->SetVisibility(visible);
     }
 
-    if (dd->actor2D) {
-        dd->actor2D->SetVisibility(visible);
+    if (ddd->actor2D) {
+        ddd->actor2D->SetVisibility(visible);
     }
 }
 
 void gnomonVisualizationCellComplex::setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cellComplexSeries)
 {
-    dd->cellComplexSeries = cellComplexSeries;
-    dd->cellComplex = cellComplexSeries->current();
+    ddd->cellComplexSeries = cellComplexSeries;
+    ddd->cellComplex = cellComplexSeries->current();
 
     this->setParameter("alpha",1.0);
     d->parameters["property_name"]->connect([=] (QVariant v) {
-        if(!dd->cellComplex)
+        if(!ddd->cellComplex)
             return;
-        dd->updateValueRange();
+        ddd->updateValueRange();
         emit parametersChanged();
     });
 
@@ -145,8 +146,8 @@ void gnomonVisualizationCellComplex::setCellComplex(std::shared_ptr<gnomonCellCo
     QString property_name = ((dtk::d_inliststring *)d->parameters["property_name"])->value();
 
     QStringList properties = {""};
-    for (const auto& prop : dd->cellComplex->elementPropertyNames(3)) {
-        if(dd->cellComplex->elementProperty(3,prop)[dd->cellComplex->elementIds(3)[0]].canConvert<double>()) {
+    for (const auto& prop : ddd->cellComplex->elementPropertyNames(3)) {
+        if(ddd->cellComplex->elementProperty(3,prop)[ddd->cellComplex->elementIds(3)[0]].canConvert<double>()) {
             properties.append(prop);
         }
     }
@@ -157,18 +158,18 @@ void gnomonVisualizationCellComplex::setCellComplex(std::shared_ptr<gnomonCellCo
         propertyParam->setValue(QString(""));
     }
 
-    dd->updateValueRange();
+    ddd->updateValueRange();
 }
 
 std::shared_ptr<gnomonCellComplexSeries> gnomonVisualizationCellComplex::cellComplex(void)
 {
-    return dd->cellComplexSeries;
+    return ddd->cellComplexSeries;
 }
 
 QImage gnomonVisualizationCellComplex::imageRendering(void)
 {
     double bounds[6];
-    dd->polydata->GetBounds(bounds);
+    ddd->polydata->GetBounds(bounds);
 
     if (bounds[4]==bounds[5]) {
         double size = ((bounds[1]-bounds[0])+(bounds[3]-bounds[2]))/4;
@@ -178,7 +179,7 @@ QImage gnomonVisualizationCellComplex::imageRendering(void)
 
     this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
-    this->offscreenRenderer()->AddActor(dd->actor);
+    this->offscreenRenderer()->AddActor(ddd->actor);
 
     return this->offscreenImageRendering();
 }
@@ -192,70 +193,70 @@ void gnomonVisualizationCellComplex::update(void)
     std::array<double, 2> value_range = ((dtk::d_range_real *)d->parameters["value_range"])->value();
     double scale = ((dtk::d_real *)d->parameters["scale_factor"])->value();
 
-    if(!dd->cellComplex)
+    if(!ddd->cellComplex)
         return;
 
-    if (dd->polydata) {
-        dd->polydata->Delete();
-        dd->polydata = nullptr;
+    if (ddd->polydata) {
+        ddd->polydata->Delete();
+        ddd->polydata = nullptr;
     }
 
-    if (!dd->polydata)
-        dd->polydata = gnomonPolyDataCellComplex::New();
-    dd->polydata->setCellComplex(dd->cellComplex);
-    dd->polydata->set8Bit(colormap_name=="glasbey");
-    dd->polydata->setPropertyName(property_name);
-    dd->polydata->setScaleFactor(scale);
-    dd->polydata->update();
+    if (!ddd->polydata)
+        ddd->polydata = gnomonPolyDataCellComplex::New();
+    ddd->polydata->setCellComplex(ddd->cellComplex);
+    ddd->polydata->set8Bit(colormap_name=="glasbey");
+    ddd->polydata->setPropertyName(property_name);
+    ddd->polydata->setScaleFactor(scale);
+    ddd->polydata->update();
 
     if (colormap_name == "glasbey") {
         value_range[0] = 0;
         value_range[1] = 255;
     }
 
-//    if (dd->actor) {
-//        d->view->renderer3D()->RemoveActor(dd->actor);
-//        dd->actor->Delete();
-//        dd->actor = nullptr;
+//    if (ddd->actor) {
+//        ((gnomonViewForm *) d->view)->renderer3D()->RemoveActor(ddd->actor);
+//        ddd->actor->Delete();
+//        ddd->actor = nullptr;
 //    }
 
-    if (!dd->actor) {
-        dd->actor = gnomonActorPolyData::New();
-        d->view->renderer3D()->AddActor(dd->actor);
+    if (!ddd->actor) {
+        ddd->actor = gnomonActorPolyData::New();
+        ((gnomonViewForm *) d->view)->renderer3D()->AddActor(ddd->actor);
     }
-    dd->actor->setInteractor(d->view->interactor());
-    dd->actor->setPolyData(dd->polydata);
-    dd->actor->setColorMap(colormap);
-    dd->actor->setValueRange(value_range);
+    ddd->actor->setInteractor(((gnomonViewForm *) d->view)->interactor());
+    ddd->actor->setPolyData(ddd->polydata);
+    ddd->actor->setColorMap(colormap);
+    ddd->actor->setValueRange(value_range);
 
-//    if (dd->actor2D) {
-//        d->view->renderer2D()->RemoveActor(dd->actor2D);
-//        dd->actor2D->Delete();
-//        dd->actor2D = nullptr;
+//    if (ddd->actor2D) {
+//        ((gnomonViewForm *) d->view)->renderer2D()->RemoveActor(ddd->actor2D);
+//        ddd->actor2D->Delete();
+//        ddd->actor2D = nullptr;
 //    }
 
-    if (!dd->actor2D)
+    if (!ddd->actor2D)
     {
-        dd->actor2D = gnomonActor2DPolyData::New();
-        d->view->renderer2D()->AddActor(dd->actor2D);
+        ddd->actor2D = gnomonActor2DPolyData::New();
+        ((gnomonViewForm *) d->view)->renderer2D()->AddActor(ddd->actor2D);
     }
-    dd->actor2D->setInteractor(d->view->interactor());
-    dd->actor2D->setSliceThickness(0.5);
-    dd->actor2D->setPolyData(dd->polydata);
-    dd->actor2D->setColorMap(colormap);
-    dd->actor2D->setValueRange(value_range);
+    ddd->actor2D->setInteractor(((gnomonViewForm *) d->view)->interactor());
+    ddd->actor2D->setSliceThickness(0.5);
+    ddd->actor2D->setPolyData(ddd->polydata);
+    ddd->actor2D->setColorMap(colormap);
+    ddd->actor2D->setValueRange(value_range);
 
     double bounds[6];
-    dd->polydata->GetBounds(bounds);
-    d->view->setBounds(bounds);
+    ddd->polydata->GetBounds(bounds);
+    ((gnomonViewForm *) d->view)->setBounds(bounds);
 
     this->render();
 }
 
 void gnomonVisualizationCellComplex::render(void)
 {
-    dd->updateOpacity();
-    d->view->render();
+    ddd->updateOpacity();
+    ((gnomonViewForm *) d->view)->render();
 }
 
 dtkCoreParameters gnomonVisualizationCellComplex::parameters(void) const
@@ -292,12 +293,12 @@ QMap<QString, QString> gnomonVisualizationCellComplex::parameterGroups(void)
 
 void gnomonVisualizationCellComplex::onSliceOrientationChanged(int value)
 {
-    dd->actor2D->setSliceOrientation(value);
+    ddd->actor2D->setSliceOrientation(value);
 }
 
 void gnomonVisualizationCellComplex::onSliceChanged(int value)
 {
-    dd->actor2D->setSlice(value);
+    ddd->actor2D->setSlice(value);
     this->render();
 }
 
@@ -328,8 +329,8 @@ void gnomonVisualizationCellComplex::onXZ(void)
 
 void gnomonVisualizationCellComplex::onTimeChanged(double value)
 {
-    if (dd->cellComplexSeries->times().contains(value)) {
-        dd->cellComplex = dd->cellComplexSeries->at(value);
+    if (ddd->cellComplexSeries->times().contains(value)) {
+        ddd->cellComplex = ddd->cellComplexSeries->at(value);
         this->update();
     }
     this->render();

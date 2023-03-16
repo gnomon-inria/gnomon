@@ -54,7 +54,7 @@ public:
     QMap<QString, QString> parameterGroups(void) override;
 
 private:
-	class gnomonVisualizationMeshPrivate *dd;
+	class gnomonVisualizationMeshPrivate *ddd;
 };
 
 inline gnomonAbstractVisualizationMesh *gnomonVisualizationMeshCreator(void)

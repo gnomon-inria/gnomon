@@ -54,7 +54,7 @@ public:
     QMap<QString, QString> parameterGroups(void) override;
 
 private:
-    class gnomonVisualizationImagePrivate *dd;
+    class gnomonVisualizationImagePrivate *ddd;
 };
 
 inline gnomonAbstractVisualizationImage *gnomonVisualizationImageCreator(void)

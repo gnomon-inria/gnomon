@@ -9,12 +9,12 @@
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 #include "gnomonForm/gnomonDynamicFormMetadata.h"
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization"
-#include "gnomonVisualizations/gnomonAbstractVisualization"
+#include "gnomonVisualizations/gnomonAbstractFormVisualization"
 
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractCommand;
-//class gnomonAbstractVisualization;
+//class gnomonAbstractFormVisualization;
 //class gnomonAbstractMatplotlibVisualization;
 
 class gnomonFormManagerItem;
@@ -35,7 +35,7 @@ signals:
     void alreadyAdded(void);
 
 public slots:    
-    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> visualization,const QImage& image, vtkCamera *cam=nullptr);
+    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractFormVisualization> visualization,const QImage& image, vtkCamera *cam=nullptr);
     void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractMatplotlibVisualization> visualization);
     void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image);
 
@@ -63,7 +63,7 @@ public:
 
 public:
     std::shared_ptr<gnomonAbstractDynamicForm> get(int index);
-    std::shared_ptr<gnomonAbstractVisualization> getVisualization(int index);
+    std::shared_ptr<gnomonAbstractFormVisualization> getVisualization(int index);
     //QJsonObject getVisuDescription(int index);
     vtkCamera *getCamera(int index);
 

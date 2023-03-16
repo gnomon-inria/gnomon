@@ -54,7 +54,7 @@ public:
     QMap<QString, QString> parameterGroups(void) override;
 
 private:
-    class gnomonVisualizationCellImageVolumePrivate *dd;
+    class gnomonVisualizationCellImageVolumePrivate *ddd;
 };
 
 

@@ -27,8 +27,9 @@
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 #include <gnomonVisualization/gnomonView/gnomonViewData.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractFormVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractVisualizationBinaryImage.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
@@ -901,8 +902,9 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterNurbs, ParameterNurbs)
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 %include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 %include <gnomonVisualization/gnomonView/gnomonViewData.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonAbstractFormVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractVisualizationBinaryImage.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>

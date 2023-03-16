@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonVisualizationExport.h>
@@ -20,9 +6,11 @@
 
 #include <dtkCore/dtkCoreParameters>
 
-class gnomonViewMatplotlib;
+#include "gnomonAbstractVisualization.h"
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractMatplotlibVisualization : public QObject
+class gnomonAbstractView;
+
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractMatplotlibVisualization : public gnomonAbstractVisualization
 {
     Q_OBJECT
 
@@ -31,30 +19,10 @@ public:
     ~gnomonAbstractMatplotlibVisualization(void);
 
 public:
-    virtual const QString name(void) = 0;
-
-    void setView(gnomonViewMatplotlib *view);
-    virtual void setParameter(const QString&, const QVariant&) = 0;
-    virtual void setParameters(const dtkCoreParameters&) = 0;
+    void setView(gnomonAbstractView *view) override;
 
 public:
-    gnomonViewMatplotlib* view(void);
-    virtual dtkCoreParameters parameters(void) const = 0;
-    virtual QMap<QString, QString> parameterGroups(void) = 0;
-
-public:
-    virtual QImage imageRendering(void) = 0;
-
-signals:
-    void parametersChanged(void);
-
-public slots:
-    virtual void update(void) = 0;
-    virtual void render(void) = 0;
-    virtual void clear(void) = 0;
-
-protected:
-    class gnomonAbstractMatplotlibVisualizationPrivate *d;
+    int figureNumber(void);
 };
 
 //

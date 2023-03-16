@@ -56,7 +56,7 @@ public:
     QMap<QString, QString> parameterGroups(void) override;
 
 private:
-	class gnomonVisualizationImageChannelBlendingPrivate *dd;
+	class gnomonVisualizationImageChannelBlendingPrivate *ddd;
     friend gnomonVisualizationImageChannelBlendingPrivate;
 };
 

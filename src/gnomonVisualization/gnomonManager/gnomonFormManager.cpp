@@ -3,7 +3,7 @@
 #include <memory>
 #include <utility>
 
-#include "gnomonVisualizations/gnomonAbstractVisualization.h"
+#include "gnomonVisualizations/gnomonAbstractFormVisualization.h"
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 
 
@@ -53,7 +53,7 @@ public:
 
 public:
     QHash<int, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
-    QHash<int, std::shared_ptr<gnomonAbstractVisualization> > formVisualizations;
+    QHash<int, std::shared_ptr<gnomonAbstractFormVisualization> > formVisualizations;
     QHash<int, std::shared_ptr<gnomonAbstractMatplotlibVisualization> > formMatplotlibVisualizations;
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
     QHash<int, gnomonAbstractReaderCommand *> formReaderCommand;
@@ -385,7 +385,7 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return &s_instance;
 }
 
-void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,  std::shared_ptr<gnomonAbstractVisualization> visualization, const QImage& image,  vtkCamera *cam)
+void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,  std::shared_ptr<gnomonAbstractFormVisualization> visualization, const QImage& image,  vtkCamera *cam)
 {
     if (!d->forms.values().contains(form)) {
         int item = d->item_counter++;
@@ -431,7 +431,7 @@ std::shared_ptr<gnomonAbstractDynamicForm> gnomonFormManager::get(int index)
     return d->forms.value(index, nullptr);
 }
 
-std::shared_ptr<gnomonAbstractVisualization> gnomonFormManager::getVisualization(int index)
+std::shared_ptr<gnomonAbstractFormVisualization> gnomonFormManager::getVisualization(int index)
 {
     return d->formVisualizations.value(index, nullptr);
 }

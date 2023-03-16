@@ -1,5 +1,6 @@
 #include "gnomonVisualizationImageChannelBlending.h"
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
+#include "gnomonVisualizations/gnomonAbstractFormVisualization_p.h"
 
 #include <dtkImagingCore>
 
@@ -82,27 +83,27 @@ void gnomonVisualizationImageChannelBlendingPrivate::reset(void)
 // gnomonVisualizationImageChannelBlending
 // /////////////////////////////////////////////////////////////////
 
-gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending(void) : gnomonAbstractVisualizationImage(), dd(new gnomonVisualizationImageChannelBlendingPrivate)
+gnomonVisualizationImageChannelBlending::gnomonVisualizationImageChannelBlending(void) : gnomonAbstractVisualizationImage(), ddd(new gnomonVisualizationImageChannelBlendingPrivate)
 {
-    dd->qq = this;
+    ddd->qq = this;
 
     d->parameters["alpha"] = new dtk::d_real("alpha", 1, 0, 1, 2, "Transparency value for the image rendering");
 
-    dd->defaultColormaps[0] = "gray";
-    dd->defaultColormaps[1] = "0CMY_cyan";
-    dd->defaultColormaps[2] = "0CMY_magenta";
-    dd->defaultColormaps[3] = "0CMY_yellow";
-    dd->defaultColormaps[4] = "0RGB_green";
-    dd->defaultColormaps[5] = "0RGB_red";
-    dd->defaultColormaps[6] = "0RGB_blue";
+    ddd->defaultColormaps[0] = "gray";
+    ddd->defaultColormaps[1] = "0CMY_cyan";
+    ddd->defaultColormaps[2] = "0CMY_magenta";
+    ddd->defaultColormaps[3] = "0CMY_yellow";
+    ddd->defaultColormaps[4] = "0RGB_green";
+    ddd->defaultColormaps[5] = "0RGB_red";
+    ddd->defaultColormaps[6] = "0RGB_blue";
 }
 
 gnomonVisualizationImageChannelBlending::~gnomonVisualizationImageChannelBlending(void)
 {
-    dd->reset();
-    dd->qq = nullptr;
-    delete dd;
-    dd = nullptr;
+    ddd->reset();
+    ddd->qq = nullptr;
+    delete ddd;
+    ddd = nullptr;
 }
 
 const QString gnomonVisualizationImageChannelBlending::pluginName(void)
@@ -112,41 +113,41 @@ const QString gnomonVisualizationImageChannelBlending::pluginName(void)
 
 void gnomonVisualizationImageChannelBlending::clear(void)
 {
-    if (dd->volume) {
-        d->view->renderer3D()->RemoveActor(dd->volume);
-        dd->volume->Delete();
-        dd->volume = nullptr;
+    if (ddd->volume) {
+        ((gnomonViewForm *) d->view)->renderer3D()->RemoveActor(ddd->volume);
+        ddd->volume->Delete();
+        ddd->volume = nullptr;
     }
 
-    if (dd->actor2D) {
-        d->view->renderer2D()->RemoveActor(dd->actor2D);
-        dd->actor2D->Delete();
-        dd->actor2D = nullptr;
+    if (ddd->actor2D) {
+        ((gnomonViewForm *) d->view)->renderer2D()->RemoveActor(ddd->actor2D);
+        ddd->actor2D->Delete();
+        ddd->actor2D = nullptr;
     }
 
-    if (dd->blending) {
-        dd->blending->Delete();
-        dd->blending = nullptr;
+    if (ddd->blending) {
+        ddd->blending->Delete();
+        ddd->blending = nullptr;
     }
 }
 
 void gnomonVisualizationImageChannelBlending::setVisible(bool visible)
 {
-    if (dd->volume) {
-        dd->volume->SetVisibility(visible);
+    if (ddd->volume) {
+        ddd->volume->SetVisibility(visible);
     }
 
-    if (dd->actor2D) {
-        dd->actor2D->SetVisibility(visible);
+    if (ddd->actor2D) {
+        ddd->actor2D->SetVisibility(visible);
     }
 }
 
 void gnomonVisualizationImageChannelBlending::setImage(std::shared_ptr<gnomonImageSeries> image)
 {
-    dd->reset();
+    ddd->reset();
 
-    dd->imageSeries = image;
-    dd->image = image->current();
+    ddd->imageSeries = image;
+    ddd->image = image->current();
 
     this->setParameter("alpha", 1.0);
 
@@ -154,20 +155,20 @@ void gnomonVisualizationImageChannelBlending::setImage(std::shared_ptr<gnomonIma
     QList<double> valueRange = {0, 1};
     QList<double> channelRange(2);
     int channel_id = 0;
-    auto img_channels = dd->image->channels();
+    auto img_channels = ddd->image->channels();
     for (auto channel : img_channels) {
-        auto dtk_img = dd->image->image(channel);
+        auto dtk_img = ddd->image->image(channel);
 
         if (dtk_img->storageType() == QMetaType::UChar) {
             valueRange[1] = 255;
         } else if (dtk_img->storageType() == QMetaType::UShort) {
             valueRange[1] = 65535;
         }
-        channelRange[0] = dd->image->minValue(channel);
-        channelRange[1] = dd->image->maxValue(channel);
+        channelRange[0] = ddd->image->minValue(channel);
+        channelRange[1] = ddd->image->maxValue(channel);
 
-        dd->channelLookupTables[channel] = gnomonLookupTable(dd->defaultColormaps[channel_id], channelRange, valueRange, true);
-        auto param = new gnomonCoreParameterLookupTable(channel+"\nLUT", dd->channelLookupTables[channel], "Lookuptable to apply to the " + channel + " image channel");
+        ddd->channelLookupTables[channel] = gnomonLookupTable(ddd->defaultColormaps[channel_id], channelRange, valueRange, true);
+        auto param = new gnomonCoreParameterLookupTable(channel+"\nLUT", ddd->channelLookupTables[channel], "Lookuptable to apply to the " + channel + " image channel");
 
         if (channel.isEmpty()) {
             param->setLabel("LUT");
@@ -187,20 +188,20 @@ void gnomonVisualizationImageChannelBlending::setImage(std::shared_ptr<gnomonIma
 
 void gnomonVisualizationImageChannelBlending::updateChannelImages(void)
 {
-    if (dd->image) {
-        dd->dtk_img_by_channel.clear();
-        dd->vtk_img_by_channel.clear();
+    if (ddd->image) {
+        ddd->dtk_img_by_channel.clear();
+        ddd->vtk_img_by_channel.clear();
 
-        auto img_channels = dd->image->channels();
+        auto img_channels = ddd->image->channels();
         for (auto channel : img_channels) {
-            auto dtk_img = dd->image->image(channel);
-            dd->dtk_img_by_channel[channel].reset(dtk_img);
+            auto dtk_img = ddd->image->image(channel);
+            ddd->dtk_img_by_channel[channel].reset(dtk_img);
 
             // Fill vtk maps
             dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
             converter->setInput(dtk_img);
             converter->convert();
-            dd->vtk_img_by_channel[channel] = static_cast<vtkImageData *>(converter->output());
+            ddd->vtk_img_by_channel[channel] = static_cast<vtkImageData *>(converter->output());
             delete converter;
         }
     }
@@ -208,77 +209,77 @@ void gnomonVisualizationImageChannelBlending::updateChannelImages(void)
 
 std::shared_ptr<gnomonImageSeries> gnomonVisualizationImageChannelBlending::image(void)
 {
-    return dd->imageSeries;
+    return ddd->imageSeries;
 }
 
 void gnomonVisualizationImageChannelBlending::updateOpacity(void)
 {
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
-    dd->actor2D->setOpacity(alpha);
-    dd->volume->setOpacity(alpha);
+    ddd->actor2D->setOpacity(alpha);
+    ddd->volume->setOpacity(alpha);
 }
 
 QImage gnomonVisualizationImageChannelBlending::imageRendering(void)
 {
     double bounds[6];
-    dd->vtk_img->GetBounds(bounds);
+    ddd->vtk_img->GetBounds(bounds);
     this->updateOffscreenRenderer(bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
-    this->offscreenRenderer()->AddActor(dd->volume);
+    this->offscreenRenderer()->AddActor(ddd->volume);
 
     return this->offscreenImageRendering();
 }
 
 void gnomonVisualizationImageChannelBlending::update(void)
 {
-    if(!dd->image)
+    if(!ddd->image)
         return;
 
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
-    dd->channelLookupTables.clear();
-    if(dd->image->channels().size()==1) {
-        dd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
+    ddd->channelLookupTables.clear();
+    if(ddd->image->channels().size()==1) {
+        ddd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
     } else {
-        for (const auto& channelName : dd->image->channels()) {
-            dd->channelLookupTables[channelName] = ((gnomonCoreParameterLookupTable *)d->parameters[channelName+"\nlookuptable"])->value();
+        for (const auto& channelName : ddd->image->channels()) {
+            ddd->channelLookupTables[channelName] = ((gnomonCoreParameterLookupTable *)d->parameters[channelName+"\nlookuptable"])->value();
         }
     }
 
-    if (!dd->blending) {
-        dd->blending = gnomonImageDataChannelBlending::New();
+    if (!ddd->blending) {
+        ddd->blending = gnomonImageDataChannelBlending::New();
     }
-    dd->blending->setImageChannels(dd->vtk_img_by_channel);
-    dd->blending->setChannelLookupTables(dd->channelLookupTables);
+    ddd->blending->setImageChannels(ddd->vtk_img_by_channel);
+    ddd->blending->setChannelLookupTables(ddd->channelLookupTables);
 
-    dd->blending->update();
-    dd->vtk_img = dd->blending;
+    ddd->blending->update();
+    ddd->vtk_img = ddd->blending;
 
-    if (!dd->actor2D) {
-        dd->actor2D = gnomonActor2DImageRGBA::New();
-        d->view->renderer2D()->AddActor(dd->actor2D);
+    if (!ddd->actor2D) {
+        ddd->actor2D = gnomonActor2DImageRGBA::New();
+        ((gnomonViewForm *) d->view)->renderer2D()->AddActor(ddd->actor2D);
     }
-    dd->actor2D->setImage(dd->vtk_img);
-    dd->actor2D->setInteractor(d->view->renderer2D()->GetRenderWindow()->GetInteractor());
-    dd->actor2D->setOpacity(alpha);
-    dd->actor2D->update();
+    ddd->actor2D->setImage(ddd->vtk_img);
+    ddd->actor2D->setInteractor(((gnomonViewForm *) d->view)->renderer2D()->GetRenderWindow()->GetInteractor());
+    ddd->actor2D->setOpacity(alpha);
+    ddd->actor2D->update();
 
-    if (!dd->volume) {
-        dd->volume = gnomonActorImageRGBAVolume::New();
-        d->view->renderer3D()->AddActor(dd->volume);
+    if (!ddd->volume) {
+        ddd->volume = gnomonActorImageRGBAVolume::New();
+        ((gnomonViewForm *) d->view)->renderer3D()->AddActor(ddd->volume);
     }
-    dd->volume->setInteractor(d->view->interactor());
-    dd->volume->setImage(dd->vtk_img);
+    ddd->volume->setInteractor(((gnomonViewForm *) d->view)->interactor());
+    ddd->volume->setImage(ddd->vtk_img);
 
     double bounds[6];
     bounds[0] = 0;
-    bounds[1] = (dd->vtk_img->GetDimensions()[0]-1)*dd->vtk_img->GetSpacing()[0];
+    bounds[1] = (ddd->vtk_img->GetDimensions()[0]-1)*ddd->vtk_img->GetSpacing()[0];
     bounds[2] = 0;
-    bounds[3] = (dd->vtk_img->GetDimensions()[1]-1)*dd->vtk_img->GetSpacing()[1];
+    bounds[3] = (ddd->vtk_img->GetDimensions()[1]-1)*ddd->vtk_img->GetSpacing()[1];
     bounds[4] = 0;
-    bounds[5] = (dd->vtk_img->GetDimensions()[2]-1)*dd->vtk_img->GetSpacing()[2];
-    d->view->setBounds(bounds);
+    bounds[5] = (ddd->vtk_img->GetDimensions()[2]-1)*ddd->vtk_img->GetSpacing()[2];
+    ((gnomonViewForm *) d->view)->setBounds(bounds);
 
     this->render();
 }
@@ -286,7 +287,7 @@ void gnomonVisualizationImageChannelBlending::update(void)
 void gnomonVisualizationImageChannelBlending::render(void)
 {
     this->updateOpacity();
-    d->view->render();
+    ((gnomonViewForm *) d->view)->render();
 }
 
 
@@ -322,24 +323,24 @@ QMap<QString, QString> gnomonVisualizationImageChannelBlending::parameterGroups(
 
 void gnomonVisualizationImageChannelBlending::onSliceOrientationChanged(int value)
 {
-    dd->actor2D->setSliceOrientation(value);
+    ddd->actor2D->setSliceOrientation(value);
 }
 
 void gnomonVisualizationImageChannelBlending::onSliceChanged(int value)
 {
-    dd->actor2D->setSlice(value);
+    ddd->actor2D->setSlice(value);
     this->render();
 }
 
 void gnomonVisualizationImageChannelBlending::on3D(void)
 {
-    dd->actor2D->hide();
+    ddd->actor2D->hide();
     this->render();
 }
 
 void gnomonVisualizationImageChannelBlending::on2D(void)
 {
-    dd->actor2D->show();
+    ddd->actor2D->show();
     this->render();
 }
 
@@ -360,8 +361,8 @@ void gnomonVisualizationImageChannelBlending::onXZ(void)
 
 void gnomonVisualizationImageChannelBlending::onTimeChanged(double value)
 {
-    if (dd->imageSeries->times().contains(value)) {
-        dd->image = dd->imageSeries->at(value);
+    if (ddd->imageSeries->times().contains(value)) {
+        ddd->image = ddd->imageSeries->at(value);
         this->updateChannelImages();
         this->update();
     }

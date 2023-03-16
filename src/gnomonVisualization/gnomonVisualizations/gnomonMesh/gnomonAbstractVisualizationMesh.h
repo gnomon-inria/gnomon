@@ -7,16 +7,16 @@
 #include "gnomonCore/gnomonCorePlugin.h"
 #include <dtkCore/dtkCoreParameters>
 
-#include <gnomonVisualizations/gnomonAbstractVisualization.h>
+#include <gnomonVisualizations/gnomonAbstractFormVisualization.h>
 
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
-class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationMesh : public gnomonAbstractVisualization
+class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualizationMesh : public gnomonAbstractFormVisualization
 {
     Q_OBJECT
 
 public:
-    gnomonAbstractVisualizationMesh(void) : gnomonAbstractVisualization() {}
+    gnomonAbstractVisualizationMesh(void) : gnomonAbstractFormVisualization() {}
     virtual ~gnomonAbstractVisualizationMesh(void) = default;
 
 public:
