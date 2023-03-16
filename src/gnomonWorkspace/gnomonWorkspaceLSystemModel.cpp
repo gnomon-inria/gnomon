@@ -219,6 +219,17 @@ void gnomonWorkspaceLSystemModel::setAnimationStep(int s)
     }
 }
 
+void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
+{
+    bool ok;
+    double t_double = time.toDouble(&ok);
+    if(ok) {
+        d->command->setAnimationTime(t_double);
+    } else {
+        qWarning() << "SetAnimationTime: Cannot convert " << time << " to double";
+    }
+}
+
 void gnomonWorkspaceLSystemModel::read(const QString& file_url)
 {
     QString file_path = filePathFromUrl(file_url);

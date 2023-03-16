@@ -69,6 +69,7 @@ public slots:
     void run(void);
     void reset(void);
     void stop(void);
+    void setAnimationTime(const QString& time);
 
     void setInitialState(void);
     void viewState(void);

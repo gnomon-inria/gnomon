@@ -20,6 +20,7 @@ public:
 
     int derivationLength = 0;
     int animation_step = 1;
+    double animation_time = 10;
 
     std::unique_ptr<QFutureWatcher<int>> watcher = nullptr;
 };
@@ -97,8 +98,11 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
             maxDerivationLength = i+1;
         }
 
-        //let's slow down the computation (10s)!
-        int sleeptime = int(10*1000*d->animation_step / maxDerivationLength);
+        //let's slow down the computation!
+        // time during each iteration
+        int sleeptime = int(d->animation_time*1000*d->animation_step / maxDerivationLength);
+        QElapsedTimer timer;
+        timer.start();
 
         for(; i<maxDerivationLength; i++) {
             this->predo();
@@ -110,7 +114,10 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
                     d->lString->insert(i+1, lstring_model->stepAndReturn(i, 1));
                     promise.setProgressValue(i+1);
                     if(this->simulationType == SimulationType::animate) {
-                        QThread::msleep(sleeptime);
+                        int remainingTime = sleeptime - timer.restart();
+                        if(remainingTime > 50) {
+                            QThread::msleep(remainingTime);
+                        }
                     }
                 } else {
                     lstring_model->step(i,1);
@@ -178,6 +185,12 @@ int gnomonLStringEvolutionModelCommand::animationStep(void) const
 void gnomonLStringEvolutionModelCommand::setAnimationStep(int s)
 {
     d->animation_step = s;
+}
+
+
+void gnomonLStringEvolutionModelCommand::setAnimationTime(double t)
+{
+    d->animation_time = t;
 }
 
 void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)
