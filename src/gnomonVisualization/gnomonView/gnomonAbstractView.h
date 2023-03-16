@@ -55,7 +55,7 @@ signals:
 
     void badFormDropped(QString badFormName, QString acceptedForms);
 
-protected:
+public:
     class gnomonAbstractViewPrivate *d;
 };
 

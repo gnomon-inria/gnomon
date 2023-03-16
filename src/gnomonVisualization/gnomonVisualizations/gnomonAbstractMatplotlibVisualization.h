@@ -8,8 +8,6 @@
 
 #include "gnomonAbstractVisualization.h"
 
-class gnomonAbstractView;
-
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractMatplotlibVisualization : public gnomonAbstractVisualization
 {
     Q_OBJECT

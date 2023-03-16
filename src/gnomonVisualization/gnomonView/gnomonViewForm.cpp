@@ -17,6 +17,9 @@
 #include "gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h"
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
+#include <gnomonVisualization/gnomonCommand/gnomonAbstractVisualizationCommand>
+#include <gnomonVisualization/gnomonCommand/gnomonCellImage/gnomonCellImageVtkVisualizationCommand>
+
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
 #include <memory>
@@ -337,7 +340,9 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
     } else if (formType == "gnomonCellImage") {
         std::shared_ptr<gnomonAbstractVisualizationCellImage> visu;
         if (new_visu) {
-            visu = std::shared_ptr<gnomonAbstractVisualizationCellImage>(gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_name));
+            q->d->visualizationCommands[formType]->setAlgorithmName(visu_name);
+            auto _visu = q->d->visualizationCommands[formType]->visualization();
+            visu = std::static_pointer_cast<gnomonAbstractVisualizationCellImage>(_visu);
             this->formVisualization[formType] = visu;
             emit q->formVisualizationChanged();
         } else {
@@ -502,7 +507,7 @@ gnomonViewForm::gnomonViewForm(QStringList nodePortNames, QObject *parent) : gno
 
     loadPluginGroup("visualizationBinaryImage");
     loadPluginGroup("visualizationCellComplex");
-    loadPluginGroup("visualizationCellImage");
+    d->visualizationCommands["gnomonCellImage"] = new gnomonCellImageVtkVisualizationCommand;
     loadPluginGroup("visualizationImage");
     loadPluginGroup("visualizationLString");
     loadPluginGroup("visualizationMesh");
@@ -981,7 +986,8 @@ void gnomonViewForm::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellIma
             visu_name = current_visu->pluginName();
             parameters = visuParameters(current_visu);
         } else {
-            visu_name = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
+            visu_name = d->visualizationCommands[name]->algorithmName();
+            // visu_name = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
         }
     }
 

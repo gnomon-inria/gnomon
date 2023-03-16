@@ -1,0 +1,48 @@
+#pragma once
+
+#include <gnomonVisualizationExport>
+
+#include "gnomonCore/gnomonCommand/gnomonAbstractCommand.h"
+
+class gnomonAbstractDynamicForm;
+class gnomonAbstractView;
+class gnomonAbstractVisualization;
+
+class GNOMONCORE_EXPORT gnomonAbstractVisualizationCommand : public gnomonAbstractCommand
+{
+
+public:
+    virtual void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) = 0;
+
+public:
+    virtual gnomonAbstractView *view(void);
+    virtual void setView(gnomonAbstractView *view);
+
+public:
+    virtual std::shared_ptr<gnomonAbstractVisualization> visualization(void);
+
+public:
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override {
+        return {};
+    }
+
+    orderedMap outputTypes() override {
+        return {};
+    }
+
+    void deserializeResults(QJsonObject &serialization) override {
+
+    }
+
+    QJsonObject serializeResults(void) override {
+        return QJsonObject();
+    }
+
+protected:
+    gnomonAbstractView *_view = nullptr;
+    std::shared_ptr<gnomonAbstractVisualization> visu = nullptr;
+};
+
+
+//
+// gnomonAbstractVisualizationCommand.h ends here

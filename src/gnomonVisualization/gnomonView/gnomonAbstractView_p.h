@@ -4,6 +4,7 @@
 
 class gnomonAbstractDynamicForm;
 class gnomonAbstractView;
+class gnomonAbstractVisualizationCommand;
 
 class gnomonAbstractViewPrivate : public QObject
 {
@@ -24,6 +25,9 @@ public:
 
 public:
     QMap<QString, bool> acceptForms;
+
+public:
+    QMap<QString, gnomonAbstractVisualizationCommand *> visualizationCommands;
 
 public:
     bool input_view = false;

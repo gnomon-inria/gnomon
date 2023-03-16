@@ -1,9 +1,10 @@
 #pragma once
 
+#include <gnomonVisualizationExport.h>
+
 #include <QtCore>
 
 #include <dtkCore/dtkCoreParameters>
-#include <gnomonVisualizationExport.h>
 
 #include "gnomonAbstractVisualization.h"
 

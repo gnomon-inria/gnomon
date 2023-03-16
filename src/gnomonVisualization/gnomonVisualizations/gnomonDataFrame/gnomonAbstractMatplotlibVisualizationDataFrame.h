@@ -1,15 +1,10 @@
 #pragma once
 
-#include <QtCore>
-
 #include <gnomonVisualizationExport.h>
-
-#include <dtkCore>
 #include "gnomonCore/gnomonCorePlugin.h"
 
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
-
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractMatplotlibVisualizationDataFrame : public gnomonAbstractMatplotlibVisualization
 {

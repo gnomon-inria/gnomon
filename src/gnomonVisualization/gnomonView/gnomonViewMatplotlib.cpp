@@ -14,6 +14,9 @@
 
 #include "gnomonManager/gnomonFormManager.h"
 
+#include <gnomonCommand/gnomonAbstractMplVisualizationCommand>
+#include <gnomonCommand/gnomonDataFrame/gnomonDataFrameMplVisualizationCommand>
+
 #include "gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h"
 #include "gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h"
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h"
@@ -190,7 +193,7 @@ void gnomonViewMatplotlibPrivate::updateFormVisualization(const QString& name)
     }
 }
 
-void gnomonViewMatplotlibPrivate::setFormVisualization(const QString& name, const QString& visu, const QVariantMap &parameters)
+void gnomonViewMatplotlibPrivate::setFormVisualization(const QString& name, const QString& visu_name, const QVariantMap &parameters)
 {
     // saving current parameters before change
     QMap<QString, std::shared_ptr<gnomonAbstractMatplotlibVisualization>>::iterator i;
@@ -199,7 +202,7 @@ void gnomonViewMatplotlibPrivate::setFormVisualization(const QString& name, cons
         viewParameters.parameters[_visu_name] = visuMatplotlibParameters(i.value());
     }
 
-    if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu) {
+    if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu_name) {
 
         if (this->formVisualization[name]) {
             this->formVisualization[name]->clear();
@@ -208,13 +211,16 @@ void gnomonViewMatplotlibPrivate::setFormVisualization(const QString& name, cons
         }
 
         if (name == "gnomonDataFrame") {
-            this->formVisualization[name] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationDataFrame>(gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu));
+            q->d->visualizationCommands[name]->setAlgorithmName(visu_name);
+            auto visu = q->d->visualizationCommands[name]->visualization();
+            this->formVisualization[name] = std::dynamic_pointer_cast<gnomonAbstractMatplotlibVisualization>(visu);
+            //this->formVisualization[name] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationDataFrame>(gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu));
             emit q->formVisualizationChanged();
         } else if (name == "gnomonLString") {
-            this->formVisualization[name] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationLString>(gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu));
+            this->formVisualization[name] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationLString>(gnomonVisualization::matplotlibVisualizationLString::pluginFactory().create(visu_name));
             emit q->formVisualizationChanged();
         } else if (name == "gnomonTree") {
-            this->formVisualization[name] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationTree>(gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(visu));
+            this->formVisualization[name] = std::shared_ptr<gnomonAbstractMatplotlibVisualizationTree>(gnomonVisualization::matplotlibVisualizationTree::pluginFactory().create(visu_name));
             emit q->formVisualizationChanged();
         }
     }
@@ -222,16 +228,16 @@ void gnomonViewMatplotlibPrivate::setFormVisualization(const QString& name, cons
     auto&& form_visu = this->formVisualization[name];
     // taking saved parameters if none are provided and available
     if(viewParameters.parameters.contains(name) && parameters.size()==0) {
-        setVisuMatplotlibParameters(form_visu, viewParameters.parameters[visu]);
+        setVisuMatplotlibParameters(form_visu, viewParameters.parameters[visu_name]);
     } else {
         setVisuMatplotlibParameters(form_visu, parameters);
     }
 
-    this->formVisualizationNames[name] = visu;
+    this->formVisualizationNames[name] = visu_name;
     if (!this->formVisibility.contains(name)) {
         this->formVisibility[name] = true;
     }
-    viewParameters.visuSelected[name] = visu;
+    viewParameters.visuSelected[name] = visu_name;
 
     this->updateFormVisualization(name);
 }
@@ -284,12 +290,15 @@ gnomonViewMatplotlib::gnomonViewMatplotlib(QObject *parent) : gnomonAbstractView
 {
     dd = new gnomonViewMatplotlibPrivate(this);
     dd->q = this;
+
+
 //
 //    static int count = 0;
 //    d->figureNumber = count++;
 
     loadPluginGroup("matplotlibVisualizationTree");
-    loadPluginGroup("matplotlibVisualizationDataFrame");
+    //loadPluginGroup("matplotlibVisualizationDataFrame");
+    d->visualizationCommands["gnomonDataFrame"] = new gnomonDataFrameMplVisualizationCommand;
     loadPluginGroup("matplotlibVisualizationLString");
 
     d->acceptForms["gnomonTree"] = false;
