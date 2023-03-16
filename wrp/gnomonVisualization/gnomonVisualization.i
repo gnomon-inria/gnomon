@@ -24,6 +24,7 @@
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+// #include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 #include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 #include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 #include <gnomonVisualization/gnomonView/gnomonViewData.h>
@@ -899,6 +900,7 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterNurbs, ParameterNurbs)
 %include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 %include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 // %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
+// %include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 %include <gnomonVisualization/gnomonView/gnomonViewForm.h>
 %include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
 %include <gnomonVisualization/gnomonView/gnomonViewData.h>

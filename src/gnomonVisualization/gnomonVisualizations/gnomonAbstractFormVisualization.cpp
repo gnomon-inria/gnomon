@@ -65,9 +65,34 @@ void gnomonAbstractFormVisualization::clearConnections(void)
     disconnect(dd->connectTime);
 }
 
+vtkRenderer *gnomonAbstractFormVisualization::renderer3D(void)
+{
+    return ((gnomonViewForm *) d->view)->renderer3D();
+}
+
+vtkRenderer *gnomonAbstractFormVisualization::renderer2D(void)
+{
+    return ((gnomonViewForm *) d->view)->renderer2D();
+}
+
 vtkRenderer *gnomonAbstractFormVisualization::offscreenRenderer(void)
 {
     return dd->offscreenRenderer;
+}
+
+vtkRenderWindowInteractor *gnomonAbstractFormVisualization::interactor(void)
+{
+    return ((gnomonViewForm *) d->view)->interactor();
+}
+
+void gnomonAbstractFormVisualization::setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax)
+{
+     ((gnomonViewForm *) d->view)->setBounds(xMin, xMax, yMin, yMax, zMin, zMax);
+}
+
+double gnomonAbstractFormVisualization::currentTime(void) const
+{
+    return ((gnomonViewForm *) d->view)->currentTime();
 }
 
 void gnomonAbstractFormVisualization::updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax)

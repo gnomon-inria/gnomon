@@ -26,10 +26,14 @@ public:
     virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> );
     virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
     virtual void removeForm(const QString& name);
+
+    virtual inline void render(void) {}
+    virtual inline void update(void) {}
     virtual void clear(void);
 
 public slots:
     virtual void drop(int);
+    virtual void transmit(void);
 
 public slots:
     virtual void setAcceptForm(const QString&, bool);
@@ -42,9 +46,6 @@ public:
     virtual bool inputView(void);
 
     virtual bool empty(void);
-
-public slots:
-    virtual void transmit(void);
 
 signals:
     void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm> );

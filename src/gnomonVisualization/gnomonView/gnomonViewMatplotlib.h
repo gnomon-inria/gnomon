@@ -64,8 +64,8 @@ public:
     Q_INVOKABLE QString lastVisuSelected(QString formType);
 
 public slots:
-    void render(void);
-    void update(void);
+    void render(void) override;
+    void update(void) override;
     void clear(void) override;
 
 private:

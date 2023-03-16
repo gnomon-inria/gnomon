@@ -5,7 +5,7 @@
 #include <dtkCore/dtkCoreParameters>
 #include <gnomonVisualizationExport.h>
 
-class gnomonAbstractView;
+#include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualization : public QObject
 {

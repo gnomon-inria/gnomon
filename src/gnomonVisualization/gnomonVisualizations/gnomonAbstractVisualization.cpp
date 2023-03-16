@@ -1,8 +1,6 @@
 #include "gnomonAbstractVisualization.h"
 #include "gnomonAbstractVisualization_p.h"
 
-#include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
-
 // /////////////////////////////////////////////////////////////////
 // gnomonAbstractVisualization
 // /////////////////////////////////////////////////////////////////

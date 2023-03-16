@@ -7,11 +7,12 @@
 #include <dtkCore/dtkCoreParameters>
 
 #include "gnomonAbstractVisualization.h"
+#include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 
 class gnomonInteractorStyle;
 
-class vtkGenericOpenGLRenderWindow;
 class vtkRenderer;
+class vtkRenderWindowInteractor;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractFormVisualization : public gnomonAbstractVisualization
 {
@@ -39,8 +40,17 @@ public slots:
     virtual void onSliceOrientationChanged(int) = 0;
     virtual void onTimeChanged(double) = 0;
 
+// Convenience accessors for Python plugins
 public:
+    vtkRenderer *renderer3D(void);
+    vtkRenderer *renderer2D(void);
     vtkRenderer *offscreenRenderer(void);
+
+    vtkRenderWindowInteractor *interactor(void);
+
+public:
+    void setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
+    double currentTime(void) const;
 
 public slots:
     void updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax);

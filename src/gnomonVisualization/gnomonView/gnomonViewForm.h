@@ -195,8 +195,8 @@ public:
     void setCamera(vtkCamera *);
 
 public slots:
-    void render(void);
-    void update(void);
+    void render(void) override;
+    void update(void) override;
     void clear(void) override;
 
 public slots:
