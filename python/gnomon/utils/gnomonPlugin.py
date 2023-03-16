@@ -915,3 +915,10 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
             coreversion) + " but actual version is ${gnomon_VERSION}")
         logging.warn("plugin not loaded")
     return cls
+
+def function_ptr(func):
+    import ctypes
+    ptr_fun_type = ctypes.CFUNCTYPE(None)
+    f = ptr_fun_type(func)
+    f_ptr = ctypes.cast(f, ctypes.c_void_p).value
+    return f_ptr
