@@ -163,7 +163,7 @@ QString gnomonWorkspaceLSystemModel::text(void)
     return d->text;
 }
 
-QString gnomonWorkspaceLSystemModel::message(void)
+QString gnomonWorkspaceLSystemModel::message(void) const
 {
     return d->message;
 }
