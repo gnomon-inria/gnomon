@@ -38,10 +38,31 @@ gnomonCellImageVtkVisualizationCommand::~gnomonCellImageVtkVisualizationCommand(
 
 void gnomonCellImageVtkVisualizationCommand::setAlgorithmName(const QString& algo_name)
 {
-    this->algorithm_name = algo_name;
-    this->visu->deleteLater();
-    auto visu = gnomonVisualization::visualizationCellImage::pluginFactory().create(algo_name);
-    this->visu = std::shared_ptr<gnomonAbstractVisualizationCellImage>(visu);
+    if (this->algorithm_name != algo_name) {
+        this->algorithm_name = algo_name;
+        auto &&old_visu = std::static_pointer_cast<gnomonAbstractVisualizationCellImage>(this->visu);
+        if (old_visu) {
+            old_visu->clearConnections();
+            old_visu->clear();
+            old_visu->deleteLater();
+        }
+
+        auto visu = gnomonVisualization::visualizationCellImage::pluginFactory().create(algo_name);
+        this->visu = std::shared_ptr<gnomonAbstractVisualizationCellImage>(visu);
+    }
+}
+
+void gnomonCellImageVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
+{
+    this->setAlgorithmName(visu_name);
+    auto &&visu = std::static_pointer_cast<gnomonAbstractVisualizationCellImage>(this->visu);
+
+    if (visu) {
+        if (visu->cellImage() != d->cellImage) {
+            visu->setCellImage(d->cellImage);
+            this->setVisualizationParameters(parameters);
+        }
+    }
 }
 
 void gnomonCellImageVtkVisualizationCommand::predo(void)

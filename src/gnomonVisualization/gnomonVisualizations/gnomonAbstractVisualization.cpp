@@ -1,6 +1,9 @@
 #include "gnomonAbstractVisualization.h"
 #include "gnomonAbstractVisualization_p.h"
 
+#include <dtkCore>
+
+
 // /////////////////////////////////////////////////////////////////
 // gnomonAbstractVisualization
 // /////////////////////////////////////////////////////////////////
@@ -24,6 +27,27 @@ gnomonAbstractView* gnomonAbstractVisualization::view(void)
 {
     return d->view;
 }
+
+QVariantMap gnomonAbstractVisualization::visuParameters(void)
+{
+    QVariantMap parameters;
+
+    dtkCoreParameters dtkParameters = this->parameters();
+    for(const auto& param_name : dtkParameters.keys()){
+        QVariant param_value = dtkParameters[param_name]->variant();
+        parameters.insert(param_name, param_value);
+    }
+    return parameters;
+}
+
+void gnomonAbstractVisualization::setVisuParameters(QVariantMap parameters)
+{
+    for(const auto& param_name: parameters.keys()) {
+        QVariant param = parameters[param_name];
+        this->setParameter(param_name, param);
+    }
+}
+
 
 //
 // gnomonAbstractVisualization.cpp ends here

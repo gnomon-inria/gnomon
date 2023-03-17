@@ -19,6 +19,8 @@ public:
     void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) override;
     void setAlgorithmName(const QString &) override;
 
+    void setFormVisualization(const QString& visu_name, const QVariantMap &parameters) override;
+
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
     orderedMap inputTypes() override;
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;

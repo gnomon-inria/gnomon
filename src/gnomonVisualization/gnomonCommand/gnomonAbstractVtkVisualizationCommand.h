@@ -12,6 +12,7 @@ class GNOMONCORE_EXPORT gnomonAbstractVtkVisualizationCommand :  public gnomonAb
 
 public:
     void setView(gnomonAbstractView *view) override;
+    void setVisualizationParameters(const QVariantMap &parameters) override;
 };
 
 

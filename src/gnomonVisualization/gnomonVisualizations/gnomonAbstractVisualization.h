@@ -32,6 +32,10 @@ public:
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
 
 public:
+    QVariantMap visuParameters(void);
+    void setVisuParameters(QVariantMap parameters);
+
+public:
     virtual QImage imageRendering(void) = 0;
 
 signals:
