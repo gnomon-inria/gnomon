@@ -94,12 +94,14 @@ gnomonWorkspaceCellComplexFromCellImage::gnomonWorkspaceCellComplexFromCellImage
 
     d = new gnomonWorkspaceCellComplexFromCellImagePrivate;
 
-    d->source = new gnomonViewForm({}, this);
+    d->source = new gnomonViewForm(this);
+    d->source->setNodePortNames({});
     d->source->setExportColor(this->color);
     d->source->setAcceptForm("gnomonCellImage",true);
     d->source->setInputView(true);
 
-    d->target = new gnomonViewForm({}, this);
+    d->target = new gnomonViewForm(this);
+    d->target->setNodePortNames({});
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonCellComplex",true);
 

@@ -98,7 +98,8 @@ gnomonViewFormList::~gnomonViewFormList(void)
 
 void gnomonViewFormList::addView(const QVector<QString> &accepted_forms, QStringList nodePortNames)
 {
-    gnomonViewForm *new_view = new gnomonViewForm(nodePortNames, this->parent());
+    gnomonViewForm *new_view = new gnomonViewForm(this->parent());
+    new_view->setNodePortNames(nodePortNames);
 
 //    for(gnomonViewForm *view : d->views) {
 //        connect(new_view, &gnomonViewForm::landmarkAdded, view, &gnomonViewForm::addLandmark);

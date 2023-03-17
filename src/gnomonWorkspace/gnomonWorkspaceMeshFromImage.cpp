@@ -86,12 +86,14 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
     
     d = new gnomonWorkspaceMeshFromImagePrivate;
 
-    d->source = new gnomonViewForm({}, this);
+    d->source = new gnomonViewForm(this);
+    d->source->setNodePortNames({});
     d->source->setExportColor(this->color);
     d->source->setAcceptForm("gnomonImage",true);
     d->source->setInputView(true);
 
-    d->target = new gnomonViewForm({}, this);
+    d->target = new gnomonViewForm(this);
+    d->target->setNodePortNames({});
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonMesh",true);
 

@@ -115,9 +115,7 @@ public:
     QMap<QString, QJsonObject > visualization_description;
     QMap<QString, bool > formVisibility;
     viewFormParameters viewParameters;
-    
-public:
-    QStringList nodePortNames;
+
 
 public:
     QMetaObject::Connection connect3D;
@@ -499,11 +497,10 @@ void gnomonViewFormPrivate::adaptForm(const QString& adapter_plugin)
 // gnomonViewForm
 // ///////////////////////////////////////////////////////////////////
 
-gnomonViewForm::gnomonViewForm(QStringList nodePortNames, QObject *parent) : gnomonAbstractView(parent)
+gnomonViewForm::gnomonViewForm(QObject *parent) : gnomonAbstractView(parent)
 {
     dd = new gnomonViewFormPrivate;
     dd->q = this;
-    dd->nodePortNames = nodePortNames;
 
     loadPluginGroup("visualizationBinaryImage");
     loadPluginGroup("visualizationCellComplex");
@@ -1438,11 +1435,6 @@ void gnomonViewForm::setCamera(vtkCamera *cam)
     camera3D->SetFocalPoint(cam->GetFocalPoint());
     camera3D->SetViewUp(cam->GetViewUp());
     camera3D->SetPosition(cam->GetPosition());
-}
-
-QStringList gnomonViewForm::nodePortNames(void)
-{
-    return dd->nodePortNames;
 }
 
 void gnomonViewForm::setEnableLinking(bool enable)

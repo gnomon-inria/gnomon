@@ -76,6 +76,16 @@ void gnomonAbstractView::removeForm(const QString& name)
     }
 }
 
+QStringList gnomonAbstractView::nodePortNames(void)
+{
+    return d->nodePortNames;
+}
+
+void gnomonAbstractView::setNodePortNames(const QStringList& names)
+{
+    d->nodePortNames = names;
+}
+
 void gnomonAbstractView::clear(void)
 {
     d->forms.clear();

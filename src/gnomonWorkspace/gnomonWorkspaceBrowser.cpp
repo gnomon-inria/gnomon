@@ -347,7 +347,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
 
     d->pipeline_manager = gnomonPipelineManager::instance();
 
-    d->browse_view = new gnomonViewForm({}, this);
+    d->browse_view = new gnomonViewForm(this);
+    d->browse_view->setNodePortNames({});
     // d->browse_view->setExportColor(this->color);
     d->browse_view->setAcceptForm("gnomonBinaryImage", true);
     d->browse_view->setAcceptForm("gnomonCellComplex",true);

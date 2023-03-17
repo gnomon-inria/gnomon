@@ -31,6 +31,10 @@ public:
     virtual inline void update(void) {}
     virtual void clear(void);
 
+public:
+    QStringList nodePortNames(void);
+    void setNodePortNames(const QStringList&);
+
 public slots:
     virtual void drop(int);
     virtual void transmit(void);

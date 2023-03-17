@@ -24,6 +24,9 @@ public:
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
 
 public:
+    QStringList nodePortNames;
+
+public:
     QMap<QString, bool> acceptForms;
 
 public:

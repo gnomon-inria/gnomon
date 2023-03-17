@@ -163,7 +163,8 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
     d = new gnomonWorkspaceMorphonetPrivate();
 
     d->pipeline_manager = gnomonPipelineManager::instance();
-    d->view = new gnomonViewForm({}, this);
+    d->view = new gnomonViewForm(this);
+    d->view->setNodePortNames({});
     d->img_series = std::make_shared<gnomonCellImageSeries>();
     d->img_series->metadata()->set("source", "MorphoNet");
 

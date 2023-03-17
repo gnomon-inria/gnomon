@@ -25,10 +25,13 @@ class GNOMONVISUALIZATION_EXPORT gnomonViewForm : public gnomonAbstractView
 {
     Q_OBJECT
 public:
-     gnomonViewForm(QStringList nodePortNames, QObject *parent = nullptr);
+     gnomonViewForm(QObject *parent = nullptr);
     ~gnomonViewForm(void);
 
 public:
+    Q_ENUMS(Mode);
+    Q_ENUMS(Orientation);
+
     enum Mode {
         VIEW_MODE_3D = 3,
         VIEW_MODE_2D = 2,
@@ -63,8 +66,6 @@ public:
     Q_INVOKABLE void startPicking();
     Q_INVOKABLE void stopPicking();
 
-    Q_ENUM(Mode);
-    Q_ENUM(Orientation);
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -127,9 +128,6 @@ public:
 
 public:
     void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>);
-
-public:
-    QStringList nodePortNames(void);
 
     bool synced(void);
     bool syncing(void);

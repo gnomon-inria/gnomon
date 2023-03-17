@@ -82,7 +82,8 @@ gnomonWorkspaceMeshConstructor::gnomonWorkspaceMeshConstructor(QWidget *parent) 
 
     d = new gnomonWorkspaceMeshConstructorPrivate;
 
-    d->target = new gnomonViewForm({}, this);
+    d->target = new gnomonViewForm(this);
+    d->target->setNodePortNames({});
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonMesh",true);
 
