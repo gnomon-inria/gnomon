@@ -120,8 +120,6 @@ public:
     void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ,std::shared_ptr<gnomonAbstractFormVisualization> visualization=nullptr);
     void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> , std::shared_ptr<gnomonAbstractFormVisualization> visualization=nullptr);
     void setCellComplex(std::shared_ptr<gnomonCellComplexSeries> , std::shared_ptr<gnomonAbstractFormVisualization> visualization=nullptr);
-    void setCellImage(std::shared_ptr<gnomonCellImageSeries> , std::shared_ptr<gnomonAbstractFormVisualization> visualization=nullptr);
-    void setImage(std::shared_ptr<gnomonImageSeries> , std::shared_ptr<gnomonAbstractFormVisualization> visualization=nullptr);
     void setLString(std::shared_ptr<gnomonLStringSeries> , std::shared_ptr<gnomonAbstractFormVisualization> visualization=nullptr);
     void setMesh(std::shared_ptr<gnomonMeshSeries> , std::shared_ptr<gnomonAbstractFormVisualization> visualization=nullptr);
     void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> , std::shared_ptr<gnomonAbstractFormVisualization> visualization=nullptr);

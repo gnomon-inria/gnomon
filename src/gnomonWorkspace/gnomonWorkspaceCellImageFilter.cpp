@@ -211,7 +211,7 @@ void gnomonWorkspaceCellImageFilter::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setCellImage(d->command->output());
+        d->target->setForm("gnomonCellImage", d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);

@@ -960,33 +960,6 @@ std::shared_ptr<gnomonCellImageSeries> gnomonViewForm::cellImage(void)
     }
 }
 
-void gnomonViewForm::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage, std::shared_ptr<gnomonAbstractFormVisualization> visu)
-{
-    QString name = "gnomonCellImage";
-    QString visu_name;
-    QVariantMap parameters;
-
-    if(visu) {
-        visu_name = visu->pluginName();
-        parameters = visu->visuParameters();
-        // dd->formVisualization[name] = visu;
-        // dd->formVisualizationNames[name] = visu_name;
-    } else {
-        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[name];
-            visu_name = current_visu->pluginName();
-            parameters = current_visu->visuParameters();
-        } else {
-            visu_name = d->visualizationCommands[name]->algorithmName();
-            // visu_name = gnomonVisualization::visualizationCellImage::pluginFactory().keys()[0];
-        }
-    }
-
-    d->forms[name] = cellImage;
-    dd->setFormVisualization(name, visu_name, parameters);
-    emit formAdded("gnomonCellImage");
-}
-
 std::shared_ptr<gnomonCellComplexSeries> gnomonViewForm::cellComplex(void)
 {
     if (d->forms.contains("gnomonCellComplex")) {
@@ -1030,34 +1003,6 @@ std::shared_ptr<gnomonImageSeries> gnomonViewForm::image(void)
         return nullptr;
     }
 }
-
-void gnomonViewForm::setImage(std::shared_ptr<gnomonImageSeries> image, std::shared_ptr<gnomonAbstractFormVisualization> visu)
-{
-    QString name = "gnomonImage";
-    QString visu_name;
-    QVariantMap parameters;
-
-    if(visu) {
-        visu_name = visu->pluginName();
-        parameters = visu->visuParameters();
-        // dd->formVisualization[name] = visu;
-        // dd->formVisualizationNames[name] = visu_name;
-    } else {
-        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[name];
-            visu_name = current_visu->pluginName();
-            parameters = current_visu->visuParameters();
-        } else {
-            visu_name = d->visualizationCommands[name]->algorithmName();
-            // visu_name = gnomonVisualization::visualizationImage::pluginFactory().keys()[0];
-        }
-    }
-
-    d->forms[name] = image;
-    dd->setFormVisualization(name, visu_name, parameters);
-    emit formAdded("gnomonImage");
-}
-
 
 std::shared_ptr<gnomonBinaryImageSeries> gnomonViewForm::binaryImage(void)
 {

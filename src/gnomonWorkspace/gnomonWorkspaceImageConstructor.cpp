@@ -156,7 +156,7 @@ void gnomonWorkspaceImageConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setImage(d->command->output());
+        d->target->setForm("gnomonImage", d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
 

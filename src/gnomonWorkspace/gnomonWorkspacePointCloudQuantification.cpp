@@ -158,7 +158,7 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
             d->command->setPointCloud(d->view->pointCloud());
         }
         if(d->view->image()) {
-            d->command->setImage(d->view->image());
+            d->command->setForm("gnomonImage", d->view->image());
         }
         d->configure(d->algorithm);
     });
@@ -169,7 +169,7 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
             d->command->setPointCloud(d->view->pointCloud());
         }
         if(d->view->image()) {
-            d->command->setImage(d->view->image());
+            d->command->setForm("gnomonImage", d->view->image());
         }
         d->configure(algorithm);
     });
@@ -214,7 +214,7 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
         d->command->setPointCloud(d->view->pointCloud());
     }
     if(d->view->image()) {
-        d->command->setImage(d->view->image());
+        d->command->setForm("gnomonImage", d->view->image());
     }
 
     d->view->setInputView(true);

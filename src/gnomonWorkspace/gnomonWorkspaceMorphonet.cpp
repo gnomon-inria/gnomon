@@ -379,7 +379,7 @@ void gnomonWorkspaceMorphonet::onDataLoaded(int startTime, int endTime)
         d->view->clear();
         int form_count = gnomonFormManager::instance()->formCount(d->img_series->formName());
         d->img_series->metadata()->set("name", d->img_series->formName().remove("gnomon") + QString::number(form_count+1));
-        d->view->setCellImage(d->img_series, {});
+        d->view->setForm("gnomonCellImage", d->img_series, {});
         d->pipeline_manager->addMorphoForm(d->img_series, d->current_id, d->voxelsize, startTime, endTime);
 
         emit timeEndChanged();
@@ -472,10 +472,10 @@ void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
         QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
         outputs["curatedCellImage"] = image;
 
-        this->view()->setCellImage(image);
+        this->view()->setForm("gnomonCellImage", image);
         d->pipeline_manager->addTask("morphoPlotCuration", inputs, outputs);
 
-        //this->view()->setCellImage(imageSerie, {}); //same image, not needed?
+        //this->view()->setForm("gnomonCellImage", imageSerie, {}); //same image, not needed?
         // just beed to refresh the view
     
         // cleaning up
