@@ -66,20 +66,6 @@ void gnomonCellImageVtkVisualizationCommand::setFormVisualization(const QString&
     }
 }
 
-void gnomonCellImageVtkVisualizationCommand::predo(void)
-{
-    std::dynamic_pointer_cast<gnomonAbstractVisualizationCellImage>(this->visu)->setCellImage(d->cellImage);
-}
-
-void gnomonCellImageVtkVisualizationCommand::postdo(void)
-{
-
-}
-
-void gnomonCellImageVtkVisualizationCommand::undo()
-{
-}
-
 void gnomonCellImageVtkVisualizationCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     d->cellImage = std::dynamic_pointer_cast<gnomonCellImageSeries>(form);

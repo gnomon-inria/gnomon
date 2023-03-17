@@ -40,6 +40,11 @@ public:
         return QJsonObject();
     }
 
+public:
+    inline void  predo(void) override { }
+    inline void postdo(void) override { }
+    inline void   undo(void) override { }
+
 protected:
     gnomonAbstractView *_view = nullptr;
     std::shared_ptr<gnomonAbstractVisualization> visu = nullptr;

@@ -2,14 +2,13 @@
 
 #include <gnomonVisualization/gnomonCommand/gnomonAbstractVtkVisualizationCommand>
 
-#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 
-class GNOMONCORE_EXPORT gnomonCellImageVtkVisualizationCommand : public gnomonAbstractVtkVisualizationCommand
+class GNOMONCORE_EXPORT gnomonImageVtkVisualizationCommand : public gnomonAbstractVtkVisualizationCommand
 {
 public:
-     gnomonCellImageVtkVisualizationCommand();
-    ~gnomonCellImageVtkVisualizationCommand() override;
-
+     gnomonImageVtkVisualizationCommand();
+    ~gnomonImageVtkVisualizationCommand() override;
 
 public:
     void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) override;
@@ -22,8 +21,8 @@ public:
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
-    inline static const QString groupName = "visualizationCellImage";
+    inline static const QString groupName = "visualizationImage";
 
 private:
-    class gnomonCellImageVtkVisualizationCommandPrivate *d;
+    class gnomonImageVtkVisualizationCommandPrivate *d;
 };
