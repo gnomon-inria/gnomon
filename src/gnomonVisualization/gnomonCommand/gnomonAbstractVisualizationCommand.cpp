@@ -2,14 +2,6 @@
 
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization>
 
-void setVisuParameters(std::shared_ptr<gnomonAbstractVisualization> visu, QVariantMap parameters)
-{
-    for(const auto& param_name: parameters.keys()) {
-        QVariant param = parameters[param_name];
-        visu->setParameter(param_name, param);
-    }
-};
-
 gnomonAbstractView *gnomonAbstractVisualizationCommand::view(void)
 {
     return this->_view;

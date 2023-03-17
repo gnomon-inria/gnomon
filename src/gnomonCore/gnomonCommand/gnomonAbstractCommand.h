@@ -9,6 +9,7 @@
 
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm>
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
+#include "gnomonCore/gnomonPluginFactory.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractCommand : public QObject
 {
@@ -52,6 +53,11 @@ public:
         return this->factory_name;
     }
 
+    gnomonPluginFactoryBase *pluginFactory(void)
+    {
+        return this->factory;
+    }
+
     void setNoAsync() {this->override_async = true;}
 
 public:
@@ -75,6 +81,7 @@ protected:
     class gnomonAbstractAlgorithm *action = nullptr;
     QString algorithm_name = "";
     QString factory_name = "";
+    gnomonPluginFactoryBase *factory;
     QFutureWatcher<void> *watcher = nullptr;
     bool override_async = false;
 };

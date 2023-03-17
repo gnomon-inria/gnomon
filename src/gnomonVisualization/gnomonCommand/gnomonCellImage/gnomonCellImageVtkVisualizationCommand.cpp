@@ -21,9 +21,10 @@ public:
 gnomonCellImageVtkVisualizationCommand::gnomonCellImageVtkVisualizationCommand() : d(new gnomonCellImageVtkVisualizationCommandPrivate)
 {
     this->factory_name = groupName;
+    this->factory = &gnomonVisualization::visualizationCellImage::pluginFactory();
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonVisualization::visualizationCellImage::pluginFactory().keys();
+    QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
         auto visu = gnomonVisualization::visualizationCellImage::pluginFactory().create(this->algorithm_name);
@@ -89,15 +90,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageVtkVis
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["cellImage"] = d->cellImage;
     return inputs;
-}
-
-bool gnomonCellImageVtkVisualizationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonCellImageVtkVisualizationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonCellImageVtkVisualizationCommand::inputTypes() {

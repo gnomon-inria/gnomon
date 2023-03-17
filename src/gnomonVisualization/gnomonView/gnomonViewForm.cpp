@@ -867,47 +867,72 @@ void gnomonViewForm::disconnectTime() {
 
 void gnomonViewForm::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractFormVisualization> visualization)
 {
-    if (std::shared_ptr<gnomonBinaryImageSeries> binaryImage = std::dynamic_pointer_cast<gnomonBinaryImageSeries>(form)) {
-        if (d->acceptForms["gnomonBinaryImage"]) {
-            this->setBinaryImage(binaryImage, visualization);
+    QString form_name = form->formName();
+    if (form_name == "gnomonCellImage") {
+        if (d->acceptForms[form_name]) {
+            QString visu_name;
+            QVariantMap parameters;
+
+            if(visualization) {
+                visu_name = visualization->pluginName();
+                parameters = visualization->visuParameters();
+            } else {
+                if (dd->formVisualization.contains(form_name) &&  dd->formVisualization[form_name]) {
+                    std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[form_name];
+                    visu_name = current_visu->pluginName();
+                    parameters = current_visu->visuParameters();
+                } else {
+                    visu_name = d->visualizationCommands[form_name]->algorithmName();
+                }
+            }
+
+            d->forms[form_name] = form;
+            dd->setFormVisualization(form_name, visu_name, parameters);
+            emit formAdded(form_name);
         } else {
-            emit badFormDropped("gnomonbinaryImage", acceptedForms().join(", "));
+            emit badFormDropped(form->formName(), acceptedForms().join(", "));
         }
-    }  else if (std::shared_ptr<gnomonCellComplexSeries> cellComplex = std::dynamic_pointer_cast<gnomonCellComplexSeries>(form)) {
-        if (d->acceptForms["gnomonCellComplex"]) {
-            this->setCellComplex(cellComplex, visualization);
-        } else {
-            this->setAdaptedForm("gnomonCellComplex", cellComplex);
-        }
-    } else if (std::shared_ptr<gnomonCellImageSeries> cellImage = std::dynamic_pointer_cast<gnomonCellImageSeries>(form)) {
-        if (d->acceptForms["gnomonCellImage"]) {
-            this->setCellImage(cellImage, visualization);
-        } else {
-            emit badFormDropped("gnomonCellImage", acceptedForms().join(", "));
-        }
-    } else if (std::shared_ptr<gnomonImageSeries> image = std::dynamic_pointer_cast<gnomonImageSeries>(form)) {
-        if (d->acceptForms["gnomonImage"]) {
-            this->setImage(image, visualization);
-        } else {
-            emit badFormDropped("gnomonImage", acceptedForms().join(", "));
-        }
-    } else if (std::shared_ptr<gnomonLStringSeries> lString = std::dynamic_pointer_cast<gnomonLStringSeries>(form)) {
-        if (d->acceptForms["gnomonLString"]) {
-            this->setLString(lString, visualization);
-        } else {
-            emit badFormDropped("gnomonLString", acceptedForms().join(", "));
-        }
-    } else if (std::shared_ptr<gnomonMeshSeries> mesh = std::dynamic_pointer_cast<gnomonMeshSeries>(form)) {
-        if (d->acceptForms["gnomonMesh"]) {
-            this->setMesh(mesh, visualization);
-        } else {
-            this->setAdaptedForm("gnomonMesh", mesh);
-        }
-    } else if (std::shared_ptr<gnomonPointCloudSeries> pointCloud = std::dynamic_pointer_cast<gnomonPointCloudSeries>(form)) {
-        if (d->acceptForms["gnomonPointCloud"]) {
-            this->setPointCloud(pointCloud, visualization);
-        } else {
-            emit badFormDropped("gnomonPointCloud", acceptedForms().join(", "));
+    } else {
+        if (std::shared_ptr<gnomonBinaryImageSeries> binaryImage = std::dynamic_pointer_cast<gnomonBinaryImageSeries>(
+                form)) {
+            if (d->acceptForms["gnomonBinaryImage"]) {
+                this->setBinaryImage(binaryImage, visualization);
+            } else {
+                emit badFormDropped("gnomonbinaryImage", acceptedForms().join(", "));
+            }
+        } else if (std::shared_ptr<gnomonCellComplexSeries> cellComplex = std::dynamic_pointer_cast<gnomonCellComplexSeries>(
+                form)) {
+            if (d->acceptForms["gnomonCellComplex"]) {
+                this->setCellComplex(cellComplex, visualization);
+            } else {
+                this->setAdaptedForm("gnomonCellComplex", cellComplex);
+            }
+        } else if (std::shared_ptr<gnomonImageSeries> image = std::dynamic_pointer_cast<gnomonImageSeries>(form)) {
+            if (d->acceptForms["gnomonImage"]) {
+                this->setImage(image, visualization);
+            } else {
+                emit badFormDropped("gnomonImage", acceptedForms().join(", "));
+            }
+        } else if (std::shared_ptr<gnomonLStringSeries> lString = std::dynamic_pointer_cast<gnomonLStringSeries>(
+                form)) {
+            if (d->acceptForms["gnomonLString"]) {
+                this->setLString(lString, visualization);
+            } else {
+                emit badFormDropped("gnomonLString", acceptedForms().join(", "));
+            }
+        } else if (std::shared_ptr<gnomonMeshSeries> mesh = std::dynamic_pointer_cast<gnomonMeshSeries>(form)) {
+            if (d->acceptForms["gnomonMesh"]) {
+                this->setMesh(mesh, visualization);
+            } else {
+                this->setAdaptedForm("gnomonMesh", mesh);
+            }
+        } else if (std::shared_ptr<gnomonPointCloudSeries> pointCloud = std::dynamic_pointer_cast<gnomonPointCloudSeries>(
+                form)) {
+            if (d->acceptForms["gnomonPointCloud"]) {
+                this->setPointCloud(pointCloud, visualization);
+            } else {
+                emit badFormDropped("gnomonPointCloud", acceptedForms().join(", "));
+            }
         }
     }
     return;
@@ -1213,7 +1238,7 @@ QVariantList gnomonViewForm::formVisualizations(const QString& name)
         } else if (name == "gnomonCellComplex") {
             return gnomonVisualization::visualizationCellComplex::pluginFactory().dataList();
         } else if (name == "gnomonCellImage") {
-             return gnomonVisualization::visualizationCellImage::pluginFactory().dataList();
+            return d->visualizationCommands[name]->pluginFactory()->dataList();
         } else if (name == "gnomonImage") {
             return gnomonVisualization::visualizationImage::pluginFactory().dataList();
         } else if (name == "gnomonLString") {
