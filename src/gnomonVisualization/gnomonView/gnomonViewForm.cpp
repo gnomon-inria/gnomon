@@ -18,8 +18,13 @@
 #include "gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h"
 
 #include <gnomonVisualization/gnomonCommand/gnomonAbstractVisualizationCommand>
+#include <gnomonVisualization/gnomonCommand/gnomonBinaryImage/gnomonBinaryImageVtkVisualizationCommand>
+#include <gnomonVisualization/gnomonCommand/gnomonCellComplex/gnomonCellComplexVtkVisualizationCommand>
 #include <gnomonVisualization/gnomonCommand/gnomonCellImage/gnomonCellImageVtkVisualizationCommand>
 #include <gnomonVisualization/gnomonCommand/gnomonImage/gnomonImageVtkVisualizationCommand>
+#include <gnomonVisualization/gnomonCommand/gnomonLString/gnomonLStringVtkVisualizationCommand>
+#include <gnomonVisualization/gnomonCommand/gnomonMesh/gnomonMeshVtkVisualizationCommand>
+#include <gnomonVisualization/gnomonCommand/gnomonPointCloud/gnomonPointCloudVtkVisualizationCommand>
 
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
@@ -279,129 +284,11 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
         visu_parameters = viewParameters.parameters[visu_name];
     }
 
-    if (formType == "gnomonCellImage" || formType == "gnomonImage") {
-        qDebug()<<Q_FUNC_INFO<<q->form(formType).get();
-        q->d->visualizationCommands[formType]->setForm(q->form(formType));
-        q->d->visualizationCommands[formType]->setFormVisualization(visu_name, visu_parameters);
-        auto&& visu = q->d->visualizationCommands[formType]->visualization();
-        this->formVisualization[formType] = std::static_pointer_cast<gnomonAbstractFormVisualization>(visu);
-        emit q->formVisualizationChanged();
-    } else {
-        bool new_visu = !this->formVisualizationNames.contains(formType)
-                        || this->formVisualizationNames[formType] != visu_name;
-
-        if (this->formVisualizationNames.contains(formType) && this->formVisualization[formType] && new_visu) {
-            // clear before replacing
-            this->formVisualization[formType]->clearConnections();
-            this->formVisualization[formType]->clear();
-        }
-
-        auto &&form = q->form(formType);
-        bool form_changed = false;
-
-        if (formType == "gnomonBinaryImage") {
-            std::shared_ptr<gnomonAbstractVisualizationBinaryImage> visu;
-            if (new_visu) {
-                visu = std::shared_ptr<gnomonAbstractVisualizationBinaryImage>(
-                        gnomonVisualization::visualizationBinaryImage::pluginFactory().create(visu_name));
-                this->formVisualization[formType] = visu;
-                emit q->formVisualizationChanged();
-            } else {
-                visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationBinaryImage>(
-                        this->formVisualization[formType]);
-            }
-            const auto &last_form = visu->binaryImage();
-            if (last_form != form) {
-                visu->setBinaryImage(std::dynamic_pointer_cast<gnomonBinaryImageSeries>(form));
-                form_changed = true;
-            }
-        } else if (formType == "gnomonCellComplex") {
-            std::shared_ptr<gnomonAbstractVisualizationCellComplex> visu;
-            if (new_visu) {
-                visu = std::shared_ptr<gnomonAbstractVisualizationCellComplex>(
-                        gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu_name));
-                this->formVisualization[formType] = visu;
-                emit q->formVisualizationChanged();
-            } else {
-                visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationCellComplex>(
-                        this->formVisualization[formType]);
-            }
-            const auto &last_form = visu->cellComplex();
-            if (last_form != form) {
-                visu->setCellComplex(std::dynamic_pointer_cast<gnomonCellComplexSeries>(form));
-                form_changed = true;
-            }
-        } else if (formType == "gnomonLString") {
-            std::shared_ptr<gnomonAbstractVisualizationLString> visu;
-            if (new_visu) {
-                visu = std::shared_ptr<gnomonAbstractVisualizationLString>(
-                        gnomonVisualization::visualizationLString::pluginFactory().create(visu_name));
-                this->formVisualization[formType] = visu;
-                emit q->formVisualizationChanged();
-            } else {
-                visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationLString>(this->formVisualization[formType]);
-            }
-            const auto &last_form = visu->lString();
-            if (last_form != form) {
-                visu->setLString(std::dynamic_pointer_cast<gnomonLStringSeries>(form));
-                form_changed = true;
-            }
-        } else if (formType == "gnomonMesh") {
-            std::shared_ptr<gnomonAbstractVisualizationMesh> visu;
-            if (new_visu) {
-                visu = std::shared_ptr<gnomonAbstractVisualizationMesh>(
-                        gnomonVisualization::visualizationMesh::pluginFactory().create(visu_name));
-                this->formVisualization[formType] = visu;
-                emit q->formVisualizationChanged();
-            } else {
-                visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationMesh>(this->formVisualization[formType]);
-            }
-            const auto &last_form = visu->mesh();
-            if (last_form != form) {
-                visu->setMesh(std::dynamic_pointer_cast<gnomonMeshSeries>(form));
-                form_changed = true;
-            }
-        } else if (formType == "gnomonPointCloud") {
-            std::shared_ptr<gnomonAbstractVisualizationPointCloud> visu;
-            if (new_visu) {
-                visu = std::shared_ptr<gnomonAbstractVisualizationPointCloud>(
-                        gnomonVisualization::visualizationPointCloud::pluginFactory().create(visu_name));
-                this->formVisualization[formType] = visu;
-                emit q->formVisualizationChanged();
-            } else {
-                visu = std::dynamic_pointer_cast<gnomonAbstractVisualizationPointCloud>(
-                        this->formVisualization[formType]);
-            }
-            const auto &last_form = visu->pointCloud();
-            if (last_form != form) {
-                visu->setPointCloud(std::dynamic_pointer_cast<gnomonPointCloudSeries>(form));
-                form_changed = true;
-            }
-        }
-
-        if (!this->formVisualization[formType]) {
-            qWarning() << "Cannot create visu for name " << formType << " visu_name " << visu_name;
-            return;
-        }
-
-        auto &&form_visu = this->formVisualization[formType];
-
-        if (form_changed) {
-            form_visu->clearConnections();
-            form_visu->clear();
-            form_visu->setView(q);
-            // taking saved parameters if none are provided and available
-            if (viewParameters.parameters.contains(visu_name) && parameters.size() == 0) {
-                form_visu->setVisuParameters(viewParameters.parameters[visu_name]);
-            } else {
-                form_visu->setVisuParameters(parameters);
-            }
-            form_visu->update();
-            form_visu->setVisible(true);
-        }
-    }
-
-    auto &&form_visu = this->formVisualization[formType];
+    q->d->visualizationCommands[formType]->setForm(q->form(formType));
+    q->d->visualizationCommands[formType]->setFormVisualization(visu_name, visu_parameters);
+    auto&& visu = q->d->visualizationCommands[formType]->visualization();
+    this->formVisualization[formType] = std::static_pointer_cast<gnomonAbstractFormVisualization>(visu);
+    emit q->formVisualizationChanged();
 
     this->formVisualizationNames[formType] = visu_name;
     if (!this->formVisibility.contains(formType)) {
@@ -410,7 +297,7 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
 
     viewParameters.visuSelected[formType] = visu_name;
 
-    connect(form_visu.get(), &gnomonAbstractFormVisualization::parametersChanged, [=] () {
+    connect(visu.get(), &gnomonAbstractFormVisualization::parametersChanged, [=] () {
         emit q->formVisuParametersChanged();
     });
 
@@ -475,23 +362,17 @@ gnomonViewForm::gnomonViewForm(QObject *parent) : gnomonAbstractView(parent)
     dd = new gnomonViewFormPrivate;
     dd->q = this;
 
-    loadPluginGroup("visualizationBinaryImage");
-    loadPluginGroup("visualizationCellComplex");
+    d->visualizationCommands["gnomonBinaryImage"] = new gnomonBinaryImageVtkVisualizationCommand;
+    d->visualizationCommands["gnomonCellComplex"] = new gnomonCellComplexVtkVisualizationCommand;
     d->visualizationCommands["gnomonCellImage"] = new gnomonCellImageVtkVisualizationCommand;
     d->visualizationCommands["gnomonImage"] = new gnomonImageVtkVisualizationCommand;
-    loadPluginGroup("visualizationLString");
-    loadPluginGroup("visualizationMesh");
-    loadPluginGroup("visualizationPointCloud");
+    d->visualizationCommands["gnomonLString"] = new gnomonLStringVtkVisualizationCommand;
+    d->visualizationCommands["gnomonMesh"] = new gnomonMeshVtkVisualizationCommand;
+    d->visualizationCommands["gnomonPointCloud"] = new gnomonPointCloudVtkVisualizationCommand;
     for (const auto &formType: d->visualizationCommands.keys()) {
         d->visualizationCommands[formType]->setView(this);
         d->acceptForms[formType] = false;
     }
-
-    d->acceptForms["gnomonBinaryImage"] = false;
-    d->acceptForms["gnomonCellComplex"] = false;
-    d->acceptForms["gnomonLString"] = false;
-    d->acceptForms["gnomonMesh"] = false;
-    d->acceptForms["gnomonPointCloud"] = false;
 
     for (const auto& form : d->acceptForms.keys()) {
         if (form=="gnomonMesh") {
@@ -853,66 +734,28 @@ void gnomonViewForm::disconnectTime() {
 void gnomonViewForm::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractFormVisualization> visualization)
 {
     QString form_name = form->formName();
-    if (form_name == "gnomonCellImage" || form_name == "gnomonImage") {
-        if (d->acceptForms[form_name]) {
-            QString visu_name;
-            QVariantMap parameters;
+    if (d->acceptForms[form_name]) {
+        QString visu_name;
+        QVariantMap parameters;
 
-            if(visualization) {
-                visu_name = visualization->pluginName();
-                parameters = visualization->visuParameters();
-            } else {
-                if (dd->formVisualization.contains(form_name) &&  dd->formVisualization[form_name]) {
-                    std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[form_name];
-                    visu_name = current_visu->pluginName();
-                    parameters = current_visu->visuParameters();
-                } else {
-                    visu_name = d->visualizationCommands[form_name]->algorithmName();
-                }
-            }
-
-            d->forms[form_name] = form;
-            dd->setFormVisualization(form_name, visu_name, parameters);
-            emit formAdded(form_name);
+        if(visualization) {
+            visu_name = visualization->pluginName();
+            parameters = visualization->visuParameters();
         } else {
-            emit badFormDropped(form->formName(), acceptedForms().join(", "));
+            if (dd->formVisualization.contains(form_name) &&  dd->formVisualization[form_name]) {
+                std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[form_name];
+                visu_name = current_visu->pluginName();
+                parameters = current_visu->visuParameters();
+            } else {
+                visu_name = d->visualizationCommands[form_name]->algorithmName();
+            }
         }
+
+        d->forms[form_name] = form;
+        dd->setFormVisualization(form_name, visu_name, parameters);
+        emit formAdded(form_name);
     } else {
-        if (std::shared_ptr<gnomonBinaryImageSeries> binaryImage = std::dynamic_pointer_cast<gnomonBinaryImageSeries>(
-                form)) {
-            if (d->acceptForms["gnomonBinaryImage"]) {
-                this->setBinaryImage(binaryImage, visualization);
-            } else {
-                emit badFormDropped("gnomonbinaryImage", acceptedForms().join(", "));
-            }
-        } else if (std::shared_ptr<gnomonCellComplexSeries> cellComplex = std::dynamic_pointer_cast<gnomonCellComplexSeries>(
-                form)) {
-            if (d->acceptForms["gnomonCellComplex"]) {
-                this->setCellComplex(cellComplex, visualization);
-            } else {
-                this->setAdaptedForm("gnomonCellComplex", cellComplex);
-            }
-        } else if (std::shared_ptr<gnomonLStringSeries> lString = std::dynamic_pointer_cast<gnomonLStringSeries>(
-                form)) {
-            if (d->acceptForms["gnomonLString"]) {
-                this->setLString(lString, visualization);
-            } else {
-                emit badFormDropped("gnomonLString", acceptedForms().join(", "));
-            }
-        } else if (std::shared_ptr<gnomonMeshSeries> mesh = std::dynamic_pointer_cast<gnomonMeshSeries>(form)) {
-            if (d->acceptForms["gnomonMesh"]) {
-                this->setMesh(mesh, visualization);
-            } else {
-                this->setAdaptedForm("gnomonMesh", mesh);
-            }
-        } else if (std::shared_ptr<gnomonPointCloudSeries> pointCloud = std::dynamic_pointer_cast<gnomonPointCloudSeries>(
-                form)) {
-            if (d->acceptForms["gnomonPointCloud"]) {
-                this->setPointCloud(pointCloud, visualization);
-            } else {
-                emit badFormDropped("gnomonPointCloud", acceptedForms().join(", "));
-            }
-        }
+        emit badFormDropped(form->formName(), acceptedForms().join(", "));
     }
     return;
 }
@@ -951,10 +794,11 @@ void gnomonViewForm::setAdaptedForm(const QString& name, std::shared_ptr<gnomonA
     }
 }
 
-std::shared_ptr<gnomonCellImageSeries> gnomonViewForm::cellImage(void)
+
+std::shared_ptr<gnomonBinaryImageSeries> gnomonViewForm::binaryImage(void)
 {
-    if (d->forms.contains("gnomonCellImage")) {
-        return std::dynamic_pointer_cast<gnomonCellImageSeries>(d->forms["gnomonCellImage"]);
+    if (d->forms.contains("gnomonBinaryImage")) {
+        return std::dynamic_pointer_cast<gnomonBinaryImageSeries>(d->forms["gnomonBinaryImage"]);
     } else {
         return nullptr;
     }
@@ -969,30 +813,13 @@ std::shared_ptr<gnomonCellComplexSeries> gnomonViewForm::cellComplex(void)
     }
 }
 
-void gnomonViewForm::setCellComplex(std::shared_ptr<gnomonCellComplexSeries> cellComplex, std::shared_ptr<gnomonAbstractFormVisualization> visu)
+std::shared_ptr<gnomonCellImageSeries> gnomonViewForm::cellImage(void)
 {
-    QString name = "gnomonCellComplex";
-    QString visu_name;
-    QVariantMap parameters;
-
-    if(visu) {
-        visu_name = visu->pluginName();
-        parameters = visu->visuParameters();
-        // dd->formVisualization[name] = visu;
-        // dd->formVisualizationNames[name] = visu_name;
+    if (d->forms.contains("gnomonCellImage")) {
+        return std::dynamic_pointer_cast<gnomonCellImageSeries>(d->forms["gnomonCellImage"]);
     } else {
-        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[name];
-            visu_name = current_visu->pluginName();
-            parameters = current_visu->visuParameters();
-        } else {
-            visu_name = gnomonVisualization::visualizationCellComplex::pluginFactory().keys()[0];
-        }
+        return nullptr;
     }
-
-    d->forms[name] = cellComplex;
-    dd->setFormVisualization(name, visu_name, parameters);
-    emit formAdded("gnomonCellComplex");
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonViewForm::image(void)
@@ -1004,40 +831,6 @@ std::shared_ptr<gnomonImageSeries> gnomonViewForm::image(void)
     }
 }
 
-std::shared_ptr<gnomonBinaryImageSeries> gnomonViewForm::binaryImage(void)
-{
-    if (d->forms.contains("gnomonBinaryImage")) {
-        return std::dynamic_pointer_cast<gnomonBinaryImageSeries>(d->forms["gnomonBinaryImage"]);
-    } else {
-        return nullptr;
-    }
-}
-
-void gnomonViewForm::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> image, std::shared_ptr<gnomonAbstractFormVisualization> visu )
-{
-    QString name = "gnomonBinaryImage";
-    QString visu_name;
-    QVariantMap parameters;
-
-    if(visu) {
-        visu_name = visu->pluginName();
-        parameters = visu->visuParameters();
-        // dd->formVisualization[name] = visu;
-        // dd->formVisualizationNames[name] = visu_name;
-    } else {
-        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[name];
-            visu_name = current_visu->pluginName();
-            parameters = current_visu->visuParameters();
-        } else {
-            visu_name = gnomonVisualization::visualizationBinaryImage::pluginFactory().keys()[0];
-        }
-    }
-
-    d->forms[name] = image;
-    dd->setFormVisualization(name, visu_name, parameters);
-    emit formAdded("gnomonBinaryImage");
-}
 
 std::shared_ptr<gnomonLStringSeries> gnomonViewForm::lString(void)
 {
@@ -1046,34 +839,6 @@ std::shared_ptr<gnomonLStringSeries> gnomonViewForm::lString(void)
     } else {
         return nullptr;
     }
-}
-
-void gnomonViewForm::setLString(std::shared_ptr<gnomonLStringSeries> lString, std::shared_ptr<gnomonAbstractFormVisualization> visu)
-{
-    QString name = "gnomonLString";
-    QString visu_name;
-    QVariantMap parameters;
-
-    if(visu) {
-        visu_name = visu->pluginName();
-        parameters = visu->visuParameters();
-        // dd->formVisualization[name] = visu;
-        // dd->formVisualizationNames[name] = visu_name;
-    } else {
-        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[name];
-            visu_name = current_visu->pluginName();
-            //parameters = current_visu->visuParameters();
-            //already a visu, clear it
-            current_visu->clear();
-        } else {
-            visu_name = gnomonVisualization::visualizationLString::pluginFactory().keys()[0];
-        }
-    }
-
-    d->forms[name] = lString;
-    dd->setFormVisualization(name, visu_name, parameters);
-    emit formAdded("gnomonLString");
 }
 
 std::shared_ptr<gnomonMeshSeries> gnomonViewForm::mesh(void)
@@ -1085,32 +850,6 @@ std::shared_ptr<gnomonMeshSeries> gnomonViewForm::mesh(void)
     }
 }
 
-void gnomonViewForm::setMesh(std::shared_ptr<gnomonMeshSeries> mesh, std::shared_ptr<gnomonAbstractFormVisualization> visu)
-{
-    QString name = "gnomonMesh";
-    QString visu_name;
-    QVariantMap parameters;
-
-    if(visu) {
-        visu_name = visu->pluginName();
-        parameters = visu->visuParameters();
-        // dd->formVisualization[name] = visu;
-        // dd->formVisualizationNames[name] = visu_name;
-    } else {
-        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[name];
-            visu_name = current_visu->pluginName();
-            parameters = current_visu->visuParameters();
-        } else {
-            visu_name = gnomonVisualization::visualizationMesh::pluginFactory().keys()[0];
-        }
-    }
-
-    d->forms[name] = mesh;
-    dd->setFormVisualization(name, visu_name, parameters);
-    emit formAdded("gnomonMesh");
-}
-
 std::shared_ptr<gnomonPointCloudSeries> gnomonViewForm::pointCloud(void)
 {
     if (d->forms.contains("gnomonPointCloud")) {
@@ -1118,32 +857,6 @@ std::shared_ptr<gnomonPointCloudSeries> gnomonViewForm::pointCloud(void)
     } else {
         return nullptr;
     }
-}
-
-void gnomonViewForm::setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud, std::shared_ptr<gnomonAbstractFormVisualization> visu)
-{
-    QString name = "gnomonPointCloud";
-    QString visu_name;
-    QVariantMap parameters;
-
-    if(visu) {
-        visu_name = visu->pluginName();
-        parameters = visu->visuParameters();
-        // dd->formVisualization[name] = visu;
-        // dd->formVisualizationNames[name] = visu_name;
-    } else {
-        if ( dd->formVisualization.contains(name) &&  dd->formVisualization[name]) {
-            std::shared_ptr<gnomonAbstractFormVisualization> current_visu =  dd->formVisualization[name];
-            visu_name = current_visu->pluginName();
-            parameters = current_visu->visuParameters();
-        } else {
-            visu_name = gnomonVisualization::visualizationPointCloud::pluginFactory().keys()[0];
-        }
-    }
-
-    d->forms[name] = pointCloud;
-    dd->setFormVisualization(name, visu_name, parameters);
-    emit formAdded("gnomonPointCloud");
 }
 
 QString gnomonViewForm::formVisuName(const QString& name)
@@ -1158,19 +871,7 @@ QString gnomonViewForm::formVisuName(const QString& name)
 QVariantList gnomonViewForm::formVisualizations(const QString& name)
 {
     if (d->forms.contains(name)) {
-        if (name == "gnomonBinaryImage") {
-            return gnomonVisualization::visualizationBinaryImage::pluginFactory().dataList();
-        } else if (name == "gnomonCellComplex") {
-            return gnomonVisualization::visualizationCellComplex::pluginFactory().dataList();
-        } else if (name == "gnomonCellImage" || name == "gnomonImage") {
-            return d->visualizationCommands[name]->pluginFactory()->dataList();
-        } else if (name == "gnomonLString") {
-            return gnomonVisualization::visualizationLString::pluginFactory().dataList();
-        } else if (name == "gnomonMesh") {
-            return gnomonVisualization::visualizationMesh::pluginFactory().dataList();
-        } else if (name == "gnomonPointCloud") {
-            return gnomonVisualization::visualizationPointCloud::pluginFactory().dataList();
-        }
+        return d->visualizationCommands[name]->pluginFactory()->dataList();
     }
     return {};
 }

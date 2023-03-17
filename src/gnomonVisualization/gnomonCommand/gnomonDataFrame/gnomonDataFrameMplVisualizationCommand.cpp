@@ -36,11 +36,11 @@ gnomonDataFrameMplVisualizationCommand::~gnomonDataFrameMplVisualizationCommand(
     delete d;
 }
 
-void gnomonDataFrameMplVisualizationCommand::setAlgorithmName(const QString& algo_name)
+void gnomonDataFrameMplVisualizationCommand::setAlgorithmName(const QString& visu_name)
 {
-    this->algorithm_name = algo_name;
+    this->algorithm_name = visu_name;
     this->visu->deleteLater();
-    auto visu = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(algo_name);
+    auto visu = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu_name);
     this->visu = std::shared_ptr<gnomonAbstractMatplotlibVisualizationDataFrame>(visu);
 }
 

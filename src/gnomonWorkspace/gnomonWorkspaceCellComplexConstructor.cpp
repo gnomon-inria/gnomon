@@ -156,7 +156,7 @@ void gnomonWorkspaceCellComplexConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setCellComplex(d->command->output());
+        d->target->setForm("gnomonCellComplex", d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
 

@@ -158,7 +158,7 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
             d->command->setPointCloud(d->view->pointCloud());
         }
         if(d->view->image()) {
-            d->command->setForm("gnomonImage", d->view->image());
+            d->command->setImage(d->view->image());
         }
         d->configure(d->algorithm);
     });
@@ -169,7 +169,7 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
             d->command->setPointCloud(d->view->pointCloud());
         }
         if(d->view->image()) {
-            d->command->setForm("gnomonImage", d->view->image());
+            d->command->setImage(d->view->image());
         }
         d->configure(algorithm);
     });
@@ -214,7 +214,7 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
         d->command->setPointCloud(d->view->pointCloud());
     }
     if(d->view->image()) {
-        d->command->setForm("gnomonImage", d->view->image());
+        d->command->setImage(d->view->image());
     }
 
     d->view->setInputView(true);
@@ -226,7 +226,7 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
     }
 
     if(d->command->pointCloud()) {
-        d->view->setPointCloud(d->command->pointCloud());
+        d->view->setForm("gnomonPointCloud", d->command->pointCloud());
         //d->pipeline_manager->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
         d->pipeline_manager->addForm(d->command->pointCloud());
         d->view->setInputView(false);

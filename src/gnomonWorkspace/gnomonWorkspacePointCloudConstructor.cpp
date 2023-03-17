@@ -156,7 +156,7 @@ void gnomonWorkspacePointCloudConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setPointCloud(d->command->output());
+        d->target->setForm("gnomonPointCloud", d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
 

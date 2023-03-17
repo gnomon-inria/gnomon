@@ -151,7 +151,7 @@ void gnomonWorkspaceSimulation::apply(void)
     d->command->setMesh(d->source->mesh());
     d->command->redo();
 
-    d->target->setMesh(d->command->updatedMesh());
+    d->target->setForm("gnomonMesh", d->command->updatedMesh());
 }
 
 void gnomonWorkspaceSimulation::configure(const QString& algorithm)

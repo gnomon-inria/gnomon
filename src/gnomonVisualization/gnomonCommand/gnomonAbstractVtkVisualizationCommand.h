@@ -11,6 +11,8 @@ class GNOMONCORE_EXPORT gnomonAbstractVtkVisualizationCommand :  public gnomonAb
 {
 
 public:
+    void setAlgorithmName(const QString &) override;
+
     void setView(gnomonAbstractView *view) override;
     void setVisualizationParameters(const QVariantMap &parameters) override;
 };

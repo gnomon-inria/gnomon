@@ -345,7 +345,7 @@ void gnomonWorkspaceLSystemModel::viewState()
     d->command->setDerivationLength(d->derivations);
     auto lString = d->command->lString();
     if (lString) {
-        d->view->setLString(lString); //TODO only update, only do it if it's different ..
+        d->view->setForm("gnomonLString", lString); //TODO only update, only do it if it's different ..
         if (lString->times().size() != 0) {
             d->view->setCurrentTime(lString->times().last());
         }
@@ -362,7 +362,7 @@ void gnomonWorkspaceLSystemModel::viewNewStep()
     if(!lString || d->derivations == d->animation_step) {
         lString = d->command->lString();
         if(lString && lString->times().length() > 0) {
-            d->view->setLString(lString);
+            d->view->setForm("gnomonLString", lString);
         } else {
             return;
         }

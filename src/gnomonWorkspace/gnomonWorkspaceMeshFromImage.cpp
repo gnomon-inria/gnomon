@@ -207,7 +207,7 @@ void gnomonWorkspaceMeshFromImage::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setMesh(d->command->output());
+        d->target->setForm("gnomonMesh", d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
         d->source->setEnableLinking(true);
