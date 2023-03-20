@@ -19,12 +19,12 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-    gnomonAbstractMatplotlibVisualizationTree
-    gnomonAbstractMatplotlibVisualizationTree.h)
+    gnomonAbstractTreeMplVisualization
+    gnomonAbstractTreeMplVisualization.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractMatplotlibVisualizationTree.cpp)
+    gnomonAbstractTreeMplVisualization.cpp)
 
 
 ######################################################################

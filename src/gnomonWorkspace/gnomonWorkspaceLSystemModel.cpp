@@ -6,8 +6,8 @@
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
-#include <gnomonVisualization/gnomonView/gnomonViewForm>
-#include "gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString"
+#include <gnomonVisualization/gnomonView/gnomonVtkView>
+#include "gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization"
 
 QString vonKochLSystem(void)
 {
@@ -75,7 +75,7 @@ public:
     gnomonLStringEvolutionModelCommand *command = nullptr;
 
 public:
-    gnomonViewForm *view = nullptr;
+    gnomonVtkView *view = nullptr;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -106,14 +106,14 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
 
-    d->view = new gnomonViewForm(this);
+    d->view = new gnomonVtkView(this);
     d->view->setNodePortNames({});
     d->view->setAcceptForm("gnomonLString", true);
 
-    connect(d->view, &gnomonViewForm::formAdded, [=](const QString &name) {
+    connect(d->view, &gnomonVtkView::formAdded, [=](const QString &name) {
         const QString plugin_name = "lStringVisualizationVtkTurtle";
         if (name == "gnomonLString") {
-            if (gnomonVisualization::visualizationLString::pluginFactory().keys().contains(plugin_name)) {
+            if (gnomonVisualization::lStringVtkVisualization::pluginFactory().keys().contains(plugin_name)) {
                 // d->view->setFormVisuName(name, plugin_name);
                 d->view->setFormVisuParameter(name, "interpretation_lsystem", d->model_file->fileName());
             }
@@ -126,7 +126,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
         }
     });
 
-    connect(d->view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+    connect(d->view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         gnomonPipelineManager::instance()->addForm(f);
     });
 
@@ -417,7 +417,7 @@ void gnomonWorkspaceLSystemModel::setCurrentIndex(int i)
     }
 }
 
-gnomonViewForm *gnomonWorkspaceLSystemModel::view(void) const
+gnomonVtkView *gnomonWorkspaceLSystemModel::view(void) const
 {
     return d->view;
 }

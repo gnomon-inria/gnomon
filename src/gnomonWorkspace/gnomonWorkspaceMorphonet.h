@@ -3,13 +3,13 @@
 #include <gnomonWorkspaceExport>
 #include "gnomonAbstractWorkspace.h"
 
-#include <gnomonVisualization/gnomonView/gnomonViewFormList>
+#include <gnomonVisualization/gnomonView/gnomonVtkViewList>
 
 #include <QJSValue>
 
 #define MORPHOPLOT_TMP_FILE "edited_seg_img.inr.gz"
 
-class gnomonViewForm;
+class gnomonVtkView;
 class gnomonPythonAlgorithmPluginCode;
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceMorphonet : public gnomonAbstractWorkspace
@@ -33,7 +33,7 @@ public:
     Q_PROPERTY(int timeEnd   READ timeEnd   WRITE setTimeEnd   NOTIFY timeEndChanged);
     Q_PROPERTY(bool uploadMode READ uploadMode WRITE setUploadMode NOTIFY uploadModeChanged);
 
-    Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
+    Q_PROPERTY(gnomonVtkView* view READ view CONSTANT);
 
 public:
     Q_INVOKABLE bool login(const QString& login, const QString& passwd);
@@ -57,7 +57,7 @@ public:
     Q_INVOKABLE int morphoPlot(double voxelsize);
     Q_INVOKABLE void morphoPlotCollect(void);
 
-    Q_INVOKABLE gnomonViewForm *view(void);
+    Q_INVOKABLE gnomonVtkView *view(void);
 
 signals:
     void currentIdChanged(void);

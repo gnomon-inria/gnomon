@@ -41,11 +41,11 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *source = nullptr;
-    gnomonViewForm *target = nullptr;
+    gnomonVtkView *source = nullptr;
+    gnomonVtkView *target = nullptr;
 
 public:
-    gnomonViewFormPool *pool = nullptr;
+    gnomonVtkViewPool *pool = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -86,20 +86,20 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
     
     d = new gnomonWorkspaceCellImageFilterPrivate;
 
-    d->source = new gnomonViewForm(this);
+    d->source = new gnomonVtkView(this);
     d->source->setNodePortNames({});
     d->source->setExportColor(this->color);
     d->source->setInputView(true);
     d->source->setAcceptForm("gnomonCellImage",true);
 
-    d->target = new gnomonViewForm(this);
+    d->target = new gnomonVtkView(this);
     d->target->setNodePortNames({});
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonCellImage",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
-    d->pool = new gnomonViewFormPool(this);
+    d->pool = new gnomonVtkViewPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);
     d->pool->linkAll();
@@ -143,7 +143,7 @@ gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) 
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    connect(d->source, &gnomonViewForm::formAdded, [=] ()
+    connect(d->source, &gnomonVtkView::formAdded, [=] ()
     {
         if(d->command->input() != d->source->cellImage()) {
 

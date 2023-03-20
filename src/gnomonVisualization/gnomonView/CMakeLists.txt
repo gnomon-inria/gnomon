@@ -4,29 +4,29 @@ ADD_GNOMON_HEADERS(
     gnomonAbstractView_p.h
     # gnomonFormAdapterMenu
     # gnomonFormAdapterMenu.h
-    gnomonViewForm
-    gnomonViewForm.h
-    gnomonViewFormList
-    gnomonViewFormList.h
-    gnomonViewFormPool
-    gnomonViewFormPool.h
+    gnomonVtkView
+    gnomonVtkView.h
+    gnomonVtkViewList
+    gnomonVtkViewList.h
+    gnomonVtkViewPool
+    gnomonVtkViewPool.h
     # gnomonViewManager
     # gnomonViewManager.h
-    gnomonViewMatplotlib
-    gnomonViewMatplotlib.h
-    gnomonViewData
-    gnomonViewData.h
+    gnomonMplView
+    gnomonMplView.h
+    gnomonQmlView
+    gnomonQmlView.h
 )
 
 ADD_GNOMON_SOURCES(
     gnomonAbstractView.cpp
     # gnomonFormAdapterMenu.cpp
-    gnomonViewForm.cpp
-    gnomonViewFormList.cpp
-    gnomonViewFormPool.cpp
+    gnomonVtkView.cpp
+    gnomonVtkViewList.cpp
+    gnomonVtkViewPool.cpp
     # gnomonViewManager.cpp
-    gnomonViewMatplotlib.cpp
-    gnomonViewData.cpp
+    gnomonMplView.cpp
+    gnomonQmlView.cpp
 )
 
 ######################################################################

@@ -25,7 +25,7 @@ public:
 
 public:
     static bool isEmpty();
-    inline static const QString groupName = "matplotlibVisualizationDataFrame";
+    inline static const QString groupName = "dataFrameMplVisualization";
     static QStringList availablePlugins();
 
 private:

@@ -19,15 +19,15 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-    gnomonAbstractMatplotlibVisualizationLString
-    gnomonAbstractMatplotlibVisualizationLString.h
-    gnomonAbstractVisualizationLString
-    gnomonAbstractMatplotlibVisualizationLString.h)
+    gnomonAbstractLStringMplVisualization
+    gnomonAbstractLStringMplVisualization.h
+    gnomonAbstractLStringVtkVisualization
+    gnomonAbstractLStringVtkVisualization.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractMatplotlibVisualizationLString.cpp
-    gnomonAbstractVisualizationLString.cpp)
+    gnomonAbstractLStringMplVisualization.cpp
+    gnomonAbstractLStringVtkVisualization.cpp)
 
 
 ######################################################################

@@ -5,7 +5,7 @@
 #include "gnomonAbstractVisualizationCommand.h"
 
 class gnomonAbstractView;
-class gnomonAbstractFormVisualization;
+class gnomonAbstractVtkVisualization;
 
 class GNOMONCORE_EXPORT gnomonAbstractVtkVisualizationCommand :  public gnomonAbstractVisualizationCommand
 {

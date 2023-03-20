@@ -44,8 +44,8 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *source = nullptr;
-    gnomonViewForm *target = nullptr;
+    gnomonVtkView *source = nullptr;
+    gnomonVtkView *target = nullptr;
 
 public:
     dtkWidgetsMenu *menu_;
@@ -84,12 +84,12 @@ gnomonWorkspaceSimulation::gnomonWorkspaceSimulation(QWidget *parent) : dtkWidge
 
     d = new gnomonWorkspaceSimulationPrivate;
 
-    d->source = new gnomonViewForm(this);
+    d->source = new gnomonVtkView(this);
     d->source->setNodePortNames({});
     d->source->setExportColor(this->color);
     d->source->setAcceptForm("gnomonMesh",true);
 
-    d->target = new gnomonViewForm(this);
+    d->target = new gnomonVtkView(this);
     d->target->setNodePortNames({});
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonMesh",true);

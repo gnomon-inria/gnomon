@@ -1,6 +1,6 @@
 #include "gnomonBinaryImageVtkVisualizationCommand.h"
 
-#include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractVisualizationBinaryImage.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractBinaryImageVtkVisualization.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 
@@ -21,14 +21,14 @@ public:
 gnomonBinaryImageVtkVisualizationCommand::gnomonBinaryImageVtkVisualizationCommand() : d(new gnomonBinaryImageVtkVisualizationCommandPrivate)
 {
     this->factory_name = groupName;
-    this->factory = &gnomonVisualization::visualizationBinaryImage::pluginFactory();
+    this->factory = &gnomonVisualization::binaryImageVtkVisualization::pluginFactory();
     loadPluginGroup(this->factoryName());
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::visualizationBinaryImage::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationBinaryImage>(visu);
+        auto visu = gnomonVisualization::binaryImageVtkVisualization::pluginFactory().create(this->algorithm_name);
+        this->visu = std::shared_ptr<gnomonAbstractBinaryImageVtkVisualization>(visu);
     }
 }
 
@@ -41,15 +41,15 @@ void gnomonBinaryImageVtkVisualizationCommand::setAlgorithmName(const QString& v
 {
     if (this->algorithm_name != visu_name) {
         gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::visualizationBinaryImage::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationBinaryImage>(visu);
+        auto visu = gnomonVisualization::binaryImageVtkVisualization::pluginFactory().create(visu_name);
+        this->visu = std::shared_ptr<gnomonAbstractBinaryImageVtkVisualization>(visu);
     }
 }
 
 void gnomonBinaryImageVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
     this->setAlgorithmName(visu_name);
-    auto &&visu = std::static_pointer_cast<gnomonAbstractVisualizationBinaryImage>(this->visu);
+    auto &&visu = std::static_pointer_cast<gnomonAbstractBinaryImageVtkVisualization>(this->visu);
     if (visu) {
         if (visu->binaryImage() != d->binaryImage) {
             visu->setBinaryImage(d->binaryImage);

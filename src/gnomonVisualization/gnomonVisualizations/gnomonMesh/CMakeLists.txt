@@ -19,15 +19,15 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-    gnomonAbstractVisualizationMesh
-    gnomonAbstractVisualizationMesh.h
-    gnomonVisualizationMesh
-    gnomonVisualizationMesh.h)
+    gnomonAbstractMeshVtkVisualization
+    gnomonAbstractMeshVtkVisualization.h
+    gnomonMeshVtkVisualization
+    gnomonMeshVtkVisualization.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractVisualizationMesh.cpp
-    gnomonVisualizationMesh.cpp)
+    gnomonAbstractMeshVtkVisualization.cpp
+    gnomonMeshVtkVisualization.cpp)
 
 
 ######################################################################

@@ -1,6 +1,6 @@
 #include "gnomonWorkspaceCellImageTracking.h"
 #include "gnomonAlgorithmWorkspace_p.h"
-#include "gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage"
+#include "gnomonVisualizations/gnomonCellImage/gnomonAbstractCellImageVtkVisualization"
 
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageTrackingCommand>
@@ -46,7 +46,7 @@ public:
     ~gnomonWorkspaceCellImageTrackingPrivate(void);
 
 public:
-    gnomonViewData *source_dict = nullptr;
+    gnomonQmlView *source_dict = nullptr;
 };
 
 gnomonWorkspaceCellImageTrackingPrivate::gnomonWorkspaceCellImageTrackingPrivate(void)
@@ -79,7 +79,7 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
     //create the views
     this->addInputView();
     this->addOutputView();
-    dd->source_dict = new gnomonViewData();
+    dd->source_dict = new gnomonQmlView();
     dd->source_dict->setInputView(true);
     dd->source_dict->setAcceptForm("gnomonDataDict", true);
 
@@ -87,30 +87,30 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
 
     d->updatePool();
 
-    connect(this->target(), &gnomonViewForm::syncedChanged, [=]() {
+    connect(this->target(), &gnomonVtkView::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
         this->target()->setCurrentTime(this->source()->currentTime()+1.0);
     });
-    connect(this->source(), &gnomonViewForm::syncedChanged, [=]() {
+    connect(this->source(), &gnomonVtkView::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
         this->target()->setCurrentTime(this->source()->currentTime()+1.0);
     });
-    connect(this->target(), &gnomonViewForm::formAdded, [=](const QString &name) {
-        const QString plugin_name = "visualizationCellImageMarchingCubes";
+    connect(this->target(), &gnomonVtkView::formAdded, [=](const QString &name) {
+        const QString plugin_name = "CellImageVtkVisualizationMarchingCubes";
         if(name == "gnomonCellImage" &&
-        gnomonVisualization::visualizationCellImage::pluginFactory().keys().contains(plugin_name))
+        gnomonVisualization::cellImageVtkVisualization::pluginFactory().keys().contains(plugin_name))
         {
             this->target()->setFormVisuName(name, plugin_name);
             this->target()->setFormVisuParameter("gnomonCellImage", "property_name", "ancestor");
             this->target()->update();
         }
     });
-    connect(this->source(), &gnomonViewForm::formAdded, [=](const QString &name) {
-        const QString plugin_name = "visualizationCellImageMarchingCubes";
+    connect(this->source(), &gnomonVtkView::formAdded, [=](const QString &name) {
+        const QString plugin_name = "CellImageVtkVisualizationMarchingCubes";
         if(name == "gnomonCellImage" &&
-           gnomonVisualization::visualizationCellImage::pluginFactory().keys().contains(plugin_name))
+           gnomonVisualization::cellImageVtkVisualization::pluginFactory().keys().contains(plugin_name))
         {
             this->source()->setFormVisuName(name, plugin_name);
             if (this->target()->empty()) {
@@ -129,7 +129,7 @@ gnomonWorkspaceCellImageTracking::~gnomonWorkspaceCellImageTracking(void)
 
 }
 
-gnomonViewData *gnomonWorkspaceCellImageTracking::sourceDict(void) const
+gnomonQmlView *gnomonWorkspaceCellImageTracking::sourceDict(void) const
 {
     return dd->source_dict;
 }

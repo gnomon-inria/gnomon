@@ -41,11 +41,11 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *source = nullptr;
-    gnomonViewForm *target = nullptr;
+    gnomonVtkView *source = nullptr;
+    gnomonVtkView *target = nullptr;
 
 public:
-    gnomonViewFormPool *pool = nullptr;
+    gnomonVtkViewPool *pool = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -86,20 +86,20 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
     
     d = new gnomonWorkspaceMeshFromImagePrivate;
 
-    d->source = new gnomonViewForm(this);
+    d->source = new gnomonVtkView(this);
     d->source->setNodePortNames({});
     d->source->setExportColor(this->color);
     d->source->setAcceptForm("gnomonImage",true);
     d->source->setInputView(true);
 
-    d->target = new gnomonViewForm(this);
+    d->target = new gnomonVtkView(this);
     d->target->setNodePortNames({});
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonMesh",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
-    d->pool = new gnomonViewFormPool(this);
+    d->pool = new gnomonVtkViewPool(this);
     d->pool->addView(d->source);
     d->pool->addView(d->target);
     d->pool->linkAll();
@@ -140,7 +140,7 @@ gnomonWorkspaceMeshFromImage::gnomonWorkspaceMeshFromImage(QWidget *parent) : dt
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    connect(d->source, &gnomonViewForm::formAdded, [=] ()
+    connect(d->source, &gnomonVtkView::formAdded, [=] ()
     {
         if (d->command->input() != d->source->image()) {
             if (d->source->image()) {

@@ -1,6 +1,6 @@
 #include "gnomonMeshVtkVisualizationCommand.h"
 
-#include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractMeshVtkVisualization.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 
@@ -21,14 +21,14 @@ public:
 gnomonMeshVtkVisualizationCommand::gnomonMeshVtkVisualizationCommand() : d(new gnomonMeshVtkVisualizationCommandPrivate)
 {
     this->factory_name = groupName;
-    this->factory = &gnomonVisualization::visualizationMesh::pluginFactory();
+    this->factory = &gnomonVisualization::meshVtkVisualization::pluginFactory();
     loadPluginGroup(this->factoryName());
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::visualizationMesh::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationMesh>(visu);
+        auto visu = gnomonVisualization::meshVtkVisualization::pluginFactory().create(this->algorithm_name);
+        this->visu = std::shared_ptr<gnomonAbstractMeshVtkVisualization>(visu);
     }
 }
 
@@ -41,15 +41,15 @@ void gnomonMeshVtkVisualizationCommand::setAlgorithmName(const QString& visu_nam
 {
     if (this->algorithm_name != visu_name) {
         gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::visualizationMesh::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationMesh>(visu);
+        auto visu = gnomonVisualization::meshVtkVisualization::pluginFactory().create(visu_name);
+        this->visu = std::shared_ptr<gnomonAbstractMeshVtkVisualization>(visu);
     }
 }
 
 void gnomonMeshVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
     this->setAlgorithmName(visu_name);
-    auto &&visu = std::static_pointer_cast<gnomonAbstractVisualizationMesh>(this->visu);
+    auto &&visu = std::static_pointer_cast<gnomonAbstractMeshVtkVisualization>(this->visu);
     if (visu) {
         if (visu->mesh() != d->mesh) {
             visu->setMesh(d->mesh);

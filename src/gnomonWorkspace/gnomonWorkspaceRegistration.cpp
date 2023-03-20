@@ -8,7 +8,7 @@
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
-#include <gnomonVisualization/gnomonView/gnomonViewFormPool>
+#include <gnomonVisualization/gnomonView/gnomonVtkViewPool>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
 
@@ -68,23 +68,23 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     this->addInputView({}, {"floating", "image"}); // floating
     this->addOutputView(); // registered
 
-    this->m_target_dict = new gnomonViewData(this);
+    this->m_target_dict = new gnomonQmlView(this);
     this->m_target_dict->setAcceptForm("gnomonDataDict", true);
     
     if(!d->pool)
-        d->pool = new gnomonViewFormPool(this);
+        d->pool = new gnomonVtkViewPool(this);
     d->pool->addView(this->sources()->views()[0]);
     d->pool->addView(this->sources()->views()[1]);
     d->pool->addView(this->targets()->views()[0]);
 
-    connect(this->targets()->views()[0], &gnomonViewForm::syncedChanged, [=]() {
+    connect(this->targets()->views()[0], &gnomonVtkView::syncedChanged, [=]() {
         this->targets()->views()[0]->disconnectTime();
         this->sources()->views()[0]->disconnectTime();
         this->sources()->views()[1]->disconnectTime();
     });
     for(int i=0; i<2; i++)
     {
-        connect(this->sources()->views()[i], &gnomonViewForm::syncedChanged, [=]() {
+        connect(this->sources()->views()[i], &gnomonVtkView::syncedChanged, [=]() {
             this->targets()->views()[0]->disconnectTime();
             this->sources()->views()[0]->disconnectTime();
             this->sources()->views()[1]->disconnectTime();

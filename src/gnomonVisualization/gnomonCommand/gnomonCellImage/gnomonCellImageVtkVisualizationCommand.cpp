@@ -1,6 +1,6 @@
 #include "gnomonCellImageVtkVisualizationCommand.h"
 
-#include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractCellImageVtkVisualization.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 
@@ -21,14 +21,14 @@ public:
 gnomonCellImageVtkVisualizationCommand::gnomonCellImageVtkVisualizationCommand() : d(new gnomonCellImageVtkVisualizationCommandPrivate)
 {
     this->factory_name = groupName;
-    this->factory = &gnomonVisualization::visualizationCellImage::pluginFactory();
+    this->factory = &gnomonVisualization::cellImageVtkVisualization::pluginFactory();
     loadPluginGroup(this->factoryName());
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::visualizationCellImage::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationCellImage>(visu);
+        auto visu = gnomonVisualization::cellImageVtkVisualization::pluginFactory().create(this->algorithm_name);
+        this->visu = std::shared_ptr<gnomonAbstractCellImageVtkVisualization>(visu);
     }
 }
 
@@ -41,15 +41,15 @@ void gnomonCellImageVtkVisualizationCommand::setAlgorithmName(const QString& vis
 {
     if (this->algorithm_name != visu_name) {
         gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::visualizationCellImage::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationCellImage>(visu);
+        auto visu = gnomonVisualization::cellImageVtkVisualization::pluginFactory().create(visu_name);
+        this->visu = std::shared_ptr<gnomonAbstractCellImageVtkVisualization>(visu);
     }
 }
 
 void gnomonCellImageVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
     this->setAlgorithmName(visu_name);
-    auto &&visu = std::static_pointer_cast<gnomonAbstractVisualizationCellImage>(this->visu);
+    auto &&visu = std::static_pointer_cast<gnomonAbstractCellImageVtkVisualization>(this->visu);
     if (visu) {
         if (visu->cellImage() != d->cellImage) {
             visu->setCellImage(d->cellImage);

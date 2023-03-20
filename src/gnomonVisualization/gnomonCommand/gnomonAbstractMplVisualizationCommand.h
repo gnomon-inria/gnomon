@@ -5,7 +5,7 @@
 #include "gnomonAbstractVisualizationCommand.h"
 
 class gnomonAbstractView;
-class gnomonAbstractMatplotlibVisualization;
+class gnomonAbstractMplVisualization;
 
 class GNOMONCORE_EXPORT gnomonAbstractMplVisualizationCommand :  public gnomonAbstractVisualizationCommand
 {

@@ -21,7 +21,7 @@ public:
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
-    inline static const QString groupName = "visualizationImage";
+    inline static const QString groupName = "imageVtkVisualization";
 
 private:
     class gnomonImageVtkVisualizationCommandPrivate *d;

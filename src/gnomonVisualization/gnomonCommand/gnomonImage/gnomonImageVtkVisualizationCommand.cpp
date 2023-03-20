@@ -1,6 +1,6 @@
 #include "gnomonImageVtkVisualizationCommand.h"
 
-#include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractImageVtkVisualization.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 
@@ -21,14 +21,14 @@ public:
 gnomonImageVtkVisualizationCommand::gnomonImageVtkVisualizationCommand() : d(new gnomonImageVtkVisualizationCommandPrivate)
 {
     this->factory_name = groupName;
-    this->factory = &gnomonVisualization::visualizationImage::pluginFactory();
+    this->factory = &gnomonVisualization::imageVtkVisualization::pluginFactory();
     loadPluginGroup(this->factoryName());
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::visualizationImage::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationImage>(visu);
+        auto visu = gnomonVisualization::imageVtkVisualization::pluginFactory().create(this->algorithm_name);
+        this->visu = std::shared_ptr<gnomonAbstractImageVtkVisualization>(visu);
     }
 }
 
@@ -41,15 +41,15 @@ void gnomonImageVtkVisualizationCommand::setAlgorithmName(const QString& visu_na
 {
     if (this->algorithm_name != visu_name) {
         gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::visualizationImage::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationImage>(visu);
+        auto visu = gnomonVisualization::imageVtkVisualization::pluginFactory().create(visu_name);
+        this->visu = std::shared_ptr<gnomonAbstractImageVtkVisualization>(visu);
     }
 }
 
 void gnomonImageVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
     this->setAlgorithmName(visu_name);
-    auto &&visu = std::static_pointer_cast<gnomonAbstractVisualizationImage>(this->visu);
+    auto &&visu = std::static_pointer_cast<gnomonAbstractImageVtkVisualization>(this->visu);
     if (visu) {
         if (visu->image() != d->image) {
             visu->setImage(d->image);

@@ -1,6 +1,6 @@
 #include "gnomonDataFrameMplVisualizationCommand.h"
 
-#include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractDataFrameMplVisualization.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 
@@ -23,11 +23,11 @@ gnomonDataFrameMplVisualizationCommand::gnomonDataFrameMplVisualizationCommand()
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().keys();
+    QStringList keys = gnomonVisualization::dataFrameMplVisualization::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractMatplotlibVisualizationDataFrame>(visu);
+        auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(this->algorithm_name);
+        this->visu = std::shared_ptr<gnomonAbstractDataFrameMplVisualization>(visu);
     }
 }
 
@@ -40,13 +40,13 @@ void gnomonDataFrameMplVisualizationCommand::setAlgorithmName(const QString& vis
 {
     this->algorithm_name = visu_name;
     this->visu->deleteLater();
-    auto visu = gnomonVisualization::matplotlibVisualizationDataFrame::pluginFactory().create(visu_name);
-    this->visu = std::shared_ptr<gnomonAbstractMatplotlibVisualizationDataFrame>(visu);
+    auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(visu_name);
+    this->visu = std::shared_ptr<gnomonAbstractDataFrameMplVisualization>(visu);
 }
 
 void gnomonDataFrameMplVisualizationCommand::predo(void)
 {
-    std::dynamic_pointer_cast<gnomonAbstractMatplotlibVisualizationDataFrame>(this->visu)->setDataFrame(d->dataFrame->current());
+    std::dynamic_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu)->setDataFrame(d->dataFrame->current());
 }
 
 void gnomonDataFrameMplVisualizationCommand::postdo(void)

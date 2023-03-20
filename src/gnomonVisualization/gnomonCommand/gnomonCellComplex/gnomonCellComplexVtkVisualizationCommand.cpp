@@ -1,6 +1,6 @@
 #include "gnomonCellComplexVtkVisualizationCommand.h"
 
-#include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractCellComplexVtkVisualization.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 
@@ -21,14 +21,14 @@ public:
 gnomonCellComplexVtkVisualizationCommand::gnomonCellComplexVtkVisualizationCommand() : d(new gnomonCellComplexVtkVisualizationCommandPrivate)
 {
     this->factory_name = groupName;
-    this->factory = &gnomonVisualization::visualizationCellComplex::pluginFactory();
+    this->factory = &gnomonVisualization::cellComplexVtkVisualization::pluginFactory();
     loadPluginGroup(this->factoryName());
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::visualizationCellComplex::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationCellComplex>(visu);
+        auto visu = gnomonVisualization::cellComplexVtkVisualization::pluginFactory().create(this->algorithm_name);
+        this->visu = std::shared_ptr<gnomonAbstractCellComplexVtkVisualization>(visu);
     }
 }
 
@@ -41,15 +41,15 @@ void gnomonCellComplexVtkVisualizationCommand::setAlgorithmName(const QString& v
 {
     if (this->algorithm_name != visu_name) {
         gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::visualizationCellComplex::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationCellComplex>(visu);
+        auto visu = gnomonVisualization::cellComplexVtkVisualization::pluginFactory().create(visu_name);
+        this->visu = std::shared_ptr<gnomonAbstractCellComplexVtkVisualization>(visu);
     }
 }
 
 void gnomonCellComplexVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
     this->setAlgorithmName(visu_name);
-    auto &&visu = std::static_pointer_cast<gnomonAbstractVisualizationCellComplex>(this->visu);
+    auto &&visu = std::static_pointer_cast<gnomonAbstractCellComplexVtkVisualization>(this->visu);
     if (visu) {
         if (visu->cellComplex() != d->cellComplex) {
             visu->setCellComplex(d->cellComplex);

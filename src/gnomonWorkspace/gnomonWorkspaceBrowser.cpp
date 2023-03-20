@@ -3,7 +3,7 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
-#include <gnomonVisualization/gnomonView/gnomonViewForm.h>
+#include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 
@@ -46,7 +46,7 @@ public slots:
 
 public:
     gnomonPipelineManager *pipeline_manager;
-    gnomonViewForm *browse_view;
+    gnomonVtkView *browse_view;
     gnomonWorkspaceBrowser *q;
     QMap<QString, QMap<QString, gnomonAbstractReaderCommand *> > fileReaderCommands;
     QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
@@ -347,7 +347,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
 
     d->pipeline_manager = gnomonPipelineManager::instance();
 
-    d->browse_view = new gnomonViewForm(this);
+    d->browse_view = new gnomonVtkView(this);
     d->browse_view->setNodePortNames({});
     // d->browse_view->setExportColor(this->color);
     d->browse_view->setAcceptForm("gnomonBinaryImage", true);
@@ -359,10 +359,10 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
     d->browse_view->setAcceptForm("gnomonPointCloud",true);
     // d->browse_view->setAcceptDrops(true);
 
-    connect(d->browse_view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+    connect(d->browse_view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         d->pipeline_manager->addForm(f);
     });
-    // d->browse_figure = new gnomonViewMatplotlib(this);
+    // d->browse_figure = new gnomonMplView(this);
     // d->browse_figure->setAcceptForm("gnomonTree",true);
     // d->browse_figure->setAcceptForm("gnomonDataFrame",true);
     // d->browse_figure->setAcceptForm("gnomonLString",true);
@@ -378,12 +378,12 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
     // d->view_stack->addWidget(d->browse_view);
     // d->view_stack->addWidget(d->browse_figure);
 
-    // connect(d->browse_view, &gnomonViewForm::formAdded, [=] (const QString&)
+    // connect(d->browse_view, &gnomonVtkView::formAdded, [=] (const QString&)
     // {
     //     d->view_stack->setCurrentWidget(d->browse_view);
     // });
 
-    // connect(d->browse_figure, &gnomonViewMatplotlib::formAdded, [=] (const QString&)
+    // connect(d->browse_figure, &gnomonMplView::formAdded, [=] (const QString&)
     // {
     //     d->view_stack->setCurrentWidget(d->browse_figure);
     //     d->browse_figure->updateVisualizations();
@@ -471,12 +471,12 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
 //     layout->addWidget(d->splitter);
 
 // /////////////////////////////////////////////////////////////////////////////
-//     connect(d->browse_view, &gnomonViewForm::fileDropped, [=] (const QString& filename)
+//     connect(d->browse_view, &gnomonVtkView::fileDropped, [=] (const QString& filename)
 //     {
 //         d->findReaders(filename);
 //     });
 
-//     connect(d->browse_figure, &gnomonViewMatplotlib::fileDropped, [=] (const QString& filename)
+//     connect(d->browse_figure, &gnomonMplView::fileDropped, [=] (const QString& filename)
 //     {
 //         d->findReaders(filename);
 //     });
@@ -659,7 +659,7 @@ bool gnomonWorkspaceBrowser::readWith(const QString& reader)
     return d->readForm(reader);
 }
 
-gnomonViewForm *gnomonWorkspaceBrowser::view(void) const
+gnomonVtkView *gnomonWorkspaceBrowser::view(void) const
 {
     return d->browse_view;
 }

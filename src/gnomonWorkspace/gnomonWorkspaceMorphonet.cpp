@@ -8,7 +8,7 @@
 #include <gnomonCore/simpleCrypt.h>
 #include "gnomonManager/gnomonFormManager"
 #include <gnomonPipeline/gnomonPipelineManager.h>
-#include <gnomonVisualization/gnomonView/gnomonViewForm.h>
+#include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 
 #include <dtkLog>
 #include <QtCore>
@@ -52,7 +52,7 @@ public:
     bool upload_mode = false;
     gnomonPipelineManager *pipeline_manager;
 
-    gnomonViewForm *view = nullptr;
+    gnomonVtkView *view = nullptr;
     std::shared_ptr<gnomonCellImageSeries> img_series = nullptr;
 
     QFutureWatcher<void> *watcher = nullptr;
@@ -163,14 +163,14 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
     d = new gnomonWorkspaceMorphonetPrivate();
 
     d->pipeline_manager = gnomonPipelineManager::instance();
-    d->view = new gnomonViewForm(this);
+    d->view = new gnomonVtkView(this);
     d->view->setNodePortNames({});
     d->img_series = std::make_shared<gnomonCellImageSeries>();
     d->img_series->metadata()->set("source", "MorphoNet");
 
     d->view->setAcceptForm("gnomonCellImage",true);
 
-    connect(d->view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+    connect(d->view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         //TODO what to do in pipeline manager if data coming from morphonet?
         d->pipeline_manager->addForm(f);
     });
@@ -486,7 +486,7 @@ void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
     }
 }
 
-gnomonViewForm *gnomonWorkspaceMorphonet::view(void)
+gnomonVtkView *gnomonWorkspaceMorphonet::view(void)
 {
     return d->view;
 }

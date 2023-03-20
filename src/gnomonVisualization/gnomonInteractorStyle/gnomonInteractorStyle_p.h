@@ -16,7 +16,7 @@
 
 #include <QtCore>
 
-class gnomonViewForm;
+class gnomonVtkView;
 
 class gnomonInteractorStylePrivate
 {
@@ -24,7 +24,7 @@ class gnomonInteractorStylePrivate
         QString mode = "3D";
 
     public:
-        gnomonViewForm *view = nullptr;
+        gnomonVtkView *view = nullptr;
 
     public:
         QMap<int, QString> keymap;

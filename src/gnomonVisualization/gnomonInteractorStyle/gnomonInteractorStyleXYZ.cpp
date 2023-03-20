@@ -15,7 +15,7 @@
 #include "gnomonInteractorStyleXYZ.h"
 #include "gnomonInteractorStyle_p.h"
 
-#include "gnomonView/gnomonViewForm.h"
+#include "gnomonView/gnomonVtkView.h"
 
 #include <vtkCamera.h>
 #include <vtkRenderer.h>
@@ -130,7 +130,7 @@ void gnomonInteractorStyleXYZ::OnChar(void)
     }
 }
 
-void gnomonInteractorStyleXYZ::setView(gnomonViewForm *view)
+void gnomonInteractorStyleXYZ::setView(gnomonVtkView *view)
 {
     gnomonInteractorStyle::setView(view);
     this->updateCamera();

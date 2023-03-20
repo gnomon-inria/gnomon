@@ -14,11 +14,11 @@ add_subdirectory(gnomonTree)
 ## #################################################################
 
 ADD_GNOMON_HEADERS(
-    gnomonAbstractFormVisualization
-    gnomonAbstractFormVisualization.h
-    gnomonAbstractFormVisualization_p.h
-    gnomonAbstractMatplotlibVisualization
-    gnomonAbstractMatplotlibVisualization.h
+    gnomonAbstractVtkVisualization
+    gnomonAbstractVtkVisualization.h
+    gnomonAbstractVtkVisualization_p.h
+    gnomonAbstractMplVisualization
+    gnomonAbstractMplVisualization.h
     gnomonAbstractVisualization
     gnomonAbstractVisualization.h
     gnomonAbstractVisualization_p.h
@@ -33,8 +33,8 @@ ADD_GNOMON_HEADERS(
     ${${PROJECT_NAME}_VISUALIZATIONS_TREE_HEADERS})
 
 ADD_GNOMON_SOURCES(
-    gnomonAbstractFormVisualization.cpp
-    gnomonAbstractMatplotlibVisualization.cpp
+    gnomonAbstractVtkVisualization.cpp
+    gnomonAbstractMplVisualization.cpp
     gnomonAbstractVisualization.cpp
     ${${PROJECT_NAME}_VISUALIZATIONS_BINARYIMAGE_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_CELLCOMPLEX_SOURCES}

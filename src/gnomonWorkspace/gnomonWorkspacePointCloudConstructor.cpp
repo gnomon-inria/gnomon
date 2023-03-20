@@ -41,7 +41,7 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *target = nullptr;
+    gnomonVtkView *target = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -82,7 +82,7 @@ gnomonWorkspacePointCloudConstructor::gnomonWorkspacePointCloudConstructor(QWidg
 
     d = new gnomonWorkspacePointCloudConstructorPrivate;
 
-    d->target = new gnomonViewForm(this);
+    d->target = new gnomonVtkView(this);
     d->target->setNodePortNames({});
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonPointCloud",true);

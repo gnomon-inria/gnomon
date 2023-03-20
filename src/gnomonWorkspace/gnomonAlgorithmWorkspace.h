@@ -5,8 +5,8 @@
 
 #include <QJSValue>
 
-#include <gnomonVisualization/gnomonView/gnomonViewFormList>
-#include <gnomonVisualization/gnomonView/gnomonViewForm.h>
+#include <gnomonVisualization/gnomonView/gnomonVtkViewList>
+#include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 
 class gnomonAbstractCommand;
 
@@ -23,10 +23,10 @@ public:
     Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded);
     Q_PROPERTY(QVariantList algorithmsData READ algorithmsData NOTIFY algorithmsLoaded);
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged);
-    Q_PROPERTY(gnomonViewFormList* sources READ sources CONSTANT);
-    Q_PROPERTY(gnomonViewFormList* targets READ targets CONSTANT);
-    Q_PROPERTY(gnomonViewForm* source READ source CONSTANT); //for ease of use
-    Q_PROPERTY(gnomonViewForm* target READ target CONSTANT); //for ease of use
+    Q_PROPERTY(gnomonVtkViewList* sources READ sources CONSTANT);
+    Q_PROPERTY(gnomonVtkViewList* targets READ targets CONSTANT);
+    Q_PROPERTY(gnomonVtkView* source READ source CONSTANT); //for ease of use
+    Q_PROPERTY(gnomonVtkView* target READ target CONSTANT); //for ease of use
 
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
@@ -53,12 +53,12 @@ public:
     void setCurrentIndex(int);
 
 public:
-    gnomonViewFormList *sources(void) const;
-    gnomonViewFormList *targets(void) const;
+    gnomonVtkViewList *sources(void) const;
+    gnomonVtkViewList *targets(void) const;
 
     //for old compatibility
-    gnomonViewForm *source(void) const { return (*this->sources())[0]; };
-    gnomonViewForm *target(void) const {return (*this->targets())[0]; };
+    gnomonVtkView *source(void) const { return (*this->sources())[0]; };
+    gnomonVtkView *target(void) const {return (*this->targets())[0]; };
 
     QJSValue parameters(void);
     QJsonObject serialize(void);

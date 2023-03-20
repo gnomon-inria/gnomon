@@ -26,9 +26,9 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     this->addInputView();
 
-    this->m_target_mpl = new gnomonViewMatplotlib(this);
+    this->m_target_mpl = new gnomonMplView(this);
     this->m_target_mpl->setAcceptForm("gnomonDataFrame",true);
-    connect(this->m_target_mpl, &gnomonViewMatplotlib::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+    connect(this->m_target_mpl, &gnomonMplView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         d->pipeline_manager->addForm(f);
     });
     emit parametersChanged();
@@ -45,7 +45,7 @@ void gnomonWorkspaceCellImageQuantification::setInputs()
     d->command->undo(); //clean
 
     auto *command = dynamic_cast<gnomonCellImageQuantificationCommand *>(d->command);
-    for(gnomonViewForm *f : d->sources->views()) {
+    for(gnomonVtkView *f : d->sources->views()) {
         if (f->image()) {
             command->setInputForm("image", f->image());
         }

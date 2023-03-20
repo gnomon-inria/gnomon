@@ -1,6 +1,6 @@
 #include "gnomonLStringVtkVisualizationCommand.h"
 
-#include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 
@@ -21,14 +21,14 @@ public:
 gnomonLStringVtkVisualizationCommand::gnomonLStringVtkVisualizationCommand() : d(new gnomonLStringVtkVisualizationCommandPrivate)
 {
     this->factory_name = groupName;
-    this->factory = &gnomonVisualization::visualizationLString::pluginFactory();
+    this->factory = &gnomonVisualization::lStringVtkVisualization::pluginFactory();
     loadPluginGroup(this->factoryName());
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::visualizationLString::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationLString>(visu);
+        auto visu = gnomonVisualization::lStringVtkVisualization::pluginFactory().create(this->algorithm_name);
+        this->visu = std::shared_ptr<gnomonAbstractLStringVtkVisualization>(visu);
     }
 }
 
@@ -41,15 +41,15 @@ void gnomonLStringVtkVisualizationCommand::setAlgorithmName(const QString& visu_
 {
     if (this->algorithm_name != visu_name) {
         gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::visualizationLString::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractVisualizationLString>(visu);
+        auto visu = gnomonVisualization::lStringVtkVisualization::pluginFactory().create(visu_name);
+        this->visu = std::shared_ptr<gnomonAbstractLStringVtkVisualization>(visu);
     }
 }
 
 void gnomonLStringVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
     this->setAlgorithmName(visu_name);
-    auto &&visu = std::static_pointer_cast<gnomonAbstractVisualizationLString>(this->visu);
+    auto &&visu = std::static_pointer_cast<gnomonAbstractLStringVtkVisualization>(this->visu);
     if (visu) {
         if (visu->lString() != d->lString) {
             visu->setLString(d->lString);
