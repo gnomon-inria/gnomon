@@ -53,8 +53,7 @@ public:
 
 public:
     QHash<int, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
-    QHash<int, std::shared_ptr<gnomonAbstractVtkVisualization> > formVisualizations;
-    QHash<int, std::shared_ptr<gnomonAbstractMplVisualization> > formMplVisualizations;
+    QHash<int, std::shared_ptr<gnomonAbstractVisualization> > formVisualizations;
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
     QHash<int, gnomonAbstractReaderCommand *> formReaderCommand;
     QHash<int, QImage> formThumbnail;
@@ -301,11 +300,7 @@ bool gnomonFormManager::deleteForm(int id, bool force)
         if (d->formCameras.contains(id)) {
             d->formCameras.remove(id);
         }
-        if (d->formVisualizations.contains(id)) {
-            d->formVisualizations.remove(id);
-        } else if (d->formMplVisualizations.contains(id)) {
-            d->formMplVisualizations.remove(id);
-        }
+        d->formVisualizations.remove(id);
         d->formThumbnail.remove(id);
         d->formWriterCommand.remove(id);
         d->formDropped.remove(id);
@@ -331,7 +326,7 @@ void gnomonFormManager::compose(int first, int second) {
     gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
     gnomonPipelineManager::instance()->addForm(output);
 
-    this->addForm(output, {}, d->formThumbnail[first]);
+    this->addForm(output, d->formThumbnail[first]);
 }
 
 void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) const
@@ -385,41 +380,13 @@ gnomonFormManager *gnomonFormManager::instance(void)
     return &s_instance;
 }
 
-void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,  std::shared_ptr<gnomonAbstractVtkVisualization> visualization, const QImage& image,  vtkCamera *cam)
+void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, const QImage& image, std::shared_ptr<gnomonAbstractVisualization> visualization)
 {
     if (!d->forms.values().contains(form)) {
         int item = d->item_counter++;
+        form->metadata()->moveToThread(QThread::currentThread());
         d->insertForm(item, form, image);
         d->formVisualizations.insert(item, visualization);
-        d->formCameras.insert(item, cam);
-        emit added(item, form->formName());
-    } else {
-        emit alreadyAdded();
-    }
-}
-
-void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractMplVisualization> visualization)
-{
-    if (!d->forms.values().contains(form)) {
-        int item = d->item_counter++;
-        QImage image = visualization->imageRendering();
-        form->metadata()->moveToThread(QThread::currentThread());
-        d->insertForm(item, form, image);
-        d->formMplVisualizations.insert(item, visualization);
-        emit added(item, form->formName());
-    } else {
-        emit alreadyAdded();
-    }
-}
-
-
-void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form, const QImage& image)
-{
-    if (!d->forms.values().contains(form)) {
-        int item = d->item_counter++;
-        form->metadata()->moveToThread(QThread::currentThread());
-        d->insertForm(item, form, image);
-        d->formMplVisualizations.insert(item, nullptr);
         emit added(item, form->formName());
     } else {
         emit alreadyAdded();
@@ -431,9 +398,23 @@ std::shared_ptr<gnomonAbstractDynamicForm> gnomonFormManager::get(int index)
     return d->forms.value(index, nullptr);
 }
 
-std::shared_ptr<gnomonAbstractVtkVisualization> gnomonFormManager::getVisualization(int index)
+int gnomonFormManager::formIndex(std::shared_ptr<gnomonAbstractDynamicForm> form)
+{
+    if (d->forms.values().contains(form)) {
+        return d->forms.values().indexOf(form);
+    } else {
+        return -1;
+    }
+}
+
+std::shared_ptr<gnomonAbstractVisualization> gnomonFormManager::getVisualization(int index)
 {
     return d->formVisualizations.value(index, nullptr);
+}
+
+void gnomonFormManager::setCamera(int index, vtkCamera *cam)
+{
+    d->formCameras.insert(index, cam);
 }
 
 vtkCamera *gnomonFormManager::getCamera(int index)

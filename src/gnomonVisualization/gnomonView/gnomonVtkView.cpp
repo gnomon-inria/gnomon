@@ -177,15 +177,6 @@ gnomonVtkViewPrivate::~gnomonVtkViewPrivate(void)
     this->clearConnections();
 }
 
-/* void gnomonVtkViewPrivate::exportToManager(void)
-{
-    for (const auto& key : this->forms.keys()) {
-        QImage image = this->formVisualization[key]->imageRendering();
-        gnomonFormManager::instance()->addForm(this->forms[key], this->formVisualization[key],image, this->renderer3D->GetActiveCamera());
-        q->emit exportedForm(this->forms[key]);
-    }
-} */
-
 void gnomonVtkViewPrivate::clearConnections(void)
 {
     disconnect(this->connect3D);
@@ -423,6 +414,11 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
          emit formsChanged();
      });
 
+    connect(this, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> form) {
+        int index = gnomonFormManager::instance()->formIndex(form);
+        gnomonFormManager::instance()->setCamera(index, dd->renderer3D->GetActiveCamera());
+    });
+
     // just need to find a signal that's actually emitted when a parameter changes :|
     connect(this, &gnomonVtkView::formVisuParametersChanged, [=] () {
         QMap<QString, std::shared_ptr<gnomonAbstractVtkVisualization>>::iterator i;
@@ -432,11 +428,6 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
         }
     });
 }
-
-/*void gnomonVtkView::transmit(void)
-{
-    d->exportToManager();
-}*/
 
 void gnomonVtkView::restoreState(void)
 {
@@ -589,7 +580,6 @@ void gnomonVtkView::sliceChange(int value)
 
     dd->interactor()->Render();
 }
-
 
 void gnomonVtkView::setCurrentTime(double time)
 {
@@ -1206,7 +1196,8 @@ void gnomonVtkView::drop(int index)
             this->setCamera(cam);
         }
     }
-    this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
+    auto &&visu = gnomonFormManager::instance()->getVisualization(index);
+    this->setForm("formManager", form, std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visu));
 
     dd->interactor()->Render();
     gnomonFormManager::instance()->setFormDropped(form);

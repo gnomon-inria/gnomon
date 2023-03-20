@@ -366,7 +366,7 @@ gnomonMplView::~gnomonMplView(void)
 }
 
 // TODO: introduce a command pattern
-void gnomonMplView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
+void gnomonMplView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVisualization> visualization)
 {
     QString form_name = form->formName();
     if (d->acceptForms[form_name]) {

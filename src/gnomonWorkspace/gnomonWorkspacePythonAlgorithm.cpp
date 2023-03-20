@@ -101,6 +101,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
     d->pool = new gnomonVtkViewPool(this);
 
     connect(d->sources, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
+        v->setAcceptForm("gnomonBinaryImage",true);
         v->setAcceptForm("gnomonCellComplex",true);
         v->setAcceptForm("gnomonCellImage",true);
         v->setAcceptForm("gnomonImage",true);
@@ -115,6 +116,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
     });
 
     connect(d->targets, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
+        v->setAcceptForm("gnomonBinaryImage",true);
         v->setAcceptForm("gnomonCellComplex",true);
         v->setAcceptForm("gnomonCellImage",true);
         v->setAcceptForm("gnomonImage",true);

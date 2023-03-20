@@ -8,6 +8,7 @@
 #include "gnomonAbstractView.h"
 
 class gnomonAbstractDynamicForm;
+class gnomonAbstractVisualization;
 class gnomonAbstractMplVisualization;
 
 class GNOMONVISUALIZATION_EXPORT gnomonMplView  : public gnomonAbstractView
@@ -22,7 +23,7 @@ public:
     Q_PROPERTY(int figureNumber READ figureNumber WRITE setFigureNumber NOTIFY figureNumberChanged);
 
 public:
-    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ) override;
+    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr) override;
     void removeForm(const QString& name) override;
 
 public:

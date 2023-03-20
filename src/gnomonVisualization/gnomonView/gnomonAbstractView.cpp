@@ -1,6 +1,7 @@
 #include <gnomonCore>
 
 #include <gnomonManager/gnomonFormManager>
+#include <gnomonVisualizations/gnomonAbstractVisualization>
 #include <gnomonCommand/gnomonAbstractVisualizationCommand>
 
 #include "gnomonAbstractView.h"
@@ -22,10 +23,8 @@ gnomonAbstractViewPrivate::~gnomonAbstractViewPrivate(void)
 void gnomonAbstractViewPrivate::exportToManager(void)
 {
     for(const auto& key: this->forms.keys()) {
-        QImage image(1500, 1500, QImage::Format_RGB32);
-        image.fill(Qt::GlobalColor::black);
-
-        gnomonFormManager::instance()->addForm(this->forms[key],image);
+        QImage image = this->visualizationCommands[key]->visualization()->imageRendering();
+        gnomonFormManager::instance()->addForm(this->forms[key], image, this->visualizationCommands[key]->visualization());
         q->emit exportedForm(this->forms[key]);
     }
 }
@@ -50,7 +49,7 @@ gnomonAbstractView::~gnomonAbstractView(void)
     delete d;
 }
 
-void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
+void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVisualization> visu)
 {
     QString form_name = form->formName();
     if(d->acceptForms[form_name]) {
@@ -96,8 +95,7 @@ void gnomonAbstractView::clear(void)
 void gnomonAbstractView::drop(int index)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
-    // this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
-    this->setForm("formManager", form);
+    this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
     gnomonFormManager::instance()->setFormDropped(form);
 }
 

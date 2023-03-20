@@ -7,6 +7,7 @@
 #include <QtGui>
 
 class gnomonAbstractDynamicForm;
+class gnomonAbstractVisualization;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractView : public QObject
 {
@@ -23,7 +24,7 @@ public:
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
 
 public:
-    virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> );
+    virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr);
     virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
     virtual void removeForm(const QString& name);
 
