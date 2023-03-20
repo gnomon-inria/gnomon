@@ -81,7 +81,7 @@ protected:
     class gnomonAbstractAlgorithm *action = nullptr;
     QString algorithm_name = "";
     QString factory_name = "";
-    gnomonPluginFactoryBase *factory;
+    gnomonPluginFactoryBase *factory = nullptr;
     QFutureWatcher<void> *watcher = nullptr;
     bool override_async = false;
 };

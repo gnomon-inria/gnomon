@@ -3,15 +3,12 @@
 ## #################################################################
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-        gnomonLStringMplVisualizationCommand
-        gnomonLStringMplVisualizationCommand.h
-        gnomonLStringVtkVisualizationCommand
-        gnomonLStringVtkVisualizationCommand.h
+        gnomonTreeMplVisualizationCommand
+        gnomonTreeMplVisualizationCommand.h
 )
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-        gnomonLStringMplVisualizationCommand.cpp
-        gnomonLStringVtkVisualizationCommand.cpp
+        gnomonTreeMplVisualizationCommand.cpp
 )
 
 ######################################################################

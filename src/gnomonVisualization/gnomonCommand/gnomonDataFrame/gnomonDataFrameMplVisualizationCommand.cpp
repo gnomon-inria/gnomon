@@ -21,9 +21,10 @@ public:
 gnomonDataFrameMplVisualizationCommand::gnomonDataFrameMplVisualizationCommand() : d(new gnomonDataFrameMplVisualizationCommandPrivate)
 {
     this->factory_name = groupName;
+    this->factory = &gnomonVisualization::dataFrameMplVisualization::pluginFactory();
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonVisualization::dataFrameMplVisualization::pluginFactory().keys();
+    QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
         auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(this->algorithm_name);

@@ -374,7 +374,7 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
         d->acceptForms[formType] = false;
     }
 
-    for (const auto& form : d->acceptForms.keys()) {
+    for (const auto& form : d->visualizationCommands.keys()) {
         if (form=="gnomonMesh") {
             loadPluginGroup("meshAdapter");
             for (const auto& key : gnomonCore::meshAdapter::pluginFactory().keys())

@@ -26,7 +26,7 @@ public:
     void removeForm(const QString& name) override;
 
 public:
-    void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> , gnomonAbstractMplVisualization * = nullptr);
+    void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractMplVisualization> visualization = nullptr);
 
 public:
     void setIsModifiedForm(const QString&);

@@ -10,6 +10,7 @@ add_subdirectory(gnomonImage)
 add_subdirectory(gnomonLString)
 add_subdirectory(gnomonMesh)
 add_subdirectory(gnomonPointCloud)
+add_subdirectory(gnomonTree)
 
 ## #################################################################
 ## Sources
@@ -30,6 +31,7 @@ ADD_GNOMON_HEADERS(
         ${${PROJECT_NAME}_COMMAND_LSTRING_HEADERS}
         ${${PROJECT_NAME}_COMMAND_MESH_HEADERS}
         ${${PROJECT_NAME}_COMMAND_POINTCLOUD_HEADERS}
+        ${${PROJECT_NAME}_COMMAND_TREE_HEADERS}
 )
 
 
@@ -45,6 +47,7 @@ ADD_GNOMON_SOURCES(
         ${${PROJECT_NAME}_COMMAND_LSTRING_SOURCES}
         ${${PROJECT_NAME}_COMMAND_MESH_SOURCES}
         ${${PROJECT_NAME}_COMMAND_POINTCLOUD_SOURCES}
+        ${${PROJECT_NAME}_COMMAND_TREE_SOURCES}
 )
 
 
