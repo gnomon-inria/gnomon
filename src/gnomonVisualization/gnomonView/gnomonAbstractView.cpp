@@ -1,6 +1,7 @@
 #include <gnomonCore>
 
-#include <gnomonVisualization/gnomonManager/gnomonFormManager>
+#include <gnomonManager/gnomonFormManager>
+#include <gnomonCommand/gnomonAbstractVisualizationCommand>
 
 #include "gnomonAbstractView.h"
 #include "gnomonAbstractView_p.h"
@@ -154,4 +155,21 @@ bool gnomonAbstractView::inputView()
 
 bool gnomonAbstractView::empty(void) {
     return d->forms.empty();
+}
+
+QString gnomonAbstractView::formVisuName(const QString& name)
+{
+    QString visu_name;
+    if (d->forms.contains(name)) {
+        visu_name =  d->visualizationCommands[name]->algorithmName();
+    }
+    return visu_name;
+}
+
+QVariantList gnomonAbstractView::formVisualizations(const QString& name)
+{
+    if (d->forms.contains(name)) {
+        return d->visualizationCommands[name]->pluginFactory()->dataList();
+    }
+    return {};
 }

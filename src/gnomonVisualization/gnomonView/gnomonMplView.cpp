@@ -437,26 +437,6 @@ void gnomonMplView::updateVisualizations(void)
     }
 }
 
-QString gnomonMplView::formVisuName(const QString& name)
-{
-    QString visu_name;
-    if (d->forms.contains(name)) {
-        visu_name = dd->formVisualizationNames[name];
-    }
-    return visu_name;
-}
-
-QVariantList gnomonMplView::formVisualizations(const QString& name)
-{
-    if (d->forms.contains(name)) {
-        qDebug()<<Q_FUNC_INFO<<name<<d->visualizationCommands[name]->pluginFactory();
-        qDebug()<<Q_FUNC_INFO<<d->visualizationCommands[name]->pluginFactory()->keys();
-        qDebug()<<Q_FUNC_INFO<<d->visualizationCommands[name]->pluginFactory()->dataList();
-        return d->visualizationCommands[name]->pluginFactory()->dataList();
-    }
-    return {};
-}
-
 void gnomonMplView::setFormVisuName(const QString& name, const QString& visu_name)
 {
     if (d->forms.contains(name)) {

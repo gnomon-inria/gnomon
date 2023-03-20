@@ -859,23 +859,6 @@ std::shared_ptr<gnomonPointCloudSeries> gnomonVtkView::pointCloud(void)
     }
 }
 
-QString gnomonVtkView::formVisuName(const QString& name)
-{
-    QString visu_name;
-    if (d->forms.contains(name)) {
-        visu_name =  dd->formVisualizationNames[name];
-    }
-    return visu_name;
-}
-
-QVariantList gnomonVtkView::formVisualizations(const QString& name)
-{
-    if (d->forms.contains(name)) {
-        return d->visualizationCommands[name]->pluginFactory()->dataList();
-    }
-    return {};
-}
-
 void gnomonVtkView::setFormVisuName(const QString& name, const QString& visu_name)
 {
     if (d->forms.contains(name)  && !visu_name.isEmpty()) {

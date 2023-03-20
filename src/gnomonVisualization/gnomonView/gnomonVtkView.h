@@ -142,8 +142,6 @@ public slots:
     void removeForm(const QString& name) override;
 
 public:
-    Q_INVOKABLE QString formVisuName(const QString& name);
-    Q_INVOKABLE QVariantList formVisualizations(const QString& name);
     //Q_INVOKABLE QList<gnomonPluginData *> formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
     Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
