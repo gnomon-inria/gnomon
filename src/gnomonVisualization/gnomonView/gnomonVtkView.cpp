@@ -1189,18 +1189,12 @@ void gnomonVtkView::updateShortcutKeys(void)
 
 void gnomonVtkView::drop(int index)
 {
-    std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
-
     if (this->empty()) {
         if (vtkCamera *cam = gnomonFormManager::instance()->getCamera(index)) {
             this->setCamera(cam);
         }
     }
-    auto &&visu = gnomonFormManager::instance()->getVisualization(index);
-    this->setForm("formManager", form, std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visu));
-
-    dd->interactor()->Render();
-    gnomonFormManager::instance()->setFormDropped(form);
+    gnomonAbstractView::drop(index);
 }
 
 gnomonDynamicFormMetadata* gnomonVtkView::formMetadata(const QString &name) {

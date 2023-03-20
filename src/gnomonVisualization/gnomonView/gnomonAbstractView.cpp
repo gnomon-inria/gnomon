@@ -96,6 +96,7 @@ void gnomonAbstractView::drop(int index)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
     this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
+    this->render();
     gnomonFormManager::instance()->setFormDropped(form);
 }
 
