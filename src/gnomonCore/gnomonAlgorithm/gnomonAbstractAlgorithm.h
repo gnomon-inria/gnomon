@@ -26,12 +26,6 @@ public:
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
     virtual void refreshParameters(void) {};
-    inline void connectParameter(dtkCoreParameter *parameter, void (*callback)()) {
-        qDebug()<<Q_FUNC_INFO<<"########################";
-        parameter->connect([=] (QVariant v) {
-            callback();
-        });
-    };
 public:
     virtual void run(void) = 0;
     virtual void run_async(gnomonAbstractCommand *c) {};

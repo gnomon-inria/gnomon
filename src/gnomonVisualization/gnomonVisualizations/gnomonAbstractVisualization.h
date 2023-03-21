@@ -4,6 +4,7 @@
 
 #include <dtkCore/dtkCoreParameters>
 #include <gnomonVisualizationExport.h>
+#include <dtkImagingCore>
 
 class gnomonViewForm;
 class gnomonInteractorStyle;
@@ -29,6 +30,8 @@ public:
 public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
     virtual void setParameters(const dtkCoreParameters&) = 0;
+    virtual void updateParameters(void) = 0;
+    virtual void connectParameter(dtkCoreParameter *parameter);
 
 public:
     gnomonViewForm* view(void);

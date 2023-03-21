@@ -25,6 +25,13 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
     d = NULL;
 }
 
+void gnomonAbstractVisualization::connectParameter(dtkCoreParameter *parameter) {
+        parameter->connect([this] (QVariant v) {
+            qDebug()<<Q_FUNC_INFO;
+            this->updateParameters();
+        });
+}
+
 void gnomonAbstractVisualization::setView(gnomonViewForm* view)
 {
     d->view = view;
