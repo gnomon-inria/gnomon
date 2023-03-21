@@ -27,22 +27,31 @@ gnomonAbstractVtkVisualization::~gnomonAbstractVtkVisualization(void)
 
 void gnomonAbstractVtkVisualization::setView(gnomonAbstractView* view)
 {
-    if (auto view_form = dynamic_cast<gnomonVtkView *>(view)) {
-        gnomonAbstractVisualization::setView(view_form);
+    gnomonAbstractVisualization::setView(view);
+    if (auto vtk_view = dynamic_cast<gnomonVtkView *>(view)) {
 
         this->clearConnections();
 
-        dd->connect3D = connect(view_form, SIGNAL(switchedTo3D(void)), this, SLOT(on3D(void)));
-        dd->connect2D = connect(view_form, SIGNAL(switchedTo2D(void)), this, SLOT(on2D(void)));
-        dd->connectXY = connect(view_form, SIGNAL(switchedTo2DXY(void)), this, SLOT(onXY(void)));
-        dd->connectYZ = connect(view_form, SIGNAL(switchedTo2DYZ(void)), this, SLOT(onYZ(void)));
-        dd->connectXZ = connect(view_form, SIGNAL(switchedTo2DXZ(void)), this, SLOT(onXZ(void)));
+        dd->connect3D = connect(vtk_view, SIGNAL(switchedTo3D(void)), this, SLOT(on3D(void)));
+        dd->connect2D = connect(vtk_view, SIGNAL(switchedTo2D(void)), this, SLOT(on2D(void)));
+        dd->connectXY = connect(vtk_view, SIGNAL(switchedTo2DXY(void)), this, SLOT(onXY(void)));
+        dd->connectYZ = connect(vtk_view, SIGNAL(switchedTo2DYZ(void)), this, SLOT(onYZ(void)));
+        dd->connectXZ = connect(vtk_view, SIGNAL(switchedTo2DXZ(void)), this, SLOT(onXZ(void)));
 
-        dd->connectSliceOrientation = connect(view_form, SIGNAL(sliceOrientationChanged(int)), this,
+        dd->connectSliceOrientation = connect(vtk_view, SIGNAL(sliceOrientationChanged(int)), this,
                                               SLOT(onSliceOrientationChanged(int)));
-        dd->connectSlice = connect(view_form, SIGNAL(sliceChanged(int)), this, SLOT(onSliceChanged(int)));
+        dd->connectSlice = connect(vtk_view, SIGNAL(sliceChanged(int)), this, SLOT(onSliceChanged(int)));
 
-        dd->connectTime = connect(view_form, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
+        dd->connectTime = connect(vtk_view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
+    }
+}
+
+gnomonVtkView *gnomonAbstractVtkVisualization::vtkView(void)
+{
+    if (auto vtk_view = dynamic_cast<gnomonVtkView *>(d->view)) {
+        return vtk_view;
+    } else {
+        return nullptr;
     }
 }
 
@@ -65,34 +74,9 @@ void gnomonAbstractVtkVisualization::clearConnections(void)
     disconnect(dd->connectTime);
 }
 
-vtkRenderer *gnomonAbstractVtkVisualization::renderer3D(void)
-{
-    return ((gnomonVtkView *) d->view)->renderer3D();
-}
-
-vtkRenderer *gnomonAbstractVtkVisualization::renderer2D(void)
-{
-    return ((gnomonVtkView *) d->view)->renderer2D();
-}
-
 vtkRenderer *gnomonAbstractVtkVisualization::offscreenRenderer(void)
 {
     return dd->offscreenRenderer;
-}
-
-vtkRenderWindowInteractor *gnomonAbstractVtkVisualization::interactor(void)
-{
-    return ((gnomonVtkView *) d->view)->interactor();
-}
-
-void gnomonAbstractVtkVisualization::setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax)
-{
-     ((gnomonVtkView *) d->view)->setBounds(xMin, xMax, yMin, yMax, zMin, zMax);
-}
-
-double gnomonAbstractVtkVisualization::currentTime(void) const
-{
-    return ((gnomonVtkView *) d->view)->currentTime();
 }
 
 void gnomonAbstractVtkVisualization::updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax)

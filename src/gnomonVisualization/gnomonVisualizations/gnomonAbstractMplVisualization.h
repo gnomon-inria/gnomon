@@ -17,9 +17,6 @@ public:
     ~gnomonAbstractMplVisualization(void);
 
 public:
-    void setView(gnomonAbstractView *view) override;
-
-public:
     int figureNumber(void);
 };
 
