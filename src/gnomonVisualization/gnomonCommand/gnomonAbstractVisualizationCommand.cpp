@@ -35,6 +35,21 @@ QVariantMap gnomonAbstractVisualizationCommand::visualizationParameters(void)
     return this->visu->visuParameters();
 }
 
+dtkCoreParameters gnomonAbstractVisualizationCommand::parameters(void) const
+{
+    return this->visu->parameters();
+}
+
+void gnomonAbstractVisualizationCommand::setParameter(const QString& parameter, const QVariant& value)
+{
+    this->visu->setParameter(parameter, value);
+}
+
+QMap<QString, QString> gnomonAbstractVisualizationCommand::parameterGroups() const
+{
+    return this->visu->parameterGroups();
+}
+
 void gnomonAbstractVisualizationCommand::update(void)
 {
     this->visu->update();

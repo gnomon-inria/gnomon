@@ -409,44 +409,6 @@ void gnomonMplView::setFormVisuName(const QString& name, const QString& visu_nam
     }
 }
 
-QJSValue gnomonMplView::formVisuParameters(const QString& name)
-{
-    if (d->forms.contains(name)) {
-        return dtkCoreParameterCollection(dd->formVisualization[name]->parameters()).toJSValue(this->parent());
-    } else {
-        return QJSValue();
-    }
-}
-
-QVariant gnomonMplView::formVisuParameter(const QString& name, const QString& parameter_name)
-{
-    if (d->forms.contains(name)) {
-        auto params = dd->formVisualization[name]->parameters();
-        if (params.keys().contains(parameter_name)) {
-            dtkCoreParameter *param = params.value(parameter_name);
-            // TODO: More specific cases to handle?
-            if (auto string_param = dynamic_cast<dtkCoreParameterSimple<QString> *>(param))
-            {
-                return QVariant(string_param->value());
-            } else {
-                return param->variant();
-            }
-        } else {
-            return QVariant();
-        }
-    } else {
-        return QVariant();
-    }
-}
-
-void gnomonMplView::setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value)
-{
-    if (d->forms.contains(name)) {
-        auto visu = dd->formVisualization[name];
-        visu->setParameter(parameter_name, value);
-    }
-}
-
 // TODO: introduce a command pattern
 void gnomonMplView::removeForm(const QString& name)
 {

@@ -144,9 +144,6 @@ public slots:
 public:
     //Q_INVOKABLE QList<gnomonPluginData *> formVisualizations(const QString& name);
     Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
-    Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
-    Q_INVOKABLE QVariant formVisuParameter(const QString& name, const QString& parameter_name);
-    Q_INVOKABLE void setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value);
 
 
     Q_INVOKABLE gnomonDynamicFormMetadata* formMetadata(const QString& name);

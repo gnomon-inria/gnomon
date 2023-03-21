@@ -42,6 +42,11 @@ public:
     }
 
 public:
+    dtkCoreParameters parameters() const override;
+    void setParameter(const QString& parameter, const QVariant& value) override;
+    QMap<QString, QString> parameterGroups() const override;
+
+public:
     inline void  predo(void) override { }
     inline void postdo(void) override { }
     inline void   undo(void) override { }

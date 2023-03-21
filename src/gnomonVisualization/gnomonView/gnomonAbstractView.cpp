@@ -173,10 +173,57 @@ QVariantList gnomonAbstractView::formVisualizations(const QString& name)
     return {};
 }
 
-void gnomonAbstractView::setFormVisible(const QString& name, bool visible)
+QJSValue gnomonAbstractView::formVisuParameters(const QString& form_type)
 {
-    if (d->forms.contains(name)) {
-        d->visualizationCommands[name]->setVisible(visible);
+    if (d->forms.contains(form_type)) {
+        QJSValue parameters = dtkCoreParameterCollection(d->visualizationCommands[form_type]->parameters()).toJSValue(this->parent());
+        QMap<QString, QString> parameter_groups =  d->visualizationCommands[form_type]->parameterGroups();
+
+        QJSValueIterator it(parameters);
+        while (it.hasNext()) {
+            it.next();
+            QString group = parameter_groups.contains(it.name()) ? parameter_groups[it.name()] : "";
+            it.value().setProperty("group", group != "" ? group : nullptr);
+        }
+
+        return parameters;
+    } else {
+        return QJSValue();
+    }
+}
+
+QVariant gnomonAbstractView::formVisuParameter(const QString& form_type, const QString& parameter_name)
+{
+    if (d->forms.contains(form_type)) {
+        auto params = d->visualizationCommands[form_type]->parameters();
+        if (params.keys().contains(parameter_name)) {
+            dtkCoreParameter *param = params.value(parameter_name);
+            // TODO: More specific cases to handle?
+            if (auto string_param = dynamic_cast<dtkCoreParameterSimple<QString> *>(param))
+            {
+                return QVariant(string_param->value());
+            } else {
+                return param->variant();
+            }
+        } else {
+            return QVariant();
+        }
+    } else {
+        return QVariant();
+    }
+}
+
+void gnomonAbstractView::setFormVisuParameter(const QString& form_type, const QString& parameter_name, const QVariant& value)
+{
+    if (d->forms.contains(form_type)) {
+        d->visualizationCommands[form_type]->setParameter(parameter_name, value);
+    }
+}
+
+void gnomonAbstractView::setFormVisible(const QString& form_type, bool visible)
+{
+    if (d->forms.contains(form_type)) {
+        d->visualizationCommands[form_type]->setVisible(visible);
     }
     this->render();
 }

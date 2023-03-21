@@ -847,54 +847,6 @@ void gnomonVtkView::setFormVisuName(const QString& name, const QString& visu_nam
     }
 }
 
-QJSValue gnomonVtkView::formVisuParameters(const QString& name)
-{
-    if (d->forms.contains(name)) {
-        QJSValue parameters = dtkCoreParameterCollection( dd->formVisualization[name]->parameters()).toJSValue(this->parent());
-        QMap<QString, QString> parameter_groups =  dd->formVisualization[name]->parameterGroups();
-
-        QJSValueIterator it(parameters);
-        while (it.hasNext()) {
-            it.next();
-            QString group = parameter_groups.contains(it.name()) ? parameter_groups[it.name()] : "";
-            it.value().setProperty("group", group != "" ? group : nullptr);
-        }
-
-        return parameters;
-    } else {
-        return QJSValue();
-    }
-}
-
-QVariant gnomonVtkView::formVisuParameter(const QString& name, const QString& parameter_name)
-{
-    if (d->forms.contains(name)) {
-        auto params =  dd->formVisualization[name]->parameters();
-        if (params.keys().contains(parameter_name)) {
-            dtkCoreParameter *param = params.value(parameter_name);
-            // TODO: More specific cases to handle?
-            if (auto string_param = dynamic_cast<dtkCoreParameterSimple<QString> *>(param))
-            {
-                return QVariant(string_param->value());
-            } else {
-                return param->variant();
-            }
-        } else {
-            return QVariant();
-        }
-    } else {
-        return QVariant();
-    }
-}
-
-void gnomonVtkView::setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value)
-{
-    if (d->forms.contains(name)) {
-        auto visu =  dd->formVisualization[name];
-        visu->setParameter(parameter_name, value);
-    }
-}
-
 void gnomonVtkView::removeForm(const QString& name)
 {
     if ( dd->formVisualization.contains(name)) {
