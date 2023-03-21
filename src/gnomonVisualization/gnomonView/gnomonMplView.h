@@ -51,8 +51,6 @@ public:
     Q_INVOKABLE QVariant formVisuParameter(const QString& name, const QString& parameter_name);
     Q_INVOKABLE void setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value);
 
-    Q_INVOKABLE void setFormVisible(const QString& name, bool visible);
-
 signals:
     void figureNumberChanged(int);
 

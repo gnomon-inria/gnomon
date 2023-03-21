@@ -57,6 +57,8 @@ public:
     Q_INVOKABLE QString formVisuName(const QString& name);
     Q_INVOKABLE QVariantList formVisualizations(const QString& name);
 
+    Q_INVOKABLE void setFormVisible(const QString& name, bool visible);
+
 signals:
     void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm> );
     void inputViewChanged(bool);

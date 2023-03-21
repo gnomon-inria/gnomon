@@ -79,7 +79,6 @@ public:
     QMap<QString, QString> formVisualizationNames;
     QMap<QString, std::shared_ptr<gnomonAbstractMplVisualization> > formVisualization;
 
-    QMap<QString, bool > formVisibility;
     MplViewParameters viewParameters;
 
 public:
@@ -228,9 +227,6 @@ void gnomonMplViewPrivate::setFormVisualization(const QString& name, const QStri
     }
 
     this->formVisualizationNames[name] = visu_name;
-    if (!this->formVisibility.contains(name)) {
-        this->formVisibility[name] = true;
-    }
     viewParameters.visuSelected[name] = visu_name;
 
     this->updateFormVisualization(name);
@@ -482,19 +478,6 @@ void gnomonMplView::setFormVisuParameter(const QString& name, const QString& par
     }
 }
 
-void gnomonMplView::setFormVisible(const QString& name, bool visible)
-{
-    if (dd->formVisualization.contains(name)) {
-        if (dd->formVisualization[name]) {
-            // TODO: Implement visibility for mpl visus?
-            // d->formVisualization[name]->setVisible(visible);
-            dd->formVisibility[name] = visible;
-        }
-    }
-
-    this->render();
-}
-
 // TODO: introduce a command pattern
 void gnomonMplView::removeForm(const QString& name)
 {
@@ -512,7 +495,6 @@ void gnomonMplView::removeForm(const QString& name)
     dd->viewParameters.visuSelected.remove(name);
 
     dd->formVisualizationNames.remove(name);
-    dd->formVisibility.remove(name);
     dd->formModified.remove(name);
 
     gnomonAbstractView::removeForm(name);
@@ -546,7 +528,6 @@ void gnomonMplView::clear(void)
     dd->viewParameters.visuSelected.clear();
 
     dd->formVisualizationNames.clear();
-    dd->formVisibility.clear();
     dd->formModified.clear();
 
     dd->clear();

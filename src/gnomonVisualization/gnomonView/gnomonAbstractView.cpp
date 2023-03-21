@@ -172,3 +172,11 @@ QVariantList gnomonAbstractView::formVisualizations(const QString& name)
     }
     return {};
 }
+
+void gnomonAbstractView::setFormVisible(const QString& name, bool visible)
+{
+    if (d->forms.contains(name)) {
+        d->visualizationCommands[name]->setVisible(visible);
+    }
+    this->render();
+}

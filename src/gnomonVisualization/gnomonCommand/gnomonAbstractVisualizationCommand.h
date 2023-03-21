@@ -44,10 +44,15 @@ public:
     inline void  predo(void) override { }
     inline void postdo(void) override { }
     inline void   undo(void) override { }
+    void update(void);
+
+public:
+    void setVisible(bool visible);
 
 protected:
     gnomonAbstractView *_view = nullptr;
     std::shared_ptr<gnomonAbstractVisualization> visu = nullptr;
+    bool visible = true;
 };
 
 

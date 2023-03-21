@@ -98,7 +98,6 @@ public:
     QMap<QString, QString> formVisualizationNames;
     QMap<QString, std::shared_ptr<gnomonAbstractVtkVisualization> > formVisualization;
     QMap<QString, QJsonObject > visualization_description;
-    QMap<QString, bool > formVisibility;
     VtkViewParameters viewParameters;
 
 
@@ -282,9 +281,6 @@ void gnomonVtkViewPrivate::setFormVisualization(const QString& formType, const Q
     emit q->formVisualizationChanged();
 
     this->formVisualizationNames[formType] = visu_name;
-    if (!this->formVisibility.contains(formType)) {
-        this->formVisibility[formType] = true;
-    }
 
     viewParameters.visuSelected[formType] = visu_name;
 
@@ -432,13 +428,8 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 void gnomonVtkView::restoreState(void)
 {
     if (!this->empty()) {
-        for (const auto &key :  dd->formVisualization.keys()) {
-             dd->formVisualization[key]->clearConnections();
-             dd->formVisualization[key]->clear();
-             dd->formVisualization[key]->setView(this);
-            // dd->formVisualization[d->viewParameters.visuSelected[key]]->setVisuParameters(d->viewParameters.parameters[key]->);
-             dd->formVisualization[key]->update();
-             dd->formVisualization[key]->setVisible( dd->formVisibility[key]);
+        for (const auto &form_type :  d->forms.keys()) {
+            d->visualizationCommands[form_type]->setVisualizationParameters(dd->viewParameters.parameters[form_type]);
         }
     }
 }
@@ -910,18 +901,6 @@ void gnomonVtkView::setFormVisuParameter(const QString& name, const QString& par
     }
 }
 
-void gnomonVtkView::setFormVisible(const QString& name, bool visible)
-{
-    if ( dd->formVisualization.contains(name)) {
-        if ( dd->formVisualization[name]) {
-             dd->formVisualization[name]->setVisible(visible);
-             dd->formVisibility[name] = visible;
-        }
-    }
-
-    this->render();
-}
-
 void gnomonVtkView::removeForm(const QString& name)
 {
     if ( dd->formVisualization.contains(name)) {
@@ -935,8 +914,7 @@ void gnomonVtkView::removeForm(const QString& name)
     if ( dd->formVisualizationNames.contains(name)) {
         dd->viewParameters.parameters.remove( dd->formVisualizationNames[name]);
     }
-     dd->formVisualizationNames.remove(name);
-     dd->formVisibility.remove(name);
+    dd->formVisualizationNames.remove(name);
     d->forms.remove(name);
     dd->viewParameters.visuSelected.remove(name);
 
@@ -1089,9 +1067,8 @@ void gnomonVtkView::render(void)
 
 void gnomonVtkView::update(void)
 {
-    for (const auto& key :  dd->formVisualization.keys()) {
-         dd->formVisualization[key]->update();
-         dd->formVisualization[key]->setVisible( dd->formVisibility[key]);
+    for (const auto& form_type :  d->forms.keys()) {
+        d->visualizationCommands[form_type]->update();
     }
 }
 
@@ -1103,7 +1080,6 @@ void gnomonVtkView::clear(void)
         fv->clear();
     }
     dd->formVisualizationNames.clear();
-    dd->formVisibility.clear();
     dd->formVisualization.clear();
 
     dd->updateFormsTimes();

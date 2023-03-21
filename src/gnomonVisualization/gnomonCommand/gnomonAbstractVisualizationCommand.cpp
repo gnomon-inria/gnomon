@@ -27,4 +27,17 @@ void gnomonAbstractVisualizationCommand::setFormVisualization(const QString& vis
 void gnomonAbstractVisualizationCommand::setVisualizationParameters(const QVariantMap &parameters)
 {
     this->visu->setVisuParameters(parameters);
+    this->visu->setVisible(this->visible);
+}
+
+void gnomonAbstractVisualizationCommand::update(void)
+{
+    this->visu->update();
+    this->visu->setVisible(this->visible);
+}
+
+void gnomonAbstractVisualizationCommand::setVisible(bool visible)
+{
+    this->visible = visible;
+    this->visu->setVisible(this->visible);
 }

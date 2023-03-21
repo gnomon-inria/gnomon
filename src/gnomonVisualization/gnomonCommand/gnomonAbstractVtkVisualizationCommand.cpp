@@ -29,6 +29,5 @@ void gnomonAbstractVtkVisualizationCommand::setVisualizationParameters(const QVa
     visu->clear();
     visu->setView(this->_view);
     visu->setVisuParameters(parameters);
-    visu->update();
-    visu->setVisible(true);
+    this->update();
 }
