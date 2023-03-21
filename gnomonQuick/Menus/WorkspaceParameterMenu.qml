@@ -15,6 +15,7 @@ import gnomonQuick.Menus as G
 import gnomonQuick.Workspaces as G
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
 
 Control {
     id: _menu;
@@ -95,6 +96,62 @@ Control {
 
             ScrollIndicator.vertical: ScrollIndicator {
                 visible: _control.contentHeight > _control.height;
+            }
+        }
+
+        ProgressBar {
+            Layout.fillWidth: true;
+            indeterminate: d.progress == -1
+            from: 0
+            to: 100
+            value: d.progress
+        }
+
+        Item {
+            id: _controll_button_container
+
+            height: G.Style.largeButtonHeight
+            Layout.fillWidth: true;
+
+            G.Button {
+
+                id: _pause
+
+                anchors.left: _controll_button_container.left;
+                anchors.verticalCenter: _controll_button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
+                property bool paused: false
+                type: paused? G.Style.ButtonType.OK : G.Style.ButtonType.Neutral
+
+                text: paused ? "Resume" : "Pause"
+                iconName: paused ? G.Icons.icons["play"] : G.Icons.icons["pause"]
+
+                onClicked: {
+                    if(paused) {
+                        d.resume()
+                        paused = false
+                    } else {
+                        d.pause()
+                        paused = true
+                    }
+                }
+            }
+
+            G.Button {
+
+                id: _stop
+
+                anchors.right: _controll_button_container.right;
+                anchors.verticalCenter: _controll_button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
+                type: G.Style.ButtonType.Danger
+                iconName: G.Icons.icons["stop"]
+                text: "Stop"
+
+                onClicked: {
+                    console.info('stopping Run!')
+                    d.stop();
+                }
             }
         }
 
