@@ -22,6 +22,7 @@ public:
     virtual std::shared_ptr<gnomonAbstractVisualization> visualization(void);
     virtual void setFormVisualization(const QString& visu_name, const QVariantMap &parameters);
     virtual void setVisualizationParameters(const QVariantMap &parameters);
+    virtual QVariantMap visualizationParameters(void);
 
 public:
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override {

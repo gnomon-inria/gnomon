@@ -25,27 +25,6 @@
 #include "gnomonVisualizations/gnomonTree/gnomonAbstractTreeMplVisualization.h"
 
 
-QVariantMap visuMatplotlibParameters(std::shared_ptr<gnomonAbstractMplVisualization> visu)
-{
-    QVariantMap parameters;
-
-    dtkCoreParameters dtkParameters = visu->parameters();
-    for(const auto& param_name : dtkParameters.keys()){
-        QVariant param_value = dtkParameters[param_name]->variant();
-        parameters.insert(param_name, param_value);
-    }
-    return parameters;
-};
-
-void setVisuMatplotlibParameters(std::shared_ptr<gnomonAbstractMplVisualization> visu, QVariantMap parameters)
-{
-    for(const auto& param_name: parameters.keys()) {
-        QVariant param = parameters[param_name];
-        visu->setParameter(param_name, param);
-    }
-};
-
-
 // ///////////////////////////////////////////////////////////////////
 // gnomonMplViewPrivate
 // ///////////////////////////////////////////////////////////////////
@@ -58,7 +37,7 @@ public:
     typedef struct {
         QString currentFormType;
         int currentFormIndex = -1;
-        QMap<QString, QString> visuSelected;  // formType --> visu_name
+        QMap<QString, QString> visuSelected;  // form_type --> visu_name
         QMap<QString, QVariantMap> parameters; // visu_name --> parameters
 
     } MplViewParameters;
@@ -76,7 +55,6 @@ public slots:
     void clear(void);
 
 public:
-    QMap<QString, QString> formVisualizationNames;
     QMap<QString, std::shared_ptr<gnomonAbstractMplVisualization> > formVisualization;
 
     MplViewParameters viewParameters;
@@ -194,42 +172,34 @@ void gnomonMplViewPrivate::updateFormVisualization(const QString& name)
     }
 }
 
-void gnomonMplViewPrivate::setFormVisualization(const QString& name, const QString& visu_name, const QVariantMap &parameters)
+void gnomonMplViewPrivate::setFormVisualization(const QString& form_type, const QString& visu_name, const QVariantMap &parameters)
 {
     // saving current parameters before change
-    QMap<QString, std::shared_ptr<gnomonAbstractMplVisualization>>::iterator i;
-    for (i = formVisualization.begin(); i != formVisualization.end(); ++i) {
-        const auto& _visu_name = formVisualizationNames[i.key()];
-        viewParameters.parameters[_visu_name] = visuMatplotlibParameters(i.value());
+    for (const auto& form_type : q->d->forms.keys()) {
+        const auto& _visu_name = q->d->visualizationCommands[form_type]->algorithmName();
+        viewParameters.parameters[_visu_name] = q->d->visualizationCommands[form_type]->visualizationParameters();
     }
 
-    if (!this->formVisualizationNames.contains(name) || this->formVisualizationNames[name] != visu_name) {
-
-        if (this->formVisualization[name]) {
-            this->formVisualization[name]->clear();
-            //delete this->formVisualization[name];
-            //this->formVisualization[name] = nullptr;
-        }
-
-        q->d->visualizationCommands[name]->setForm(q->form(name));
-        q->d->visualizationCommands[name]->setAlgorithmName(visu_name);
-        auto&& visu = q->d->visualizationCommands[name]->visualization();
-        this->formVisualization[name] = std::static_pointer_cast<gnomonAbstractMplVisualization>(visu);
-        emit q->formVisualizationChanged();
+    auto visu_parameters = parameters;
+    if(viewParameters.parameters.contains(visu_name) && parameters.size()==0) {
+        visu_parameters = viewParameters.parameters[visu_name];
     }
 
-    auto&& form_visu = this->formVisualization[name];
-    // taking saved parameters if none are provided and available
-    if(viewParameters.parameters.contains(name) && parameters.size()==0) {
-        setVisuMatplotlibParameters(form_visu, viewParameters.parameters[visu_name]);
-    } else {
-        setVisuMatplotlibParameters(form_visu, parameters);
-    }
+    q->d->visualizationCommands[form_type]->setForm(q->form(form_type));
+    q->d->visualizationCommands[form_type]->setFormVisualization(visu_name, visu_parameters);
+    auto&& visu = q->d->visualizationCommands[form_type]->visualization();
+    this->formVisualization[form_type] = std::static_pointer_cast<gnomonAbstractMplVisualization>(visu);
+    emit q->formVisualizationChanged();
 
-    this->formVisualizationNames[name] = visu_name;
-    viewParameters.visuSelected[name] = visu_name;
+    viewParameters.visuSelected[form_type] = visu_name;
 
-    this->updateFormVisualization(name);
+    this->updateFormVisualization(form_type);
+
+    connect(visu.get(), &gnomonAbstractMplVisualization::parametersChanged, [=] () {
+        emit q->formVisuParametersChanged();
+    });
+
+    q->formVisuParametersChanged();
 }
 
 void gnomonMplViewPrivate::render(void)
@@ -289,9 +259,9 @@ gnomonMplView::gnomonMplView(QObject *parent) : gnomonAbstractView(parent)
     d->visualizationCommands["gnomonDataFrame"] = new gnomonDataFrameMplVisualizationCommand;
     d->visualizationCommands["gnomonLString"] = new gnomonLStringMplVisualizationCommand;
     d->visualizationCommands["gnomonTree"] = new gnomonTreeMplVisualizationCommand;
-    for (const auto &formType: d->visualizationCommands.keys()) {
-        d->visualizationCommands[formType]->setView(this);
-        d->acceptForms[formType] = false;
+    for (const auto &form_type: d->visualizationCommands.keys()) {
+        d->visualizationCommands[form_type]->setView(this);
+        d->acceptForms[form_type] = false;
     }
 
     for (const auto& form : d->visualizationCommands.keys()) {
@@ -348,10 +318,9 @@ gnomonMplView::gnomonMplView(QObject *parent) : gnomonAbstractView(parent)
 
     // just need to find a signal that's actually emitted when a parameter changes :|
     connect(this, &gnomonMplView::formVisuParametersChanged, [=] () {
-        QMap<QString, std::shared_ptr<gnomonAbstractMplVisualization>>::iterator i;
-        for (i = dd->formVisualization.begin(); i != dd->formVisualization.end(); ++i) {
-            const auto& visu_name = dd->formVisualizationNames[i.key()];
-            dd->viewParameters.parameters[visu_name] = visuMatplotlibParameters(i.value());
+        for (const auto& form_type : d->forms.keys()) {
+            const auto& visu_name = d->visualizationCommands[form_type]->algorithmName();
+            dd->viewParameters.parameters[visu_name] = d->visualizationCommands[form_type]->visualizationParameters();
         }
     });
 }
@@ -489,12 +458,11 @@ void gnomonMplView::removeForm(const QString& name)
     }
     dd->formVisualization.remove(name);
 
-    if (dd->formVisualizationNames.contains(name)) {
-        dd->viewParameters.parameters.remove(dd->formVisualizationNames[name]);
+    if (d->forms.contains(name)) {
+        QString visu_name = d->visualizationCommands[name]->algorithmName();
+        dd->viewParameters.parameters.remove(visu_name);
     }
     dd->viewParameters.visuSelected.remove(name);
-
-    dd->formVisualizationNames.remove(name);
     dd->formModified.remove(name);
 
     gnomonAbstractView::removeForm(name);
@@ -522,12 +490,12 @@ void gnomonMplView::clear(void)
     }
     dd->formVisualization.clear();
 
-    for (auto name : dd->formVisualizationNames) {
-        dd->viewParameters.parameters.remove(dd->formVisualizationNames[name]);
+    for (const auto & form_type : d->forms.keys()) {
+        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
+        dd->viewParameters.parameters.remove(visu_name);
     }
     dd->viewParameters.visuSelected.clear();
 
-    dd->formVisualizationNames.clear();
     dd->formModified.clear();
 
     dd->clear();
@@ -546,9 +514,9 @@ void gnomonMplView::setFigureNumber(int num)
     emit figureNumberChanged(num);
 }
 
-void gnomonMplView::notifyFormSelected(int index, QString formType) {
+void gnomonMplView::notifyFormSelected(int index, QString form_type) {
     dd->viewParameters.currentFormIndex = index;
-    dd->viewParameters.currentFormType = std::move(formType);
+    dd->viewParameters.currentFormType = std::move(form_type);
 }
 
 int gnomonMplView::lastFormIndexSelected() {
@@ -559,8 +527,8 @@ QString gnomonMplView::lastFromTypeSelected() {
     return dd->viewParameters.currentFormType;
 }
 
-QString gnomonMplView::lastVisuSelected(QString formType) {
-    return dd->viewParameters.visuSelected[formType];
+QString gnomonMplView::lastVisuSelected(QString form_type) {
+    return dd->viewParameters.visuSelected[form_type];
 }
 
 // ///////////////////////////////////////////////////////////////////

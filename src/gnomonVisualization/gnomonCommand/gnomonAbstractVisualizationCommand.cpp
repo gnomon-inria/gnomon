@@ -30,6 +30,11 @@ void gnomonAbstractVisualizationCommand::setVisualizationParameters(const QVaria
     this->visu->setVisible(this->visible);
 }
 
+QVariantMap gnomonAbstractVisualizationCommand::visualizationParameters(void)
+{
+    return this->visu->visuParameters();
+}
+
 void gnomonAbstractVisualizationCommand::update(void)
 {
     this->visu->update();
