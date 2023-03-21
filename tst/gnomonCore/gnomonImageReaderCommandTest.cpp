@@ -20,7 +20,7 @@ public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {};
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
 
-    void run(void) override{ reader::t_run_called = true;};
+    int run(void) override{ reader::t_run_called = true; return 0;};
     QString documentation(void) override {return "empty";};
     void setPath(const QString& path) override {reader::t_set_path = true;};
     std::shared_ptr<gnomonImageSeries> image() override {return nullptr;};

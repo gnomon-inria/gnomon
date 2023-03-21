@@ -35,7 +35,7 @@ gnomonLogConnection::gnomonLogConnection(QObject *parent, QTcpSocket *socket, bo
 QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
     if(socket){
         connect(d->socket, &QTcpSocket::readyRead, [this]() {
-            if(this->d->server_alive) {
+            if(this-> d && this->d->server_alive) {
                 QByteArray data = this->d->socket->readAll();
                 QString data_string = QString::fromUtf8(data);
                 this->d->text.append(data_string);
@@ -55,6 +55,8 @@ QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
 }
 
 gnomonLogConnection::~gnomonLogConnection() {
+    if(d && d->socket)
+        disconnect(d->socket, SIGNAL(readyRead()), nullptr, nullptr);
     delete d;
     d = nullptr;
 }

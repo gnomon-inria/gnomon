@@ -23,7 +23,7 @@ public:
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
 
 
-    void run(void) override{ imagefromimage::t_run_called = true;};
+    int run(void) override{ imagefromimage::t_run_called = true; return 0;};
     QString documentation(void) override {return "empty";};
     void setInput(std::shared_ptr<gnomonImageSeries> image_series) override { imagefromimage::t_set_input_called = true;};
     void setCellPoints(std::shared_ptr<gnomonPointCloudSeries> pointCloud_series) override{};

@@ -22,7 +22,7 @@ public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {registration::t_set_parameter_called = true;};
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
 
-    void run(void) override{ registration::t_run_called = true;};
+    int run(void) override{ registration::t_run_called = true; return 0;};
     QString documentation(void) override {return "empty";};
     void setImage(std::shared_ptr<gnomonImageSeries> imageSeries) override {registration::t_set_image_called = true;};
     std::shared_ptr<gnomonImageSeries> image() override {return nullptr;};
