@@ -6,6 +6,6 @@
 void gnomonAbstractMplVisualizationCommand::setView(gnomonAbstractView *view)
 {
     if (auto mpl_view = dynamic_cast<gnomonMplView *>(view)) {
-        this->_view = mpl_view;
+        gnomonAbstractVisualizationCommand::setView(mpl_view);
     }
 }

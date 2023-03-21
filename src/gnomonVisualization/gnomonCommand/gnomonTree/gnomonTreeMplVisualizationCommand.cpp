@@ -27,8 +27,6 @@ gnomonTreeMplVisualizationCommand::gnomonTreeMplVisualizationCommand() : d(new g
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::treeMplVisualization::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractTreeMplVisualization>(visu);
     }
 }
 
@@ -39,11 +37,27 @@ gnomonTreeMplVisualizationCommand::~gnomonTreeMplVisualizationCommand()
 
 void gnomonTreeMplVisualizationCommand::setAlgorithmName(const QString& visu_name)
 {
-    this->algorithm_name = visu_name;
-    this->visu->deleteLater();
-    auto visu = gnomonVisualization::treeMplVisualization::pluginFactory().create(visu_name);
-    this->visu = std::shared_ptr<gnomonAbstractTreeMplVisualization>(visu);
+    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
+        gnomonAbstractVisualizationCommand::setAlgorithmName(visu_name);
+        auto visu = gnomonVisualization::treeMplVisualization::pluginFactory().create(visu_name);
+        this->visu = std::shared_ptr<gnomonAbstractTreeMplVisualization>(visu);
+        this->connectVisualization();
+    }
 }
+
+void gnomonTreeMplVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
+{
+    this->setAlgorithmName(visu_name);
+    auto &&visu = std::static_pointer_cast<gnomonAbstractTreeMplVisualization>(this->visu);
+    if (visu) {
+        if (visu->tree() != d->tree->current()) {
+            visu->setTree(d->tree->current());
+            this->setVisualizationParameters(parameters);
+            visu->update();
+        }
+    }
+}
+
 
 void gnomonTreeMplVisualizationCommand::predo(void)
 {

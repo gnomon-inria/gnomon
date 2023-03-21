@@ -10,7 +10,6 @@ public:
      gnomonCellImageVtkVisualizationCommand();
     ~gnomonCellImageVtkVisualizationCommand() override;
 
-
 public:
     void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) override;
     void setAlgorithmName(const QString &) override;

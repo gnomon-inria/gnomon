@@ -31,7 +31,7 @@ public:
     virtual gnomonInteractorStyle * interactorStyle(void);
 
 public slots:
-    void clearConnections(void);
+    void clearConnections(void) override;
 
 public slots:
     virtual void on2D(void) = 0;

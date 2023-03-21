@@ -11,14 +11,24 @@ class gnomonAbstractViewPrivate : public QObject
     Q_OBJECT
 
 public:
+    typedef struct {
+        QString currentFormType;
+        int currentFormIndex = -1;
+        QMap<QString, QString> visuSelected;  // form_type --> visu_name
+        QMap<QString, QVariantMap> parameters; // visu_name --> parameters
+
+    } ViewParameters;
+
+public:
     gnomonAbstractViewPrivate(QObject *parent = Q_NULLPTR);
     ~gnomonAbstractViewPrivate(void);
 
-public:
-    gnomonAbstractView *q = nullptr;
-
 public slots:
     void exportToManager(void);
+    void setFormVisualization(const QString& form_type, const QString& visu_name, const QVariantMap &parameters = {});
+
+public:
+    gnomonAbstractView *q = nullptr;
 
 public:
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
@@ -31,6 +41,7 @@ public:
 
 public:
     QMap<QString, gnomonAbstractVisualizationCommand *> visualizationCommands;
+    ViewParameters viewParameters;
 
 public:
     bool input_view = false;

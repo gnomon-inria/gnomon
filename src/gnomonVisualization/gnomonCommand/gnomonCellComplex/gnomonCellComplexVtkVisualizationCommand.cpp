@@ -27,8 +27,6 @@ gnomonCellComplexVtkVisualizationCommand::gnomonCellComplexVtkVisualizationComma
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::cellComplexVtkVisualization::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractCellComplexVtkVisualization>(visu);
     }
 }
 
@@ -39,10 +37,11 @@ gnomonCellComplexVtkVisualizationCommand::~gnomonCellComplexVtkVisualizationComm
 
 void gnomonCellComplexVtkVisualizationCommand::setAlgorithmName(const QString& visu_name)
 {
-    if (this->algorithm_name != visu_name) {
+    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
         gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
         auto visu = gnomonVisualization::cellComplexVtkVisualization::pluginFactory().create(visu_name);
         this->visu = std::shared_ptr<gnomonAbstractCellComplexVtkVisualization>(visu);
+        this->connectVisualization();
     }
 }
 
@@ -54,6 +53,7 @@ void gnomonCellComplexVtkVisualizationCommand::setFormVisualization(const QStrin
         if (visu->cellComplex() != d->cellComplex) {
             visu->setCellComplex(d->cellComplex);
             this->setVisualizationParameters(parameters);
+            visu->update();
         }
     }
 }

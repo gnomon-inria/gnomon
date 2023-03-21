@@ -10,6 +10,10 @@ class gnomonAbstractVisualization;
 
 class GNOMONCORE_EXPORT gnomonAbstractVisualizationCommand : public gnomonAbstractCommand
 {
+    Q_OBJECT
+
+public:
+    void setAlgorithmName(const QString &) override;
 
 public:
     virtual void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) = 0;
@@ -51,11 +55,18 @@ public:
     inline void postdo(void) override { }
     inline void   undo(void) override { }
 
+public slots:
     virtual void update(void);
     virtual void clear(void);
 
+    void connectVisualization(void);
+    void disconnectVisualization(void);
+
 public:
     void setVisible(bool visible);
+
+signals:
+    void visuParametersChanged(void);
 
 protected:
     gnomonAbstractView *_view = nullptr;

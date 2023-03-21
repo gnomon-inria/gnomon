@@ -14,6 +14,7 @@
 
 gnomonAbstractViewPrivate::gnomonAbstractViewPrivate(QObject *parent): QObject(parent)
 {
+    this->viewParameters.currentFormIndex = -1;
 }
 
 gnomonAbstractViewPrivate::~gnomonAbstractViewPrivate(void)
@@ -25,14 +26,38 @@ void gnomonAbstractViewPrivate::exportToManager(void)
     for(const auto& key: this->forms.keys()) {
         QImage image = this->visualizationCommands[key]->visualization()->imageRendering();
         gnomonFormManager::instance()->addForm(this->forms[key], image, this->visualizationCommands[key]->visualization());
-        q->emit exportedForm(this->forms[key]);
+        emit q->exportedForm(this->forms[key]);
     }
+}
+
+void gnomonAbstractViewPrivate::setFormVisualization(const QString& form_type, const QString& visu_name, const QVariantMap &parameters)
+{
+    // saving current parameters before change
+    for (const auto& form_type : this->forms.keys()) {
+        const auto& _visu_name = this->visualizationCommands[form_type]->algorithmName();
+        this->viewParameters.parameters[_visu_name] = this->visualizationCommands[form_type]->visualizationParameters();
+    }
+
+    auto visu_parameters = parameters;
+    if (this->viewParameters.parameters.contains(visu_name) && parameters.size()==0) {
+        visu_parameters = this->viewParameters.parameters[visu_name];
+    }
+
+    this->visualizationCommands[form_type]->setForm(q->form(form_type));
+    this->visualizationCommands[form_type]->setFormVisualization(visu_name, visu_parameters);
+    auto&& visu = this->visualizationCommands[form_type]->visualization();
+    emit q->formVisualizationChanged();
+
+    this->viewParameters.visuSelected[form_type] = visu_name;
+
+    // this->visualizationCommands[form_type]->update();
+
+    emit q->formVisuParametersChanged();
 }
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonAbstractView
 // ///////////////////////////////////////////////////////////////////
-
 
 gnomonAbstractView::gnomonAbstractView(QObject *parent): QObject(parent)
 {

@@ -45,6 +45,7 @@ public slots:
     virtual void update(void) = 0;
     virtual void render(void) = 0;
     virtual void clear(void) = 0;
+    virtual inline void clearConnections(void) {  };
 
 public slots:
     virtual void setVisible(bool visible) = 0;

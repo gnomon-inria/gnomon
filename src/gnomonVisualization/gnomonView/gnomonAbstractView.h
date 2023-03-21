@@ -53,7 +53,6 @@ public:
 
     virtual bool empty(void);
 
-
 public:
     Q_INVOKABLE QString formVisuName(const QString& name);
     Q_INVOKABLE QVariantList formVisualizations(const QString& name);
@@ -70,6 +69,9 @@ signals:
     void formAdded(const QString&);
     void formRemoved(const QString&);
     void formsChanged(void);
+
+    void formVisuParametersChanged(void);
+    void formVisualizationChanged(void);
 
     void badFormDropped(QString badFormName, QString acceptedForms);
 

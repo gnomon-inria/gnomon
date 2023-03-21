@@ -10,7 +10,6 @@ public:
      gnomonLStringVtkVisualizationCommand();
     ~gnomonLStringVtkVisualizationCommand() override;
 
-
 public:
     void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) override;
     void setAlgorithmName(const QString &) override;

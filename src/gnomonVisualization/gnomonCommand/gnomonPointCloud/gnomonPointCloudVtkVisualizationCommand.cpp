@@ -27,8 +27,6 @@ gnomonPointCloudVtkVisualizationCommand::gnomonPointCloudVtkVisualizationCommand
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::pointCloudVtkVisualization::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractPointCloudVtkVisualization>(visu);
     }
 }
 
@@ -39,10 +37,11 @@ gnomonPointCloudVtkVisualizationCommand::~gnomonPointCloudVtkVisualizationComman
 
 void gnomonPointCloudVtkVisualizationCommand::setAlgorithmName(const QString& visu_name)
 {
-    if (this->algorithm_name != visu_name) {
+    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
         gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
         auto visu = gnomonVisualization::pointCloudVtkVisualization::pluginFactory().create(visu_name);
         this->visu = std::shared_ptr<gnomonAbstractPointCloudVtkVisualization>(visu);
+        this->connectVisualization();
     }
 }
 
@@ -54,6 +53,7 @@ void gnomonPointCloudVtkVisualizationCommand::setFormVisualization(const QString
         if (visu->pointCloud() != d->pointCloud) {
             visu->setPointCloud(d->pointCloud);
             this->setVisualizationParameters(parameters);
+            visu->update();
         }
     }
 }

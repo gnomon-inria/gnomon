@@ -124,10 +124,6 @@ public:
     bool syncing(void);
     bool inPool(void);
 
-signals:
-    void formVisuParametersChanged(void);
-    void formVisualizationChanged(void);
-
 public:
     std::shared_ptr<gnomonBinaryImageSeries> binaryImage(void);
     std::shared_ptr<gnomonCellComplexSeries> cellComplex(void);

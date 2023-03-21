@@ -27,8 +27,6 @@ gnomonMeshVtkVisualizationCommand::gnomonMeshVtkVisualizationCommand() : d(new g
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
-        auto visu = gnomonVisualization::meshVtkVisualization::pluginFactory().create(this->algorithm_name);
-        this->visu = std::shared_ptr<gnomonAbstractMeshVtkVisualization>(visu);
     }
 }
 
@@ -39,10 +37,11 @@ gnomonMeshVtkVisualizationCommand::~gnomonMeshVtkVisualizationCommand()
 
 void gnomonMeshVtkVisualizationCommand::setAlgorithmName(const QString& visu_name)
 {
-    if (this->algorithm_name != visu_name) {
+    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
         gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
         auto visu = gnomonVisualization::meshVtkVisualization::pluginFactory().create(visu_name);
         this->visu = std::shared_ptr<gnomonAbstractMeshVtkVisualization>(visu);
+        this->connectVisualization();
     }
 }
 
@@ -54,6 +53,7 @@ void gnomonMeshVtkVisualizationCommand::setFormVisualization(const QString& visu
         if (visu->mesh() != d->mesh) {
             visu->setMesh(d->mesh);
             this->setVisualizationParameters(parameters);
+            visu->update();
         }
     }
 }
