@@ -50,7 +50,9 @@ public:
     inline void  predo(void) override { }
     inline void postdo(void) override { }
     inline void   undo(void) override { }
-    void update(void);
+
+    virtual void update(void);
+    virtual void clear(void);
 
 public:
     void setVisible(bool visible);

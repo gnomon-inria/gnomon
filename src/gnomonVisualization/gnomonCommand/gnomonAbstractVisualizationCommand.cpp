@@ -56,6 +56,11 @@ void gnomonAbstractVisualizationCommand::update(void)
     this->visu->setVisible(this->visible);
 }
 
+void gnomonAbstractVisualizationCommand::clear(void)
+{
+    this->visu->clear();
+}
+
 void gnomonAbstractVisualizationCommand::setVisible(bool visible)
 {
     this->visible = visible;

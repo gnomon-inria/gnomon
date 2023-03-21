@@ -86,6 +86,13 @@ void gnomonAbstractView::setNodePortNames(const QStringList& names)
     d->nodePortNames = names;
 }
 
+void gnomonAbstractView::update(void)
+{
+    for (const auto& form_type :  d->forms.keys()) {
+        d->visualizationCommands[form_type]->update();
+    }
+}
+
 void gnomonAbstractView::clear(void)
 {
     d->forms.clear();

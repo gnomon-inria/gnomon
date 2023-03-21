@@ -24,10 +24,16 @@ void gnomonAbstractVtkVisualizationCommand::setView(gnomonAbstractView *view)
 
 void gnomonAbstractVtkVisualizationCommand::setVisualizationParameters(const QVariantMap &parameters)
 {
-    auto &&visu = std::static_pointer_cast<gnomonAbstractVtkVisualization>(this->visu);
-    visu->clearConnections();
-    visu->clear();
+    this->clear();
     visu->setView(this->_view);
     visu->setVisuParameters(parameters);
     this->update();
+}
+
+void gnomonAbstractVtkVisualizationCommand::clear(void)
+{
+    auto &&visu = std::static_pointer_cast<gnomonAbstractVtkVisualization>(this->visu);
+    visu->disconnect();
+    visu->clearConnections();
+    gnomonAbstractVisualizationCommand::clear();
 }

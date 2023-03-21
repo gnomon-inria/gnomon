@@ -93,10 +93,6 @@ public:
     QMap<gnomonVtkView::Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > to_export;
-
-    QMap<QString, std::shared_ptr<gnomonAbstractVtkVisualization> > formVisualization;
-    QMap<QString, QJsonObject > visualization_description;
     VtkViewParameters viewParameters;
 
 public:
@@ -274,7 +270,6 @@ void gnomonVtkViewPrivate::setFormVisualization(const QString& form_type, const 
     q->d->visualizationCommands[form_type]->setForm(q->form(form_type));
     q->d->visualizationCommands[form_type]->setFormVisualization(visu_name, visu_parameters);
     auto&& visu = q->d->visualizationCommands[form_type]->visualization();
-    this->formVisualization[form_type] = std::static_pointer_cast<gnomonAbstractVtkVisualization>(visu);
     emit q->formVisualizationChanged();
 
     viewParameters.visuSelected[form_type] = visu_name;
@@ -444,11 +439,9 @@ void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
 
 gnomonVtkView::~gnomonVtkView(void)
 {
-    for(auto&& form_visu :  dd->formVisualization) {
-        if(form_visu && form_visu->view() == this)
-            form_visu->clear();
+    for(const auto& form_type : d->forms.keys()) {
+        d->visualizationCommands[form_type]->clear();
     }
-     dd->formVisualization.clear();
     delete dd;
 }
 
@@ -708,27 +701,23 @@ void gnomonVtkView::disconnectTime() {
 
 void gnomonVtkView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVtkVisualization> visualization)
 {
-    QString form_name = form->formName();
-    if (d->acceptForms[form_name]) {
+    QString form_type = form->formName();
+    if (d->acceptForms[form_type]) {
         QString visu_name;
         QVariantMap parameters;
-
-        if(visualization) {
+        if (visualization) {
             visu_name = visualization->pluginName();
             parameters = visualization->visuParameters();
         } else {
-            if (dd->formVisualization.contains(form_name) &&  dd->formVisualization[form_name]) {
-                std::shared_ptr<gnomonAbstractVtkVisualization> current_visu =  dd->formVisualization[form_name];
-                visu_name = current_visu->pluginName();
-                parameters = current_visu->visuParameters();
-            } else {
-                visu_name = d->visualizationCommands[form_name]->algorithmName();
+            visu_name = d->visualizationCommands[form_type]->algorithmName();
+            if (d->forms.contains(form_type)) {
+                parameters = d->visualizationCommands[form_type]->visualizationParameters();
             }
         }
 
-        d->forms[form_name] = form;
-        dd->setFormVisualization(form_name, visu_name, parameters);
-        emit formAdded(form_name);
+        d->forms[form_type] = form;
+        dd->setFormVisualization(form_type, visu_name, parameters);
+        emit formAdded(form_type);
     } else {
         emit badFormDropped(form->formName(), acceptedForms().join(", "));
     }
@@ -847,22 +836,15 @@ void gnomonVtkView::setFormVisuName(const QString& name, const QString& visu_nam
     }
 }
 
-void gnomonVtkView::removeForm(const QString& name)
+void gnomonVtkView::removeForm(const QString& form_type)
 {
-    if ( dd->formVisualization.contains(name)) {
-        if ( dd->formVisualization[name]) {
-             dd->formVisualization[name]->disconnect();
-             dd->formVisualization[name]->clearConnections();
-             dd->formVisualization[name]->clear();
-        }
-    }
-     dd->formVisualization.remove(name);
-    if (d->forms.contains(name)) {
-        QString visu_name = d->visualizationCommands[name]->algorithmName();
+    if (d->forms.contains(form_type)) {
+        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
         dd->viewParameters.parameters.remove(visu_name);
+        d->visualizationCommands[form_type]->clear();
     }
-    d->forms.remove(name);
-    dd->viewParameters.visuSelected.remove(name);
+    d->forms.remove(form_type);
+    dd->viewParameters.visuSelected.remove(form_type);
 
     dd->updateFormsTimes();
 
@@ -1011,25 +993,12 @@ void gnomonVtkView::render(void)
     dd->interactor()->Render();
 }
 
-void gnomonVtkView::update(void)
-{
-    for (const auto& form_type :  d->forms.keys()) {
-        d->visualizationCommands[form_type]->update();
-    }
-}
-
 void gnomonVtkView::clear(void)
 {
-    for (auto fv : dd->formVisualization) {
-        fv->disconnect();
-        fv->clearConnections();
-        fv->clear();
-    }
-    dd->formVisualization.clear();
-
     for (const auto & form_type : d->forms.keys()) {
         QString visu_name = d->visualizationCommands[form_type]->algorithmName();
         dd->viewParameters.parameters.remove(visu_name);
+        d->visualizationCommands[form_type]->clear();
     }
     dd->viewParameters.visuSelected.clear();
 
@@ -1040,8 +1009,8 @@ void gnomonVtkView::clear(void)
 }
 
 void gnomonVtkView::startPicking() {
-    if(! dd->formVisualization["gnomonCellImage"] ||
-        dd->formVisualization["gnomonCellImage"]->pluginName() != "CellImageVtkVisualizationMarchingCubes") {
+    if(!d->forms.contains("gnomonCellImage") ||
+        d->visualizationCommands["gnomonCellImage"]->algorithmName() != "CellImageVtkVisualizationMarchingCubes") {
         qWarning() << "Picking not implemented for : "
                    <<  d->visualizationCommands["gnomonCellImage"]->algorithmName()
                    << " only CellImageVtkVisualizationMarchingCubes has picking";
@@ -1051,7 +1020,7 @@ void gnomonVtkView::startPicking() {
     // backup old interactor style
     dd->old_style = dd->interactor()->GetInteractorStyle();
 
-    dd->picking_visu = std::dynamic_pointer_cast<gnomonAbstractCellImageVtkVisualization>( dd->formVisualization["gnomonCellImage"]);
+    dd->picking_visu = std::dynamic_pointer_cast<gnomonAbstractCellImageVtkVisualization>(d->visualizationCommands["gnomonCellImage"]->visualization());
 
     if(dd->mode == gnomonVtkView::VIEW_MODE_3D) {
         dd->picking_visu->on3D();

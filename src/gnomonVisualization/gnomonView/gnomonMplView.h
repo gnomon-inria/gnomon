@@ -59,7 +59,6 @@ public:
 
 public slots:
     void render(void) override;
-    void update(void) override;
     void clear(void) override;
 
 private:

@@ -55,8 +55,6 @@ public slots:
     void clear(void);
 
 public:
-    QMap<QString, std::shared_ptr<gnomonAbstractMplVisualization> > formVisualization;
-
     MplViewParameters viewParameters;
 
 public:
@@ -92,14 +90,6 @@ gnomonMplViewPrivate::~gnomonMplViewPrivate(void)
 {
 }
 
-/*void gnomonMplViewPrivate::exportToManager(void)
-{
-    for (const auto& key : this->forms.keys()) {
-        gnomonFormManager::instance()->addForm(this->forms[key], this->formVisualization[key]);
-        q->emit exportedForm(this->forms[key]);
-    }
-}*/
-
 void gnomonMplViewPrivate::saveFigure(const QString& path)
 {
     /*QSettings settings("inria", "gnomon");
@@ -132,28 +122,28 @@ void gnomonMplViewPrivate::clear(void)
     }
 }
 
-void gnomonMplViewPrivate::updateFormVisualization(const QString& name)
+void gnomonMplViewPrivate::updateFormVisualization(const QString& form_type)
 {
-    auto&& visu = this->formVisualization[name];
-    auto&& form = q->form(name);
+    auto&& visu = q->d->visualizationCommands[form_type]->visualization();
+    auto&& form = q->form(form_type);
    
     visu->setView(q);
 
     bool update = false;
 
-    if (name == "gnomonDataFrame") {
+    if (form_type == "gnomonDataFrame") {
         auto formVisualizationDataFrame = std::dynamic_pointer_cast<gnomonAbstractDataFrameMplVisualization>(visu);
         if (formVisualizationDataFrame->dataFrame() != std::dynamic_pointer_cast<gnomonDataFrameSeries>(form)->current()) {
             formVisualizationDataFrame->setDataFrame(std::dynamic_pointer_cast<gnomonDataFrameSeries>(form)->current());
             update = true;
         }
-    } else if (name == "gnomonLString") {
+    } else if (form_type == "gnomonLString") {
         auto formLStringVtkVisualization = std::dynamic_pointer_cast<gnomonAbstractLStringMplVisualization>(visu);
         if (formLStringVtkVisualization->lString() != std::dynamic_pointer_cast<gnomonLStringSeries>(form)->current()) {
             formLStringVtkVisualization->setLString(std::dynamic_pointer_cast<gnomonLStringSeries>(form)->current());
             update = true;
         }
-    } else if (name == "gnomonTree") {
+    } else if (form_type == "gnomonTree") {
         auto formVisualizationTree = std::dynamic_pointer_cast<gnomonAbstractTreeMplVisualization>(visu);
         if (formVisualizationTree->tree() != std::dynamic_pointer_cast<gnomonTreeSeries>(form)->current()) {
             formVisualizationTree->setTree(std::dynamic_pointer_cast<gnomonTreeSeries>(form)->current());
@@ -188,7 +178,6 @@ void gnomonMplViewPrivate::setFormVisualization(const QString& form_type, const 
     q->d->visualizationCommands[form_type]->setForm(q->form(form_type));
     q->d->visualizationCommands[form_type]->setFormVisualization(visu_name, visu_parameters);
     auto&& visu = q->d->visualizationCommands[form_type]->visualization();
-    this->formVisualization[form_type] = std::static_pointer_cast<gnomonAbstractMplVisualization>(visu);
     emit q->formVisualizationChanged();
 
     viewParameters.visuSelected[form_type] = visu_name;
@@ -333,22 +322,17 @@ gnomonMplView::~gnomonMplView(void)
 // TODO: introduce a command pattern
 void gnomonMplView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVisualization> visualization)
 {
-    QString form_name = form->formName();
-    if (d->acceptForms[form_name]) {
-        QString visu_name;
+    QString form_type = form->formName();
+    if (d->acceptForms[form_type]) {
         QVariantMap parameters;
-
-        if (dd->formVisualization.contains(form_name) &&  dd->formVisualization[form_name]) {
-            std::shared_ptr<gnomonAbstractMplVisualization> current_visu =  dd->formVisualization[form_name];
-            visu_name = current_visu->pluginName();
-            parameters = current_visu->visuParameters();
-        } else {
-            visu_name = d->visualizationCommands[form_name]->algorithmName();
+        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
+        if (d->forms.contains(form_type)) {
+            parameters = d->visualizationCommands[form_type]->visualizationParameters();
         }
 
-        d->forms[form_name] = form;
-        dd->setFormVisualization(form_name, visu_name, parameters);
-        emit formAdded(form_name);
+        d->forms[form_type] = form;
+        dd->setFormVisualization(form_type, visu_name, parameters);
+        emit formAdded(form_type);
     } else {
         // TODO: restore the adaption mechanism
         // this->setAdaptedForm(form_name, form);
@@ -394,10 +378,10 @@ void gnomonMplView::setIsModifiedForm(const QString& name)
 
 void gnomonMplView::updateVisualizations(void)
 {
-    for (const auto& name : dd->formVisualization.keys()) {
-        if (dd->formModified[name]) {
-            dd->formVisualization[name]->update();
-            dd->formModified[name] = false;
+    for (const auto& form_type : d->forms.keys()) {
+        if (dd->formModified[form_type]) {
+            d->visualizationCommands[form_type]->update();
+            dd->formModified[form_type] = false;
         }
     }
 }
@@ -409,25 +393,17 @@ void gnomonMplView::setFormVisuName(const QString& name, const QString& visu_nam
     }
 }
 
-// TODO: introduce a command pattern
-void gnomonMplView::removeForm(const QString& name)
+void gnomonMplView::removeForm(const QString& form_type)
 {
-    if (dd->formVisualization.contains(name)) {
-        if (dd->formVisualization[name]) {
-            dd->formVisualization[name]->disconnect();
-            dd->formVisualization[name]->clear();
-        }
-    }
-    dd->formVisualization.remove(name);
-
-    if (d->forms.contains(name)) {
-        QString visu_name = d->visualizationCommands[name]->algorithmName();
+    if (d->forms.contains(form_type)) {
+        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
         dd->viewParameters.parameters.remove(visu_name);
+        d->visualizationCommands[form_type]->clear();
     }
-    dd->viewParameters.visuSelected.remove(name);
-    dd->formModified.remove(name);
+    dd->viewParameters.visuSelected.remove(form_type);
+    dd->formModified.remove(form_type);
 
-    gnomonAbstractView::removeForm(name);
+    gnomonAbstractView::removeForm(form_type);
 }
 
 void gnomonMplView::render(void)
@@ -435,23 +411,8 @@ void gnomonMplView::render(void)
     dd->render();
 }
 
-void gnomonMplView::update(void)
-{
-     for (const auto& key : dd->formVisualization.keys()) {
-         dd->formVisualization[key]->update();
-     }
-}
-
 void gnomonMplView::clear(void)
 {
-    for (auto name : dd->formVisualization.keys()) {
-        if (dd->formVisualization[name]) {
-            dd->formVisualization[name]->disconnect();
-            dd->formVisualization[name]->clear();
-        }
-    }
-    dd->formVisualization.clear();
-
     for (const auto & form_type : d->forms.keys()) {
         QString visu_name = d->visualizationCommands[form_type]->algorithmName();
         dd->viewParameters.parameters.remove(visu_name);

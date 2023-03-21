@@ -28,8 +28,9 @@ public:
     virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
     virtual void removeForm(const QString& name);
 
+public slots:
     virtual inline void render(void) {}
-    virtual inline void update(void) {}
+    virtual void update(void);
     virtual void clear(void);
 
 public:
