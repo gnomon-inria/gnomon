@@ -121,6 +121,5 @@ void gnomonAbstractVisualizationCommand::disconnectVisualization(void)
         this->visu->disconnect();
         this->visu->clearConnections();
         this->visu->clear();
-        this->visu->deleteLater();
     }
 }

@@ -79,6 +79,9 @@ gnomonAbstractView::gnomonAbstractView(QObject *parent): QObject(parent)
 
 gnomonAbstractView::~gnomonAbstractView(void)
 {
+    for (auto command : d->visualizationCommands) {
+        command->disconnectVisualization();
+    }
     delete d;
 }
 
@@ -152,7 +155,7 @@ void gnomonAbstractView::clear(void)
     for (const auto & form_type : d->forms.keys()) {
         QString visu_name = d->visualizationCommands[form_type]->algorithmName();
         d->viewParameters.parameters.remove(visu_name);
-        d->visualizationCommands[form_type]->clear();
+        d->visualizationCommands[form_type]->disconnectVisualization();
     }
     d->viewParameters.visuSelected.clear();
 
