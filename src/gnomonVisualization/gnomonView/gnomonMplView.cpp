@@ -46,22 +46,19 @@ public:
      gnomonMplViewPrivate(QObject *parent = Q_NULLPTR);
     ~gnomonMplViewPrivate(void);
 
+public slots:
+    void saveFigure(const QString& path);
+    void clearFigure(void);
+    void renderFigure(void);
+
+public slots:
+    void adaptForm(const QString& adapter_plugin);
+
 public:
     gnomonMplView *q = nullptr;
 
-public slots:
-    void saveFigure(const QString& path);
-
-    void clear(void);
-
-public:
-    QMap<QString, bool> formModified;
-
 public:
     int figureNumber;
-
-public slots:
-    void render(void);
 
 public:
     QMap<QString, QMap<QString, gnomonAbstractAdapterCommand *> > adapterCommands;
@@ -70,8 +67,6 @@ public:
 
     std::shared_ptr<gnomonAbstractDynamicForm> form_to_adapt = nullptr;
 
-public slots:
-    void adaptForm(const QString& adapter_plugin);
 };
 
 gnomonMplViewPrivate::gnomonMplViewPrivate(QObject *parent) : QObject(parent)
@@ -106,7 +101,7 @@ void gnomonMplViewPrivate::saveFigure(const QString& path)
 
 }
 
-void gnomonMplViewPrivate::clear(void)
+void gnomonMplViewPrivate::clearFigure(void)
 {
     if (this->figureNumber != -1) {
         int stat;
@@ -115,7 +110,7 @@ void gnomonMplViewPrivate::clear(void)
     }
 }
 
-void gnomonMplViewPrivate::render(void)
+void gnomonMplViewPrivate::renderFigure(void)
 {
     if (this->figureNumber != -1) {
         int stat;
@@ -223,44 +218,12 @@ gnomonMplView::gnomonMplView(QObject *parent) : gnomonAbstractView(parent)
         this->render();
         emit formsChanged();
     });
-
-    // just need to find a signal that's actually emitted when a parameter changes :|
-    connect(this, &gnomonMplView::formVisuParametersChanged, [=] () {
-        for (const auto& form_type : d->forms.keys()) {
-            const auto& visu_name = d->visualizationCommands[form_type]->algorithmName();
-            d->viewParameters.parameters[visu_name] = d->visualizationCommands[form_type]->visualizationParameters();
-        }
-    });
 }
 
 gnomonMplView::~gnomonMplView(void)
 {
     delete dd;
 }
-
-// TODO: introduce a command pattern
-void gnomonMplView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVisualization> visualization)
-{
-    QString form_type = form->formName();
-    if (d->acceptForms[form_type]) {
-        QVariantMap parameters;
-        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
-        if (d->forms.contains(form_type)) {
-            parameters = d->visualizationCommands[form_type]->visualizationParameters();
-        }
-
-        d->forms[form_type] = form;
-        d->setFormVisualization(form_type, visu_name, parameters);
-        emit formAdded(form_type);
-    } else {
-        // TODO: restore the adaption mechanism
-        // this->setAdaptedForm(form_name, form);
-        emit badFormDropped(form->formName(), acceptedForms().join(", "));
-    }
-    return;
-
-}
-
 
 void gnomonMplView::setAdaptedForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractMplVisualization> visualization)
 {
@@ -287,62 +250,15 @@ void gnomonMplView::setAdaptedForm(const QString& name, std::shared_ptr<gnomonAb
         }
     }
 }
-
-
-void gnomonMplView::setIsModifiedForm(const QString& name)
-{
-    dd->formModified[name] = true;
-    this->updateVisualizations();
-}
-
-void gnomonMplView::updateVisualizations(void)
-{
-    for (const auto& form_type : d->forms.keys()) {
-        if (dd->formModified[form_type]) {
-            d->visualizationCommands[form_type]->update();
-            dd->formModified[form_type] = false;
-        }
-    }
-}
-
-void gnomonMplView::setFormVisuName(const QString& form_type, const QString& visu_name)
-{
-    if (d->forms.contains(form_type)) {
-        d->setFormVisualization(form_type, visu_name);
-    }
-}
-
-void gnomonMplView::removeForm(const QString& form_type)
-{
-    if (d->forms.contains(form_type)) {
-        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
-        d->viewParameters.parameters.remove(visu_name);
-        d->visualizationCommands[form_type]->clear();
-    }
-    d->viewParameters.visuSelected.remove(form_type);
-    dd->formModified.remove(form_type);
-
-    gnomonAbstractView::removeForm(form_type);
-}
-
 void gnomonMplView::render(void)
 {
-    dd->render();
+    dd->renderFigure();
 }
 
 void gnomonMplView::clear(void)
 {
-    for (const auto & form_type : d->forms.keys()) {
-        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
-        d->viewParameters.parameters.remove(visu_name);
-    }
-    d->viewParameters.visuSelected.clear();
-
-    dd->formModified.clear();
-
-    dd->clear();
-
     gnomonAbstractView::clear();
+    dd->clearFigure();
 }
 
 int gnomonMplView::figureNumber(void)
@@ -354,23 +270,6 @@ void gnomonMplView::setFigureNumber(int num)
 {
     dd->figureNumber = num;
     emit figureNumberChanged(num);
-}
-
-void gnomonMplView::notifyFormSelected(int index, QString form_type) {
-    d->viewParameters.currentFormIndex = index;
-    d->viewParameters.currentFormType = std::move(form_type);
-}
-
-int gnomonMplView::lastFormIndexSelected() {
-    return d->viewParameters.currentFormIndex;
-}
-
-QString gnomonMplView::lastFromTypeSelected() {
-    return d->viewParameters.currentFormType;
-}
-
-QString gnomonMplView::lastVisuSelected(QString form_type) {
-    return d->viewParameters.visuSelected[form_type];
 }
 
 // ///////////////////////////////////////////////////////////////////

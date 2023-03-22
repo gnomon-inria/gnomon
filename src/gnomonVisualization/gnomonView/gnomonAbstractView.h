@@ -7,6 +7,7 @@
 #include <QtGui>
 
 class gnomonAbstractDynamicForm;
+class gnomonDynamicFormMetadata;
 class gnomonAbstractVisualization;
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractView : public QObject
@@ -26,12 +27,12 @@ public:
 public:
     virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr);
     virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
-    virtual void removeForm(const QString& name);
+    virtual void removeForm(const QString& form_type);
 
 public slots:
-    virtual inline void render(void) {}
-    virtual void update(void);
-    virtual void clear(void);
+    virtual inline void render(void) {} // refresh the display of the view
+    virtual void update(void); // update the visualizations of the displayed forms
+    virtual void clear(void); // remove all displayed forms and their visualizations
 
 public:
     QStringList nodePortNames(void);
@@ -40,6 +41,7 @@ public:
 public slots:
     virtual void drop(int);
     virtual void transmit(void);
+    virtual void restoreState(void);
 
 public slots:
     virtual void setAcceptForm(const QString&, bool);
@@ -54,14 +56,23 @@ public:
     virtual bool empty(void);
 
 public:
-    Q_INVOKABLE QString formVisuName(const QString& name);
-    Q_INVOKABLE QVariantList formVisualizations(const QString& name);
+    Q_INVOKABLE QString formVisuName(const QString& form_type);
+    Q_INVOKABLE void setFormVisuName(const QString& form_type, const QString& visu_name);
+    Q_INVOKABLE QVariantList formVisualizations(const QString& form_type);
 
-    Q_INVOKABLE QJSValue formVisuParameters(const QString& name);
-    Q_INVOKABLE QVariant formVisuParameter(const QString& name, const QString& parameter_name);
-    Q_INVOKABLE void setFormVisuParameter(const QString& name, const QString& parameter_name, const QVariant& value);
+    Q_INVOKABLE gnomonDynamicFormMetadata* formMetadata(const QString& form_type);
 
-    Q_INVOKABLE void setFormVisible(const QString& name, bool visible);
+    Q_INVOKABLE QJSValue formVisuParameters(const QString& form_type);
+    Q_INVOKABLE QVariant formVisuParameter(const QString& form_type, const QString& parameter_name);
+    Q_INVOKABLE void setFormVisuParameter(const QString& form_type, const QString& parameter_name, const QVariant& value);
+
+    Q_INVOKABLE void setFormVisible(const QString& form_type, bool visible);
+
+public:
+    Q_INVOKABLE void notifyFormSelected(int index, QString form_type);
+    Q_INVOKABLE int lastFormIndexSelected();
+    Q_INVOKABLE QString lastFromTypeSelected();
+    Q_INVOKABLE QString lastVisuSelected(QString form_type);
 
 signals:
     void exportedForm(std::shared_ptr<gnomonAbstractDynamicForm> );
@@ -73,7 +84,7 @@ signals:
     void formVisuParametersChanged(void);
     void formVisualizationChanged(void);
 
-    void badFormDropped(QString badFormName, QString acceptedForms);
+    void badFormDropped(const QString& form_type, const QString& acceptedForms);
 
 public:
     class gnomonAbstractViewPrivate *d;

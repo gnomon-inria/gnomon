@@ -117,7 +117,6 @@ public slots:
     void disconnectTime();
 
 public:
-    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> ,std::shared_ptr<gnomonAbstractVtkVisualization> visualization=nullptr);
     void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>);
 
     bool synced(void);
@@ -136,13 +135,6 @@ public:
 public slots:
     void drop(int) override;
     void removeForm(const QString& name) override;
-
-public:
-    //Q_INVOKABLE QList<gnomonPluginData *> formVisualizations(const QString& name);
-    Q_INVOKABLE void setFormVisuName(const QString& name, const QString& visu_name);
-
-
-    Q_INVOKABLE gnomonDynamicFormMetadata* formMetadata(const QString& name);
 
 public:
     vtkRenderer *renderer2D(void);
@@ -209,17 +201,8 @@ public slots:
 public slots:
     void setEnableMenus(bool);
 
-public:
-    Q_INVOKABLE void notifyFormSelected(int index, QString form_type);
-    Q_INVOKABLE int lastFormIndexSelected();
-    Q_INVOKABLE QString lastFromTypeSelected();
-    Q_INVOKABLE QString lastVisuSelected(QString form_type);
-
 public slots:
     void updateShortcutKeys(void);
-
-public slots:
-    void restoreState(void);
 
 private:
     class gnomonVtkViewPrivate *dd;

@@ -42,9 +42,9 @@ signals:
     void parametersChanged(void);
 
 public slots:
-    virtual void update(void) = 0;
-    virtual void render(void) = 0;
-    virtual void clear(void) = 0;
+    virtual void update(void) = 0; // update the form visualization display in its view
+    virtual void render(void) = 0; // refresh the view where the visualization is displayed
+    virtual void clear(void) = 0; // remove the form visualization from its view
     virtual inline void clearConnections(void) {  };
 
 public slots:

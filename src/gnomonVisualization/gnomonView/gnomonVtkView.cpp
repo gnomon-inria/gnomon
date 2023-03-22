@@ -364,23 +364,11 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
         int index = gnomonFormManager::instance()->formIndex(form);
         gnomonFormManager::instance()->setCamera(index, dd->renderer3D->GetActiveCamera());
     });
-
-    // just need to find a signal that's actually emitted when a parameter changes :|
-    connect(this, &gnomonVtkView::formVisuParametersChanged, [=] () {
-        for (const auto& form_type : d->forms.keys()) {
-            const auto& visu_name = d->visualizationCommands[form_type]->algorithmName();
-            d->viewParameters.parameters[visu_name] = d->visualizationCommands[form_type]->visualizationParameters();
-        }
-    });
 }
 
-void gnomonVtkView::restoreState(void)
+gnomonVtkView::~gnomonVtkView(void)
 {
-    if (!this->empty()) {
-        for (const auto &form_type :  d->forms.keys()) {
-            d->visualizationCommands[form_type]->setVisualizationParameters(d->viewParameters.parameters[form_type]);
-        }
-    }
+    delete dd;
 }
 
 void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
@@ -395,14 +383,6 @@ void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
 
     dd->updateOrientation();
     dd->updateFormsTimes();
-}
-
-gnomonVtkView::~gnomonVtkView(void)
-{
-    for(const auto& form_type : d->forms.keys()) {
-        d->visualizationCommands[form_type]->clear();
-    }
-    delete dd;
 }
 
 void gnomonVtkView::switchTo3D(void)
@@ -659,31 +639,6 @@ void gnomonVtkView::disconnectTime() {
     disconnect(dd->connectTime);
 }
 
-void gnomonVtkView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVtkVisualization> visualization)
-{
-    QString form_type = form->formName();
-    if (d->acceptForms[form_type]) {
-        QString visu_name;
-        QVariantMap parameters;
-        if (visualization) {
-            visu_name = visualization->pluginName();
-            parameters = visualization->visuParameters();
-        } else {
-            visu_name = d->visualizationCommands[form_type]->algorithmName();
-            if (d->forms.contains(form_type)) {
-                parameters = d->visualizationCommands[form_type]->visualizationParameters();
-            }
-        }
-
-        d->forms[form_type] = form;
-        d->setFormVisualization(form_type, visu_name, parameters);
-        emit formAdded(form_type);
-    } else {
-        emit badFormDropped(form->formName(), acceptedForms().join(", "));
-    }
-    return;
-}
-
 void gnomonVtkView::setAdaptedForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     bool adapter_found = false;
@@ -717,7 +672,6 @@ void gnomonVtkView::setAdaptedForm(const QString& name, std::shared_ptr<gnomonAb
         emit badFormDropped(name ,acceptedForms().join(", "));
     }
 }
-
 
 std::shared_ptr<gnomonBinaryImageSeries> gnomonVtkView::binaryImage(void)
 {
@@ -755,7 +709,6 @@ std::shared_ptr<gnomonImageSeries> gnomonVtkView::image(void)
     }
 }
 
-
 std::shared_ptr<gnomonLStringSeries> gnomonVtkView::lString(void)
 {
     if (d->forms.contains("gnomonLString")) {
@@ -783,34 +736,10 @@ std::shared_ptr<gnomonPointCloudSeries> gnomonVtkView::pointCloud(void)
     }
 }
 
-void gnomonVtkView::setFormVisuName(const QString& name, const QString& visu_name)
-{
-    if (d->forms.contains(name)  && !visu_name.isEmpty()) {
-        if(d->viewParameters.parameters.contains(visu_name)) {
-            // setting the parameters does not work so ignoring it for now
-            // d->setFormVisualization(name, visu_name, d->viewParameters.parameters[visu_name]);
-            d->setFormVisualization(name, visu_name);
-        } else {
-            d->setFormVisualization(name, visu_name);
-        }
-    }
-}
-
 void gnomonVtkView::removeForm(const QString& form_type)
 {
-    if (d->forms.contains(form_type)) {
-        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
-        d->viewParameters.parameters.remove(visu_name);
-        d->visualizationCommands[form_type]->clear();
-    }
-    d->forms.remove(form_type);
-    d->viewParameters.visuSelected.remove(form_type);
-
+    gnomonAbstractView::removeForm(form_type);
     dd->updateFormsTimes();
-
-    this->render();
-
-    emit formsChanged();
 }
 
 void gnomonVtkView::setBounds(double bounds[6])
@@ -955,17 +884,9 @@ void gnomonVtkView::render(void)
 
 void gnomonVtkView::clear(void)
 {
-    for (const auto & form_type : d->forms.keys()) {
-        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
-        d->viewParameters.parameters.remove(visu_name);
-        d->visualizationCommands[form_type]->clear();
-    }
-    d->viewParameters.visuSelected.clear();
-
+    gnomonAbstractView::clear();
     dd->updateFormsTimes();
     this->render();
-
-    gnomonAbstractView::clear();
 }
 
 void gnomonVtkView::startPicking() {
@@ -1009,7 +930,6 @@ void gnomonVtkView::stopPicking() {
 void gnomonVtkView::onSliceChanged(int slice)
 {
     // d->slice_slider->setValue(slice);
-
     Q_UNUSED(slice);
 }
 
@@ -1051,29 +971,6 @@ void gnomonVtkView::drop(int index)
         }
     }
     gnomonAbstractView::drop(index);
-}
-
-gnomonDynamicFormMetadata* gnomonVtkView::formMetadata(const QString &name) {
-    gnomonDynamicFormMetadata *ptr = d->forms[name]->metadata();
-    QQmlEngine::setObjectOwnership(ptr, QQmlEngine::CppOwnership);
-    return ptr;
-}
-
-void gnomonVtkView::notifyFormSelected(int index, QString form_type) {
-    d->viewParameters.currentFormIndex = index;
-    d->viewParameters.currentFormType = std::move(form_type);
-}
-
-int gnomonVtkView::lastFormIndexSelected() {
-    return d->viewParameters.currentFormIndex;
-}
-
-QString gnomonVtkView::lastFromTypeSelected() {
-    return d->viewParameters.currentFormType;
-}
-
-QString gnomonVtkView::lastVisuSelected(QString form_type) {
-    return d->viewParameters.visuSelected[form_type];
 }
 
 // ///////////////////////////////////////////////////////////////////

@@ -77,8 +77,9 @@ QMap<QString, QString> gnomonAbstractVisualizationCommand::parameterGroups() con
 {
     QMap<QString, QString> groups;
     if (this->visu) {
-        return this->visu->parameterGroups();
+        groups = this->visu->parameterGroups();
     }
+    return groups;
 }
 
 void gnomonAbstractVisualizationCommand::update(void)
