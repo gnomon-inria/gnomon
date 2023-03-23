@@ -97,16 +97,6 @@ GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug dbg, gnomonCoreParameterGr
     return dbg.maybeSpace();
 }
 
-extern void connectDTKParameter(dtkCoreParameter* parameter, void (*func)())
-{
-    qDebug()<<Q_FUNC_INFO<<"###########################";
-    parameter->connect([=] (QVariant v) {
-        qDebug()<<"######### Executing Connect_1 ##################";
-        func();
-        qDebug()<<"######### Executing Connect_2 ##################";
-    });
-}
-
 DTK_DEFINE_PARAMETER(gnomonCoreParameterGraphical, g_gparam);
 
 

@@ -25,7 +25,17 @@ public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
-    virtual void refreshParameters(void) {};
+    virtual void updateParameters(void) = 0;
+    virtual inline void connectParameter(dtkCoreParameter *parameter) {
+        parameter->connect([this] (QVariant v) {
+            qDebug()<<Q_FUNC_INFO;
+            this->updateParameters();
+            this->refreshParameters();
+        });
+    };
+    virtual void refreshParameters(void) {
+        qDebug()<<Q_FUNC_INFO<<"Not implemented";
+    };
 public:
     virtual void run(void) = 0;
     virtual void run_async(gnomonAbstractCommand *c) {};

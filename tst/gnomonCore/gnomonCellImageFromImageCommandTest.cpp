@@ -21,6 +21,7 @@ class dummyImageFromImagePlugin : public gnomonAbstractCellImageFromImage {
 public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override { imagefromimage::t_set_parameter_called = true;};
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
+    void updateParameters(void){};
 
 
     void run(void) override{ imagefromimage::t_run_called = true;};

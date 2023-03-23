@@ -69,6 +69,7 @@ void gnomonBinaryImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeri
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(d->input);
+    ((gnomonAbstractBinaryImageFromImage *) this->action)->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonBinaryImageFromImageCommand::input()

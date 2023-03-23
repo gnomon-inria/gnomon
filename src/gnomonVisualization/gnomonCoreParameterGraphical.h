@@ -53,7 +53,6 @@ private:
     class gnomonCoreParameterGraphicalObject *m_object = nullptr;
 
 };
-void connectDTKParameter(dtkCoreParameter* parameter, void (*func)());
 
 GNOMONVISUALIZATION_EXPORT QDataStream& operator << (QDataStream&, const gnomonCoreParameterGraphical&);
 GNOMONVISUALIZATION_EXPORT QDataStream& operator >> (QDataStream&, gnomonCoreParameterGraphical&);
