@@ -873,14 +873,19 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
 
     cls.stop = stop
 
-    def increment(self, increase=1):
+    def set_max_progress(self, v: int):
+        self._max_progress = v
+
+    cls.set_max_progress = set_max_progress
+
+    def increment_progress(self, increase=1):
         """Increment the progress counter by increase and can pause or stop the computation if requested"""
         self._progress += increase
         self._event.wait()
         if self._stop_requested:
             raise InterruptProcess
 
-    cls.increment = increment
+    cls.increment_progress = increment_progress
 
     def progress(self):
         if self._max_progress <= 0 or self._progress < 0:
