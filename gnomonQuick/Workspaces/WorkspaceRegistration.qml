@@ -167,19 +167,6 @@ G.Workspace {
                         d.stackLevel = currentIndex-1
                     }
                 }
-
-                G.Button {
-                    Layout.fillWidth: true;
-
-                    text: "Iterate";
-                    type: G.Style.ButtonType.Base
-                    empty: true
-                    enabled: false;
-
-                    onClicked: {
-                        d.iterate();
-                    }
-                }
             }
         }
 
