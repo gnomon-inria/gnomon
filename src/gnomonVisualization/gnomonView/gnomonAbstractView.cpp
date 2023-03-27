@@ -232,6 +232,10 @@ bool gnomonAbstractView::inputView()
     return d->input_view;
 }
 
+bool gnomonAbstractView::contains(const QString& form_type) {
+    return d->forms.contains(form_type);
+}
+
 bool gnomonAbstractView::empty(void) {
     return d->forms.empty();
 }

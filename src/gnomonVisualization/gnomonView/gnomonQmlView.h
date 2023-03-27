@@ -30,6 +30,8 @@ private:
 
 };
 
+QString transformMatrixString(QVector<QVector<double> > transform_matrix);
+
 // Q_DECLARE_METATYPE(gnomonQmlView *);
 //
 // gnomonQmlView.h ends here

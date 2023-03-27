@@ -53,6 +53,7 @@ public:
     virtual QStringList acceptedForms(void);
     virtual bool inputView(void);
 
+    bool contains(const QString&);
     virtual bool empty(void);
 
 public:
