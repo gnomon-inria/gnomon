@@ -10,7 +10,6 @@
 #include <QtGui>
 
 #include <dtkCore/dtkCoreParameter>
-#include <dtkImagingCore>
 
 
 class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterGraphical : public dtkCoreParameterBase<gnomonCoreParameterGraphical>
