@@ -94,6 +94,7 @@ void gnomonAbstractVisualizationCommand::clear(void)
 {
     if (this->visu) {
         this->visu->clear();
+        this->visu = nullptr;
     }
 }
 
@@ -120,6 +121,5 @@ void gnomonAbstractVisualizationCommand::disconnectVisualization(void)
     if (this->visu) {
         this->visu->disconnect();
         this->visu->clearConnections();
-        this->visu->clear();
     }
 }

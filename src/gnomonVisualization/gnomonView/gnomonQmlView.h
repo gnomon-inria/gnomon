@@ -16,6 +16,8 @@ public:
     gnomonQmlView(QObject *parent = nullptr);
     ~gnomonQmlView(void);
 
+    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr) override;
+
 public:
     Q_PROPERTY(QString dataDict READ dataDict WRITE setDataDict NOTIFY dictChanged);
 

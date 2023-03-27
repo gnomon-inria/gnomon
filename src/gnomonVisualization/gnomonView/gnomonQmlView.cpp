@@ -118,7 +118,7 @@ gnomonQmlView::~gnomonQmlView(void)
     delete dd;
 }
 
-/*void gnomonQmlView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form)
+void gnomonQmlView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVisualization> visu)
 {
     if(std::shared_ptr<gnomonDataDictSeries> dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(form)) {
         if(d->acceptForms["gnomonDataDict"]) {
@@ -132,8 +132,7 @@ gnomonQmlView::~gnomonQmlView(void)
             emit formAdded("gnomonDataDict");
         }       
     }
-}*/
-
+}
 
 QString gnomonQmlView::dataDict(void)
 {
@@ -143,17 +142,10 @@ QString gnomonQmlView::dataDict(void)
 void gnomonQmlView::setDataDict(QString dict)
 {
     dd->data_dict = dict;
-    qDebug()<<Q_FUNC_INFO<<dict;
+    // qDebug()<<Q_FUNC_INFO<<dict;
     emit dictChanged();
 }
 
-bool gnomonViewData::contains(const QString& key) {
-    return d->forms.contains(key);
-}
-
-bool gnomonViewData::empty() {
-    return d->forms.empty();
-}
 // ///////////////////////////////////////////////////////////////////
 
 #include "gnomonQmlView.moc"
