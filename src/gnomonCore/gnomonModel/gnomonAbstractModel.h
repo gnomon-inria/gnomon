@@ -2,13 +2,17 @@
 
 #include <gnomonCoreExport.h>
 
+#include <QtCore>
 #include <dtkCore>
+
 #include "gnomonCore/gnomonCorePlugin.h"
 
 class dtkCoreParameter;
 
-class GNOMONCORE_EXPORT gnomonAbstractModel
+class GNOMONCORE_EXPORT gnomonAbstractModel : public QObject
 {
+    Q_OBJECT
+
 public:
     virtual ~gnomonAbstractModel(void) = default;
 
@@ -16,6 +20,9 @@ public:
     virtual void reset(void) = 0;
     virtual void step(double time, double dt) = 0;
     virtual void run(double timeMin, double timeMax, double dt) = 0;
+
+signals:
+    void modelMessage(QString);
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;

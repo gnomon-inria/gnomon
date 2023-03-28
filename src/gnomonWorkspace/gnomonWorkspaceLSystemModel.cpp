@@ -7,6 +7,8 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonView/gnomonViewForm>
+#include "gnomonCommand/gnomonLString/gnomonLStringEvolutionModelCommand.h"
+#include "gnomonForm/gnomonLString/gnomonLString.h"
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString"
 
 QString vonKochLSystem(void)
@@ -53,6 +55,7 @@ public:
 
 public:
     QString text;
+    QString message;
     int derivationLength = 100;
     int animation_step = 1;
 
@@ -129,6 +132,12 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
         gnomonPipelineManager::instance()->addForm(f);
     });
 
+
+    connect(d->command, &gnomonAbstractEvolutionModelCommand::modelMessage, [=](QString msg) {
+            d->message = msg;
+            this->messageChanged();
+        });
+
     this->setText(vonKochLSystem());
 }
 
@@ -153,6 +162,11 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
 QString gnomonWorkspaceLSystemModel::text(void)
 {
     return d->text;
+}
+
+QString gnomonWorkspaceLSystemModel::message(void) const
+{
+    return d->message;
 }
 
 void gnomonWorkspaceLSystemModel::setText(const QString& text)
@@ -203,6 +217,17 @@ void gnomonWorkspaceLSystemModel::setAnimationStep(int s)
     if (s != d->animation_step) {
         d->animation_step = s;
         emit animationStepChanged(d->animation_step);
+    }
+}
+
+void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
+{
+    bool ok;
+    double t_double = time.toDouble(&ok);
+    if(ok) {
+        d->command->setAnimationTime(t_double);
+    } else {
+        qWarning() << "SetAnimationTime: Cannot convert " << time << " to double";
     }
 }
 
