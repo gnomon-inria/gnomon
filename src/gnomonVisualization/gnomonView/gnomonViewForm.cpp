@@ -442,6 +442,7 @@ void gnomonViewFormPrivate::setFormVisualization(const QString& formType, const 
     auto&& form_visu = this->formVisualization[formType];
 
     if(form_changed) {
+        form_visu->refreshParameters();
         form_visu->clearConnections();
         form_visu->clear();
         form_visu->setView(q);
