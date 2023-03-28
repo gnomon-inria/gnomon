@@ -918,7 +918,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
         return func
 
     for key, value in cls.__dict__.items():
-        if callable(value) and key not in ["increment"]:
+        if callable(value) and key not in ["increment_progress"]:
             setattr(cls, key, wrapper(value))
 
     def pluginName(self):
