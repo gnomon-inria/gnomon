@@ -76,6 +76,7 @@ void gnomonImageFilterCommand::setInput(std::shared_ptr<gnomonImageSeries> input
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
+    ((gnomonAbstractImageFilter *) this->action)->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonImageFilterCommand::input()

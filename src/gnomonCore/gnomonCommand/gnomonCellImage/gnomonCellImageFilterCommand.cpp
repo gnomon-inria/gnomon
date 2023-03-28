@@ -74,6 +74,7 @@ void gnomonCellImageFilterCommand::setInput(std::shared_ptr<gnomonCellImageSerie
         d->input = input;
         Q_ASSERT(this->action);
         ((gnomonAbstractCellImageFilter *) this->action)->setInput(d->input);
+        ((gnomonAbstractCellImageFilter *) this->action)->refreshParameters();
     }
 }
 

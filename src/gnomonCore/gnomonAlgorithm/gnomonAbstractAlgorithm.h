@@ -30,7 +30,6 @@ public:
         parameter->connect([this] (QVariant v) {
             qDebug()<<Q_FUNC_INFO;
             this->updateParameters();
-            this->refreshParameters();
         });
     };
     virtual void refreshParameters(void) {

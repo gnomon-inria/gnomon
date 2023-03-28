@@ -59,6 +59,7 @@ void gnomonCellComplexAdapterCommand::setInput(std::shared_ptr<gnomonCellComplex
         d->input = input;
         Q_ASSERT(this->action);
         ((gnomonAbstractCellComplexAdapter *) this->action)->setInput(d->input);
+        ((gnomonAbstractCellComplexAdapter *) this->action)->refreshParameters();
     }
 }
 

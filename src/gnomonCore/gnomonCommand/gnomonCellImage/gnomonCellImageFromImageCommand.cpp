@@ -73,6 +73,7 @@ void gnomonCellImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->image_series);
+    ((gnomonAbstractCellImageFromImage *) this->action)->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonCellImageFromImageCommand::input()

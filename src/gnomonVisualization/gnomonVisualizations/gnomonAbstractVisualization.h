@@ -37,6 +37,9 @@ public:
             this->updateParameters();
         });
     };
+    virtual void refreshParameters(void) {
+            qDebug()<<Q_FUNC_INFO<<"Not implemented";
+    };
 
 public:
     gnomonViewForm* view(void);
