@@ -22,6 +22,8 @@ from matplotlib import animation
 from matplotlib.backend_bases import MouseButton, PickEvent
 from gnomon.utils.matplotlib_tools import gnomon_figure
 
+from PySide6.QtCore import QSettings
+
 class VisConfig(vis.VisConfigAbstract):
     """ Configuration class for Matplotlib visualization module.
 
@@ -139,6 +141,9 @@ class VisCurve2D(vis.VisAbstract):
         self.is_function = is_function
         self.fig_number = -1
         self.press: Optional[tuple[float, float]] = None
+        self.ctrl_color="blue"
+        self.eval_color="royalblue"
+        self.qsettings = QSettings(QSettings.IniFormat ,QSettings.UserScope, "inria", "gnomon")
 
     def setFigureNumber(self, fig_number):
         self.fig = gnomon_figure(fig_number)
@@ -153,24 +158,36 @@ class VisCurve2D(vis.VisAbstract):
         legend_proxy = []
         legend_names = []
 
-        # Draw control points polygon and the curve
-        #self.fig = plt.figure(num=self.fig_number, figsize=self._config.figure_size, dpi=self._config.figure_dpi)
         self.ax = self.fig.gca()
         self.bg = self.fig.canvas.copy_from_bbox(self.fig.bbox)
+
+        if self.qsettings.value("variant") == "DARK":
+            self.ax.set_facecolor("black")
+            self.fig.set_facecolor("black")
+            self.ctrl_color="coral"
+            self.eval_color="lightcoral"
+
+            self.ax.xaxis.label.set_color('w')        #setting up X-axis label color to yellow
+            self.ax.yaxis.label.set_color('w')          #setting up Y-axis label color to blue
+            self.ax.tick_params(axis='x', colors='w')    #setting up X-axis tick color to red
+            self.ax.tick_params(axis='y', colors='w')  #setting up Y-axis tick color to black
+        self.ax.grid(alpha=0.3)
+
 
         # Start plotting
         for plot in self._plots:
             pts = np.array(plot['ptsarr'])
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o',
-                                            picker=True, pickradius=5)
+                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=self.ctrl_color,
+                                            linestyle='-.', marker='o', picker=True, pickradius=5)
                 legend_proxy.append(self.cpplot)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                self.curveplt, = self.ax.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-')
+                self.curveplt, = self.ax.plot(pts[:, 0], pts[:, 1], color=self.eval_color,
+                                              linestyle='-')
                 legend_proxy.append(self.curveplt)
                 legend_names.append(plot['name'])
 
@@ -184,8 +201,6 @@ class VisCurve2D(vis.VisAbstract):
 
         # Set aspect ratio
         self.ax.set_aspect('auto')
-        ## interactor
-
 
         def get_ind_under_point(event):
             'get the index of the vertex under point if within epsilon tolerance'
