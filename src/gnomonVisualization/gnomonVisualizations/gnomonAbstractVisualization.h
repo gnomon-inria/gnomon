@@ -30,16 +30,9 @@ public:
 public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
     virtual void setParameters(const dtkCoreParameters&) = 0;
-    virtual void updateParameters(void) = 0;
-    virtual inline void connectParameter(dtkCoreParameter *parameter) {
-        parameter->connect([this] (QVariant v) {
-            qDebug()<<Q_FUNC_INFO;
-            this->updateParameters();
-        });
-    };
-    virtual void refreshParameters(void) {
-            qDebug()<<Q_FUNC_INFO<<"Not implemented";
-    };
+    virtual void connectParameter(dtkCoreParameter *parameter);
+    virtual void refreshParameters(void);
+    virtual void updateParameters(const QString& sender_label = "");
 
 public:
     gnomonViewForm* view(void);

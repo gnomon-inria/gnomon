@@ -19,7 +19,6 @@ class dummyImageReaderPlugin : public gnomonAbstractImageReader {
 public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {};
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
-    void updateParameters(void){};
 
     void run(void) override{ reader::t_run_called = true;};
     QString documentation(void) override {return "empty";};

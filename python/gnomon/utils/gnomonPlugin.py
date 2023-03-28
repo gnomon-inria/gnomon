@@ -329,12 +329,6 @@ def gnomonParametric(cls):
 
     cls.parameterGroups = parameterGroups
 
-    if hasattr(cls, 'updateParameters'):
-        if not callable(cls.updateParameters):
-            def updateParameters(self):
-                pass
-            setattr(cls, "updateParameters", updateParameters)
-
     return cls
 
 
