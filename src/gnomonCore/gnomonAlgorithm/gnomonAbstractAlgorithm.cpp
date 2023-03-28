@@ -2,15 +2,16 @@
 #include "gnomonCommand/gnomonAbstractAdapterCommand.h"
 #include "gnomonCore.h"
 
-void gnomonAbstractAlgorithm::connectParameter(dtkCoreParameter *parameter) {
-    parameter->connect([this] (QVariant v) {
-        qDebug()<<Q_FUNC_INFO;
-        dtkCoreParameterInList<QString> propertyParameter = v.value<dtkCoreParameterInList<QString>>();
-        QString sender_label = propertyParameter.label();
-        this->updateParameters(sender_label);
-    });
+void gnomonAbstractAlgorithm::connectParameter(const QString& parameter_name)
+{
+    dtkCoreParameters params = this->parameters();
+    dtkCoreParameter *parameter = params.value(parameter_name, nullptr);
+    if (parameter) {
+        parameter->connect([=]() {
+            this->updateParameters(parameter_name);
+        });
+    }
 }
-
 void gnomonAbstractAlgorithm::refreshParameters(void) {
     qDebug()<<Q_FUNC_INFO<<"Not implemented";
 }

@@ -131,20 +131,22 @@ QImage gnomonAbstractVisualization::offscreenImageRendering(void)
     return image;
 }
 
-void gnomonAbstractVisualization::connectParameter(dtkCoreParameter *parameter) {
-    parameter->connect([this] (QVariant v) {
-        qDebug()<<Q_FUNC_INFO;
-        dtkCoreParameterInList<QString> propertyParameter = v.value<dtkCoreParameterInList<QString>>();
-        QString sender_label = propertyParameter.label();
-        this->updateParameters(sender_label);
-    });
+void gnomonAbstractVisualization::connectParameter(const QString& parameter_name)
+{
+    dtkCoreParameters params = this->parameters();
+    dtkCoreParameter *parameter = params.value(parameter_name, nullptr);
+    if (parameter) {
+        parameter->connect([=]() {
+            this->updateParameters(parameter_name);
+        });
+    }
 }
 
 void gnomonAbstractVisualization::refreshParameters(void) {
     qDebug()<<Q_FUNC_INFO<<"Not implemented";
 }
 
-void gnomonAbstractVisualization::updateParameters(const QString& sender_label) {
+void gnomonAbstractVisualization::updateParameters(const QString& sender_name) {
     qDebug()<<Q_FUNC_INFO<<"Not implemented";
 }
 //
