@@ -137,6 +137,10 @@ G.Workspace {
                     }
 
                     viewLogic: d.targetDict;
+
+                    onDroppedFromManager: (index) => {
+                        d.targetDict.drop(index);
+                    }
                 }
 
                 Label {
@@ -161,18 +165,6 @@ G.Workspace {
 
                     onCurrentIndexChanged: {
                         d.stackLevel = currentIndex-1
-                    }
-                }
-
-                G.Button {
-                    Layout.fillWidth: true;
-
-                    text: "Iterate";
-                    type: G.Style.ButtonType.Base
-                    empty: true
-
-                    onClicked: {
-                        d.iterate();
                     }
                 }
             }
