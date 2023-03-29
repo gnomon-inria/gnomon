@@ -43,6 +43,7 @@ public:
 
     int animationStep(void) const;
     void setAnimationStep(int);
+    void setAnimationTime(double t);
 
     SimulationType simulationType;
 
