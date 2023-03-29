@@ -76,10 +76,10 @@ void gnomonPointCloudQuantificationCommand::setImage(std::shared_ptr<gnomonImage
         d->image = nullptr;
     } else {
         d->image = image;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(d->image);
-        this->action->refreshParameters();
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(d->image);
+    this->action->refreshParameters();
 }
 
 void gnomonPointCloudQuantificationCommand::setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud)
@@ -88,11 +88,10 @@ void gnomonPointCloudQuantificationCommand::setPointCloud(std::shared_ptr<gnomon
         d->input_pointCloud = nullptr;
     } else {
         d->input_pointCloud = pointCloud;
-
-        Q_ASSERT(this->action);
-        ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(d->input_pointCloud);
-        this->action->refreshParameters();
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(d->input_pointCloud);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonPointCloudSeries> gnomonPointCloudQuantificationCommand::pointCloud()

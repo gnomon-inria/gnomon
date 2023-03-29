@@ -63,10 +63,10 @@ void gnomonMeshFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries> inp
         d->input = nullptr;
     } else {
         d->input = input;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractMeshFromImage *) this->action)->setInput(d->input);
-        this->action->refreshParameters();
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractMeshFromImage *) this->action)->setInput(d->input);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonMeshFromImageCommand::input()

@@ -71,10 +71,10 @@ void gnomonTreeTransformCommand::setInput(std::shared_ptr<gnomonTreeSeries> inpu
         d->input = nullptr;
     } else {
         d->input = input;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractTreeTransform *) this->action)->setInput(d->input);
-        this->action->refreshParameters();
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractTreeTransform *) this->action)->setInput(d->input);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonTreeSeries> gnomonTreeTransformCommand::input()

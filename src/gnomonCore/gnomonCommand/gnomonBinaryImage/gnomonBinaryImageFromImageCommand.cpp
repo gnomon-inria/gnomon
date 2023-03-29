@@ -62,7 +62,8 @@ void gnomonBinaryImageFromImageCommand::undo()
     this->action->refreshParameters();
 }
 
-void gnomonBinaryImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries> image){
+void gnomonBinaryImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries> image)
+{
     if ((!image)||(image->times().empty())) {
         d->input.reset();
     } else {

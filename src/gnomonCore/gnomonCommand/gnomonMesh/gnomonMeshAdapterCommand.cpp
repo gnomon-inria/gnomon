@@ -63,10 +63,10 @@ void gnomonMeshAdapterCommand::setInput(std::shared_ptr<gnomonMeshSeries> input)
         d->input = nullptr;
     } else {
         d->input = input;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractMeshAdapter *) this->action)->setInput(d->input);
-        this->action->refreshParameters();
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractMeshAdapter *) this->action)->setInput(d->input);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonMeshSeries> gnomonMeshAdapterCommand::input()

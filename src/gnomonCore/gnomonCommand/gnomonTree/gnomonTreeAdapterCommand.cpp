@@ -63,10 +63,10 @@ void gnomonTreeAdapterCommand::setInput(std::shared_ptr<gnomonTreeSeries> input)
         d->input = nullptr;
     } else {
         d->input = input;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractTreeAdapter *) this->action)->setInput(d->input);
-        this->action->refreshParameters();
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractTreeAdapter *) this->action)->setInput(d->input);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonTreeSeries> gnomonTreeAdapterCommand::input()

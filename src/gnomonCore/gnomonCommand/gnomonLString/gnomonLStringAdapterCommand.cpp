@@ -63,10 +63,10 @@ void gnomonLStringAdapterCommand::setInput(std::shared_ptr<gnomonLStringSeries> 
         d->input = nullptr;
     } else {
         d->input = input;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractLStringAdapter *) this->action)->setInput(d->input);
-        this->action->refreshParameters();
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractLStringAdapter *) this->action)->setInput(d->input);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonLStringSeries> gnomonLStringAdapterCommand::input()

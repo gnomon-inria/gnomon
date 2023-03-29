@@ -90,10 +90,10 @@ void gnomonLStringTranslationCommand::setInputLString(std::shared_ptr<gnomonLStr
         d->lString_series = nullptr;
     } else {
         d->lString_series = lString_series;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractLStringTranslation *) this->action)->setInputLString(d->lString_series);
-        this->action->refreshParameters();
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractLStringTranslation *) this->action)->setInputLString(d->lString_series);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonTreeSeries> gnomonLStringTranslationCommand::inputTree()
