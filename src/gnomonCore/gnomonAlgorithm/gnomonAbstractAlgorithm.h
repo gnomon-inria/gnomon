@@ -27,7 +27,7 @@ public:
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
     virtual void connectParameter(const QString& parameter_name);
     virtual void refreshParameters(void);
-    virtual void updateParameters(const QString& sender_name = "");
+    virtual void onParameterChanged(const QString& parameter_name = "");
     
 public:
     virtual void run(void) = 0;

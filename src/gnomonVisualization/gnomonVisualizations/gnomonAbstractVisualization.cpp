@@ -137,7 +137,7 @@ void gnomonAbstractVisualization::connectParameter(const QString& parameter_name
     dtkCoreParameter *parameter = params.value(parameter_name, nullptr);
     if (parameter) {
         parameter->connect([=]() {
-            this->updateParameters(parameter_name);
+            this->onParameterChanged(parameter_name);
         });
     }
 }
@@ -146,7 +146,7 @@ void gnomonAbstractVisualization::refreshParameters(void) {
     qDebug()<<Q_FUNC_INFO<<"Not implemented";
 }
 
-void gnomonAbstractVisualization::updateParameters(const QString& sender_name) {
+void gnomonAbstractVisualization::onParameterChanged(const QString& parameter_name) {
     qDebug()<<Q_FUNC_INFO<<"Not implemented";
 }
 //

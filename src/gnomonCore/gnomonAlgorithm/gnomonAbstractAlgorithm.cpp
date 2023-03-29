@@ -8,7 +8,7 @@ void gnomonAbstractAlgorithm::connectParameter(const QString& parameter_name)
     dtkCoreParameter *parameter = params.value(parameter_name, nullptr);
     if (parameter) {
         parameter->connect([=]() {
-            this->updateParameters(parameter_name);
+            this->onParameterChanged(parameter_name);
         });
     }
 }
@@ -16,7 +16,7 @@ void gnomonAbstractAlgorithm::refreshParameters(void) {
     qDebug()<<Q_FUNC_INFO<<"Not implemented";
 }
 
-void gnomonAbstractAlgorithm::updateParameters(const QString& sender_name) {
+void gnomonAbstractAlgorithm::onParameterChanged(const QString& parameter_name) {
     qDebug()<<Q_FUNC_INFO<<"Not implemented";
 }
 

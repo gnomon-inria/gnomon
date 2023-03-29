@@ -32,7 +32,7 @@ public:
     virtual void setParameters(const dtkCoreParameters&) = 0;
     virtual void connectParameter(const QString& parameter_name);
     virtual void refreshParameters(void);
-    virtual void updateParameters(const QString& sender_name = "");
+    virtual void onParameterChanged(const QString& parameter_name = "");
 
 public:
     gnomonViewForm* view(void);
