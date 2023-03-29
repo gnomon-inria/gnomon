@@ -90,6 +90,7 @@ void gnomonCellImageFromImageCommand::setCellPoints(std::shared_ptr<gnomonPointC
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setCellPoints(d->pointCloud_series);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonPointCloudSeries> gnomonCellImageFromImageCommand::cellPoints()

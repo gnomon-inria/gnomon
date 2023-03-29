@@ -62,6 +62,7 @@ void gnomonTreeTransformCommand::postdo(void)
 void gnomonTreeTransformCommand::undo()
 {
     ((gnomonAbstractTreeTransform *) this->action)->setInput(nullptr);
+    this->action->refreshParameters();
 }
 
 void gnomonTreeTransformCommand::setInput(std::shared_ptr<gnomonTreeSeries> input)
@@ -72,6 +73,7 @@ void gnomonTreeTransformCommand::setInput(std::shared_ptr<gnomonTreeSeries> inpu
         d->input = input;
         Q_ASSERT(this->action);
         ((gnomonAbstractTreeTransform *) this->action)->setInput(d->input);
+        this->action->refreshParameters();
     }
 }
 

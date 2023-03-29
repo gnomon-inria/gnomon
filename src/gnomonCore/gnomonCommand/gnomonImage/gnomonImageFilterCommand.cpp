@@ -65,6 +65,7 @@ void gnomonImageFilterCommand::undo()
 {
     ((gnomonAbstractImageFilter *) this->action)->setInput(nullptr);
     ((gnomonAbstractImageFilter *) this->action)->setMask(nullptr);
+    this->action->refreshParameters();
 }
 
 void gnomonImageFilterCommand::setInput(std::shared_ptr<gnomonImageSeries> input)
@@ -148,6 +149,7 @@ void gnomonImageFilterCommand::setMask(std::shared_ptr<gnomonBinaryImageSeries> 
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonBinaryImageSeries> gnomonImageFilterCommand::mask(void)

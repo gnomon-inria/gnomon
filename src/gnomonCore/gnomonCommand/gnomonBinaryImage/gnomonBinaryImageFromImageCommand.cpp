@@ -59,6 +59,7 @@ void gnomonBinaryImageFromImageCommand::undo()
 {
     ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(nullptr);
     ((gnomonAbstractBinaryImageFromImage *) this->action)->setInitialization(nullptr);
+    this->action->refreshParameters();
 }
 
 void gnomonBinaryImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries> image){
@@ -69,7 +70,7 @@ void gnomonBinaryImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeri
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(d->input);
-    ((gnomonAbstractBinaryImageFromImage *) this->action)->refreshParameters();
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonBinaryImageFromImageCommand::input()
@@ -86,6 +87,7 @@ void gnomonBinaryImageFromImageCommand::setInitialization(std::shared_ptr<gnomon
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractBinaryImageFromImage *) this->action)->setInitialization(d->initialization);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonBinaryImageSeries> gnomonBinaryImageFromImageCommand::initialization()

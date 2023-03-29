@@ -49,6 +49,7 @@ void gnomonCellComplexAdapterCommand::postdo(void)
 void gnomonCellComplexAdapterCommand::undo()
 {
     ((gnomonAbstractCellComplexAdapter *) this->action)->setInput(nullptr);
+    this->action->refreshParameters();
 }
 
 void gnomonCellComplexAdapterCommand::setInput(std::shared_ptr<gnomonCellComplexSeries> input)

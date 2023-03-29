@@ -55,6 +55,7 @@ void gnomonTreeFromLStringCommand::postdo(void)
 void gnomonTreeFromLStringCommand::undo()
 {
     ((gnomonAbstractTreeFromLString *) this->action)->setInput(nullptr);
+    this->action->refreshParameters();
 }
 
 //void gnomonTreeFromLStringCommand::setLSystem(const QString& lsystem)
@@ -70,6 +71,7 @@ void gnomonTreeFromLStringCommand::setInput(std::shared_ptr<gnomonLStringSeries>
         d->input = input;
         Q_ASSERT(this->action);
         ((gnomonAbstractTreeFromLString *) this->action)->setInput(d->input);
+        this->action->refreshParameters();
     }
 }
 
