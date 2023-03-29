@@ -51,6 +51,7 @@ G.CollapsiblePanel {
 
       Connections {
         target: param
+        ignoreUnknownSignals: true
         function onValueChanged() {
           _control.valueChanged()
         }
