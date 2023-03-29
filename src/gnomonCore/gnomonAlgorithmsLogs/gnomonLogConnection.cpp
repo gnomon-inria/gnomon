@@ -34,14 +34,7 @@ gnomonLogConnectionPrivate::~gnomonLogConnectionPrivate() {
 gnomonLogConnection::gnomonLogConnection(QObject *parent, QTcpSocket *socket, bool *server_alive):
 QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
     if(socket){
-        connect(d->socket, &QTcpSocket::readyRead, [this]() {
-            if(this-> d && this->d->server_alive) {
-                QByteArray data = this->d->socket->readAll();
-                QString data_string = QString::fromUtf8(data);
-                this->d->text.append(data_string);
-                emit this->textChanged();
-            }
-        });
+        connect(d->socket, &QTcpSocket::readyRead, this, &gnomonLogConnection::readConnection);
         connect(d->socket, &QAbstractSocket::errorOccurred, [this] (auto error) {
             if(error != QAbstractSocket::RemoteHostClosedError)
                 qWarning() << "socket error: " << error;
@@ -55,8 +48,6 @@ QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
 }
 
 gnomonLogConnection::~gnomonLogConnection() {
-    if(d && d->socket)
-        disconnect(d->socket, SIGNAL(readyRead()), nullptr, nullptr);
     delete d;
     d = nullptr;
 }
@@ -83,5 +74,14 @@ bool gnomonLogConnection::alive() {
         return d->socket->isOpen();
     }
     return false;
+}
+
+void gnomonLogConnection::readConnection() {
+    if(this->d && !this->d->is_closed && this->d->server_alive && this->d->socket) {
+        QByteArray data = this->d->socket->readAll();
+        QString data_string = QString::fromUtf8(data);
+        this->d->text.append(data_string);
+        emit this->textChanged();
+    }
 }
 
