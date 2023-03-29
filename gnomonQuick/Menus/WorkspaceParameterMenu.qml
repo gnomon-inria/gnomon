@@ -108,54 +108,6 @@ Control {
         }
 
         Item {
-            id: _controll_button_container
-
-            height: G.Style.largeButtonHeight
-            Layout.fillWidth: true;
-
-            G.Button {
-
-                id: _pause
-
-                anchors.left: _controll_button_container.left;
-                anchors.verticalCenter: _controll_button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
-                property bool paused: false
-                type: paused? G.Style.ButtonType.OK : G.Style.ButtonType.Neutral
-
-                text: paused ? "Resume" : "Pause"
-                iconName: paused ? G.Icons.icons["play"] : G.Icons.icons["pause"]
-
-                onClicked: {
-                    if(paused) {
-                        d.resume()
-                        paused = false
-                    } else {
-                        d.pause()
-                        paused = true
-                    }
-                }
-            }
-
-            G.Button {
-
-                id: _stop
-
-                anchors.right: _controll_button_container.right;
-                anchors.verticalCenter: _controll_button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
-                type: G.Style.ButtonType.Danger
-                iconName: G.Icons.icons["stop"]
-                text: "Stop"
-
-                onClicked: {
-                    console.info('stopping Run!')
-                    d.stop();
-                }
-            }
-        }
-
-        Item {
             id: _button_container
 
             height: G.Style.largeButtonHeight
@@ -165,15 +117,58 @@ Control {
 
                 id: _apply
 
-                anchors.right: _button_container.right;
+                anchors.right: _stop.left;
                 anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
-                text: "Apply"
+                property bool paused: false
+                property bool running: false
+                type: !running ? G.Style.ButtonType.Base : paused? G.Style.ButtonType.OK : G.Style.ButtonType.Neutral
+
+                text: !running ? "Run" : paused ? "Resume" : "Pause"
+                iconName: !running ? G.Icons.icons["play"] : paused ? G.Icons.icons["play"] : G.Icons.icons["pause"]
+
+                Connections {
+                    target: d
+                    function onStarted() {
+                        _apply.running = true
+                    }
+                    function onFinished() {
+                        _apply.running = false
+                    }
+                }
 
                 onClicked: {
-                    console.info('launching Run!')
-                    d.run();
+                    if(!_apply.running){
+                        paused=false
+                        console.info("Launching run !")
+                        d.run()
+                    } else if(paused) {
+                        d.resume()
+                        paused=false
+                    } else {
+                        d.pause()
+                        paused = true
+                    }
+                }
+            }
+
+            G.SquareButton {
+
+                id: _stop
+
+                anchors.right: _button_container.right;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
+                type: enabled ? G.Style.ButtonType.Danger : G.Style.ButtonType.Neutral
+                iconName: G.Icons.icons["stop"]
+                text: "stop"
+                tooltip: "stop"
+                enabled: _apply.running
+
+                onClicked: {
+                    console.info('stopping Run!')
+                    d.stop();
                 }
             }
 
