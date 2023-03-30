@@ -870,6 +870,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
     def stop(self):
         self._stop_requested = True
         self._event.set()
+        self._progress = 0
 
     cls.stop = stop
 
