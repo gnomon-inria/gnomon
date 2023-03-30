@@ -15,6 +15,7 @@ import gnomonQuick.Menus as G
 import gnomonQuick.Workspaces as G
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
 
 Control {
     id: _menu;
@@ -98,6 +99,14 @@ Control {
             }
         }
 
+        ProgressBar {
+            Layout.fillWidth: true;
+            indeterminate: d.progress == -1
+            from: 0
+            to: 100
+            value: d.progress
+        }
+
         Item {
             id: _button_container
 
@@ -108,15 +117,58 @@ Control {
 
                 id: _apply
 
-                anchors.right: _button_container.right;
+                anchors.right: _stop.left;
                 anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
-                text: "Apply"
+                property bool paused: false
+                property bool running: false
+                type: !running ? G.Style.ButtonType.Base : paused? G.Style.ButtonType.OK : G.Style.ButtonType.Neutral
+
+                text: !running ? "Run" : paused ? "Resume" : "Pause"
+                iconName: !running ? G.Icons.icons["play"] : paused ? G.Icons.icons["play"] : G.Icons.icons["pause"]
+
+                Connections {
+                    target: d
+                    function onStarted() {
+                        _apply.running = true
+                    }
+                    function onFinished() {
+                        _apply.running = false
+                    }
+                }
 
                 onClicked: {
-                    console.info('launching Run!')
-                    d.run();
+                    if(!_apply.running){
+                        paused=false
+                        console.info("Launching run !")
+                        d.run()
+                    } else if(paused) {
+                        d.resume()
+                        paused=false
+                    } else {
+                        d.pause()
+                        paused = true
+                    }
+                }
+            }
+
+            G.SquareButton {
+
+                id: _stop
+
+                anchors.right: _button_container.right;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.margins: G.Style.smallPadding
+                type: enabled ? G.Style.ButtonType.Danger : G.Style.ButtonType.Neutral
+                iconName: G.Icons.icons["stop"]
+                text: "stop"
+                tooltip: "stop"
+                enabled: _apply.running
+
+                onClicked: {
+                    console.info('stopping Run!')
+                    d.stop();
                 }
             }
 

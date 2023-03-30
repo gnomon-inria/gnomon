@@ -57,6 +57,13 @@ G.Workspace {
         onParametersChanged: {
             updateParametersModel(); //_self.updateParametersModel();
         }
+
+        onMessageChanged: {
+            let msg_json = JSON.parse(d.message);
+            if(msg_json.type === "parsing") {
+                _editor.markers = msg_json
+            }
+        }
     }
 
     property string _path: d.defaultReadPath()

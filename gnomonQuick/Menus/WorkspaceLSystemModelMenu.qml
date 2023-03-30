@@ -94,6 +94,42 @@ Item {
             }
         }
 
+
+        RowLayout {
+            Layout.fillWidth: true;
+
+            G.CheckBox{
+                id: _auto_apply
+                text: "Auto apply"
+                checked: false
+
+                onClicked: {
+                    if (_auto_apply.checked) {
+                        d.reset();
+                        d.run();
+                    }
+                }
+            }
+
+            Label {
+                id: _anim_time_label
+                text: "Animation Time(s)"
+                font: G.Style.fonts.label
+                color: G.Style.colors.textColorBase
+            }
+
+            TextField {
+                id: _anim_time
+                text: "10"
+                color: G.Style.colors.hoveredBaseColor
+                font: G.Style.fonts.value
+
+                onTextChanged: {
+                    d.setAnimationTime(text)
+                }
+            }
+        }
+
         G.NumericSlider {
             id: _animation_slider
 
@@ -234,23 +270,6 @@ Item {
                 onClicked: {
                     console.info('launching Reset?')
                     d.reset();
-                }
-            }
-        }
-
-        G.CheckBox{
-            id: _auto_apply
-
-            anchors.left: parent.left
-
-            text: "Auto apply"
-            checked: false
-
-
-            onClicked: {
-                if (_auto_apply.checked) {
-                    d.reset()
-                    d.run();
                 }
             }
         }
