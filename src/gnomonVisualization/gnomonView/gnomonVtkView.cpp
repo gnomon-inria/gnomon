@@ -891,10 +891,10 @@ void gnomonVtkView::clear(void)
 
 void gnomonVtkView::startPicking() {
     if(!d->forms.contains("gnomonCellImage") ||
-        d->visualizationCommands["gnomonCellImage"]->algorithmName() != "CellImageVtkVisualizationMarchingCubes") {
+        d->visualizationCommands["gnomonCellImage"]->algorithmName() != "cellImageVtkVisualizationMarchingCubes") {
         qWarning() << "Picking not implemented for : "
                    <<  d->visualizationCommands["gnomonCellImage"]->algorithmName()
-                   << " only CellImageVtkVisualizationMarchingCubes has picking";
+                   << " only cellImageVtkVisualizationMarchingCubes has picking";
         return;
     }
 
