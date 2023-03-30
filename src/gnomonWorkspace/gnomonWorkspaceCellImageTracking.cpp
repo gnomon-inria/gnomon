@@ -98,7 +98,7 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
         this->target()->setCurrentTime(this->source()->currentTime()+1.0);
     });
     connect(this->target(), &gnomonVtkView::formAdded, [=](const QString &name) {
-        const QString plugin_name = "CellImageVtkVisualizationMarchingCubes";
+        const QString plugin_name = "cellImageVtkVisualizationMarchingCubes";
         if(name == "gnomonCellImage" &&
         gnomonVisualization::cellImageVtkVisualization::pluginFactory().keys().contains(plugin_name))
         {
@@ -108,7 +108,7 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
         }
     });
     connect(this->source(), &gnomonVtkView::formAdded, [=](const QString &name) {
-        const QString plugin_name = "CellImageVtkVisualizationMarchingCubes";
+        const QString plugin_name = "cellImageVtkVisualizationMarchingCubes";
         if(name == "gnomonCellImage" &&
            gnomonVisualization::cellImageVtkVisualization::pluginFactory().keys().contains(plugin_name))
         {
