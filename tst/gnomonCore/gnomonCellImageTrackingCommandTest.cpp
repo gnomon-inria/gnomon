@@ -79,7 +79,7 @@ void gnomonCellImageTrackingCommandTestCase::redo(void) {
 
     auto img_series = std::make_shared<gnomonImageSeries>();
     d->tracking_command->setImage(img_series);
-    QVERIFY(!tracking::t_set_image_called); //empty time series so not called
+    QVERIFY(tracking::t_set_image_called);
 
     auto cellimg_series = std::make_shared<gnomonCellImageSeries>();
     auto cellimg = std::make_shared<gnomonCellImage>();

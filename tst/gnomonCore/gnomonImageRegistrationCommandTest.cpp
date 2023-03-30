@@ -14,13 +14,22 @@
 namespace registration{
 bool t_run_called = false;
 bool t_set_image_called = false;
+bool t_set_init_transfo_called = false;
 bool t_set_parameter_called = false;
 }
 
 class dummyImageRegistrationPlugin : public gnomonAbstractImageRegistration {
 public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {registration::t_set_parameter_called = true;};
-    dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
+    dtkCoreParameters parameters(void) const override {return dtkCoreParameters();}
+
+    void setInitialTransformation(std::shared_ptr<gnomonDataDictSeries> ptr) override {
+        registration::t_set_init_transfo_called = true;
+    }
+
+    std::shared_ptr<gnomonDataDictSeries> initialTransformation() override {
+        return nullptr;
+    };
 
     int run(void) override{ registration::t_run_called = true; return 0;};
     QString documentation(void) override {return "empty";};

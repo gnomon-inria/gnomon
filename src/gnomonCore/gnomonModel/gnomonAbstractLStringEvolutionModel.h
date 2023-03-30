@@ -12,6 +12,8 @@
 
 class GNOMONCORE_EXPORT gnomonAbstractLStringEvolutionModel : public gnomonAbstractModel
 {
+    Q_OBJECT
+
 public:
     virtual ~gnomonAbstractLStringEvolutionModel(void) = default;
 

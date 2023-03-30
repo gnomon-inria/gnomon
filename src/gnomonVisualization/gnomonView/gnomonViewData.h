@@ -27,6 +27,8 @@ public:
     void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm> );
     std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&) ;
     void clearForm(const QString&);
+    bool contains(const QString&);
+    bool empty();
 
 public slots:
     void drop(int);
@@ -58,6 +60,7 @@ private:
 
 };
 
+QString transformMatrixString(QVector<QVector<double> > transform_matrix);
 // Q_DECLARE_METATYPE(gnomonViewData *);
 //
 // gnomonViewData.h ends here

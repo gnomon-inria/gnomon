@@ -10,10 +10,10 @@
 class gnomonImageRegistrationCommandPrivate
 {
 public:
-    gnomonAbstractCommand::orderedMap input_types = {{"image", "gnomonImage"}};
+    gnomonAbstractCommand::orderedMap input_types = {{"image", "gnomonImage"}, {"initialTransformation", "gnomonDataDict"}};
     gnomonAbstractCommand::orderedMap output_types = {{"output", "gnomonImage"}, {"outputTransformation", "gnomonDataDict"}};
 
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs = {{"image", nullptr}};
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs = {{"image", nullptr},  {"initialTransformation", nullptr}};
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs = {{"output", nullptr}, {"outputTransformation", nullptr}};
 };
 
@@ -81,12 +81,31 @@ void gnomonImageRegistrationCommand::setImage(std::shared_ptr<gnomonImageSeries>
     } else {
         d->inputs["image"] = image_series;
     }
+    Q_ASSERT(this->action);
     ((gnomonAbstractImageRegistration *) this->action)->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(d->inputs["image"]));
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonImageRegistrationCommand::image()
 {
     return std::dynamic_pointer_cast<gnomonImageSeries>(d->inputs["image"]);
+}
+
+void gnomonImageRegistrationCommand::setInitialTransformation(std::shared_ptr<gnomonDataDictSeries> init_trsf) {
+    if ((!init_trsf)||(init_trsf->times().empty())) {
+        d->inputs["initialTransformation"] = nullptr;
+    } else {
+        d->inputs["initialTransformation"] = init_trsf;
+    }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractImageRegistration *) this->action)->setInitialTransformation(
+        std::dynamic_pointer_cast<gnomonDataDictSeries>(d->inputs["initialTransformation"])
+    );
+    this->action->refreshParameters();
+}
+
+std::shared_ptr<gnomonDataDictSeries> gnomonImageRegistrationCommand::initialTransformation() {
+    return std::dynamic_pointer_cast<gnomonDataDictSeries>(d->inputs["initialTransformation"]);
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonImageRegistrationCommand::output()
@@ -127,6 +146,8 @@ void gnomonImageRegistrationCommand::setInputForm(const QString &name, std::shar
     // TODO: come back later to check if correct
     if(name == "image") {
         this->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
+    } else if (name == "initialTransformation"){
+        this->setInitialTransformation(std::dynamic_pointer_cast<gnomonDataDictSeries>(form));
     } else {
         dtkWarn() << Q_FUNC_INFO << "unknown input " << name;
         return;

@@ -187,7 +187,7 @@ void gnomonAlgorithmWorkspace::run(bool no_async)
 
     emit started();
 
-    this->setInputs();
+    // this->setInputs();
 
     if(no_async){
         d->command->setNoAsync();

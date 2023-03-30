@@ -2,7 +2,8 @@
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 
-#include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include "gnomonCore/gnomonForm/gnomonImage/gnomonImage"
+#include "gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict.h"
 
 class gnomonImage;
 
@@ -20,6 +21,8 @@ public:
 public:
     void setImage(std::shared_ptr<gnomonImageSeries> );
     std::shared_ptr<gnomonImageSeries> image();
+    void setInitialTransformation(std::shared_ptr<gnomonDataDictSeries>);
+    std::shared_ptr<gnomonDataDictSeries> initialTransformation();
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
     orderedMap inputTypes() override;
 
