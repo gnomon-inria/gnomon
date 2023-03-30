@@ -25,6 +25,7 @@ public:
 
 public:
     gnomonPythonAlgorithmPluginCode *code = nullptr;
+    QProcess *lsp_process = nullptr;
 
 public:
     bool edit_mode = true;
@@ -92,6 +93,17 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
 {
     d = new gnomonWorkspacePythonAlgorithmPrivate;
 
+    QString lsp_server = "pylsp";
+    QStringList arguments;
+    arguments << "--ws" << "--host" << "127.0.0.1" << "--port" << "3000";
+
+    d->lsp_process = new QProcess(parent);
+    d->lsp_process->start(lsp_server, arguments);
+    if(!d->lsp_process->waitForStarted()) {
+        qWarning() << "Error launching Python LSP server";
+    }
+
+
     d->code = new gnomonPythonAlgorithmPluginCode(this);
     d->code->updateCode();
 
@@ -135,6 +147,10 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
 
 gnomonWorkspacePythonAlgorithm::~gnomonWorkspacePythonAlgorithm(void)
 {
+    if(d->lsp_process) {
+        d->lsp_process->kill();
+        d->lsp_process = nullptr;
+    }
     delete d;
 }
 
@@ -429,7 +445,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
             lString->metadata()->set("name", lString->formName().remove("gnomon") + QString::number(form_count + 1));
             lString->metadata()->set("source", d->algorithm_key);
         }
-        
+
         std::shared_ptr<gnomonMeshSeries> mesh = d->algorithm->outputMesh();
         if ((mesh) && (mesh->times().size() != 0)) {
             d->command->addOutput(mesh);
