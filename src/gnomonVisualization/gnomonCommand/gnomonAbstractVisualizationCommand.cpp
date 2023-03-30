@@ -8,6 +8,7 @@ void gnomonAbstractVisualizationCommand::setAlgorithmName(const QString& visu_na
     if (this->algorithm_name != visu_name) {
         this->algorithm_name = visu_name;
         this->disconnectVisualization();
+        this->clear();
     }
 }
 

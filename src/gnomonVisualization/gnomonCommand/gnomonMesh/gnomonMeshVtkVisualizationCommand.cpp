@@ -52,6 +52,7 @@ void gnomonMeshVtkVisualizationCommand::setFormVisualization(const QString& visu
     if (visu) {
         if (visu->mesh() != d->mesh) {
             visu->setMesh(d->mesh);
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }

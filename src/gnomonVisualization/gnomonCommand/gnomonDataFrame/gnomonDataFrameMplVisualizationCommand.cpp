@@ -52,6 +52,7 @@ void gnomonDataFrameMplVisualizationCommand::setFormVisualization(const QString&
     if (visu) {
         if (visu->dataFrame() != d->dataFrame->current()) {
             visu->setDataFrame(d->dataFrame->current());
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }

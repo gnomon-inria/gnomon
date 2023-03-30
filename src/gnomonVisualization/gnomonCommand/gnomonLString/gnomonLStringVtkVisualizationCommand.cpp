@@ -52,6 +52,7 @@ void gnomonLStringVtkVisualizationCommand::setFormVisualization(const QString& v
     if (visu) {
         if (visu->lString() != d->lString) {
             visu->setLString(d->lString);
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }

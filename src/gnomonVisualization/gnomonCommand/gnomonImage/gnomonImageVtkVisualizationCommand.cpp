@@ -52,6 +52,7 @@ void gnomonImageVtkVisualizationCommand::setFormVisualization(const QString& vis
     if (visu) {
         if (visu->image() != d->image) {
             visu->setImage(d->image);
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }

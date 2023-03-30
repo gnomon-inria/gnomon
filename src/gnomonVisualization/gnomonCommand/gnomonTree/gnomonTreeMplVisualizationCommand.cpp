@@ -52,6 +52,7 @@ void gnomonTreeMplVisualizationCommand::setFormVisualization(const QString& visu
     if (visu) {
         if (visu->tree() != d->tree->current()) {
             visu->setTree(d->tree->current());
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }

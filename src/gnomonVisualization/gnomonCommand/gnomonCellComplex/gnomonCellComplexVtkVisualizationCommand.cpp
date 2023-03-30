@@ -52,6 +52,7 @@ void gnomonCellComplexVtkVisualizationCommand::setFormVisualization(const QStrin
     if (visu) {
         if (visu->cellComplex() != d->cellComplex) {
             visu->setCellComplex(d->cellComplex);
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }

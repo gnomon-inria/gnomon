@@ -37,7 +37,6 @@ gnomonCellImageVtkVisualizationCommand::~gnomonCellImageVtkVisualizationCommand(
 
 void gnomonCellImageVtkVisualizationCommand::setAlgorithmName(const QString& visu_name)
 {
-    qDebug()<<Q_FUNC_INFO<<(this->algorithm_name != visu_name)<<(this->visu == nullptr);
     if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
         gnomonAbstractVisualizationCommand::setAlgorithmName(visu_name);
         auto visu = gnomonVisualization::cellImageVtkVisualization::pluginFactory().create(visu_name);
@@ -53,6 +52,7 @@ void gnomonCellImageVtkVisualizationCommand::setFormVisualization(const QString&
     if (visu) {
         if (visu->cellImage() != d->cellImage) {
             visu->setCellImage(d->cellImage);
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }

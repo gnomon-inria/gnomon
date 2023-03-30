@@ -52,6 +52,7 @@ void gnomonBinaryImageVtkVisualizationCommand::setFormVisualization(const QStrin
     if (visu) {
         if (visu->binaryImage() != d->binaryImage) {
             visu->setBinaryImage(d->binaryImage);
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }

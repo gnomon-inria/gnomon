@@ -52,6 +52,7 @@ void gnomonLStringMplVisualizationCommand::setFormVisualization(const QString& v
     if (visu) {
         if (visu->lString() != d->lString->current()) {
             visu->setLString(d->lString->current());
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }

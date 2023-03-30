@@ -52,6 +52,7 @@ void gnomonPointCloudVtkVisualizationCommand::setFormVisualization(const QString
     if (visu) {
         if (visu->pointCloud() != d->pointCloud) {
             visu->setPointCloud(d->pointCloud);
+            visu->refreshParameters();
             this->setVisualizationParameters(parameters);
             visu->update();
         }
