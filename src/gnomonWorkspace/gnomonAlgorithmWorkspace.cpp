@@ -87,6 +87,18 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
     });
 
     connect(this, &gnomonAlgorithmWorkspace::parametersChanged, this, &gnomonAlgorithmWorkspace::saveState);
+
+    d->timer.setInterval(100);
+    connect(&d->timer, &QTimer::timeout, [=]() {
+        //qDebug() << "============= PROGRESS : " << d->command->progress();
+        emit progressChanged(d->command->progress());
+    });
+    connect(this, &gnomonAbstractWorkspace::started, [=]() {
+       d->timer.start();
+    });
+    connect(this, &gnomonAbstractWorkspace::finished, [=]() {
+        d->timer.stop();
+    });
 }
 
 gnomonAlgorithmWorkspace::~gnomonAlgorithmWorkspace(void)
@@ -318,6 +330,22 @@ void gnomonAlgorithmWorkspace::addOutputView(const QVector<QString> &accepted_fo
     } else {
         d->targets->addView(accepted_forms, nodePortNames);
     }
+}
+
+int gnomonAlgorithmWorkspace::progress(void) {
+    return d->command->progress();
+}
+
+void gnomonAlgorithmWorkspace::pause(void) {
+    d->command->pause();
+}
+
+void gnomonAlgorithmWorkspace::resume(void) {
+    d->command->resume();
+}
+
+void gnomonAlgorithmWorkspace::stop(void) {
+    d->command->stop();
 }
 
 //

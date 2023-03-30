@@ -44,6 +44,7 @@ public:
 public:
     gnomonAbstractCommand *command = nullptr;
     QMetaObject::Connection connect_finished;
+    QTimer timer = QTimer(this);
 
 public:
     gnomonViewFormList *sources = nullptr;
