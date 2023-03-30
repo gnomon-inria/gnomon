@@ -62,6 +62,7 @@ void gnomonPointCloudFromImageCommand::postdo(void)
 void gnomonPointCloudFromImageCommand::undo()
 {
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(nullptr);
+    this->action->refreshParameters();
 }
 
 void gnomonPointCloudFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries> image)
@@ -73,6 +74,7 @@ void gnomonPointCloudFromImageCommand::setInput(std::shared_ptr<gnomonImageSerie
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(d->input);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonPointCloudFromImageCommand::input()

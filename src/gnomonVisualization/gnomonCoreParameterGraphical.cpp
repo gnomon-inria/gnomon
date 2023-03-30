@@ -97,7 +97,6 @@ GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug dbg, gnomonCoreParameterGr
     return dbg.maybeSpace();
 }
 
-
 DTK_DEFINE_PARAMETER(gnomonCoreParameterGraphical, g_gparam);
 
 

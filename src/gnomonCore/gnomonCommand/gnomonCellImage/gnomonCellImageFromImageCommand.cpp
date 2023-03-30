@@ -73,6 +73,7 @@ void gnomonCellImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->image_series);
+    ((gnomonAbstractCellImageFromImage *) this->action)->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonCellImageFromImageCommand::input()
@@ -89,6 +90,7 @@ void gnomonCellImageFromImageCommand::setCellPoints(std::shared_ptr<gnomonPointC
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setCellPoints(d->pointCloud_series);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonPointCloudSeries> gnomonCellImageFromImageCommand::cellPoints()

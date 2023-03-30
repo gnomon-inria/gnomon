@@ -6,6 +6,7 @@
 
 #include <dtkCore/dtkCorePlugin>
 #include <dtkCore/dtkCoreParameters>
+#include <dtkImagingCore>
 
 #include "gnomonCore/gnomonCorePlugin.h"
 
@@ -24,8 +25,10 @@ public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
-    virtual void refreshParameters(void) {};
-
+    virtual void connectParameter(const QString& parameter_name);
+    virtual void refreshParameters(void);
+    virtual void onParameterChanged(const QString& parameter_name = "");
+    
 public:
     virtual void run(void) = 0;
     virtual void run_async(gnomonAbstractCommand *c) {};

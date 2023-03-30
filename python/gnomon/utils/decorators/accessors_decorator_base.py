@@ -28,15 +28,7 @@ def form_input(cls, attr, method, setter_method, data_plugin, form_data_factory,
     def setter(self, form):
         if form is not None:
             form_dict = formDictFromSeries(form=form, data_plugin=data_plugin)
-            if hasattr(self, "refresh_parameters") and _is_form_dict_modified(getattr(self, attr), form_dict):
-                setattr(self, attr, form_dict)
-                self.refresh_parameters()
-            else:
-                setattr(self, attr, form_dict)
-
-        elif hasattr(self, "refresh_parameters") and getattr(self, attr):
-            setattr(self, attr, {})
-            self.refresh_parameters()
+            setattr(self, attr, form_dict)
         else:
             setattr(self, attr, {})
 

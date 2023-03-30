@@ -81,7 +81,9 @@ void gnomonImageRegistrationCommand::setImage(std::shared_ptr<gnomonImageSeries>
     } else {
         d->inputs["image"] = image_series;
     }
+    Q_ASSERT(this->action);
     ((gnomonAbstractImageRegistration *) this->action)->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(d->inputs["image"]));
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonImageRegistrationCommand::image()
@@ -95,9 +97,11 @@ void gnomonImageRegistrationCommand::setInitialTransformation(std::shared_ptr<gn
     } else {
         d->inputs["initialTransformation"] = init_trsf;
     }
+    Q_ASSERT(this->action);
     ((gnomonAbstractImageRegistration *) this->action)->setInitialTransformation(
-            std::dynamic_pointer_cast<gnomonDataDictSeries>(d->inputs["initialTransformation"])
-                    );
+        std::dynamic_pointer_cast<gnomonDataDictSeries>(d->inputs["initialTransformation"])
+    );
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonDataDictSeries> gnomonImageRegistrationCommand::initialTransformation() {
