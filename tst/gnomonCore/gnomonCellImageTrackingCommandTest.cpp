@@ -22,7 +22,7 @@ public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {tracking::t_set_parameter_called = true;};
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
 
-    void run(void) override{ tracking::t_run_called = true;};
+    int run(void) override{ tracking::t_run_called = true; return 0;};
     QString documentation(void) override {return "empty";};
 
     void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) override {

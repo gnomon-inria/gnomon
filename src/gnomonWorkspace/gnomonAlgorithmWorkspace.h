@@ -27,6 +27,7 @@ public:
     Q_PROPERTY(gnomonVtkViewList* targets READ targets CONSTANT);
     Q_PROPERTY(gnomonVtkView* source READ source CONSTANT); //for ease of use
     Q_PROPERTY(gnomonVtkView* target READ target CONSTANT); //for ease of use
+    Q_PROPERTY(int progress READ progress NOTIFY progressChanged)
 
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
@@ -35,6 +36,7 @@ signals:
     void algorithmChanged(const QString& algorithm);
     void parametersChanged(void);
     void currentIndexChanged(void);
+    void progressChanged(int progress);
 
 public slots:
     virtual void run(bool no_async=false);
@@ -44,6 +46,11 @@ public slots:
     virtual void restoreState(void);
     virtual void export_outputs(void);
 
+public slots:
+    virtual void pause(void);
+    virtual void resume(void);
+    virtual void stop(void);
+
 public:
     QString algoName(void) const;
     QStringList algorithms(void) const;
@@ -51,6 +58,7 @@ public:
     void setAlgoName(const QString &);
     int currentIndex(void) const;
     void setCurrentIndex(int);
+    int progress(void);
 
 public:
     gnomonVtkViewList *sources(void) const;

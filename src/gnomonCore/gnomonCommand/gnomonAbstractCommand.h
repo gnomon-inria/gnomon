@@ -53,10 +53,32 @@ public:
         return this->factory_name;
     }
 
-    gnomonPluginFactoryBase *pluginFactory(void)
-    {
+    inline gnomonPluginFactoryBase *pluginFactory(void) {
         return this->factory;
     }
+
+    inline void pause(void) {
+        if(this->action)
+            this->action->pause();
+    };
+
+    inline void resume(void) {
+        if(this->action)
+            this->action->resume();
+    };
+
+    inline void stop(void) {
+        if(this->action)
+            this->action->stop();
+    };
+
+    inline int progress(void) {
+        if(this->action) {
+            return this->action->progress();
+        } else {
+            return -1;
+        }
+    };
 
     void setNoAsync() {this->override_async = true;}
 
