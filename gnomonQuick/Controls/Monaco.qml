@@ -12,12 +12,14 @@ Control {
     property var theme;
     property var language;
     property var contents;
+    property var markers
 
     signal modified(var content);
 
        onThemeChanged: if(self.connected) bridge.send('theme',    self.theme);
     onLanguageChanged: if(self.connected) bridge.send('language', self.language);
     onContentsChanged: if(self.connected) bridge.send('value',    self.contents);
+     onMarkersChanged: if(self.connected) bridge.send('markers',  self.markers);
 
     QtObject {
         id: bridge;
@@ -25,13 +27,13 @@ Control {
         signal sendDataChanged(string name, string value);
 
         function send(name, value) {
-            // console.log("QML: sending", name, value);
+            //console.log("QML: sending", name, value);
 
             sendDataChanged(name, JSON.stringify(value));
         }
 
         function receive(name, value) {
-            // console.log("QML: receiving", name, value);
+            //console.log("QML: receiving", name, value);
 
             switch(name) {
             case "theme":
@@ -82,7 +84,7 @@ Control {
         url: 'qrc:/js/monaco/monaco.html';
 
         onJavaScriptConsoleMessage: (level, message, lineNumber, sourceID) => {
-            // console.log(message, lineNumber, sourceID);
+            console.log(message, lineNumber, sourceID);
         }
     }
 }
