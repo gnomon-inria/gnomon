@@ -62,6 +62,7 @@ void gnomonMeshFilterCommand::postdo(void)
 void gnomonMeshFilterCommand::undo()
 {
     ((gnomonAbstractMeshFilter *) this->action)->setInput(nullptr);
+    this->action->refreshParameters();
 }
 
 void gnomonMeshFilterCommand::setInput(std::shared_ptr<gnomonMeshSeries> input)
@@ -70,9 +71,10 @@ void gnomonMeshFilterCommand::setInput(std::shared_ptr<gnomonMeshSeries> input)
         d->input = nullptr;
     } else {
         d->input = input;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractMeshFilter *) this->action)->setInput(d->input);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractMeshFilter *) this->action)->setInput(d->input);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonMeshSeries> gnomonMeshFilterCommand::input()

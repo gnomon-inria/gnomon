@@ -48,6 +48,24 @@ void gnomonAbstractVisualization::setVisuParameters(QVariantMap parameters)
     }
 }
 
+void gnomonAbstractVisualization::connectParameter(const QString& parameter_name)
+{
+    dtkCoreParameters params = this->parameters();
+    dtkCoreParameter *parameter = params.value(parameter_name, nullptr);
+    if (parameter) {
+        parameter->connect([=]() {
+            this->onParameterChanged(parameter_name);
+        });
+    }
+}
+
+void gnomonAbstractVisualization::refreshParameters(void) {
+    qDebug()<<Q_FUNC_INFO<<"Not implemented";
+}
+
+void gnomonAbstractVisualization::onParameterChanged(const QString& parameter_name) {
+    qDebug()<<Q_FUNC_INFO<<"Not implemented";
+}
 
 //
 // gnomonAbstractVisualization.cpp ends here

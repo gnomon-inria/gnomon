@@ -67,6 +67,7 @@ void gnomonCellImageQuantificationCommand::undo()
 {
     ((gnomonAbstractCellImageQuantification *) this->action)->setImage(nullptr);
     ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(nullptr);
+    this->action->refreshParameters();
 }
 
 void gnomonCellImageQuantificationCommand::setImage(std::shared_ptr<gnomonImageSeries> image)
@@ -75,9 +76,10 @@ void gnomonCellImageQuantificationCommand::setImage(std::shared_ptr<gnomonImageS
         d->image = nullptr;
     } else {
         d->image = image;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractCellImageQuantification *) this->action)->setImage(d->image);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractCellImageQuantification *) this->action)->setImage(d->image);
+    this->action->refreshParameters();
 }
 
 void gnomonCellImageQuantificationCommand::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage)
@@ -86,10 +88,10 @@ void gnomonCellImageQuantificationCommand::setCellImage(std::shared_ptr<gnomonCe
         d->input_cellImage = nullptr;
     } else {
         d->input_cellImage = cellImage;
-
-        Q_ASSERT(this->action);
-        ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(d->input_cellImage);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(d->input_cellImage);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonCellImageSeries> gnomonCellImageQuantificationCommand::cellImage()

@@ -92,7 +92,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC  dtkCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC  dtkLog)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
