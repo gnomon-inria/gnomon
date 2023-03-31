@@ -159,7 +159,9 @@ void gnomonCellImageFromImageCommand::setBinaryImage(std::shared_ptr<gnomonBinar
     } else {
         d->binary_image_series = binary_image_series;
     }
+     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setBinaryImage(d->binary_image_series);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonBinaryImageSeries> gnomonCellImageFromImageCommand::binaryImage() {
