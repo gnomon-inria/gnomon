@@ -1,10 +1,10 @@
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-        gnomonAbstractVisualizationBinaryImage.h
-        gnomonAbstractVisualizationBinaryImage
+        gnomonAbstractBinaryImageVtkVisualization.h
+        gnomonAbstractBinaryImageVtkVisualization
 )
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-        gnomonAbstractVisualizationBinaryImage.cpp
+        gnomonAbstractBinaryImageVtkVisualization.cpp
 )
 

@@ -19,12 +19,12 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-    gnomonAbstractMatplotlibVisualizationDataFrame
-    gnomonAbstractMatplotlibVisualizationDataFrame.h)
+    gnomonAbstractDataFrameMplVisualization
+    gnomonAbstractDataFrameMplVisualization.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractMatplotlibVisualizationDataFrame.cpp)
+    gnomonAbstractDataFrameMplVisualization.cpp)
 
 
 ######################################################################

@@ -27,7 +27,7 @@ dtkWidgetsMenuBar#RHS
 /* //                                                                               */
 /* // ///////////////////////////////////////////////////////////////////////////// */
 
-gnomonViewForm > QSlider
+gnomonVtkView > QSlider
 {
     border: none;
 }

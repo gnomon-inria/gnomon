@@ -41,7 +41,7 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *target = nullptr;
+    gnomonVtkView *target = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -82,7 +82,8 @@ gnomonWorkspaceCellImageConstructor::gnomonWorkspaceCellImageConstructor(QWidget
 
     d = new gnomonWorkspaceCellImageConstructorPrivate;
 
-    d->target = new gnomonViewForm({}, this);
+    d->target = new gnomonVtkView(this);
+    d->target->setNodePortNames({});
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonCellImage",true);
 
@@ -155,7 +156,7 @@ void gnomonWorkspaceCellImageConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setCellImage(d->command->output());
+        d->target->setForm("gnomonCellImage", d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
 

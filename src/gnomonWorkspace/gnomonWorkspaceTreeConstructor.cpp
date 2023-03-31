@@ -41,7 +41,7 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewMatplotlib *target = nullptr;
+    gnomonMplView *target = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -82,7 +82,7 @@ gnomonWorkspaceTreeConstructor::gnomonWorkspaceTreeConstructor(QWidget *parent) 
 
     d = new gnomonWorkspaceTreeConstructorPrivate;
 
-    d->target = new gnomonViewMatplotlib(this);
+    d->target = new gnomonMplView(this);
     d->target->setAcceptForm("gnomonTree",true);
 
     connect(d->target, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));

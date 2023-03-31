@@ -6,7 +6,7 @@
 
 #include <QJSValue>
 
-class gnomonViewForm;
+class gnomonVtkView;
 
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceLSystemModel : public gnomonAbstractWorkspace
@@ -29,7 +29,7 @@ public:
     Q_PROPERTY(QString modelName READ modelName WRITE setModelName NOTIFY modelChanged);
     Q_PROPERTY(QStringList models READ models NOTIFY modelsLoaded);
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged);
-    Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
+    Q_PROPERTY(gnomonVtkView* view READ view CONSTANT);
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
@@ -83,7 +83,7 @@ public:
     int currentIndex(void) const;
     void setCurrentIndex(int);
 
-    gnomonViewForm *view(void) const;
+    gnomonVtkView *view(void) const;
 
     QJSValue parameters(void);
 

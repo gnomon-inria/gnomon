@@ -5,9 +5,9 @@
 class gnomonPipelineManager;
 class gnomonAbstractCommand;
 
-class gnomonViewForm;
-class gnomonViewFormList;
-class gnomonViewFormPool;
+class gnomonVtkView;
+class gnomonVtkViewList;
+class gnomonVtkViewPool;
 
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonAlgorithmWorkspacePrivate
@@ -47,7 +47,7 @@ public:
     QTimer timer = QTimer(this);
 
 public:
-    gnomonViewFormList *sources = nullptr;
-    gnomonViewFormList *targets = nullptr;
-    gnomonViewFormPool *pool = nullptr;
+    gnomonVtkViewList *sources = nullptr;
+    gnomonVtkViewList *targets = nullptr;
+    gnomonVtkViewPool *pool = nullptr;
 };

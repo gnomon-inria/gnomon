@@ -26,7 +26,7 @@
 #include <dtkWidgets>
 #include <dtkWidgetsMenu+ux.h>
 
-#include "gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h"
+#include "gnomonVisualizations/gnomonLString/gnomonAbstractLStringMplVisualization.h"
 
 // /////////////////////////////////////////////////////////////////////////////
 // Helper functions
@@ -153,8 +153,8 @@ public:
     QWidget *rhs_area;
 
 public:
-    gnomonViewMatplotlib *axiom = nullptr;
-    gnomonViewMatplotlib *target = nullptr;
+    gnomonMplView *axiom = nullptr;
+    gnomonMplView *target = nullptr;
 
 public:
     QTextEdit *axiom_editor = nullptr;
@@ -221,7 +221,7 @@ void gnomonWorkspaceLSystemSimulatorPrivate::exportAxiom(void)
         this->axiom->setForm("gnomonLString",lstring_series);
     } else {
         if (this->axiom->form("gnomonLString")) {
-            this->axiom->clearForm("gnomonLString");
+            this->axiom->removeForm("gnomonLString");
         }
     }
 }
@@ -255,7 +255,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
 /////////////////////////////////////////////////////////////////////////////
 
-    d->axiom = new gnomonViewMatplotlib(this);
+    d->axiom = new gnomonMplView(this);
     d->axiom->setAcceptForm("gnomonLString",true);
     d->axiom->setInputView(true);
 
@@ -316,7 +316,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
         axiom_save_button->setVisible(true);
     });
 
-    connect(d->axiom, &gnomonViewMatplotlib::formAdded, [=] (const QString& form_name)
+    connect(d->axiom, &gnomonMplView::formAdded, [=] (const QString& form_name)
     {
         gnomonAbstractDynamicForm *form = d->axiom->form(form_name);
 
@@ -340,7 +340,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
         }
     });
 
-    connect(d->axiom, &gnomonViewMatplotlib::formRemoved, [=] (const QString& form_name)
+    connect(d->axiom, &gnomonMplView::formRemoved, [=] (const QString& form_name)
     {
         if (form_name == "gnomonLString") {
             QStringList module_names;
@@ -354,7 +354,7 @@ gnomonWorkspaceLSystemSimulator::gnomonWorkspaceLSystemSimulator(QWidget *parent
 
 /////////////////////////////////////////////////////////////////////////////
 
-    d->target = new gnomonViewMatplotlib(this);
+    d->target = new gnomonMplView(this);
     d->target->setAcceptForm("gnomonLString",true);
     d->target->setInputView(false);
 
@@ -1067,8 +1067,8 @@ const QColor gnomonWorkspaceLSystemSimulator::color = QColor("#89a348");
 
 bool gnomonWorkspaceLSystemSimulator::isEmpty(void)
 {
-    loadPluginGroup("matplotlibVisualizationLString");
-    if (gnomonVisualization::matplotlibVisualizationLString::pluginFactory().keys().count() == 0) {
+    loadPluginGroup("lStringFrameMplVisualization");
+    if (gnomonVisualization::lStringFrameMplVisualization::pluginFactory().keys().count() == 0) {
         return true;
     }
     int stat;

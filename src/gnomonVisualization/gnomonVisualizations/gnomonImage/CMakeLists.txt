@@ -17,17 +17,17 @@
 ## #################################################################
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-    gnomonAbstractVisualizationImage.h
-    gnomonAbstractVisualizationImage
-    gnomonVisualizationImage
-    gnomonVisualizationImage.h
-    gnomonVisualizationImageChannelBlending
-    gnomonVisualizationImageChannelBlending.h)
+    gnomonAbstractImageVtkVisualization.h
+    gnomonAbstractImageVtkVisualization
+    gnomonImageVtkVisualization
+    gnomonImageVtkVisualization.h
+    gnomonImageVtkVisualizationChannelBlending
+    gnomonImageVtkVisualizationChannelBlending.h)
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractVisualizationImage.cpp
-    gnomonVisualizationImage.cpp
-    gnomonVisualizationImageChannelBlending.cpp)
+    gnomonAbstractImageVtkVisualization.cpp
+    gnomonImageVtkVisualization.cpp
+    gnomonImageVtkVisualizationChannelBlending.cpp)
 
 ######################################################################
 ### CMakeLists.txt ends here

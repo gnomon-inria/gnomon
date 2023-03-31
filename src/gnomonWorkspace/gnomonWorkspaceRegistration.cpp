@@ -8,7 +8,8 @@
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
-#include <gnomonVisualization/gnomonView/gnomonViewFormPool>
+#include <gnomonVisualization/gnomonView/gnomonVtkViewPool>
+#include <gnomonVisualization/gnomonView/gnomonQmlView>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
 
@@ -68,7 +69,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     this->addInputView({}, {"floating", "image"}); // floating
     this->addOutputView(); // registered
 
-    this->m_target_dict = new gnomonViewData(this);
+    this->m_target_dict = new gnomonQmlView(this);
     this->m_target_dict->setAcceptForm("gnomonDataDict", true);
 
     // TODO: actually create a dataDict and add it to the transformation stack
@@ -76,25 +77,26 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     m_target_dict->setDataDict(transformMatrixString(eye4));
     
     if(!d->pool)
-        d->pool = new gnomonViewFormPool(this);
+        d->pool = new gnomonVtkViewPool(this);
     d->pool->addView(this->sources()->views()[0]);
     d->pool->addView(this->sources()->views()[1]);
     d->pool->addView(this->targets()->views()[0]);
 
-    connect(this->targets()->views()[0], &gnomonViewForm::syncedChanged, [=]() {
+    connect(this->targets()->views()[0], &gnomonVtkView::syncedChanged, [=]() {
         this->targets()->views()[0]->disconnectTime();
         this->sources()->views()[0]->disconnectTime();
         this->sources()->views()[1]->disconnectTime();
     });
     for(int i=0; i<2; i++)
     {
-        connect(this->sources()->views()[i], &gnomonViewForm::syncedChanged, [=]() {
+        connect(this->sources()->views()[i], &gnomonVtkView::syncedChanged, [=]() {
             this->targets()->views()[0]->disconnectTime();
             this->sources()->views()[0]->disconnectTime();
             this->sources()->views()[1]->disconnectTime();
         });
     }
-    connect(this->m_target_dict, &gnomonViewData::exportedForm, [=](auto form) {
+
+    connect(this->m_target_dict, &gnomonAbstractView::exportedForm, [=](auto form) {
         gnomonPipelineManager::instance()->addForm(form);
     });
 }
@@ -138,7 +140,7 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
             std::shared_ptr<gnomonImageSeries> input_image = dd->image_stack[0];
             if (dd->image_stack.contains(dd->stack_level) && level>=1) {
                 std::shared_ptr<gnomonImageSeries> output_image = dd->image_stack[dd->stack_level];
-                this->targets()->views()[0]->setImage(output_image);
+                this->targets()->views()[0]->setForm("gnomonImage", output_image);
             } else {
                 this->targets()->views()[0]->clear();
             }

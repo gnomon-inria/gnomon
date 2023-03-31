@@ -13,6 +13,8 @@ class GNOMONPIPELINE_EXPORT gnomonPipelineNode : public QObject
     Q_OBJECT
 
 public:
+    Q_ENUMS(Type);
+
     enum Type {
         NODE_DEFAULT = -1,
         NODE_ALGORITHM = 0,
@@ -52,8 +54,6 @@ public:
 
     Q_PROPERTY(int inputEdgeCount READ inputEdgeCount);
     Q_PROPERTY(int outputEdgeCount READ outputEdgeCount);
-
-    Q_ENUM(Type);
 
 public:
     const QString& name(void);

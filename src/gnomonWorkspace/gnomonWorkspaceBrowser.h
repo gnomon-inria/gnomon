@@ -3,7 +3,7 @@
 #include <gnomonWorkspaceExport>
 #include "gnomonAbstractWorkspace.h"
 
-class gnomonViewForm;
+class gnomonVtkView;
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceBrowser : public gnomonAbstractWorkspace
 {
@@ -25,7 +25,7 @@ public:
     ~gnomonWorkspaceBrowser(void);
 
 public:
-    Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
+    Q_PROPERTY(gnomonVtkView* view READ view CONSTANT);
     Q_PROPERTY(QStringList extensions READ readerExtensions);
     Q_PROPERTY(QString readerPath READ readerPath WRITE setReaderPath NOTIFY readerPathChanged);
 
@@ -35,7 +35,7 @@ signals:
     void noReaderAvailable(QString);
 
 public:
-    gnomonViewForm *view(void) const;
+    gnomonVtkView *view(void) const;
     const QString& readerPath(void) const;
 
 public slots:

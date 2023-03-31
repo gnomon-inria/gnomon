@@ -6,10 +6,10 @@
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
-#include <gnomonVisualization/gnomonView/gnomonViewForm>
+#include <gnomonVisualization/gnomonView/gnomonVtkView>
 #include "gnomonCommand/gnomonLString/gnomonLStringEvolutionModelCommand.h"
 #include "gnomonForm/gnomonLString/gnomonLString.h"
-#include "gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString"
+#include "gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization"
 
 QString vonKochLSystem(void)
 {
@@ -78,7 +78,7 @@ public:
     gnomonLStringEvolutionModelCommand *command = nullptr;
 
 public:
-    gnomonViewForm *view = nullptr;
+    gnomonVtkView *view = nullptr;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -109,13 +109,14 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
 
-    d->view = new gnomonViewForm({}, this);
+    d->view = new gnomonVtkView(this);
+    d->view->setNodePortNames({});
     d->view->setAcceptForm("gnomonLString", true);
 
-    connect(d->view, &gnomonViewForm::formAdded, [=](const QString &name) {
+    connect(d->view, &gnomonVtkView::formAdded, [=](const QString &name) {
         const QString plugin_name = "lStringVisualizationVtkTurtle";
         if (name == "gnomonLString") {
-            if (gnomonVisualization::visualizationLString::pluginFactory().keys().contains(plugin_name)) {
+            if (gnomonVisualization::lStringVtkVisualization::pluginFactory().keys().contains(plugin_name)) {
                 // d->view->setFormVisuName(name, plugin_name);
                 d->view->setFormVisuParameter(name, "interpretation_lsystem", d->model_file->fileName());
             }
@@ -128,15 +129,14 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
         }
     });
 
-    connect(d->view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+    connect(d->view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         gnomonPipelineManager::instance()->addForm(f);
     });
-
 
     connect(d->command, &gnomonAbstractEvolutionModelCommand::modelMessage, [=](QString msg) {
             d->message = msg;
             this->messageChanged();
-        });
+    });
 
     this->setText(vonKochLSystem());
 }
@@ -369,7 +369,7 @@ void gnomonWorkspaceLSystemModel::viewState()
     d->command->setDerivationLength(d->derivations);
     auto lString = d->command->lString();
     if (lString) {
-        d->view->setLString(lString); //TODO only update, only do it if it's different ..
+        d->view->setForm("gnomonLString", lString); //TODO only update, only do it if it's different ..
         if (lString->times().size() != 0) {
             d->view->setCurrentTime(lString->times().last());
         }
@@ -386,7 +386,7 @@ void gnomonWorkspaceLSystemModel::viewNewStep()
     if(!lString || d->derivations == d->animation_step) {
         lString = d->command->lString();
         if(lString && lString->times().length() > 0) {
-            d->view->setLString(lString);
+            d->view->setForm("gnomonLString", lString);
         } else {
             return;
         }
@@ -441,7 +441,7 @@ void gnomonWorkspaceLSystemModel::setCurrentIndex(int i)
     }
 }
 
-gnomonViewForm *gnomonWorkspaceLSystemModel::view(void) const
+gnomonVtkView *gnomonWorkspaceLSystemModel::view(void) const
 {
     return d->view;
 }
