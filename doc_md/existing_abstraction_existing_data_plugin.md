@@ -244,6 +244,7 @@ channel at each time point, and fill the output dictionary
 
 ``` python
 from timagetk.plugins.linear_filtering import linear_filtering
+from timagetk import MultiChannelimage
 ```
 
 ``` python
@@ -257,6 +258,8 @@ def run(self):
             img = self.images[time][channel]
             filtered_img = linear_filtering(img, method='gaussian_smoothing', sigma=self['gaussian_sigma'])
             self.filtered_images[time][channel] = filtered_img
+            
+        self.filtered_images[time] = MultiChannelImage(self.filtered_images[time])
 ```
 
 **Parameter values**
@@ -267,6 +270,45 @@ perform the computations and can be accessed easily thanks to the
 `gaussian_sigma` parameter (that might have been set manually by the
 user using a graphical interface) is passed to the function as
 `self['gaussian_sigma']`.
+
+### Adding progress values
+
+Now that we have a functioning plugin we might want to give some
+information on the progress of the computation back to _gnomon_.
+To achieve that, gnomon provides 2 pre-implemented methods to
+every plugins: `set_max_progress(self, v: int)` and 
+`increment_progress(self, increase: int = 1)`
+
+First, we need to call `self.increment_progress()` every so often 
+inside `run()`. Then, for this to work properly, we must set max progress to the number
+of expected calls to `increment_progress`.
+
+For instance:
+
+``` python
+def run(self):
+    self.set_max_progress(1*sum(len(img) for img in self.images.values))
+    self.filtered_images = {}
+
+    for time in self.images.keys():
+        self.filtered_images[time] = {}
+
+        for channel in self.images[time].keys():
+            img = self.images[time][channel]
+            filtered_img = linear_filtering(img, method='gaussian_smoothing', sigma=self['gaussian_sigma'])
+            self.increment_progress()
+            self.filtered_images[time][channel] = filtered_img
+            
+        self.filtered_images[time] = MultiChannelImage(self.filtered_images[time])
+```
+
+The maximum progress here is the sum of the number of channels of each image
+in the time series.
+
+```{note}
+The `increment_progress` serves another purpose additionaly. It
+can pause or stop the process if requested by _gnomon_.
+```
 
 
 ## Provide a documentation for the plugin
@@ -298,32 +340,15 @@ gaussian_sigma parameter.
 
 ## Enable the dynamical discovery of the plugin
 
-### Edit the setup.py of the Python package
-
-
 **Entry points**
 
 To be dynamically discovered by the Gnomon platform, the plugin class
 should be referenced in the entry points of your Python interpreter. To
 do so, Gnomon offers a function that introspects a package looking for
 Gnomon plugins, and include them in a way that they will be found by the
-platform. This is done by adding the following lines to the `setup.py`
-of the Python package containing the plugin module.
+platform. 
 
-
-    setup.py
-
-``` python
-from gnomon.utils.gnomonPlugin import gnomon_declare_plugins
-
-setup_kwds['entry_points'] = gnomon_declare_plugins('src/package_name')
-```
-
-```{warning}
-You need to make sure that the path passed to the
-`gnomon_declare_plugins` function contains the sources of the package,
-or at least all modules defining Gnomon plugins.
-```
+For more, see how they are declared [here](entry_points)
 
 ## Complete plugin module
 
@@ -337,6 +362,7 @@ from gnomon.utils.decorators import imageInput, imageOutput
 import dtkcore
 
 from timagetk.plugins.linear_filtering import linear_filtering
+from timagetk import MultiChannelimage
 
 @corePlugin(version="0.1.0", coreversion="0.72.0")
 @imageInput(attr="images")
@@ -360,13 +386,17 @@ class linearFilterTimagetk(gnomonAbstractImageFilter):
             "Standard deviation of the Gaussian kernel")
 
     def run(self):
+        self.set_max_progress(1*sum(len(img) for img in self.images.values))
         self.filtered_images = {}
-
+    
         for time in self.images.keys():
             self.filtered_images[time] = {}
-
+    
             for channel in self.images[time].keys():
                 img = self.images[time][channel]
                 filtered_img = linear_filtering(img, method='gaussian_smoothing', sigma=self['gaussian_sigma'])
+                self.increment_progress()
                 self.filtered_images[time][channel] = filtered_img
+                
+            self.filtered_images[time] = MultiChannelImage(self.filtered_images[time])
 ```
