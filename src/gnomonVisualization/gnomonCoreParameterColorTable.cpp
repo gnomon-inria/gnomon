@@ -241,7 +241,7 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
     if (v.canConvert<gnomonCoreParameterColorTable>()) {
         *this = v.value<gnomonCoreParameterColorTable>();
 
-    } 
+    }
      else if (v.canConvert<QVariantHash>()) {
          auto map = v.toHash();
 
@@ -307,6 +307,7 @@ QColor gnomonCoreParameterColorTable::color(long i) const
 
 void gnomonCoreParameterColorTable::setColor(long i, const QColor& color) {
     m_c.setColor(i, color);
+    this->sync();
 }
 
 QString gnomonCoreParameterColorTable::texture(long i) const
@@ -320,6 +321,7 @@ QString gnomonCoreParameterColorTable::texture(long i) const
 
 void gnomonCoreParameterColorTable::setTexture(long i, const QString& texture) {
     m_c.setTexture(i, texture);
+    this->sync();
 }
 
 void gnomonCoreParameterColorTable::clearColors(void)
@@ -405,4 +407,3 @@ GNOMONVISUALIZATION_EXPORT QDebug operator << (QDebug dbg, gnomonCoreParameterCo
 
 
 DTK_DEFINE_PARAMETER(gnomonCoreParameterColorTable, g_ctable);
-
