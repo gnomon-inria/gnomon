@@ -27,6 +27,14 @@ Control {
             _params.parameters = view.viewLogic.formVisuParameters(_form_selector.currentValue);
             _params.updateParametersModel();
         }
+        function onFormVisualizationChanged() {
+            let formType = _form_selector.currentValue
+            if (formType) {
+                let visuName = view.viewLogic.formVisuName(formType)
+                let index = formVisuIndex(formType, visuName)
+                _visu_combobox.currentIndex = index
+            }
+        }
         function onFormsChanged() {
              if(view.viewLogic.formNames.length) {
                 _form_selector.currentIndex = 0;
@@ -125,20 +133,15 @@ Control {
             property bool _model_changing: true;
 
             function changeModel(formType) {
-                let previousVisuSelected = ""
-                if(view) {
-                    previousVisuSelected = view.viewLogic.lastVisuSelected(formType)
-                }
+                let previousVisuSelected = view ? view.viewLogic.lastVisuSelected(formType) : ""
+                let currentVisu = view ? view.viewLogic.formVisuName(formType) : ""
                 _model_changing = true
                 model = view? view.viewLogic.formVisualizations(formType) : null;
-                let index = -1;
-                if(model) {
-                    index = model.findIndex(
-                        (element) => element.key == previousVisuSelected
-                    )
-                }
+                let index = formVisuIndex(formType, previousVisuSelected)
                 if(index>=0 && count>=1) {
                     currentIndex = index
+                } else if(count>=1 && index ==-1) {
+                    currentIndex = formVisuIndex(formType, currentVisu)
                 } else if(count>=1 && currentIndex ==-1) {
                     currentIndex = 0
                 }
@@ -267,6 +270,12 @@ Control {
         id: _internal;
 
         property var menu: null;
+    }
+
+    function formVisuIndex(formType, visuName) {
+        let model = _control.view? _control.view.viewLogic.formVisualizations(formType) : null;
+        let index = model? model.findIndex(v => (v.key == visuName) ) : -1
+        return index;
     }
 
     function update_menu(name) {
