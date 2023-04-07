@@ -44,6 +44,9 @@ Control {
                 console.log("formsChanged  no formNames ")
                 _form_selector.currentIndex = -1;
                 _form_selector.currentValue = "";
+                if (_internal.menu) {
+                    _internal.menu.destroy();
+                }
             }
         }
     }
@@ -90,10 +93,9 @@ Control {
             _visu_combobox.changeModel(currentValue)
         }
 
-        onDeleteForm: {
+        onDeleteForm: function(index, deleteMenu) {
             view.viewLogic.removeForm(view.viewLogic.formNames[index]);
-            view.viewLogic.update();
-
+            //view.viewLogic.update();
             if(deleteMenu & _internal.menu)
                 _internal.menu.destroy()
         }
@@ -157,14 +159,16 @@ Control {
 
             function valueChangeHandler() {
                 if(view) {
-                    let previousVisuSelected = view.viewLogic.lastVisuSelected(_form_selector.currentValue)
-                    if(previousVisuSelected!=model[_visu_combobox.currentIndex].key){
-                        view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex].key)
+                    if (_form_selector.currentValue) {
+                        let previousVisuSelected = view.viewLogic.lastVisuSelected(_form_selector.currentValue)
+                        if(previousVisuSelected!=model[_visu_combobox.currentIndex].key){
+                            view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex].key)
+                        }
+                        //_auto_render.checked = false
+                        _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
+                        _params.updateParametersModel();
+                        _control.update_menu(_visu_combobox.currentValue.key);
                     }
-                    //_auto_render.checked = false
-                    _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
-                    _params.updateParametersModel();
-                    _control.update_menu(_visu_combobox.currentValue.key);
                 }
             }
 
