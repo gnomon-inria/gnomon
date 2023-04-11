@@ -110,7 +110,9 @@ Control {
         anchors.top: _colors.bottom
         anchors.left: parent.left
 
-        text: "Appearance " + param.colorIndexAt(_colors.currentValue)
+        property int colorIndex: _control.param ? _control.param.colorIndexAt(_colors.currentValue) : -1
+
+        text: "Appearance " + colorIndex
         font: G.Style.fonts.value
         color: G.Style.colors.hoveredBaseColor
     }
