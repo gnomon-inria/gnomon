@@ -23,7 +23,7 @@ Control {
         anchors.left: parent.left
         anchors.top: parent.top
 
-        text: param.label.toUpperCase()
+        text: _control.param ? _control.param.label.toUpperCase() : ""
         font: G.Style.fonts.label
         color: G.Style.colors.textColorBase
     }
@@ -36,13 +36,13 @@ Control {
         anchors.right: _edit_appeareance.left
         anchors.rightMargin: G.Style.smallPadding
 
-        model: param.colorIndexCount
+        model: _control.param ? _control.param.colorIndexCount : 0
         displayText: ""
 
         delegate: G.ComboBoxDelegate {
             width: _colors.width
-            property int colorIndex: param.colorIndexAt(index)
-            property bool isColor: param.isColor(colorIndex)
+            property int colorIndex: _control.param ? _control.param.colorIndexAt(index) : -1
+            property bool isColor: _control.param ? _control.param.isColor(colorIndex) : false
             text: "Appearance " + colorIndex
             background: Rectangle {
                color: isColor? param.color(colorIndex) : G.Style.colors.transparent
@@ -50,7 +50,7 @@ Control {
             Image {
                 anchors.fill: parent
                 fillMode: Image.Stretch
-                visible: param.isTexture(colorIndex)
+                visible: _control.param ? _control.param.isTexture(colorIndex) : false
                 source: visible ? "file://" + param.texture(colorIndex) : ""
             }
         }
@@ -58,7 +58,7 @@ Control {
         background: Rectangle {
             id: _color_bg
 
-            color: (param.value && param.isColor(param.colorIndexAt(_colors.currentValue)))? param.color(param.colorIndexAt(_colors.currentValue)) : G.Style.colors.transparent
+            color: (param && param.isColor(param.colorIndexAt(_colors.currentValue)))? param.color(param.colorIndexAt(_colors.currentValue)) : G.Style.colors.transparent
 
             radius: G.Style.buttonRadius
             border.color: G.Style.colors.gutterColor
@@ -67,8 +67,8 @@ Control {
             Image {
                 anchors.fill: parent
                 fillMode: Image.Stretch
-                visible: param.value && param.isTexture(param.colorIndexAt(_colors.currentValue))
-                source: (param.value && param.isTexture(param.colorIndexAt(_colors.currentValue)))? "file://" + param.texture(param.colorIndexAt(_colors.currentValue)) : ""
+                visible: param && param.isTexture(param.colorIndexAt(_colors.currentValue))
+                source: visible? "file://" + param.texture(param.colorIndexAt(_colors.currentValue)) : ""
             }
         }
     }
@@ -118,8 +118,8 @@ Control {
     G.Dialog {
         id: _edit_dialog;
 
-        property var color
-        property var texture
+        property var color : G.Style.colors.transparent
+        property var texture : ""
 
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2

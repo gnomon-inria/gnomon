@@ -16,7 +16,7 @@ Control {
 
     G.ToolTip {
         visible: _control.hovered && !_button.pressed
-        text: param.doc
+        text: _control.param ? _control.param.doc : ""
     }
 
     Label {
@@ -25,7 +25,7 @@ Control {
         anchors.left: _control.left
         anchors.top: _control.top
 
-        text: _control.param.label.toUpperCase()
+        text: _control.param? _control.param.label.toUpperCase() : ""
         font: G.Style.fonts.label
         color: G.Style.colors.textColorBase
     }
