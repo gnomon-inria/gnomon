@@ -12,7 +12,7 @@ public:
 
 public:
     void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) override;
-    void setAlgorithmName(const QString &) override;
+    void newVisualization(void) override;
 
     void setFormVisualization(const QString& visu_name, const QVariantMap &parameters) override;
 

@@ -20,7 +20,9 @@ gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
 
 void gnomonAbstractVisualization::setView(gnomonAbstractView* view)
 {
+    this->clear();
     d->view = view;
+    this->fill();
 }
 
 gnomonAbstractView* gnomonAbstractVisualization::view(void)

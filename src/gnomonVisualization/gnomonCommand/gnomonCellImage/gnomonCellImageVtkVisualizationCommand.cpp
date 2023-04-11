@@ -35,14 +35,12 @@ gnomonCellImageVtkVisualizationCommand::~gnomonCellImageVtkVisualizationCommand(
     delete d;
 }
 
-void gnomonCellImageVtkVisualizationCommand::setAlgorithmName(const QString& visu_name)
+void gnomonCellImageVtkVisualizationCommand::newVisualization(void)
 {
-    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
-        gnomonAbstractVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::cellImageVtkVisualization::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractCellImageVtkVisualization>(visu);
-        this->connectVisualization();
-    }
+    this->clear();
+    auto visu = gnomonVisualization::cellImageVtkVisualization::pluginFactory().create(this->algorithm_name);
+    this->visu = std::shared_ptr<gnomonAbstractCellImageVtkVisualization>(visu);
+    this->connectVisualization();
 }
 
 void gnomonCellImageVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
@@ -50,12 +48,10 @@ void gnomonCellImageVtkVisualizationCommand::setFormVisualization(const QString&
     this->setAlgorithmName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractCellImageVtkVisualization>(this->visu);
     if (visu) {
-        if (visu->cellImage() != d->cellImage) {
-            visu->setCellImage(d->cellImage);
-            visu->refreshParameters();
-            this->setVisualizationParameters(parameters);
-            visu->update();
-        }
+        visu->setCellImage(d->cellImage);
+        this->setVisualizationParameters(parameters);
+        visu->refreshParameters();
+        visu->update();
     }
 }
 

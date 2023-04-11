@@ -48,6 +48,7 @@ public slots:
 
 public slots:
     void clear(void) override;
+    void fill(void) override;
     virtual void setVisible(bool visible) override;
 
 public slots:

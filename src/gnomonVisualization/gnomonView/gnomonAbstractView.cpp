@@ -40,26 +40,25 @@ void gnomonAbstractViewPrivate::exportToManager(void)
 
 void gnomonAbstractViewPrivate::setFormVisualization(const QString& form_type, const QString& visu_name, const QVariantMap &parameters)
 {
-    // saving current parameters before change
+    // Saving current parameters before change
     for (const auto& _type : this->forms.keys()) {
         const auto& _visu_name = this->visualizationCommands[_type]->algorithmName();
         this->viewParameters.parameters[_visu_name] = this->visualizationCommands[_type]->visualizationParameters();
     }
 
     auto visu_parameters = parameters;
+    // Use saved parameters if none are provided
     if (this->viewParameters.parameters.contains(visu_name) && parameters.size()==0) {
         visu_parameters = this->viewParameters.parameters[visu_name];
     }
 
+    // Update the form in the command (no update at this stage)
     this->visualizationCommands[form_type]->setForm(this->forms[form_type]);
+    // Set the visualization name and parameters and update it
     this->visualizationCommands[form_type]->setFormVisualization(visu_name, visu_parameters);
-    auto&& visu = this->visualizationCommands[form_type]->visualization();
     emit q->formVisualizationChanged();
 
     this->viewParameters.visuSelected[form_type] = visu_name;
-
-    // this->visualizationCommands[form_type]->update();
-
     emit q->formVisuParametersChanged();
 }
 
@@ -97,19 +96,26 @@ void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbst
 {
     QString form_type = form->formName();
     if (d->acceptForms[form_type]) {
-        QString visu_name;
-        QVariantMap parameters;
-        if (visualization) {
-            visu_name = visualization->pluginName();
-            parameters = visualization->visuParameters();
-        } else {
-            visu_name = d->visualizationCommands[form_type]->algorithmName();
-            if (d->forms.contains(form_type)) {
-                parameters = d->visualizationCommands[form_type]->visualizationParameters();
-            }
-        }
+        // If another form of the same type is already in the view, we need to create a new visualization instance
+        bool existing_visu = d->forms.contains(form_type) && (form != d->visualizationCommands[form_type]->inputs()[form_type]);
         d->forms[form_type] = form;
-        d->setFormVisualization(form_type, visu_name, parameters);
+        // If the form comes with a visualization (drop from manager) we pass it on to the command (no update)
+        if (visualization) {
+            d->visualizationCommands[form_type]->setVisualization(visualization);
+            emit formVisualizationChanged();
+            d->visualizationCommands[form_type]->setForm(d->forms[form_type]);
+            emit formVisuParametersChanged();
+        } else {
+            QString visu_name = d->visualizationCommands[form_type]->algorithmName();
+            QVariantMap parameters;
+            if (existing_visu) {
+                parameters = d->visualizationCommands[form_type]->visualizationParameters();
+                // Create a new visualization instance to avoid changing the form of the current one that can be shared
+                d->visualizationCommands[form_type]->newVisualization();
+            }
+            // Update the command with parameter values (name is identical and will have no effect)
+            d->setFormVisualization(form_type, visu_name, parameters);
+        }
         emit formAdded(form_type);
     } else {
         // TODO: restore the adaption mechanism
@@ -163,7 +169,6 @@ void gnomonAbstractView::clear(void)
     for (const auto & form_type : d->forms.keys()) {
         QString visu_name = d->visualizationCommands[form_type]->algorithmName();
         d->viewParameters.parameters.remove(visu_name);
-        d->visualizationCommands[form_type]->disconnectVisualization();
         d->visualizationCommands[form_type]->clear();
         d->visualizationCommands[form_type]->setForm(nullptr);
     }
@@ -190,8 +195,12 @@ void gnomonAbstractView::restoreState(void)
 {
     if (!this->empty()) {
         for (const auto &form_type :  d->forms.keys()) {
+            // Ensure tranfer of actors of shared visualizations in the current view
+            d->visualizationCommands[form_type]->setView(this);
             d->visualizationCommands[form_type]->setVisualizationParameters(d->viewParameters.parameters[form_type]);
         }
+        // Force the renderer to update after new actors are added
+        this->render();
     }
 }
 
@@ -259,15 +268,18 @@ QString gnomonAbstractView::formVisuName(const QString& form_type)
     return visu_name;
 }
 
-void gnomonAbstractView::setFormVisuName(const QString& name, const QString& visu_name)
+void gnomonAbstractView::setFormVisuName(const QString& form_type, const QString& visu_name)
 {
-    if (d->forms.contains(name)  && !visu_name.isEmpty()) {
-        if(d->viewParameters.parameters.contains(visu_name)) {
-            // TODO: setting the parameters does not work so ignoring it for now
-            // d->setFormVisualization(name, visu_name, d->viewParameters.parameters[visu_name]);
-            d->setFormVisualization(name, visu_name);
-        } else {
-            d->setFormVisualization(name, visu_name);
+    if (d->forms.contains(form_type)) {
+        auto current_visu_name = d->visualizationCommands[form_type]->algorithmName();
+        if (visu_name != current_visu_name && !visu_name.isEmpty()) {
+            if (d->viewParameters.parameters.contains(visu_name)) {
+                // TODO: setting the parameters does not work so ignoring it for now
+                // d->setFormVisualization(form_type, visu_name, d->viewParameters.parameters[visu_name]);
+                d->setFormVisualization(form_type, visu_name);
+            } else {
+                d->setFormVisualization(form_type, visu_name);
+            }
         }
     }
 }

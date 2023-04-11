@@ -10,11 +10,3 @@ void gnomonAbstractVtkVisualizationCommand::setView(gnomonAbstractView *view)
         gnomonAbstractVisualizationCommand::setView(vtk_view);
     }
 }
-
-void gnomonAbstractVtkVisualizationCommand::clear(void)
-{
-    auto &&visu = std::static_pointer_cast<gnomonAbstractVtkVisualization>(this->visu);
-    visu->disconnect();
-    visu->clearConnections();
-    gnomonAbstractVisualizationCommand::clear();
-}
