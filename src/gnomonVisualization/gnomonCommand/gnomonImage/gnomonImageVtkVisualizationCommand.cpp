@@ -35,14 +35,12 @@ gnomonImageVtkVisualizationCommand::~gnomonImageVtkVisualizationCommand()
     delete d;
 }
 
-void gnomonImageVtkVisualizationCommand::setAlgorithmName(const QString& visu_name)
+void gnomonImageVtkVisualizationCommand::newVisualization(void)
 {
-    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
-        gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::imageVtkVisualization::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractImageVtkVisualization>(visu);
-        this->connectVisualization();
-    }
+    this->clear();
+    auto visu = gnomonVisualization::imageVtkVisualization::pluginFactory().create(this->algorithm_name);
+    this->visu = std::shared_ptr<gnomonAbstractImageVtkVisualization>(visu);
+    this->connectVisualization();
 }
 
 void gnomonImageVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
@@ -50,12 +48,10 @@ void gnomonImageVtkVisualizationCommand::setFormVisualization(const QString& vis
     this->setAlgorithmName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractImageVtkVisualization>(this->visu);
     if (visu) {
-        if (visu->image() != d->image) {
-            visu->setImage(d->image);
-            visu->refreshParameters();
-            this->setVisualizationParameters(parameters);
-            visu->update();
-        }
+        visu->setImage(d->image);
+        this->setVisualizationParameters(parameters);
+        visu->refreshParameters();
+        visu->update();
     }
 }
 

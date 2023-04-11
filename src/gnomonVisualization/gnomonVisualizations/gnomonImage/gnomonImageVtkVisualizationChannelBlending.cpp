@@ -102,6 +102,19 @@ gnomonImageVtkVisualizationChannelBlending::~gnomonImageVtkVisualizationChannelB
 {
     ddd->reset();
     ddd->qq = nullptr;
+
+    if (ddd->volume) {
+        ddd->volume->Delete();
+        ddd->volume = nullptr;
+    }
+    if (ddd->actor2D) {
+        ddd->actor2D->Delete();
+        ddd->actor2D = nullptr;
+    }
+    if (ddd->blending) {
+        ddd->blending->Delete();
+        ddd->blending = nullptr;
+    }
     delete ddd;
     ddd = nullptr;
 }
@@ -110,24 +123,29 @@ const QString gnomonImageVtkVisualizationChannelBlending::pluginName(void)
 {
     return "gnomonImageVtkVisualizationChannelBlending";
 }
-
 void gnomonImageVtkVisualizationChannelBlending::clear(void)
 {
-    if (ddd->volume) {
-        ((gnomonVtkView *) d->view)->renderer3D()->RemoveActor(ddd->volume);
-        ddd->volume->Delete();
-        ddd->volume = nullptr;
+    auto view = dynamic_cast<gnomonVtkView *>(d->view);
+    if (view) {
+        if (ddd->actor2D) {
+            view->renderer2D()->RemoveActor(ddd->actor2D);
+        }
+        if (ddd->volume) {
+            view->renderer3D()->RemoveActor(ddd->volume);
+        }
     }
+}
 
-    if (ddd->actor2D) {
-        ((gnomonVtkView *) d->view)->renderer2D()->RemoveActor(ddd->actor2D);
-        ddd->actor2D->Delete();
-        ddd->actor2D = nullptr;
-    }
-
-    if (ddd->blending) {
-        ddd->blending->Delete();
-        ddd->blending = nullptr;
+void gnomonImageVtkVisualizationChannelBlending::fill(void)
+{
+    auto view = dynamic_cast<gnomonVtkView *>(d->view);
+    if (view) {
+        if (ddd->actor2D) {
+            view->renderer2D()->AddActor(ddd->actor2D);
+        }
+        if (ddd->volume) {
+            view->renderer3D()->AddActor(ddd->volume);
+        }
     }
 }
 

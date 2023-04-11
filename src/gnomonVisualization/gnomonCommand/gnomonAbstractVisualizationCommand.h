@@ -59,6 +59,9 @@ public slots:
     virtual void update(void);
     virtual void clear(void);
 
+    virtual void setVisualization(std::shared_ptr<gnomonAbstractVisualization>);
+    virtual inline void newVisualization(void) { };
+
     void connectVisualization(void);
     void disconnectVisualization(void);
 

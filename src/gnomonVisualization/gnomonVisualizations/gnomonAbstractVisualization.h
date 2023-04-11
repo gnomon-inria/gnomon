@@ -46,9 +46,15 @@ signals:
     void parametersChanged(void);
 
 public slots:
-    virtual void update(void) = 0; // update the form visualization display in its view
-    virtual void render(void) = 0; // refresh the view where the visualization is displayed
-    virtual void clear(void) = 0; // remove the form visualization from its view
+    // recompute the form visualization display and if necessary add it to its view
+    virtual void update(void) = 0;
+    // refresh the view where the visualization is displayed without any recomputing
+    virtual void render(void) = 0;
+    // remove the form visualization from its view without deleting the computed display
+    virtual void clear(void) = 0;
+    // add the form visualization to its view, if possible without any recomputing
+    virtual void fill(void) = 0;
+
     virtual inline void clearConnections(void) {  };
 
 public slots:

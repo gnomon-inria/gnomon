@@ -35,14 +35,12 @@ gnomonLStringMplVisualizationCommand::~gnomonLStringMplVisualizationCommand()
     delete d;
 }
 
-void gnomonLStringMplVisualizationCommand::setAlgorithmName(const QString& visu_name)
+void gnomonLStringMplVisualizationCommand::newVisualization(void)
 {
-    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
-        gnomonAbstractVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::lStringMplVisualization::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractLStringMplVisualization>(visu);
-        this->connectVisualization();
-    }
+    this->clear();
+    auto visu = gnomonVisualization::lStringMplVisualization::pluginFactory().create(this->algorithm_name);
+    this->visu = std::shared_ptr<gnomonAbstractLStringMplVisualization>(visu);
+    this->connectVisualization();
 }
 
 void gnomonLStringMplVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
@@ -50,12 +48,10 @@ void gnomonLStringMplVisualizationCommand::setFormVisualization(const QString& v
     this->setAlgorithmName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractLStringMplVisualization>(this->visu);
     if (visu) {
-        if (visu->lString() != d->lString->current()) {
-            visu->setLString(d->lString->current());
-            visu->refreshParameters();
-            this->setVisualizationParameters(parameters);
-            visu->update();
-        }
+        visu->setLString(d->lString->current());
+        this->setVisualizationParameters(parameters);
+        visu->refreshParameters();
+        visu->update();
     }
 }
 

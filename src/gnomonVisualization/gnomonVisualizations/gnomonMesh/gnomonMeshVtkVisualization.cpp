@@ -51,7 +51,18 @@ gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMes
 
 gnomonMeshVtkVisualization::~gnomonMeshVtkVisualization(void)
 {
-    this->clear();
+    if (ddd->actor) {
+        ddd->actor->Delete();
+        ddd->actor = nullptr;
+    }
+    if (ddd->edge_actor) {
+        ddd->edge_actor->Delete();
+        ddd->edge_actor = nullptr;
+    }
+    if (ddd->actor2D) {
+        ddd->actor2D->Delete();
+        ddd->actor2D = nullptr;
+    }
     delete ddd;
 }
 
@@ -62,22 +73,33 @@ const QString gnomonMeshVtkVisualization::pluginName(void)
 
 void gnomonMeshVtkVisualization::clear(void)
 {
-    if (ddd->actor) {
-        ((gnomonVtkView *) d->view)->renderer3D()->RemoveActor(ddd->actor);
-        ddd->actor->Delete();
-        ddd->actor = nullptr;
+    auto view = dynamic_cast<gnomonVtkView *>(d->view);
+    if (view) {
+        if (ddd->actor) {
+            view->renderer3D()->RemoveActor(ddd->actor);
+        }
+        if (ddd->edge_actor) {
+            view->renderer3D()->RemoveActor(ddd->edge_actor);
+        }
+        if (ddd->actor2D) {
+            view->renderer2D()->RemoveActor(ddd->actor2D);
+        }
     }
+}
 
-    if (ddd->edge_actor) {
-        ((gnomonVtkView *) d->view)->renderer3D()->RemoveActor(ddd->edge_actor);
-        ddd->edge_actor->Delete();
-        ddd->edge_actor = nullptr;
-    }
-
-    if (ddd->actor2D) {
-        ((gnomonVtkView *) d->view)->renderer2D()->RemoveActor(ddd->actor2D);
-        ddd->actor2D->Delete();
-        ddd->actor2D = nullptr;
+void gnomonMeshVtkVisualization::fill(void)
+{
+    auto view = dynamic_cast<gnomonVtkView *>(d->view);
+    if (view) {
+        if (ddd->actor) {
+            view->renderer3D()->AddActor(ddd->actor);
+        }
+        if (ddd->edge_actor) {
+            view->renderer3D()->AddActor(ddd->edge_actor);
+        }
+        if (ddd->actor2D) {
+            view->renderer2D()->AddActor(ddd->actor2D);
+        }
     }
 }
 

@@ -12,9 +12,6 @@ class GNOMONCORE_EXPORT gnomonAbstractVtkVisualizationCommand :  public gnomonAb
 
 public:
     void setView(gnomonAbstractView *view) override;
-
-public:
-    void clear(void) override;
 };
 
 

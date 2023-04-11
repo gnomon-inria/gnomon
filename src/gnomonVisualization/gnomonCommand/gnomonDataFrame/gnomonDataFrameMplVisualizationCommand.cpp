@@ -35,14 +35,12 @@ gnomonDataFrameMplVisualizationCommand::~gnomonDataFrameMplVisualizationCommand(
     delete d;
 }
 
-void gnomonDataFrameMplVisualizationCommand::setAlgorithmName(const QString& visu_name)
+void gnomonDataFrameMplVisualizationCommand::newVisualization(void)
 {
-    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
-        gnomonAbstractVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractDataFrameMplVisualization>(visu);
-        this->connectVisualization();
-    }
+    this->clear();
+    auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(this->algorithm_name);
+    this->visu = std::shared_ptr<gnomonAbstractDataFrameMplVisualization>(visu);
+    this->connectVisualization();
 }
 
 void gnomonDataFrameMplVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
@@ -50,12 +48,10 @@ void gnomonDataFrameMplVisualizationCommand::setFormVisualization(const QString&
     this->setAlgorithmName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu);
     if (visu) {
-        if (visu->dataFrame() != d->dataFrame->current()) {
-            visu->setDataFrame(d->dataFrame->current());
-            visu->refreshParameters();
-            this->setVisualizationParameters(parameters);
-            visu->update();
-        }
+        visu->setDataFrame(d->dataFrame->current());
+        this->setVisualizationParameters(parameters);
+        visu->refreshParameters();
+        visu->update();
     }
 }
 

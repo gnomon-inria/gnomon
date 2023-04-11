@@ -35,14 +35,12 @@ gnomonPointCloudVtkVisualizationCommand::~gnomonPointCloudVtkVisualizationComman
     delete d;
 }
 
-void gnomonPointCloudVtkVisualizationCommand::setAlgorithmName(const QString& visu_name)
+void gnomonPointCloudVtkVisualizationCommand::newVisualization(void)
 {
-    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
-        gnomonAbstractVtkVisualizationCommand::setAlgorithmName(visu_name);
-        auto visu = gnomonVisualization::pointCloudVtkVisualization::pluginFactory().create(visu_name);
-        this->visu = std::shared_ptr<gnomonAbstractPointCloudVtkVisualization>(visu);
-        this->connectVisualization();
-    }
+    this->clear();
+    auto visu = gnomonVisualization::pointCloudVtkVisualization::pluginFactory().create(this->algorithm_name);
+    this->visu = std::shared_ptr<gnomonAbstractPointCloudVtkVisualization>(visu);
+    this->connectVisualization();
 }
 
 void gnomonPointCloudVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
@@ -50,12 +48,10 @@ void gnomonPointCloudVtkVisualizationCommand::setFormVisualization(const QString
     this->setAlgorithmName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractPointCloudVtkVisualization>(this->visu);
     if (visu) {
-        if (visu->pointCloud() != d->pointCloud) {
-            visu->setPointCloud(d->pointCloud);
-            visu->refreshParameters();
-            this->setVisualizationParameters(parameters);
-            visu->update();
-        }
+        visu->setPointCloud(d->pointCloud);
+        this->setVisualizationParameters(parameters);
+        visu->refreshParameters();
+        visu->update();
     }
 }
 

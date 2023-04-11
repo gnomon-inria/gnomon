@@ -5,10 +5,9 @@
 
 void gnomonAbstractVisualizationCommand::setAlgorithmName(const QString& visu_name)
 {
-    if (this->algorithm_name != visu_name) {
+    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
         this->algorithm_name = visu_name;
-        this->disconnectVisualization();
-        this->clear();
+        this->newVisualization();
     }
 }
 
@@ -19,11 +18,9 @@ gnomonAbstractView *gnomonAbstractVisualizationCommand::view(void)
 
 void gnomonAbstractVisualizationCommand::setView(gnomonAbstractView *view)
 {
-    if (view != this->_view) {
-        this->_view = view;
-        if (this->visu) {
-            this->visu->setView(this->_view);
-        }
+    this->_view = view;
+    if (this->visu) {
+        this->visu->setView(this->_view);
     }
 }
 
@@ -93,6 +90,7 @@ void gnomonAbstractVisualizationCommand::update(void)
 
 void gnomonAbstractVisualizationCommand::clear(void)
 {
+    this->disconnectVisualization();
     if (this->visu) {
         this->visu->clear();
         this->visu = nullptr;
@@ -104,6 +102,19 @@ void gnomonAbstractVisualizationCommand::setVisible(bool visible)
     this->visible = visible;
     if (this->visu) {
         this->visu->setVisible(this->visible);
+    }
+}
+
+void gnomonAbstractVisualizationCommand::setVisualization(std::shared_ptr<gnomonAbstractVisualization> visu)
+{
+    // Replace visualization by existing (shared) visualization (e.g. on form drop from manager)
+    if (visu && visu != this->visu) {
+        // Remove current visualization from the view
+        this->clear();
+        this->visu = visu;
+        this->algorithm_name = this->visu->pluginName();
+        // Update the view of the visualization to make sure it is displayed
+        this->connectVisualization();
     }
 }
 

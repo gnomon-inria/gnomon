@@ -18,6 +18,9 @@ public:
 
 public:
     int figureNumber(void);
+
+public slots:
+    inline void fill(void) override { this->update(); };
 };
 
 //

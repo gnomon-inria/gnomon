@@ -51,7 +51,14 @@ gnomonCellImageVtkVisualizationVolume::gnomonCellImageVtkVisualizationVolume(voi
 
 gnomonCellImageVtkVisualizationVolume::~gnomonCellImageVtkVisualizationVolume(void)
 {
-    this->clear();
+    if (ddd->actor) {
+        ddd->actor->Delete();
+        ddd->actor = nullptr;
+    }
+    if (ddd->actor2D) {
+        ddd->actor2D->Delete();
+        ddd->actor2D = nullptr;
+    }
     delete ddd;
 }
 
@@ -62,20 +69,30 @@ const QString gnomonCellImageVtkVisualizationVolume::pluginName(void)
 
 void gnomonCellImageVtkVisualizationVolume::clear(void)
 {
-//    gnomonAbstractVisualization::clear();
-
-    if (ddd->actor) {
-        ((gnomonVtkView *) d->view)->renderer3D()->RemoveActor(ddd->actor);
-        ddd->actor->Delete();
-        ddd->actor = nullptr;
-    }
-
-    if (ddd->actor2D) {
-        ((gnomonVtkView *) d->view)->renderer2D()->RemoveActor(ddd->actor2D);
-        ddd->actor2D->Delete();
-        ddd->actor2D = nullptr;
+    auto view = dynamic_cast<gnomonVtkView *>(d->view);
+    if (view) {
+        if (ddd->actor) {
+            view->renderer3D()->RemoveActor(ddd->actor);
+        }
+        if (ddd->actor2D) {
+            view->renderer2D()->RemoveActor(ddd->actor2D);
+        }
     }
 }
+
+void gnomonCellImageVtkVisualizationVolume::fill(void)
+{
+    auto view = dynamic_cast<gnomonVtkView *>(d->view);
+    if (view) {
+        if (ddd->actor) {
+            view->renderer3D()->AddActor(ddd->actor);
+        }
+        if (ddd->actor2D) {
+            view->renderer2D()->AddActor(ddd->actor2D);
+        }
+    }
+}
+
 
 void gnomonCellImageVtkVisualizationVolume::setVisible(bool visible)
 {
