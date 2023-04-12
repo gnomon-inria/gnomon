@@ -1,5 +1,18 @@
 # ChangeLog
 
+## version 0.80.0 - 2023-04-12
+* LSP server for python workspace
+* connect for python parameters
+* fix morphonet curation
+* manually pick cells for tracking workspace
+* intelligible names for algorithms
+* share visualization across workspaces
+* uniformization of abstract views
+* picker for curve2d
+* fix lpy bugs
+* lpy 2.13
+
+
 ## version 0.72.0 - 2023-02-03
 * L-Py modelling workspace
 * Semi-automatic cell tracking
@@ -42,7 +55,7 @@
 * first morphonet api
 * 3d and 4d numpy wrapper
 * support time series
-* add workspace cellular tracking 
+* add workspace cellular tracking
 
 ## version 0.60.0 - 2022-03-15
 * qt6
@@ -72,6 +85,6 @@
 * colormaps per channels
 * world with metadata on images
 * blending with 2 images
-* 
+*
 ## version 0.9.0 - 2018-11-20
 *initial release

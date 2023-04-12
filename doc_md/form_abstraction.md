@@ -550,7 +550,7 @@ from gnomon.core import gnomonAbstractNewFormData
 
 from gnomon.utils import corePlugin
 
-@corePlugin(version="0.1.0", coreversion="0.72.0")
+@corePlugin(version="0.1.0", coreversion="0.80.0")
 class newFormDataMyStructure(gnomonAbstractNewFormData):
 ```
 
