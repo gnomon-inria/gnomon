@@ -22,7 +22,7 @@ public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {tracking::t_set_parameter_called = true;};
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
 
-    void run(void) override{ tracking::t_run_called = true;};
+    int run(void) override{ tracking::t_run_called = true; return 0;};
     QString documentation(void) override {return "empty";};
 
     void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) override {
@@ -79,7 +79,7 @@ void gnomonCellImageTrackingCommandTestCase::redo(void) {
 
     auto img_series = std::make_shared<gnomonImageSeries>();
     d->tracking_command->setImage(img_series);
-    QVERIFY(!tracking::t_set_image_called); //empty time series so not called
+    QVERIFY(tracking::t_set_image_called);
 
     auto cellimg_series = std::make_shared<gnomonCellImageSeries>();
     auto cellimg = std::make_shared<gnomonCellImage>();

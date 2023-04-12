@@ -17,11 +17,11 @@
 #include <gnomonWorkspaceExport>
 #include "gnomonAbstractWorkspace.h"
 
-#include <gnomonVisualization/gnomonView/gnomonViewFormList>
+#include <gnomonVisualization/gnomonView/gnomonVtkViewList>
 
 #include <QJSValue>
 
-class gnomonViewForm;
+class gnomonVtkView;
 class gnomonPythonAlgorithmPluginCode;
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspacePythonAlgorithm : public gnomonAbstractWorkspace
@@ -52,10 +52,10 @@ public:
 
     Q_PROPERTY(gnomonPythonAlgorithmPluginCode* code READ code CONSTANT);
 
-    Q_PROPERTY(gnomonViewFormList* sources READ sources CONSTANT);
-    Q_PROPERTY(gnomonViewFormList* targets READ targets CONSTANT);
-    Q_PROPERTY(gnomonViewForm* source READ source CONSTANT); //for ease of use
-    Q_PROPERTY(gnomonViewForm* target READ target CONSTANT); //for ease of use
+    Q_PROPERTY(gnomonVtkViewList* sources READ sources CONSTANT);
+    Q_PROPERTY(gnomonVtkViewList* targets READ targets CONSTANT);
+    Q_PROPERTY(gnomonVtkView* source READ source CONSTANT); //for ease of use
+    Q_PROPERTY(gnomonVtkView* target READ target CONSTANT); //for ease of use
 
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
@@ -94,11 +94,11 @@ public:
 public:
     gnomonPythonAlgorithmPluginCode *code(void) const;
 
-    gnomonViewFormList *sources(void) const;
-    gnomonViewFormList *targets(void) const;
+    gnomonVtkViewList *sources(void) const;
+    gnomonVtkViewList *targets(void) const;
 
-    gnomonViewForm *source(void) const { return (*this->sources())[0]; };
-    gnomonViewForm *target(void) const { return (*this->targets())[0]; };
+    gnomonVtkView *source(void) const { return (*this->sources())[0]; };
+    gnomonVtkView *target(void) const { return (*this->targets())[0]; };
 
     QJSValue parameters(void);
 

@@ -24,6 +24,8 @@ public:
 public:
     virtual void setImage(std::shared_ptr<gnomonImageSeries> ) = 0;
     virtual std::shared_ptr<gnomonImageSeries> image() = 0;
+    virtual void setInitialTransformation(std::shared_ptr<gnomonDataDictSeries>) = 0;
+    virtual std::shared_ptr<gnomonDataDictSeries> initialTransformation() = 0;
 
     virtual std::shared_ptr<gnomonImageSeries> output() = 0;
     virtual std::shared_ptr<gnomonDataDictSeries> outputTransformation() = 0;
@@ -32,12 +34,16 @@ public:
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonImage") {
             return {"setImage"};
+        } else if(formName == "gnomonDataDict") {
+            return {"setInitialTransformation"};
         }
         return {};
     };
     static inline QString defaultGetter(QString formName) {
         if(formName == "gnomonImage") {
             return {"image"};
+        } else if(formName == "gnomonDataDict") {
+            return {"initialTransformation"};
         }
         return {};
     };

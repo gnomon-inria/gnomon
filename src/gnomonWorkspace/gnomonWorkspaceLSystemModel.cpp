@@ -6,8 +6,10 @@
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
-#include <gnomonVisualization/gnomonView/gnomonViewForm>
-#include "gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString"
+#include <gnomonVisualization/gnomonView/gnomonVtkView>
+#include "gnomonCommand/gnomonLString/gnomonLStringEvolutionModelCommand.h"
+#include "gnomonForm/gnomonLString/gnomonLString.h"
+#include "gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization"
 
 QString vonKochLSystem(void)
 {
@@ -53,7 +55,9 @@ public:
 
 public:
     QString text;
+    QString message;
     int derivationLength = 100;
+    int animation_step = 1;
 
     int derivations = 0;
     std::shared_ptr<gnomonLStringSeries> current_lString;
@@ -74,7 +78,7 @@ public:
     gnomonLStringEvolutionModelCommand *command = nullptr;
 
 public:
-    gnomonViewForm *view = nullptr;
+    gnomonVtkView *view = nullptr;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -105,13 +109,14 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
 
-    d->view = new gnomonViewForm({}, this);
+    d->view = new gnomonVtkView(this);
+    d->view->setNodePortNames({});
     d->view->setAcceptForm("gnomonLString", true);
 
-    connect(d->view, &gnomonViewForm::formAdded, [=](const QString &name) {
+    connect(d->view, &gnomonVtkView::formAdded, [=](const QString &name) {
         const QString plugin_name = "lStringVisualizationVtkTurtle";
         if (name == "gnomonLString") {
-            if (gnomonVisualization::visualizationLString::pluginFactory().keys().contains(plugin_name)) {
+            if (gnomonVisualization::lStringVtkVisualization::pluginFactory().keys().contains(plugin_name)) {
                 // d->view->setFormVisuName(name, plugin_name);
                 d->view->setFormVisuParameter(name, "interpretation_lsystem", d->model_file->fileName());
             }
@@ -120,11 +125,17 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
             while (it.hasNext()) {
                 it.next();
             }
+            d->view->setBounds(-100., 100., -100., 100., -1., 10.);
         }
     });
 
-    connect(d->view, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+    connect(d->view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         gnomonPipelineManager::instance()->addForm(f);
+    });
+
+    connect(d->command, &gnomonAbstractEvolutionModelCommand::modelMessage, [=](QString msg) {
+            d->message = msg;
+            this->messageChanged();
     });
 
     this->setText(vonKochLSystem());
@@ -139,6 +150,7 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
     }
 
     if(d->model_file) {
+        d->model_file->remove();
         delete d->model_file;
         d->model_file = nullptr;
     }
@@ -150,6 +162,11 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
 QString gnomonWorkspaceLSystemModel::text(void)
 {
     return d->text;
+}
+
+QString gnomonWorkspaceLSystemModel::message(void) const
+{
+    return d->message;
 }
 
 void gnomonWorkspaceLSystemModel::setText(const QString& text)
@@ -190,6 +207,30 @@ void gnomonWorkspaceLSystemModel::setDerivationLength(int l)
     }
 }
 
+int gnomonWorkspaceLSystemModel::animationStep(void)
+{
+    return d->animation_step;
+}
+
+void gnomonWorkspaceLSystemModel::setAnimationStep(int s)
+{
+    if (s != d->animation_step) {
+        d->animation_step = s;
+        emit animationStepChanged(d->animation_step);
+    }
+}
+
+void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
+{
+    bool ok;
+    double t_double = time.toDouble(&ok);
+    if(ok) {
+        d->command->setAnimationTime(t_double);
+    } else {
+        qWarning() << "SetAnimationTime: Cannot convert " << time << " to double";
+    }
+}
+
 void gnomonWorkspaceLSystemModel::read(const QString& file_url)
 {
     QString file_path = filePathFromUrl(file_url);
@@ -205,6 +246,7 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url)
         QString temp_file = finfo.absolutePath() + QDir::separator() + ".XXXXXX" + finfo.fileName();
         d->model_file = new QTemporaryFile(temp_file);
         this->setText(in.readAll());
+        this->reset();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }
@@ -231,13 +273,14 @@ void gnomonWorkspaceLSystemModel::animate()
     emit started();
     this->setInitialState();
     d->command->undo();
+
     d->derivations = 0;
     d->command->simulationType = SimulationType::animate;
     d->command->setDerivationLength(d->derivationLength);
-    connect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, [=](){
-        d->derivations += 1;
+    d->command->setAnimationStep(d->animation_step);
+    connect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, [=] (int s){
+        d->derivations = s;
         this->viewNewStep();
-        //d->synchro.wakeAll();
     });
     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
         disconnect(d->command, &gnomonLStringEvolutionModelCommand::finished, nullptr, nullptr);
@@ -326,7 +369,7 @@ void gnomonWorkspaceLSystemModel::viewState()
     d->command->setDerivationLength(d->derivations);
     auto lString = d->command->lString();
     if (lString) {
-        d->view->setLString(lString); //TODO only update, only do it if it's different ..
+        d->view->setForm("gnomonLString", lString); //TODO only update, only do it if it's different ..
         if (lString->times().size() != 0) {
             d->view->setCurrentTime(lString->times().last());
         }
@@ -340,18 +383,18 @@ void gnomonWorkspaceLSystemModel::viewNewStep()
 {
     // get the current lstring from view
     auto lString = d->view->lString();
-    if(!lString || d->derivations == 1) {
+    if(!lString || d->derivations == d->animation_step) {
         lString = d->command->lString();
         if(lString && lString->times().length() > 0) {
-            d->view->setLString(lString);
+            d->view->setForm("gnomonLString", lString);
         } else {
             return;
         }
     }
 
     if (lString->times().size() != 0) {
-        d->view->formAdded("miaou");
-        d->view->setCurrentTime(lString->times().last());
+        d->view->formAdded("gnomonLString");
+        d->view->setCurrentTime(d->derivations);
     }
     //gnomonPipelineManager::instance()->addEvolutionModel(d->command);
 }
@@ -398,7 +441,7 @@ void gnomonWorkspaceLSystemModel::setCurrentIndex(int i)
     }
 }
 
-gnomonViewForm *gnomonWorkspaceLSystemModel::view(void) const
+gnomonVtkView *gnomonWorkspaceLSystemModel::view(void) const
 {
     return d->view;
 }

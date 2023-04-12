@@ -19,10 +19,10 @@
 
 #include <dtkLog>
 
-#include "gnomonVisualizations/gnomonCellComplex/gnomonVisualizationCellComplex.h"
-#include "gnomonVisualizations/gnomonCellImage/gnomonVisualizationCellImageVolume.h"
-#include "gnomonVisualizations/gnomonImage/gnomonVisualizationImageChannelBlending.h"
-#include "gnomonVisualizations/gnomonMesh/gnomonVisualizationMesh.h"
+#include "gnomonVisualizations/gnomonCellComplex/gnomonCellComplexVtkVisualization.h"
+#include "gnomonVisualizations/gnomonCellImage/gnomonCellImageVtkVisualizationVolume.h"
+#include "gnomonVisualizations/gnomonImage/gnomonImageVtkVisualizationChannelBlending.h"
+#include "gnomonVisualizations/gnomonMesh/gnomonMeshVtkVisualization.h"
 
 namespace gnomonVisualization {
 
@@ -58,11 +58,11 @@ void initialize(const QString& path)
     for(const QString& v_path : pathslist) {
         manager().initialize(v_path);
     }
-    gnomonVisualization::visualizationCellComplex::pluginFactory().record("gnomonVisualizationCellComplex", gnomonVisualizationCellComplexCreator, "Cell Complex Visualization", "");
-    // gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageMarchingCubes", gnomonVisualizationCellImageMarchingCubesCreator);
-    gnomonVisualization::visualizationCellImage::pluginFactory().record("gnomonVisualizationCellImageVolume", gnomonVisualizationCellImageVolumeCreator, "Cell Image Volume", "");
-    gnomonVisualization::visualizationImage::pluginFactory().record("gnomonVisualizationImageChannelBlending", gnomonVisualizationImageChannelBlendingCreator, "Channel Blending", "");
-    gnomonVisualization::visualizationMesh::pluginFactory().record("gnomonVisualizationMesh", gnomonVisualizationMeshCreator, "Mesh Visualization", "");
+    gnomonVisualization::cellComplexVtkVisualization::pluginFactory().record("gnomonCellComplexVtkVisualization", gnomonCellComplexVtkVisualizationCreator, "Cell Complex Visualization", "");
+    // gnomonVisualization::cellImageVtkVisualization::pluginFactory().record("gnomonCellImageVtkVisualizationMarchingCubes", gnomonCellImageVtkVisualizationMarchingCubesCreator);
+    gnomonVisualization::cellImageVtkVisualization::pluginFactory().record("gnomonCellImageVtkVisualizationVolume", gnomonCellImageVtkVisualizationVolumeCreator, "Cell Image Volume", "");
+    gnomonVisualization::imageVtkVisualization::pluginFactory().record("gnomonImageVtkVisualizationChannelBlending", gnomonImageVtkVisualizationChannelBlendingCreator, "Channel Blending", "");
+    gnomonVisualization::meshVtkVisualization::pluginFactory().record("gnomonMeshVtkVisualization", gnomonMeshVtkVisualizationCreator, "Mesh Visualization", "");
 }
 
 void uninitialize(void)

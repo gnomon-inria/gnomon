@@ -3,10 +3,32 @@
 #include <QtCore>
 #include <functional>
 
+#include <gnomonCoreExport.h>
+
 //#include <dtkCorePluginFactory>
 #include <dtkCore/dtkCorePluginBase.h>
 
-template <typename T> class gnomonPluginFactory
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonPluginFactoryBase interface
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONCORE_EXPORT gnomonPluginFactoryBase
+{
+public:
+    virtual ~gnomonPluginFactoryBase(void) = default;
+
+public:
+    virtual QStringList keys(void) const = 0;
+    virtual QVariantList dataList() const = 0;
+};
+
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonPluginFactory
+// ///////////////////////////////////////////////////////////////////
+
+template <typename T> class gnomonPluginFactory : public gnomonPluginFactoryBase
 {
 
 public:
@@ -25,12 +47,12 @@ public:
 public:
     virtual void record(const QString& key, creator func, const QString& name="", const QString& doc="");
     virtual void recordPlugin(const QString& key, dtkCorePluginBase *plugin, const QString& name="", const QString& doc="", bool force = false);
-    QStringList keys(void) const;
+    QStringList keys(void) const override;
 
 public:
     virtual QString name(const QString& key) const;
     virtual QString doc(const QString& key) const;
-    virtual QVariantList dataList() const;
+    QVariantList dataList() const override;
 
 protected:
     QHash<QString, QString> names;

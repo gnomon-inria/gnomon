@@ -6,7 +6,7 @@
 
 #include <QJSValue>
 
-class gnomonViewForm;
+class gnomonVtkView;
 
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceLSystemModel : public gnomonAbstractWorkspace
@@ -24,17 +24,20 @@ public:
 public:
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     Q_PROPERTY(int derivationLength READ derivationLength WRITE setDerivationLength NOTIFY derivationLengthChanged)
+    Q_PROPERTY(int animationStep READ animationStep WRITE setAnimationStep NOTIFY animationStepChanged)
 
     Q_PROPERTY(QString modelName READ modelName WRITE setModelName NOTIFY modelChanged);
     Q_PROPERTY(QStringList models READ models NOTIFY modelsLoaded);
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged);
-    Q_PROPERTY(gnomonViewForm* view READ view CONSTANT);
-
+    Q_PROPERTY(gnomonVtkView* view READ view CONSTANT);
+    Q_PROPERTY(QString message READ message NOTIFY messageChanged)
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
     void textChanged(const QString&);
     void derivationLengthChanged(int);
+    void animationStepChanged(int);
+    void messageChanged();
 
     void modelsLoaded(void);
     void modelChanged(const QString& model);
@@ -42,11 +45,16 @@ signals:
     void currentIndexChanged(void);
 
 public:
+    QString message(void) const;
+
     QString text(void);
     void setText(const QString& text);
 
     int derivationLength(void);
     void setDerivationLength(int l);
+
+    int animationStep(void);
+    void setAnimationStep(int s);
 
 public:
     Q_INVOKABLE QUrl defaultReadPath();
@@ -61,6 +69,7 @@ public slots:
     void run(void);
     void reset(void);
     void stop(void);
+    void setAnimationTime(const QString& time);
 
     void setInitialState(void);
     void viewState(void);
@@ -74,7 +83,7 @@ public:
     int currentIndex(void) const;
     void setCurrentIndex(int);
 
-    gnomonViewForm *view(void) const;
+    gnomonVtkView *view(void) const;
 
     QJSValue parameters(void);
 

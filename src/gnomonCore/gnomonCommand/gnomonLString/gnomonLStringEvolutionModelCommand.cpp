@@ -1,10 +1,13 @@
 #include "gnomonLStringEvolutionModelCommand.h"
+#include "gnomonCommand/gnomonAbstractEvolutionModelCommand.h"
+#include "gnomonModel/gnomonAbstractModel.h"
 
 #include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
 #include <QtConcurrent>
 #include <QtCore>
+#include <qthread.h>
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -16,6 +19,8 @@ public:
     std::shared_ptr<gnomonLStringSeries> lString = nullptr;
 
     int derivationLength = 0;
+    int animation_step = 1;
+    double animation_time = 10;
 
     std::unique_ptr<QFutureWatcher<int>> watcher = nullptr;
 };
@@ -34,6 +39,7 @@ gnomonLStringEvolutionModelCommand::gnomonLStringEvolutionModelCommand() : d(new
     if (!keys.empty()) {
         this->model_name = keys[0];
         this->model = gnomonCore::lStringEvolutionModel::pluginFactory().create(this->model_name);
+        connect(this->model, &gnomonAbstractModel::modelMessage, this, &gnomonAbstractEvolutionModelCommand::modelMessage);
     }
 }
 
@@ -89,22 +95,35 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
         if(this->simulationType == SimulationType::step) {
             d->lString = lstring_model->state();
             i = int(d->lString->times().last());
+            maxDerivationLength = i+1;
         }
 
-        for(; i<maxDerivationLength; i++) {
-            if( i % 100 == 0)
-                qInfo() <<"Step:"<< i;
+        //let's slow down the computation!
+        // time during each iteration
+        int sleeptime = int(d->animation_time*1000*d->animation_step / maxDerivationLength);
+        QElapsedTimer timer;
+        timer.start();
 
+        for(; i<maxDerivationLength; i++) {
             this->predo();
             if(this->simulationType == SimulationType::run) {
                 this->model->run(0, 0, 0);
                 this->postdo();
             } else {
-                auto temp = lstring_model->stepAndReturn(i, 1);
-                d->lString->insert(i+1, temp );
+                if ((i+1) % d->animation_step == 0) {
+                    d->lString->insert(i+1, lstring_model->stepAndReturn(i, 1));
+                    promise.setProgressValue(i+1);
+                    if(this->simulationType == SimulationType::animate) {
+                        int remainingTime = sleeptime - timer.restart();
+                        if(remainingTime > 50) {
+                            QThread::msleep(remainingTime);
+                        }
+                    }
+                } else {
+                    lstring_model->step(i,1);
+                }
             }
 
-            promise.setProgressValue(i);
             promise.suspendIfRequested();
             if (promise.isCanceled())
                 return;
@@ -158,11 +177,28 @@ void gnomonLStringEvolutionModelCommand::setDerivationLength(int l)
     d->derivationLength = l;
 }
 
+int gnomonLStringEvolutionModelCommand::animationStep(void) const
+{
+    return d->animation_step;
+}
+
+void gnomonLStringEvolutionModelCommand::setAnimationStep(int s)
+{
+    d->animation_step = s;
+}
+
+
+void gnomonLStringEvolutionModelCommand::setAnimationTime(double t)
+{
+    d->animation_time = t;
+}
+
 void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)
 {
     this->model_name = model_name;
     delete this->model;
     this->model = gnomonCore::lStringEvolutionModel::pluginFactory().create(this->model_name);
+    connect(this->model, &gnomonAbstractModel::modelMessage, this, &gnomonAbstractEvolutionModelCommand::modelMessage);
 }
 
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringEvolutionModelCommand::initialState()

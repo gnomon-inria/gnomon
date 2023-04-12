@@ -19,15 +19,15 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-    gnomonAbstractVisualizationCellComplex
-    gnomonAbstractVisualizationCellComplex.h
-    gnomonVisualizationCellComplex
-    gnomonVisualizationCellComplex.h)
+    gnomonAbstractCellComplexVtkVisualization
+    gnomonAbstractCellComplexVtkVisualization.h
+    gnomonCellComplexVtkVisualization
+    gnomonCellComplexVtkVisualization.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractVisualizationCellComplex.cpp
-    gnomonVisualizationCellComplex.cpp)
+    gnomonAbstractCellComplexVtkVisualization.cpp
+    gnomonCellComplexVtkVisualization.cpp)
 
 
 ######################################################################

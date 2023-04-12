@@ -1,16 +1,16 @@
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-    gnomonAbstractVisualizationCellImage
-    gnomonAbstractVisualizationCellImage.h
-    # gnomonVisualizationCellImageMarchingCubes
-    # gnomonVisualizationCellImageMarchingCubes.h
-    gnomonVisualizationCellImageVolume
-    gnomonVisualizationCellImageVolume.h)
+    gnomonAbstractCellImageVtkVisualization
+    gnomonAbstractCellImageVtkVisualization.h
+    # gnomonCellImageVtkVisualizationMarchingCubes
+    # gnomonCellImageVtkVisualizationMarchingCubes.h
+    gnomonCellImageVtkVisualizationVolume
+    gnomonCellImageVtkVisualizationVolume.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractVisualizationCellImage.cpp
-    # gnomonVisualizationCellImageMarchingCubes.cpp
-    gnomonVisualizationCellImageVolume.cpp)
+    gnomonAbstractCellImageVtkVisualization.cpp
+    # gnomonCellImageVtkVisualizationMarchingCubes.cpp
+    gnomonCellImageVtkVisualizationVolume.cpp)
 
 
 ######################################################################

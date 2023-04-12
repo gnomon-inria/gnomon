@@ -26,7 +26,7 @@ public slots:
 
 signals:
     void finished(void);
-    void stepFinished(void);
+    void stepFinished(int);
 
 public:
     void setAxiom(std::shared_ptr<gnomonLStringSeries> lstring);
@@ -40,6 +40,11 @@ public:
 
     int derivationLength(void) const;
     void setDerivationLength(int);
+
+    int animationStep(void) const;
+    void setAnimationStep(int);
+    void setAnimationTime(double t);
+
     SimulationType simulationType;
 
 public:

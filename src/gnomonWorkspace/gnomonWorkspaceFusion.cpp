@@ -41,7 +41,7 @@ public:
     gnomonGridLayout *sources_layout;
 
 public:
-    gnomonViewForm *target;
+    gnomonVtkView *target;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -75,13 +75,13 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     d->sources_layout = new gnomonGridLayout;
     d->sources_layout->addView();
 
-    for(gnomonViewForm *view : d->sources_layout->views()) {
+    for(gnomonVtkView *view : d->sources_layout->views()) {
         view->setInputView(true);
         view->setEnableLinking(false);
         view->setAcceptForm("gnomonImage",true);
     }
 
-    d->target = new gnomonViewForm(this);
+    d->target = new gnomonVtkView(this);
     d->target->setExportColor(this->color);
     d->target->setMinimumWidth(250);
     d->target->setEnableLinking(false);
@@ -132,7 +132,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
     {
         d->command->undo();
         d->target_message->setMessage("Result will be displayed here");
-        for(gnomonViewForm *view : d->sources_layout->views()) {
+        for(gnomonVtkView *view : d->sources_layout->views()) {
             if (view->image()) {
                 d->command->addImage(view->image());
                 d->target_message->setMessage("Result will be displayed here");
@@ -141,7 +141,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
         d->configure(d->algorithm);
     });
 
-    connect(d->sources_layout, &gnomonGridLayout::viewAdded, [=] (gnomonViewForm *view)
+    connect(d->sources_layout, &gnomonGridLayout::viewAdded, [=] (gnomonVtkView *view)
     {
         view->setInputView(true);
         view->setEnableLinking(false);
@@ -151,7 +151,7 @@ gnomonWorkspaceFusion::gnomonWorkspaceFusion(QWidget *parent) : dtkWidgetsWorksp
 
     connect(d, &gnomonWorkspaceFusionPrivate::algorithmChanged, [=] (const QString& algorithm) {
         d->command->undo();
-        for(gnomonViewForm *view : d->sources_layout->views()) {
+        for(gnomonVtkView *view : d->sources_layout->views()) {
             if (view->image()) {
                 d->command->addImage(view->image());
             }
@@ -193,7 +193,7 @@ void gnomonWorkspaceFusion::apply(void)
     //d->command->removeLandmarks();
     d->command->undo();
 
-    for(gnomonViewForm *view : d->sources_layout->views()) {
+    for(gnomonVtkView *view : d->sources_layout->views()) {
         if (view->image()) {
             d->command->addImage(view->image());
 //        d->command->addLandmarks(view->landmarks());
@@ -203,7 +203,7 @@ void gnomonWorkspaceFusion::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setImage(d->command->output());
+        d->target->setForm("gnomonImage", d->command->output());
         d->target_stack->setCurrentWidget(d->target);
 
         d->registerPipeline();

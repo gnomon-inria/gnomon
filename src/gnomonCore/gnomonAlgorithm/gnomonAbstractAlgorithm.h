@@ -6,6 +6,7 @@
 
 #include <dtkCore/dtkCorePlugin>
 #include <dtkCore/dtkCoreParameters>
+#include <dtkImagingCore>
 
 #include "gnomonCore/gnomonCorePlugin.h"
 
@@ -14,7 +15,7 @@
 // ///////////////////////////////////////////////////////////////////
 class gnomonAbstractCommand;
 
-class GNOMONCORE_EXPORT gnomonAbstractAlgorithm : public QRunnable
+class GNOMONCORE_EXPORT gnomonAbstractAlgorithm
 {
 public:
              gnomonAbstractAlgorithm(void) = default;
@@ -24,14 +25,21 @@ public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
-    virtual void refreshParameters(void) {};
-
+    virtual void connectParameter(const QString& parameter_name);
+    virtual void refreshParameters(void);
+    virtual void onParameterChanged(const QString& parameter_name = "");
+    
 public:
-    virtual void run(void) = 0;
+    virtual int run(void) = 0;
     virtual void run_async(gnomonAbstractCommand *c) {};
     virtual QString documentation(void) = 0;
     virtual QString version(void) { return "X.X.X"; }
     virtual QString name(void) {return "";};
+
+    virtual void pause(void) {};
+    virtual void resume(void) {};
+    virtual void stop(void) {};
+    virtual int progress(void) {return -1;}
 
     virtual void clearInputs(void) {};
     virtual void clearOutputs(void) {};

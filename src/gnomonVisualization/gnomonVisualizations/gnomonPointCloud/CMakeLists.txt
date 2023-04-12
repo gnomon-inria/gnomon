@@ -19,12 +19,12 @@
 
 
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
-    gnomonAbstractVisualizationPointCloud
-    gnomonAbstractVisualizationPointCloud.h)
+    gnomonAbstractPointCloudVtkVisualization
+    gnomonAbstractPointCloudVtkVisualization.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-    gnomonAbstractVisualizationPointCloud.cpp)
+    gnomonAbstractPointCloudVtkVisualization.cpp)
 
 
 ######################################################################

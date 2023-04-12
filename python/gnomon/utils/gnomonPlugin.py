@@ -15,6 +15,7 @@ from typing import Callable
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from json import load, loads, dump
+from threading import Event
 
 from pkg_resources import iter_entry_points, resource_filename
 
@@ -27,6 +28,10 @@ from dtkcore import dtkCoreParameter
 __PLUGINS__ = []
 DEBUG = True if os.environ.get('DEBUG') else False
 
+
+class InterruptProcess(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
 
 def get_factory(plugin_group: str):
     return getattr(gnomon.core, f"{plugin_group}_pluginFactory")
@@ -201,6 +206,7 @@ def register_output(cls: type, attribute: str):
     else:
         setattr(cls, "_output_storage_list", [attribute])
 
+
 def gnomon_declare_plugins(path: str) -> dict[str, list[str]]:
     """
     Returns the entry_points dict used to declare the plugins in plugin groups.
@@ -284,7 +290,7 @@ def gnomonParametric(cls):
     cls.__setitem__ = __setitem__
 
     def __getitem__(self, key):
-        if  self._parameters[key].typeName() == "dtkCoreParameterPath":
+        if self._parameters[key].typeName() == "dtkCoreParameterPath":
             return self._parameters[key].path()
         else:
             return self._parameters[key].value()
@@ -385,6 +391,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
     Class
         Decorated plugin
     """
+
     def seriesReaderDecorator(cls: type):
         def run_decorator(f: Callable):
             @wraps(f)
@@ -408,6 +415,11 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
                     if "manifest.json" not in container.namelist():
                         raise RuntimeError("Invalid series container, no manifest.json file found.")
                     manifest = loads(container.read("manifest.json").decode("utf-8"))
+                    # extracting misc files
+                    if "misc_files" in manifest:
+                        for filename in manifest["misc_files"]:
+                            container.extract(filename, tmpdirname)
+                    # extracting form files
                     for t, filename in manifest["series"].items():
                         new_paths.append(container.extract(filename, tmpdirname))
                         time_stamps.append(t)
@@ -415,9 +427,9 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
                     # logging.info(new_paths)
                     self.setPath(",".join(new_paths))
                     f(self)
-                    #logging.info(getattr(self, form_attr))
-                    #setattr(self, form_attr, {t: getattr(self, form_attr)[i] for i, t in enumerate(time_stamps)})
-                    #logging.info(getattr(self, "image")())
+                    # logging.info(getattr(self, form_attr))
+                    # setattr(self, form_attr, {t: getattr(self, form_attr)[i] for i, t in enumerate(time_stamps)})
+                    # logging.info(getattr(self, "image")())
 
                 self.setPath = old_paths
 
@@ -431,6 +443,7 @@ def seriesReader(form_attr: str, path_attr: str = "path"):
         setattr(cls, "preview", preview)
 
         return cls
+
     return seriesReaderDecorator
 
 
@@ -455,28 +468,42 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
     Class
         Decorated plugin
     """
+
     def seriesWriterDecorator(cls: type):
         def writerDecorator(f):
             @wraps(f)
             def run_wrapper(self):
-                paths = getattr(self, path_attr).split(",")
-                path = paths[0]
+                paths: list[str] = getattr(self, path_attr).split(",")
+                path: str = paths[0]
+                stem, *extensions = os.path.basename(path).split(".")
                 forms = getattr(self, form_attr)
-                if len(forms) == 1:
+                if len(forms) == 1 and extensions[-1] != "zip":
                     return f(self)
                 # writing the series
                 with TemporaryDirectory() as tmpdirname:
                     container = zipfile.ZipFile(Path(path).with_suffix(".zip"), "w", compression=zipfile.ZIP_DEFLATED,
                                                 compresslevel=5)
-                    ext = Path(path).suffix if Path(path).suffix != ".zip" else self.extensions()[0]
-                    manifest = {"extension": ext[1:], "series": {}}
-                    for t, form in forms.items():
-                        filename = Path(path).stem + "_t" + "%05.2f" % t + ext
+                    suffix = "." + ".".join(extensions)
+                    ext: str = suffix if suffix != ".zip" else self.extensions()[0]
+                    ext = "." + ext if not ext.startswith(".") else ext
+                    filename_template = stem + "_t{:.0f}" + ext
+                    manifest = {"extension": ext[1:], "name_format": filename_template, "series": {}, "misc_files": []}
+                    not_misc_files = os.listdir(tmpdirname)  # ignore as not part of the form written
+                    for i, (t, form) in enumerate(forms.items()):
+                        filename = filename_template.format(i)
                         manifest["series"][t] = filename
                         filepath = Path(tmpdirname).joinpath(filename)
                         self.setPath(str(filepath))
                         setattr(self, form_attr, {t: form})
                         f(self)
+                        container.write(str(filepath), str(filename))
+                        not_misc_files.append(filename)  # ignore as already in zip
+                    # saving other files written by the plugins
+                    files_inventory = os.listdir(tmpdirname)
+                    misc_files = set(files_inventory) - set(not_misc_files)
+                    for filename in misc_files:
+                        manifest["misc_files"].append(filename)
+                        filepath = Path(tmpdirname).joinpath(filename)
                         container.write(str(filepath), str(filename))
                     # writing manifest
                     filepath = Path(tmpdirname).joinpath("manifest.json")
@@ -497,7 +524,7 @@ def seriesWriter(form_attr: str, path_attr: str = "path"):
     return seriesWriterDecorator
 
 
-def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter: str, name: str="", base_class=None):
+def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter: str, name: str = "", base_class=None):
     """
     Registers form data plugins to the plugin factory.
 
@@ -540,7 +567,7 @@ def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter
     return decorator
 
 
-def algorithmPlugin(version: str, coreversion: str, name: str="", base_class=None):
+def algorithmPlugin(version: str, coreversion: str, name: str = "", base_class=None):
     """
     Registers algorithm plugins to the plugin factory.
 
@@ -607,6 +634,7 @@ def algorithmPlugin(version: str, coreversion: str, name: str="", base_class=Non
                 # clear outputs before run
                 self.clearOutputs()
                 run(self)
+
             return run_wrapper
 
         setattr(cls, "clearInputs", clearInputs)
@@ -621,7 +649,7 @@ def algorithmPlugin(version: str, coreversion: str, name: str="", base_class=Non
     return decorator
 
 
-def corePlugin(version: str, coreversion: str, name: str="", base_class=None):
+def corePlugin(version: str, coreversion: str, name: str = "", base_class=None):
     """
     Registers gnomon plugins which implements an interface from gnomon.core to the plugin factory.
 
@@ -719,8 +747,7 @@ def visualizationPlugin(version: str, coreversion: str, name="", base_class=None
     def decorator(cls):
         import gnomon.visualization
 
-        if not (issubclass(cls, gnomon.visualization.gnomonAbstractVisualization) or
-                issubclass(cls, gnomon.visualization.gnomonAbstractMatplotlibVisualization)):
+        if not issubclass(cls, gnomon.visualization.gnomonAbstractVisualization):
             raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractVisualization interface."
                             f" Otherwise try using corePlugin or formDataPlugin")
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
@@ -770,9 +797,11 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
     if DEBUG:
         def destructor_decorator(f):
             def destructor_wrapper(self):
-                print(f"{cls.__name__} is dying")
+                logging.debug(f"{cls.__name__} is dying")
                 f(self)
+
             return destructor_wrapper
+
         original_del = getattr(cls, "__del__") if hasattr(cls, "__del__") else lambda self: None
         setattr(cls, "__del__", destructor_decorator(original_del))
 
@@ -791,7 +820,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
             try:
                 _logger = StreamCapture([sys.stdout, sys.stderr], echo=True)
             except Exception as e:
-                logging.warn("Could not initialize logger. Server probably not found.")
+                logging.warning("Could not initialize logger. Server probably not found.")
                 pass
             # base run
             out = _old_run(self, *args, **kwargs)
@@ -803,6 +832,70 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
         cls.run = logger_init
 
     # -----------------------------------------------------
+    # Progress indicator & interruptions
+    # -----------------------------------------------------
+    if hasattr(cls, "run"):
+        _old_run2 = cls.run
+
+        @wraps(_old_run2)
+        def run_init_progress(self, *args, **kwargs):
+            self._progress = 0
+            self._stop_requested = False
+            res = _old_run2(self, *args, **kwargs)
+            return res if res else 0  # TODO: change later
+        cls.run = run_init_progress
+
+    _old_init = cls.__init__
+
+    @wraps(_old_init)
+    def init(self, *args, **kwargs):
+        self._stop_requested = False
+        self._max_progress = -1
+        self._event = Event()
+        self._event.set()  # release the lock
+        return _old_init(self, *args, **kwargs)
+    cls.__init__ = init
+
+    def pause(self):
+        self._event.clear()
+
+    cls.pause = pause
+
+    def resume(self):
+        self._event.set()
+
+    cls.resume = resume
+
+    def stop(self):
+        self._stop_requested = True
+        self._event.set()
+        self._progress = 0
+
+    cls.stop = stop
+
+    def set_max_progress(self, v: int):
+        self._max_progress = v
+
+    cls.set_max_progress = set_max_progress
+
+    def increment_progress(self, increase: int = 1):
+        """Increment the progress counter by increase and can pause or stop the computation if requested"""
+        self._progress += increase
+        self._event.wait()
+        if self._stop_requested:
+            raise InterruptProcess
+
+    cls.increment_progress = increment_progress
+
+    def progress(self):
+        if self._max_progress <= 0 or self._progress < 0:
+            return -1
+        else:
+            return self._progress*100//self._max_progress
+
+    cls.progress = progress
+
+    # -----------------------------------------------------
     # Python error management
     # -----------------------------------------------------
 
@@ -811,17 +904,21 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
         def func(self, *args, **kwargs):
             try:
                 return f(self, *args, **kwargs)
+            except InterruptProcess:
+                # normal interruption
+                return 1
             except Exception as e:
                 if DEBUG:  # if debug let it throw
                     traceback.print_exc()
                     raise
                 traceback.print_exc()
                 print(e)
+                return 2
 
         return func
 
     for key, value in cls.__dict__.items():
-        if callable(value):
+        if callable(value) and key not in ["increment_progress"]:
             setattr(cls, key, wrapper(value))
 
     def pluginName(self):
@@ -891,7 +988,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
     if checkVersion(coreversion):
         factory.recordPlugin(plugin_key, __PLUGINS__[-1], name, inspect.cleandoc(cls.__doc__) if cls.__doc__ else "")
         if plugin_key in factory.keys():
-            logging.info("Python plugin " + str(plugin_key) + ":" + name +" has been successfully loaded!")
+            logging.info("Python plugin " + str(plugin_key) + ":" + name + " has been successfully loaded!")
     else:
         logging.warn("Python plugin" + str(plugin_key) + "defined for core version " + str(
             coreversion) + " but actual version is ${gnomon_VERSION}")

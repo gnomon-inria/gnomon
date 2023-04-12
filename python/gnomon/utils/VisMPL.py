@@ -7,6 +7,7 @@
 .. moduleauthor:: Onur Rauf Bingol <orbingol@gmail.com>
 .. moduleauthor:: tristan cabel tristan.cabel@inria.fr
 """
+from typing import Optional
 
 from geomdl import vis
 import numpy as np
@@ -18,8 +19,10 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib import animation
 
 #from mpl_toolkits.mplot3d import Axes3D, proj3d
-from matplotlib.backend_bases import MouseButton
+from matplotlib.backend_bases import MouseButton, PickEvent
 from gnomon.utils.matplotlib_tools import gnomon_figure
+
+from PySide6.QtCore import QSettings
 
 class VisConfig(vis.VisConfigAbstract):
     """ Configuration class for Matplotlib visualization module.
@@ -132,11 +135,15 @@ class VisCurve2D(vis.VisAbstract):
         self.selected_ctrlpts_id = -1
         self.cpplot = None
         self.curveplt = None
-        self.fig = None
-        self.ax = None
+        self.fig: Optional[plt.Figure] = None
+        self.ax: Optional[plt.Axes] = None
         self.bg = None
         self.is_function = is_function
         self.fig_number = -1
+        self.press: Optional[tuple[float, float]] = None
+        self.ctrl_color="blue"
+        self.eval_color="royalblue"
+        self.qsettings = QSettings(QSettings.IniFormat ,QSettings.UserScope, "inria", "gnomon")
 
     def setFigureNumber(self, fig_number):
         self.fig = gnomon_figure(fig_number)
@@ -151,23 +158,36 @@ class VisCurve2D(vis.VisAbstract):
         legend_proxy = []
         legend_names = []
 
-        # Draw control points polygon and the curve
-        #self.fig = plt.figure(num=self.fig_number, figsize=self._config.figure_size, dpi=self._config.figure_dpi)
         self.ax = self.fig.gca()
         self.bg = self.fig.canvas.copy_from_bbox(self.fig.bbox)
+
+        if self.qsettings.value("variant") == "DARK":
+            self.ax.set_facecolor("black")
+            self.fig.set_facecolor("black")
+            self.ctrl_color="coral"
+            self.eval_color="lightcoral"
+
+            self.ax.xaxis.label.set_color('w')        #setting up X-axis label color to yellow
+            self.ax.yaxis.label.set_color('w')          #setting up Y-axis label color to blue
+            self.ax.tick_params(axis='x', colors='w')    #setting up X-axis tick color to red
+            self.ax.tick_params(axis='y', colors='w')  #setting up Y-axis tick color to black
+        self.ax.grid(alpha=0.3)
+
 
         # Start plotting
         for plot in self._plots:
             pts = np.array(plot['ptsarr'])
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-.', marker='o')
+                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=self.ctrl_color,
+                                            linestyle='-.', marker='o', picker=True, pickradius=5)
                 legend_proxy.append(self.cpplot)
                 legend_names.append(plot['name'])
 
             # Plot evaluated points
             if plot['type'] == 'evalpts':
-                self.curveplt, = self.ax.plot(pts[:, 0], pts[:, 1], color=plot['color'], linestyle='-')
+                self.curveplt, = self.ax.plot(pts[:, 0], pts[:, 1], color=self.eval_color,
+                                              linestyle='-')
                 legend_proxy.append(self.curveplt)
                 legend_names.append(plot['name'])
 
@@ -181,8 +201,6 @@ class VisCurve2D(vis.VisAbstract):
 
         # Set aspect ratio
         self.ax.set_aspect('auto')
-        ## interactor
-
 
         def get_ind_under_point(event):
             'get the index of the vertex under point if within epsilon tolerance'
@@ -202,24 +220,55 @@ class VisCurve2D(vis.VisAbstract):
         def on_move(event):
             # get the x and y pixel coords
             x, y = event.xdata, event.ydata
-            if event.inaxes and self.selected_ctrlpts_id != -1:
+            if self.press and event.inaxes:
+                x0, y0 = self.press
+                dx = x - x0
+                dy = y - y0
+                xmin, xmax, ymin, ymax = self.ax.axis()
+                self.ax.axis((xmin-dx, xmax-dx, ymin-dy, ymax-dy))
+                self.update()
+            elif event.inaxes and self.selected_ctrlpts_id != -1:
                 if self.is_function:
                     # do not move x if it's a function
                     x = self.curve._control_points[self.selected_ctrlpts_id][0]
                 self.curve._control_points[self.selected_ctrlpts_id] = [x, y]
                 self.update()
 
+        def on_scroll(event):
+            zoom_speed = 0.001
+            x, y = event.xdata, event.ydata
+            if event.inaxes:
+                xmin, xmax, ymin, ymax = self.ax.axis()
+                xmin2 = xmin + (x-xmin)*zoom_speed*event.step
+                xmax2 = xmax - (xmax-x)*zoom_speed*event.step
+                ymin2 = ymin + (y-ymin)*zoom_speed*event.step
+                ymax2 = ymax - (ymax-y)*zoom_speed*event.step
+                self.ax.axis((xmin2, xmax2, ymin2, ymax2))
+                self.update()
+
         def on_click(event):
             if event.button is MouseButton.LEFT:
-                self.selected_ctrlpts_id = get_ind_under_point(event)
+                # old picker
+                # self.selected_ctrlpts_id = get_ind_under_point(event)
+                if event.key == "shift" and event.inaxes:
+                    self.press = event.xdata, event.ydata
+
+        def on_pick(event: PickEvent):
+            if event.artist == self.cpplot:
+                points_indices = event.ind
+                if not points_indices:  # no points
+                    return
+                self.selected_ctrlpts_id = points_indices[0]
 
         def on_release(event):
             self.selected_ctrlpts_id = -1
-
+            self.press = None
 
         self.fig.canvas.mpl_connect('motion_notify_event', on_move)
+        self.fig.canvas.mpl_connect('scroll_event', on_scroll)
         self.fig.canvas.mpl_connect('button_press_event', on_click)
         self.fig.canvas.mpl_connect('button_release_event', on_release)
+        self.fig.canvas.mpl_connect('pick_event', on_pick)
         ## end interactor
 
         # Display 2D plot

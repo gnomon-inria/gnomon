@@ -7,7 +7,7 @@
 #include <QtCore>
 #include <QtQml>
 
-class gnomonViewForm;
+class gnomonVtkView;
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceSegmentation : public gnomonAlgorithmWorkspace
 {

@@ -1,6 +1,33 @@
 # ChangeLog
 
-## version 0.72.0 - 2022-09-15
+## version 0.80.0 - 2023-04-12
+* LSP server for python workspace
+* connect for python parameters
+* fix morphonet curation
+* manually pick cells for tracking workspace
+* intelligible names for algorithms
+* share visualization across workspaces
+* uniformization of abstract views
+* picker for curve2d
+* fix lpy bugs
+* lpy 2.13
+
+
+## version 0.72.0 - 2023-02-03
+* L-Py modelling workspace
+* Semi-automatic cell tracking
+* Intelligible names for plugins in the interface
+* Close current project / remove recent projects
+* Graphical parameters + texture parameters
+* Highlight new workspaces compatible with active form
+* Better memory management
+* Description of forms in the documentation
+* Pre-loading of plugins before creating project
+* Active form by default in visu menu
+* Draggers and sliders more visible
+* A Gnomon icon on the launch bar! (linux)
+
+## version 0.71.0 - 2022-09-15
 * Facilitate Workspace navigation (dialog if no exported Forms, switch button visibility)
 * Display the log of running Algorithms within the application
 * More information when reading a Form (reader description images, error toasts)
@@ -28,7 +55,7 @@
 * first morphonet api
 * 3d and 4d numpy wrapper
 * support time series
-* add workspace cellular tracking 
+* add workspace cellular tracking
 
 ## version 0.60.0 - 2022-03-15
 * qt6
@@ -58,6 +85,6 @@
 * colormaps per channels
 * world with metadata on images
 * blending with 2 images
-* 
+*
 ## version 0.9.0 - 2018-11-20
 *initial release

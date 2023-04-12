@@ -6,7 +6,7 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
-#include <gnomonVisualization/gnomonView/gnomonViewFormPool.h>
+#include <gnomonVisualization/gnomonView/gnomonVtkViewPool.h>
 
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonAlgorithmWorkspacePrivate
@@ -51,12 +51,12 @@ void gnomonAlgorithmWorkspacePrivate::registerPipeline(void)
 void gnomonAlgorithmWorkspacePrivate::updatePool(void)
 {
     if(!this->pool)
-        this->pool = new gnomonViewFormPool(this);
+        this->pool = new gnomonVtkViewPool(this);
 
-    foreach(gnomonViewForm *view, this->sources->views())
+    foreach(gnomonVtkView *view, this->sources->views())
         this->pool->addView(view);
 
-    foreach(gnomonViewForm *view, this->targets->views())
+    foreach(gnomonVtkView *view, this->targets->views())
         this->pool->addView(view);
 }
 
@@ -68,25 +68,37 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
 {
     d = new gnomonAlgorithmWorkspacePrivate;
 
-    d->sources = new gnomonViewFormList(this);
-    connect(d->sources, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *v) {
+    d->sources = new gnomonVtkViewList(this);
+    connect(d->sources, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
         v->setInputView(true);
     });
 
-    d->targets = new gnomonViewFormList(this);
-    connect(d->targets, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *v) {
-        connect(v, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+    d->targets = new gnomonVtkViewList(this);
+    connect(d->targets, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
+        connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
             d->pipeline_manager->addForm(f);
         });
     });
 
-    connect(d->sources, &gnomonViewFormList::formsChanged, [=] ()
+    connect(d->sources, &gnomonVtkViewList::formsChanged, [=] ()
     {
         this->setInputs();
         emit parametersChanged();
     });
 
     connect(this, &gnomonAlgorithmWorkspace::parametersChanged, this, &gnomonAlgorithmWorkspace::saveState);
+
+    d->timer.setInterval(100);
+    connect(&d->timer, &QTimer::timeout, [=]() {
+        //qDebug() << "============= PROGRESS : " << d->command->progress();
+        emit progressChanged(d->command->progress());
+    });
+    connect(this, &gnomonAbstractWorkspace::started, [=]() {
+       d->timer.start();
+    });
+    connect(this, &gnomonAbstractWorkspace::finished, [=]() {
+        d->timer.stop();
+    });
 }
 
 gnomonAlgorithmWorkspace::~gnomonAlgorithmWorkspace(void)
@@ -151,12 +163,12 @@ QJSValue gnomonAlgorithmWorkspace::parameters(void)
     return parameters;
 }
 
-gnomonViewFormList* gnomonAlgorithmWorkspace::sources(void) const
+gnomonVtkViewList* gnomonAlgorithmWorkspace::sources(void) const
 {
     return d->sources;
 }
 
-gnomonViewFormList* gnomonAlgorithmWorkspace::targets(void) const
+gnomonVtkViewList* gnomonAlgorithmWorkspace::targets(void) const
 {
     return d->targets;
 }
@@ -175,7 +187,7 @@ void gnomonAlgorithmWorkspace::run(bool no_async)
 
     emit started();
 
-    this->setInputs();
+    // this->setInputs();
 
     if(no_async){
         d->command->setNoAsync();
@@ -318,6 +330,22 @@ void gnomonAlgorithmWorkspace::addOutputView(const QVector<QString> &accepted_fo
     } else {
         d->targets->addView(accepted_forms, nodePortNames);
     }
+}
+
+int gnomonAlgorithmWorkspace::progress(void) {
+    return d->command->progress();
+}
+
+void gnomonAlgorithmWorkspace::pause(void) {
+    d->command->pause();
+}
+
+void gnomonAlgorithmWorkspace::resume(void) {
+    d->command->resume();
+}
+
+void gnomonAlgorithmWorkspace::stop(void) {
+    d->command->stop();
 }
 
 //

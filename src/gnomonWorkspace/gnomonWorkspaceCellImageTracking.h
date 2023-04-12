@@ -4,7 +4,7 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
-#include "gnomonVisualization/gnomonView/gnomonViewData.h"
+#include "gnomonVisualization/gnomonView/gnomonQmlView.h"
 
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageTracking :  public gnomonAlgorithmWorkspace
@@ -22,9 +22,14 @@ public:
     ~gnomonWorkspaceCellImageTracking(void);
 
 public:
-    Q_PROPERTY(gnomonViewData* sourceDict READ sourceDict CONSTANT);
+    Q_PROPERTY(gnomonQmlView* sourceDict READ sourceDict CONSTANT);
 
-    gnomonViewData *sourceDict(void) const;
+    gnomonQmlView *sourceDict(void) const;
+
+// TODO: have a more generic way for workspaces to signal warnings/errors to the GUI
+signals:
+    void notEnoughCells(int);
+    void notInitTrans(void);
 
 public slots:
     virtual void setInputs(void) override;

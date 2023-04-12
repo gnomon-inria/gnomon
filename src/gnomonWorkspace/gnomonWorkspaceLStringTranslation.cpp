@@ -41,8 +41,8 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewMatplotlib *source = nullptr;
-    gnomonViewMatplotlib *target = nullptr;
+    gnomonMplView *source = nullptr;
+    gnomonMplView *target = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -91,11 +91,11 @@ gnomonWorkspaceLStringTranslation::gnomonWorkspaceLStringTranslation(QWidget *pa
 
     d = new gnomonWorkspaceLStringTranslationPrivate;
 
-    d->source = new gnomonViewMatplotlib(this);
+    d->source = new gnomonMplView(this);
     d->source->setAcceptForm("gnomonTree",true);
     d->source->setAcceptForm("gnomonLString",true);
 
-    d->target = new gnomonViewMatplotlib(this);
+    d->target = new gnomonMplView(this);
     d->target->setAcceptForm("gnomonTree",true);
     d->target->setAcceptForm("gnomonLString",true);
 
@@ -139,7 +139,7 @@ gnomonWorkspaceLStringTranslation::gnomonWorkspaceLStringTranslation(QWidget *pa
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    connect(d->source, &gnomonViewMatplotlib::formAdded, [=] ()
+    connect(d->source, &gnomonMplView::formAdded, [=] ()
     {
         if (d->command->inputTree() != dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {
             if (dynamic_cast<gnomonTreeSeries *>(d->source->form("gnomonTree"))) {

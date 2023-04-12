@@ -4,23 +4,21 @@
 
 #include <dtkCore/dtkCoreParameters>
 #include <gnomonVisualizationExport.h>
+#include <dtkImagingCore>
 
-class gnomonViewForm;
-class gnomonInteractorStyle;
-
-class vtkGenericOpenGLRenderWindow;
-class vtkRenderer;
+#include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 
 class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualization : public QObject
 {
     Q_OBJECT
 
 public:
-     gnomonAbstractVisualization();
+    gnomonAbstractVisualization();
     ~gnomonAbstractVisualization(void);
 
 public:
-    void setView(gnomonViewForm *view);
+    virtual void setView(gnomonAbstractView *view);
+    virtual gnomonAbstractView* view(void);
 
 public:
     virtual const QString pluginName(void) = 0;
@@ -29,46 +27,38 @@ public:
 public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
     virtual void setParameters(const dtkCoreParameters&) = 0;
+    virtual void connectParameter(const QString& parameter_name);
+    virtual void refreshParameters(void);
+    virtual void onParameterChanged(const QString& parameter_name = "");
 
 public:
-    gnomonViewForm* view(void);
-    virtual gnomonInteractorStyle * interactorStyle(void);
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
 
 public:
-    virtual QImage imageRendering(void) = 0;
+    QVariantMap visuParameters(void);
+    void setVisuParameters(QVariantMap parameters);
 
 public:
+    virtual QImage imageRendering(void) = 0;
 
 signals:
     void parametersChanged(void);
 
 public slots:
+    // recompute the form visualization display and if necessary add it to its view
     virtual void update(void) = 0;
+    // refresh the view where the visualization is displayed without any recomputing
     virtual void render(void) = 0;
-
-public slots:
-    void clearConnections(void);
+    // remove the form visualization from its view without deleting the computed display
     virtual void clear(void) = 0;
+    // add the form visualization to its view, if possible without any recomputing
+    virtual void fill(void) = 0;
+
+    virtual inline void clearConnections(void) {  };
+
+public slots:
     virtual void setVisible(bool visible) = 0;
-
-public slots:
-    virtual void on2D(void) = 0;
-    virtual void on3D(void) = 0;
-    virtual void onXY(void) = 0;
-    virtual void onXZ(void) = 0;
-    virtual void onYZ(void) = 0;
-    virtual void onSliceChanged(int) = 0;
-    virtual void onSliceOrientationChanged(int) = 0;
-    virtual void onTimeChanged(double) = 0;
-
-public:
-    vtkRenderer *offscreenRenderer(void);
-
-public slots:
-    void updateOffscreenRenderer(double xMin,double xMax,double yMin,double yMax,double zMin,double zMax);
-    QImage offscreenImageRendering(void);
 
 protected:
     class gnomonAbstractVisualizationPrivate *d;

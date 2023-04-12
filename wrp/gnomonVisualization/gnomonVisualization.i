@@ -24,21 +24,23 @@
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
-#include <gnomonVisualization/gnomonView/gnomonViewForm.h>
-#include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
-#include <gnomonVisualization/gnomonView/gnomonViewData.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
+#include <gnomonVisualization/gnomonView/gnomonVtkView.h>
+#include <gnomonVisualization/gnomonView/gnomonMplView.h>
+#include <gnomonVisualization/gnomonView/gnomonQmlView.h>
+#include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractVisualizationBinaryImage.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
-#include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVtkVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMplVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractBinaryImageVtkVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractCellComplexVtkVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractCellImageVtkVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractDataFrameMplVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractImageVtkVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractMeshVtkVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractLStringMplVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractPointCloudVtkVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractTreeMplVisualization.h>
 
 #include <gnomonVisualization/gnomonCoreParameterColor.h>
 #include <gnomonVisualization/gnomonCoreParameterColorTable.h>
@@ -428,6 +430,36 @@
     }
 }
 
+%typemap(in) const QList<std::array<double, 3>>& {
+    $1 = new QList<std::array<double, 3>>;
+    if (PyList_Check($input)) {
+        int nb_points = PyList_Size($input);
+
+        for(int i=0; i<nb_points; ++i) {
+            PyObject *p_point = PyList_GET_ITEM($input, i);
+            double x,y,z;
+            x = PyFloat_AsDouble(PyList_GET_ITEM(p_point, 0));
+            y = PyFloat_AsDouble(PyList_GET_ITEM(p_point, 1));
+            if(PyList_Size(p_point) == 3) {
+                z = PyFloat_AsDouble(PyList_GET_ITEM(p_point, 2));
+            } else {
+                z = 1.0;
+            }
+            std::array<double, 3> arr = {x,y,z};
+            $1->append(arr);
+        }
+    } else {
+        qWarning() << "List of List of double is expected ad input. empty list is returned";
+    }
+}
+
+%typemap(freearg) const const QList<std::array<double, 3>>& {
+    if ($1) {
+        delete $1;
+    }
+}
+
+
 %typemap(out) QList<std::array<double, 3>> {
     int nb_elem = $1.size();
     $result = PyList_New(nb_elem);
@@ -703,7 +735,7 @@
         }
 
         return result;
-    } 
+    }
 }
 
 %typemap(in, fragment="Gnomon_QJsonValue") const QJsonValue& {
@@ -800,7 +832,7 @@
             auto t_s = c.toString().toStdString();
             value = PyString_FromString(t_s.c_str());
         }
-        
+
         std::string k_str = k.toStdString();
 
         PyDict_SetItemString($result, k_str.c_str(), value);
@@ -868,21 +900,23 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterNurbs, ParameterNurbs)
 %include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 %include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 // %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
-%include <gnomonVisualization/gnomonView/gnomonViewForm.h>
-%include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
-%include <gnomonVisualization/gnomonView/gnomonViewData.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMatplotlibVisualization.h>
+%include <gnomonVisualization/gnomonView/gnomonVtkView.h>
+%include <gnomonVisualization/gnomonView/gnomonMplView.h>
+%include <gnomonVisualization/gnomonView/gnomonQmlView.h>
+%include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractVisualizationBinaryImage.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractVisualizationCellComplex.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractVisualizationCellImage.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractMatplotlibVisualizationDataFrame.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractVisualizationImage.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractVisualizationMesh.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractMatplotlibVisualizationLString.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractVisualizationLString.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractVisualizationPointCloud.h>
-%include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractMatplotlibVisualizationTree.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVtkVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMplVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractBinaryImageVtkVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractCellComplexVtkVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractCellImageVtkVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractDataFrameMplVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractImageVtkVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractMeshVtkVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractLStringMplVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonPointCloud/gnomonAbstractPointCloudVtkVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonTree/gnomonAbstractTreeMplVisualization.h>
 
 
 %include <gnomonVisualization/gnomonCoreParameterColor.h>

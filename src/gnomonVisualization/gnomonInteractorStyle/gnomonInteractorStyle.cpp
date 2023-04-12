@@ -15,7 +15,7 @@
 #include "gnomonInteractorStyle.h"
 #include "gnomonInteractorStyle_p.h"
 
-#include "gnomonView/gnomonViewForm.h"
+#include "gnomonView/gnomonVtkView.h"
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkInteractorStyleTrackballCamera.h>
@@ -125,19 +125,19 @@ vtkRenderer *gnomonInteractorStyle::GetDefaultRenderer(void)
 //    vtkInteractorStyle::SetDefaultRenderer(renderer);
 //}
 
-void gnomonInteractorStyle::setView(gnomonViewForm *view)
+void gnomonInteractorStyle::setView(gnomonVtkView *view)
 {
     d->view = view;
 
 //    view->interactor()->SetInteractorStyle(this);
 
-    d->connect3D = connect(view, &gnomonViewForm::switchedTo3D, [=] (void) {
+    d->connect3D = connect(view, &gnomonVtkView::switchedTo3D, [=] (void) {
         this->setMode("3D");
         this->SetDefaultRenderer(d->view->renderer3D());
         d->view->updateShortcutKeys();
     });
 
-    d->connect2D = connect(view, &gnomonViewForm::switchedTo2D, [=] (void) {
+    d->connect2D = connect(view, &gnomonVtkView::switchedTo2D, [=] (void) {
         this->setMode("2D");
         this->SetDefaultRenderer(d->view->renderer2D());
         d->view->updateShortcutKeys();

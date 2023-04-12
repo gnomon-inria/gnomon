@@ -4,7 +4,7 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
-#include <gnomonVisualization/gnomonView/gnomonViewMatplotlib.h>
+#include <gnomonVisualization/gnomonView/gnomonMplView.h>
 
 #include <QtCore>
 
@@ -26,17 +26,17 @@ public:
     ~gnomonWorkspaceCellImageQuantification(void) override;
 
 public:
-    Q_PROPERTY(gnomonViewMatplotlib* targetMpl READ targetMpl CONSTANT);
+    Q_PROPERTY(gnomonMplView* targetMpl READ targetMpl CONSTANT);
 
 public slots:
     void setInputs(void) override;
     void viewOutputs(void) override;
 
 public:
-    gnomonViewMatplotlib *targetMpl(void) const { return this->m_target_mpl;};
+    gnomonMplView *targetMpl(void) const { return this->m_target_mpl;};
 
 private: 
-    gnomonViewMatplotlib *m_target_mpl = nullptr;
+    gnomonMplView *m_target_mpl = nullptr;
 };
 
 //

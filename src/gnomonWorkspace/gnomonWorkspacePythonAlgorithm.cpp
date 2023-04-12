@@ -7,7 +7,7 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
-#include <gnomonVisualization/gnomonView/gnomonViewFormPool.h>
+#include <gnomonVisualization/gnomonView/gnomonVtkViewPool.h>
 
 #include "gnomonPythonAlgorithmPluginCode.h"
 
@@ -25,14 +25,15 @@ public:
 
 public:
     gnomonPythonAlgorithmPluginCode *code = nullptr;
+    QProcess *lsp_process = nullptr;
 
 public:
     bool edit_mode = true;
 
 public:
-    gnomonViewFormList *sources = nullptr;
-    gnomonViewFormList *targets = nullptr;
-    gnomonViewFormPool *pool = nullptr;
+    gnomonVtkViewList *sources = nullptr;
+    gnomonVtkViewList *targets = nullptr;
+    gnomonVtkViewPool *pool = nullptr;
 
 public:
     QString algorithm_key;
@@ -92,15 +93,27 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
 {
     d = new gnomonWorkspacePythonAlgorithmPrivate;
 
+    QString lsp_server = "pylsp";
+    QStringList arguments;
+    arguments << "--ws" << "--host" << "127.0.0.1" << "--port" << "3000";
+
+    d->lsp_process = new QProcess(parent);
+    d->lsp_process->start(lsp_server, arguments);
+    if(!d->lsp_process->waitForStarted()) {
+        qWarning() << "Error launching Python LSP server";
+    }
+
+
     d->code = new gnomonPythonAlgorithmPluginCode(this);
     d->code->updateCode();
 
-    d->sources = new gnomonViewFormList(this);
-    d->targets = new gnomonViewFormList(this);
+    d->sources = new gnomonVtkViewList(this);
+    d->targets = new gnomonVtkViewList(this);
 
-    d->pool = new gnomonViewFormPool(this);
+    d->pool = new gnomonVtkViewPool(this);
 
-    connect(d->sources, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *v) {
+    connect(d->sources, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
+        v->setAcceptForm("gnomonBinaryImage",true);
         v->setAcceptForm("gnomonCellComplex",true);
         v->setAcceptForm("gnomonCellImage",true);
         v->setAcceptForm("gnomonImage",true);
@@ -108,20 +121,21 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
         v->setAcceptForm("gnomonMesh",true);
         v->setAcceptForm("gnomonPointCloud",true);
         v->setInputView(true);
-        connect(v, &gnomonViewForm::formAdded, [=] () {
+        connect(v, &gnomonVtkView::formAdded, [=] () {
             this->setInputs();
             emit parametersChanged();
         });
     });
 
-    connect(d->targets, &gnomonViewFormList::viewAdded, [=] (gnomonViewForm *v) {
+    connect(d->targets, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
+        v->setAcceptForm("gnomonBinaryImage",true);
         v->setAcceptForm("gnomonCellComplex",true);
         v->setAcceptForm("gnomonCellImage",true);
         v->setAcceptForm("gnomonImage",true);
         v->setAcceptForm("gnomonLString",true);
         v->setAcceptForm("gnomonMesh",true);
         v->setAcceptForm("gnomonPointCloud",true);
-        connect(v, &gnomonViewForm::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+        connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
             gnomonPipelineManager::instance()->addForm(f);
         });
     });
@@ -135,6 +149,10 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
 
 gnomonWorkspacePythonAlgorithm::~gnomonWorkspacePythonAlgorithm(void)
 {
+    if(d->lsp_process) {
+        d->lsp_process->kill();
+        d->lsp_process = nullptr;
+    }
     delete d;
 }
 
@@ -429,7 +447,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
             lString->metadata()->set("name", lString->formName().remove("gnomon") + QString::number(form_count + 1));
             lString->metadata()->set("source", d->algorithm_key);
         }
-        
+
         std::shared_ptr<gnomonMeshSeries> mesh = d->algorithm->outputMesh();
         if ((mesh) && (mesh->times().size() != 0)) {
             d->command->addOutput(mesh);
@@ -496,12 +514,12 @@ gnomonPythonAlgorithmPluginCode* gnomonWorkspacePythonAlgorithm::code(void) cons
     return d->code;
 }
 
-gnomonViewFormList* gnomonWorkspacePythonAlgorithm::sources(void) const
+gnomonVtkViewList* gnomonWorkspacePythonAlgorithm::sources(void) const
 {
     return d->sources;
 }
 
-gnomonViewFormList* gnomonWorkspacePythonAlgorithm::targets(void) const
+gnomonVtkViewList* gnomonWorkspacePythonAlgorithm::targets(void) const
 {
     return d->targets;
 }

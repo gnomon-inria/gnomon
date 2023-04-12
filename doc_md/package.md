@@ -112,6 +112,7 @@ This python file includes the following functions from [`setuptools`](https://se
 
 **Create a setup keywords dictionary**: in this dictionary you precise plugin's name, version, licence. The requirement keywords are all left empty as we consider that dependencies are managed through the conda environment.
 
+(entry_points)=
 ### Advertising your plugins in the global namespace: entry points
 
 Before your plugins can be used by gnomon they need to be advertised so gnomon can dynamically discover them.
@@ -234,7 +235,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.9
-  - libgnomon>=0.72.0
+  - libgnomon>=0.80.0
   - gnomon_package_data
   - ipython
   - nose2
@@ -275,7 +276,7 @@ requirements:
     - python=3.9
   run:
     - python=3.9
-    - libgnomon>=0.72.0
+    - libgnomon>=0.80.0
     - gnomon_package_data
     - ipython
     - nose2

@@ -73,6 +73,7 @@ void gnomonCellImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->image_series);
+    ((gnomonAbstractCellImageFromImage *) this->action)->refreshParameters();
 }
 
 std::shared_ptr<gnomonImageSeries> gnomonCellImageFromImageCommand::input()
@@ -89,6 +90,7 @@ void gnomonCellImageFromImageCommand::setCellPoints(std::shared_ptr<gnomonPointC
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setCellPoints(d->pointCloud_series);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonPointCloudSeries> gnomonCellImageFromImageCommand::cellPoints()
@@ -157,7 +159,9 @@ void gnomonCellImageFromImageCommand::setBinaryImage(std::shared_ptr<gnomonBinar
     } else {
         d->binary_image_series = binary_image_series;
     }
+     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageFromImage *) this->action)->setBinaryImage(d->binary_image_series);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonBinaryImageSeries> gnomonCellImageFromImageCommand::binaryImage() {

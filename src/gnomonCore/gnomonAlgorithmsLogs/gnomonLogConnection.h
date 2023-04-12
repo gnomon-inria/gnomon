@@ -29,6 +29,9 @@ public:
     void setText(QString txt);
     bool alive();
 
+private slots:
+    void readConnection();
+
 private:
     gnomonLogConnectionPrivate *d;
 };

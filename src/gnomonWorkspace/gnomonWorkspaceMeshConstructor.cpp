@@ -41,7 +41,7 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *target = nullptr;
+    gnomonVtkView *target = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -82,7 +82,8 @@ gnomonWorkspaceMeshConstructor::gnomonWorkspaceMeshConstructor(QWidget *parent) 
 
     d = new gnomonWorkspaceMeshConstructorPrivate;
 
-    d->target = new gnomonViewForm({}, this);
+    d->target = new gnomonVtkView(this);
+    d->target->setNodePortNames({});
     d->target->setExportColor(this->color);
     d->target->setAcceptForm("gnomonMesh",true);
 
@@ -155,7 +156,7 @@ void gnomonWorkspaceMeshConstructor::apply(void)
     d->command->redo();
 
     if (d->command->output()) {
-        d->target->setMesh(d->command->output());
+        d->target->setForm("gnomonMesh", d->command->output());
         d->target->render();
         d->target_stack->setCurrentWidget(d->target);
 

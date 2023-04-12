@@ -5,6 +5,7 @@ project(gnomonVisualization VERSION ${gnomon_VERSION})
 ## #################################################################
 
 add_subdirectory(gnomonActor)
+add_subdirectory(gnomonCommand)
 # add_subdirectory(gnomonInspector)
 add_subdirectory(gnomonInteractorStyle)
 add_subdirectory(gnomonManager)
@@ -41,6 +42,7 @@ set(${PROJECT_NAME}_HEADERS
 
 
     ${${PROJECT_NAME}_ACTOR_HEADERS}
+    ${${PROJECT_NAME}_COMMAND_HEADERS}
 #   ${${PROJECT_NAME}_INSPECTOR_HEADERS}
     ${${PROJECT_NAME}_INTERACTORSTYLE_HEADERS}
     ${${PROJECT_NAME}_MANAGER_HEADERS}
@@ -64,6 +66,7 @@ set(${PROJECT_NAME}_SOURCES
 
 
     ${${PROJECT_NAME}_ACTOR_SOURCES}
+    ${${PROJECT_NAME}_COMMAND_SOURCES}
 #   ${${PROJECT_NAME}_INSPECTOR_SOURCES}
     ${${PROJECT_NAME}_INTERACTORSTYLE_SOURCES}
     ${${PROJECT_NAME}_MANAGER_SOURCES}

@@ -20,7 +20,7 @@
 
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
-class gnomonViewForm;
+class gnomonVtkView;
 
 class GNOMONVISUALIZATION_EXPORT gnomonInteractorStyleXYZ : public gnomonInteractorStyle
 {
@@ -42,7 +42,7 @@ public:
     virtual void OnChar(void) override;
 
 public slots:
-    void setView(gnomonViewForm *) override;
+    void setView(gnomonVtkView *) override;
 
 public slots:
     void updateCamera(void);

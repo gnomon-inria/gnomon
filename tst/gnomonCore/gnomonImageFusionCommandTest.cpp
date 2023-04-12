@@ -25,7 +25,7 @@ public:
     void setParameter(const QString& parameterName, const QVariant& parameterValue) override {fusion::t_set_parameter_called = true;};
     dtkCoreParameters parameters(void) const override {return dtkCoreParameters();};
 
-    void run(void) override{ fusion::t_run_called = true;};
+    int run(void) override{ fusion::t_run_called = true; return 0;};
     QString documentation(void) override {return "empty";};
     void addImage(std::shared_ptr<gnomonImageSeries> ) override { fusion::t_nb_image_added++;};
     void removeImages(void) override { fusion::t_remove_images_called = true; fusion::t_nb_image_added=0;};

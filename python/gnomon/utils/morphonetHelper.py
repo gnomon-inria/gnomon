@@ -3,6 +3,9 @@ import logging
 import math
 import re
 import traceback
+import zmq
+import pickle
+from typing import Any
 
 import numpy as np
 import scipy.ndimage as nd
@@ -13,8 +16,10 @@ from vtk.util.numpy_support import numpy_to_vtk, vtk_to_numpy
 from gnomon.core import gnomonCellImage, cellImageData_pluginFactory, setMorphonetHelperCreator, gnomonMorphonetHelper, gnomonMorphonetHelperCreator
 from gnomon.utils import load_plugin_group
 
-from gnomon.utils.decorators.form_series import formDictFromSeries
+from gnomon.utils.decorators.form_series import formDictFromSeries, buildFormSeries
 from morphonet import Net, tools
+
+from gnomon_package_tissueimage.form.cellImageData.gnomonCellImageDataTissueImage import gnomonCellImageDataTissueImage
 
 from timagetk import TissueImage3D, LabelledImage, SpatialImage
 from timagetk.algorithms.resample import isometric_resampling
@@ -111,6 +116,32 @@ def _dict_from_info(info_str):
                     info_dict[int(time)][int(label)] = int(previous_label)
 
     return info_type, info_dict
+
+
+def add_cell_feature_from_info(tissue: TissueImage3D, time: int, info_name: str, info_type: str, info_dict: dict[float, dict[int, Any]]):
+    if info_type == 'time':
+        feature_name = 'ancestor'
+        if time not in info_dict.keys():
+            feature_dict = {c: c for c in tissue.cell_ids()}
+        else:
+            feature_dict = {c: info_dict[time][c] for c in tissue.cell_ids() if c in info_dict[time]}
+    else:
+        feature_name = info_name
+        if time in info_dict:
+            if info_type == 'selection':
+                feature_dict = {
+                    c: info_dict[time][c] if c in info_dict[time] else 0 for c in tissue.cell_ids()
+                }
+            elif info_type == 'float':
+                feature_dict = {
+                    c: info_dict[time][c] if c in info_dict[time] else np.nan for c in tissue.cell_ids()
+                }
+            else:
+                feature_dict = {c: info_dict[time][c] for c in tissue.cell_ids() if c in info_dict[time]}
+        else:
+            feature_dict = {}
+    logging.info(f"  --> Add feature {feature_name} on {len(feature_dict)} cells")
+    tissue.cells.set_feature(feature_name, feature_dict)
 
 
 class MorphonetHelper(gnomonMorphonetHelper):
@@ -435,32 +466,8 @@ class MorphonetHelper(gnomonMorphonetHelper):
                 logging.info(f"  --> Found info {info_name} of type {info_type}")
 
         for info_type, info_name, info_dict in self.dataset_info:
-            if info_type == 'time':
-                feature_name = 'ancestor'
-                if time not in info_dict.keys():
-                    feature_dict = {c:c for c in tissue.cell_ids()}
-                else:
-                    feature_dict = {c:info_dict[time][c] for c in tissue.cell_ids() if c in info_dict[time]}
-            else:
-                feature_name = info_name
-                if time in info_dict:
-                    if info_type == 'selection':
-                        feature_dict = {c: info_dict[time][c]
-                                           if c in info_dict[time]
-                                           else 0
-                                        for c in tissue.cell_ids()}
-                    elif info_type == 'float':
-                        feature_dict = {c: info_dict[time][c]
-                                           if c in info_dict[time]
-                                           else np.nan
-                                        for c in tissue.cell_ids()}
-                    else:
-                        feature_dict = {c:info_dict[time][c] for c in tissue.cell_ids() if c in info_dict[time]}
-                else:
-                    feature_dict = {}
+            add_cell_feature_from_info(tissue, time, info_name, info_type, info_dict)
 
-            logging.info(f"  --> Add feature {feature_name} on {len(feature_dict)} cells")
-            tissue.cells.set_feature(feature_name, feature_dict)
 
     def transform_to_mn_mesh(self, seg_img, time, voxelsize, border):
         """
@@ -593,6 +600,77 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         return self._net.id_dataset
     
+    def startCuration(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.5) -> bool:
+        """send a dataset through socket 
+
+        Args:
+            name (str): _name of the dataset
+            form_series (_type_): _images_
+            id_NCBI (int): _NCBI id if available
+            id_type (int): _0:  1 or 2
+            description (str): _dataset description_
+
+        Returns:
+            int: the id of the created dataset or -1 if there is an error
+        """
+        times = np.sort(list(form_series.keys()))
+        print("times " , times)
+        cell_img_data = {}
+        infos = self.transform_to_mn_infos(form_series)
+        for i_t, time in enumerate(times):
+            cell_img_data[time] = form_series[time].data().get_tissue_image()
+        
+        context = zmq.Context()
+        m_socket = context.socket(zmq.REQ)
+        m_socket.connect("tcp://127.0.0.1:5555")
+
+        for i_t, (time, data) in enumerate(cell_img_data.items()):
+            tissue_args = {"voxelsize": data.voxelsize, "not_a_label": data.not_a_label, "background": data.background}
+            message = {
+                "request": "set",
+                "data": data.tolist(),
+                "index": i_t,
+                "time": time,
+                "tissue_args": tissue_args,
+                "meshing_voxelsize": voxelsize,
+            }
+            m_socket.send_json(message)
+            message = m_socket.recv()
+        m_socket.send_json({"request": "set_infos", "infos": infos})
+        message = m_socket.recv()
+        m_socket.send_json({"request": "launch"})
+        message = m_socket.recv()
+        return True
+
+    
+    def collectCuration(self):
+        forms: dict[float, TissueImage3D] = {}
+        context = zmq.Context()
+        m_socket = context.socket(zmq.REQ)
+        m_socket.connect("tcp://127.0.0.1:5555")
+        m_socket.send_json({"request": "collect"})
+        message: dict = m_socket.recv_json()
+        datas: dict[int, np.ndarray] = message["data"]
+        times: dict[int, float] = message["timestamps"]
+        tissue_args: dict[int, dict] = message["tissue_args"]
+        infos: dict[str, str] = message["infos"]
+        for i_t, data in datas.items():
+            t = times[i_t]
+            data = np.asarray(data, dtype=np.uint16)
+            tissue = TissueImage3D(data, **tissue_args[i_t])
+
+            for info_name, info_string in infos.items():
+                info_type, info_dict = _dict_from_info(info_string)
+                logging.info(f"  --> Found info {info_name} of type {info_type}")
+                add_cell_feature_from_info(tissue, int(i_t), info_name, info_type, info_dict)
+            forms[t] = tissue
+        m_socket.send_json({"request": "kill"})
+        form_dict, data_dict = buildFormSeries(form_dict=forms, form_class=gnomonCellImage,
+                                               data_plugin=gnomonCellImageDataTissueImage)
+        return form_dict
+
+
+
     def deleteDataset(self, id: int) -> bool:
         """Delete a dataset by id
         """
@@ -684,13 +762,38 @@ def visu_debug(polydata=None, img=None):
     renderWindow.Render()
     renderWindowInteractor.Start()
 
-
-# if __name__ == "__main__":
-    # import gnomon.utils.morphonetHelper as helper
-    # mn = helper.MorphonetHelper()
-    # mn.connect("trcabel", "....")
+#def test_createdataset():
+    #mn = MorphonetHelper()
+    #mn.connect("trcabel", "....")
     # mn.selectDataset(204)
     # cell_img = mn.loadMnDataAtTime(1, 100, 100, 100)  
     # mesh = mn.transform_to_mn_mesh(cell_img, 1)
     # new_id = mn.createDataset("test1", {1: cell_img}, 0, 0, "mydesc")
     # mn.deleteDataset(new_id)
+
+
+def test_plot():
+    import gnomon.core
+    from gnomon.core import gnomonCellImage
+    from gnomon.utils import load_plugin_group
+    import time 
+
+    load_plugin_group("cellImageReader")
+    filename = "/home/trcabel/Dev/naviscope/test_data/0hrs_plant1_seg_small.inr"
+    reader = gnomon.core.cellImageReader_pluginFactory().create("cellImageReaderTimagetk")
+    reader.setPath(filename)
+    reader.run()
+    cellImage = reader.cellImage()
+
+    # import gnomon.utils.morphonetHelper as helper
+    # mn = helper.MorphonetHelper()
+    mn = MorphonetHelper()
+    mn.connect("trcabel", "----")
+    mn.sendDataset("toto", cellImage, 1, 3, "description")
+    print(" END SEND DDDDDD")
+
+    input()
+    mn.collectDataset(cellImage)
+
+if __name__ == "__main__":
+    test_plot()

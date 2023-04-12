@@ -1,0 +1,39 @@
+#pragma once
+
+#include <gnomonVisualizationExport>
+
+#include "gnomonForm/gnomonDataDict/gnomonDataDict.h"
+
+#include "gnomonAbstractView.h"
+
+class gnomonAbstractDynamicForm;
+
+class GNOMONVISUALIZATION_EXPORT gnomonQmlView : public gnomonAbstractView
+{
+    Q_OBJECT
+
+public:
+    gnomonQmlView(QObject *parent = nullptr);
+    ~gnomonQmlView(void);
+
+    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr) override;
+
+public:
+    Q_PROPERTY(QString dataDict READ dataDict WRITE setDataDict NOTIFY dictChanged);
+
+    void setDataDict(QString);
+    QString dataDict(void);
+
+signals:
+    void dictChanged(void);
+
+private:
+    class gnomonQmlViewPrivate *dd;
+
+};
+
+QString transformMatrixString(QVector<QVector<double> > transform_matrix);
+
+// Q_DECLARE_METATYPE(gnomonQmlView *);
+//
+// gnomonQmlView.h ends here

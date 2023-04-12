@@ -232,6 +232,8 @@ class PipelineRunner:
             source_node, source_port = source
             tmp = self.nodes[source_node].outputs[source_port]()
             node.inputs[target_port](tmp)
+        if node.algo:
+            node.algo.refreshParameters()
 
     def run(self):
         """

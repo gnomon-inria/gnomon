@@ -4,7 +4,7 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
-class gnomonViewForm;
+class gnomonVtkView;
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspacePreprocess : public gnomonAlgorithmWorkspace
 {

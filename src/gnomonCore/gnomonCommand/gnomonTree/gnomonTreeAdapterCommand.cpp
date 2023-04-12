@@ -54,6 +54,7 @@ void gnomonTreeAdapterCommand::postdo(void)
 void gnomonTreeAdapterCommand::undo()
 {
     ((gnomonAbstractTreeAdapter *) this->action)->setInput(nullptr);
+    this->action->refreshParameters();
 }
 
 void gnomonTreeAdapterCommand::setInput(std::shared_ptr<gnomonTreeSeries> input)
@@ -62,9 +63,10 @@ void gnomonTreeAdapterCommand::setInput(std::shared_ptr<gnomonTreeSeries> input)
         d->input = nullptr;
     } else {
         d->input = input;
-        Q_ASSERT(this->action);
-        ((gnomonAbstractTreeAdapter *) this->action)->setInput(d->input);
     }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractTreeAdapter *) this->action)->setInput(d->input);
+    this->action->refreshParameters();
 }
 
 std::shared_ptr<gnomonTreeSeries> gnomonTreeAdapterCommand::input()

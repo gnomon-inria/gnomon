@@ -41,8 +41,8 @@ public:
     QStringList keys(void) const override;
 
 public:
-    gnomonViewForm *view = nullptr;
-    gnomonViewMatplotlib *mpl_figure = nullptr;
+    gnomonVtkView *view = nullptr;
+    gnomonMplView *mpl_figure = nullptr;
 
 public:
     QStackedWidget *target_stack = nullptr;
@@ -92,7 +92,8 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
 
     d = new gnomonWorkspacePointCloudQuantificationPrivate;
 
-    d->view = new gnomonViewForm({}, this);
+    d->view = new gnomonVtkView(this);
+    d->view->setNodePortNames({});
     d->view->setExportColor(this->color);
     d->view->setAcceptForm("gnomonPointCloud",true);
     d->view->setAcceptForm("gnomonImage",true);
@@ -101,7 +102,7 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
 
     connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
 
-    d->mpl_figure = new gnomonViewMatplotlib(this);
+    d->mpl_figure = new gnomonMplView(this);
     d->mpl_figure->setAcceptForm("gnomonDataFrame",true);
 
     connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
@@ -151,7 +152,7 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    connect(d->view, &gnomonViewForm::formAdded, [=] ()
+    connect(d->view, &gnomonVtkView::formAdded, [=] ()
     {
         if(d->view->pointCloud()) {
             d->command->setPointCloud(d->view->pointCloud());
@@ -225,7 +226,7 @@ void gnomonWorkspacePointCloudQuantification::apply(void)
     }
 
     if(d->command->pointCloud()) {
-        d->view->setPointCloud(d->command->pointCloud());
+        d->view->setForm("gnomonPointCloud", d->command->pointCloud());
         //d->pipeline_manager->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
         d->pipeline_manager->addForm(d->command->pointCloud());
         d->view->setInputView(false);
