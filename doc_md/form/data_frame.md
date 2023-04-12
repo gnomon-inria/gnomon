@@ -43,7 +43,7 @@ from gnomon.core import gnomonAbstractPointCloudQuantification
 from timagetk.algorithms.signal_quantification import quantify_nuclei_signal_intensity
 
 
-@algorithmPlugin(version="0.3.1", coreversion="0.72.0")
+@algorithmPlugin(version="0.3.1", coreversion="0.80.0")
 @imageInput('img', data_plugin='gnomonImageDataMultiChannelImage')
 @pointCloudInput("df", data_plugin="gnomonPointCloudDataPandas")
 @pointCloudOutput('out_df', data_plugin="gnomonPointCloudDataPandas")

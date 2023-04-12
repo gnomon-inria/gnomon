@@ -59,7 +59,7 @@ from gnomon.core import gnomonAbstractImageFilter
 
 from gnomon.utils import corePlugin
 
-@corePlugin(version="0.1.0", coreversion="0.72.0")
+@corePlugin(version="0.1.0", coreversion="0.80.0")
 class linearFilterTimagetk(gnomonAbstractImageFilter):
 ```
 
@@ -109,7 +109,7 @@ are channel names.
 ``` python
 from gnomon.utils.decorators import imageInput, imageOutput
 
-@gnomonPlugin(version="0.1.0", coreversion="0.72.0")
+@gnomonPlugin(version="0.1.0", coreversion="0.80.0")
 @imageInput(attr='images')
 @imageOutput(attr='filtered_images')
 class linearFilterTimagetk(gnomonAbstractImageFilter):
@@ -195,7 +195,7 @@ from gnomon.utils.decorators import imageInput, imageOutput
 
 import dtkcore
 
-@corePlugin(version="0.1.0", coreversion="0.72.0")
+@corePlugin(version="0.1.0", coreversion="0.80.0")
 @imageInput("images")
 @imageOutput("filtered_images")
 class linearFilterTimagetk(gnomonAbstractImageFilter):
@@ -364,7 +364,7 @@ import dtkcore
 from timagetk.plugins.linear_filtering import linear_filtering
 from timagetk import MultiChannelimage
 
-@corePlugin(version="0.1.0", coreversion="0.72.0")
+@corePlugin(version="0.1.0", coreversion="0.80.0")
 @imageInput(attr="images")
 @imageOutput(attr="filtered_images")
 class linearFilterTimagetk(gnomonAbstractImageFilter):

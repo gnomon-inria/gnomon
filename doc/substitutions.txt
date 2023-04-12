@@ -1,6 +1,6 @@
 .. |coord| replace:: Guillaume Cerutti, Julien Wintz, Christophe Godin.
 .. |contrib| replace:: Olivier Ali, Jonathan Legrand, Romain Azais, Bruno Leggio, Ayan Chaudhury, Florian Ingels, Manuel Petit,  Anuradah Kar, Thibaud Kloczko, Nicolas Niclausse, Tristan Cabel, Florian Gacon, Jean Luc Szpyrka, Ghada Bahloul, Pierre Fernique, Côme Le Breton, Jonathan Levy, Romain Lacroix, Carlos Zubiaga
-.. |release| replace:: 0.72.0
+.. |release| replace:: 0.80.0
 .. |name| replace:: Gnomon
 .. |sname| replace:: Gnomon
 .. |gitlab_url| replace:: git@gitlab.inria.fr:gnomon/gnomon.git

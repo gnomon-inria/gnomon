@@ -50,7 +50,7 @@ from gnomon.utils.decorators import imageInput, imageOutput
 from timagetk.algorithms.resample import isometric_resampling
 
 
-@algorithmPlugin(version='0.3.1', coreversion='0.72.0')
+@algorithmPlugin(version='0.3.1', coreversion='0.80.0')
 @imageInput(attr='in_img', data_plugin='gnomonImageDataMultiChannelImage')
 @imageOutput(attr='out_img', data_plugin='gnomonImageDataMultiChannelImage')
 class isometricResampling(gnomon.core.gnomonAbstractFormAlgorithm):

@@ -48,7 +48,7 @@ from timagetk.components.tissue_image import TissueImage3D
 
 load_plugin_group("cellImageData")
 
-@algorithmPlugin(version="0.3.1", coreversion="0.72.0")
+@algorithmPlugin(version="0.3.1", coreversion="0.80.0")
 @cellImageInput("in_tissue", data_plugin="gnomonCellImageDataTissueImage")
 @cellImageOutput("out_tissue", data_plugin="gnomonCellImageDataTissueImage")
 class morphoCellFilter(gnomonAbstractCellImageFilter):
