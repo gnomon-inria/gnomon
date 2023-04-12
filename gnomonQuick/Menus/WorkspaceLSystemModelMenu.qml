@@ -137,7 +137,7 @@ Item {
 
             value: 1
             min: 1
-            max: 100
+            max: 200
             decimals: 0
 
             label: "Animation step"
@@ -155,7 +155,7 @@ Item {
 
             value: 100
             min: 0
-            max: 2000
+            max: 4000
             decimals: 0
 
             label: "Derivation length"
