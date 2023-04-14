@@ -52,16 +52,24 @@ if (PYTHON)
     add_dependencies(${PROJECT_NAME} gnomoncore)
     add_dependencies(${PROJECT_NAME} gnomonPipeline)
     add_dependencies(${PROJECT_NAME} gnomonpipeline)
-    add_dependencies(${PROJECT_NAME} gnomonVisualization)
-    add_dependencies(${PROJECT_NAME} gnomonvisualization)
+    if(GNOMON_ENABLE_VISU)
+      add_dependencies(${PROJECT_NAME} gnomonVisualization)
+      add_dependencies(${PROJECT_NAME} gnomonvisualization)
+    endif(GNOMON_ENABLE_VISU)
 
     # after the REMOVE RECURSE, copy the wrapping files
     add_custom_command(
       TARGET ${PROJECT_NAME} POST_BUILD VERBATIM
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/wrp/gnomonCore/gnomoncore.py  ${CMAKE_CURRENT_BINARY_DIR}/gnomon/core/__gnomoncore.py
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/wrp/gnomonCore/gnomonform.py  ${CMAKE_CURRENT_BINARY_DIR}/gnomon/core/__gnomonform.py
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/wrp/gnomonPipeline/gnomonpipeline.py  ${CMAKE_CURRENT_BINARY_DIR}/gnomon/pipeline/__gnomonpipeline.py
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/wrp/gnomonVisualization/gnomonvisualization.py  ${CMAKE_CURRENT_BINARY_DIR}/gnomon/visualization/__gnomonvisualization.py)
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/wrp/gnomonPipeline/gnomonpipeline.py  ${CMAKE_CURRENT_BINARY_DIR}/gnomon/pipeline/__gnomonpipeline.py)
+
+    if(GNOMON_ENABLE_VISU)
+      add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD VERBATIM
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/wrp/gnomonVisualization/gnomonvisualization.py  ${CMAKE_CURRENT_BINARY_DIR}/gnomon/visualization/__gnomonvisualization.py)
+    endif(GNOMON_ENABLE_VISU)
+
     install(
         CODE "execute_process(COMMAND ${PYTHON} -m pip install python/)"
     )

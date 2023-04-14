@@ -79,16 +79,11 @@ if("${isSystemDir}" STREQUAL "-1")
    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif("${isSystemDir}" STREQUAL "-1")
 
-
-#if(UNIX)
-#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -Wno-deprecated-register -Wno-unused-value")
-#endif(UNIX)
-
 ## #################################################################
 ## Options
 ## #################################################################
 
-option(GNOMON_ENABLE_WIDGETS "Enable Widgets and Visualization View" false)
+option(GNOMON_ENABLE_VISU "Enable Visualization and workspaces" true)
 
 ## ###################################################################
 ## Test setup
@@ -116,7 +111,7 @@ endif()
 find_package(Python3 3.9 EXACT COMPONENTS Interpreter Development NumPy)
 set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickWidgets Widgets Network Svg Xml Concurrent Test)
+find_package(Qt6 REQUIRED COMPONENTS Core Concurrent Network Qml Test Xml)
 
 find_package(dtkLog      REQUIRED)
 find_package(dtkCore     REQUIRED)
@@ -125,13 +120,10 @@ find_package(dtkScript   REQUIRED)
 find_package(VTK         REQUIRED) # only for vtkImageData in gnomonImageDtk
 find_package(xtensor     REQUIRED) # because of dtkImaging
 
-if(GNOMON_ENABLE_WIDGETS)
-  find_package(dtkFonts    REQUIRED)
-  find_package(dtkThemes   REQUIRED)
-  find_package(dtkMacs     REQUIRED)
-  find_package(dtkWidgets  REQUIRED)
-  find_package(dtkComposer REQUIRED)
-endif(GNOMON_ENABLE_WIDGETS)
+if(GNOMON_ENABLE_VISU)
+  add_definitions(-DGNOMON_USE_VISU)
+  find_package(Qt6 REQUIRED COMPONENTS Gui Quick QuickWidgets)
+endif(GNOMON_ENABLE_VISU)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
 include_directories(${Python3_INCLUDE_DIRS})
@@ -215,10 +207,8 @@ mark_as_advanced(Qt6Quick_DIR)
 mark_as_advanced(Qt6QuickTest_DIR)
 mark_as_advanced(Qt6Script_DIR)
 mark_as_advanced(Qt6Test_DIR)
-mark_as_advanced(Qt6Widgets_DIR)
 mark_as_advanced(Qt6Xml_DIR)
 mark_as_advanced(Qt6Sql_DIR)
-mark_as_advanced(Qt6Svg_DIR)
 
 mark_as_advanced(CMAKE_AR)
 mark_as_advanced(CMAKE_BUILD_TYPE)
@@ -227,6 +217,7 @@ mark_as_advanced(CMAKE_OSX_ARCHITECTURES)
 mark_as_advanced(CMAKE_OSX_DEPLOYMENT_TARGET)
 mark_as_advanced(CMAKE_OSX_SYSROOT)
 
+#omero stuff
 mark_as_advanced(Ice_DB_ARCHIVE_EXECUTABLE)
 mark_as_advanced(Ice_DB_CHECKPOINT_EXECUTABLE)
 mark_as_advanced(Ice_DB_DEADLOCK_EXECUTABLE)
@@ -285,7 +276,6 @@ mark_as_advanced(omero-ice_DIR)
 ## ###################################################################
 ## Packaging
 ## ###################################################################
-# TODO remove?
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_VERSION_MAJOR "${${PROJECT_NAME}_VERSION_MAJOR}")
