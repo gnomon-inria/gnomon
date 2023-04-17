@@ -70,8 +70,12 @@ G.Dialog { id: _self;
         }
 
         TextField { id: _name_field;
+            property int counter: 0;
             Layout.fillWidth: true;
             Layout.preferredHeight: 28;
+            //text: "property".concat("_", counter.toString());
+            text: "property";
+
         }
 
         Label{
@@ -117,7 +121,7 @@ G.Dialog { id: _self;
                 }
                 errorText: "Enter a number";
             }
-            
+
 
             TextField  {
                 id: _str_value_input;
@@ -228,7 +232,7 @@ G.Dialog { id: _self;
     }
 
     function clear() {
-        _name_field.text = ""
+        _name_field.text = "property".concat("_", _name_field.counter.toString())
         _type_combobox.currentIndex = 0
         if (_self.type == "Parameter") {
             _doc_field.text = ""
@@ -246,6 +250,7 @@ G.Dialog { id: _self;
     onAccepted: {
         var name = _name_field.text
         var type = _type_combobox.currentValue
+        _name_field.counter += 1
 
         if (_self.type == "Parameter") {
             var doc = _doc_field.text
