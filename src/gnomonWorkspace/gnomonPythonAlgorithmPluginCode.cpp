@@ -215,6 +215,13 @@ void gnomonPythonAlgorithmPluginCode::addInputForm(const QJsonObject& desc)
     this->addInputForm(gnomonFormDescription(name, type, data_plugin), true);
 }
 
+void gnomonPythonAlgorithmPluginCode::removeInputForm(const QJsonObject& desc)
+{
+    d->input_forms.remove(desc["type"].toString());
+    this->updateCode();
+    emit inputFormsChanged();
+}
+
 void gnomonPythonAlgorithmPluginCode::addOutputForm(gnomonFormDescription desc, bool update_code)
 {
     d->output_forms[desc.type] = desc;
@@ -230,6 +237,13 @@ void gnomonPythonAlgorithmPluginCode::addOutputForm(const QJsonObject& desc)
     QString type = desc.contains("type") ? desc["type"].toString() : "";
     QString data_plugin = desc.contains("data_plugin") ? desc["data_plugin"].toString() : "";
     this->addOutputForm(gnomonFormDescription(name, type, data_plugin), true);
+}
+
+void gnomonPythonAlgorithmPluginCode::removeOutputForm(const QJsonObject& desc)
+{
+    d->output_forms.remove(desc["type"].toString());
+    this->updateCode();
+    emit outputFormsChanged();
 }
 
 void gnomonPythonAlgorithmPluginCode::addParameter(gnomonParameterDescription desc, bool update_code)
@@ -250,6 +264,13 @@ void gnomonPythonAlgorithmPluginCode::addParameter(const QJsonObject& desc)
     QJsonObject args  = desc.contains("args") ? desc["args"].toObject() : QJsonObject();
 
     this->addParameter(gnomonParameterDescription(name, type, doc, value, args), true);
+}
+
+void gnomonPythonAlgorithmPluginCode::removeParameter(const QJsonObject& desc)
+{
+    d->parameters.remove(desc["name"].toString());
+    this->updateCode();
+    emit parametersChanged();
 }
 
 void gnomonPythonAlgorithmPluginCode::updateCode(void)
