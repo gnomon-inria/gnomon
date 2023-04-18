@@ -277,13 +277,34 @@ Item {
             }
         }
 
-        G.WorkspaceParameterMenu {
+        Control {
+            anchors.fill: parent;
+            anchors.margins: G.Style.smallPadding;
 
-            id: _parameters_menu;
-            d: _self.d
+            G.ComboBoxWithLabel {
+                id: _combo_box
 
-            algo_combobox.model: [d.algorithm]
-            algo_combobox.enabled: false
+                label: "Algorithm:"
+                model: d ? [d.algorithm] : null;
+
+                anchors.left: parent.left
+                anchors.right: parent.right
+                enabled: false
+            }
+
+            G.WorkspaceParameterMenu {
+                id: _parameters_menu;
+
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: _combo_box.bottom
+                anchors.bottom: parent.bottom
+
+                property alias model: _parameters_menu.algo_combobox.model
+
+                d: _self.d
+                algo_combobox.visible: false
+            }
         }
     }
 }

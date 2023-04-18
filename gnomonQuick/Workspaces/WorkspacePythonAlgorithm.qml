@@ -38,7 +38,8 @@ G.Workspace {
         onEditModeChanged: {
             d.code.text = _editor.contents
             if(!d.editMode) {
-                _source_view.droppedFromManager(world.currentRef)
+                if(world.currentRef >= 0)
+                    _source_view.droppedFromManager(world.currentRef)
             }
         }
 
