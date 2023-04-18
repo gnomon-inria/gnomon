@@ -80,9 +80,11 @@ Control {
                     highlighted: false
 
                     Label {
+                        id: _name_label
                         anchors.left: parent.left;
                         anchors.top: parent.top;
-                        anchors.margins: 10;
+                        anchors.leftMargin: G.Style.smallPadding;
+                        anchors.topMargin: G.Style.smallPadding;
 
                         text: _self.type == "Parameter" ?
                               modelData.name + " (" + modelData.type + ") = " + modelData.value:
@@ -92,10 +94,37 @@ Control {
                         font: G.Style.fonts.formLabel;
                     }
 
+                    G.IconButton {
+                        anchors.verticalCenter: _name_label.verticalCenter;
+                        anchors.right: parent.right
+                        anchors.margins: G.Style.smallPadding;
+
+                        size: G.Style.iconMedium;
+                        hoverColor: G.Style.colors.hoveredDangerColor
+                        color: active? G.Style.colors.textColorNeutral : G.Style.colors.dangerColor;
+
+                        iconName: G.Icons.icons["minus"]
+                        tooltip: "Delete"
+
+                        onClicked: {
+                            if(_self.type == "Parameter") {
+                                code.removeParameter(modelData)
+                            } else if(_self.type == "Input Form") {
+                                code.removeInputForm(modelData)
+                            } else if(_self.type == "Output Form") {
+                                code.removeOutputForm(modelData)
+                            }
+                        }
+
+
+                    }
+
                     Label {
+                        id: _type_label
                         anchors.right: parent.right;
                         anchors.bottom: parent.bottom;
-                        anchors.margins: 10;
+                        anchors.rightMargin: G.Style.smallPadding;
+                        anchors.bottomMargin: G.Style.smallPadding;
 
                         text: _self.type == "Parameter" ?
                               modelData.doc :
