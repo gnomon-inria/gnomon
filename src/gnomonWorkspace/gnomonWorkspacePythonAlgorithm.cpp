@@ -228,6 +228,7 @@ QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)
 void gnomonWorkspacePythonAlgorithm::run(void) {
 
     if(d->algorithm) {
+        emit started();
         d->algorithm->run();
         this->viewOutputs();
         emit finished();
