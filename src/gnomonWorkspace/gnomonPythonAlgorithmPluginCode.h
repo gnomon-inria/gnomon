@@ -74,8 +74,11 @@ public slots:
     void addParameter(gnomonParameterDescription desc, bool update_code=true);
 
     Q_INVOKABLE void addInputForm(const QJsonObject& desc);
+    Q_INVOKABLE void removeInputForm(const QJsonObject& desc);
     Q_INVOKABLE void addOutputForm(const QJsonObject& desc);
+    Q_INVOKABLE void removeOutputForm(const QJsonObject& desc);
     Q_INVOKABLE void addParameter(const QJsonObject& desc);
+    Q_INVOKABLE void removeParameter(const QJsonObject& desc);
 
 public slots:
     void updateCode(void);

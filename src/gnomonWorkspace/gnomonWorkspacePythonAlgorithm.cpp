@@ -64,6 +64,7 @@ void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
     if (this->algorithm) {
         dtkCoreObjectManager *object_manager = dtkCoreObjectManager::instance();
         int algo_id = 0;
+        // TODO: Make sure that the gnomonPluginFactory actually registers to the dtkCoreObjectManager
         for (const auto& key : object_manager->keys()) {
             QRegularExpression rx("gnomonAbstractFormAlgorithm[*] ([0-9]*)");
             auto match = rx.match(key);
@@ -228,6 +229,7 @@ QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)
 void gnomonWorkspacePythonAlgorithm::run(void) {
 
     if(d->algorithm) {
+        emit started();
         d->algorithm->run();
         this->viewOutputs();
         emit finished();
@@ -249,6 +251,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
     if (d->algorithm) {
         int stat;
         QString output;
+        // TODO : make sure that we look into the right object manager
         output = dtkScriptInterpreterPython::instance()->interpret("from gnomon.core import objectManagerFormAlgorithm",
                                                                    &stat);
         output = dtkScriptInterpreterPython::instance()->interpret(
