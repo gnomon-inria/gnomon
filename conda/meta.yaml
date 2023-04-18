@@ -10,7 +10,7 @@ build:
 
 requirements:
   build:
-    - cmake >=3.17
+    - cmake >=3.20
     - make
     - python
     - numpy {{numpy}}

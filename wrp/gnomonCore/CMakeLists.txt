@@ -51,7 +51,7 @@ swig_link_libraries(${PROJECT_NAME}
   dtkCore
   dtkImagingCore
   Qt6::Core)
-  
+
 #target_link_libraries(${PROJECT_NAME} ${LAYER_NAME})
 
 ## #############################################################################
@@ -59,16 +59,13 @@ swig_link_libraries(${PROJECT_NAME}
 ## #############################################################################
 
 set(GNOMON_PYTHON "${CMAKE_BINARY_DIR}/python/gnomon/")
-
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD VERBATIM
-    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${PROJECT_NAME}>" ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_${PROJECT_NAME}.so
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py  ${GNOMON_PYTHON}/core/__${PROJECT_NAME}.py)
+    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${PROJECT_NAME}>" ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_${PROJECT_NAME}.so)
 
 add_custom_command(
     TARGET gnomonform POST_BUILD VERBATIM
-    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:gnomonform>" ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_gnomonform.so
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/gnomonform.py  ${GNOMON_PYTHON}/core/__gnomonform.py)
+    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:gnomonform>" ${CMAKE_BINARY_DIR}/${DTK_PYTHON_INSTALL_PATH}/_gnomonform.so)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)
 install(TARGETS gnomonform DESTINATION ${DTK_PYTHON_INSTALL_PATH}/)

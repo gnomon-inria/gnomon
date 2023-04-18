@@ -42,12 +42,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(gnomonCore)
 add_subdirectory(gnomonPipeline)
-add_subdirectory(gnomonVisualization)
 
-if(GNOMON_ENABLE_WIDGETS)
-  add_subdirectory(gnomonWidgets)
-  add_subdirectory(gnomonWorkspace)
-endif(GNOMON_ENABLE_WIDGETS)
+if(GNOMON_ENABLE_VISU)
+  add_subdirectory(gnomonVisualization)
+endif()
 
 ######################################################################
 ### CMakeLists.txt ends here

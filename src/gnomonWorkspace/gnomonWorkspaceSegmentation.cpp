@@ -4,6 +4,7 @@
 #include <gnomonCore/gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageFromImage>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageFromImageCommand.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
+#include <gnomonConfig.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspaceSegmentation
@@ -12,6 +13,7 @@
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
     loadPluginGroup("cellImageFromImage");
+    gnomonCore::cellImageFromImage::pluginManager().initialize(GNOMON_PLUGIN_PATH);
 
     d->workspace = "Segmentation";
     d->command   = new gnomonCellImageFromImageCommand;
