@@ -232,7 +232,13 @@ G.Dialog { id: _self;
     }
 
     function clear() {
-        _name_field.text = "property".concat("_", _name_field.counter.toString())
+        if(_self.type == "Parameter") {
+            _name_field.text = "property".concat("_", _name_field.counter.toString())
+        } else if(_self.type == "Input Form") {
+            _name_field.text = "input".concat("_", _name_field.counter.toString())
+        } else if(_self.type == "Output Form") {
+            _name_field.text = "output".concat("_", _name_field.counter.toString())
+        }
         _type_combobox.currentIndex = 0
         if (_self.type == "Parameter") {
             _doc_field.text = ""
