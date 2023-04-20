@@ -44,6 +44,11 @@ public:
         NONE = -1
     };
 
+    enum Representation {
+        VTK_REPRESENTATION_POINTS = 0,
+        VTK_REPRESENTATION_WIREFRAME  = 1,
+        VTK_REPRESENTATION_SURFACE = 2,
+    };
 
 public:
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
@@ -57,6 +62,7 @@ public:
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
     Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
+    Q_PROPERTY(Representation representation READ representation WRITE setRepresentation NOTIFY representationChanged)
     Q_PROPERTY(bool inPool READ inPool WRITE setInPool NOTIFY inPoolChanged);
     Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
     Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
@@ -89,6 +95,7 @@ signals:
     void boundsChanged(void);
     void modeChanged(void);
     void orientationChanged(void);
+    void representationChanged(void);
     void inPoolChanged(void);
 
     void syncedChanged(void);
@@ -151,8 +158,11 @@ public:
 
 public:
     Orientation orientation(void);
+    Representation representation(void);
 
 public slots:
+    void setRepresentation(Representation representation);
+
     void setBounds(double bounds[6]);
     void setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 

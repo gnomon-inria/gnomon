@@ -35,6 +35,7 @@
 #include <vtkInteractorStyle.h>
 #include <vtkInteractorStyleImage.h>
 #include <vtkPNGWriter.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindowInteractor.h>
@@ -85,6 +86,7 @@ public:
 public:
     gnomonVtkView::Mode mode = gnomonVtkView::VIEW_MODE_3D;
     gnomonVtkView::Orientation ori = gnomonVtkView::NONE;
+    gnomonVtkView::Representation representation = gnomonVtkView::VTK_REPRESENTATION_SURFACE;
     QMap<gnomonVtkView::Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
@@ -931,6 +933,35 @@ vtkRenderer *gnomonVtkView::renderer3D(void)
 gnomonVtkView::Orientation gnomonVtkView::orientation(void)
 {
     return dd->ori;
+}
+
+gnomonVtkView::Representation gnomonVtkView::representation(void)
+{
+    return dd->representation;
+}
+
+void gnomonVtkView::setRepresentation(gnomonVtkView::Representation representation)
+{
+    if (representation != dd->representation) {
+        dd->representation = representation;
+
+        auto actors = dd->renderer3D->GetActors();
+        actors->InitTraversal();
+        for (int i_p=0; i_p<actors->GetNumberOfItems(); i_p++) {
+            auto actor = actors->GetNextActor();
+            actor->GetProperty()->SetRepresentation(dd->representation);
+        }
+
+        auto actors_2d = dd->renderer2D->GetActors();
+        actors_2d->InitTraversal();
+        for (int i_p=0; i_p<actors_2d->GetNumberOfItems(); i_p++) {
+            auto actor_2d = actors_2d->GetNextActor();
+            actor_2d->GetProperty()->SetRepresentation(dd->representation);
+        }
+
+        this->render();
+        emit representationChanged();
+    }
 }
 
 void gnomonVtkView::render(void)
