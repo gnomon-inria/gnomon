@@ -292,6 +292,80 @@ Rectangle {
     }
 
     G.IconButton {
+        id: _camera_icon;
+        property bool active: false;
+        iconName: G.Icons.icons["video"];
+        size: G.Style.iconLarge;
+        color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D
+        tooltip: "Reset camera to default positions"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            active = !active
+        }
+    }
+
+    G.IconButton {
+        id: _camera_xy_icon;
+        iconName: G.Icons.icons["axis-z-arrow"];
+        size: G.Style.iconLarge;
+        color: G.Style.colors.textColorNeutral;
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
+        tooltip: "Reset camera to XY axes"
+
+        anchors.top: _camera_icon.bottom
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.setCameraXY(_camera_xy_icon.shift_click, _camera_xy_icon.ctrl_click)
+        }
+    }
+
+    G.IconButton {
+        id: _camera_xz_icon;
+
+        iconName: G.Icons.icons["axis-y-arrow"];
+        size: G.Style.iconLarge;
+        color: G.Style.colors.textColorNeutral;
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
+        tooltip: "Reset camera to XZ"
+
+        anchors.top: _camera_xy_icon.bottom
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.setCameraXZ(_camera_xz_icon.shift_click, _camera_xz_icon.ctrl_click)
+        }
+    }
+
+    G.IconButton {
+        id: _camera_yz_icon;
+        iconName: G.Icons.icons["axis-x-arrow"];
+        size: G.Style.iconLarge;
+        color: G.Style.colors.textColorNeutral;
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
+        tooltip: "Reset camera to YZ"
+
+        anchors.top: _camera_xz_icon.bottom
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.setCameraYZ(_camera_yz_icon.shift_click, _camera_yz_icon.ctrl_click)
+        }
+    }
+
+    G.IconButton {
         id: _link;
         iconName: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
         size: G.Style.iconLarge;
@@ -301,7 +375,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _color_icon.right
+        anchors.left: _camera_icon.visible? _camera_icon.right : _color_icon.right
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
