@@ -30,6 +30,7 @@
 
 #include <memory>
 #include <vtkCamera.h>
+#include <vtkCubeAxesActor.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorObserver.h>
 #include <vtkInteractorStyle.h>
@@ -39,6 +40,7 @@
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkTextProperty.h>
 #include <vtkWindowToImageFilter.h>
 
 // #include <QVTKInteractor.h>
@@ -107,6 +109,9 @@ public:
     QMetaObject::Connection connectPicked;
 
 public:
+    vtkSmartPointer<vtkCubeAxesActor> grid_actor = nullptr;
+
+public:
     int syncing_count = 0; QTimer *syncing_timer = nullptr; bool synced = false; bool syncing = false;
 
 public:
@@ -130,7 +135,8 @@ public:
 public:
     QSettings *settings;
     QColor background_color;
-    
+    bool grid_visible;
+
 signals:
     void sliceOrientationChanged(int);
 
@@ -155,6 +161,10 @@ gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 gnomonVtkViewPrivate::~gnomonVtkViewPrivate(void)
 {
     this->clearConnections();
+    if (this->grid_actor) {
+        this->grid_actor->Delete();
+        this->grid_actor = nullptr;
+    }
 }
 
 void gnomonVtkViewPrivate::clearConnections(void)
@@ -301,6 +311,8 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     dd->settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     QString bg_color_hex = dd->settings->value("vtk/background_color", "#000000").toString();
     this->setBgColor(QColor(bg_color_hex));
+    bool show_grid = dd->settings->value("vtk/grid", false).toBool();
+    this->setGridVisible(show_grid);
 
     d->visualizationCommands["gnomonBinaryImage"] = new gnomonBinaryImageVtkVisualizationCommand;
     d->visualizationCommands["gnomonCellComplex"] = new gnomonCellComplexVtkVisualizationCommand;
@@ -780,6 +792,9 @@ void gnomonVtkView::setBounds(double bounds[6])
 
     if (changed) {
         emit boundsChanged();
+        if (dd->grid_actor) {
+            dd->grid_actor->SetBounds(dd->xBounds[0], dd->xBounds[1], dd->yBounds[0], dd->yBounds[1], dd->zBounds[0], dd->zBounds[1]);
+        }
         dd->renderer2D->ResetCamera();
         dd->renderer3D->ResetCamera();
     }
@@ -892,6 +907,15 @@ void gnomonVtkView::setBgColor(const QColor& color)
         dd->background_color = color;
         renderer3D()->SetBackground(dd->background_color.redF(), dd->background_color.greenF(), dd->background_color.blueF());
         renderer2D()->SetBackground(dd->background_color.redF(), dd->background_color.greenF(), dd->background_color.blueF());
+
+        if (dd->grid_actor) {
+            QColor axis_color = QColor(255-dd->background_color.red(), 255-dd->background_color.green(), 255-dd->background_color.blue());
+            for (int i_dim=0; i_dim<3; i_dim++) {
+                dd->grid_actor->GetTitleTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+                dd->grid_actor->GetLabelTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+            }
+        }
+
         this->render();
         emit bgColorChanged();
 
@@ -899,8 +923,63 @@ void gnomonVtkView::setBgColor(const QColor& color)
     }
 }
 
-const QColor& gnomonVtkView::bgColor(void) {
+const QColor& gnomonVtkView::bgColor(void)
+{
     return dd->background_color;
+}
+
+void gnomonVtkView::setGridVisible(bool visible)
+{
+    if (!dd->grid_actor)  {
+        dd->grid_actor = vtkSmartPointer<vtkCubeAxesActor>::New();;
+        dd->renderer3D->AddActor(dd->grid_actor);
+        dd->grid_actor->SetCamera(dd->renderer3D->GetActiveCamera());
+
+        dd->grid_actor->SetUseTextActor3D(false);
+        dd->grid_actor->SetUse2DMode(true);
+        for (int i_dim=0; i_dim<3; i_dim++) {
+            dd->grid_actor->GetTitleTextProperty(i_dim)->SetFontSize(12);
+            dd->grid_actor->GetLabelTextProperty(i_dim)->SetFontSize(8);
+        }
+
+        dd->grid_actor->DrawXGridlinesOn();
+        dd->grid_actor->DrawYGridlinesOn();
+        dd->grid_actor->DrawZGridlinesOn();
+        dd->grid_actor->SetGridLineLocation(dd->grid_actor->VTK_GRID_LINES_FURTHEST);
+
+        dd->grid_actor->XAxisTickVisibilityOn();
+        dd->grid_actor->XAxisMinorTickVisibilityOff();
+        dd->grid_actor->YAxisTickVisibilityOn();
+        dd->grid_actor->YAxisMinorTickVisibilityOff();
+        dd->grid_actor->ZAxisTickVisibilityOn();
+        dd->grid_actor->ZAxisMinorTickVisibilityOff();
+        dd->grid_actor->SetFlyModeToStaticTriad();
+        dd->grid_actor->SetInertia(2);
+        dd->grid_actor->SetEnableDistanceLOD(true);
+        dd->grid_actor->SetDistanceLODThreshold(10);
+    }
+
+    if (visible != dd->grid_visible) {
+        dd->grid_visible = visible;
+
+        QColor axis_color = QColor(255-dd->background_color.red(), 255-dd->background_color.green(), 255-dd->background_color.blue());
+        for (int i_dim=0; i_dim<3; i_dim++) {
+            dd->grid_actor->GetTitleTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+            dd->grid_actor->GetLabelTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+        }
+        dd->grid_actor->SetBounds(dd->xBounds[0], dd->xBounds[1], dd->yBounds[0], dd->yBounds[1], dd->zBounds[0], dd->zBounds[1]);
+        dd->grid_actor->SetVisibility(dd->grid_visible);
+
+        this->render();
+        emit gridVisibleChanged();
+
+        dd->settings->setValue("vtk/grid", dd->grid_visible);
+    }
+}
+
+bool gnomonVtkView::gridVisible(void)
+{
+    return dd->grid_visible;
 }
 
 void gnomonVtkView::setEnableLinking(bool enable)

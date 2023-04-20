@@ -69,6 +69,7 @@ public:
     Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
 
     Q_PROPERTY(QColor bgColor READ bgColor WRITE setBgColor NOTIFY bgColorChanged);
+    Q_PROPERTY(bool gridVisible READ gridVisible WRITE setGridVisible NOTIFY gridVisibleChanged);
 
     Q_PROPERTY(QList<long> pickedCells READ pickedCells NOTIFY pickedCellsChanged)
 
@@ -107,6 +108,7 @@ signals:
 
 signals:
    void bgColorChanged(void);
+   void gridVisibleChanged(void);
 
 signals:
     void pickedCellsChanged();
@@ -179,6 +181,9 @@ public slots:
 
     void setBgColor(const QColor& color);
     const QColor& bgColor(void);
+
+    void setGridVisible(bool visible);
+    bool gridVisible(void);
 
 public slots:
     void setCameraXY(bool flip=false, bool turn=false);
