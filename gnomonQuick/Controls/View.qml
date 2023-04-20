@@ -329,7 +329,7 @@ Rectangle {
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
-            viewLogic.setCameraXY(_camera_xy_icon.shift_click, _camera_xy_icon.ctrl_click)
+            viewLogic.setCameraXY(self.shift_pressed, self.ctrl_pressed)
         }
     }
 
@@ -350,7 +350,7 @@ Rectangle {
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
-            viewLogic.setCameraXZ(_camera_xz_icon.shift_click, _camera_xz_icon.ctrl_click)
+            viewLogic.setCameraXZ(self.shift_pressed, self.ctrl_pressed)
         }
     }
 
@@ -370,7 +370,7 @@ Rectangle {
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
-            viewLogic.setCameraYZ(_camera_yz_icon.shift_click, _camera_yz_icon.ctrl_click)
+            viewLogic.setCameraYZ(self.shift_pressed, self.ctrl_pressed)
         }
     }
 
@@ -392,6 +392,23 @@ Rectangle {
     }
 
     G.IconButton {
+        id: _grid_button;
+        iconName: G.Icons.icons["grid"];
+        size: G.Style.iconLarge;
+        color: viewLogic.gridVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        tooltip: "Show/Hide the grid around the objects"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _representation_button.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.gridVisible = !viewLogic.gridVisible
+        }
+    }
+
+    G.IconButton {
         id: _link;
         iconName: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
         size: G.Style.iconLarge;
@@ -401,7 +418,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _representation_button.right
+        anchors.left: _grid_button.right
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
