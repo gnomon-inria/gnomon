@@ -47,8 +47,11 @@ G.Dialog {
     onAccepted: {
         if (_internal.selected_workspace) {
             _internal.algoName = ""
-            if(!window.check_if_forms_in_world() &&
-                _internal.selected_workspace.title != "L-System Model") {
+            let show_dialog = !window.check_if_forms_in_world();
+            if (window.current_workspace().workspace_title == "Browsing") {
+                show_dialog = !window.current_workspace().d.view.empty
+            }
+            if(show_dialog) {
                 no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
                 no_form_exported_dialog.open()
                 no_form_exported_dialog.forceActiveFocus()
