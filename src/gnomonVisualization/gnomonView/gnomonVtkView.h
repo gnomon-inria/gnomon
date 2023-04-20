@@ -170,6 +170,11 @@ public slots:
     void setBgColor(const QColor& color);
     const QColor& bgColor(void);
 
+public slots:
+    void setCameraXY(bool flip=false, bool turn=false);
+    void setCameraXZ(bool flip=false, bool turn=false);
+    void setCameraYZ(bool flip=false, bool turn=false);
+
 public:
     void setCamera(vtkCamera *);
 

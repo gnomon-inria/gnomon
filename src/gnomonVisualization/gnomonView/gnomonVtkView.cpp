@@ -840,6 +840,41 @@ gnomonVtkView::Mode gnomonVtkView::mode(void) const
     return dd->mode;
 }
 
+void gnomonVtkView::setCameraXY(bool flip, bool turn) {
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    cam->SetFocalPoint((dd->xBounds[0] + dd->xBounds[1]) / 2,
+                       (dd->yBounds[0] + dd->yBounds[1]) / 2,
+                       (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetPosition((dd->xBounds[0] + dd->xBounds[1]) / 2, (dd->yBounds[0] + dd->yBounds[1]) / 2, flip? dd->zBounds[0] : dd->zBounds[1]);
+    cam->SetViewUp(0, turn? -1 : 1, 0);
+    dd->renderer3D->ResetCamera();
+    this->render();
+}
+
+void gnomonVtkView::setCameraXZ(bool flip, bool turn)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    cam->SetFocalPoint((dd->xBounds[0] + dd->xBounds[1]) / 2,
+                       (dd->yBounds[0] + dd->yBounds[1]) / 2,
+                       (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetPosition((dd->xBounds[0] + dd->xBounds[1]) / 2, flip? dd->yBounds[0] : dd->yBounds[1], (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetViewUp(0, 0, turn? -1 : 1);
+    dd->renderer3D->ResetCamera();
+    this->render();
+}
+
+void gnomonVtkView::setCameraYZ(bool flip, bool turn)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    cam->SetFocalPoint((dd->xBounds[0] + dd->xBounds[1]) / 2,
+                       (dd->yBounds[0] + dd->yBounds[1]) / 2,
+                       (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetPosition(flip? dd->xBounds[0] : dd->xBounds[1], (dd->yBounds[0] + dd->yBounds[1]) / 2, (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetViewUp(0, 0, turn? -1 : 1);
+    dd->renderer3D->ResetCamera();
+    this->render();
+}
+
 void gnomonVtkView::setCamera(vtkCamera *cam)
 {
     vtkSmartPointer<vtkCamera> camera3D = dd->renderer3D->GetActiveCamera();
