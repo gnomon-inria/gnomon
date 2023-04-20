@@ -1,6 +1,7 @@
 import QtQuick            2.15
 import QtQuick.Controls   2.15
 import QtQuick.Layouts    1.15
+import Qt.labs.platform  1.0 as P
 
 import Qt5Compat.GraphicalEffects
 
@@ -103,7 +104,6 @@ Rectangle {
     }
 
     G.Slider {
-
         id: _2d_slider
 
         x: _2d_yz.x + _2d_slider.height / 2
@@ -127,7 +127,8 @@ Rectangle {
         }
     }
 
-    G.TimeSeriesSlider { id: _ts_slider;
+    G.TimeSeriesSlider {
+        id: _ts_slider;
         times: viewLogic.times
         visible: viewLogic.times.length > 1
 
@@ -136,7 +137,8 @@ Rectangle {
         }
     }
 
-    G.IconButton { id: _2d_icon;
+    G.IconButton {
+        id: _2d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_2D;
         iconName: G.Icons.icons["crop-free"];
         size: G.Style.iconLarge;
@@ -163,8 +165,8 @@ Rectangle {
         height: G.Style.iconLarge
         fillMode: Image.PreserveAspectFit
 
-        anchors.top: _view.top
-        anchors.topMargin: G.Style.iconLarge + 2*G.Style.smallPadding
+        anchors.top: _2d_icon.bottom
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 1.5*G.Style.smallPadding
 
@@ -187,8 +189,8 @@ Rectangle {
         height: G.Style.iconLarge
         fillMode: Image.PreserveAspectFit
 
-        anchors.top: _view.top
-        anchors.topMargin: 2*G.Style.iconLarge + 3*G.Style.smallPadding
+        anchors.top: _2d_xy.bottom
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 1.5*G.Style.smallPadding
 
@@ -211,8 +213,8 @@ Rectangle {
         height: G.Style.iconLarge
         fillMode: Image.PreserveAspectFit
 
-        anchors.top: _view.top
-        anchors.topMargin: 3*G.Style.iconLarge + 4*G.Style.smallPadding
+        anchors.top: _2d_xz.bottom
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 1.5*G.Style.smallPadding
 
@@ -226,7 +228,8 @@ Rectangle {
         }
     }
 
-    G.IconButton { id: _3d_icon;
+    G.IconButton {
+        id: _3d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_3D;
         iconName: G.Icons.icons["cube-outline"];
         size: G.Style.iconLarge;
@@ -235,8 +238,8 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _view.left
-        anchors.leftMargin: G.Style.iconLarge + 2*G.Style.smallPadding
+        anchors.left: _2d_icon.right
+        anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
             self.switchTo3D();
@@ -262,7 +265,34 @@ Rectangle {
         }
     }
 
-    G.IconButton {id: _link;
+    G.IconButton {
+        id: _color_icon;
+
+        iconName: G.Icons.icons["palette"]
+        size: G.Style.iconLarge;
+        color: G.Style.colors.textColorNeutral;
+        tooltip: "Choose background color"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _3d_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        P.ColorDialog {
+            id: _color_dialog
+            onAccepted: {
+               viewLogic.bgColor = _color_dialog.color
+            }
+        }
+
+        onClicked: {
+            _color_dialog.color = viewLogic.bgColor
+            _color_dialog.open()
+        }
+    }
+
+    G.IconButton {
+        id: _link;
         iconName: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
         size: G.Style.iconLarge;
         color: viewLogic.synced ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
@@ -271,8 +301,8 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _view.left
-        anchors.leftMargin: 2*G.Style.iconLarge + 3*G.Style.smallPadding
+        anchors.left: _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
             viewLogic.tryLinking();
@@ -304,7 +334,8 @@ Rectangle {
 
     }
 
-    G.IconButton { id: _export_icon;
+    G.IconButton {
+        id: _export_icon;
         iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
         enabled: !viewLogic.inputView
         visible: !viewLogic.inputView
