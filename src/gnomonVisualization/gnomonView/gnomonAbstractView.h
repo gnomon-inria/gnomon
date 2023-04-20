@@ -24,6 +24,8 @@ public:
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
 
+    Q_PROPERTY(bool empty READ empty NOTIFY formsChanged);
+
 public:
     virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr);
     virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
