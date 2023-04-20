@@ -10,6 +10,8 @@ Button
 
   property alias iconName: _icon.icon;
   property alias size: _icon.size;
+  property alias rotation: _icon.rotation;
+  property alias flip: _icon.flip
 
   property color color : G.Style.colors.textColorBase;
   property color hoverColor : G.Style.colors.hoveredBaseColor;

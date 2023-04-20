@@ -33,6 +33,9 @@ Rectangle {
     property var viewLogic;
     property var visualizations;
 
+    property bool shift_pressed: false;
+    property bool ctrl_pressed: false;
+
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
 
@@ -314,6 +317,8 @@ Rectangle {
         id: _camera_xy_icon;
         iconName: G.Icons.icons["axis-z-arrow"];
         size: G.Style.iconLarge;
+        rotation: self.shift_pressed? 180 : 0
+        flip: self.ctrl_pressed
         color: G.Style.colors.textColorNeutral;
         visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
         tooltip: "Reset camera to XY axes"
@@ -333,6 +338,8 @@ Rectangle {
 
         iconName: G.Icons.icons["axis-y-arrow"];
         size: G.Style.iconLarge;
+        rotation: self.ctrl_pressed ? 180 : 0
+        flip: (self.shift_pressed ? !self.ctrl_pressed : self.ctrl_pressed)
         color: G.Style.colors.textColorNeutral;
         visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
         tooltip: "Reset camera to XZ"
@@ -351,6 +358,8 @@ Rectangle {
         id: _camera_yz_icon;
         iconName: G.Icons.icons["axis-x-arrow"];
         size: G.Style.iconLarge;
+        rotation: self.ctrl_pressed ? 180 : 0
+        flip: (self.shift_pressed ? !self.ctrl_pressed : self.ctrl_pressed)
         color: G.Style.colors.textColorNeutral;
         visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
         tooltip: "Reset camera to YZ"
@@ -383,8 +392,21 @@ Rectangle {
         }
     }
 
+    Keys.onReleased: (event) => {
+        event.accepted = false
+
+        self.shift_pressed = (event.modifiers & Qt.ShiftModifier) != 0
+        self.ctrl_pressed = (event.modifiers & Qt.ControlModifier) != 0
+
+        event.accepted = _view.keyPressed(event.key)
+    }
+
     Keys.onPressed: (event) => {
         event.accepted = false
+
+        self.shift_pressed = (event.modifiers & Qt.ShiftModifier) != 0
+        self.ctrl_pressed = (event.modifiers & Qt.ControlModifier) != 0
+
         // ctrl + E
         if (event.key == Qt.Key_E && event.modifiers & Qt.ControlModifier) {
             event.accepted = true
@@ -405,7 +427,6 @@ Rectangle {
         event.accepted = _view.keyPressed(event.key)
         //event.accepted = viewLogic.keyPressed(event.key)
         }
-
     }
 
     G.IconButton {
