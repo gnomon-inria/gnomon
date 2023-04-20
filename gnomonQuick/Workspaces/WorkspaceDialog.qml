@@ -49,7 +49,7 @@ G.Dialog {
             _internal.algoName = ""
             let show_dialog = !window.check_if_forms_in_world();
             if (window.current_workspace().workspace_title == "Browsing") {
-                show_dialog = !window.current_workspace().d.view.empty
+                show_dialog = show_dialog & !window.current_workspace().d.view.empty
             }
             if(show_dialog) {
                 no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
