@@ -59,7 +59,11 @@ public:
 public:
     vtkRenderWindowInteractor *interactor(void)
     {
-        return this->window->GetInteractor();
+        if (this->window) {
+            return this->window->GetInteractor();
+        } else {
+            return nullptr;
+        }
     }
 
 public:
@@ -121,6 +125,10 @@ public:
 public:
     double c_t = 0;
 
+public:
+    QSettings *settings;
+    QColor background_color;
+    
 signals:
     void sliceOrientationChanged(int);
 
@@ -137,15 +145,8 @@ public slots:
 
 gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 {
-    // TODO: expose as a view parameter
-    QColor background_color = QColor("#00000000");
-
     this->renderer2D = vtkSmartPointer<vtkRenderer>::New();
-    this->renderer2D->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
-
     this->renderer3D = vtkSmartPointer<vtkRenderer>::New();
-    this->renderer3D->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
-
     static int count = 0;
 }
 
@@ -294,6 +295,10 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 {
     dd = new gnomonVtkViewPrivate;
     dd->q = this;
+
+    dd->settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    QString bg_color_hex = dd->settings->value("vtk/background_color", "#000000").toString();
+    this->setBgColor(QColor(bg_color_hex));
 
     d->visualizationCommands["gnomonBinaryImage"] = new gnomonBinaryImageVtkVisualizationCommand;
     d->visualizationCommands["gnomonCellComplex"] = new gnomonCellComplexVtkVisualizationCommand;
@@ -844,6 +849,23 @@ void gnomonVtkView::setCamera(vtkCamera *cam)
     camera3D->SetPosition(cam->GetPosition());
 }
 
+void gnomonVtkView::setBgColor(const QColor& color)
+{
+    if (color != dd->background_color) {
+        dd->background_color = color;
+        renderer3D()->SetBackground(dd->background_color.redF(), dd->background_color.greenF(), dd->background_color.blueF());
+        renderer2D()->SetBackground(dd->background_color.redF(), dd->background_color.greenF(), dd->background_color.blueF());
+        this->render();
+        emit bgColorChanged();
+
+        dd->settings->setValue("vtk/background_color", dd->background_color.name());
+    }
+}
+
+const QColor& gnomonVtkView::bgColor(void) {
+    return dd->background_color;
+}
+
 void gnomonVtkView::setEnableLinking(bool enable)
 {
     dd->enableLink = enable;
@@ -879,7 +901,9 @@ gnomonVtkView::Orientation gnomonVtkView::orientation(void)
 void gnomonVtkView::render(void)
 {
     dd->renderer2D->ResetCameraClippingRange();
-    dd->interactor()->Render();
+    if (dd->interactor()) {
+        dd->interactor()->Render();
+    }
 }
 
 void gnomonVtkView::clear(void)

@@ -61,6 +61,9 @@ public:
     Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
     Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
     Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
+
+    Q_PROPERTY(QColor bgColor READ bgColor WRITE setBgColor NOTIFY bgColorChanged);
+
     Q_PROPERTY(QList<long> pickedCells READ pickedCells NOTIFY pickedCellsChanged)
 
     Q_INVOKABLE void startPicking();
@@ -94,6 +97,9 @@ signals:
 signals:
     void   linking(void);
     void unlinking(void);
+
+signals:
+   void bgColorChanged(void);
 
 signals:
     void pickedCellsChanged();
@@ -160,6 +166,9 @@ public slots:
     Mode mode(void) const;
     double currentTime(void) const;
     double timeMax(void);
+
+    void setBgColor(const QColor& color);
+    const QColor& bgColor(void);
 
 public:
     void setCamera(vtkCamera *);
