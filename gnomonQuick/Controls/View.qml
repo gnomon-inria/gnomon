@@ -375,6 +375,23 @@ Rectangle {
     }
 
     G.IconButton {
+        id: _representation_button
+        iconName: G.Icons.icons[["dots-triangle", "vector-triangle", "triangle"][viewLogic.representation]]
+        size: G.Style.iconLarge;
+        color: G.Style.colors.textColorNeutral;
+        tooltip: "Set representation to Point/Wireframe/Surface"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _camera_icon.visible? _camera_icon.right : _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.representation = (viewLogic.representation + 1)%3
+        }
+    }
+
+    G.IconButton {
         id: _link;
         iconName: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
         size: G.Style.iconLarge;
@@ -384,7 +401,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _camera_icon.visible? _camera_icon.right : _color_icon.right
+        anchors.left: _representation_button.right
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
@@ -418,14 +435,20 @@ Rectangle {
             }
         }
 
-        if (event.key == Qt.Key_R    //Reset
-            || event.key == Qt.Key_S //Smooth
+        if (event.key == Qt.Key_S) {
+            viewLogic.representation = 2
+        } else if (event.key == Qt.Key_W) {
+            viewLogic.representation = 1
+        }
+
+        if (event.key == Qt.Key_R    //ResetCamera
+            || event.key == Qt.Key_S //Surface
             || event.key == Qt.Key_W //Wireframe
             || event.key == Qt.Key_A //Axes
             || event.key == Qt.Key_U) { //userEvent
-        // if(viewLogic.acceptKey() // can do like this to restrict to certain views only
-        event.accepted = _view.keyPressed(event.key)
-        //event.accepted = viewLogic.keyPressed(event.key)
+            // if(viewLogic.acceptKey() // can do like this to restrict to certain views only
+            event.accepted = _view.keyPressed(event.key)
+            //event.accepted = viewLogic.keyPressed(event.key)
         }
     }
 

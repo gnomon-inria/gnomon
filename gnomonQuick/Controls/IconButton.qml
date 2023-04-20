@@ -19,9 +19,6 @@ Button
   property string tooltip: "";
   property alias containsMouse: _icon_area.containsMouse
 
-  property bool shift_click: false;
-  property bool ctrl_click: false;
-
   implicitHeight: implicitContentHeight;
   implicitWidth: implicitContentWidth;
 
@@ -41,8 +38,6 @@ Button
       hoverEnabled: true;
 
       onClicked: {
-        _control.ctrl_click = (mouse.modifiers & Qt.ControlModifier) != 0
-        _control.shift_click = (mouse.modifiers & Qt.ShiftModifier) != 0
         _control.clicked()
       }
     }
