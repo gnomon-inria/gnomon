@@ -76,6 +76,7 @@ public:
 
 public:
     void updateFormsTimes(void);
+    void updateGrid(void);
 
 public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
@@ -265,6 +266,29 @@ void gnomonVtkViewPrivate::updateFormsTimes(void)
     q->timesChanged();
 }
 
+void gnomonVtkViewPrivate::updateGrid(void)
+{
+    if (this->grid_actor) {
+        this->grid_actor->SetXAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        this->grid_actor->SetXAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        this->grid_actor->SetXAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        this->grid_actor->SetXAxisMinorTickVisibility(false);
+        this->grid_actor->SetDrawXGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+
+        this->grid_actor->SetYAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetYAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetYAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetYAxisMinorTickVisibility(false);
+        this->grid_actor->SetDrawYGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+
+        this->grid_actor->SetZAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetZAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetZAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetZAxisMinorTickVisibility(false);
+        this->grid_actor->SetDrawZGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+    }
+}
+
 void gnomonVtkViewPrivate::adaptForm(const QString& adapter_plugin)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = this->form_to_adapt;
@@ -410,6 +434,12 @@ void gnomonVtkView::switchTo3D(void)
     dd->setViewMode(gnomonVtkView::VIEW_MODE_3D);
 
     if (hasChanged){
+        if (dd->grid_actor) {
+            dd->renderer2D->RemoveActor(dd->grid_actor);
+            dd->renderer3D->AddActor(dd->grid_actor);
+            dd->grid_actor->SetCamera(dd->renderer3D->GetActiveCamera());
+        }
+        dd->updateGrid();
         emit switchedTo3D();
         emit modeChanged();
     }
@@ -421,6 +451,12 @@ void gnomonVtkView::switchTo2D(void)
     dd->setViewMode(gnomonVtkView::VIEW_MODE_2D);
 
     if (hasChanged) {
+        if (dd->grid_actor) {
+            dd->renderer3D->RemoveActor(dd->grid_actor);
+            dd->renderer2D->AddActor(dd->grid_actor);
+            dd->grid_actor->SetCamera(dd->renderer2D->GetActiveCamera());
+        }
+        dd->updateGrid();
         switch(dd->ori) {
             case gnomonVtkView::SLICE_ORIENTATION_XY:
                 this->switchTo2DXY();
@@ -452,6 +488,7 @@ void gnomonVtkView::switchTo2DXY(void)
     dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_XY);
 
     if (hasChanged) {
+        dd->updateGrid();
         emit switchedTo2DXY();
         emit orientationChanged();
     }
@@ -467,6 +504,7 @@ void gnomonVtkView::switchTo2DXZ(void)
     dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_XZ);
 
     if (hasChanged)
+        dd->updateGrid();
         emit switchedTo2DXZ();
         emit orientationChanged();
 }
@@ -480,6 +518,7 @@ void gnomonVtkView::switchTo2DYZ(void)
     dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_YZ);
 
     if (hasChanged)
+        dd->updateGrid();
         emit switchedTo2DYZ();
         emit orientationChanged();
 }
@@ -759,6 +798,9 @@ void gnomonVtkView::removeForm(const QString& form_type)
 {
     gnomonAbstractView::removeForm(form_type);
     dd->updateFormsTimes();
+    if (this->empty()) {
+        this->setBounds(0, 0, 0, 0, 0, 0);
+    }
 }
 
 void gnomonVtkView::setBounds(double bounds[6])
@@ -931,33 +973,33 @@ const QColor& gnomonVtkView::bgColor(void)
 void gnomonVtkView::setGridVisible(bool visible)
 {
     if (!dd->grid_actor)  {
-        dd->grid_actor = vtkSmartPointer<vtkCubeAxesActor>::New();;
-        dd->renderer3D->AddActor(dd->grid_actor);
-        dd->grid_actor->SetCamera(dd->renderer3D->GetActiveCamera());
+        dd->grid_actor = vtkSmartPointer<vtkCubeAxesActor>::New();
+        if (dd->mode == gnomonVtkView::VIEW_MODE_3D) {
+            dd->renderer3D->AddActor(dd->grid_actor);
+            dd->grid_actor->SetCamera(dd->renderer3D->GetActiveCamera());
+        } else {
+            dd->renderer2D->AddActor(dd->grid_actor);
+            dd->grid_actor->SetCamera(dd->renderer2D->GetActiveCamera());
+        }
 
         dd->grid_actor->SetUseTextActor3D(false);
         dd->grid_actor->SetUse2DMode(true);
         for (int i_dim=0; i_dim<3; i_dim++) {
-            dd->grid_actor->GetTitleTextProperty(i_dim)->SetFontSize(12);
             dd->grid_actor->GetLabelTextProperty(i_dim)->SetFontSize(8);
         }
+        dd->grid_actor->SetXTitle("");
+        dd->grid_actor->SetYTitle("");
+        dd->grid_actor->SetZTitle("");
 
-        dd->grid_actor->DrawXGridlinesOn();
-        dd->grid_actor->DrawYGridlinesOn();
-        dd->grid_actor->DrawZGridlinesOn();
         dd->grid_actor->SetGridLineLocation(dd->grid_actor->VTK_GRID_LINES_FURTHEST);
 
-        dd->grid_actor->XAxisTickVisibilityOn();
-        dd->grid_actor->XAxisMinorTickVisibilityOff();
-        dd->grid_actor->YAxisTickVisibilityOn();
-        dd->grid_actor->YAxisMinorTickVisibilityOff();
-        dd->grid_actor->ZAxisTickVisibilityOn();
-        dd->grid_actor->ZAxisMinorTickVisibilityOff();
         dd->grid_actor->SetFlyModeToStaticTriad();
         dd->grid_actor->SetInertia(2);
         dd->grid_actor->SetEnableDistanceLOD(true);
-        dd->grid_actor->SetDistanceLODThreshold(10);
+        dd->grid_actor->SetDistanceLODThreshold(1);
     }
+
+    dd->updateGrid();
 
     if (visible != dd->grid_visible) {
         dd->grid_visible = visible;
@@ -1054,6 +1096,7 @@ void gnomonVtkView::render(void)
 void gnomonVtkView::clear(void)
 {
     gnomonAbstractView::clear();
+    this->setBounds(0, 0, 0, 0, 0, 0);
     dd->updateFormsTimes();
     this->render();
 }
