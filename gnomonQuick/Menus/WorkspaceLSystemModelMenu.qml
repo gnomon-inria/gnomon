@@ -153,17 +153,29 @@ Item {
 
             Layout.fillWidth: true;
 
-            value: 100
+            value: d.derivationLength
             min: 0
             max: 4000
             decimals: 0
 
             label: "Derivation length"
             doc: "Total number of derivation steps to compute for Animate"
-
             onValueChanged: {
-                d.derivationLength = _derivation_slider.value
+                console.debug("==== value changed: ", value, d.derivationLength)
+                if(d.derivationLength != value) {
+                    d.derivationLength = value
+                }
             }
+            Connections {
+                target: d
+                function onDerivationLengthChanged(length) {
+                    console.debug("==== dlength changed: ", length, _derivation_slider.value)
+                    if(length != _derivation_slider.value) {
+                        _derivation_slider.value = length
+                    }
+                }
+            }
+
         }
 
         Item {
