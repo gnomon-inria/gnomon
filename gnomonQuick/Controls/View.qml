@@ -409,15 +409,32 @@ Rectangle {
     }
 
     G.IconButton {
+        id: _axes_button;
+        iconName: G.Icons.icons["axis-arrow"]
+        size: G.Style.iconLarge;
+        color: viewLogic.axesVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        tooltip: "Show/Hide the axes orientation widget"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _grid_button.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.axesVisible = !viewLogic.axesVisible
+        }
+    }
+
+    G.IconButton {
         id: _fixed_camera_button;
-        iconName: viewLogic.cameraFixed ? G.Icons.icons["axis-lock"] : G.Icons.icons["axis-arrow"];
+        iconName: G.Icons.icons["axis-lock"]
         size: G.Style.iconLarge;
         color: viewLogic.cameraFixed ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Forbid/Allow visualization updates to change the field of view"
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _grid_button.right
+        anchors.left: _axes_button.right
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
@@ -478,7 +495,7 @@ Rectangle {
         if (event.key == Qt.Key_R    //ResetCamera
             || event.key == Qt.Key_S //Surface
             || event.key == Qt.Key_W //Wireframe
-            || event.key == Qt.Key_A //Axes
+            || event.key == Qt.Key_P //Point?
             || event.key == Qt.Key_U) { //userEvent
             // if(viewLogic.acceptKey() // can do like this to restrict to certain views only
             event.accepted = _view.keyPressed(event.key)
