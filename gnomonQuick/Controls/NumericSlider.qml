@@ -114,7 +114,7 @@ Control {
         }
 
 		onEditingFinished: {
-            _slider.value = parseFloat(text);
+            _control.value = parseFloat(text);
             _internal.textEdit = false
         }
 
