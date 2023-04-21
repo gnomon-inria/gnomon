@@ -107,7 +107,7 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
         for(; i<maxDerivationLength; i++) {
             this->predo();
             if(this->simulationType == SimulationType::run) {
-                this->model->run(0, 0, 0);
+                this->model->run(0, d->derivationLength, 0);
                 this->postdo();
             } else {
                 if ((i+1) % d->animation_step == 0) {
@@ -169,12 +169,15 @@ const QString& gnomonLStringEvolutionModelCommand::lSystemCode(void) const
 
 int gnomonLStringEvolutionModelCommand::derivationLength(void) const
 {
-    return d->derivationLength;
+    int dlength = dynamic_cast<gnomonAbstractLStringEvolutionModel*>(this->model)->derivationLength();
+    d->derivationLength = dlength;
+    return dlength;
 }
 
 void gnomonLStringEvolutionModelCommand::setDerivationLength(int l)
 {
     d->derivationLength = l;
+    dynamic_cast<gnomonAbstractLStringEvolutionModel*>(this->model)->setDerivationLength(l);
 }
 
 int gnomonLStringEvolutionModelCommand::animationStep(void) const
