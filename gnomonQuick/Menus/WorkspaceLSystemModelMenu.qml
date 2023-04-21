@@ -161,7 +161,6 @@ Item {
             label: "Derivation length"
             doc: "Total number of derivation steps to compute for Animate"
             onValueChanged: {
-                console.debug("==== value changed: ", value, d.derivationLength)
                 if(d.derivationLength != value) {
                     d.derivationLength = value
                 }
@@ -169,7 +168,6 @@ Item {
             Connections {
                 target: d
                 function onDerivationLengthChanged(length) {
-                    console.debug("==== dlength changed: ", length, _derivation_slider.value)
                     if(length != _derivation_slider.value) {
                         _derivation_slider.value = length
                     }
