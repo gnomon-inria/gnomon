@@ -56,7 +56,6 @@ public:
 public:
     QString text;
     QString message;
-    int derivationLength = 100;
     int animation_step = 1;
 
     int derivations = 0;
@@ -188,7 +187,7 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
         } else {
             qWarning() << "cannot open temp file for writing" << d->model_file;
         }
-
+        emit derivationLengthChanged(d->command->derivationLength());
         emit textChanged(d->text);
         emit parametersChanged();
     }
@@ -196,15 +195,13 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
 
 int gnomonWorkspaceLSystemModel::derivationLength(void)
 {
-    return d->derivationLength;
+    return d->command->derivationLength();
 }
 
 void gnomonWorkspaceLSystemModel::setDerivationLength(int l)
 {
-    if (l != d->derivationLength) {
-        d->derivationLength = l;
-        emit derivationLengthChanged(d->derivationLength);
-    }
+    d->command->setDerivationLength(l);
+    emit derivationLengthChanged(l);
 }
 
 int gnomonWorkspaceLSystemModel::animationStep(void)
@@ -276,7 +273,6 @@ void gnomonWorkspaceLSystemModel::animate()
 
     d->derivations = 0;
     d->command->simulationType = SimulationType::animate;
-    d->command->setDerivationLength(d->derivationLength);
     d->command->setAnimationStep(d->animation_step);
     connect(d->command, &gnomonLStringEvolutionModelCommand::stepFinished, [=] (int s){
         d->derivations = s;
@@ -300,7 +296,7 @@ void gnomonWorkspaceLSystemModel::run()
     d->command->simulationType = SimulationType::run;
     connect(d->command, &gnomonLStringEvolutionModelCommand::finished, [=](){
         disconnect(d->command, &gnomonLStringEvolutionModelCommand::finished, nullptr, nullptr);
-        d->derivations = d->derivationLength;
+        d->derivations = derivationLength();
         this->viewState();
         emit finished();
     });

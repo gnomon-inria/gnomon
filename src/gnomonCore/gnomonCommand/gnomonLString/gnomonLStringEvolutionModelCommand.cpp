@@ -169,12 +169,15 @@ const QString& gnomonLStringEvolutionModelCommand::lSystemCode(void) const
 
 int gnomonLStringEvolutionModelCommand::derivationLength(void) const
 {
-    return d->derivationLength;
+    int dlength = dynamic_cast<gnomonAbstractLStringEvolutionModel*>(this->model)->derivationLength();
+    d->derivationLength = dlength;
+    return dlength;
 }
 
 void gnomonLStringEvolutionModelCommand::setDerivationLength(int l)
 {
     d->derivationLength = l;
+    dynamic_cast<gnomonAbstractLStringEvolutionModel*>(this->model)->setDerivationLength(l);
 }
 
 int gnomonLStringEvolutionModelCommand::animationStep(void) const
