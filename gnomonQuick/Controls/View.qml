@@ -409,6 +409,23 @@ Rectangle {
     }
 
     G.IconButton {
+        id: _fixed_camera_button;
+        iconName: viewLogic.cameraFixed ? G.Icons.icons["axis-lock"] : G.Icons.icons["axis-arrow"];
+        size: G.Style.iconLarge;
+        color: viewLogic.cameraFixed ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        tooltip: "Forbid/Allow visualization updates to change the field of view"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _grid_button.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.cameraFixed = !viewLogic.cameraFixed
+        }
+    }
+
+    G.IconButton {
         id: _link;
         iconName: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
         size: G.Style.iconLarge;
@@ -418,7 +435,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _grid_button.right
+        anchors.left: _fixed_camera_button.right
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
