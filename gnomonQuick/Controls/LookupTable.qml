@@ -80,14 +80,14 @@ Control {
 
         G.CheckBox {
             id: _visible
-            text: "Hide";
+            text: "Show";
             //Layout.fillWidth: true;
             width: G.Style.sizes.s6
 
-            checked: param ? !param.visibility: false
+            checked: param ? param.visibility: false
 
             onClicked: {
-                param.visibility = !_visible.checked
+                param.visibility = _visible.checked
             }
         }
 
