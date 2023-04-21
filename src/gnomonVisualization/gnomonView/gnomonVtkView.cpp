@@ -29,12 +29,15 @@
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
 #include <memory>
+#include <vtkAxesActor.h>
 #include <vtkCamera.h>
+#include <vtkCaptionActor2D.h>
 #include <vtkCubeAxesActor.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorObserver.h>
 #include <vtkInteractorStyle.h>
 #include <vtkInteractorStyleImage.h>
+#include <vtkOrientationMarkerWidget.h>
 #include <vtkPNGWriter.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
@@ -111,6 +114,8 @@ public:
 
 public:
     vtkSmartPointer<vtkCubeAxesActor> grid_actor = nullptr;
+    vtkSmartPointer<vtkAxesActor> axes =  nullptr;
+    vtkSmartPointer<vtkOrientationMarkerWidget> axes_widget = nullptr;
 
 public:
     int syncing_count = 0; QTimer *syncing_timer = nullptr; bool synced = false; bool syncing = false;
@@ -137,6 +142,7 @@ public:
     QSettings *settings;
     QColor background_color;
     bool grid_visible;
+    bool axes_visible;
     bool camera_fixed;
 
 signals:
@@ -338,6 +344,8 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     this->setBgColor(QColor(bg_color_hex));
     bool show_grid = dd->settings->value("vtk/grid", false).toBool();
     this->setGridVisible(show_grid);
+    bool show_axes = dd->settings->value("vtk/axes", false).toBool();
+    this->setAxesVisible(show_axes);
     bool fixed_camera = dd->settings->value("vtk/fixed_camera", false).toBool();
     this->setCameraFixed(fixed_camera);
 
@@ -443,6 +451,15 @@ void gnomonVtkView::switchTo3D(void)
             dd->grid_actor->SetCamera(dd->renderer3D->GetActiveCamera());
         }
         dd->updateGrid();
+        if (dd->axes_widget) {
+            if (dd->interactor()) {
+                dd->axes_widget->SetInteractor(dd->interactor());
+                dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
+                dd->axes_widget->SetEnabled(dd->axes_visible);
+                dd->axes_widget->SetInteractive(dd->axes_visible);
+                dd->axes_widget->Modified();
+            }
+        }
         emit switchedTo3D();
         emit modeChanged();
     }
@@ -460,6 +477,14 @@ void gnomonVtkView::switchTo2D(void)
             dd->grid_actor->SetCamera(dd->renderer2D->GetActiveCamera());
         }
         dd->updateGrid();
+        if (dd->axes_widget) {
+            if (dd->interactor()) {
+                dd->axes_widget->SetInteractor(dd->interactor());
+                dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
+                dd->axes_widget->SetEnabled(false);
+                dd->axes_widget->SetInteractive(false);
+            }
+        }
         switch(dd->ori) {
             case gnomonVtkView::SLICE_ORIENTATION_XY:
                 this->switchTo2DXY();
@@ -1035,6 +1060,41 @@ void gnomonVtkView::setGridVisible(bool visible)
 bool gnomonVtkView::gridVisible(void)
 {
     return dd->grid_visible;
+}
+
+void gnomonVtkView::setAxesVisible(bool visible)
+{
+    if (!dd->axes_widget)  {
+        dd->axes =  vtkSmartPointer<vtkAxesActor>::New();
+        dd->axes->GetXAxisCaptionActor2D()->GetCaptionTextProperty()->ItalicOff();
+        dd->axes->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ItalicOff();
+        dd->axes->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ItalicOff();
+
+        dd->axes_widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+        dd->axes_widget->SetOrientationMarker(dd->axes);
+        dd->axes_widget->SetViewport(-0.2, -0.2, 0.2, 0.2);
+    }
+
+    if (visible != dd->axes_visible) {
+        dd->axes_visible = visible;
+
+        if (dd->interactor()) {
+            dd->axes_widget->SetInteractor(dd->interactor());
+            dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
+            dd->axes_widget->SetEnabled(dd->mode == VIEW_MODE_3D && dd->axes_visible);
+            dd->axes_widget->SetInteractive(dd->mode == VIEW_MODE_3D && dd->axes_visible);
+        }
+
+        this->render();
+        emit axesVisibleChanged();
+
+        dd->settings->setValue("vtk/axes", dd->axes_visible);
+    }
+}
+
+bool gnomonVtkView::axesVisible(void)
+{
+    return dd->axes_visible;
 }
 
 void gnomonVtkView::setCameraFixed(bool fixed)

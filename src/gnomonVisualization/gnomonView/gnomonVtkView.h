@@ -70,6 +70,7 @@ public:
 
     Q_PROPERTY(QColor bgColor READ bgColor WRITE setBgColor NOTIFY bgColorChanged);
     Q_PROPERTY(bool gridVisible READ gridVisible WRITE setGridVisible NOTIFY gridVisibleChanged);
+    Q_PROPERTY(bool axesVisible READ axesVisible WRITE setAxesVisible NOTIFY axesVisibleChanged);
     Q_PROPERTY(bool cameraFixed READ cameraFixed WRITE setCameraFixed NOTIFY cameraFixedChanged);
 
     Q_PROPERTY(QList<long> pickedCells READ pickedCells NOTIFY pickedCellsChanged)
@@ -108,9 +109,10 @@ signals:
     void unlinking(void);
 
 signals:
-   void bgColorChanged(void);
-   void gridVisibleChanged(void);
-   void cameraFixedChanged(void);
+    void bgColorChanged(void);
+    void gridVisibleChanged(void);
+    void axesVisibleChanged(void);
+    void cameraFixedChanged(void);
 
 signals:
     void pickedCellsChanged();
@@ -186,6 +188,9 @@ public slots:
 
     void setGridVisible(bool visible);
     bool gridVisible(void);
+
+    void setAxesVisible(bool visible);
+    bool axesVisible(void);
 
     void setCameraFixed(bool fixed);
     bool cameraFixed(void);
