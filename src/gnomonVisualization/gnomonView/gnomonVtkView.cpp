@@ -137,6 +137,7 @@ public:
     QSettings *settings;
     QColor background_color;
     bool grid_visible;
+    bool camera_fixed;
 
 signals:
     void sliceOrientationChanged(int);
@@ -337,6 +338,8 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     this->setBgColor(QColor(bg_color_hex));
     bool show_grid = dd->settings->value("vtk/grid", false).toBool();
     this->setGridVisible(show_grid);
+    bool fixed_camera = dd->settings->value("vtk/fixed_camera", false).toBool();
+    this->setCameraFixed(fixed_camera);
 
     d->visualizationCommands["gnomonBinaryImage"] = new gnomonBinaryImageVtkVisualizationCommand;
     d->visualizationCommands["gnomonCellComplex"] = new gnomonCellComplexVtkVisualizationCommand;
@@ -837,8 +840,10 @@ void gnomonVtkView::setBounds(double bounds[6])
         if (dd->grid_actor) {
             dd->grid_actor->SetBounds(dd->xBounds[0], dd->xBounds[1], dd->yBounds[0], dd->yBounds[1], dd->zBounds[0], dd->zBounds[1]);
         }
-        dd->renderer2D->ResetCamera();
-        dd->renderer3D->ResetCamera();
+        if (!dd->camera_fixed) {
+            dd->renderer2D->ResetCamera();
+            dd->renderer3D->ResetCamera();
+        }
     }
 }
 
@@ -943,6 +948,14 @@ void gnomonVtkView::setCamera(vtkCamera *cam)
     camera3D->SetPosition(cam->GetPosition());
 }
 
+void gnomonVtkView::resetCamera()
+{
+    if (!dd->camera_fixed) {
+        dd->renderer3D->ResetCamera();
+        dd->renderer2D->ResetCamera();
+    }
+}
+
 void gnomonVtkView::setBgColor(const QColor& color)
 {
     if (color != dd->background_color) {
@@ -1022,6 +1035,21 @@ void gnomonVtkView::setGridVisible(bool visible)
 bool gnomonVtkView::gridVisible(void)
 {
     return dd->grid_visible;
+}
+
+void gnomonVtkView::setCameraFixed(bool fixed)
+{
+    if (fixed != dd->camera_fixed) {
+        dd->camera_fixed = fixed;
+        emit cameraFixedChanged();
+
+        dd->settings->setValue("vtk/fixed_camera", dd->camera_fixed);
+    }
+}
+
+bool gnomonVtkView::cameraFixed(void)
+{
+    return dd->camera_fixed;
 }
 
 void gnomonVtkView::setEnableLinking(bool enable)
