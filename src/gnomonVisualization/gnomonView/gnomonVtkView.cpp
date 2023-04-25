@@ -455,8 +455,15 @@ void gnomonVtkView::switchTo3D(void)
             if (dd->interactor()) {
                 dd->axes_widget->SetInteractor(dd->interactor());
                 dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
-                dd->axes_widget->SetEnabled(dd->axes_visible);
-                dd->axes_widget->SetInteractive(dd->axes_visible);
+                if(dd->axes_visible) {
+                    dd->axes_widget->SetEnabled(true);
+                    dd->axes_widget->SetInteractive(true);
+                } else {
+                    if(dd->axes_widget->GetEnabled()) {
+                        dd->axes_widget->SetInteractive(false);  // must be enabled while setting interactive
+                    }
+                    dd->axes_widget->SetEnabled(false);
+                }
                 dd->axes_widget->Modified();
             }
         }
@@ -481,8 +488,10 @@ void gnomonVtkView::switchTo2D(void)
             if (dd->interactor()) {
                 dd->axes_widget->SetInteractor(dd->interactor());
                 dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
+                if(dd->axes_widget->GetEnabled()) {
+                    dd->axes_widget->SetInteractive(false);
+                }
                 dd->axes_widget->SetEnabled(false);
-                dd->axes_widget->SetInteractive(false);
             }
         }
         switch(dd->ori) {
@@ -1081,8 +1090,17 @@ void gnomonVtkView::setAxesVisible(bool visible)
         if (dd->interactor()) {
             dd->axes_widget->SetInteractor(dd->interactor());
             dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
-            dd->axes_widget->SetEnabled(dd->mode == VIEW_MODE_3D && dd->axes_visible);
-            dd->axes_widget->SetInteractive(dd->mode == VIEW_MODE_3D && dd->axes_visible);
+            bool show_3d = dd->mode == VIEW_MODE_3D && dd->axes_visible;
+            if(show_3d) {
+                dd->axes_widget->SetEnabled(true);
+                dd->axes_widget->SetInteractive(true);
+            } else {
+                if(dd->axes_widget->GetEnabled()) {
+                    dd->axes_widget->SetInteractive(false);  // must be enabled while setting interactive
+                }
+                dd->axes_widget->SetEnabled(false);
+            }
+
         }
 
         this->render();
