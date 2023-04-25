@@ -1,6 +1,7 @@
 import QtQuick            2.15
 import QtQuick.Controls   2.15
 import QtQuick.Layouts    1.15
+import Qt.labs.platform  1.0 as P
 
 import Qt5Compat.GraphicalEffects
 
@@ -31,6 +32,9 @@ Rectangle {
     property alias ts_slider: _ts_slider
     property var viewLogic;
     property var visualizations;
+
+    property bool shift_pressed: false;
+    property bool ctrl_pressed: false;
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
@@ -103,7 +107,6 @@ Rectangle {
     }
 
     G.Slider {
-
         id: _2d_slider
 
         x: _2d_yz.x + _2d_slider.height / 2
@@ -127,7 +130,8 @@ Rectangle {
         }
     }
 
-    G.TimeSeriesSlider { id: _ts_slider;
+    G.TimeSeriesSlider {
+        id: _ts_slider;
         times: viewLogic.times
         visible: viewLogic.times.length > 1
 
@@ -136,7 +140,8 @@ Rectangle {
         }
     }
 
-    G.IconButton { id: _2d_icon;
+    G.IconButton {
+        id: _2d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_2D;
         iconName: G.Icons.icons["crop-free"];
         size: G.Style.iconLarge;
@@ -163,8 +168,8 @@ Rectangle {
         height: G.Style.iconLarge
         fillMode: Image.PreserveAspectFit
 
-        anchors.top: _view.top
-        anchors.topMargin: G.Style.iconLarge + 2*G.Style.smallPadding
+        anchors.top: _2d_icon.bottom
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 1.5*G.Style.smallPadding
 
@@ -187,8 +192,8 @@ Rectangle {
         height: G.Style.iconLarge
         fillMode: Image.PreserveAspectFit
 
-        anchors.top: _view.top
-        anchors.topMargin: 2*G.Style.iconLarge + 3*G.Style.smallPadding
+        anchors.top: _2d_xy.bottom
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 1.5*G.Style.smallPadding
 
@@ -211,8 +216,8 @@ Rectangle {
         height: G.Style.iconLarge
         fillMode: Image.PreserveAspectFit
 
-        anchors.top: _view.top
-        anchors.topMargin: 3*G.Style.iconLarge + 4*G.Style.smallPadding
+        anchors.top: _2d_xz.bottom
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: _view.left
         anchors.leftMargin: 1.5*G.Style.smallPadding
 
@@ -226,7 +231,8 @@ Rectangle {
         }
     }
 
-    G.IconButton { id: _3d_icon;
+    G.IconButton {
+        id: _3d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_3D;
         iconName: G.Icons.icons["cube-outline"];
         size: G.Style.iconLarge;
@@ -235,8 +241,8 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _view.left
-        anchors.leftMargin: G.Style.iconLarge + 2*G.Style.smallPadding
+        anchors.left: _2d_icon.right
+        anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
             self.switchTo3D();
@@ -262,7 +268,182 @@ Rectangle {
         }
     }
 
-    G.IconButton {id: _link;
+    G.IconButton {
+        id: _color_icon;
+
+        iconName: G.Icons.icons["palette"]
+        size: G.Style.iconLarge;
+        color: G.Style.colors.textColorNeutral;
+        tooltip: "Choose background color"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _3d_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        P.ColorDialog {
+            id: _color_dialog
+            onAccepted: {
+               viewLogic.bgColor = _color_dialog.color
+            }
+        }
+
+        onClicked: {
+            _color_dialog.color = viewLogic.bgColor
+            _color_dialog.open()
+        }
+    }
+
+    G.IconButton {
+        id: _camera_icon;
+        property bool active: false;
+        iconName: G.Icons.icons["video"];
+        size: G.Style.iconLarge;
+        color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D
+        tooltip: "Reset camera to default positions"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            active = !active
+        }
+    }
+
+    G.IconButton {
+        id: _camera_xy_icon;
+        iconName: G.Icons.icons["axis-z-arrow"];
+        size: G.Style.iconLarge;
+        rotation: self.shift_pressed? 180 : 0
+        flip: self.ctrl_pressed
+        color: G.Style.colors.textColorNeutral;
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
+        tooltip: "Reset camera to XY axes"
+
+        anchors.top: _camera_icon.bottom
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.setCameraXY(self.shift_pressed, self.ctrl_pressed)
+        }
+    }
+
+    G.IconButton {
+        id: _camera_xz_icon;
+
+        iconName: G.Icons.icons["axis-y-arrow"];
+        size: G.Style.iconLarge;
+        rotation: self.ctrl_pressed ? 180 : 0
+        flip: (self.shift_pressed ? !self.ctrl_pressed : self.ctrl_pressed)
+        color: G.Style.colors.textColorNeutral;
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
+        tooltip: "Reset camera to XZ"
+
+        anchors.top: _camera_xy_icon.bottom
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.setCameraXZ(self.shift_pressed, self.ctrl_pressed)
+        }
+    }
+
+    G.IconButton {
+        id: _camera_yz_icon;
+        iconName: G.Icons.icons["axis-x-arrow"];
+        size: G.Style.iconLarge;
+        rotation: self.ctrl_pressed ? 180 : 0
+        flip: (self.shift_pressed ? !self.ctrl_pressed : self.ctrl_pressed)
+        color: G.Style.colors.textColorNeutral;
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
+        tooltip: "Reset camera to YZ"
+
+        anchors.top: _camera_xz_icon.bottom
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.setCameraYZ(self.shift_pressed, self.ctrl_pressed)
+        }
+    }
+
+    G.IconButton {
+        id: _representation_button
+        iconName: G.Icons.icons[["dots-triangle", "vector-triangle", "triangle"][viewLogic.representation]]
+        size: G.Style.iconLarge;
+        color: G.Style.colors.textColorNeutral;
+        tooltip: "Set representation to Point/Wireframe/Surface"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _camera_icon.visible? _camera_icon.right : _color_icon.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.representation = (viewLogic.representation + 1)%3
+        }
+    }
+
+    G.IconButton {
+        id: _grid_button;
+        iconName: G.Icons.icons["grid"];
+        size: G.Style.iconLarge;
+        color: viewLogic.gridVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        tooltip: "Show/Hide the grid around the objects"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _representation_button.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.gridVisible = !viewLogic.gridVisible
+        }
+    }
+
+    G.IconButton {
+        id: _axes_button;
+        iconName: G.Icons.icons["axis-arrow"]
+        size: G.Style.iconLarge;
+        color: viewLogic.axesVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        tooltip: "Show/Hide the axes orientation widget"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _grid_button.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.axesVisible = !viewLogic.axesVisible
+        }
+    }
+
+    G.IconButton {
+        id: _fixed_camera_button;
+        iconName: G.Icons.icons["axis-lock"]
+        size: G.Style.iconLarge;
+        color: viewLogic.cameraFixed ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        tooltip: "Forbid/Allow visualization updates to change the field of view"
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _axes_button.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.cameraFixed = !viewLogic.cameraFixed
+        }
+    }
+
+    G.IconButton {
+        id: _link;
         iconName: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
         size: G.Style.iconLarge;
         color: viewLogic.synced ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
@@ -271,16 +452,29 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _view.left
-        anchors.leftMargin: 2*G.Style.iconLarge + 3*G.Style.smallPadding
+        anchors.left: _fixed_camera_button.right
+        anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
             viewLogic.tryLinking();
         }
     }
 
+    Keys.onReleased: (event) => {
+        event.accepted = false
+
+        self.shift_pressed = (event.modifiers & Qt.ShiftModifier) != 0
+        self.ctrl_pressed = (event.modifiers & Qt.ControlModifier) != 0
+
+        event.accepted = _view.keyPressed(event.key)
+    }
+
     Keys.onPressed: (event) => {
         event.accepted = false
+
+        self.shift_pressed = (event.modifiers & Qt.ShiftModifier) != 0
+        self.ctrl_pressed = (event.modifiers & Qt.ControlModifier) != 0
+
         // ctrl + E
         if (event.key == Qt.Key_E && event.modifiers & Qt.ControlModifier) {
             event.accepted = true
@@ -292,19 +486,25 @@ Rectangle {
             }
         }
 
-        if (event.key == Qt.Key_R    //Reset
-            || event.key == Qt.Key_S //Smooth
-            || event.key == Qt.Key_W //Wireframe
-            || event.key == Qt.Key_A //Axes
-            || event.key == Qt.Key_U) { //userEvent
-        // if(viewLogic.acceptKey() // can do like this to restrict to certain views only
-        event.accepted = _view.keyPressed(event.key)
-        //event.accepted = viewLogic.keyPressed(event.key)
+        if (event.key == Qt.Key_S) {
+            viewLogic.representation = 2
+        } else if (event.key == Qt.Key_W) {
+            viewLogic.representation = 1
         }
 
+        if (event.key == Qt.Key_R    //ResetCamera
+            || event.key == Qt.Key_S //Surface
+            || event.key == Qt.Key_W //Wireframe
+            || event.key == Qt.Key_P //Point?
+            || event.key == Qt.Key_U) { //userEvent
+            // if(viewLogic.acceptKey() // can do like this to restrict to certain views only
+            event.accepted = _view.keyPressed(event.key)
+            //event.accepted = viewLogic.keyPressed(event.key)
+        }
     }
 
-    G.IconButton { id: _export_icon;
+    G.IconButton {
+        id: _export_icon;
         iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
         enabled: !viewLogic.inputView
         visible: !viewLogic.inputView

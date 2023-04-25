@@ -10,6 +10,8 @@ Control
   property string icon: "";
   property int size: G.Style.iconMedium;
   property color color: G.Style.colors.textColorBase;
+  property alias rotation: _text.rotation;
+  property bool flip: false;
 
   readonly property real _implicitSize: icon.toString() ? size : 0
 
@@ -22,6 +24,7 @@ Control
   }
 
   Text {
+    id: _text
     anchors.fill: _control;
 
     color: _control.color;
@@ -30,5 +33,9 @@ Control
     font.family: _loader.name;
     verticalAlignment: Text.AlignVCenter;
     horizontalAlignment: Text.AlignHCenter;
+    transform: Scale {
+      origin.x: _text.x + _text.width/2;
+      xScale: _control.flip ? -1 : 1;
+    }
   }
 }
