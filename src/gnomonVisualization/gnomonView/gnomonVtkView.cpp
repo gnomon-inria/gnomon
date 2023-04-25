@@ -29,15 +29,21 @@
 #include "gnomonInteractorStyle/gnomonInteractorStyle.h"
 
 #include <memory>
+#include <vtkAxesActor.h>
 #include <vtkCamera.h>
+#include <vtkCaptionActor2D.h>
+#include <vtkCubeAxesActor.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorObserver.h>
 #include <vtkInteractorStyle.h>
 #include <vtkInteractorStyleImage.h>
+#include <vtkOrientationMarkerWidget.h>
 #include <vtkPNGWriter.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkTextProperty.h>
 #include <vtkWindowToImageFilter.h>
 
 // #include <QVTKInteractor.h>
@@ -59,7 +65,11 @@ public:
 public:
     vtkRenderWindowInteractor *interactor(void)
     {
-        return this->window->GetInteractor();
+        if (this->window) {
+            return this->window->GetInteractor();
+        } else {
+            return nullptr;
+        }
     }
 
 public:
@@ -69,6 +79,7 @@ public:
 
 public:
     void updateFormsTimes(void);
+    void updateGrid(void);
 
 public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
@@ -81,6 +92,7 @@ public:
 public:
     gnomonVtkView::Mode mode = gnomonVtkView::VIEW_MODE_3D;
     gnomonVtkView::Orientation ori = gnomonVtkView::NONE;
+    gnomonVtkView::Representation representation = gnomonVtkView::VTK_REPRESENTATION_SURFACE;
     QMap<gnomonVtkView::Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
@@ -99,6 +111,11 @@ public:
     vtkSmartPointer<vtkInteractorObserver> old_style = nullptr;
     std::shared_ptr<gnomonAbstractCellImageVtkVisualization> picking_visu = nullptr;
     QMetaObject::Connection connectPicked;
+
+public:
+    vtkSmartPointer<vtkCubeAxesActor> grid_actor = nullptr;
+    vtkSmartPointer<vtkAxesActor> axes =  nullptr;
+    vtkSmartPointer<vtkOrientationMarkerWidget> axes_widget = nullptr;
 
 public:
     int syncing_count = 0; QTimer *syncing_timer = nullptr; bool synced = false; bool syncing = false;
@@ -121,6 +138,13 @@ public:
 public:
     double c_t = 0;
 
+public:
+    QSettings *settings;
+    QColor background_color;
+    bool grid_visible;
+    bool axes_visible;
+    bool camera_fixed;
+
 signals:
     void sliceOrientationChanged(int);
 
@@ -137,21 +161,18 @@ public slots:
 
 gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 {
-    // TODO: expose as a view parameter
-    QColor background_color = QColor("#00000000");
-
     this->renderer2D = vtkSmartPointer<vtkRenderer>::New();
-    this->renderer2D->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
-
     this->renderer3D = vtkSmartPointer<vtkRenderer>::New();
-    this->renderer3D->SetBackground(background_color.redF(), background_color.greenF(), background_color.blueF());
-
     static int count = 0;
 }
 
 gnomonVtkViewPrivate::~gnomonVtkViewPrivate(void)
 {
     this->clearConnections();
+    if (this->grid_actor) {
+        this->grid_actor->Delete();
+        this->grid_actor = nullptr;
+    }
 }
 
 void gnomonVtkViewPrivate::clearConnections(void)
@@ -252,6 +273,29 @@ void gnomonVtkViewPrivate::updateFormsTimes(void)
     q->timesChanged();
 }
 
+void gnomonVtkViewPrivate::updateGrid(void)
+{
+    if (this->grid_actor) {
+        this->grid_actor->SetXAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        this->grid_actor->SetXAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        this->grid_actor->SetXAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        this->grid_actor->SetXAxisMinorTickVisibility(false);
+        this->grid_actor->SetDrawXGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+
+        this->grid_actor->SetYAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetYAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetYAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetYAxisMinorTickVisibility(false);
+        this->grid_actor->SetDrawYGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+
+        this->grid_actor->SetZAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetZAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetZAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetZAxisMinorTickVisibility(false);
+        this->grid_actor->SetDrawZGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+    }
+}
+
 void gnomonVtkViewPrivate::adaptForm(const QString& adapter_plugin)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = this->form_to_adapt;
@@ -294,6 +338,16 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 {
     dd = new gnomonVtkViewPrivate;
     dd->q = this;
+
+    dd->settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
+    QString bg_color_hex = dd->settings->value("vtk/background_color", "#000000").toString();
+    this->setBgColor(QColor(bg_color_hex));
+    bool show_grid = dd->settings->value("vtk/grid", false).toBool();
+    this->setGridVisible(show_grid);
+    bool show_axes = dd->settings->value("vtk/axes", false).toBool();
+    this->setAxesVisible(show_axes);
+    bool fixed_camera = dd->settings->value("vtk/fixed_camera", false).toBool();
+    this->setCameraFixed(fixed_camera);
 
     d->visualizationCommands["gnomonBinaryImage"] = new gnomonBinaryImageVtkVisualizationCommand;
     d->visualizationCommands["gnomonCellComplex"] = new gnomonCellComplexVtkVisualizationCommand;
@@ -391,6 +445,28 @@ void gnomonVtkView::switchTo3D(void)
     dd->setViewMode(gnomonVtkView::VIEW_MODE_3D);
 
     if (hasChanged){
+        if (dd->grid_actor) {
+            dd->renderer2D->RemoveActor(dd->grid_actor);
+            dd->renderer3D->AddActor(dd->grid_actor);
+            dd->grid_actor->SetCamera(dd->renderer3D->GetActiveCamera());
+        }
+        dd->updateGrid();
+        if (dd->axes_widget) {
+            if (dd->interactor()) {
+                dd->axes_widget->SetInteractor(dd->interactor());
+                dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
+                if(dd->axes_visible) {
+                    dd->axes_widget->SetEnabled(true);
+                    dd->axes_widget->SetInteractive(true);
+                } else {
+                    if(dd->axes_widget->GetEnabled()) {
+                        dd->axes_widget->SetInteractive(false);  // must be enabled while setting interactive
+                    }
+                    dd->axes_widget->SetEnabled(false);
+                }
+                dd->axes_widget->Modified();
+            }
+        }
         emit switchedTo3D();
         emit modeChanged();
     }
@@ -402,6 +478,22 @@ void gnomonVtkView::switchTo2D(void)
     dd->setViewMode(gnomonVtkView::VIEW_MODE_2D);
 
     if (hasChanged) {
+        if (dd->grid_actor) {
+            dd->renderer3D->RemoveActor(dd->grid_actor);
+            dd->renderer2D->AddActor(dd->grid_actor);
+            dd->grid_actor->SetCamera(dd->renderer2D->GetActiveCamera());
+        }
+        dd->updateGrid();
+        if (dd->axes_widget) {
+            if (dd->interactor()) {
+                dd->axes_widget->SetInteractor(dd->interactor());
+                dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
+                if(dd->axes_widget->GetEnabled()) {
+                    dd->axes_widget->SetInteractive(false);
+                }
+                dd->axes_widget->SetEnabled(false);
+            }
+        }
         switch(dd->ori) {
             case gnomonVtkView::SLICE_ORIENTATION_XY:
                 this->switchTo2DXY();
@@ -433,6 +525,7 @@ void gnomonVtkView::switchTo2DXY(void)
     dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_XY);
 
     if (hasChanged) {
+        dd->updateGrid();
         emit switchedTo2DXY();
         emit orientationChanged();
     }
@@ -448,6 +541,7 @@ void gnomonVtkView::switchTo2DXZ(void)
     dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_XZ);
 
     if (hasChanged)
+        dd->updateGrid();
         emit switchedTo2DXZ();
         emit orientationChanged();
 }
@@ -461,6 +555,7 @@ void gnomonVtkView::switchTo2DYZ(void)
     dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_YZ);
 
     if (hasChanged)
+        dd->updateGrid();
         emit switchedTo2DYZ();
         emit orientationChanged();
 }
@@ -740,6 +835,9 @@ void gnomonVtkView::removeForm(const QString& form_type)
 {
     gnomonAbstractView::removeForm(form_type);
     dd->updateFormsTimes();
+    if (this->empty()) {
+        this->setBounds(0, 0, 0, 0, 0, 0);
+    }
 }
 
 void gnomonVtkView::setBounds(double bounds[6])
@@ -773,8 +871,13 @@ void gnomonVtkView::setBounds(double bounds[6])
 
     if (changed) {
         emit boundsChanged();
-        dd->renderer2D->ResetCamera();
-        dd->renderer3D->ResetCamera();
+        if (dd->grid_actor) {
+            dd->grid_actor->SetBounds(dd->xBounds[0], dd->xBounds[1], dd->yBounds[0], dd->yBounds[1], dd->zBounds[0], dd->zBounds[1]);
+        }
+        if (!dd->camera_fixed) {
+            dd->renderer2D->ResetCamera();
+            dd->renderer3D->ResetCamera();
+        }
     }
 }
 
@@ -835,6 +938,41 @@ gnomonVtkView::Mode gnomonVtkView::mode(void) const
     return dd->mode;
 }
 
+void gnomonVtkView::setCameraXY(bool flip, bool turn) {
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    cam->SetFocalPoint((dd->xBounds[0] + dd->xBounds[1]) / 2,
+                       (dd->yBounds[0] + dd->yBounds[1]) / 2,
+                       (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetPosition((dd->xBounds[0] + dd->xBounds[1]) / 2, (dd->yBounds[0] + dd->yBounds[1]) / 2, flip? dd->zBounds[0] : dd->zBounds[1]);
+    cam->SetViewUp(0, turn? -1 : 1, 0);
+    dd->renderer3D->ResetCamera();
+    this->render();
+}
+
+void gnomonVtkView::setCameraXZ(bool flip, bool turn)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    cam->SetFocalPoint((dd->xBounds[0] + dd->xBounds[1]) / 2,
+                       (dd->yBounds[0] + dd->yBounds[1]) / 2,
+                       (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetPosition((dd->xBounds[0] + dd->xBounds[1]) / 2, flip? dd->yBounds[0] : dd->yBounds[1], (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetViewUp(0, 0, turn? -1 : 1);
+    dd->renderer3D->ResetCamera();
+    this->render();
+}
+
+void gnomonVtkView::setCameraYZ(bool flip, bool turn)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    cam->SetFocalPoint((dd->xBounds[0] + dd->xBounds[1]) / 2,
+                       (dd->yBounds[0] + dd->yBounds[1]) / 2,
+                       (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetPosition(flip? dd->xBounds[0] : dd->xBounds[1], (dd->yBounds[0] + dd->yBounds[1]) / 2, (dd->zBounds[0] + dd->zBounds[1]) / 2);
+    cam->SetViewUp(0, 0, turn? -1 : 1);
+    dd->renderer3D->ResetCamera();
+    this->render();
+}
+
 void gnomonVtkView::setCamera(vtkCamera *cam)
 {
     vtkSmartPointer<vtkCamera> camera3D = dd->renderer3D->GetActiveCamera();
@@ -842,6 +980,154 @@ void gnomonVtkView::setCamera(vtkCamera *cam)
     camera3D->SetFocalPoint(cam->GetFocalPoint());
     camera3D->SetViewUp(cam->GetViewUp());
     camera3D->SetPosition(cam->GetPosition());
+}
+
+void gnomonVtkView::resetCamera()
+{
+    if (!dd->camera_fixed) {
+        dd->renderer3D->ResetCamera();
+        dd->renderer2D->ResetCamera();
+    }
+}
+
+void gnomonVtkView::setBgColor(const QColor& color)
+{
+    if (color != dd->background_color) {
+        dd->background_color = color;
+        renderer3D()->SetBackground(dd->background_color.redF(), dd->background_color.greenF(), dd->background_color.blueF());
+        renderer2D()->SetBackground(dd->background_color.redF(), dd->background_color.greenF(), dd->background_color.blueF());
+
+        if (dd->grid_actor) {
+            QColor axis_color = QColor(255-dd->background_color.red(), 255-dd->background_color.green(), 255-dd->background_color.blue());
+            for (int i_dim=0; i_dim<3; i_dim++) {
+                dd->grid_actor->GetTitleTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+                dd->grid_actor->GetLabelTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+            }
+        }
+
+        this->render();
+        emit bgColorChanged();
+
+        dd->settings->setValue("vtk/background_color", dd->background_color.name());
+    }
+}
+
+const QColor& gnomonVtkView::bgColor(void)
+{
+    return dd->background_color;
+}
+
+void gnomonVtkView::setGridVisible(bool visible)
+{
+    if (!dd->grid_actor)  {
+        dd->grid_actor = vtkSmartPointer<vtkCubeAxesActor>::New();
+        if (dd->mode == gnomonVtkView::VIEW_MODE_3D) {
+            dd->renderer3D->AddActor(dd->grid_actor);
+            dd->grid_actor->SetCamera(dd->renderer3D->GetActiveCamera());
+        } else {
+            dd->renderer2D->AddActor(dd->grid_actor);
+            dd->grid_actor->SetCamera(dd->renderer2D->GetActiveCamera());
+        }
+
+        dd->grid_actor->SetUseTextActor3D(false);
+        dd->grid_actor->SetUse2DMode(true);
+        for (int i_dim=0; i_dim<3; i_dim++) {
+            dd->grid_actor->GetLabelTextProperty(i_dim)->SetFontSize(8);
+        }
+        dd->grid_actor->SetXTitle("");
+        dd->grid_actor->SetYTitle("");
+        dd->grid_actor->SetZTitle("");
+
+        dd->grid_actor->SetGridLineLocation(dd->grid_actor->VTK_GRID_LINES_FURTHEST);
+
+        dd->grid_actor->SetFlyModeToStaticTriad();
+        dd->grid_actor->SetInertia(2);
+        dd->grid_actor->SetEnableDistanceLOD(true);
+        dd->grid_actor->SetDistanceLODThreshold(1);
+    }
+
+    dd->updateGrid();
+
+    if (visible != dd->grid_visible) {
+        dd->grid_visible = visible;
+
+        QColor axis_color = QColor(255-dd->background_color.red(), 255-dd->background_color.green(), 255-dd->background_color.blue());
+        for (int i_dim=0; i_dim<3; i_dim++) {
+            dd->grid_actor->GetTitleTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+            dd->grid_actor->GetLabelTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+        }
+        dd->grid_actor->SetBounds(dd->xBounds[0], dd->xBounds[1], dd->yBounds[0], dd->yBounds[1], dd->zBounds[0], dd->zBounds[1]);
+        dd->grid_actor->SetVisibility(dd->grid_visible);
+
+        this->render();
+        emit gridVisibleChanged();
+
+        dd->settings->setValue("vtk/grid", dd->grid_visible);
+    }
+}
+
+bool gnomonVtkView::gridVisible(void)
+{
+    return dd->grid_visible;
+}
+
+void gnomonVtkView::setAxesVisible(bool visible)
+{
+    if (!dd->axes_widget)  {
+        dd->axes =  vtkSmartPointer<vtkAxesActor>::New();
+        dd->axes->GetXAxisCaptionActor2D()->GetCaptionTextProperty()->ItalicOff();
+        dd->axes->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ItalicOff();
+        dd->axes->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ItalicOff();
+
+        dd->axes_widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+        dd->axes_widget->SetOrientationMarker(dd->axes);
+        dd->axes_widget->SetViewport(-0.2, -0.2, 0.2, 0.2);
+    }
+
+    if (visible != dd->axes_visible) {
+        dd->axes_visible = visible;
+
+        if (dd->interactor()) {
+            dd->axes_widget->SetInteractor(dd->interactor());
+            dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
+            bool show_3d = dd->mode == VIEW_MODE_3D && dd->axes_visible;
+            if(show_3d) {
+                dd->axes_widget->SetEnabled(true);
+                dd->axes_widget->SetInteractive(true);
+            } else {
+                if(dd->axes_widget->GetEnabled()) {
+                    dd->axes_widget->SetInteractive(false);  // must be enabled while setting interactive
+                }
+                dd->axes_widget->SetEnabled(false);
+            }
+
+        }
+
+        this->render();
+        emit axesVisibleChanged();
+
+        dd->settings->setValue("vtk/axes", dd->axes_visible);
+    }
+}
+
+bool gnomonVtkView::axesVisible(void)
+{
+    return dd->axes_visible;
+}
+
+void gnomonVtkView::setCameraFixed(bool fixed)
+{
+    if (fixed != dd->camera_fixed) {
+        dd->camera_fixed = fixed;
+        emit cameraFixedChanged();
+
+        dd->settings->setValue("vtk/fixed_camera", dd->camera_fixed);
+    }
+}
+
+bool gnomonVtkView::cameraFixed(void)
+{
+    return dd->camera_fixed;
 }
 
 void gnomonVtkView::setEnableLinking(bool enable)
@@ -876,15 +1162,47 @@ gnomonVtkView::Orientation gnomonVtkView::orientation(void)
     return dd->ori;
 }
 
+gnomonVtkView::Representation gnomonVtkView::representation(void)
+{
+    return dd->representation;
+}
+
+void gnomonVtkView::setRepresentation(gnomonVtkView::Representation representation)
+{
+    if (representation != dd->representation) {
+        dd->representation = representation;
+
+        auto actors = dd->renderer3D->GetActors();
+        actors->InitTraversal();
+        for (int i_p=0; i_p<actors->GetNumberOfItems(); i_p++) {
+            auto actor = actors->GetNextActor();
+            actor->GetProperty()->SetRepresentation(dd->representation);
+        }
+
+        auto actors_2d = dd->renderer2D->GetActors();
+        actors_2d->InitTraversal();
+        for (int i_p=0; i_p<actors_2d->GetNumberOfItems(); i_p++) {
+            auto actor_2d = actors_2d->GetNextActor();
+            actor_2d->GetProperty()->SetRepresentation(dd->representation);
+        }
+
+        this->render();
+        emit representationChanged();
+    }
+}
+
 void gnomonVtkView::render(void)
 {
     dd->renderer2D->ResetCameraClippingRange();
-    dd->interactor()->Render();
+    if (dd->interactor()) {
+        dd->interactor()->Render();
+    }
 }
 
 void gnomonVtkView::clear(void)
 {
     gnomonAbstractView::clear();
+    this->setBounds(0, 0, 0, 0, 0, 0);
     dd->updateFormsTimes();
     this->render();
 }

@@ -124,7 +124,6 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
             while (it.hasNext()) {
                 it.next();
             }
-            d->view->setBounds(-100., 100., -100., 100., -1., 10.);
         }
     });
 

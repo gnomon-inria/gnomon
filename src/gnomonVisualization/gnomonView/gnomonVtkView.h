@@ -44,6 +44,11 @@ public:
         NONE = -1
     };
 
+    enum Representation {
+        VTK_REPRESENTATION_POINTS = 0,
+        VTK_REPRESENTATION_WIREFRAME  = 1,
+        VTK_REPRESENTATION_SURFACE = 2,
+    };
 
 public:
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
@@ -57,10 +62,17 @@ public:
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
     Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
+    Q_PROPERTY(Representation representation READ representation WRITE setRepresentation NOTIFY representationChanged)
     Q_PROPERTY(bool inPool READ inPool WRITE setInPool NOTIFY inPoolChanged);
     Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
     Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
     Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
+
+    Q_PROPERTY(QColor bgColor READ bgColor WRITE setBgColor NOTIFY bgColorChanged);
+    Q_PROPERTY(bool gridVisible READ gridVisible WRITE setGridVisible NOTIFY gridVisibleChanged);
+    Q_PROPERTY(bool axesVisible READ axesVisible WRITE setAxesVisible NOTIFY axesVisibleChanged);
+    Q_PROPERTY(bool cameraFixed READ cameraFixed WRITE setCameraFixed NOTIFY cameraFixedChanged);
+
     Q_PROPERTY(QList<long> pickedCells READ pickedCells NOTIFY pickedCellsChanged)
 
     Q_INVOKABLE void startPicking();
@@ -86,6 +98,7 @@ signals:
     void boundsChanged(void);
     void modeChanged(void);
     void orientationChanged(void);
+    void representationChanged(void);
     void inPoolChanged(void);
 
     void syncedChanged(void);
@@ -94,6 +107,12 @@ signals:
 signals:
     void   linking(void);
     void unlinking(void);
+
+signals:
+    void bgColorChanged(void);
+    void gridVisibleChanged(void);
+    void axesVisibleChanged(void);
+    void cameraFixedChanged(void);
 
 signals:
     void pickedCellsChanged();
@@ -145,8 +164,11 @@ public:
 
 public:
     Orientation orientation(void);
+    Representation representation(void);
 
 public slots:
+    void setRepresentation(Representation representation);
+
     void setBounds(double bounds[6]);
     void setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
@@ -161,8 +183,26 @@ public slots:
     double currentTime(void) const;
     double timeMax(void);
 
+    void setBgColor(const QColor& color);
+    const QColor& bgColor(void);
+
+    void setGridVisible(bool visible);
+    bool gridVisible(void);
+
+    void setAxesVisible(bool visible);
+    bool axesVisible(void);
+
+    void setCameraFixed(bool fixed);
+    bool cameraFixed(void);
+
+public slots:
+    void setCameraXY(bool flip=false, bool turn=false);
+    void setCameraXZ(bool flip=false, bool turn=false);
+    void setCameraYZ(bool flip=false, bool turn=false);
+
 public:
     void setCamera(vtkCamera *);
+    void resetCamera(void);
 
 public slots:
     void render(void) override;
