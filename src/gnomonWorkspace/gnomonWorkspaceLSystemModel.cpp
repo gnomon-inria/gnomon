@@ -334,6 +334,7 @@ void gnomonWorkspaceLSystemModel::reset()
     emit started();
     this->setInitialState();
     d->command->undo();
+    emit derivationLengthChanged(derivationLength());
     d->derivations = 0;
     this->viewState();
     emit finished();
@@ -362,7 +363,6 @@ void gnomonWorkspaceLSystemModel::setInitialState()
 void gnomonWorkspaceLSystemModel::viewState()
 {
     // TODO: pass lsystem to visu plugin
-    d->command->setDerivationLength(d->derivations);
     auto lString = d->command->lString();
     if (lString) {
         d->view->setForm("gnomonLString", lString); //TODO only update, only do it if it's different ..
