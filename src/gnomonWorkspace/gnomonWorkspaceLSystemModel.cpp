@@ -15,6 +15,7 @@ QString vonKochLSystem(void)
 {
     QString l_sys;
     l_sys += "Axiom: -(90)_(0.1)F(50.)\n";
+    l_sys += "derivation length: 5\n";
     l_sys += "production:\n";
     l_sys += "F(x) : produce F(x/3.)+(60)F(x/3.)-(120)F(x/3.)+(60)F(x/3.)\n";
     l_sys += "endlsystem\n";
