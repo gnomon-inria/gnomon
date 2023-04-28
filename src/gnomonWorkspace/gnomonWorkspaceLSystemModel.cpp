@@ -15,6 +15,7 @@ QString vonKochLSystem(void)
 {
     QString l_sys;
     l_sys += "Axiom: -(90)_(0.1)F(50.)\n";
+    l_sys += "derivation length: 5\n";
     l_sys += "production:\n";
     l_sys += "F(x) : produce F(x/3.)+(60)F(x/3.)-(120)F(x/3.)+(60)F(x/3.)\n";
     l_sys += "endlsystem\n";
@@ -333,6 +334,7 @@ void gnomonWorkspaceLSystemModel::reset()
     emit started();
     this->setInitialState();
     d->command->undo();
+    emit derivationLengthChanged(derivationLength());
     d->derivations = 0;
     this->viewState();
     emit finished();
@@ -361,7 +363,6 @@ void gnomonWorkspaceLSystemModel::setInitialState()
 void gnomonWorkspaceLSystemModel::viewState()
 {
     // TODO: pass lsystem to visu plugin
-    d->command->setDerivationLength(d->derivations);
     auto lString = d->command->lString();
     if (lString) {
         d->view->setForm("gnomonLString", lString); //TODO only update, only do it if it's different ..
