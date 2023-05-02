@@ -163,6 +163,8 @@ gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 {
     this->renderer2D = vtkSmartPointer<vtkRenderer>::New();
     this->renderer3D = vtkSmartPointer<vtkRenderer>::New();
+    this->renderer2D->UseFXAAOn(); // anti-aliasing
+    this->renderer3D->UseFXAAOn(); // anti-aliasing
     static int count = 0;
 }
 
