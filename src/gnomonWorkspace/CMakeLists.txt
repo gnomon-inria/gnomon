@@ -63,8 +63,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspacePythonSimulator.h
   gnomonWorkspaceRegistration
   gnomonWorkspaceRegistration.h
-  # gnomonWorkspaceSimulation
-  # gnomonWorkspaceSimulation.h
+  gnomonWorkspaceSimulation
+  gnomonWorkspaceSimulation.h
   gnomonWorkspaceSegmentation
   gnomonWorkspaceSegmentation.h
   # gnomonWorkspaceTreeAnalysis
@@ -106,7 +106,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspacePythonSimulator.cpp
   gnomonWorkspaceRegistration.cpp
   gnomonWorkspaceSegmentation.cpp
-  # gnomonWorkspaceSimulation.cpp
+  gnomonWorkspaceSimulation.cpp
   # gnomonWorkspaceTreeAnalysis.cpp
   # gnomonWorkspaceTreeConstructor.cpp
   # gnomonWorkspaceTreeFromLString.cpp)

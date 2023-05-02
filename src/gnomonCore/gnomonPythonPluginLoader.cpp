@@ -61,19 +61,21 @@ QStringList availablePluginsFromGroup(const QString & module) {
     Py_DECREF(pName);
 
     PyGILState_Release(gstate);
+
+    //todo add cpp plugins ?
     return available_plugins;
 }
 
 QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugin_name) {
     QMap<QString, QString> metadata;
     PyGILState_STATE gstate;
-    gstate = PyGILState_Ensure(); 
-    
+    gstate = PyGILState_Ensure();
+
     PyObject* pName = PyUnicode_FromString("gnomon.utils.gnomonPlugin");
     PyObject* pModule = PyImport_Import(pName);
 
     if(pModule)
-    {   
+    {
         PyObject* pFunc = PyObject_GetAttrString(pModule, "plugin_metadata");
         if(pFunc && PyCallable_Check(pFunc))
         {

@@ -26,7 +26,7 @@
 #include "gnomonWorkspaceRegistration.h"
 #include "gnomonWorkspaceSegmentation.h"
 #include "gnomonWorkspaceCellImageQuantification.h"
-// #include "gnomonWorkspaceSimulation.h"
+#include "gnomonWorkspaceSimulation.h"
 // #include "gnomonWorkspaceTreeAnalysis.h"
 // #include "gnomonWorkspaceTreeConstructor.h"
 // #include "gnomonWorkspaceTreeFromLString.h"
