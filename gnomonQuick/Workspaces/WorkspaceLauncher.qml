@@ -251,27 +251,146 @@ G.Workspace {
                             anchors.margins: G.Style.mediumPadding
 
                             size: G.Style.ButtonSize.Large
-                            type: new_pipeline_info.visible ? G.Style.ButtonType.OK : G.Style.ButtonType.Base
+                            type: G.Style.ButtonType.Base
 
                             text: "New"
                             iconName: G.Icons.icons["plus"]
 
                             onClicked: {
-                                if(new_pipeline_info.visible) {
-                                    new_pipeline_info.close()
-                                    GP.PipelineManager.pipeline.name = new_pipeline_info.pipeline_title
-                                    GP.PipelineManager.pipeline.description = new_pipeline_info.pipeline_descr
-                                    switch_from_launcher()
-                                } else {
-                                    new_pipeline_info.open()
+                                new_project_dialog.open()
+                            }
+                        }
+                    }
+                    
+                    G.Dialog {
+                        id: new_project_dialog
+
+                        parent: Overlay.overlay
+                        x: (parent.width - width) / 2
+                        y: (parent.height - height) / 2
+                        width: G.Style.mediumDialogWidth
+                        height: G.Style.largeDialogHeight
+
+                        modal: true
+                        title: "Create a new Project"
+                        standardButtons:  Dialog.Open | Dialog.Cancel
+                        
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: G.Style.colors.bgColor;
+                            border.color: G.Style.colors.gutterColor
+                            border.width: G.Style.borderWidth
+                        }
+
+                        ColumnLayout {
+                            id: _layout
+                            anchors.fill: parent
+
+                            Label {
+                                Layout.fillWidth: true;
+                                text: "Title"
+                                font: G.Style.fonts.formLabel
+
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignTop
+
+                                wrapMode: Text.Wrap
+                                color: G.Style.colors.textColorBase
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true;
+                                height: G.Style.largeLabelHeight
+
+                                color: G.Style.colors.gutterColor;
+                                radius: G.Style.panelRadius
+
+                                TextField {
+                                    id: _pipeline_title
+
+                                    anchors.fill: parent
+                                    anchors.margins: G.Style.smallPadding
+
+                                    text: ""
+                                    placeholderText: "New project title"
+                                    font: G.Style.fonts.header
+
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignVCenter
+
+                                    wrapMode: Text.Wrap
+                                    color: G.Style.colors.textColorBase
                                 }
                             }
-                            onDoubleClicked: {
-                                new_pipeline_info.close()
-                                GP.PipelineManager.pipeline.name = new_pipeline_info.pipeline_title
-                                GP.PipelineManager.pipeline.description = new_pipeline_info.pipeline_descr
-                                switch_from_launcher()
+
+                            Label {
+                                Layout.fillWidth: true;
+                                text: "Description"
+                                font: G.Style.fonts.formLabel
+
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignTop
+
+                                wrapMode: Text.Wrap
+                                color: G.Style.colors.textColorBase
                             }
+
+                            G.TextArea {
+                                id: _pipeline_description
+                                Layout.fillWidth: true;
+                                Layout.fillHeight: true;
+                                text: ""
+                                placeholderText: "Enter the desciption of the project..."
+                                font: G.Style.fonts.value
+
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignTop
+
+                                wrapMode: Text.Wrap
+                                color: G.Style.colors.textColorBase
+                            }
+
+                            Label {
+                                Layout.fillWidth: true;
+                                text: "First Workspace"
+                                font: G.Style.fonts.formLabel
+
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignTop
+
+                                wrapMode: Text.Wrap
+                                color: G.Style.colors.textColorBase
+                            }
+
+                            G.ComboBox {
+                                id: _pipeline_workspace
+
+                                Layout.fillWidth: true;
+
+                                model: _workspace_dialog.available_workspaces
+                                textRole: "title"
+                                valueRole: "source"
+
+                                delegate: G.ComboBoxDelegate {
+                                    text: model["title"]
+                                    width: parent.width
+                                }
+
+                                Component.onCompleted: {
+                                    let titles = [];
+                                    for (let i=0; i<_workspace_dialog.available_workspaces.count; i++) {
+                                        let w = _workspace_dialog.available_workspaces.get(i);
+                                        titles.push(w["title"]);
+                                    }
+                                    currentIndex = titles.indexOf("Browsing")
+                                }
+                            }
+                        }
+                        
+                        onAccepted: {
+                            GP.PipelineManager.pipeline.name = _pipeline_title.text
+                            GP.PipelineManager.pipeline.description = _pipeline_description.text
+                            switch_from_launcher(_pipeline_workspace.currentValue)
                         }
                     }
 
@@ -280,102 +399,6 @@ G.Workspace {
 
                         Layout.fillWidth: true;
                         Layout.fillHeight: true;
-
-                        Popup {
-                            id: new_pipeline_info
-                            height: _projects.height
-                            width: G.Style.mediumPanelWidth
-                            x: _projects.x + _projects.width - width
-                            //x: _projects.x
-                            y: _project_header.y
-                            modal: false
-                            topInset: 0
-
-                            property alias pipeline_title: _pipeline_title.text
-                            property alias pipeline_descr: _pipeline_description.text
-
-                            enter.enabled: false
-                            exit.enabled: false
-
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: G.Style.colors.bgColor;
-                                border.color: G.Style.colors.gutterColor
-                                border.width: G.Style.borderWidth
-                            }
-
-
-                            ColumnLayout {
-                                id: _layout
-                                anchors.fill: parent
-
-                                Label {
-                                    Layout.fillWidth: true;
-                                    text: "New project infos"
-                                    font: G.Style.fonts.h3
-
-                                    horizontalAlignment: Text.AlignLeft
-                                    verticalAlignment: Text.AlignTop
-
-                                    wrapMode: Text.Wrap
-                                    color: G.Style.colors.textColorBase
-
-                                }
-
-                                Label {
-                                    Layout.fillWidth: true;
-                                    text: "Title"
-                                    font: G.Style.fonts.formLabel
-
-                                    horizontalAlignment: Text.AlignLeft
-                                    verticalAlignment: Text.AlignTop
-
-                                    wrapMode: Text.Wrap
-                                    color: G.Style.colors.textColorBase
-                                }
-
-                                TextField {
-                                    id: _pipeline_title
-                                    Layout.fillWidth: true;
-                                    text: ""
-                                    placeholderText: "Pipeline's title"
-                                    font: G.Style.fonts.value
-
-                                    horizontalAlignment: Text.AlignLeft
-                                    verticalAlignment: Text.AlignTop
-
-                                    wrapMode: Text.Wrap
-                                    color: G.Style.colors.textColorBase
-                                }
-
-                                Label {
-                                    Layout.fillWidth: true;
-                                    text: "Description"
-                                    font: G.Style.fonts.formLabel
-
-                                    horizontalAlignment: Text.AlignLeft
-                                    verticalAlignment: Text.AlignTop
-
-                                    wrapMode: Text.Wrap
-                                    color: G.Style.colors.textColorBase
-                                }
-
-                                G.TextArea {
-                                    id: _pipeline_description
-                                    Layout.fillWidth: true;
-                                    Layout.fillHeight: true;
-                                    text: ""
-                                    placeholderText: "Enter the desciption of the pipeline here ..."
-                                    font: G.Style.fonts.value
-
-                                    horizontalAlignment: Text.AlignLeft
-                                    verticalAlignment: Text.AlignTop
-
-                                    wrapMode: Text.Wrap
-                                    color: G.Style.colors.textColorBase
-                                }
-                            }
-                        }
 
                         background: Rectangle {
                             radius: G.Style.panelRadius;
