@@ -415,6 +415,13 @@ G.Dialog {
             available: true
             highlightElement: false
         }
+        ListElement {
+            type: "gnomonWorkspaceSimulation"
+            title: "Simulation"
+            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceSimulation.qml"
+            available: true
+            highlightElement: false
+        }
     }
 
     function has_loaded_plugins(index) {
