@@ -343,6 +343,7 @@ G.Dialog {
             title: "Binarization"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceBinarization.qml"
             available: true
+            initial: false
             highlightElement: false
         }
         ListElement {
@@ -350,6 +351,7 @@ G.Dialog {
             title: "Browsing"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
             available: true
+            initial: true
             highlightElement: false
         }
         ListElement {
@@ -357,6 +359,7 @@ G.Dialog {
             title: "Cell Image Quantification"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageQuantification.qml"
             available: true
+            initial: false
             highlightElement: false
         }
         ListElement {
@@ -364,6 +367,7 @@ G.Dialog {
             title: "Cell Image Tracking"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
             available: true
+            initial: false
             highlightElement: false
         }
         ListElement {
@@ -371,6 +375,7 @@ G.Dialog {
             title: "L-System Model"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
             available: true
+            initial: true
             highlightElement: false
         }
         ListElement {
@@ -378,6 +383,7 @@ G.Dialog {
             title: "MorphoNet"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
             available: true
+            initial: true
             highlightElement: false
         }
         ListElement {
@@ -385,6 +391,7 @@ G.Dialog {
             title: "Point Detection"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePointDetection.qml"
             available: true
+            initial: false
             highlightElement: false
         }
         ListElement {
@@ -392,6 +399,7 @@ G.Dialog {
             title: "Preprocessing"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
             available: true
+            initial: false
             highlightElement: false
         }
         ListElement {
@@ -399,6 +407,7 @@ G.Dialog {
             title: "Python Algorithm"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePythonAlgorithm.qml"
             available: true
+            initial: true
             highlightElement: false
         }
         ListElement {
@@ -406,6 +415,7 @@ G.Dialog {
             title: "Registration"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceRegistration.qml"
             available: true
+            initial: false
             highlightElement: false
         }
         ListElement {
@@ -413,6 +423,7 @@ G.Dialog {
             title: "Segmentation"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceSegmentation.qml"
             available: true
+            initial: false
             highlightElement: false
         }
     }

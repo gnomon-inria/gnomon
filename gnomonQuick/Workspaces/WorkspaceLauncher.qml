@@ -387,7 +387,7 @@ G.Workspace {
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: parent.width - _remember_workspace.width - G.Style.smallPadding
 
-                                    model: _workspace_dialog.available_workspaces
+                                    model: []
                                     textRole: "title"
                                     valueRole: "source"
 
@@ -397,11 +397,16 @@ G.Workspace {
                                     }
 
                                     Component.onCompleted: {
+                                        let workspaces = Qt.createQmlObject("import QtQuick 2.15; ListModel { }", _pipeline_workspace, "");
                                         let titles = [];
                                         for (let i=0; i<_workspace_dialog.available_workspaces.count; i++) {
                                             let w = _workspace_dialog.available_workspaces.get(i);
-                                            titles.push(w["title"]);
+                                            if (w.initial) {
+                                                workspaces.append(w);
+                                                titles.push(w.title);
+                                            }
                                         }
+                                        model = workspaces
                                         currentIndex = titles.indexOf(_settings.default_workspace)
                                     }
                                 }
