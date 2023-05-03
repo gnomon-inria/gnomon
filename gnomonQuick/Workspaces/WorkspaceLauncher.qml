@@ -3,7 +3,7 @@ import QtQuick.Controls  2.15
 import QtQuick.Layouts   1.15
 
 import Qt.labs.platform  1.0 as P
-import Qt.labs.settings 1.0
+import Qt.labs.settings
 
 import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
@@ -256,8 +256,22 @@ G.Workspace {
                             text: "New"
                             iconName: G.Icons.icons["plus"]
 
+                            Timer {
+                                id: _timer
+                                interval: 200
+                                onTriggered: {
+                                    new_project_dialog.open()
+                                }
+                            }
+
                             onClicked: {
-                                new_project_dialog.open()
+                                if(_timer.running)
+                                {
+                                    _timer.stop()
+                                    new_project_dialog.accept()
+                                } else {
+                                    _timer.restart()
+                                }
                             }
                         }
                     }
@@ -352,7 +366,7 @@ G.Workspace {
 
                             Label {
                                 Layout.fillWidth: true;
-                                text: "First Workspace"
+                                text: "Initial Workspace"
                                 font: G.Style.fonts.formLabel
 
                                 horizontalAlignment: Text.AlignLeft
@@ -362,34 +376,61 @@ G.Workspace {
                                 color: G.Style.colors.textColorBase
                             }
 
-                            G.ComboBox {
-                                id: _pipeline_workspace
-
+                            Control {
                                 Layout.fillWidth: true;
+                                height: G.Style.comboBoxHeight;
 
-                                model: _workspace_dialog.available_workspaces
-                                textRole: "title"
-                                valueRole: "source"
+                                G.ComboBox {
+                                    id: _pipeline_workspace
 
-                                delegate: G.ComboBoxDelegate {
-                                    text: model["title"]
-                                    width: parent.width
-                                }
+                                    anchors.left: parent.left
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: parent.width - _remember_workspace.width - G.Style.smallPadding
 
-                                Component.onCompleted: {
-                                    let titles = [];
-                                    for (let i=0; i<_workspace_dialog.available_workspaces.count; i++) {
-                                        let w = _workspace_dialog.available_workspaces.get(i);
-                                        titles.push(w["title"]);
+                                    model: _workspace_dialog.available_workspaces
+                                    textRole: "title"
+                                    valueRole: "source"
+
+                                    delegate: G.ComboBoxDelegate {
+                                        text: model["title"]
+                                        width: parent.width
                                     }
-                                    currentIndex = titles.indexOf("Browsing")
+
+                                    Component.onCompleted: {
+                                        let titles = [];
+                                        for (let i=0; i<_workspace_dialog.available_workspaces.count; i++) {
+                                            let w = _workspace_dialog.available_workspaces.get(i);
+                                            titles.push(w["title"]);
+                                        }
+                                        currentIndex = titles.indexOf(_settings.default_workspace)
+                                    }
                                 }
+
+                                G.CheckBox {
+                                    id: _remember_workspace
+
+                                    anchors.right: parent.right
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: G.Style.shortButtonWidth
+                                    text: "Make default"
+                                    checked: false
+                                    tooltip: "Check to make the chosen workspace the default option next time you create a new project."
+                                }
+                            }
+
+                            Settings {
+                                id: _settings
+                                category: "project"
+                                property var default_workspace: "Browsing"
                             }
                         }
                         
                         onAccepted: {
                             GP.PipelineManager.pipeline.name = _pipeline_title.text
                             GP.PipelineManager.pipeline.description = _pipeline_description.text
+                            if (_remember_workspace.checked) {
+                                _settings.default_workspace = _pipeline_workspace.currentText
+                            }
                             switch_from_launcher(_pipeline_workspace.currentValue)
                         }
                     }

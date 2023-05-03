@@ -12,6 +12,8 @@ CheckBox {
     implicitHeight: _control.indicator.height
     implicitWidth: _control.indicator.width + _control.contentItem.implicitWidth
     spacing: G.Style.smallPadding
+    property string tooltip: "";
+    hoverEnabled: enabled
 
     indicator: Rectangle {
 
@@ -34,6 +36,8 @@ CheckBox {
     }
 
     contentItem: Label {
+        id: _content
+
         text: _control.text
         font: G.Style.fonts.label
         color: _control.down ? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
@@ -42,5 +46,9 @@ CheckBox {
     }
 
 
+    G.ToolTip {
+        text: _control.tooltip;
+        visible: _control.tooltip && _control.hovered
+    }
 
 }

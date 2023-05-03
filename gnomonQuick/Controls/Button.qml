@@ -20,7 +20,7 @@ Button {
   property bool empty: false
   property string iconName: ""
   property string tooltip: "";
-  property bool isHovered: (_control.hovered || _content.hovered || _icon_area.containsMouse) && _control.hoverEnabled && _control.enabled
+  property bool isHovered: (_control.hovered || _content.hovered || _icon_area.containsMouse || _label_area.containsMouse) && _control.hoverEnabled && _control.enabled
 
   flat: false
 
@@ -99,6 +99,18 @@ Button {
         verticalAlignment: Text.AlignVCenter
 
         color: _control.flat || _control.empty ? _getBgColor() : _getTextColor()
+
+        MouseArea {
+            id: _label_area;
+
+            anchors.fill: parent;
+            hoverEnabled: true;
+            cursorShape: Qt.PointingHandCursor
+
+            onClicked: {
+              _control.clicked()
+            }
+        }
     }
   }
 
@@ -139,7 +151,7 @@ Button {
 
     State {
       name: "hovered"
-      when: (_control.hovered || _content.hovered || _icon_area.containsMouse) && _control.hoverEnabled && _control.enabled
+      when: (_control.hovered || _content.hovered || _icon_area.containsMouse || _label_area.containsMouse) && _control.hoverEnabled && _control.enabled
       PropertyChanges {
         target: _text;
 //        font: G.Style.fonts.buttonHovered
