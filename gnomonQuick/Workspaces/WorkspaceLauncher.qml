@@ -228,6 +228,8 @@ G.Workspace {
                         }
 
                         G.Button {
+                            id: _load
+
                             anchors.right: _new.left
                             anchors.verticalCenter: _project_header.verticalCenter;
                             anchors.margins: G.Style.mediumPadding
@@ -451,8 +453,88 @@ G.Workspace {
                             color: G.Style.colors.gutterColor;
                         }
 
+                        Control {
+                            id: _no_project_hint
+
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            width: G.Style.smallPanelWidth
+                            height: G.Style.smallDelegateHeight
+
+                            visible: window.recent_projects.count == 0
+
+                            G.IconButton {
+                                id: _no_project_new_button
+
+                                anchors.top: parent.top
+                                anchors.left: parent.left
+                                anchors.margins: G.Style.smallPadding
+
+                                size: G.Style.iconMedium;
+                                iconName: G.Icons.icons["plus"]
+                                color: G.Style.colors.bgColor
+
+                                onClicked: {
+                                    _new.clicked()
+                                }
+                            }
+
+                            Label {
+                                anchors.verticalCenter: _no_project_new_button.verticalCenter
+                                anchors.left: _no_project_new_button.right
+                                anchors.margins: G.Style.smallPadding
+
+                                text: "Start by creating a NEW project"
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignTop
+
+                                wrapMode: Text.Wrap
+                                color: G.Style.colors.bgColor
+                                font: G.Style.fonts.cardTitle
+                            }
+
+                            G.IconButton {
+                                id: _no_project_load_button
+
+                                anchors.top: _no_project_new_button.bottom
+                                anchors.left: parent.left
+                                anchors.margins: G.Style.smallPadding
+
+                                size: G.Style.iconMedium;
+                                iconName: G.Icons.icons["play"]
+                                color: G.Style.colors.bgColor
+
+                                onClicked: {
+                                    _load.clicked()
+                                }
+                            }
+
+                            Label {
+                                anchors.verticalCenter: _no_project_load_button.verticalCenter
+                                anchors.left: _no_project_load_button.right
+                                anchors.margins: G.Style.smallPadding
+
+                                text: "Or simply LOAD an existing one"
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignTop
+
+                                wrapMode: Text.Wrap
+                                color: G.Style.colors.bgColor
+                                font: G.Style.fonts.cardTitle
+                            }
+
+                        }
+
                         GridView {
                             id: _project_grid
+
+                            anchors.fill: parent
+                            anchors.margins: G.Style.smallPadding;
+
+                            clip: true;
+                            focus: true;
+                            visible: window.recent_projects.count > 0
 
                             model: window.recent_projects
 
@@ -460,12 +542,6 @@ G.Workspace {
                             cellHeight: G.Style.largeDelegateHeight;
                             displayMarginBeginning: G.Style.smallPadding;
                             displayMarginEnd: G.Style.smallPadding;
-
-                            anchors.fill: parent
-                            anchors.margins: G.Style.smallPadding;
-
-                            clip: true;
-                            focus: true;
 
                             ScrollIndicator.vertical: ScrollIndicator {
                                 id: _scroll_indicator;
