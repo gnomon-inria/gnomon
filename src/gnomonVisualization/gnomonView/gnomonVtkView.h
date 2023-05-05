@@ -130,6 +130,7 @@ public slots:
 
 public slots:
     void tryLinking(void);
+    void setAcceptForm(const QString&, bool) override;
 
     void   link(gnomonVtkView *other);
     void unlink(gnomonVtkView *other);

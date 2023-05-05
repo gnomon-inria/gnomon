@@ -1,4 +1,3 @@
-
 #include <gnomonConfig.h>
 
 #include "gnomonCore.h"
@@ -30,7 +29,7 @@ void initialize(const QString& path)
         settings.endGroup();
 
         if (realpath.isEmpty()) {
-            realpath = QDir(GNOMON_INSTALL_PREFIX).filePath("plugins/gnomonCore");
+            realpath = QDir(GNOMON_INSTALL_PREFIX).filePath("plugins");
             dtkDebug() << "no plugin path configured for gnomonCore, using default" << realpath;
         }
 

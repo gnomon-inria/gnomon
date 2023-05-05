@@ -1,4 +1,5 @@
 #include "gnomonPythonPluginLoader.h"
+#include <gnomonConfig.h>
 
 #include <QtCore>
 #pragma push_macro("slots")
@@ -9,21 +10,43 @@
 #include <dtkLog>
 #include <dtkScript>
 
+QMap<QString, gnomonPluginManagerBase*>& pluginsManagers(void) {
+    static QMap<QString, gnomonPluginManagerBase*> _managers_instance;
+    return _managers_instance;
+}
+
+QMap<QString, gnomonPluginFactoryBase*>& pluginsFactories(void) {
+    static QMap<QString, gnomonPluginFactoryBase*> _factories_instance;
+    return _factories_instance;
+}
 
 void loadPluginGroup (const QString& module)
 {
-  int stat;
-  QString code = "from pkg_resources import iter_entry_points\n";
-  code = code + QString("for entry_point in iter_entry_points(group=") + QString("\"") + module  + QString("\"") + QString(", name=None):\n");
-  code = code + QString("   entry_point.load()\n");
+    int stat;
+    QString code = "from gnomon.utils import load_plugin_group\n";
+    code = code + QString("load_plugin_group(\"") + module  + QString("\")");
+    dtkScriptInterpreterPython::instance()->interpret(code, &stat);
 
-  dtkScriptInterpreterPython::instance()->interpret(code, &stat);
-
-  //Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
+    if(!pluginsManagers()[module]) {
+        dtkWarn() << "cannot find plugin manager for " << module;
+        dtkWarn() << "keys are " << pluginsManagers().keys();
+        return;
+    }
+    pluginsManagers()[module]->initialize(GNOMON_PLUGIN_PATH);
+    //Q_ASSERT(stat == dtkScriptInterpreter::Status::Status_Ok);
 }
 
 QStringList availablePluginsFromGroup(const QString & module) {
     QStringList available_plugins;
+    if(!pluginsFactories()[module]) {
+      dtkWarn() << "cannot find plugin factory for " << module;
+      dtkWarn() << "keys are " << pluginsFactories().keys();
+    } else {
+        //needs to initialize the plugins manager to
+        //initialize factory for c++ plugins
+        pluginsManagers()[module]->initialize(GNOMON_PLUGIN_PATH);
+        available_plugins += pluginsFactories()[module]->keys();
+    }
 
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure();
@@ -67,6 +90,9 @@ QStringList availablePluginsFromGroup(const QString & module) {
 }
 
 QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugin_name) {
+    //need package and conda_channel at least;
+
+    //TODO C++ plugins!
     QMap<QString, QString> metadata;
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure();
