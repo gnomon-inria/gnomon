@@ -116,7 +116,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     connect(d->view, &gnomonVtkView::formAdded, [=](const QString &name) {
         const QString plugin_name = "lStringVisualizationVtkTurtle";
         if (name == "gnomonLString") {
-            if (gnomonVisualization::lStringVtkVisualization::pluginFactory().keys().contains(plugin_name)) {
+            if (d->view->formVisuName(name) == plugin_name) {
                 // d->view->setFormVisuName(name, plugin_name);
                 d->view->setFormVisuParameter(name, "interpretation_lsystem", d->model_file->fileName());
             }
@@ -124,6 +124,15 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
             QJSValueIterator it(visu_params);
             while (it.hasNext()) {
                 it.next();
+            }
+        }
+    });
+
+    connect(d->view, &gnomonVtkView::formVisualizationChanged, [=](const QString &name) {
+        const QString plugin_name = "lStringVisualizationVtkTurtle";
+        if (name == "gnomonLString") {
+            if (d->view->formVisuName(name) == plugin_name) {
+                d->view->setFormVisuParameter(name, "interpretation_lsystem", d->model_file->fileName());
             }
         }
     });

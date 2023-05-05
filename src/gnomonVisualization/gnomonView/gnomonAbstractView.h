@@ -85,7 +85,7 @@ signals:
     void formsChanged(void);
 
     void formVisuParametersChanged(void);
-    void formVisualizationChanged(void);
+    void formVisualizationChanged(const QString&);
 
     void badFormDropped(const QString& form_type, const QString& acceptedForms);
 

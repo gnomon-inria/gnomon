@@ -56,7 +56,7 @@ void gnomonAbstractViewPrivate::setFormVisualization(const QString& form_type, c
     this->visualizationCommands[form_type]->setForm(this->forms[form_type]);
     // Set the visualization name and parameters and update it
     this->visualizationCommands[form_type]->setFormVisualization(visu_name, visu_parameters);
-    emit q->formVisualizationChanged();
+    emit q->formVisualizationChanged(form_type);
 
     this->viewParameters.visuSelected[form_type] = visu_name;
     emit q->formVisuParametersChanged();
@@ -102,7 +102,7 @@ void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbst
         // If the form comes with a visualization (drop from manager) we pass it on to the command (no update)
         if (visualization) {
             d->visualizationCommands[form_type]->setVisualization(visualization);
-            emit formVisualizationChanged();
+            emit formVisualizationChanged(form_type);
             d->visualizationCommands[form_type]->setForm(d->forms[form_type]);
             emit formVisuParametersChanged();
         } else {
