@@ -11,7 +11,6 @@ class gnomonVtkViewPool;
 
 
 #define WORKSPACEINIT(name, group, thecommand)                          \
-    loadPluginGroup(#group);                                           \
     d->workspace = #name;                                              \
     d->command = new thecommand;                                        \
     d->keys = gnomonCore::group::pluginFactory().keys();                \

@@ -66,8 +66,6 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
 {
     dd = new gnomonWorkspaceCellImageTrackingPrivate;
 
-    loadPluginGroup("cellImageTracking");
-
     d->workspace = "Cellular Tracking";
     d->command   = new gnomonCellImageTrackingCommand;
     d->keys = gnomonCore::cellImageTracking::pluginFactory().keys();

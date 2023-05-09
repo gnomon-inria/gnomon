@@ -14,8 +14,6 @@
 
 gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
-    loadPluginGroup("cellImageQuantification");
-
     d->workspace = "Cell Analysis";
     d->command = new gnomonCellImageQuantificationCommand;
     d->keys = gnomonCore::cellImageQuantification::pluginFactory().keys();
