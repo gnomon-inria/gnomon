@@ -37,6 +37,7 @@
         struct type##ManagerRegister {                             \
             type##ManagerRegister() {                              \
                 pluginsManagers()[#Namespace] = &pluginManager();  \
+                pluginsFactories()[#Namespace] = &pluginFactory(); \
             } };                                                   \
     }
 

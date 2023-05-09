@@ -15,6 +15,11 @@ QMap<QString, gnomonPluginManagerBase*>& pluginsManagers(void) {
     return _managers_instance;
 }
 
+QMap<QString, gnomonPluginFactoryBase*>& pluginsFactories(void) {
+    static QMap<QString, gnomonPluginFactoryBase*> _factories_instance;
+    return _factories_instance;
+}
+
 void loadPluginGroup (const QString& module)
 {
     int stat;
@@ -40,7 +45,7 @@ QStringList availablePluginsFromGroup(const QString & module) {
         //needs to initialize the plugins manager to
         //initialize factory for c++ plugins
         pluginsManagers()[module]->initialize(GNOMON_PLUGIN_PATH);
-        available_plugins += pluginsManagers()[module]->availablePlugins();
+        available_plugins += pluginsFactories()[module]->keys();
     }
 
     PyGILState_STATE gstate;

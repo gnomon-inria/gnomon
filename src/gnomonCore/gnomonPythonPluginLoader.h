@@ -8,6 +8,7 @@
 #include <QtCore>
 
 QMap<QString, gnomonPluginManagerBase*>& pluginsManagers(void);
+QMap<QString, gnomonPluginFactoryBase*>& pluginsFactories(void);
 
 GNOMONCORE_EXPORT void loadPluginGroup(const QString&);
 
