@@ -45,6 +45,9 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTextProperty.h>
 #include <vtkWindowToImageFilter.h>
+#include <vtkSSAAPass.h>
+#include <vtkOpenGLRenderer.h>
+#include <vtkRenderStepsPass.h>
 
 // #include <QVTKInteractor.h>
 // #include <QVTKOpenGLNativeWidget.h>
@@ -165,6 +168,24 @@ gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
     this->renderer3D = vtkSmartPointer<vtkRenderer>::New();
     this->renderer2D->UseFXAAOn(); // anti-aliasing
     this->renderer3D->UseFXAAOn(); // anti-aliasing
+    // adding SSAA pass
+
+    vtkOpenGLRenderer* glrenderer = vtkOpenGLRenderer::SafeDownCast(this->renderer3D);
+    // get the basic VTK render steps
+    vtkNew<vtkRenderStepsPass> basicPasses;
+
+    // finally blur the resulting image
+    // The blur delegates rendering the unblured image
+    // to the basicPasses
+    vtkNew<vtkSSAAPass> ssaa;
+    ssaa->SetDelegatePass(basicPasses);
+
+    // tell the renderer to use our render pass pipeline
+
+    // deactivated for now as it's not working well
+    //glrenderer->SetPass(ssaa);
+
+
     static int count = 0;
 }
 
