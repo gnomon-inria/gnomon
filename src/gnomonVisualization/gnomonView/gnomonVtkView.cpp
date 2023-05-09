@@ -895,9 +895,11 @@ void gnomonVtkView::setBounds(double bounds[6])
     if (changed) {
         emit boundsChanged();
         if (dd->grid_actor && !isnan(dd->xBounds[0])) {
+            /*
             qDebug() << "(1) grid bounds: " << dd->xBounds[0] << " -> " << dd->xBounds[1] << " | " <<
                      dd->yBounds[0] << " -> " << dd->yBounds[1] << " | " <<
                      dd->zBounds[0] << " -> " << dd->zBounds[1];
+                     */
             double dx = abs(dd->xBounds[1] - dd->xBounds[0]);
             double dy = abs(dd->yBounds[1] - dd->yBounds[0]);
             double dz = abs(dd->zBounds[1] - dd->zBounds[0]);
@@ -1090,9 +1092,11 @@ void gnomonVtkView::setGridVisible(bool visible)
             dd->grid_actor->GetTitleTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
             dd->grid_actor->GetLabelTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
         }
+        /*
         qDebug() << "(2) grid bounds: " << dd->xBounds[0] << " -> " << dd->xBounds[1] << " | " <<
                                        dd->yBounds[0] << " -> " << dd->yBounds[1] << " | " <<
                                        dd->zBounds[0] << " -> " << dd->zBounds[1];
+                                       */
         double dx = abs(dd->xBounds[1] - dd->xBounds[0]);
         double dy = abs(dd->yBounds[1] - dd->yBounds[0]);
         double dz = abs(dd->zBounds[1] - dd->zBounds[0]);
