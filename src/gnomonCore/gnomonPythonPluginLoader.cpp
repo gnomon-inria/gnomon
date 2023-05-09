@@ -15,11 +15,6 @@ QMap<QString, gnomonPluginManagerBase*>& pluginsManagers(void) {
     return _managers_instance;
 }
 
-QMap<QString, gnomonPluginFactoryBase*>& pluginsFactories(void) {
-    static QMap<QString, gnomonPluginFactoryBase*> _factories_instance;
-    return _factories_instance;
-}
-
 void loadPluginGroup (const QString& module)
 {
     int stat;
@@ -38,14 +33,14 @@ void loadPluginGroup (const QString& module)
 
 QStringList availablePluginsFromGroup(const QString & module) {
     QStringList available_plugins;
-    if(!pluginsFactories()[module]) {
-      dtkWarn() << "cannot find plugin factory for " << module;
-      dtkWarn() << "keys are " << pluginsFactories().keys();
+    if(!pluginsManagers()[module]) {
+      dtkWarn() << "cannot find plugin Manager for " << module;
+      dtkWarn() << "keys are " << pluginsManagers().keys();
     } else {
         //needs to initialize the plugins manager to
         //initialize factory for c++ plugins
         pluginsManagers()[module]->initialize(GNOMON_PLUGIN_PATH);
-        available_plugins += pluginsFactories()[module]->keys();
+        available_plugins += pluginsManagers()[module]->availablePlugins();
     }
 
     PyGILState_STATE gstate;
@@ -92,7 +87,12 @@ QStringList availablePluginsFromGroup(const QString & module) {
 QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugin_name) {
     //need package and conda_channel at least;
 
-    //TODO C++ plugins!
+    //c++ plugin
+    if(pluginsManagers()[group] && pluginsManagers()[group]->availablePlugins().contains(plugin_name)) {
+        return pluginsManagers()[group]->metadatas(plugin_name);
+    }
+
+    //python plugin
     QMap<QString, QString> metadata;
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure();

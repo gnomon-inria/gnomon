@@ -166,11 +166,7 @@ template <typename T> inline void gnomonPluginManager<T>::setLayerVersion(const 
 
 template <typename T> void gnomonPluginManager<T>::initialize(const QString& path)
 {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     auto skip_empty_parts = Qt::SkipEmptyParts;
-#else
-    auto skip_empty_parts = QString::SkipEmptyParts;
-#endif
     for (QString path2 : path.split(":", skip_empty_parts)) {
         if (path2.startsWith ("~/")) {
             path2.replace (0, 1, QDir::homePath());
@@ -274,7 +270,7 @@ template <typename T> inline void gnomonPluginManager<T>::unload(const QString& 
     }
 }
 
-template <typename T> inline QStringList gnomonPluginManager<T>::plugins(void) const
+template <typename T> inline QStringList gnomonPluginManager<T>::pluginsPath(void) const
 {
     return d->loaders.keys();
 }

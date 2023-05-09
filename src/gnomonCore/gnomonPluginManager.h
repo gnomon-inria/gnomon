@@ -26,7 +26,9 @@ public:
     virtual void setLayerVersion(const QString& layer_version) = 0;
 
     virtual QMap<QString, QString> metadatas(const QString& name) const = 0;
-    virtual QStringList plugins(void) const = 0;
+    //return plugins path
+    virtual QStringList pluginsPath(void) const = 0;
+    //return plugins names (defined in the json)
     virtual QStringList availablePlugins(void) const = 0;
 };
 
@@ -57,7 +59,9 @@ public:
     void setLayerVersion(const QString& layer_version) override;
 
     QMap<QString, QString> metadatas(const QString& name) const override;
-    QStringList plugins(void) const override;
+    //return plugins path
+    QStringList pluginsPath(void) const override;
+    //return plugins names (defined in the json)
     QStringList availablePlugins(void) const override;
 
 protected:
