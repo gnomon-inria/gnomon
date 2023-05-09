@@ -45,6 +45,9 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTextProperty.h>
 #include <vtkWindowToImageFilter.h>
+#include <vtkSSAAPass.h>
+#include <vtkOpenGLRenderer.h>
+#include <vtkRenderStepsPass.h>
 
 // #include <QVTKInteractor.h>
 // #include <QVTKOpenGLNativeWidget.h>
@@ -163,6 +166,26 @@ gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 {
     this->renderer2D = vtkSmartPointer<vtkRenderer>::New();
     this->renderer3D = vtkSmartPointer<vtkRenderer>::New();
+    this->renderer2D->UseFXAAOn(); // anti-aliasing
+    this->renderer3D->UseFXAAOn(); // anti-aliasing
+    // adding SSAA pass
+
+    vtkOpenGLRenderer* glrenderer = vtkOpenGLRenderer::SafeDownCast(this->renderer3D);
+    // get the basic VTK render steps
+    vtkNew<vtkRenderStepsPass> basicPasses;
+
+    // finally blur the resulting image
+    // The blur delegates rendering the unblured image
+    // to the basicPasses
+    vtkNew<vtkSSAAPass> ssaa;
+    ssaa->SetDelegatePass(basicPasses);
+
+    // tell the renderer to use our render pass pipeline
+
+    // deactivated for now as it's not working well
+    //glrenderer->SetPass(ssaa);
+
+
     static int count = 0;
 }
 
@@ -871,8 +894,21 @@ void gnomonVtkView::setBounds(double bounds[6])
 
     if (changed) {
         emit boundsChanged();
-        if (dd->grid_actor) {
-            dd->grid_actor->SetBounds(dd->xBounds[0], dd->xBounds[1], dd->yBounds[0], dd->yBounds[1], dd->zBounds[0], dd->zBounds[1]);
+        if (dd->grid_actor && !isnan(dd->xBounds[0])) {
+            /*
+            qDebug() << "(1) grid bounds: " << dd->xBounds[0] << " -> " << dd->xBounds[1] << " | " <<
+                     dd->yBounds[0] << " -> " << dd->yBounds[1] << " | " <<
+                     dd->zBounds[0] << " -> " << dd->zBounds[1];
+                     */
+            double dx = abs(dd->xBounds[1] - dd->xBounds[0]);
+            double dy = abs(dd->yBounds[1] - dd->yBounds[0]);
+            double dz = abs(dd->zBounds[1] - dd->zBounds[0]);
+            double l = std::max(std::max(dx, dy), dz);
+            double golden_ratio = 1.61803398875;
+            double ml = l/golden_ratio;
+            dd->grid_actor->SetBounds(dx>ml ? dd->xBounds[0] : dd->xBounds[0] + dx/2 - ml/2, dx>ml ? dd->xBounds[1] : dd->xBounds[1] - dx/2 + ml/2,
+                                      dy>ml ? dd->yBounds[0] : dd->yBounds[0] + dy/2 - ml/2, dy>ml ? dd->yBounds[1] : dd->yBounds[1] - dy/2 + ml/2,
+                                      dz>ml ? dd->zBounds[0] : dd->zBounds[0] + dz/2 - ml/2, dz>ml ? dd->zBounds[1] : dd->zBounds[1] - dz/2 + ml/2);
         }
         if (!dd->camera_fixed) {
             dd->renderer2D->ResetCamera();
@@ -1048,7 +1084,7 @@ void gnomonVtkView::setGridVisible(bool visible)
 
     dd->updateGrid();
 
-    if (visible != dd->grid_visible) {
+    if (visible != dd->grid_visible && !isnan(dd->xBounds[0])) {
         dd->grid_visible = visible;
 
         QColor axis_color = QColor(255-dd->background_color.red(), 255-dd->background_color.green(), 255-dd->background_color.blue());
@@ -1056,7 +1092,20 @@ void gnomonVtkView::setGridVisible(bool visible)
             dd->grid_actor->GetTitleTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
             dd->grid_actor->GetLabelTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
         }
-        dd->grid_actor->SetBounds(dd->xBounds[0], dd->xBounds[1], dd->yBounds[0], dd->yBounds[1], dd->zBounds[0], dd->zBounds[1]);
+        /*
+        qDebug() << "(2) grid bounds: " << dd->xBounds[0] << " -> " << dd->xBounds[1] << " | " <<
+                                       dd->yBounds[0] << " -> " << dd->yBounds[1] << " | " <<
+                                       dd->zBounds[0] << " -> " << dd->zBounds[1];
+                                       */
+        double dx = abs(dd->xBounds[1] - dd->xBounds[0]);
+        double dy = abs(dd->yBounds[1] - dd->yBounds[0]);
+        double dz = abs(dd->zBounds[1] - dd->zBounds[0]);
+        double l = std::max(std::max(dx, dy), dz);
+        double golden_ratio = 1.61803398875;
+        double ml = l/golden_ratio;
+        dd->grid_actor->SetBounds(dx>ml ? dd->xBounds[0] : dd->xBounds[0] + dx/2 - ml/2, dx>ml ? dd->xBounds[1] : dd->xBounds[1] - dx/2 + ml/2,
+                                  dy>ml ? dd->yBounds[0] : dd->yBounds[0] + dy/2 - ml/2, dy>ml ? dd->yBounds[1] : dd->yBounds[1] - dy/2 + ml/2,
+                                  dz>ml ? dd->zBounds[0] : dd->zBounds[0] + dz/2 - ml/2, dz>ml ? dd->zBounds[1] : dd->zBounds[1] - dz/2 + ml/2);
         dd->grid_actor->SetVisibility(dd->grid_visible);
 
         this->render();
