@@ -30,10 +30,27 @@ Rectangle {
 
     signal transmit();
 
-    Rectangle {
+    Control {
         id: _view;
         anchors.fill: parent
-        color: X.Style.baseColor;
+        clip: true
+
+        TextEdit {
+            id: _text
+
+            anchors.fill: parent
+            anchors.margins: G.Style.smallPadding
+
+            text: viewLogic? viewLogic.displayText : ""
+            readOnly: true
+            wrapMode: Text.WrapAnywhere
+            selectByMouse: true
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font: G.Style.fonts.formLabel
+            color: G.Style.colors.textColorNeutral
+        }
 
         onActiveFocusChanged: {
             if (_view.activeFocus)
