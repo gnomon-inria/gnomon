@@ -101,10 +101,16 @@ gnomonQmlView::gnomonQmlView(QObject *parent): gnomonAbstractView(parent)
     dd = new gnomonQmlViewPrivate(this);
     d->q  = this;
 
-    d->acceptForms["gnomonDataDict"] = false;
-    d->acceptForms["gnomonLString"] = false;
-
     d->visualizationCommands["gnomonLString"] = new gnomonLStringQmlVisualizationCommand;
+
+    for (const auto &form_type: d->visualizationCommands.keys()) {
+        d->visualizationCommands[form_type]->setView(this);
+        connect(d->visualizationCommands[form_type], &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
+            emit formVisuParametersChanged();
+        });
+        d->acceptForms[form_type] = false;
+    }
+    d->acceptForms["gnomonDataDict"] = false;
 
     connect(this, &gnomonAbstractView::formAdded, [=] (const QString& name) {
         auto form = d->forms[name];
