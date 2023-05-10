@@ -191,85 +191,52 @@ G.Workspace {
             }
         }
 
-
-        SwipeView {
-            id: _swipe
+        Control {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-            currentIndex: 0;
-            clip: true
-            Item {
+            TabBar {
+                id: _bar
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+
+                currentIndex: _views.currentIndex
+
+                G.TabButton {
+                    text: "3D"
+                }
+                G.TabButton {
+                    text: "lstring text"
+                }
+
+            }
+
+            StackLayout {
+                id: _views
+                anchors.bottom: _bar.top
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                currentIndex: _bar.currentIndex;
+
                 G.View {
                     id: _view;
                     anchors.fill: parent
-                    visible: _swipe.currentIndex == 0
                     viewLogic: d.view;
                 }
-            }
-            Item {
-                 G.View {
+
+                G.View {
                     id: _lstring_view;
                     anchors.fill: parent
-                    visible: _swipe.currentIndex == 1
-                    viewLogic: d.view;
+                    viewLogic: d.text_view;
                 }
             }
         }
-        PageIndicator {
-            id: page_ind
-            interactive: true
-            count: _swipe.count
-            currentIndex: _swipe.currentIndex
-            anchors.top: _swipe.top
-            anchors.horizontalCenter: _swipe.horizontalCenter
-            anchors.topMargin: G.Style.smallPadding
-            delegate: RowLayout{
-                anchors.fill: parent
-                spacing:0
-                Rectangle {
-                    id: _switch_indicator_1
-                    height: G.Style.smallLabelHeight
-                    width: G.Style.mediumLabelHeight
-                    color: page_ind.currentIndex === 0 ? G.Style.colors.textColorDarkOk : G.Style.colors.textColorNeutral;
-                    MouseArea {
-                        anchors.fill: _switch_indicator_1;
-                        hoverEnabled: true;
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            if(page_ind.currentIndex == 0) {
-                                _swipe.currentIndex = 1
-                            } else {
-                                _swipe.currentIndex = 0
-                            }  
-                        }
-                    }
-                }
-                Rectangle {
-                    id: _switch_indicator_2
-                    height: G.Style.smallLabelHeight
-                    width: G.Style.mediumLabelHeight
-                    color: page_ind.currentIndex === 0 ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDarkOk;
-                MouseArea {
-                        anchors.fill: _switch_indicator_2;
-                        hoverEnabled: true;
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            if(page_ind.currentIndex == 0) {
-                                _swipe.currentIndex = 1
-                            } else {
-                                _swipe.currentIndex = 0
-                            }  
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
+            
+    }    
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
-        G.Associator.associate(_lstring_view, d.view);
+        G.Associator.associate(_lstring_view, d.text_view);
 
         _editor.contents = d.text;
         d.onParametersChanged();
