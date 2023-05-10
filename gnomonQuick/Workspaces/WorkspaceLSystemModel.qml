@@ -207,13 +207,18 @@ G.Workspace {
                 }
             }
             Item {
-                 G.View {
+                 G.DataDict {
                     id: _lstring_view;
                     anchors.fill: parent
                     visible: _swipe.currentIndex == 1
-                    viewLogic: d.view;
+                    viewLogic: d.textView;
                 }
             }
+
+            onCurrentIndexChanged: {
+                window.currentView = currentIndex == 1 ? _lstring_view : _view
+            }
+
         }
         PageIndicator {
             id: page_ind
@@ -249,7 +254,7 @@ G.Workspace {
                     height: G.Style.smallLabelHeight
                     width: G.Style.mediumLabelHeight
                     color: page_ind.currentIndex === 0 ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDarkOk;
-                MouseArea {
+                    MouseArea {
                         anchors.fill: _switch_indicator_2;
                         hoverEnabled: true;
                         cursorShape: Qt.PointingHandCursor
@@ -269,7 +274,6 @@ G.Workspace {
 
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
-        G.Associator.associate(_lstring_view, d.view);
 
         _editor.contents = d.text;
         d.onParametersChanged();
