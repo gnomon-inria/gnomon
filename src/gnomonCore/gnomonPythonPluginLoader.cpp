@@ -85,7 +85,6 @@ QStringList availablePluginsFromGroup(const QString & module) {
 
     PyGILState_Release(gstate);
 
-    //todo add cpp plugins ?
     return available_plugins;
 }
 
