@@ -7,8 +7,6 @@
 
 gnomonWorkspaceBinarization::gnomonWorkspaceBinarization(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
-    loadPluginGroup("binaryImageFromImage");
-
     d->workspace = "Binarization";
     d->command   = new gnomonBinaryImageFromImageCommand;
     d->keys = gnomonCore::binaryImageFromImage::pluginFactory().keys();

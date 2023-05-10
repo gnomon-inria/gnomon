@@ -9,6 +9,7 @@
 
 #include "gnomonManager/gnomonFormManager.h"
 #include "gnomonPluginFactory.h"
+#include "gnomonView/gnomonAbstractView.h"
 #include "gnomonVisualizations/gnomonCellComplex/gnomonAbstractCellComplexVtkVisualization.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractCellImageVtkVisualization.h"
 #include "gnomonVisualizations/gnomonImage/gnomonAbstractImageVtkVisualization.h"
@@ -372,70 +373,20 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     bool fixed_camera = dd->settings->value("vtk/fixed_camera", false).toBool();
     this->setCameraFixed(fixed_camera);
 
-    d->visualizationCommands["gnomonBinaryImage"] = new gnomonBinaryImageVtkVisualizationCommand;
-    d->visualizationCommands["gnomonCellComplex"] = new gnomonCellComplexVtkVisualizationCommand;
-    d->visualizationCommands["gnomonCellImage"] = new gnomonCellImageVtkVisualizationCommand;
-    d->visualizationCommands["gnomonImage"] = new gnomonImageVtkVisualizationCommand;
-    d->visualizationCommands["gnomonLString"] = new gnomonLStringVtkVisualizationCommand;
-    d->visualizationCommands["gnomonMesh"] = new gnomonMeshVtkVisualizationCommand;
-    d->visualizationCommands["gnomonPointCloud"] = new gnomonPointCloudVtkVisualizationCommand;
+    d->acceptForms["gnomonBinaryImage"] = false;
+    d->acceptForms["gnomonCellComplex"] = false;
+    d->acceptForms["gnomonCellImage"] = false;
+    d->acceptForms["gnomonImage"] = false;
+    d->acceptForms["gnomonLString"] = false;
+    d->acceptForms["gnomonMesh"] = false;
+    d->acceptForms["gnomonPointCloud"] = false;
+    d->acceptForms["gnomonDataDict"] = false;
+    d->acceptForms["gnomonDataFrame"] = false;
 
-    for (const auto &form_type: d->visualizationCommands.keys()) {
-        d->visualizationCommands[form_type]->setView(this);
-        connect(d->visualizationCommands[form_type], &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
-            emit formVisuParametersChanged();
-        });
-        d->acceptForms[form_type] = false;
-    }
-
-    for (const auto& form : d->visualizationCommands.keys()) {
-        if (form=="gnomonMesh") {
-            loadPluginGroup("meshAdapter");
-            for (const auto& key : gnomonCore::meshAdapter::pluginFactory().keys())
-            {
-                gnomonAbstractMeshAdapter *adapter = dynamic_cast<gnomonAbstractMeshAdapter *>(gnomonCore::meshAdapter::pluginFactory().create(key));
-                if (! dd->adapterCommands.contains(form))
-                {
-                    QMap<QString, QString> empty_target;
-                     dd->adapterTargets[form] = empty_target;
-                    QMap<QString, QString> empty_desc;
-                     dd->adapterDescriptions[form] = empty_desc;
-                    QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
-                     dd->adapterCommands[form] = empty_list;
-                }
-                 dd->adapterTargets[form][key] = adapter->target();
-                 dd->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                 dd->adapterCommands[form][key] = new gnomonMeshAdapterCommand;
-                 dd->adapterCommands[form][key]->setAlgorithmName(key);
-                delete adapter;
-            }
-        } else if (form=="gnomonCellComplex") {
-            loadPluginGroup("cellComplexAdapter");
-            for (const auto& key : gnomonCore::cellComplexAdapter::pluginFactory().keys())
-            {
-                gnomonAbstractCellComplexAdapter *adapter = dynamic_cast<gnomonAbstractCellComplexAdapter *>(gnomonCore::cellComplexAdapter::pluginFactory().create(key));
-                if (! dd->adapterCommands.contains(form))
-                {
-                    QMap<QString, QString> empty_target;
-                     dd->adapterTargets[form] = empty_target;
-                    QMap<QString, QString> empty_desc;
-                     dd->adapterDescriptions[form] = empty_desc;
-                    QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
-                     dd->adapterCommands[form] = empty_list;
-                }
-                 dd->adapterTargets[form][key] = adapter->target();
-                 dd->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                 dd->adapterCommands[form][key] = new gnomonCellComplexAdapterCommand;
-                 dd->adapterCommands[form][key]->setAlgorithmName(key);
-                delete adapter;
-            }
-        }
-    }
-
-     connect(this, &gnomonVtkView::formAdded, [=] (const QString& key) {
-         dd->updateFormsTimes();
-         emit formsChanged();
-     });
+    connect(this, &gnomonVtkView::formAdded, [=] (const QString& key) {
+        dd->updateFormsTimes();
+        emit formsChanged();
+    });
 
     connect(this, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> form) {
         int index = gnomonFormManager::instance()->formIndex(form);
@@ -660,6 +611,77 @@ void gnomonVtkView::setPickedCells(QList<long> new_list)
 QList<long> gnomonVtkView::pickedCells(void)
 {
     return dd->picked_cells;
+}
+
+void gnomonVtkView::setAcceptForm(const QString& form_type, bool accept)
+{
+    if(!d->acceptForms.contains(form_type)) {
+        return;
+    }
+    d->acceptForms[form_type] = accept;
+
+    if(!accept) {
+        return;
+    }
+
+    if(form_type == "gnomonBinaryImage") {
+        d->visualizationCommands["gnomonBinaryImage"] = new gnomonBinaryImageVtkVisualizationCommand;
+    } else if(form_type == "gnomonCellComplex") {
+        d->visualizationCommands["gnomonCellComplex"] = new gnomonCellComplexVtkVisualizationCommand;
+    } else if(form_type == "gnomonCellImage") {
+        d->visualizationCommands["gnomonCellImage"] = new gnomonCellImageVtkVisualizationCommand;
+    } else if(form_type == "gnomonImage") {
+        d->visualizationCommands["gnomonImage"] = new gnomonImageVtkVisualizationCommand;
+    } else if(form_type == "gnomonLString") {
+        d->visualizationCommands["gnomonLString"] = new gnomonLStringVtkVisualizationCommand;
+    } else if(form_type == "gnomonMesh") {
+        d->visualizationCommands["gnomonMesh"] = new gnomonMeshVtkVisualizationCommand;
+    } else if(form_type == "gnomonPointCloud") {
+        d->visualizationCommands["gnomonPointCloud"] = new gnomonPointCloudVtkVisualizationCommand;
+    }
+
+    d->visualizationCommands[form_type]->setView(this);
+    connect(d->visualizationCommands[form_type], &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
+        emit formVisuParametersChanged();
+    });
+
+    if (form_type=="gnomonMesh") {
+        loadPluginGroup("meshAdapter");
+        for (const auto& key : gnomonCore::meshAdapter::pluginFactory().keys()) {
+            gnomonAbstractMeshAdapter *adapter = dynamic_cast<gnomonAbstractMeshAdapter *>(gnomonCore::meshAdapter::pluginFactory().create(key));
+            if (! dd->adapterCommands.contains(form_type)) {
+                QMap<QString, QString> empty_target;
+                dd->adapterTargets[form_type] = empty_target;
+                QMap<QString, QString> empty_desc;
+                dd->adapterDescriptions[form_type] = empty_desc;
+                QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
+                dd->adapterCommands[form_type] = empty_list;
+            }
+            dd->adapterTargets[form_type][key] = adapter->target();
+            dd->adapterDescriptions[form_type][key] = adapter->documentation().split("\n")[1];
+            dd->adapterCommands[form_type][key] = new gnomonMeshAdapterCommand;
+            dd->adapterCommands[form_type][key]->setAlgorithmName(key);
+            delete adapter;
+        }
+    } else if (form_type=="gnomonCellComplex") {
+        loadPluginGroup("cellComplexAdapter");
+        for (const auto& key : gnomonCore::cellComplexAdapter::pluginFactory().keys()) {
+            gnomonAbstractCellComplexAdapter *adapter = dynamic_cast<gnomonAbstractCellComplexAdapter *>(gnomonCore::cellComplexAdapter::pluginFactory().create(key));
+            if (! dd->adapterCommands.contains(form_type)) {
+                QMap<QString, QString> empty_target;
+                dd->adapterTargets[form_type] = empty_target;
+                QMap<QString, QString> empty_desc;
+                dd->adapterDescriptions[form_type] = empty_desc;
+                QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
+                dd->adapterCommands[form_type] = empty_list;
+            }
+            dd->adapterTargets[form_type][key] = adapter->target();
+            dd->adapterDescriptions[form_type][key] = adapter->documentation().split("\n")[1];
+            dd->adapterCommands[form_type][key] = new gnomonCellComplexAdapterCommand;
+            dd->adapterCommands[form_type][key]->setAlgorithmName(key);
+            delete adapter;
+        }
+    }
 }
 
 void gnomonVtkView::tryLinking(void)

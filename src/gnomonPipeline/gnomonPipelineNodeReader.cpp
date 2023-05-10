@@ -3,7 +3,6 @@
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
 #include "gnomonPythonPluginLoader"
-#include "gnomonPythonPluginLoader.h"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineNodeReaderPrivate

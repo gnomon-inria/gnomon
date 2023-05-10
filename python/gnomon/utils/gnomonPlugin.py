@@ -63,12 +63,12 @@ def load_plugin_group(group_name: str):
     group_name: str
         Entry point group
     """
-    for i, entry_point in enumerate(iter_entry_points(group=group_name, name=None)):
+    for entry_point in iter_entry_points(group=group_name, name=None):
         logging.info(f"loading {entry_point.name}: ")
         try:
-            importlib.import_module(entry_point.module_name)
+            entry_point.load()
         except Exception as e:
-            logging.info(" --> FAIL")
+            logging.info(" --> FAILED to load plugin")
             print(e)
 
 

@@ -1,47 +1,25 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include "gnomonAlgorithmWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceMeshFilter : public dtkWidgetsWorkspace
+#include <QtCore>
+#include <QtQml>
+
+class gnomonVtkView;
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceMeshFilter : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "\
+This workspace allows to apply an algorithm on a mesh to edit it \n\
+\n")
 
 public:
-     gnomonWorkspaceMeshFilter(QWidget *parent = nullptr);
+     gnomonWorkspaceMeshFilter(QObject *parent = nullptr);
     ~gnomonWorkspaceMeshFilter(void);
 
-public:
-    void enter(void) override;
-    void leave(void) override;
-
-public slots:
-    void apply(void) override;
-    void configure(const QString& text);
-
-public:
-    static const QColor color;
-
-public:
-    static bool isEmpty(void);
-
-private:
-    class gnomonWorkspaceMeshFilterPrivate *d;
 };
 
 //
