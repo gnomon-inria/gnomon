@@ -166,8 +166,7 @@ template <typename T> inline void gnomonPluginManager<T>::setLayerVersion(const 
 
 template <typename T> void gnomonPluginManager<T>::initialize(const QString& path)
 {
-    auto skip_empty_parts = Qt::SkipEmptyParts;
-    for (QString path2 : path.split(":", skip_empty_parts)) {
+    for (QString path2 : path.split(":", Qt::SkipEmptyParts)) {
         if (path2.startsWith ("~/")) {
             path2.replace (0, 1, QDir::homePath());
         }

@@ -68,7 +68,7 @@ def load_plugin_group(group_name: str):
         try:
             entry_point.load()
         except Exception as e:
-            logging.info(" --> FAIL to load plugin")
+            logging.info(" --> FAILED to load plugin")
             print(e)
 
 
