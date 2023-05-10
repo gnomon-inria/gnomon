@@ -230,7 +230,7 @@ G.Workspace {
                     anchors.fill: parent
                     viewLogic: d.text_view;
                 }
-            }
+            }            
         }
             
     }    

@@ -34,6 +34,11 @@ Rectangle {
         id: _view;
         anchors.fill: parent
         color: X.Style.baseColor;
+
+        onActiveFocusChanged: {
+            if (_view.activeFocus)
+                window.currentView = self;
+        }
     }
 
     DropArea {
