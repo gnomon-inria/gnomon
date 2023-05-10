@@ -19,6 +19,8 @@ ADD_GNOMON_HEADERS(
     gnomonAbstractVtkVisualization_p.h
     gnomonAbstractMplVisualization
     gnomonAbstractMplVisualization.h
+    gnomonAbstractQmlVisualization
+    gnomonAbstractQmlVisualization.h
     gnomonAbstractVisualization
     gnomonAbstractVisualization.h
     gnomonAbstractVisualization_p.h
@@ -35,6 +37,7 @@ ADD_GNOMON_HEADERS(
 ADD_GNOMON_SOURCES(
     gnomonAbstractVtkVisualization.cpp
     gnomonAbstractMplVisualization.cpp
+    gnomonAbstractQmlVisualization.cpp
     gnomonAbstractVisualization.cpp
     ${${PROJECT_NAME}_VISUALIZATIONS_BINARYIMAGE_SOURCES}
     ${${PROJECT_NAME}_VISUALIZATIONS_CELLCOMPLEX_SOURCES}

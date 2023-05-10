@@ -19,13 +19,13 @@ public:
     void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr) override;
 
 public:
-    Q_PROPERTY(QString dataDict READ dataDict WRITE setDataDict NOTIFY dictChanged);
+    Q_PROPERTY(QString displayText READ displayText WRITE setDisplayText NOTIFY displayTextChanged);
 
-    void setDataDict(QString);
-    QString dataDict(void);
+    void setDisplayText(const QString&);
+    const QString& displayText(void);
 
 signals:
-    void dictChanged(void);
+    void displayTextChanged(void);
 
 private:
     class gnomonQmlViewPrivate *dd;

@@ -74,7 +74,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
 
     // TODO: actually create a dataDict and add it to the transformation stack
     QVector<QVector<double>> eye4 = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-    m_target_dict->setDataDict(transformMatrixString(eye4));
+    m_target_dict->setDisplayText(transformMatrixString(eye4));
     
     if(!d->pool)
         d->pool = new gnomonVtkViewPool(this);
@@ -134,7 +134,7 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
                 m_target_dict->setForm("gnomonDataDict", data_dict);
             } else {
                 QVector<QVector<double>> eye4 = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-                m_target_dict->setDataDict(transformMatrixString(eye4));
+                m_target_dict->setDisplayText(transformMatrixString(eye4));
             }
 
             std::shared_ptr<gnomonImageSeries> input_image = dd->image_stack[0];

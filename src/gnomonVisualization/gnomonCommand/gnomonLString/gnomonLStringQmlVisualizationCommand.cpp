@@ -1,0 +1,109 @@
+#include "gnomonLStringQmlVisualizationCommand.h"
+
+#include <gnomonVisualization/gnomonVisualizations/gnomonLString/gnomonAbstractLStringQmlVisualization.h>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
+
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+class gnomonLStringQmlVisualizationCommandPrivate
+{
+public:
+    std::shared_ptr<gnomonLStringSeries> lString = nullptr;
+};
+
+// /////////////////////////////////////////////////////////////////////////////
+//
+// /////////////////////////////////////////////////////////////////////////////
+
+gnomonLStringQmlVisualizationCommand::gnomonLStringQmlVisualizationCommand() : d(new gnomonLStringQmlVisualizationCommandPrivate)
+{
+    this->factory_name = groupName;
+    this->factory = &gnomonVisualization::lStringQmlVisualization::pluginFactory();
+    loadPluginGroup(this->factoryName());
+
+    QStringList keys = this->factory->keys();
+    if (!keys.empty()) {
+        this->algorithm_name = keys[0];
+    }
+}
+
+gnomonLStringQmlVisualizationCommand::~gnomonLStringQmlVisualizationCommand()
+{
+    delete d;
+}
+
+void gnomonLStringQmlVisualizationCommand::newVisualization(void)
+{
+    this->clear();
+    auto visu = gnomonVisualization::lStringQmlVisualization::pluginFactory().create(this->algorithm_name);
+    this->visu = std::shared_ptr<gnomonAbstractLStringQmlVisualization>(visu);
+    this->connectVisualization();
+}
+
+void gnomonLStringQmlVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
+{
+    this->setAlgorithmName(visu_name);
+    auto &&visu = std::static_pointer_cast<gnomonAbstractLStringQmlVisualization>(this->visu);
+    if (visu) {
+        visu->setLString(d->lString);
+        this->setVisualizationParameters(parameters);
+        visu->refreshParameters();
+        visu->update();
+    }
+}
+
+void gnomonLStringQmlVisualizationCommand::predo(void)
+{
+    std::dynamic_pointer_cast<gnomonAbstractLStringQmlVisualization>(this->visu)->setLString(d->lString);
+}
+
+void gnomonLStringQmlVisualizationCommand::postdo(void)
+{
+
+}
+
+void gnomonLStringQmlVisualizationCommand::undo()
+{
+}
+
+void gnomonLStringQmlVisualizationCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
+{
+    d->lString = std::dynamic_pointer_cast<gnomonLStringSeries>(form);
+}
+
+QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringQmlVisualizationCommand::inputs()
+{
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
+    inputs["lString"] = d->lString;
+    return inputs;
+}
+
+bool gnomonLStringQmlVisualizationCommand::isEmpty()
+{
+    return availablePlugins().empty();
+}
+
+QStringList gnomonLStringQmlVisualizationCommand::availablePlugins() {
+    return availablePluginsFromGroup(groupName);
+}
+
+gnomonAbstractCommand::orderedMap gnomonLStringQmlVisualizationCommand::inputTypes() {
+    orderedMap input_types;
+    input_types.emplace_back(std::make_pair("lString", "gnomonLString"));
+    return input_types;
+}
+
+void gnomonLStringQmlVisualizationCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
+    if (name == "lString") {
+        auto lString = std::dynamic_pointer_cast<gnomonLStringSeries>(form);
+        d->lString = lString;
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
+    }
+}
+
+//
+// gnomonLStringQmlVisualizationCommand.cpp ends here

@@ -3,6 +3,8 @@
 
 #include <gnomonVisualization/gnomonManager/gnomonFormManager>
 
+#include <gnomonCommand/gnomonAbstractQmlVisualizationCommand>
+#include <gnomonCommand/gnomonLString/gnomonLStringQmlVisualizationCommand>
 
 QString transformMatrixString(QVector<QVector<double> > transform_matrix)
 {
@@ -40,7 +42,7 @@ public:
     ~gnomonQmlViewPrivate(void);
 
 public:
-    QString data_dict;
+    QString display_text;
 };
 
 gnomonQmlViewPrivate::gnomonQmlViewPrivate(QObject *parent): QObject(parent)
@@ -100,6 +102,9 @@ gnomonQmlView::gnomonQmlView(QObject *parent): gnomonAbstractView(parent)
     d->q  = this;
 
     d->acceptForms["gnomonDataDict"] = false;
+    d->acceptForms["gnomonLString"] = false;
+
+    d->visualizationCommands["gnomonLString"] = new gnomonLStringQmlVisualizationCommand;
 
     connect(this, &gnomonAbstractView::formAdded, [=] (const QString& name) {
         auto form = d->forms[name];
@@ -107,7 +112,7 @@ gnomonQmlView::gnomonQmlView(QObject *parent): gnomonAbstractView(parent)
             if (dict->current()->keys().contains("transform")) {
                 QVariant transform = dict->current()->get("transform");
                 QVector<QVector<double>> transform_matrix = transform.value<QVector<QVector<double> > >();
-                this->setDataDict(transformMatrixString(transform_matrix));
+                this->setDisplayText(transformMatrixString(transform_matrix));
             }
         }
     });
@@ -126,24 +131,26 @@ void gnomonQmlView::setForm(const QString& name, std::shared_ptr<gnomonAbstractD
             if (dict->current()->keys().contains("transform")) {
                 QVariant transform = dict->current()->get("transform");
                 QVector<QVector<double>> transform_matrix = transform.value<QVector<QVector<double> > >();
-                this->setDataDict(transformMatrixString(transform_matrix));
+                this->setDisplayText(transformMatrixString(transform_matrix));
             }
 
             emit formAdded("gnomonDataDict");
         }       
+    } else {
+        gnomonAbstractView::setForm(name, form, visu);
     }
 }
 
-QString gnomonQmlView::dataDict(void)
+const QString& gnomonQmlView::displayText(void)
 {
-    return dd->data_dict;
+    return dd->display_text;
 }
 
-void gnomonQmlView::setDataDict(QString dict)
+void gnomonQmlView::setDisplayText(const QString& text)
 {
-    dd->data_dict = dict;
-    // qDebug()<<Q_FUNC_INFO<<dict;
-    emit dictChanged();
+    dd->display_text = text;
+    // qDebug()<<Q_FUNC_INFO<<text;
+    emit displayTextChanged();
 }
 
 // ///////////////////////////////////////////////////////////////////
