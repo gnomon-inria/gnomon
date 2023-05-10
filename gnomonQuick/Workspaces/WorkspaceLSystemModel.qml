@@ -225,10 +225,14 @@ G.Workspace {
                     viewLogic: d.view;
                 }
 
-                G.View {
+                G.DataDict {
                     id: _lstring_view;
                     anchors.fill: parent
-                    viewLogic: d.text_view;
+                    viewLogic: d.textView;
+                }
+
+                onCurrentIndexChanged: {
+                    window.currentView = currentIndex == 1 ? _lstring_view : _view
                 }
             }            
         }
@@ -236,7 +240,6 @@ G.Workspace {
     }    
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
-        G.Associator.associate(_lstring_view, d.text_view);
 
         _editor.contents = d.text;
         d.onParametersChanged();
