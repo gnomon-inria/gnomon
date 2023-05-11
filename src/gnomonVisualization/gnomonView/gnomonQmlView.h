@@ -20,12 +20,17 @@ public:
 
 public:
     Q_PROPERTY(QString displayText READ displayText WRITE setDisplayText NOTIFY displayTextChanged);
+    Q_PROPERTY(int fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged);
 
     void setDisplayText(const QString&);
     const QString& displayText(void);
 
+    void setFontSize(int);
+    int fontSize(void);
+
 signals:
     void displayTextChanged(void);
+    void fontSizeChanged(void);
 
 private:
     class gnomonQmlViewPrivate *dd;

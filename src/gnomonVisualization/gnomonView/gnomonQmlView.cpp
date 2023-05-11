@@ -43,6 +43,7 @@ public:
 
 public:
     QString display_text;
+    int font_size;
 };
 
 gnomonQmlViewPrivate::gnomonQmlViewPrivate(QObject *parent): QObject(parent)
@@ -157,6 +158,19 @@ void gnomonQmlView::setDisplayText(const QString& text)
     dd->display_text = text;
     // qDebug()<<Q_FUNC_INFO<<text;
     emit displayTextChanged();
+}
+
+int gnomonQmlView::fontSize(void)
+{
+    return dd->font_size;
+}
+
+void gnomonQmlView::setFontSize(int size)
+{
+    if (size != dd->font_size && size >= 0) {
+        dd->font_size = size;
+        emit fontSizeChanged();
+    }
 }
 
 // ///////////////////////////////////////////////////////////////////

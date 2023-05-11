@@ -20,9 +20,6 @@ public:
 
 public:
     gnomonQmlView *qmlView(void);
-
-public slots:
-    virtual const QString& text(void) = 0;
 };
 
 //
