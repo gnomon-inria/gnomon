@@ -34,24 +34,29 @@ Rectangle {
         id: _view;
         anchors.fill: parent
         clip: true
-
-        TextEdit {
-            id: _text
-
+        Flickable {
+            id: _flickable
+            clip: true
             anchors.fill: parent
-            anchors.margins: G.Style.smallPadding
+            contentHeight: parent.height * 2
+            TextEdit {
+                id: _text
 
-            text: viewLogic? viewLogic.displayText : ""
-            readOnly: true
-            wrapMode: Text.WrapAnywhere
-            selectByMouse: true
+                anchors.fill: parent
+                anchors.margins: G.Style.smallPadding
 
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font: G.Style.fonts.formLabel
-            color: G.Style.colors.textColorNeutral
+                text: viewLogic? viewLogic.displayText : ""
+                readOnly: true
+                wrapMode: Text.WrapAnywhere
+                selectByMouse: true
+
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font: G.Style.fonts.formLabel
+                color: G.Style.colors.textColorNeutral
+            }
+            ScrollBar.vertical: ScrollBar { }
         }
-
         onActiveFocusChanged: {
             if (_view.activeFocus)
                 window.currentView = self;
