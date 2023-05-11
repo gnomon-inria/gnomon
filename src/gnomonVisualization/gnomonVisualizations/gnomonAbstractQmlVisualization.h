@@ -20,6 +20,9 @@ public:
 
 public:
     gnomonQmlView *qmlView(void);
+
+public:
+    QImage imageRendering(void) override;
 };
 
 //

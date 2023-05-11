@@ -35,6 +35,7 @@
 #include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractBinaryImageVtkVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractCellComplexVtkVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractCellImageVtkVisualization.h>
+#include <gnomonVisualization/gnomonVisualizations/gnomonDataDict/gnomonAbstractDataDictQmlVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractDataFrameMplVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractImageVtkVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractMeshVtkVisualization.h>
@@ -913,6 +914,7 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterNurbs, ParameterNurbs)
 %include <gnomonVisualization/gnomonVisualizations/gnomonBinaryImage/gnomonAbstractBinaryImageVtkVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellComplex/gnomonAbstractCellComplexVtkVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonCellImage/gnomonAbstractCellImageVtkVisualization.h>
+%include <gnomonVisualization/gnomonVisualizations/gnomonDataDict/gnomonAbstractDataDictQmlVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonDataFrame/gnomonAbstractDataFrameMplVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonImage/gnomonAbstractImageVtkVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonMesh/gnomonAbstractMeshVtkVisualization.h>
