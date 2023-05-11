@@ -117,25 +117,6 @@ G.Workspace {
                     Layout.fillWidth: true;
                     height: window.height/8;
 
-                    Label {
-                        anchors.top: parent.top
-                        anchors.left: parent.left
-                        anchors.margins: G.Style.smallPadding
-
-                        text: "Transformation matrix"
-                        font: G.Style.fonts.value
-                        color: G.Style.colors.textColorNeutral
-                    }
-
-                    Label {
-                        anchors.centerIn: parent
-
-                        text: d.targetDict.dataDict
-                        horizontalAlignment: Text.AlignRight
-                        font: G.Style.fonts.value
-                        color: G.Style.colors.textColorNeutral
-                    }
-
                     viewLogic: d.targetDict;
 
                     onDroppedFromManager: (index) => {
