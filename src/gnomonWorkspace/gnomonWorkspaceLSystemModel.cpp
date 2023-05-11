@@ -102,12 +102,9 @@ gnomonWorkspaceLSystemModelPrivate::~gnomonWorkspaceLSystemModelPrivate(void)
 gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnomonAbstractWorkspace(parent)
 {
     d = new gnomonWorkspaceLSystemModelPrivate;
-
-    loadPluginGroup("lStringEvolutionModel");
-    emit modelsLoaded();
-
     d->workspace = "LStringEvolutionModel";
     d->command = new gnomonLStringEvolutionModelCommand;
+    emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
 

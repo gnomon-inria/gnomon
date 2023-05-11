@@ -12,17 +12,20 @@
 
 gnomonWorkspaceSegmentation::gnomonWorkspaceSegmentation(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
+    WORKSPACEINIT(Solver, cellImageFromImage, gnomonCellImageFromImageCommand)
+        /*
     loadPluginGroup("cellImageFromImage");
+    gnomonCore::cellImageFromImage::pluginManager().setVerboseLoading(true);
     gnomonCore::cellImageFromImage::pluginManager().initialize(GNOMON_PLUGIN_PATH);
-
-    d->workspace = "Segmentation";
     d->command   = new gnomonCellImageFromImageCommand;
+    d->workspace = "Segmentation";
+
     d->keys = gnomonCore::cellImageFromImage::pluginFactory().keys();
     d->algorithmsData = gnomonCore::cellImageFromImage::pluginFactory().dataList();
     d->algorithm = d->command->algorithmName();
 
     emit algorithmsLoaded();
-
+        */
     //create the views
     this->addInputView();
     this->addOutputView();

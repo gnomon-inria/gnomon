@@ -31,6 +31,8 @@ set(${PROJECT_NAME}_HEADERS
   gnomonMorphonetHelper.h
   gnomonPluginFactory.h
   gnomonPluginFactory.tpp
+  gnomonPluginManager.h
+  gnomonPluginManager.tpp
   gnomonPythonPluginLoader
   gnomonPythonPluginLoader.h
   gnomonPythonPluginParser

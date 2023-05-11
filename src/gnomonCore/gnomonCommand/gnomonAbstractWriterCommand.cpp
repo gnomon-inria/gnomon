@@ -5,5 +5,9 @@
 
 QStringList gnomonAbstractWriterCommand::extensions(void)
 {
-    return dynamic_cast<gnomonAbstractFormWriter *>(this->action)->extensions();
+    auto * action_writer = dynamic_cast<gnomonAbstractFormWriter *>(this->action);
+    if (action_writer)
+        return action_writer->extensions();
+    else
+        return {""};
 }

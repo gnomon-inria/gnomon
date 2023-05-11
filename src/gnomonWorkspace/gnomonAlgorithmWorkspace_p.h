@@ -9,6 +9,16 @@ class gnomonVtkView;
 class gnomonVtkViewList;
 class gnomonVtkViewPool;
 
+
+#define WORKSPACEINIT(name, group, thecommand)                          \
+    d->workspace = #name;                                              \
+    d->command = new thecommand;                                        \
+    d->keys = gnomonCore::group::pluginFactory().keys();                \
+    d->algorithmsData = gnomonCore::group::pluginFactory().dataList();  \
+    d->algorithm = d->command->algorithmName();                         \
+                                                                        \
+    emit algorithmsLoaded();
+
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonAlgorithmWorkspacePrivate
 // /////////////////////////////////////////////////////////////////////////////

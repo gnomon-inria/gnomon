@@ -76,8 +76,6 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
 {
     dd = new gnomonWorkspaceRegistrationPrivate;
 
-    loadPluginGroup("imageRegistration");
-
     d->workspace = "Time Registration";
     d->command = new gnomonImageRegistrationCommand;
     d->keys = gnomonCore::imageRegistration::pluginFactory().keys();
@@ -219,7 +217,7 @@ void gnomonWorkspaceRegistration::iterate(void)
 }
 
 void gnomonWorkspaceRegistration::viewOutputs()
-{   
+{
     auto * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["outputTransformation"]) {
         std::shared_ptr<gnomonAbstractDynamicForm> data_dict = command->outputs()["outputTransformation"];
