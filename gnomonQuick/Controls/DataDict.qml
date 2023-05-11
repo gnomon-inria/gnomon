@@ -30,16 +30,19 @@ Rectangle {
 
     signal transmit();
 
-    Control {
+    ScrollView {
         id: _view;
         anchors.fill: parent
+        anchors.margins: G.Style.smallPadding
+
         clip: true
+        contentWidth: availableWidth
 
         TextEdit {
             id: _text
 
-            anchors.fill: parent
-            anchors.margins: G.Style.smallPadding
+            height: Math.max(self.height - 2*G.Style.smallPadding, _text.implicitHeight)
+            width: self.width - _scrollbar.width - 2*G.Style.smallPadding
 
             text: viewLogic? viewLogic.displayText : ""
             readOnly: true
@@ -48,14 +51,27 @@ Rectangle {
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            font: G.Style.fonts.formLabel
+            font.family: "Poppins"
+            font.weight: Font.Medium
+            font.pointSize: viewLogic.fontSize
             color: G.Style.colors.textColorNeutral
+
+            onActiveFocusChanged: {
+                if (_text.activeFocus)
+                    window.currentView = self;
+            }
         }
 
-        onActiveFocusChanged: {
-            if (_view.activeFocus)
-                window.currentView = self;
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        ScrollBar.vertical: ScrollBar {
+            id: _scrollbar
+
+            policy: ScrollBar.AsNeeded
+            anchors.right: _view.right;
+            anchors.top: _view.top;
+            anchors.bottom: _view.bottom;
         }
+
     }
 
     DropArea {
