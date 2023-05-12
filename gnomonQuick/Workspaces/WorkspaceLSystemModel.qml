@@ -194,6 +194,7 @@ G.Workspace {
         Control {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
+
             TabBar {
                 id: _bar
                 anchors.bottom: parent.bottom
@@ -203,10 +204,10 @@ G.Workspace {
                 currentIndex: _views.currentIndex
 
                 G.TabButton {
-                    text: "3D"
+                    text: "3D View"
                 }
                 G.TabButton {
-                    text: "lstring text"
+                    text: "Text View"
                 }
 
             }
@@ -221,13 +222,15 @@ G.Workspace {
 
                 G.View {
                     id: _view;
-                    anchors.fill: parent
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
                     viewLogic: d.view;
                 }
 
                 G.DataDict {
                     id: _lstring_view;
-                    anchors.fill: parent
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
                     viewLogic: d.textView;
                 }
 
@@ -236,8 +239,8 @@ G.Workspace {
                 }
             }            
         }
-            
-    }    
+    }
+
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
 
