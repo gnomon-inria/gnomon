@@ -638,6 +638,8 @@ void gnomonVtkView::setAcceptForm(const QString& form_type, bool accept)
         d->visualizationCommands["gnomonMesh"] = new gnomonMeshVtkVisualizationCommand;
     } else if(form_type == "gnomonPointCloud") {
         d->visualizationCommands["gnomonPointCloud"] = new gnomonPointCloudVtkVisualizationCommand;
+    } else { // Form not supported by VtkView
+        return;
     }
 
     d->visualizationCommands[form_type]->setView(this);
