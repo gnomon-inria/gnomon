@@ -136,6 +136,9 @@ QtObject {
     property int gutterHeight: S.spacing["5"]
     property int gutterWidth: S.spacing["4"]
 
+    property int windowMinWidth: S.spacing["17"]
+    property int windowMinHeight: (S.spacing["15"] + S.spacing["16"])/2
+
     property FontLoader regular: FontLoader {
         id: _poppinsRegular
         source: "qrc:/ttf/Poppins-Regular.ttf"
