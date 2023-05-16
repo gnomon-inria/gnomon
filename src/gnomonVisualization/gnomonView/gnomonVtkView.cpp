@@ -380,8 +380,6 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     d->acceptForms["gnomonLString"] = false;
     d->acceptForms["gnomonMesh"] = false;
     d->acceptForms["gnomonPointCloud"] = false;
-    d->acceptForms["gnomonDataDict"] = false;
-    d->acceptForms["gnomonDataFrame"] = false;
 
     connect(this, &gnomonVtkView::formAdded, [=] (const QString& key) {
         dd->updateFormsTimes();
@@ -615,7 +613,7 @@ QList<long> gnomonVtkView::pickedCells(void)
 
 void gnomonVtkView::setAcceptForm(const QString& form_type, bool accept)
 {
-    if(!d->acceptForms.contains(form_type)) {
+    if(!d->acceptForms.contains(form_type)) { // Form not supported by VtkView
         return;
     }
     d->acceptForms[form_type] = accept;

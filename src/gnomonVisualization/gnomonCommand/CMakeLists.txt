@@ -5,6 +5,7 @@
 add_subdirectory(gnomonBinaryImage)
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellImage)
+add_subdirectory(gnomonDataDict)
 add_subdirectory(gnomonDataFrame)
 add_subdirectory(gnomonImage)
 add_subdirectory(gnomonLString)
@@ -21,11 +22,14 @@ ADD_GNOMON_HEADERS(
         gnomonAbstractVisualizationCommand.h
         gnomonAbstractMplVisualizationCommand
         gnomonAbstractMplVisualizationCommand.h
+        gnomonAbstractQmlVisualizationCommand
+        gnomonAbstractQmlVisualizationCommand.h
         gnomonAbstractVtkVisualizationCommand
         gnomonAbstractVtkVisualizationCommand.h
         ${${PROJECT_NAME}_COMMAND_BINARYIMAGE_HEADERS}
         ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_HEADERS}
         ${${PROJECT_NAME}_COMMAND_CELLIMAGE_HEADERS}
+        ${${PROJECT_NAME}_COMMAND_DATADICT_HEADERS}
         ${${PROJECT_NAME}_COMMAND_DATAFRAME_HEADERS}
         ${${PROJECT_NAME}_COMMAND_IMAGE_HEADERS}
         ${${PROJECT_NAME}_COMMAND_LSTRING_HEADERS}
@@ -38,10 +42,12 @@ ADD_GNOMON_HEADERS(
 ADD_GNOMON_SOURCES(
         gnomonAbstractVisualizationCommand.cpp
         gnomonAbstractMplVisualizationCommand.cpp
+        gnomonAbstractQmlVisualizationCommand.cpp
         gnomonAbstractVtkVisualizationCommand.cpp
         ${${PROJECT_NAME}_COMMAND_BINARYIMAGE_SOURCES}
         ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_SOURCES}
         ${${PROJECT_NAME}_COMMAND_CELLIMAGE_SOURCES}
+        ${${PROJECT_NAME}_COMMAND_DATADICT_SOURCES}
         ${${PROJECT_NAME}_COMMAND_DATAFRAME_SOURCES}
         ${${PROJECT_NAME}_COMMAND_IMAGE_SOURCES}
         ${${PROJECT_NAME}_COMMAND_LSTRING_SOURCES}

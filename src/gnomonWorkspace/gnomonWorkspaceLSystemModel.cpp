@@ -7,6 +7,7 @@
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonView/gnomonVtkView>
+#include <gnomonVisualization/gnomonView/gnomonQmlView>
 #include "gnomonCommand/gnomonLString/gnomonLStringEvolutionModelCommand.h"
 #include "gnomonForm/gnomonLString/gnomonLString.h"
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization"
@@ -79,6 +80,7 @@ public:
 
 public:
     gnomonVtkView *view = nullptr;
+    gnomonQmlView *text_view = nullptr;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -109,6 +111,9 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     d->view = new gnomonVtkView(this);
     d->view->setNodePortNames({});
     d->view->setAcceptForm("gnomonLString", true);
+
+    d->text_view = new gnomonQmlView(this);
+    d->text_view->setAcceptForm("gnomonLString", true);
 
     connect(d->view, &gnomonVtkView::formAdded, [=](const QString &name) {
         const QString plugin_name = "lStringVisualizationVtkTurtle";
@@ -377,6 +382,8 @@ void gnomonWorkspaceLSystemModel::viewState()
         }
         d->view->render();
 
+        d->text_view->setForm("gnomonLString", lString);
+
         gnomonPipelineManager::instance()->addEvolutionModel(d->command);
     }
 }
@@ -389,6 +396,7 @@ void gnomonWorkspaceLSystemModel::viewNewStep()
         lString = d->command->lString();
         if(lString && lString->times().length() > 0) {
             d->view->setForm("gnomonLString", lString);
+            d->text_view->setForm("gnomonLString", lString);
         } else {
             return;
         }
@@ -446,6 +454,11 @@ void gnomonWorkspaceLSystemModel::setCurrentIndex(int i)
 gnomonVtkView *gnomonWorkspaceLSystemModel::view(void) const
 {
     return d->view;
+}
+
+gnomonQmlView *gnomonWorkspaceLSystemModel::textView(void) const
+{
+    return d->text_view;
 }
 
 QJSValue gnomonWorkspaceLSystemModel::parameters(void)
