@@ -95,7 +95,7 @@ gnomonAbstractView::~gnomonAbstractView(void)
 void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVisualization> visualization)
 {
     QString form_type = form->formName();
-    if (d->acceptForms[form_type]) {
+    if (d->acceptForms.contains(form_type)  && d->acceptForms[form_type]) {
         // If another form of the same type is already in the view, we need to create a new visualization instance
         bool existing_visu = d->forms.contains(form_type) && (form != d->visualizationCommands[form_type]->inputs()[form_type]);
         d->forms[form_type] = form;
