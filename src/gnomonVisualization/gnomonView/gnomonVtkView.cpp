@@ -98,6 +98,8 @@ public:
     gnomonVtkView::Mode mode = gnomonVtkView::VIEW_MODE_3D;
     gnomonVtkView::Orientation ori = gnomonVtkView::NONE;
     gnomonVtkView::Representation representation = gnomonVtkView::VTK_REPRESENTATION_SURFACE;
+    gnomonVtkView::Grid grid_type = gnomonVtkView::GRID_PLANES;
+    gnomonVtkView::Orientation grid_orientation = gnomonVtkView::SLICE_ORIENTATION_XZ;
     QMap<gnomonVtkView::Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
@@ -305,23 +307,27 @@ void gnomonVtkViewPrivate::updateFormsTimes(void)
 void gnomonVtkViewPrivate::updateGrid(void)
 {
     if (this->grid_actor) {
-        this->grid_actor->SetXAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
-        this->grid_actor->SetXAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
-        this->grid_actor->SetXAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        bool x_visible = this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ;
+        bool y_visible = this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ;
+        bool z_visible = this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY;
+
+        this->grid_actor->SetXAxisVisibility(x_visible);
+        this->grid_actor->SetXAxisLabelVisibility(x_visible);
+        this->grid_actor->SetXAxisTickVisibility(x_visible);
         this->grid_actor->SetXAxisMinorTickVisibility(false);
-        this->grid_actor->SetDrawXGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        this->grid_actor->SetDrawXGridlines(x_visible);
 
-        this->grid_actor->SetYAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
-        this->grid_actor->SetYAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
-        this->grid_actor->SetYAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetYAxisVisibility(y_visible);
+        this->grid_actor->SetYAxisLabelVisibility(y_visible);
+        this->grid_actor->SetYAxisTickVisibility(y_visible);
         this->grid_actor->SetYAxisMinorTickVisibility(false);
-        this->grid_actor->SetDrawYGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetDrawYGridlines(y_visible);
 
-        this->grid_actor->SetZAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
-        this->grid_actor->SetZAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
-        this->grid_actor->SetZAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetZAxisVisibility(z_visible);
+        this->grid_actor->SetZAxisLabelVisibility(z_visible);
+        this->grid_actor->SetZAxisTickVisibility(z_visible);
         this->grid_actor->SetZAxisMinorTickVisibility(false);
-        this->grid_actor->SetDrawZGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetDrawZGridlines(z_visible);
 
         QColor axis_color = QColor(255-this->background_color.red(), 255-this->background_color.green(), 255-this->background_color.blue());
         for (int i_dim=0; i_dim<3; i_dim++) {
@@ -336,12 +342,34 @@ void gnomonVtkViewPrivate::updateGrid(void)
             double l = std::max(std::max(dx, dy), dz);
             double golden_ratio = 1.61803398875;
             double ml = l / golden_ratio;
-            this->grid_actor->SetBounds(dx > ml ? this->xBounds[0] : this->xBounds[0] + dx / 2 - ml / 2,
-                                        dx > ml ? this->xBounds[1] : this->xBounds[1] - dx / 2 + ml / 2,
-                                        dy > ml ? this->yBounds[0] : this->yBounds[0] + dy / 2 - ml / 2,
-                                        dy > ml ? this->yBounds[1] : this->yBounds[1] - dy / 2 + ml / 2,
-                                        dz > ml ? this->zBounds[0] : this->zBounds[0] + dz / 2 - ml / 2,
-                                        dz > ml ? this->zBounds[1] : this->zBounds[1] - dz / 2 + ml / 2);
+            
+            double x_b[2] = {this->xBounds[0], this->xBounds[1]};
+            if (dx < ml) {
+                x_b[0] += dx / 2 - ml / 2;
+                x_b[1] -= dx / 2 - ml / 2;
+            }
+            double y_b[2] = {this->yBounds[0], this->yBounds[1]};
+            if (dy < ml) {
+                y_b[0] += dy / 2 - ml / 2;
+                y_b[1] -= dy / 2 - ml / 2;
+            }
+            double z_b[2] = {this->zBounds[0], this->zBounds[1]};
+            if (dz < ml) {
+                z_b[0] += dz / 2 - ml / 2;
+                z_b[1] -= dz / 2 - ml / 2;
+            }
+
+            if (this->grid_type == gnomonVtkView::GRID_CUBE) {
+                this->grid_actor->SetBounds(x_b[0], x_b[1], y_b[0], y_b[1], z_b[0], z_b[1]);
+            } else if (this->grid_type == gnomonVtkView::GRID_PLANES) {
+                if (this->grid_orientation == gnomonVtkView::SLICE_ORIENTATION_XY) {
+                    this->grid_actor->SetBounds(x_b[0], x_b[1], y_b[0], y_b[1], 0, 0);
+                } else if (this->grid_orientation == gnomonVtkView::SLICE_ORIENTATION_XZ) {
+                    this->grid_actor->SetBounds(x_b[0], x_b[1], 0, 0, z_b[0], z_b[1]);
+                } else if (this->grid_orientation == gnomonVtkView::SLICE_ORIENTATION_YZ) {
+                    this->grid_actor->SetBounds(0, 0, y_b[0], y_b[1], z_b[0], z_b[1]);
+                }
+            }
         }
     }
 }
@@ -1136,6 +1164,36 @@ void gnomonVtkView::setGridVisible(bool visible)
 bool gnomonVtkView::gridVisible(void)
 {
     return dd->grid_visible;
+}
+
+void gnomonVtkView::setGridType(Grid type)
+{
+    if (type != dd->grid_type) {
+        dd->grid_type = type;
+        dd->updateGrid();
+        this->render();
+        emit gridTypeChanged();
+    }
+}
+
+gnomonVtkView::Grid gnomonVtkView::gridType(void)
+{
+    return dd->grid_type;
+}
+
+void gnomonVtkView::setGridOrientation(Orientation orientation)
+{
+    if (orientation != dd->grid_orientation) {
+        dd->grid_orientation = orientation;
+        dd->updateGrid();
+        this->render();
+        emit gridOrientationChanged();
+    }
+}
+
+gnomonVtkView::Orientation gnomonVtkView::gridOrientation(void)
+{
+    return dd->grid_orientation;
 }
 
 void gnomonVtkView::setAxesVisible(bool visible)
