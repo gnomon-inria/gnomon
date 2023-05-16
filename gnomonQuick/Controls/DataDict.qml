@@ -24,6 +24,7 @@ Rectangle {
 
     property alias view: _view;
     property var viewLogic;
+    property bool exportable_dict: true
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
@@ -113,10 +114,10 @@ Rectangle {
         anchors.rightMargin: G.Style.smallPadding
 
         iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
-        enabled: !viewLogic.inputView
+        enabled: self.exportable_dict && !viewLogic.inputView
         size: G.Style.iconLarge;
-        color: viewLogic.inputView ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
-        tooltip: viewLogic.inputView? "" : "Export"
+        color: !self.exportable_dict ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
+        tooltip: !self.exportable_dict? "" : "Export"
 
 
         onClicked: {
