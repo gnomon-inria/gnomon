@@ -24,16 +24,55 @@ Rectangle {
 
     property alias view: _view;
     property var viewLogic;
+    property bool export_enabled: !viewLogic.inputView
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
 
     signal transmit();
 
-    Rectangle {
+    ScrollView {
         id: _view;
         anchors.fill: parent
-        color: X.Style.baseColor;
+        anchors.margins: G.Style.smallPadding
+
+        clip: true
+        contentWidth: availableWidth
+
+        TextEdit {
+            id: _text
+
+            height: Math.max(self.height - 2*G.Style.smallPadding, _text.implicitHeight)
+            width: self.width - _scrollbar.width - 2*G.Style.smallPadding
+
+            text: viewLogic? viewLogic.displayText : ""
+            readOnly: true
+            wrapMode: Text.WrapAnywhere
+            selectByMouse: true
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.family: "Poppins"
+            font.weight: Font.Medium
+            font.pointSize: viewLogic.fontSize
+            color: G.Style.colors.textColorNeutral
+
+            onActiveFocusChanged: {
+                if (_text.activeFocus)
+                    window.currentView = self;
+            }
+        }
+
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        ScrollBar.vertical: ScrollBar {
+            id: _scrollbar
+
+            policy: ScrollBar.AsNeeded
+            anchors.right: _view.right;
+            anchors.top: _view.top;
+            anchors.bottom: _view.bottom;
+        }
+
     }
 
     DropArea {
@@ -69,16 +108,17 @@ Rectangle {
     G.IconButton {
         id: _export_icon;
 
-        anchors.top: _view.top
+        anchors.top: self.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.right: _view.right
-        anchors.rightMargin: G.Style.smallPadding
+        anchors.right: self.right
+        anchors.rightMargin: G.Style.smallPadding + _scrollbar.width
 
         iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
-        enabled: !viewLogic.inputView
+        enabled: self.export_enabled
         size: G.Style.iconLarge;
-        color: viewLogic.inputView ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
-        tooltip: viewLogic.inputView? "" : "Export"
+        color: self.export_enabled ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        hoverColor : self.export_enabled ? G.Style.colors.hoveredBaseColor : G.Style.colors.fgColor;
+        tooltip: self.export_enabled? "Export" : ""
 
 
         onClicked: {

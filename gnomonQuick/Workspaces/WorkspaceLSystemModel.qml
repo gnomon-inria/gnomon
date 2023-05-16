@@ -191,13 +191,57 @@ G.Workspace {
             }
         }
 
-        G.View {
-            id: _view;
-
+        Control {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            viewLogic: d.view;
+            TabBar {
+                id: _bar
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+
+                currentIndex: _views.currentIndex
+
+                G.TabButton {
+                    text: "3D View"
+                }
+                G.TabButton {
+                    text: "Text View"
+                }
+
+            }
+
+            StackLayout {
+                id: _views
+                anchors.bottom: _bar.top
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                currentIndex: _bar.currentIndex;
+
+                G.View {
+                    id: _view;
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+                    viewLogic: d.view;
+                    // TODO: Enable when export issue is fixed
+                    export_enabled: false;
+                }
+
+                G.DataDict {
+                    id: _lstring_view;
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+                    viewLogic: d.textView;
+                    // TODO: Enable when export issue is fixed
+                    export_enabled: false;
+                }
+
+                onCurrentIndexChanged: {
+                    window.currentView = currentIndex == 1 ? _lstring_view : _view
+                }
+            }            
         }
     }
 
