@@ -35,7 +35,7 @@ Rectangle {
 
     property bool shift_pressed: false;
     property bool ctrl_pressed: false;
-    property bool exportable_view: true;
+    property bool export_enabled: !viewLogic.inputView;
 
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
@@ -507,11 +507,12 @@ Rectangle {
     G.IconButton {
         id: _export_icon;
         iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
-        enabled: self.exportable_view && !viewLogic.inputView
+        enabled: self.export_enabled
         visible: !viewLogic.inputView
         size: G.Style.iconLarge;
-        color: !self.exportable_view ? G.Style.colors.fgColor : G.Style.colors.textColorNeutral;
-        tooltip: !self.exportable_view? "" : "Upload"
+        color: self.export_enabled ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        hoverColor : self.export_enabled ? G.Style.colors.hoveredBaseColor : G.Style.colors.fgColor;
+        tooltip: self.export_enabled? "Export" : ""
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding

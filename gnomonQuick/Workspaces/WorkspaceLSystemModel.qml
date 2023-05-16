@@ -225,7 +225,8 @@ G.Workspace {
                     Layout.fillWidth: true;
                     Layout.fillHeight: true;
                     viewLogic: d.view;
-                    exportable_view: false;
+                    // TODO: Enable when export issue is fixed
+                    export_enabled: false;
                 }
 
                 G.DataDict {
@@ -233,7 +234,8 @@ G.Workspace {
                     Layout.fillWidth: true;
                     Layout.fillHeight: true;
                     viewLogic: d.textView;
-                    exportable_dict: false;
+                    // TODO: Enable when export issue is fixed
+                    export_enabled: false;
                 }
 
                 onCurrentIndexChanged: {
