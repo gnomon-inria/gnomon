@@ -141,5 +141,10 @@ Control {
         valueFromText: function(text, locale) {
             return Number.fromLocaleString(locale, text) * Math.pow(10, _control.decimals)
         }
+
+        onValueChanged: {
+            if (_spinbox.value != _control.value)
+                _control.value = _spinbox.value
+        }
     }
 }
