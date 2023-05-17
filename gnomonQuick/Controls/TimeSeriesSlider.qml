@@ -7,6 +7,7 @@ import xQuick.Fonts       1.0 as X
 import xQuick.Style       1.0 as X
 
 import gnomonQuick.Controls as G
+import gnomonQuick.Style      1.0 as G
 
 Slider {
     id: _ts_slider
@@ -47,12 +48,6 @@ Slider {
         }
     }
 
-    G.ToolTip {
-        parent: _ts_slider.handle
-        visible: _ts_slider.pressed
-        text: (_ts_slider.times &&  _ts_slider.times[_ts_slider.value] !== undefined) ? _ts_slider.times[_ts_slider.value] : ""
-    }
-
     handle: Rectangle {
         x: _ts_slider.leftPadding + _ts_slider.visualPosition * (_ts_slider.availableWidth - width)
         implicitWidth: 14
@@ -60,5 +55,53 @@ Slider {
         radius: 7
     }
 
+    Label {
+        id: _current_time
 
+        anchors.bottom: handle.top
+        anchors.horizontalCenter: handle.horizontalCenter
+        anchors.margins: G.Style.smallPadding
+
+        width: contentWidth + G.Style.mediumPadding
+        verticalAlignment: Text.AlignVCenter;
+        horizontalAlignment: Text.AlignHCenter;
+
+        text: (_ts_slider.times &&  _ts_slider.times[_ts_slider.value] !== undefined) ? _ts_slider.times[_ts_slider.value] : ""
+        font: G.Style.fonts.value
+
+        background: Rectangle {
+            color: G.Style.colors.fgColor
+            radius: G.Style.panelRadius
+
+            opacity: 0.9
+        }
+    }
+
+    Label {
+        id: _initial_time
+
+        anchors.bottom: handle.top
+        anchors.left: _ts_slider.left
+        anchors.bottomMargin: G.Style.smallPadding
+        anchors.leftMargin: _ts_slider.tickWidth
+        horizontalAlignment: Text.AlignHCenter;
+
+        visible: _ts_slider.value != _ts_slider.from
+        text: (_ts_slider.times &&  _ts_slider.times[_ts_slider.from] !== undefined) ? _ts_slider.times[_ts_slider.from] : ""
+        font: G.Style.fonts.value
+    }
+
+    Label {
+        id: _final_time
+
+        anchors.bottom: handle.top
+        anchors.right: _ts_slider.right
+        anchors.bottomMargin: G.Style.smallPadding
+        anchors.rightMargin: _ts_slider.tickWidth
+        horizontalAlignment: Text.AlignHCenter;
+
+        visible: _ts_slider.value != _ts_slider.to
+        text: (_ts_slider.times &&  _ts_slider.times[_ts_slider.to] !== undefined) ? _ts_slider.times[_ts_slider.to] : ""
+        font: G.Style.fonts.value
+    }
 }
