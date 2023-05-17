@@ -134,5 +134,63 @@ void gnomonCoreParameterColorTableObject::notifyColorTable(const gnomonColorTabl
     emit valueChanged(color_map);
 }
 
+bool gnomonCoreParameterColorTableObject::isMaterial(long i) const {
+    return m_param->value().isMaterial(i);
+}
+
+QColor gnomonCoreParameterColorTableObject::ambient(long i) const {
+    return m_param->ambient(i);
+}
+
+void gnomonCoreParameterColorTableObject::setAmbient(long i, const QColor &color) {
+    m_param->setAmbient(i, color);
+    notifyColorTable(m_param->value());
+}
+
+QColor gnomonCoreParameterColorTableObject::specular(long i) const {
+    return m_param->specular(i);
+}
+
+void gnomonCoreParameterColorTableObject::setSpecular(long i, const QColor &color) {
+    m_param->setSpecular(i, color);
+    notifyColorTable(m_param->value());
+}
+
+QColor gnomonCoreParameterColorTableObject::emission(long i) const {
+    return m_param->emission(i);
+}
+
+void gnomonCoreParameterColorTableObject::setEmission(long i, const QColor &color) {
+    m_param->setEmission(i, color);
+    notifyColorTable(m_param->value());
+}
+
+double gnomonCoreParameterColorTableObject::diffuse(long i) const {
+    return m_param->diffuse(i);
+}
+
+void gnomonCoreParameterColorTableObject::setDiffuse(long i, const double v) {
+    m_param->setDiffuse(i, v);
+    notifyColorTable(m_param->value());
+}
+
+double gnomonCoreParameterColorTableObject::shininess(long i) const {
+    return m_param->shininess(i);
+}
+
+void gnomonCoreParameterColorTableObject::setShininess(long i, const double v) {
+    m_param->setShininess(i, v);
+    notifyColorTable(m_param->value());
+}
+
+double gnomonCoreParameterColorTableObject::transparency(long i) const {
+    return m_param->transparency(i);
+}
+
+void gnomonCoreParameterColorTableObject::setTransparency(long i, const double v) {
+    m_param->setTransparency(i, v);
+    notifyColorTable(m_param->value());
+}
+
 //
 // gnomonCoreParameterColorObject.cpp ends here

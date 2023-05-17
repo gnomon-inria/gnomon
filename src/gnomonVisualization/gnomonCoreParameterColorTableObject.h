@@ -37,6 +37,22 @@ public:
     Q_INVOKABLE QColor color(long i) const;
     Q_INVOKABLE void setColor(long i, const QColor& color);
 
+    Q_INVOKABLE bool isMaterial(long i) const;
+    Q_INVOKABLE QColor ambient(long i) const;
+    Q_INVOKABLE void setAmbient(long i, const QColor& color);
+    Q_INVOKABLE QColor specular(long i) const;
+    Q_INVOKABLE void setSpecular(long i, const QColor& color);
+    Q_INVOKABLE QColor emission(long i) const;
+    Q_INVOKABLE void setEmission(long i, const QColor& color);
+
+    Q_INVOKABLE double diffuse(long i) const;
+    Q_INVOKABLE void setDiffuse(long i, const double v);
+    Q_INVOKABLE double shininess(long i) const;
+    Q_INVOKABLE void setShininess(long i, const double v);
+    Q_INVOKABLE double transparency(long i) const;
+    Q_INVOKABLE void setTransparency(long i, const double v);
+
+
     Q_INVOKABLE bool isTexture(long i) const;
     Q_INVOKABLE QString texture(long i) const;
     Q_INVOKABLE void setTexture(long i, const QString& texture);
