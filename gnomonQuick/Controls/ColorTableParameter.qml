@@ -60,8 +60,8 @@ Control {
             id: _color_bg
 
             property int _colorIndex: param.colorIndexAt(_colors.currentValue)
-            property bool _isColor: _control.param ? _control.param.isColor(_colorIndex) : false
-            property bool _isMaterial: _control.param ? _control.param.isMaterial(_colorIndex) : false
+            property bool _isColor: param ? param.isColor(_colorIndex) : false
+            property bool _isMaterial: param ? param.isMaterial(_colorIndex) : false
 
             color: _isColor ? param.color(_colorIndex) : (_isMaterial ? param.ambient(_colorIndex) : G.Style.colors.transparent)
 
@@ -523,6 +523,9 @@ Control {
             } else {
                 param.setTexture(param.colorIndexAt(_colors.currentValue), _edit_dialog.texture)
             }
+            let current_color_index = _colors.currentIndex
+            _colors.currentIndex = current_color_index != 0 ? 0 : 1
+            _colors.currentIndex = current_color_index
         }
 
     }
