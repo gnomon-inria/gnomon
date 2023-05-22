@@ -486,26 +486,32 @@ double gnomonCoreParameterColorTable::transparency(long index) const {
 
 void gnomonCoreParameterColorTable::setAmbient(long index, const QColor &color) {
     m_c.setAmbient(index, color);
+    this->sync();
 }
 
 void gnomonCoreParameterColorTable::setSpecular(long index, const QColor &color) {
     m_c.setSpecular(index, color);
+    this->sync();
 }
 
 void gnomonCoreParameterColorTable::setEmission(long index, const QColor &color) {
     m_c.setEmission(index, color);
+    this->sync();
 }
 
 void gnomonCoreParameterColorTable::setDiffuse(long index, const double v) {
     m_c.setDiffuse(index, v);
+    this->sync();
 }
 
 void gnomonCoreParameterColorTable::setShininess(long index, const double v) {
     m_c.setShininess(index, v);
+    this->sync();
 }
 
 void gnomonCoreParameterColorTable::setTransparency(long index, const double v) {
     m_c.setTransparency(index, v);
+    this->sync();
 }
 
 
