@@ -43,9 +43,10 @@ Control {
             width: _colors.width
             property int colorIndex: _control.param ? _control.param.colorIndexAt(index) : -1
             property bool isColor: _control.param ? _control.param.isColor(colorIndex) : false
+            property bool isMaterial: _control.param ? _control.param.isMaterial(colorIndex) : false
             text: "Appearance " + colorIndex
             background: Rectangle {
-               color: isColor? param.color(colorIndex) : G.Style.colors.transparent
+               color: isColor ? param.color(colorIndex) : (isMaterial ? param.ambient(colorIndex) : G.Style.colors.transparent)
             }
             Image {
                 anchors.fill: parent
@@ -58,7 +59,11 @@ Control {
         background: Rectangle {
             id: _color_bg
 
-            color: (param && param.isColor(param.colorIndexAt(_colors.currentValue)))? param.color(param.colorIndexAt(_colors.currentValue)) : G.Style.colors.transparent
+            property int _colorIndex: param.colorIndexAt(_colors.currentValue)
+            property bool _isColor: _control.param ? _control.param.isColor(_colorIndex) : false
+            property bool _isMaterial: _control.param ? _control.param.isMaterial(_colorIndex) : false
+
+            color: _isColor ? param.color(_colorIndex) : (_isMaterial ? param.ambient(_colorIndex) : G.Style.colors.transparent)
 
             radius: G.Style.buttonRadius
             border.color: G.Style.colors.gutterColor
@@ -83,8 +88,20 @@ Control {
         iconName: G.Icons.icons["pencil"]
 
         onClicked: {
-            _edit_dialog.color = param.color(param.colorIndexAt(_colors.currentValue))
-            _edit_dialog.texture = param.texture(param.colorIndexAt(_colors.currentValue))
+            let i = param.colorIndexAt(_colors.currentValue)
+            _edit_dialog.color_index = i
+
+            _edit_dialog.color = param.color(i)
+
+            _edit_dialog.texture = param.texture(i)
+
+            _edit_dialog.ambient = param.ambient(i)
+            _edit_dialog.diffuse = param.diffuse(i)
+            _edit_dialog.specular = param.specular(i)
+            _edit_dialog.emission = param.emission(i)
+            _edit_dialog.shininess = param.shininess(i)
+            _edit_dialog.transparency = param.transparency(i)
+
             _edit_dialog.open();
         }
     }
@@ -120,13 +137,23 @@ Control {
     G.Dialog {
         id: _edit_dialog;
 
+        property int color_index: 0
+
         property var color : G.Style.colors.transparent
+
+        property var ambient : G.Style.colors.transparent
+        property double diffuse : 0
+        property var specular : G.Style.colors.transparent
+        property var emission : G.Style.colors.transparent
+        property double shininess : 0
+        property double transparency : 0
+
         property var texture : ""
 
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
-        width: G.Style.smallDialogWidth
-        height: G.Style.smallDialogHeight
+        width: G.Style.largeDialogWidth
+        height: G.Style.largeDialogHeight
 
         padding: 0;
 
@@ -158,6 +185,7 @@ Control {
             anchors.bottom: parent.bottom;
             anchors.right: parent.right;
             anchors.left: parent.left;
+            anchors.margins: G.Style.mediumColumnSpacing
 
             currentIndex: _bar.currentIndex;
 
@@ -168,50 +196,241 @@ Control {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                Label {
-                    id: _ambient_label
-
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    anchors.topMargin: G.Style.smallPadding
-
-                    text: "AMBIENT COLOR"
-                    font: G.Style.fonts.label
-                    color: G.Style.colors.textColorBase
-                }
-
                 Rectangle {
-                    id: _ambient_color
+                    id: preview
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.bottom: parent.bottom
+                    anchors.rightMargin: G.mediumColumnSpacing
+                    width: height
+                    color: G.Style.colors.gutterColor
 
-                    anchors.top: _ambient_label.bottom
-                    anchors.left: _color_panel.left
-                    anchors.right: _edit_ambient.left
-                    anchors.leftMargin: G.Style.smallPadding
-                    anchors.rightMargin: G.Style.smallPadding
-
-                    height: G.Style.mediumButtonHeight
-
-                    color: _edit_dialog.color
-
-                    radius: G.Style.buttonRadius
-                    border.color: G.Style.colors.gutterColor
-                    border.width: 1
                 }
 
-                G.IconButton {
-                    id: _edit_ambient
-
-                    anchors.verticalCenter: _ambient_color.verticalCenter
+                GridLayout {
+                    id: grid
+                    anchors.top: parent.top
+                    anchors.left: preview.right
+                    anchors.bottom: parent.bottom
                     anchors.right: parent.right
-                    anchors.rightMargin: G.Style.smallPadding
-                    size: G.Style.iconSmall;
-                    iconName: G.Icons.icons["pencil"]
+                    anchors.leftMargin: G.mediumColumnSpacing
+                    columns: 2
 
-                    onClicked: {
-                        _color_dialog.color = _edit_dialog.color
-                        _color_dialog.open();
+                    Label {
+                        id: _ambient_label
+                        Layout.row: 0
+                        Layout.column: 0
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: G.Style.mediumPadding
+
+                        text: "Ambient"
+                        font: G.Style.fonts.formLabel
+                        color: G.Style.colors.textColorBase
                     }
+
+                    Rectangle {
+                        id: _ambient_color
+                        Layout.row: 0
+                        Layout.column: 1
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        Layout.fillWidth: true
+
+                        color: _edit_dialog.ambient
+
+                        radius: G.Style.buttonRadius
+                        border.color: G.Style.colors.gutterColor
+                        border.width: 1
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            hoverEnabled: false
+                            onClicked: {
+                                _color_dialog.color = _edit_dialog.ambient
+                                _color_dialog.ref = "ambient"
+                                _color_dialog.open();
+                            }
+                        }
+                    }
+
+                    Label {
+                        id: _diffuse_label
+                        Layout.row: 1
+                        Layout.column: 0
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: G.Style.mediumPadding
+
+                        text: "Diffuse"
+                        font: G.Style.fonts.formLabel
+                        color: G.Style.colors.textColorBase
+                    }
+
+                    G.NumericSlider {
+                        id: _diffuse_slider
+                        Layout.row: 1
+                        Layout.column: 1
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        Layout.fillWidth: true
+
+                        value: _edit_dialog.diffuse
+                        min: 0
+                        max: 4
+                        decimals: 2
+
+                        label: "Diffuse strength"
+                        doc: ""
+
+                    }
+
+                    Label {
+                        id: _specular_label
+                        Layout.row: 2
+                        Layout.column: 0
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: G.Style.mediumPadding
+
+                        text: "Specular"
+                        font: G.Style.fonts.formLabel
+                        color: G.Style.colors.textColorBase
+                    }
+
+                    Rectangle {
+                        id: _specular_color
+
+                        Layout.row: 2
+                        Layout.column: 1
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        Layout.fillWidth: true
+
+                        color: _edit_dialog.specular
+
+                        radius: G.Style.buttonRadius
+                        border.color: G.Style.colors.gutterColor
+                        border.width: 1
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            hoverEnabled: false
+                            onClicked: {
+                                _color_dialog.color = _edit_dialog.specular
+                                _color_dialog.ref = "specular"
+                                _color_dialog.open();
+                            }
+                        }
+                    }
+
+                    Label {
+                        id: _emission_label
+                        Layout.row: 3
+                        Layout.column: 0
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: G.Style.mediumPadding
+
+                        text: "Emission"
+                        font: G.Style.fonts.formLabel
+                        color: G.Style.colors.textColorBase
+                    }
+
+                    Rectangle {
+                        id: _emission_color
+
+                        Layout.row: 3
+                        Layout.column: 1
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        Layout.fillWidth: true
+
+                        color: _edit_dialog.emission
+
+                        radius: G.Style.buttonRadius
+                        border.color: G.Style.colors.gutterColor
+                        border.width: 1
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            hoverEnabled: false
+                            onClicked: {
+                                _color_dialog.color = _edit_dialog.emission
+                                _color_dialog.ref = "emission"
+                                _color_dialog.open();
+                            }
+                        }
+                    }
+
+
+                    Label {
+                        id: _shininess_label
+                        Layout.row: 4
+                        Layout.column: 0
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: G.Style.mediumPadding
+
+                        text: "Shininess"
+                        font: G.Style.fonts.formLabel
+                        color: G.Style.colors.textColorBase
+                    }
+
+                    G.NumericSlider {
+                        id: _shininess_slider
+                        Layout.row: 4
+                        Layout.column: 1
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        Layout.fillWidth: true
+
+                        value: _edit_dialog.shininess
+                        min: 0
+                        max: 1
+                        decimals: 2
+
+                        label: "Shininess"
+                        doc: ""
+
+                    }
+
+                    Label {
+                        id: _transparency_label
+                        Layout.row: 5
+                        Layout.column: 0
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: G.Style.mediumPadding
+
+                        text: "Transparency"
+                        font: G.Style.fonts.formLabel
+                        color: G.Style.colors.textColorBase
+                    }
+
+                    G.NumericSlider {
+                        id: _transparency_slider
+                        Layout.row: 5
+                        Layout.column: 1
+                        Layout.minimumHeight: G.Style.mediumButtonHeight
+                        Layout.fillWidth: true
+
+                        value: _edit_dialog.transparency
+                        min: 0
+                        max: 1
+                        decimals: 2
+
+                        label: "Transparency"
+                        doc: ""
+
+                    }
+
                 }
+
             }
 
             Control {
@@ -226,21 +445,25 @@ Control {
 
                     anchors.left: parent.left
                     anchors.top: parent.top
-                    anchors.topMargin: G.Style.smallPadding
+                    height: G.Style.mediumButtonHeight
 
-                    text: "TEXTURE FILE"
-                    font: G.Style.fonts.label
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                    leftPadding: G.Style.mediumPadding
+
+                    text: "Texture file"
+                    font: G.Style.fonts.formLabel
                     color: G.Style.colors.textColorBase
                 }
 
                 Rectangle {
                     id: _texture_image
 
-                    anchors.top: _texture_label.bottom
-                    anchors.left: _texture_panel.left
+                    anchors.top: parent.top
+                    anchors.left: _texture_label.right
                     anchors.right: _edit_texture.left
-                    anchors.leftMargin: G.Style.smallPadding
-                    anchors.rightMargin: G.Style.smallPadding
+                    anchors.leftMargin: G.Style.mediumPadding
+                    anchors.rightMargin: G.Style.mediumPadding
 
                     height: G.Style.mediumButtonHeight
 
@@ -249,6 +472,16 @@ Control {
                     radius: G.Style.buttonRadius
                     border.color: G.Style.colors.gutterColor
                     border.width: 1
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        hoverEnabled: false
+                        onClicked: {
+                            _texture_dialog.folder = _edit_dialog.texture
+                            _texture_dialog.open();
+                        }
+                    }
 
                     Image {
                         anchors.fill: parent
@@ -278,7 +511,15 @@ Control {
 
         onAccepted: {
             if (_container.currentIndex == 0) {
-                param.setColor(param.colorIndexAt(_colors.currentValue), _edit_dialog.color)
+
+                //param.setColor(color_index, _edit_dialog.color)
+
+                param.setAmbient(color_index, _edit_dialog.ambient)
+                param.setDiffuse(color_index, _edit_dialog.diffuse)
+                param.setSpecular(color_index, _edit_dialog.specular)
+                param.setEmission(color_index, _edit_dialog.emission)
+                param.setShininess(color_index, _edit_dialog.shininess)
+                param.setTransparency(color_index, _edit_dialog.transparency)
             } else {
                 param.setTexture(param.colorIndexAt(_colors.currentValue), _edit_dialog.texture)
             }
@@ -301,8 +542,9 @@ Control {
 
     P.ColorDialog {
         id: _color_dialog
+        property string ref: "color"
         onAccepted: {
-            _edit_dialog.color =_color_dialog.color
+            _edit_dialog[ref] =_color_dialog.color
         }
     }
 
