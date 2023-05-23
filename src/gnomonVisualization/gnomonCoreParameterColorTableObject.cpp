@@ -26,27 +26,45 @@ gnomonColorTable gnomonCoreParameterColorTableObject::colorTable(void) const
 
 void gnomonCoreParameterColorTableObject::setValue(const QVariantMap& color_map)
 {
-    gnomonColorTable map;
+    gnomonColorTable colorTable;
     for (auto it = color_map.begin(); it != color_map.end(); ++it) {
+        long i = it.key().toLong();
         if (it.value().canConvert<QColor>()) {
-            map.setColor(it.key().toLong(), it.value().value<QColor>());
+            colorTable.setColor(i, it.value().value<QColor>());
+        } else if(it.value().canConvert<QString>()){
+            colorTable.setColor(i, it.value().value<QString>());
         } else {
-            map.setColor(it.key().toLong(), it.value().value<QString>());
+            auto material = it.value().value<QVariantMap>();
+            colorTable.setAmbient(i, material["ambient"].value<QColor>());
+            colorTable.setSpecular(i, material["specular"].value<QColor>());
+            colorTable.setEmission(i, material["emission"].value<QColor>());
+            colorTable.setDiffuse(i, material["diffuse"].value<double>());
+            colorTable.setShininess(i, material["shininess"].value<double>());
+            colorTable.setTransparency(i, material["transparency"].value<double>());
         }
     }
-    m_param->setValue(map);
+    m_param->setValue(colorTable);
 }
 
 QVariantMap gnomonCoreParameterColorTableObject::value(void) const
 {
-    gnomonColorTable map = m_param->value();
+    gnomonColorTable table = m_param->value();
     QVariantMap color_map;
-    for (auto i : map.indices())
+    for (auto i : table.indices())
     {
-        if (map.isColor(i)) {
-            color_map[QString::number(i)] = QVariant::fromValue(map.color(i));
-        } else if (map.isTexture(i)) {
-            color_map[QString::number(i)] = QVariant::fromValue(map.textureFile(i));
+        if (table.isColor(i)) {
+            color_map[QString::number(i)] = QVariant::fromValue(table.color(i));
+        } else if (table.isTexture(i)) {
+            color_map[QString::number(i)] = QVariant::fromValue(table.textureFile(i));
+        } else if (table.isMaterial(i)) {
+            QVariantMap material;
+            material["ambient"] = QVariant::fromValue(table.ambient(i));
+            material["specular"] = QVariant::fromValue(table.specular(i));
+            material["emission"] = QVariant::fromValue(table.emission(i));
+            material["diffuse"] = QVariant::fromValue(table.diffuse(i));
+            material["shininess"] = QVariant::fromValue(table.shininess(i));
+            material["transparency"] = QVariant::fromValue(table.transparency(i));
+            color_map[QString::number(i)] = QVariant::fromValue(material);
         }
     }
     return color_map;

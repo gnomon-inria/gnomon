@@ -307,6 +307,7 @@ void gnomonCoreParameterColorTable::setValue(const gnomonColorTable& c)
 {
     m_c = c;
     m_object->notifyColorTable(m_c);
+    emit this->sync();
 }
 
 void gnomonCoreParameterColorTable::setValue(const QVariant& v)
@@ -314,8 +315,7 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
     if (v.canConvert<gnomonCoreParameterColorTable>()) {
         *this = v.value<gnomonCoreParameterColorTable>();
 
-    }
-     else if (v.canConvert<QVariantHash>()) {
+    } else if (v.canConvert<QVariantHash>()) {
          auto map = v.toHash();
 
          this->m_c.clear();
@@ -327,38 +327,18 @@ void gnomonCoreParameterColorTable::setValue(const QVariant& v)
                  m_c.setColor(keys[i].toInt(), colors[i].value<QColor>());
              } else if (colors[i].canConvert<QString>()) {
                  m_c.setTexture(keys[i].toInt(), colors[i].value<QString>());
+             } else if (colors[i].canConvert<QVariantMap>()) {
+                 auto mat = colors[i].toMap();
+                 m_c.setAmbient(i, mat["ambient"].value<QColor>());
+                 m_c.setSpecular(i, mat["specular"].value<QColor>());
+                 m_c.setEmission(i, mat["emission"].value<QColor>());
+                 m_c.setDiffuse(i, mat["diffuse"].toDouble());
+                 m_c.setShininess(i, mat["shininess"].toDouble());
+                 m_c.setTransparency(i, mat["transparency"].toDouble());
              }
          }
+         emit this->sync();
          m_object->notifyColorTable(m_c);
-
-    }
-    else if (v.canConvert<gnomonColorTable>()) {
-        this->setValue(v.value<gnomonColorTable>());
-
-    } else if (v.canConvert<QVariantHash>()) {
-        auto hash = v.toHash();
-
-        m_label = hash["label"].toString();
-        m_doc = hash["doc"].toString();
-
-        gnomonColorTable cmap;
-        auto keys = hash["keys"].toList();
-        auto colors = hash["colors"].toList();
-        int i = 0;
-        for (auto key : keys) {
-            if (colors[i].canConvert<QColor>()) {
-                m_c.setColor(key.value<long>(), colors[i].value<QColor>());
-            } else if (colors[i].canConvert<QString>()) {
-                m_c.setTexture(key.value<long>(), colors[i].value<QString>());
-            }
-            ++i;
-        }
-        m_c = cmap;
-
-        m_object->notifyLabel(m_label);
-        m_object->notifyDoc(m_doc);
-        m_object->notifyColorTable(m_c);
-
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"
