@@ -130,46 +130,48 @@ Item {
             }
         }
 
-        G.NumericSlider {
-            id: _animation_slider
+        G.NumericSpinBox {
+            id: _animation_spinbox
 
             Layout.fillWidth: true;
 
             value: 1
             min: 1
-            max: 200
+            max: 1000
             decimals: 0
 
             label: "Animation step"
             doc: "Number of steps between two displayed times for Animate"
 
             onValueChanged: {
-                d.animationStep = _animation_slider.value
+                d.animationStep = _animation_spinbox.value
             }
         }
 
-        G.NumericSlider {
-            id: _derivation_slider
+        G.NumericSpinBox {
+            id: _derivation_spinbox
 
             Layout.fillWidth: true;
 
             value: d.derivationLength
             min: 0
-            max: 4000
+            max: 10000
             decimals: 0
 
             label: "Derivation length"
             doc: "Total number of derivation steps to compute for Animate"
+
             onValueChanged: {
                 if(d.derivationLength != value) {
                     d.derivationLength = value
                 }
             }
+
             Connections {
                 target: d
                 function onDerivationLengthChanged(length) {
-                    if(length != _derivation_slider.value) {
-                        _derivation_slider.value = length
+                    if(length != _derivation_spinbox.value) {
+                        _derivation_spinbox.value = length
                     }
                 }
             }
@@ -233,7 +235,7 @@ Item {
                 enabled: !d.running
                 text: "Animate"
                 type: d.running? G.Style.ButtonType.Neutral : G.Style.ButtonType.Base
-                tooltip: "Animate: do " + _derivation_slider.value + " steps and display them"
+                tooltip: "Animate: do " + _derivation_spinbox.value + " steps and display them"
                 iconName: G.Icons.icons["animation-play"]
 
                 onClicked: {
