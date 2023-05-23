@@ -38,6 +38,7 @@
 #include <vtkInteractorObserver.h>
 #include <vtkInteractorStyle.h>
 #include <vtkInteractorStyleImage.h>
+#include <vtkMath.h>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkPNGWriter.h>
 #include <vtkProperty.h>
@@ -1059,6 +1060,81 @@ void gnomonVtkView::setCameraXZ(bool flip, bool turn)
     cam->SetViewUp(0, 0, turn? -1 : 1);
     dd->renderer3D->ResetCamera();
     this->render();
+}
+
+void gnomonVtkView::setCameraAzimuth(double angle)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    this->render();
+}
+
+double gnomonVtkView::cameraAzimuth(void)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    return 0;
+}
+
+void gnomonVtkView::setCameraElevation(double angle)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto pos = cam->GetPosition();
+    auto foc = cam->GetFocalPoint();
+    this->render();
+}
+
+double gnomonVtkView::cameraElevation(void)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto pos = cam->GetPosition();
+    auto foc = cam->GetFocalPoint();
+    return 0;
+}
+
+void gnomonVtkView::setCameraRoll(double angle)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    this->render();
+}
+
+double gnomonVtkView::cameraRoll(void)
+{
+    return 0;
+}
+
+void gnomonVtkView::setCameraDistance(double distance)
+{
+    qDebug()<<Q_FUNC_INFO<<"Set camera distance to"<<distance;
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    double pos[3], foc[3], vec[3], new_vec[3], new_pos[3];
+    cam->GetPosition(pos);
+    cam->GetFocalPoint(foc);
+
+    vtkMath::Subtract(pos, foc, vec);
+    double current_distance = vtkMath::Norm(vec);
+    qDebug()<<Q_FUNC_INFO<<distance<<"->"<<current_distance;
+    vtkMath::MultiplyScalar(vec, distance/current_distance);
+    vtkMath::Add(foc, vec, new_pos);
+    cam->SetPosition(new_pos);
+    this->render();
+
+    emit cameraChanged();
+}
+
+double gnomonVtkView::cameraDistance(void)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    double pos[3], foc[3], vec[3], up[3];
+    cam->GetPosition(pos);
+    cam->GetFocalPoint(foc);
+    cam->GetViewUp(up);
+
+    vtkMath::Subtract(pos, foc, vec);
+    double distance = vtkMath::Norm(vec);
+    qDebug()<<Q_FUNC_INFO<<distance;
+    double azimuth = (vec[0] >= 0 ? 1 : -1) * acos(vec[1]/distance);
+    double elevation = asin(vec[2]/distance);
+
+    return distance;
 }
 
 void gnomonVtkView::setCameraYZ(bool flip, bool turn)

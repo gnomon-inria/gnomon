@@ -79,6 +79,10 @@ public:
     Q_PROPERTY(Orientation gridOrientation READ gridOrientation WRITE setGridOrientation NOTIFY gridOrientationChanged);
     Q_PROPERTY(bool axesVisible READ axesVisible WRITE setAxesVisible NOTIFY axesVisibleChanged);
     Q_PROPERTY(bool cameraFixed READ cameraFixed WRITE setCameraFixed NOTIFY cameraFixedChanged);
+    Q_PROPERTY(double cameraAzimuth READ cameraAzimuth WRITE setCameraAzimuth NOTIFY cameraChanged);
+    Q_PROPERTY(double cameraElevation READ cameraElevation WRITE setCameraElevation NOTIFY cameraChanged);
+    Q_PROPERTY(double cameraRoll READ cameraRoll WRITE setCameraRoll NOTIFY cameraChanged);
+    Q_PROPERTY(double cameraDistance READ cameraDistance WRITE setCameraDistance NOTIFY cameraChanged);
 
     Q_PROPERTY(QList<long> pickedCells READ pickedCells NOTIFY pickedCellsChanged)
 
@@ -122,6 +126,7 @@ signals:
     void gridOrientationChanged(void);
     void axesVisibleChanged(void);
     void cameraFixedChanged(void);
+    void cameraChanged(void);
 
 signals:
     void pickedCellsChanged();
@@ -210,6 +215,18 @@ public slots:
 
     void setCameraFixed(bool fixed);
     bool cameraFixed(void);
+
+    void setCameraAzimuth(double angle);
+    double cameraAzimuth(void);
+
+    void setCameraElevation(double angle);
+    double cameraElevation(void);
+
+    void setCameraRoll(double angle);
+    double cameraRoll(void);
+
+    void setCameraDistance(double distance);
+    double cameraDistance(void);
 
 public slots:
     void setCameraXY(bool flip=false, bool turn=false);
