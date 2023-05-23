@@ -268,6 +268,90 @@ Control {
                 }
             }
         }
+
+        Item {
+            height: G.Style.sizes.s8
+            Layout.fillWidth: true;
+
+            Label {
+                id: _azimuth_label
+
+                anchors.left: parent.left;
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: G.Style.smallPadding
+                
+
+                text: "Azimuth";
+                font: G.Style.fonts.formLabel
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            TextInput {
+                id: _azimuth
+
+                anchors.left: _azimuth_label.right;
+                anchors.right: parent.right;
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: G.Style.smallPadding
+
+                text: view ? view.viewLogic.cameraAzimuth.toFixed(2) : "0";
+                validator: DoubleValidator {
+                    bottom: 0
+                    top: 360
+                    decimals: 2
+                    notation: DoubleValidator.StandardNotation
+                }
+
+                onTextEdited: {
+                    console.log(text, view)
+                    if (view) {
+                        view.viewLogic.cameraAzimuth = parseFloat(text);
+                    }
+                }
+            }
+        }
+        
+        Item {
+            height: G.Style.sizes.s8
+            Layout.fillWidth: true;
+
+            Label {
+                id: _distance_label
+
+                anchors.left: parent.left;
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: G.Style.smallPadding
+                
+
+                text: "Distance";
+                font: G.Style.fonts.formLabel
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            TextInput {
+                id: _distance
+
+                anchors.left: _distance_label.right;
+                anchors.right: parent.right;
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: G.Style.smallPadding
+
+                text: view ? view.viewLogic.cameraDistance.toFixed(2) : "0";
+                validator: DoubleValidator {
+                    bottom: 0
+                    decimals: 2
+                    notation: DoubleValidator.StandardNotation
+                }
+
+                onTextEdited: {
+                    console.log(text, view)
+                    if (view) {
+                        console.log(text, parseFloat(text))
+                        view.viewLogic.cameraDistance = parseFloat(text);
+                    }
+                }
+            }
+        }
     }
 
     QtObject {
