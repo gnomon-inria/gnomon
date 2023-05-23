@@ -248,9 +248,14 @@ Control {
                             cursorShape: Qt.PointingHandCursor
                             hoverEnabled: false
                             onClicked: {
-                                _color_dialog.color = _edit_dialog.ambient
-                                _color_dialog.ref = "ambient"
-                                _color_dialog.open();
+                                _ambient_dialog.color = _edit_dialog.ambient
+                                _ambient_dialog.open();
+                            }
+                        }
+                        P.ColorDialog {
+                            id: _ambient_dialog
+                            onAccepted: {
+                                _edit_dialog.ambient = _ambient_dialog.color
                             }
                         }
                     }
@@ -283,6 +288,9 @@ Control {
 
                         label: "Diffuse strength"
                         doc: ""
+                        onValueChanged: {
+                            _edit_dialog.diffuse = value
+                        }
 
                     }
 
@@ -319,9 +327,14 @@ Control {
                             cursorShape: Qt.PointingHandCursor
                             hoverEnabled: false
                             onClicked: {
-                                _color_dialog.color = _edit_dialog.specular
-                                _color_dialog.ref = "specular"
-                                _color_dialog.open();
+                                _specular_dialog.color = _edit_dialog.specular
+                                _specular_dialog.open();
+                            }
+                        }
+                        P.ColorDialog {
+                            id: _specular_dialog
+                            onAccepted: {
+                                _edit_dialog.specular = _specular_dialog.color
                             }
                         }
                     }
@@ -359,9 +372,14 @@ Control {
                             cursorShape: Qt.PointingHandCursor
                             hoverEnabled: false
                             onClicked: {
-                                _color_dialog.color = _edit_dialog.emission
-                                _color_dialog.ref = "emission"
-                                _color_dialog.open();
+                                _emission_dialog.color = _edit_dialog.emission
+                                _emission_dialog.open();
+                            }
+                        }
+                        P.ColorDialog {
+                            id: _emission_dialog
+                            onAccepted: {
+                                _edit_dialog.emission = _emission_dialog.color
                             }
                         }
                     }
@@ -395,6 +413,9 @@ Control {
 
                         label: "Shininess"
                         doc: ""
+                        onValueChanged: {
+                            _edit_dialog.shininess = value
+                        }
 
                     }
 
@@ -427,6 +448,9 @@ Control {
                         label: "Transparency"
                         doc: ""
 
+                        onValueChanged: {
+                            _edit_dialog.transparency = value
+                        }
                     }
 
                 }
@@ -513,13 +537,28 @@ Control {
             if (_container.currentIndex == 0) {
 
                 //param.setColor(color_index, _edit_dialog.color)
-
+                console.log("---------------")
+                console.log(_edit_dialog.ambient, _edit_dialog.diffuse, _edit_dialog.specular, _edit_dialog.emission, _edit_dialog.shininess, _edit_dialog.transparency)
+                let v = param.value
+                v[color_index] = {
+                    "ambient": _edit_dialog.ambient,
+                    "diffuse": _edit_dialog.diffuse,
+                    "specular": _edit_dialog.specular,
+                    "emission": _edit_dialog.emission,
+                    "shininess": _edit_dialog.shininess,
+                    "transparency": _edit_dialog.transparency,
+                }
+                /*
                 param.setAmbient(color_index, _edit_dialog.ambient)
                 param.setDiffuse(color_index, _edit_dialog.diffuse)
                 param.setSpecular(color_index, _edit_dialog.specular)
                 param.setEmission(color_index, _edit_dialog.emission)
                 param.setShininess(color_index, _edit_dialog.shininess)
                 param.setTransparency(color_index, _edit_dialog.transparency)
+                */
+                console.log(JSON.stringify(v[color_index]))
+
+                param.value = v
             } else {
                 param.setTexture(param.colorIndexAt(_colors.currentValue), _edit_dialog.texture)
             }
@@ -540,14 +579,6 @@ Control {
 
         onAccepted: {
             _edit_dialog.texture = urlToPath(_texture_dialog.file.toString())
-        }
-    }
-
-    P.ColorDialog {
-        id: _color_dialog
-        property string ref: "color"
-        onAccepted: {
-            _edit_dialog[ref] =_color_dialog.color
         }
     }
 
