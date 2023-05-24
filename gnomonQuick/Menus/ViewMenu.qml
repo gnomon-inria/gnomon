@@ -270,7 +270,51 @@ Control {
         }
 
         Item {
-            height: G.Style.sizes.s8
+            height: G.Style.mediumLabelHeight
+            Layout.fillWidth: true;
+
+            Label {
+                id: _elevation_label
+
+                anchors.left: parent.left;
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: G.Style.smallPadding
+
+                text: "Elevation";
+                font: G.Style.fonts.formLabel
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            TextInput {
+                id: _elevation
+
+                anchors.left: _elevation_label.right;
+                anchors.right: parent.right;
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: G.Style.smallPadding
+
+                font: G.Style.fonts.value
+                color: G.Style.colors.textColorBase
+
+                text: view ? view.viewLogic.cameraElevation.toFixed(2) : "0";
+                validator: DoubleValidator {
+                    bottom: -90
+                    top: 90
+                    decimals: 2
+                    notation: DoubleValidator.StandardNotation
+                }
+
+                onEditingFinished: {
+                    if (view) {
+                        let d = parseFloat(text)
+                        view.viewLogic.cameraElevation = parseFloat(d != NaN ? d : 0);
+                    }
+                }
+            }
+        }
+
+        Item {
+            height: G.Style.mediumLabelHeight
             Layout.fillWidth: true;
 
             Label {
@@ -279,7 +323,6 @@ Control {
                 anchors.left: parent.left;
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.margins: G.Style.smallPadding
-                
 
                 text: "Azimuth";
                 font: G.Style.fonts.formLabel
@@ -294,25 +337,72 @@ Control {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
+                font: G.Style.fonts.value
+                color: G.Style.colors.textColorBase
+
                 text: view ? view.viewLogic.cameraAzimuth.toFixed(2) : "0";
                 validator: DoubleValidator {
-                    bottom: 0
-                    top: 360
+                    bottom: -180
+                    top: 180
                     decimals: 2
                     notation: DoubleValidator.StandardNotation
                 }
 
-                onTextEdited: {
-                    console.log(text, view)
+                onEditingFinished: {
                     if (view) {
-                        view.viewLogic.cameraAzimuth = parseFloat(text);
+                        let d = parseFloat(text)
+                        view.viewLogic.cameraAzimuth = parseFloat(d != NaN ? d : 0);
                     }
                 }
             }
         }
         
         Item {
-            height: G.Style.sizes.s8
+            height: G.Style.mediumLabelHeight
+            Layout.fillWidth: true;
+
+            Label {
+                id: _roll_label
+
+                anchors.left: parent.left;
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: G.Style.smallPadding
+
+                text: "Roll";
+                font: G.Style.fonts.formLabel
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            TextInput {
+                id: _roll
+
+                anchors.left: _roll_label.right;
+                anchors.right: parent.right;
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: G.Style.smallPadding
+
+                font: G.Style.fonts.value
+                color: G.Style.colors.textColorBase
+
+                text: view ? view.viewLogic.cameraRoll.toFixed(2) : "0";
+                validator: DoubleValidator {
+                    bottom: -180
+                    top: 180
+                    decimals: 2
+                    notation: DoubleValidator.StandardNotation
+                }
+
+                onEditingFinished: {
+                    if (view) {
+                        let d = parseFloat(text)
+                        view.viewLogic.cameraRoll = parseFloat(d != NaN ? d : 0);
+                    }
+                }
+            }
+        }
+                
+        Item {
+            height: G.Style.mediumLabelHeight
             Layout.fillWidth: true;
 
             Label {
@@ -321,7 +411,6 @@ Control {
                 anchors.left: parent.left;
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.margins: G.Style.smallPadding
-                
 
                 text: "Distance";
                 font: G.Style.fonts.formLabel
@@ -336,6 +425,9 @@ Control {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
+                font: G.Style.fonts.value
+                color: G.Style.colors.textColorBase
+
                 text: view ? view.viewLogic.cameraDistance.toFixed(2) : "0";
                 validator: DoubleValidator {
                     bottom: 0
@@ -343,11 +435,10 @@ Control {
                     notation: DoubleValidator.StandardNotation
                 }
 
-                onTextEdited: {
-                    console.log(text, view)
+                onEditingFinished: {
                     if (view) {
-                        console.log(text, parseFloat(text))
-                        view.viewLogic.cameraDistance = parseFloat(text);
+                        let d = parseFloat(text)
+                        view.viewLogic.cameraDistance = parseFloat(d != NaN ? d : 0);
                     }
                 }
             }
