@@ -54,6 +54,86 @@
 // #include <QVTKInteractor.h>
 // #include <QVTKOpenGLNativeWidget.h>
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonCameraParameters
+// ///////////////////////////////////////////////////////////////////
+
+class GNOMONVISUALIZATION_EXPORT gnomonCameraParameters
+{
+public:
+    gnomonCameraParameters(void) = default;
+    gnomonCameraParameters(double distance, double azimuth, double elevation, double roll) : distance(distance), azimuth(azimuth), elevation(elevation), roll(roll) {};
+    ~gnomonCameraParameters(void) = default;
+
+public:
+    void fromVtkCamera(vtkSmartPointer<vtkCamera> cam);
+    void toVtkCamera(vtkSmartPointer<vtkCamera> cam);
+
+public:
+    double distance = 1;
+    double azimuth = 0;
+    double elevation = 0;
+    double roll = 0;
+};
+
+void gnomonCameraParameters::fromVtkCamera(vtkSmartPointer<vtkCamera> cam)
+{
+    double pos[3], foc[3], vec[3], z_vec[3], t_vec[3], up[3];
+    cam->GetPosition(pos);
+    cam->GetFocalPoint(foc);
+    cam->GetViewUp(up);
+
+    vtkMath::Subtract(pos, foc, vec);
+    this->distance = vtkMath::Norm(vec);
+    this->azimuth = vtkMath::DegreesFromRadians(atan2(vec[1], vec[0]));
+    this->elevation = vtkMath::DegreesFromRadians(asin(vec[2] / distance));
+
+    vtkMath::MultiplyScalar(vec, 1/this->distance);
+    double z_axis[3] = {0, 0, 1};
+    if (abs(vtkMath::Dot(vec, z_axis)) != 1) {
+        vtkMath::Cross(z_axis, vec, t_vec);
+        vtkMath::MultiplyScalar(t_vec, 1 / vtkMath::Norm(t_vec));
+        vtkMath::Cross(vec, t_vec, z_vec);
+        double up_t = vtkMath::Dot(t_vec, up);
+        double up_z = vtkMath::Dot(z_vec, up);
+        this->roll = vtkMath::DegreesFromRadians(atan2(up_t, up_z));
+    } else {
+        this->roll = vtkMath::DegreesFromRadians(atan2(up[1], -up[0]));
+    }
+}
+
+void gnomonCameraParameters::toVtkCamera(vtkSmartPointer<vtkCamera> cam)
+{
+    double pos[3], foc[3], vec[3], up[3], new_pos[3];
+    cam->GetPosition(pos);
+    cam->GetFocalPoint(foc);
+
+    double a = vtkMath::RadiansFromDegrees(this->azimuth);
+    double e = vtkMath::RadiansFromDegrees(this->elevation);
+    double r = vtkMath::RadiansFromDegrees(this->roll);
+
+    vec[0] = cos(a)*cos(e);
+    vec[1] = sin(a)*cos(e);
+    vec[2] = sin(e);
+
+    if (cos(e) != 0) {
+        double z_vec[3] = {-cos(a)*sin(e), -sin(a)*sin(e), cos(e)};
+        double t_vec[3];
+        vtkMath::Cross(vec, z_vec, t_vec);
+        up[0] = -sin(r)*t_vec[0] + cos(r)*z_vec[0];
+        up[1] = -sin(r)*t_vec[1] + cos(r)*z_vec[1];
+        up[2] = -sin(r)*t_vec[2] + cos(r)*z_vec[2];
+    } else {
+        up[0] = -sin(r);
+        up[1] = cos(r);
+        up[2] = 0;
+    }
+
+    vtkMath::MultiplyScalar(vec, this->distance);
+    vtkMath::Add(foc, vec, new_pos);
+    cam->SetPosition(new_pos);
+    cam->SetViewUp(up);
+}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonVtkViewPrivate
@@ -978,6 +1058,7 @@ void gnomonVtkView::setBounds(double bounds[6])
         if (!dd->camera_fixed) {
             dd->renderer2D->ResetCamera();
             dd->renderer3D->ResetCamera();
+            emit cameraChanged();
         }
     }
 }
@@ -1047,6 +1128,7 @@ void gnomonVtkView::setCameraXY(bool flip, bool turn) {
     cam->SetPosition((dd->xBounds[0] + dd->xBounds[1]) / 2, (dd->yBounds[0] + dd->yBounds[1]) / 2, flip? dd->zBounds[0] : dd->zBounds[1]);
     cam->SetViewUp(0, turn? -1 : 1, 0);
     dd->renderer3D->ResetCamera();
+    emit cameraChanged();
     this->render();
 }
 
@@ -1059,82 +1141,8 @@ void gnomonVtkView::setCameraXZ(bool flip, bool turn)
     cam->SetPosition((dd->xBounds[0] + dd->xBounds[1]) / 2, flip? dd->yBounds[0] : dd->yBounds[1], (dd->zBounds[0] + dd->zBounds[1]) / 2);
     cam->SetViewUp(0, 0, turn? -1 : 1);
     dd->renderer3D->ResetCamera();
-    this->render();
-}
-
-void gnomonVtkView::setCameraAzimuth(double angle)
-{
-    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    this->render();
-}
-
-double gnomonVtkView::cameraAzimuth(void)
-{
-    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    return 0;
-}
-
-void gnomonVtkView::setCameraElevation(double angle)
-{
-    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto pos = cam->GetPosition();
-    auto foc = cam->GetFocalPoint();
-    this->render();
-}
-
-double gnomonVtkView::cameraElevation(void)
-{
-    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto pos = cam->GetPosition();
-    auto foc = cam->GetFocalPoint();
-    return 0;
-}
-
-void gnomonVtkView::setCameraRoll(double angle)
-{
-    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    this->render();
-}
-
-double gnomonVtkView::cameraRoll(void)
-{
-    return 0;
-}
-
-void gnomonVtkView::setCameraDistance(double distance)
-{
-    qDebug()<<Q_FUNC_INFO<<"Set camera distance to"<<distance;
-    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    double pos[3], foc[3], vec[3], new_vec[3], new_pos[3];
-    cam->GetPosition(pos);
-    cam->GetFocalPoint(foc);
-
-    vtkMath::Subtract(pos, foc, vec);
-    double current_distance = vtkMath::Norm(vec);
-    qDebug()<<Q_FUNC_INFO<<distance<<"->"<<current_distance;
-    vtkMath::MultiplyScalar(vec, distance/current_distance);
-    vtkMath::Add(foc, vec, new_pos);
-    cam->SetPosition(new_pos);
-    this->render();
-
     emit cameraChanged();
-}
-
-double gnomonVtkView::cameraDistance(void)
-{
-    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    double pos[3], foc[3], vec[3], up[3];
-    cam->GetPosition(pos);
-    cam->GetFocalPoint(foc);
-    cam->GetViewUp(up);
-
-    vtkMath::Subtract(pos, foc, vec);
-    double distance = vtkMath::Norm(vec);
-    qDebug()<<Q_FUNC_INFO<<distance;
-    double azimuth = (vec[0] >= 0 ? 1 : -1) * acos(vec[1]/distance);
-    double elevation = asin(vec[2]/distance);
-
-    return distance;
+    this->render();
 }
 
 void gnomonVtkView::setCameraYZ(bool flip, bool turn)
@@ -1146,7 +1154,83 @@ void gnomonVtkView::setCameraYZ(bool flip, bool turn)
     cam->SetPosition(flip? dd->xBounds[0] : dd->xBounds[1], (dd->yBounds[0] + dd->yBounds[1]) / 2, (dd->zBounds[0] + dd->zBounds[1]) / 2);
     cam->SetViewUp(0, 0, turn? -1 : 1);
     dd->renderer3D->ResetCamera();
+    emit cameraChanged();
     this->render();
+}
+
+void gnomonVtkView::setCameraAzimuth(double angle)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto p = new gnomonCameraParameters();
+    p->fromVtkCamera(cam);
+    p->azimuth = angle;
+    p->toVtkCamera(cam);
+    this->render();
+}
+
+double gnomonVtkView::cameraAzimuth(void)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto p = new gnomonCameraParameters();
+    p->fromVtkCamera(cam);
+    return p->azimuth;
+}
+
+void gnomonVtkView::setCameraElevation(double angle)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto p = new gnomonCameraParameters();
+    p->fromVtkCamera(cam);
+    p->elevation = angle;
+    p->toVtkCamera(cam);
+    this->render();
+}
+
+double gnomonVtkView::cameraElevation(void)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto p = new gnomonCameraParameters();
+    p->fromVtkCamera(cam);
+    return p->elevation;
+}
+
+void gnomonVtkView::setCameraRoll(double angle)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto p = new gnomonCameraParameters();
+    p->fromVtkCamera(cam);
+    p->roll = angle;
+    p->toVtkCamera(cam);
+    this->render();
+}
+
+double gnomonVtkView::cameraRoll(void)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto p = new gnomonCameraParameters();
+    p->fromVtkCamera(cam);
+    return p->roll;
+}
+
+void gnomonVtkView::setCameraDistance(double distance)
+{
+    if (distance > 0) {
+        vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+        auto p = new gnomonCameraParameters();
+        p->fromVtkCamera(cam);
+        p->distance = distance;
+        p->toVtkCamera(cam);
+        this->render();
+        emit cameraChanged();
+    }
+}
+
+double gnomonVtkView::cameraDistance(void)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto p = new gnomonCameraParameters();
+    p->fromVtkCamera(cam);
+    return p->distance;
 }
 
 void gnomonVtkView::setCamera(vtkCamera *cam)
@@ -1156,6 +1240,7 @@ void gnomonVtkView::setCamera(vtkCamera *cam)
     camera3D->SetFocalPoint(cam->GetFocalPoint());
     camera3D->SetViewUp(cam->GetViewUp());
     camera3D->SetPosition(cam->GetPosition());
+    emit cameraChanged();
 }
 
 void gnomonVtkView::resetCamera()
@@ -1163,6 +1248,7 @@ void gnomonVtkView::resetCamera()
     if (!dd->camera_fixed) {
         dd->renderer3D->ResetCamera();
         dd->renderer2D->ResetCamera();
+        emit cameraChanged();
     }
 }
 
