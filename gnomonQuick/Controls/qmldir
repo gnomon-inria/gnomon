@@ -53,6 +53,7 @@ Project.qml 1.0 Project.qml
 Stack 1.0 Stack.qml
 StringParameter 1.0 StringParameter.qml
 View 1.0 View.qml
+ViewParameters 1.0 ViewParameters.qml
 World 1.0 World.qml
 WorldDelegate 1.0 WorldDelegate.qml
 Parameters 1.0 Parameters.qml
