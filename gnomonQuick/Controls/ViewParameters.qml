@@ -20,181 +20,109 @@ Control {
 
     required property Item view;
 
-    implicitHeight: 4*G.Style.mediumLabelHeight
+    implicitHeight: _camera_panel.implicitHeight
 
-    ColumnLayout {
+    ListModel {
+        id: _camera_parameters
+
+        ListElement {
+            name: "Elevation"
+            from: -90
+            to: 90
+            target: "view.viewLogic.cameraElevation"
+        }
+
+        ListElement {
+            name: "Azimuth"
+            from: -180
+            to: 180
+            target: "view.viewLogic.cameraAzimuth"
+        }
+
+        ListElement {
+            name: "Roll"
+            from: -180
+            to: 180
+            target: "view.viewLogic.cameraRoll"
+        }
+
+        ListElement {
+            name: "Distance"
+            from: 0
+            to: 1000000
+            target: "view.viewLogic.cameraDistance"
+        }
+    }
+
+    G.CollapsiblePanel {
+        id: _camera_panel
+
         anchors.fill: parent;
 
-        Item {
-            height: G.Style.mediumLabelHeight
-            Layout.fillWidth: true;
+        title: "Camera"
+        collapsed: false
+        panelHeight: _camera_parameters.count * (G.Style.mediumLabelHeight + G.Style.mediumColumnSpacing) + G.Style.mediumColumnSpacing
 
-            Label {
-                id: _elevation_label
+        ListView {
+            id: _camera_list
 
-                anchors.left: parent.left;
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.topMargin: G.Style.smallColumnSpacing
 
-                text: "Elevation";
-                font: G.Style.fonts.formLabel
-                verticalAlignment: Text.AlignVCenter
-            }
+            width: _control.width - G.Style.sizes.s4
 
-            TextInput {
-                id: _elevation
+            spacing: G.Style.mediumColumnSpacing
 
-                anchors.left: _elevation_label.right;
-                anchors.right: parent.right;
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
+            model: _camera_parameters
 
-                font: G.Style.fonts.value
-                color: G.Style.colors.textColorBase
+            delegate: Item {
+                height: G.Style.mediumLabelHeight
+                width: _camera_list.width;
 
-                text: view ? view.viewLogic.cameraElevation.toFixed(2) : "0";
-                validator: DoubleValidator {
-                    bottom: -90
-                    top: 90
-                    decimals: 2
-                    notation: DoubleValidator.StandardNotation
+                Label {
+                    id: _label
+
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+
+                    text: model.name.toUpperCase()
+                    font: G.Style.fonts.label
+                    color: G.Style.colors.textColorBase
                 }
 
-                onEditingFinished: {
-                    if (view) {
-                        let d = parseFloat(text)
-                        view.viewLogic.cameraElevation = parseFloat(d != NaN ? d : 0);
+                TextField {
+                    id: _text
+
+                    anchors.top: _label.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+
+                    font: G.Style.fonts.value
+                    color: G.Style.colors.textColorBase
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    text: eval("view ? "+model.target+".toFixed(2) : '0'");
+                    validator: DoubleValidator {
+                        bottom: model.from
+                        top: model.to
+                        decimals: 2
+                        notation: DoubleValidator.StandardNotation
                     }
-                }
-            }
-        }
 
-        Item {
-            height: G.Style.mediumLabelHeight
-            Layout.fillWidth: true;
-
-            Label {
-                id: _azimuth_label
-
-                anchors.left: parent.left;
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                text: "Azimuth";
-                font: G.Style.fonts.formLabel
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            TextInput {
-                id: _azimuth
-
-                anchors.left: _azimuth_label.right;
-                anchors.right: parent.right;
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                font: G.Style.fonts.value
-                color: G.Style.colors.textColorBase
-
-                text: view ? view.viewLogic.cameraAzimuth.toFixed(2) : "0";
-                validator: DoubleValidator {
-                    bottom: -180
-                    top: 180
-                    decimals: 2
-                    notation: DoubleValidator.StandardNotation
-                }
-
-                onEditingFinished: {
-                    if (view) {
-                        let d = parseFloat(text)
-                        view.viewLogic.cameraAzimuth = parseFloat(d != NaN ? d : 0);
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: G.Style.colors.gutterColor
+                        radius: G.Style.panelRadius
                     }
-                }
-            }
-        }
 
-        Item {
-            height: G.Style.mediumLabelHeight
-            Layout.fillWidth: true;
-
-            Label {
-                id: _roll_label
-
-                anchors.left: parent.left;
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                text: "Roll";
-                font: G.Style.fonts.formLabel
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            TextInput {
-                id: _roll
-
-                anchors.left: _roll_label.right;
-                anchors.right: parent.right;
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                font: G.Style.fonts.value
-                color: G.Style.colors.textColorBase
-
-                text: view ? view.viewLogic.cameraRoll.toFixed(2) : "0";
-                validator: DoubleValidator {
-                    bottom: -180
-                    top: 180
-                    decimals: 2
-                    notation: DoubleValidator.StandardNotation
-                }
-
-                onEditingFinished: {
-                    if (view) {
-                        let d = parseFloat(text)
-                        view.viewLogic.cameraRoll = parseFloat(d != NaN ? d : 0);
-                    }
-                }
-            }
-        }
-
-        Item {
-            height: G.Style.mediumLabelHeight
-            Layout.fillWidth: true;
-
-            Label {
-                id: _distance_label
-
-                anchors.left: parent.left;
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                text: "Distance";
-                font: G.Style.fonts.formLabel
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            TextInput {
-                id: _distance
-
-                anchors.left: _distance_label.right;
-                anchors.right: parent.right;
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                font: G.Style.fonts.value
-                color: G.Style.colors.textColorBase
-
-                text: view ? view.viewLogic.cameraDistance.toFixed(2) : "0";
-                validator: DoubleValidator {
-                    bottom: 0
-                    decimals: 2
-                    notation: DoubleValidator.StandardNotation
-                }
-
-                onEditingFinished: {
-                    if (view) {
-                        let d = parseFloat(text)
-                        view.viewLogic.cameraDistance = parseFloat(d != NaN ? d : 0);
+                    onEditingFinished: {
+                        if (view) {
+                           let d = parseFloat(text)
+                           eval(model.target+" = parseFloat(d != NaN ? d : 0)");
+                        }
                     }
                 }
             }

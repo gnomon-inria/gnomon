@@ -232,14 +232,14 @@ Control {
                 anchors.fill: parent
                 anchors.margins: 12;
 
-                Item { // spacer
-                    Layout.fillWidth: true;
-                    Layout.fillHeight: true;
-                }
-
                 G.ViewParameters {
                     Layout.fillWidth: true
                     view: _control.view
+                }
+
+                Item { // spacer
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
                 }
             }
         }
