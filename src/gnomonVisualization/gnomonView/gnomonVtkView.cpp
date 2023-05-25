@@ -94,7 +94,8 @@ void gnomonCameraParameters::fromVtkCamera(vtkSmartPointer<vtkCamera> cam)
 
     vtkMath::MultiplyScalar(vec, 1/this->distance);
     double z_axis[3] = {0, 0, 1};
-    if (abs(vtkMath::Dot(vec, z_axis)) != 1) {
+    static const double eps = 256*std::numeric_limits<double>::epsilon();
+    if (fabs(1 - fabs(vtkMath::Dot(vec, z_axis))) > eps) {
         vtkMath::Cross(z_axis, vec, t_vec);
         vtkMath::MultiplyScalar(t_vec, 1 / vtkMath::Norm(t_vec));
         vtkMath::Cross(vec, t_vec, z_vec);
@@ -102,7 +103,7 @@ void gnomonCameraParameters::fromVtkCamera(vtkSmartPointer<vtkCamera> cam)
         double up_z = vtkMath::Dot(z_vec, up);
         this->roll = vtkMath::DegreesFromRadians(atan2(up_t, up_z));
     } else {
-        this->roll = vtkMath::DegreesFromRadians(atan2(up[1], -up[0]));
+        this->roll = vtkMath::DegreesFromRadians(atan2(-up[0], up[1]));
     }
 }
 
@@ -120,7 +121,8 @@ void gnomonCameraParameters::toVtkCamera(vtkSmartPointer<vtkCamera> cam)
     vec[1] = sin(a)*cos(e);
     vec[2] = sin(e);
 
-    if (cos(e) != 0) {
+    static const double eps = 256*std::numeric_limits<double>::epsilon();
+    if (fabs(cos(e)) > eps) {
         double z_vec[3] = {-cos(a)*sin(e), -sin(a)*sin(e), cos(e)};
         double t_vec[3];
         vtkMath::Cross(vec, z_vec, t_vec);
