@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <vtkAxesActor.h>
+#include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
 #include <vtkCaptionActor2D.h>
 #include <vtkCubeAxesActor.h>
@@ -166,6 +167,9 @@ public:
     void updateFormsTimes(void);
     void updateGrid(void);
     void updateAxes(void);
+
+public:
+    void addCameraObserver(vtkSmartPointer<vtkCamera> cam);
 
 public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
@@ -480,6 +484,18 @@ void gnomonVtkViewPrivate::updateAxes(void)
     }
 }
 
+void gnomonVtkViewPrivate::addCameraObserver(vtkSmartPointer<vtkCamera> cam)
+{
+    vtkNew<vtkCallbackCommand> camera_callback;
+    auto callback = [] (vtkObject* caller, long unsigned int eventId, void* clientData, void* callData) {
+        auto view = static_cast<gnomonVtkView *>(clientData);
+        emit view->cameraChanged();
+    };
+    camera_callback->SetCallback(callback);
+    camera_callback->SetClientData(static_cast<void *>(this->q));
+    cam->AddObserver(vtkCommand::ModifiedEvent, camera_callback);
+}
+
 void gnomonVtkViewPrivate::adaptForm(const QString& adapter_plugin)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = this->form_to_adapt;
@@ -522,6 +538,8 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 {
     dd = new gnomonVtkViewPrivate;
     dd->q = this;
+
+    dd->addCameraObserver(dd->renderer3D->GetActiveCamera());
 
     dd->settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     QString bg_color_hex = dd->settings->value("vtk/background_color", "#000000").toString();
@@ -854,6 +872,7 @@ void gnomonVtkView::link(gnomonVtkView *other)
 
     dd->renderer2D->SetActiveCamera(other->dd->renderer2D->GetActiveCamera());
     dd->renderer3D->SetActiveCamera(other->dd->renderer3D->GetActiveCamera());
+    dd->addCameraObserver(dd->renderer3D->GetActiveCamera());
 
     other->dd->window->AddObserver(vtkCommand::RenderEvent, this, &gnomonVtkView::render);
     this->render();
@@ -862,6 +881,7 @@ void gnomonVtkView::link(gnomonVtkView *other)
     dd->connect3D = connect(other, &gnomonVtkView::switchedTo3D, [=] () {
         this->switchTo3D();
         dd->renderer3D->SetActiveCamera(other->dd->renderer3D->GetActiveCamera());
+        dd->addCameraObserver(dd->renderer3D->GetActiveCamera());
     });
     dd->connect2D = connect(other, &gnomonVtkView::switchedTo2D, [=] () {
         this->switchTo2D();
@@ -907,6 +927,7 @@ void gnomonVtkView::unlink(gnomonVtkView *other)
     vtkSmartPointer<vtkCamera> camera3D = vtkCamera::New();
     camera3D->ShallowCopy(dd->renderer3D->GetActiveCamera());
     dd->renderer3D->SetActiveCamera(camera3D);
+    dd->addCameraObserver(camera3D);
 
     dd->clearConnections();
 
