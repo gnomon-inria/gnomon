@@ -11,6 +11,8 @@ import xQuick.Fonts         1.0 as X
 import xQuick.Style         1.0 as X
 import xQuick.Vis           1.0 as XVis
 
+import gnomon.Visualization 1.0 as GV
+
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
@@ -62,6 +64,8 @@ Control {
         title: "Camera"
         collapsed: false
         panelHeight: _camera_parameters.count * (G.Style.mediumLabelHeight + G.Style.mediumColumnSpacing) + G.Style.mediumColumnSpacing
+
+        visible: view.viewLogic.mode == GV.View.VIEW_MODE_3D
 
         ListView {
             id: _camera_list

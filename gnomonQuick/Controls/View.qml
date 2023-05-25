@@ -752,39 +752,6 @@ Rectangle {
         border.color: G.Style.colors.baseColor;
 
         visible: window.currentView == self;
-
-        MouseArea {
-            id: _mouse_area
-            anchors.fill: parent
-            anchors.topMargin: G.Style.iconLarge + G.Style.smallPadding
-
-            hoverEnabled: true
-            propagateComposedEvents: true
-
-            onReleased: (mouse)=> {
-                console.log(mouse)
-                viewLogic.cameraChanged()
-                mouse.accepted = false
-            }
-
-            onClicked: (mouse)=> {
-                mouse.accepted = false
-            }
-
-            onPressed: (mouse)=> {
-                mouse.accepted = false
-            }
-
-            onPositionChanged: (mouse)=> {
-                viewLogic.cameraChanged()
-                mouse.accepted = false
-            }
-
-            onWheel: (wheel)=> {
-                viewLogic.cameraChanged()
-                wheel.accepted = false
-            }
-        }
     }
 
     Component.onCompleted: window.currentView = self;
