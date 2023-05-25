@@ -102,176 +102,211 @@ Control {
 
     }
 
-    Label {
-        id: _visu_label
+    TabBar {
+        id: _bar;
 
         anchors.top: _form_selector.bottom
         anchors.left: parent.left
+        anchors.right: parent.right
         anchors.topMargin: G.Style.sizes.s5
         anchors.bottomMargin: G.Style.sizes.s4
 
-        text: "Visualization"
-        font: G.Style.fonts.header
-        color: G.Style.colors.textColorBase
+        currentIndex: _menu_container.currentIndex
+
+        G.TabButton {
+            text: "Visualization"
+            font: G.Style.fonts.formLabel
+        }
+        G.TabButton {
+            text: "View Settings"
+            font: G.Style.fonts.formLabel
+        }
     }
 
-    ColumnLayout {
-        anchors.top: _visu_label.bottom;
+    StackLayout {
+        id: _menu_container;
+
+        anchors.top: _bar.bottom;
+        anchors.right: parent.right;
+        anchors.left: parent.left;
+        anchors.bottom: _button_container.top;
+
+        currentIndex: _bar.currentIndex;
+
+        Control {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 12;
+
+                G.ComboBoxWithLabel {
+                    id: _visu_combobox;
+
+                    label: "Type:"
+                    textRole: "name"
+                    valueRole: "counter"
+                    model: view? view.viewLogic.formVisualizations(_form_selector.currentValue) : null;
+                    currentIndex: 0
+
+                    property bool _model_changing: true;
+
+                    function changeModel(formType) {
+                        let previousVisuSelected = view ? view.viewLogic.lastVisuSelected(formType) : ""
+                        let currentVisu = view ? view.viewLogic.formVisuName(formType) : ""
+                        _model_changing = true
+                        model = view? view.viewLogic.formVisualizations(formType) : null;
+                        let index = formVisuIndex(formType, previousVisuSelected)
+                        if(index>=0 && count>=1) {
+                            currentIndex = index
+                        } else if(count>=1 && index ==-1) {
+                            currentIndex = formVisuIndex(formType, currentVisu)
+                        } else if(count>=1 && currentIndex ==-1) {
+                            currentIndex = 0
+                        }
+                        valueChangeHandler()
+                        _model_changing = false;
+                    }
+
+
+                    Layout.fillWidth: true;
+                    /* Layout.leftMargin: 20 */
+                    /* Layout.rightMargin: 20 */
+                    visible: view? view.viewLogic.formNames.length > 0 : false
+
+                    function valueChangeHandler() {
+                        if(view) {
+                            if (_form_selector.currentValue) {
+                                let previousVisuSelected = view.viewLogic.lastVisuSelected(_form_selector.currentValue)
+                                if(previousVisuSelected!=model[_visu_combobox.currentIndex].key){
+                                    view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex].key)
+                                }
+                                //_auto_render.checked = false
+                                _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
+                                _params.updateParametersModel();
+                                _control.update_menu(_visu_combobox.currentValue.key);
+                            }
+                        }
+                    }
+
+                    onCurrentValueChanged: {
+                        if(!_model_changing){
+                            valueChangeHandler()
+                        }
+                    }
+                }
+
+                G.Parameters {
+                    id: _params;
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    height: G.Style.sizes.s4
+                }
+
+                Item {
+                    id: _menu;
+
+                    Layout.fillWidth: true;
+                    height: G.Style.mediumPanelHeight
+                    Layout.fillHeight: true;
+
+                }
+
+                Item {
+                    id: _spacer
+
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+                }
+            }
+        }
+
+        Control {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 12;
+
+                Item { // spacer
+                    Layout.fillWidth: true;
+                    Layout.fillHeight: true;
+                }
+
+                G.ViewParameters {
+                    Layout.fillWidth: true
+                    view: _control.view
+                }
+            }
+        }
+    }
+
+    Item {
+        id: _button_container
+
         anchors.right: parent.right;
         anchors.left: parent.left;
         anchors.bottom: parent.bottom;
+        height: G.Style.sizes.s8
 
-        anchors.margins: 12;
+        G.Button {
+            id: _render
 
-        G.ComboBoxWithLabel {
-            id: _visu_combobox;
+            anchors.right: _button_container.right;
+            anchors.verticalCenter: _button_container.verticalCenter
+            anchors.margins: G.Style.smallPadding
 
-            label: "Type:"
-            textRole: "name"
-            valueRole: "counter"
-            model: view? view.viewLogic.formVisualizations(_form_selector.currentValue) : null;
-            currentIndex: 0
+            text: "Render"
+            enabled: view? view.viewLogic.formNames.length > 0 : false;
 
-            property bool _model_changing: true;
-
-            function changeModel(formType) {
-                let previousVisuSelected = view ? view.viewLogic.lastVisuSelected(formType) : ""
-                let currentVisu = view ? view.viewLogic.formVisuName(formType) : ""
-                _model_changing = true
-                model = view? view.viewLogic.formVisualizations(formType) : null;
-                let index = formVisuIndex(formType, previousVisuSelected)
-                if(index>=0 && count>=1) {
-                    currentIndex = index
-                } else if(count>=1 && index ==-1) {
-                    currentIndex = formVisuIndex(formType, currentVisu)
-                } else if(count>=1 && currentIndex ==-1) {
-                    currentIndex = 0
-                }
-                valueChangeHandler()
-                _model_changing = false;
+            onClicked: {
+                view.viewLogic.update();
             }
 
+        }
 
-            Layout.fillWidth: true;
-            /* Layout.leftMargin: 20 */
-            /* Layout.rightMargin: 20 */
-            visible: view? view.viewLogic.formNames.length > 0 : false
+        G.Button {
+            id: _clear
 
-            function valueChangeHandler() {
-                if(view) {
-                    if (_form_selector.currentValue) {
-                        let previousVisuSelected = view.viewLogic.lastVisuSelected(_form_selector.currentValue)
-                        if(previousVisuSelected!=model[_visu_combobox.currentIndex].key){
-                            view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex].key)
-                        }
-                        //_auto_render.checked = false
-                        _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
-                        _params.updateParametersModel();
-                        _control.update_menu(_visu_combobox.currentValue.key);
-                    }
-                }
+            anchors.right: _render.left
+            anchors.verticalCenter: _button_container.verticalCenter
+            anchors.margins: G.Style.smallPadding
+
+            text: "Clear"
+            flat: true
+            enabled: view ? view.viewLogic.formNames.length > 0 : false;
+
+            onClicked: {
+                view.viewLogic.clear();
+                _internal.menu.destroy();
             }
 
-            onCurrentValueChanged: {
-                if(!_model_changing){
-                    valueChangeHandler()
-                }
+        }
+
+        G.CheckBox {
+            id: _auto_render
+
+            anchors.left: _button_container.left
+            anchors.verticalCenter: _button_container.verticalCenter
+            anchors.bottomMargin: G.Style.smallPadding
+
+            text: "Auto render"
+            checked: true
+
+            Settings {
+                property alias auto_render: _auto_render.checked
             }
-        }
 
-        G.Parameters {
-            id: _params;
-        }
-
-        Item {
-            Layout.fillWidth: true
-            height: G.Style.sizes.s4
-        }
-
-        Item {
-            id: _menu;
-
-            Layout.fillWidth: true;
-            height: G.Style.mediumPanelHeight
-            Layout.fillHeight: true;
-
-        }
-
-        Item {
-            id: _spacer
-
-            Layout.fillWidth: true;
-            Layout.fillHeight: true;
-        }
-
-        Item {
-            id: _button_container
-
-            height: G.Style.sizes.s8
-            Layout.fillWidth: true;
-
-            G.Button {
-
-                id: _render
-
-                anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                text: "Render"
-                enabled: view? view.viewLogic.formNames.length > 0 : false;
-
-                onClicked: {
+            onClicked: {
+                if (_auto_render.checked) {
+                    console.info('launching Render!')
                     view.viewLogic.update();
                 }
-
             }
-
-            G.Button {
-                id: _clear
-
-                anchors.right: _render.left
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                text: "Clear"
-                flat: true
-                enabled: view ? view.viewLogic.formNames.length > 0 : false;
-
-                onClicked: {
-                    view.viewLogic.clear();
-                    _internal.menu.destroy();
-                }
-
-            }
-
-            G.CheckBox {
-
-                id: _auto_render
-
-                anchors.left: _button_container.left
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.bottomMargin: G.Style.smallPadding
-
-                text: "Auto render"
-                checked: true
-
-                Settings {
-                    property alias auto_render: _auto_render.checked
-                }
-
-                onClicked: {
-                    if (_auto_render.checked) {
-                        console.info('launching Render!')
-                        view.viewLogic.update();
-                    }
-                }
-            }
-        }
-
-        G.ViewParameters {
-            Layout.fillWidth: true
-            view: _control.view
         }
     }
 

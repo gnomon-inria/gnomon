@@ -7,16 +7,22 @@ import gnomonQuick.Style as G
 
 TabButton {
     id: _self
-    text: ""
+
+    font: G.Style.fonts.header
+    property alias color: _label.color
+
     contentItem: Label {
+        id: _label
+
         anchors.fill: parent
 
-        font: G.Style.fonts.header;
+        font: _self.font;
         color: G.Style.colors.textColorBase;
         text: _self.text;
         verticalAlignment: Text.AlignVCenter;
         horizontalAlignment: Text.AlignHCenter;
     }
+
     background: Rectangle {
         anchors.fill: parent
         color: G.Style.colors.fgColor
