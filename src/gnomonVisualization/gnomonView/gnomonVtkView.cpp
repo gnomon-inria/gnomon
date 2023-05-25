@@ -70,6 +70,9 @@ public:
     void fromVtkCamera(vtkSmartPointer<vtkCamera> cam);
     void toVtkCamera(vtkSmartPointer<vtkCamera> cam);
 
+    void fromJson(const QJsonObject json);
+    const QJsonObject toJson(void);
+
 public:
     double distance = 1;
     double azimuth = 0;
@@ -134,6 +137,27 @@ void gnomonCameraParameters::toVtkCamera(vtkSmartPointer<vtkCamera> cam)
     vtkMath::Add(foc, vec, new_pos);
     cam->SetPosition(new_pos);
     cam->SetViewUp(up);
+}
+
+void gnomonCameraParameters::fromJson(const QJsonObject json)
+{
+    QVariantMap camera_map = json.toVariantMap();
+
+    this->elevation = camera_map.value("elevation", 90).toDouble();
+    this->azimuth = camera_map.value("azimuth", 0).toDouble();
+    this->roll = camera_map.value("roll", 0).toDouble();
+    this->distance = camera_map.value("distance", 100).toDouble();
+}
+
+const QJsonObject gnomonCameraParameters::toJson(void)
+{
+    QVariantMap camera_map;
+    camera_map["elevation"] = this->elevation;
+    camera_map["azimuth"] = this->azimuth;
+    camera_map["roll"] = this->roll;
+    camera_map["distance"] = this->distance;
+
+    return QJsonObject::fromVariantMap(camera_map);
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -1271,6 +1295,72 @@ void gnomonVtkView::resetCamera()
         dd->renderer2D->ResetCamera();
         emit cameraChanged();
     }
+}
+
+void gnomonVtkView::saveCamera(const QString& file_url)
+{
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto p = new gnomonCameraParameters();
+    p->fromVtkCamera(cam);
+    QJsonObject camera_json = p->toJson();
+
+    QJsonDocument document;
+    document.setObject(camera_json);
+    QByteArray bytes = document.toJson(QJsonDocument::Indented);
+
+    QString file_path;
+    const QUrl url(file_url);
+    if (url.isLocalFile()) {
+        file_path = QDir::toNativeSeparators(url.toLocalFile());
+    } else {
+        file_path = file_url;
+    }
+
+    QFile f(file_path);
+    if(f.open(QIODevice::WriteOnly| QIODevice::Text)) {
+        QTextStream out(&f);
+        out<<bytes;
+        f.close();
+    } else {
+        qWarning()<<"Could not save to file"<<file_path;
+    }
+}
+
+void gnomonVtkView::loadCamera(const QString& file_url)
+{
+    QJsonObject camera_json;
+
+    QString file_path;
+    const QUrl url(file_url);
+    if (url.isLocalFile()) {
+        file_path = QDir::toNativeSeparators(url.toLocalFile());
+    } else {
+        file_path = file_url;
+    }
+
+    QFile f(file_path);
+    if (f.open(QIODevice::ReadOnly)) {
+        QByteArray bytes = f.readAll();
+        f.close();
+
+        QJsonParseError jsonError;
+        QJsonDocument document = QJsonDocument::fromJson(bytes, &jsonError);
+        if (jsonError.error != QJsonParseError::NoError) {
+            qWarning()<<"Error reading file"<<file_path<<": "<<jsonError.errorString();
+            return;
+        }
+        if (document.isObject()) {
+            camera_json = document.object();
+        }
+    } else {
+        qWarning()<<"Could not read file"<<file_path;
+    }
+
+    vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+    auto p = new gnomonCameraParameters();
+    p->fromJson(camera_json);
+    p->toVtkCamera(cam);
+    this->render();
 }
 
 void gnomonVtkView::setBgColor(const QColor& color)

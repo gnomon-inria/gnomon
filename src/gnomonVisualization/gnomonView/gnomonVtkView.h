@@ -233,6 +233,9 @@ public slots:
     void setCameraXZ(bool flip=false, bool turn=false);
     void setCameraYZ(bool flip=false, bool turn=false);
 
+    void saveCamera(const QString& file_url);
+    void loadCamera(const QString& file_url);
+
 public:
     void setCamera(vtkCamera *);
     void resetCamera(void);
