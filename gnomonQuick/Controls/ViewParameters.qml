@@ -4,6 +4,7 @@ import QtQuick.Layouts      1.15
 
 import Qt5Compat.GraphicalEffects
 
+import Qt.labs.platform  1.0 as P
 import Qt.labs.settings
 
 import xQuick.Controls      1.0 as X
@@ -15,6 +16,7 @@ import gnomon.Visualization 1.0 as GV
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
 
 
 Control {
@@ -63,17 +65,17 @@ Control {
 
         title: "Camera"
         collapsed: false
-        panelHeight: _camera_parameters.count * (G.Style.mediumLabelHeight + G.Style.mediumColumnSpacing) + G.Style.mediumColumnSpacing
+        panelHeight: _camera_parameters.count * (G.Style.mediumLabelHeight + G.Style.mediumColumnSpacing) + G.Style.mediumColumnSpacing + G.Style.iconSmall
 
         visible: view.viewLogic.mode == GV.View.VIEW_MODE_3D
 
         ListView {
             id: _camera_list
 
-            anchors.top: parent.top
+            anchors.top: _button_container.bottom
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.topMargin: G.Style.smallColumnSpacing
+            anchors.topMargin: -G.Style.smallPadding
 
             width: _control.width - G.Style.sizes.s4
 
@@ -130,6 +132,75 @@ Control {
                     }
                 }
             }
+        }
+
+        Item {
+            id: _button_container
+
+            anchors.right: parent.right;
+            anchors.left: parent.left;
+            anchors.top: parent.top;
+            anchors.topMargin: G.Style.smallPadding;
+            height: G.Style.iconMedium
+
+            G.IconButton {
+                id: _load_camera
+
+                anchors.right: _button_container.right;
+                anchors.verticalCenter: _button_container.verticalCenter
+                anchors.rightMargin: G.Style.smallPadding
+
+                size: G.Style.iconSmall;
+                iconName: G.Icons.icons["file-upload-outline"]
+                color: G.Style.colors.textColorBase;
+
+                onClicked: {
+                    _file_dialog_load.open()
+                }
+            }
+
+            G.IconButton {
+                id: _save_camera
+
+                anchors.right: _load_camera.left;
+                anchors.verticalCenter: _button_container.verticalCenter
+
+                size: G.Style.iconSmall;
+                iconName: G.Icons.icons["content-save-outline"]
+                color: G.Style.colors.textColorBase;
+
+                onClicked: {
+                    _file_dialog_save.open()
+                }
+            }
+        }
+    }
+    
+    P.FileDialog {
+        id: _file_dialog_load;
+
+        title: "Load camera parameters"
+
+        fileMode: P.FileDialog.OpenFile;
+        modality: Qt.NonModal;
+        nameFilters: ["Json camera files (*.json)"]
+
+        onAccepted: {
+            view.viewLogic.loadCamera(decodeURIComponent(_file_dialog_load.file));
+        }
+    }
+
+    P.FileDialog {
+        id: _file_dialog_save
+
+        title: "Save camera parameters"
+
+        fileMode: P.FileDialog.SaveFile
+        modality: Qt.WindowModal;
+        nameFilters: ["Json camera files (*.json)"]
+
+        onAccepted: {
+            view.viewLogic.saveCamera(decodeURIComponent(_file_dialog_save.file));
         }
     }
 }
