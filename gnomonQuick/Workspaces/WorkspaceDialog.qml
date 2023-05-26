@@ -426,6 +426,13 @@ G.Dialog {
             initial: false
             highlightElement: false
         }
+        ListElement {
+            type: "gnomonWorkspaceSimulation"
+            title: "Simulation"
+            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceSimulation.qml"
+            available: true
+            highlightElement: false
+        }
     }
 
     function has_loaded_plugins(index) {
@@ -463,6 +470,9 @@ G.Dialog {
         _internal.workspace_groups["gnomonWorkspacePythonAlgorithm"] = "formAlgorithm"
         _internal.workspace_groups["gnomonWorkspaceRegistration"] = "imageRegistration"
         _internal.workspace_groups["gnomonWorkspaceSegmentation"] = "cellImageFromImage"
+        _internal.workspace_groups["gnomonWorkspaceSimulation"] = "femSolver"
+
+
 
         _internal.workspace_forms["gnomonWorkspaceBinarization"] = ["gnomonImage", "gnomonBinaryImage"]
         _internal.workspace_forms["gnomonWorkspaceCellImageQuantification"] = ["gnomonCellImage"]
@@ -474,6 +484,7 @@ G.Dialog {
         _internal.workspace_forms["gnomonWorkspacePythonAlgorithm"] = ["gnomonImage"]
         _internal.workspace_forms["gnomonWorkspaceRegistration"] = ["gnomonImage"]
         _internal.workspace_forms["gnomonWorkspaceSegmentation"] = ["gnomonImage", "gnomonBinaryImage", "gnomonPointCloud"]
+        _internal.workspace_forms["gnomonWorkspaceSimulation"] = ["gnomonMesh", "gnomonDataDict"]
 
 
         for (var i=0; i<_available_workspaces.count; i++) {
