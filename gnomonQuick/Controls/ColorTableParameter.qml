@@ -5,6 +5,7 @@ import Qt.labs.platform  1.0 as P
 
 import Qt5Compat.GraphicalEffects
 
+import gnomon.Visualization 1.0 as GV
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 import gnomonQuick.Icons as G
@@ -148,6 +149,17 @@ Control {
         property double shininess : 0
         property double transparency : 0
 
+
+        GV.MaterialPreview {
+            id: material_preview
+            ambient: parent.ambient
+            diffuse: parent.diffuse
+            specular: parent.specular
+            emission: parent.emission
+            shininess: parent.shininess
+            transparency: parent.transparency
+        }
+
         property var texture : ""
 
         x: (parent.width - width) / 2
@@ -196,7 +208,9 @@ Control {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                Rectangle {
+
+
+                G.View {
                     id: preview
                     anchors.top: parent.top
                     anchors.left: parent.left
@@ -204,7 +218,16 @@ Control {
                     anchors.rightMargin: G.mediumColumnSpacing
                     width: height
                     color: G.Style.colors.gutterColor
+                    icons_enabled: false
+                    ts_enabled: false
 
+                    viewLogic: material_preview.view;
+                    export_enabled: false;
+                    Component.onCompleted: {
+                        console.log("=========", material_preview.view, viewLogic)
+                        G.Associator.associate(preview, material_preview.view);
+                        material_preview.init()
+                    }
                 }
 
                 GridLayout {
