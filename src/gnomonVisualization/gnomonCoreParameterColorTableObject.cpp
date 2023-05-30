@@ -44,6 +44,7 @@ void gnomonCoreParameterColorTableObject::setValue(const QVariantMap& color_map)
         }
     }
     m_param->setValue(colorTable);
+    emit valueChanged(color_map);
 }
 
 QVariantMap gnomonCoreParameterColorTableObject::value(void) const
