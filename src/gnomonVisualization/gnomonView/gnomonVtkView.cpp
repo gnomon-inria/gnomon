@@ -196,14 +196,6 @@ gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 gnomonVtkViewPrivate::~gnomonVtkViewPrivate(void)
 {
     this->clearConnections();
-    if (this->grid_actor) {
-        this->grid_actor->Delete();
-        this->grid_actor = nullptr;
-    }
-    if (this->axes) {
-        this->axes->Delete();
-        this->axes = nullptr;
-    }
 }
 
 void gnomonVtkViewPrivate::clearConnections(void)
