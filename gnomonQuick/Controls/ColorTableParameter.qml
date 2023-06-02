@@ -152,12 +152,13 @@ Control {
 
         GV.MaterialPreview {
             id: material_preview
-            ambient: parent.ambient
-            diffuse: parent.diffuse
-            specular: parent.specular
-            emission: parent.emission
-            shininess: parent.shininess
-            transparency: parent.transparency
+
+            ambient: _edit_dialog.ambient
+            diffuse: _edit_dialog.diffuse
+            specular: _edit_dialog.specular
+            emission: _edit_dialog.emission
+            shininess: _edit_dialog.shininess
+            transparency: _edit_dialog.transparency
         }
 
         property var texture : ""
@@ -208,8 +209,6 @@ Control {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-
-
                 G.View {
                     id: preview
                     anchors.top: parent.top
@@ -223,6 +222,7 @@ Control {
 
                     viewLogic: material_preview.view;
                     export_enabled: false;
+
                     Component.onCompleted: {
                         console.log("=========", material_preview.view, viewLogic)
                         G.Associator.associate(preview, material_preview.view);
