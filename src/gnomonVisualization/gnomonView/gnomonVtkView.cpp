@@ -49,6 +49,7 @@
 #include <vtkSSAAPass.h>
 #include <vtkOpenGLRenderer.h>
 #include <vtkRenderStepsPass.h>
+#include <vtkBoundingBox.h>
 
 // #include <QVTKInteractor.h>
 // #include <QVTKOpenGLNativeWidget.h>
@@ -464,6 +465,7 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
         int index = gnomonFormManager::instance()->formIndex(form);
         gnomonFormManager::instance()->setCamera(index, dd->renderer3D->GetActiveCamera());
     });
+    connect(this, &gnomonVtkView::formsChanged, this, &gnomonVtkView::updateBounds);
 }
 
 gnomonVtkView::~gnomonVtkView(void)
@@ -983,6 +985,26 @@ void gnomonVtkView::setBounds(double xMin, double xMax, double yMin, double yMax
     bounds[4] = zMin;
     bounds[5] = zMax;
     this->setBounds(bounds);
+}
+
+void gnomonVtkView::updateBounds(void)
+{
+    // TODO: delete setBounds from visu plugins at a later date
+    vtkBoundingBox boundingBox;
+    auto propsList = dd->renderer3D->GetViewProps();
+    propsList->InitTraversal();
+    if(propsList->GetNumberOfItems()>0) {
+        for(vtkIdType a = 0; a < propsList->GetNumberOfItems(); ++a) {
+            vtkProp *prop = propsList->GetNextProp();
+            boundingBox.AddBounds(prop->GetBounds());
+        }
+        double bounds[6];
+        boundingBox.GetBounds(bounds);
+        this->setBounds(bounds);
+    } else {
+        this->setBounds(0, 0, 0, 0, 0, 0);
+    }
+
 }
 
 void gnomonVtkView::getBounds(double bounds[6])
