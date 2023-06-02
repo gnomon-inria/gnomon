@@ -50,6 +50,11 @@ public:
         VTK_REPRESENTATION_SURFACE = 2,
     };
 
+    enum Grid {
+        GRID_CUBE = 0,
+        GRID_PLANES = 1,
+    };
+
 public:
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
     Q_PROPERTY(bool syncing READ syncing NOTIFY syncingChanged);
@@ -70,6 +75,8 @@ public:
 
     Q_PROPERTY(QColor bgColor READ bgColor WRITE setBgColor NOTIFY bgColorChanged);
     Q_PROPERTY(bool gridVisible READ gridVisible WRITE setGridVisible NOTIFY gridVisibleChanged);
+    Q_PROPERTY(Grid gridType READ gridType WRITE setGridType NOTIFY gridTypeChanged)
+    Q_PROPERTY(Orientation gridOrientation READ gridOrientation WRITE setGridOrientation NOTIFY gridOrientationChanged);
     Q_PROPERTY(bool axesVisible READ axesVisible WRITE setAxesVisible NOTIFY axesVisibleChanged);
     Q_PROPERTY(bool cameraFixed READ cameraFixed WRITE setCameraFixed NOTIFY cameraFixedChanged);
 
@@ -111,6 +118,8 @@ signals:
 signals:
     void bgColorChanged(void);
     void gridVisibleChanged(void);
+    void gridTypeChanged(void);
+    void gridOrientationChanged(void);
     void axesVisibleChanged(void);
     void cameraFixedChanged(void);
 
@@ -189,6 +198,12 @@ public slots:
 
     void setGridVisible(bool visible);
     bool gridVisible(void);
+
+    void setGridType(Grid type);
+    Grid gridType(void);
+
+    void setGridOrientation(Orientation orientation);
+    Orientation gridOrientation(void);
 
     void setAxesVisible(bool visible);
     bool axesVisible(void);

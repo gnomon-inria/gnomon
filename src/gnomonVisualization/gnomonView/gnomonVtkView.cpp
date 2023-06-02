@@ -84,6 +84,7 @@ public:
 public:
     void updateFormsTimes(void);
     void updateGrid(void);
+    void updateAxes(void);
 
 public:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
@@ -97,6 +98,8 @@ public:
     gnomonVtkView::Mode mode = gnomonVtkView::VIEW_MODE_3D;
     gnomonVtkView::Orientation ori = gnomonVtkView::NONE;
     gnomonVtkView::Representation representation = gnomonVtkView::VTK_REPRESENTATION_SURFACE;
+    gnomonVtkView::Grid grid_type = gnomonVtkView::GRID_PLANES;
+    gnomonVtkView::Orientation grid_orientation = gnomonVtkView::SLICE_ORIENTATION_XZ;
     QMap<gnomonVtkView::Orientation, vtkSmartPointer<vtkCamera> > cameras;
 
 public:
@@ -193,10 +196,6 @@ gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 gnomonVtkViewPrivate::~gnomonVtkViewPrivate(void)
 {
     this->clearConnections();
-    if (this->grid_actor) {
-        this->grid_actor->Delete();
-        this->grid_actor = nullptr;
-    }
 }
 
 void gnomonVtkViewPrivate::clearConnections(void)
@@ -300,23 +299,95 @@ void gnomonVtkViewPrivate::updateFormsTimes(void)
 void gnomonVtkViewPrivate::updateGrid(void)
 {
     if (this->grid_actor) {
-        this->grid_actor->SetXAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
-        this->grid_actor->SetXAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
-        this->grid_actor->SetXAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        bool x_visible = this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ;
+        bool y_visible = this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ;
+        bool z_visible = this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY;
+
+        this->grid_actor->SetXAxisVisibility(x_visible);
+        this->grid_actor->SetXAxisLabelVisibility(x_visible);
+        this->grid_actor->SetXAxisTickVisibility(x_visible);
         this->grid_actor->SetXAxisMinorTickVisibility(false);
-        this->grid_actor->SetDrawXGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_YZ);
+        this->grid_actor->SetDrawXGridlines(x_visible);
 
-        this->grid_actor->SetYAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
-        this->grid_actor->SetYAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
-        this->grid_actor->SetYAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetYAxisVisibility(y_visible);
+        this->grid_actor->SetYAxisLabelVisibility(y_visible);
+        this->grid_actor->SetYAxisTickVisibility(y_visible);
         this->grid_actor->SetYAxisMinorTickVisibility(false);
-        this->grid_actor->SetDrawYGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XZ);
+        this->grid_actor->SetDrawYGridlines(y_visible);
 
-        this->grid_actor->SetZAxisVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
-        this->grid_actor->SetZAxisLabelVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
-        this->grid_actor->SetZAxisTickVisibility(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetZAxisVisibility(z_visible);
+        this->grid_actor->SetZAxisLabelVisibility(z_visible);
+        this->grid_actor->SetZAxisTickVisibility(z_visible);
         this->grid_actor->SetZAxisMinorTickVisibility(false);
-        this->grid_actor->SetDrawZGridlines(this->mode==gnomonVtkView::VIEW_MODE_3D || this->ori!=gnomonVtkView::SLICE_ORIENTATION_XY);
+        this->grid_actor->SetDrawZGridlines(z_visible);
+
+        QColor axis_color = QColor(255-this->background_color.red(), 255-this->background_color.green(), 255-this->background_color.blue());
+        for (int i_dim=0; i_dim<3; i_dim++) {
+            this->grid_actor->GetTitleTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+            this->grid_actor->GetLabelTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
+        }
+
+        if (!isnan(this->xBounds[0])) {
+            double dx = abs(this->xBounds[1] - this->xBounds[0]);
+            double dy = abs(this->yBounds[1] - this->yBounds[0]);
+            double dz = abs(this->zBounds[1] - this->zBounds[0]);
+            double l = std::max(std::max(dx, dy), dz);
+            double golden_ratio = 1.61803398875;
+            double ml = l / golden_ratio;
+            
+            double x_b[2] = {this->xBounds[0], this->xBounds[1]};
+            if (dx < ml) {
+                x_b[0] += dx / 2 - ml / 2;
+                x_b[1] -= dx / 2 - ml / 2;
+            }
+            double y_b[2] = {this->yBounds[0], this->yBounds[1]};
+            if (dy < ml) {
+                y_b[0] += dy / 2 - ml / 2;
+                y_b[1] -= dy / 2 - ml / 2;
+            }
+            double z_b[2] = {this->zBounds[0], this->zBounds[1]};
+            if (dz < ml) {
+                z_b[0] += dz / 2 - ml / 2;
+                z_b[1] -= dz / 2 - ml / 2;
+            }
+
+            if (this->grid_type == gnomonVtkView::GRID_CUBE) {
+                this->grid_actor->SetBounds(x_b[0], x_b[1], y_b[0], y_b[1], z_b[0], z_b[1]);
+            } else if (this->grid_type == gnomonVtkView::GRID_PLANES) {
+                if (this->grid_orientation == gnomonVtkView::SLICE_ORIENTATION_XY) {
+                    this->grid_actor->SetBounds(x_b[0], x_b[1], y_b[0], y_b[1], 0, 0);
+                } else if (this->grid_orientation == gnomonVtkView::SLICE_ORIENTATION_XZ) {
+                    this->grid_actor->SetBounds(x_b[0], x_b[1], 0, 0, z_b[0], z_b[1]);
+                } else if (this->grid_orientation == gnomonVtkView::SLICE_ORIENTATION_YZ) {
+                    this->grid_actor->SetBounds(0, 0, y_b[0], y_b[1], z_b[0], z_b[1]);
+                }
+            }
+        }
+    }
+}
+
+void gnomonVtkViewPrivate::updateAxes(void) 
+{
+    if (this->axes_widget) {
+        if (this->renderer3D) {
+            this->axes_widget->SetCurrentRenderer(this->renderer3D);
+        }
+
+        bool show_3d = (this->mode == gnomonVtkView::VIEW_MODE_3D) && this->axes_visible;
+        if (this->interactor()) {
+            this->axes_widget->SetInteractor(this->interactor());
+
+            if (show_3d) {
+                this->axes_widget->SetEnabled(true);
+                this->axes_widget->SetInteractive(true);
+            } else {
+                if (this->axes_widget->GetEnabled()) {
+                    this->axes_widget->SetInteractive(false);  // must be enabled while setting interactive
+                }
+                this->axes_widget->SetEnabled(false);
+            }
+            q->render();
+        }
     }
 }
 
@@ -368,7 +439,10 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     this->setBgColor(QColor(bg_color_hex));
     bool show_grid = dd->settings->value("vtk/grid", false).toBool();
     this->setGridVisible(show_grid);
-    bool show_axes = dd->settings->value("vtk/axes", false).toBool();
+    // TODO: Unable to display axes widget at creation : hidden by default
+    // Interactor is wrong, even after associate, until the view is rendered
+    //bool show_axes = dd->settings->value("vtk/axes", false).toBool();
+    bool show_axes = false;
     this->setAxesVisible(show_axes);
     bool fixed_camera = dd->settings->value("vtk/fixed_camera", false).toBool();
     this->setCameraFixed(fixed_camera);
@@ -409,6 +483,7 @@ void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
 
     dd->updateOrientation();
     dd->updateFormsTimes();
+    dd->updateAxes();
 }
 
 void gnomonVtkView::switchTo3D(void)
@@ -423,22 +498,7 @@ void gnomonVtkView::switchTo3D(void)
             dd->grid_actor->SetCamera(dd->renderer3D->GetActiveCamera());
         }
         dd->updateGrid();
-        if (dd->axes_widget) {
-            if (dd->interactor()) {
-                dd->axes_widget->SetInteractor(dd->interactor());
-                dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
-                if(dd->axes_visible) {
-                    dd->axes_widget->SetEnabled(true);
-                    dd->axes_widget->SetInteractive(true);
-                } else {
-                    if(dd->axes_widget->GetEnabled()) {
-                        dd->axes_widget->SetInteractive(false);  // must be enabled while setting interactive
-                    }
-                    dd->axes_widget->SetEnabled(false);
-                }
-                dd->axes_widget->Modified();
-            }
-        }
+        dd->updateAxes();
         emit switchedTo3D();
         emit modeChanged();
     }
@@ -456,16 +516,7 @@ void gnomonVtkView::switchTo2D(void)
             dd->grid_actor->SetCamera(dd->renderer2D->GetActiveCamera());
         }
         dd->updateGrid();
-        if (dd->axes_widget) {
-            if (dd->interactor()) {
-                dd->axes_widget->SetInteractor(dd->interactor());
-                dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
-                if(dd->axes_widget->GetEnabled()) {
-                    dd->axes_widget->SetInteractive(false);
-                }
-                dd->axes_widget->SetEnabled(false);
-            }
-        }
+        dd->updateAxes();
         switch(dd->ori) {
             case gnomonVtkView::SLICE_ORIENTATION_XY:
                 this->switchTo2DXY();
@@ -914,22 +965,7 @@ void gnomonVtkView::setBounds(double bounds[6])
 
     if (changed) {
         emit boundsChanged();
-        if (dd->grid_actor && !isnan(dd->xBounds[0])) {
-            /*
-            qDebug() << "(1) grid bounds: " << dd->xBounds[0] << " -> " << dd->xBounds[1] << " | " <<
-                     dd->yBounds[0] << " -> " << dd->yBounds[1] << " | " <<
-                     dd->zBounds[0] << " -> " << dd->zBounds[1];
-                     */
-            double dx = abs(dd->xBounds[1] - dd->xBounds[0]);
-            double dy = abs(dd->yBounds[1] - dd->yBounds[0]);
-            double dz = abs(dd->zBounds[1] - dd->zBounds[0]);
-            double l = std::max(std::max(dx, dy), dz);
-            double golden_ratio = 1.61803398875;
-            double ml = l/golden_ratio;
-            dd->grid_actor->SetBounds(dx>ml ? dd->xBounds[0] : dd->xBounds[0] + dx/2 - ml/2, dx>ml ? dd->xBounds[1] : dd->xBounds[1] - dx/2 + ml/2,
-                                      dy>ml ? dd->yBounds[0] : dd->yBounds[0] + dy/2 - ml/2, dy>ml ? dd->yBounds[1] : dd->yBounds[1] - dy/2 + ml/2,
-                                      dz>ml ? dd->zBounds[0] : dd->zBounds[0] + dz/2 - ml/2, dz>ml ? dd->zBounds[1] : dd->zBounds[1] - dz/2 + ml/2);
-        }
+        dd->updateGrid();
         if (!dd->camera_fixed) {
             dd->renderer2D->ResetCamera();
             dd->renderer3D->ResetCamera();
@@ -1075,7 +1111,9 @@ const QColor& gnomonVtkView::bgColor(void)
 
 void gnomonVtkView::setGridVisible(bool visible)
 {
+    bool new_grid = false;
     if (!dd->grid_actor)  {
+        new_grid = true;
         dd->grid_actor = vtkSmartPointer<vtkCubeAxesActor>::New();
         if (dd->mode == gnomonVtkView::VIEW_MODE_3D) {
             dd->renderer3D->AddActor(dd->grid_actor);
@@ -1104,28 +1142,8 @@ void gnomonVtkView::setGridVisible(bool visible)
 
     dd->updateGrid();
 
-    if (visible != dd->grid_visible && !isnan(dd->xBounds[0])) {
+    if (visible != dd->grid_visible || new_grid) {
         dd->grid_visible = visible;
-
-        QColor axis_color = QColor(255-dd->background_color.red(), 255-dd->background_color.green(), 255-dd->background_color.blue());
-        for (int i_dim=0; i_dim<3; i_dim++) {
-            dd->grid_actor->GetTitleTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
-            dd->grid_actor->GetLabelTextProperty(i_dim)->SetColor(axis_color.redF(), axis_color.greenF(), axis_color.blueF());
-        }
-        /*
-        qDebug() << "(2) grid bounds: " << dd->xBounds[0] << " -> " << dd->xBounds[1] << " | " <<
-                                       dd->yBounds[0] << " -> " << dd->yBounds[1] << " | " <<
-                                       dd->zBounds[0] << " -> " << dd->zBounds[1];
-                                       */
-        double dx = abs(dd->xBounds[1] - dd->xBounds[0]);
-        double dy = abs(dd->yBounds[1] - dd->yBounds[0]);
-        double dz = abs(dd->zBounds[1] - dd->zBounds[0]);
-        double l = std::max(std::max(dx, dy), dz);
-        double golden_ratio = 1.61803398875;
-        double ml = l/golden_ratio;
-        dd->grid_actor->SetBounds(dx>ml ? dd->xBounds[0] : dd->xBounds[0] + dx/2 - ml/2, dx>ml ? dd->xBounds[1] : dd->xBounds[1] - dx/2 + ml/2,
-                                  dy>ml ? dd->yBounds[0] : dd->yBounds[0] + dy/2 - ml/2, dy>ml ? dd->yBounds[1] : dd->yBounds[1] - dy/2 + ml/2,
-                                  dz>ml ? dd->zBounds[0] : dd->zBounds[0] + dz/2 - ml/2, dz>ml ? dd->zBounds[1] : dd->zBounds[1] - dz/2 + ml/2);
         dd->grid_actor->SetVisibility(dd->grid_visible);
 
         this->render();
@@ -1140,9 +1158,41 @@ bool gnomonVtkView::gridVisible(void)
     return dd->grid_visible;
 }
 
+void gnomonVtkView::setGridType(Grid type)
+{
+    if (type != dd->grid_type) {
+        dd->grid_type = type;
+        dd->updateGrid();
+        this->render();
+        emit gridTypeChanged();
+    }
+}
+
+gnomonVtkView::Grid gnomonVtkView::gridType(void)
+{
+    return dd->grid_type;
+}
+
+void gnomonVtkView::setGridOrientation(Orientation orientation)
+{
+    if (orientation != dd->grid_orientation) {
+        dd->grid_orientation = orientation;
+        dd->updateGrid();
+        this->render();
+        emit gridOrientationChanged();
+    }
+}
+
+gnomonVtkView::Orientation gnomonVtkView::gridOrientation(void)
+{
+    return dd->grid_orientation;
+}
+
 void gnomonVtkView::setAxesVisible(bool visible)
 {
+    bool new_axes = false;
     if (!dd->axes_widget)  {
+        new_axes = true;
         dd->axes =  vtkSmartPointer<vtkAxesActor>::New();
         dd->axes->GetXAxisCaptionActor2D()->GetCaptionTextProperty()->ItalicOff();
         dd->axes->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ItalicOff();
@@ -1153,26 +1203,10 @@ void gnomonVtkView::setAxesVisible(bool visible)
         dd->axes_widget->SetViewport(-0.2, -0.2, 0.2, 0.2);
     }
 
-    if (visible != dd->axes_visible) {
+    if (visible != dd->axes_visible || new_axes) {
         dd->axes_visible = visible;
 
-        if (dd->interactor()) {
-            dd->axes_widget->SetInteractor(dd->interactor());
-            dd->axes_widget->SetCurrentRenderer(dd->renderer3D);
-            bool show_3d = dd->mode == VIEW_MODE_3D && dd->axes_visible;
-            if(show_3d) {
-                dd->axes_widget->SetEnabled(true);
-                dd->axes_widget->SetInteractive(true);
-            } else {
-                if(dd->axes_widget->GetEnabled()) {
-                    dd->axes_widget->SetInteractive(false);  // must be enabled while setting interactive
-                }
-                dd->axes_widget->SetEnabled(false);
-            }
-
-        }
-
-        this->render();
+        dd->updateAxes();
         emit axesVisibleChanged();
 
         dd->settings->setValue("vtk/axes", dd->axes_visible);
