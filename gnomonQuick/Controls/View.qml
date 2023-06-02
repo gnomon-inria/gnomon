@@ -410,7 +410,7 @@ Rectangle {
 
     G.IconButton {
         id: _grid_button;
-        iconName: G.Icons.icons["grid"];
+        iconName: viewLogic.gridVisible ? G.Icons.icons["grid"] : G.Icons.icons["grid-off"];
         size: G.Style.iconLarge;
         color: viewLogic.gridVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Show/Hide the grid around the objects"
@@ -424,6 +424,32 @@ Rectangle {
 
         onClicked: {
             viewLogic.gridVisible = !viewLogic.gridVisible
+        }
+    }
+
+    G.IconButton {
+        id: _grid_type_button;
+        visible: viewLogic.gridVisible
+        iconName: viewLogic.gridType == 0 ? G.Icons.icons["cube"] : G.Icons.icons[["alpha-x-box", "alpha-y-box", "alpha-z-box"][viewLogic.gridOrientation]];
+        size: G.Style.iconLarge;
+        color: viewLogic.gridVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        tooltip: "Display grid cube or only X/Y/Z grid plane"
+
+        anchors.top: _grid_button.bottom
+        anchors.topMargin: G.Style.smallPadding
+        anchors.horizontalCenter: _grid_button.horizontalCenter
+
+        onClicked: {
+            if (viewLogic.gridType == 0) {
+                viewLogic.gridType = 1
+                viewLogic.gridOrientation = 0
+            } else {
+                if (viewLogic.gridOrientation == 2) {
+                    viewLogic.gridType = 0
+                } else {
+                    viewLogic.gridOrientation += 1
+                }
+            }
         }
     }
 
