@@ -46,6 +46,9 @@ public slots:
     virtual void restoreState(void);
 
 public slots:
+    virtual void saveScreenshot(const QString& filename) {};
+
+public slots:
     virtual void setAcceptForm(const QString&, bool);
     virtual void setInputView(bool);
 

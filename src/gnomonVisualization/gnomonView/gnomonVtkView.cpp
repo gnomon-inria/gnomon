@@ -1332,6 +1332,29 @@ void gnomonVtkView::clear(void)
     this->render();
 }
 
+void gnomonVtkView::saveScreenshot(const QString& filename)
+{
+    QString file_path;
+    const QUrl url(filename);
+    if (url.isLocalFile()) {
+        file_path = QDir::toNativeSeparators(url.toLocalFile());
+    } else {
+        file_path = filename;
+    }
+
+    if (dd->window) {
+        vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+        windowToImageFilter->SetInput(dd->window);
+        windowToImageFilter->SetInputBufferTypeToRGBA();
+        windowToImageFilter->ReadFrontBufferOff();
+
+        vtkSmartPointer<vtkPNGWriter> writer = vtkSmartPointer<vtkPNGWriter>::New();
+        writer->SetFileName(file_path.toStdString().c_str());
+        writer->SetInputConnection(windowToImageFilter->GetOutputPort());
+        writer->Write();
+    }
+}
+
 void gnomonVtkView::startPicking() {
     if(!d->forms.contains("gnomonCellImage") ||
         d->visualizationCommands["gnomonCellImage"]->algorithmName() != "cellImageVtkVisualizationMarchingCubes") {
