@@ -531,6 +531,36 @@ Rectangle {
     }
 
     G.IconButton {
+        id: _screenshot_icon;
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.right: _export_icon.visible? _export_icon.left : _view.right
+        anchors.rightMargin: G.Style.smallPadding
+
+        iconName: G.Icons.icons["camera"];
+        size: G.Style.iconLarge;
+        color: G.Style.colors.textColorNeutral
+
+        onClicked: {
+            _screenshot_dialog.open()
+        }
+
+        P.FileDialog {
+            id: _screenshot_dialog
+
+            nameFilters: [ "Image files (*.png)" ]
+            title: "Save screenshot"
+            modality: Qt.WindowModal;
+            fileMode: P.FileDialog.SaveFile
+
+            onAccepted: {
+                viewLogic.saveScreenshot(decodeURIComponent(_screenshot_dialog.file));
+            }
+        }
+    }
+
+    G.IconButton {
         id: _export_icon;
         iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
         enabled: self.export_enabled
