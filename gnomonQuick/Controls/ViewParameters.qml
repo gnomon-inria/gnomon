@@ -23,8 +23,54 @@ Control {
     id: _control;
 
     required property Item view;
+    property bool collapsed: true;
 
-    implicitHeight: _camera_panel.implicitHeight
+    implicitWidth: G.Style.smallPanelWidth;
+    implicitHeight: _header.height + 3*G.Style.smallPadding + _camera_panel.height
+    clip: true;
+
+    background: Rectangle {
+        color: G.Style.colors.bgColor
+        radius: G.Style.panelRadius
+
+        Rectangle {
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+
+             width: parent.width + 2*G.Style.smallPadding
+            height: 1
+            radius: G.Style.panelRadius;
+
+            color: G.Style.colors.transparent;
+            //visible: !_control.collapsed
+
+            border.width: 1;
+            border.color: G.Style.colors.gutterColor;
+        }
+    }
+
+    Behavior on height {
+      NumberAnimation { duration: 1000 }
+    }
+
+    Control {
+        id: _header;
+
+        anchors.top: parent.top;
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+        anchors.margins: G.Style.smallPadding
+        height: G.Style.collapsibleMinHeight;
+
+        Label {
+            anchors.fill: parent
+            visible: !_control.collapsed
+
+            text: "View Parameters"
+            font: G.Style.fonts.header
+            color: G.Style.colors.textColorBase
+        }
+    }
 
     ListModel {
         id: _camera_parameters
@@ -61,11 +107,17 @@ Control {
     G.CollapsiblePanel {
         id: _camera_panel
 
-        anchors.fill: parent;
+        //anchors.fill: parent;
+        anchors.top: _header.bottom;
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+        anchors.margins: G.Style.smallPadding
 
         title: "Camera"
         collapsed: false
-        panelHeight: _camera_parameters.count * (G.Style.mediumLabelHeight + G.Style.mediumColumnSpacing) + G.Style.mediumColumnSpacing + G.Style.iconSmall
+
+        panelHeight:  _camera_parameters.count * (G.Style.mediumLabelHeight + G.Style.mediumColumnSpacing) + G.Style.mediumColumnSpacing + G.Style.iconSmall
+        implicitHeight: _control.collapsed ? 0 : panelHeight + G.Style.collapsibleMinHeight + 3*G.Style.smallPadding
 
         visible: view.viewLogic.mode == GV.View.VIEW_MODE_3D
 
@@ -77,7 +129,7 @@ Control {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.topMargin: -G.Style.smallPadding
 
-            width: _control.width - G.Style.sizes.s4
+            width: parent.width - G.Style.sizes.s4
 
             spacing: G.Style.mediumColumnSpacing
 

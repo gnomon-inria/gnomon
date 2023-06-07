@@ -102,146 +102,106 @@ Control {
 
     }
 
-    TabBar {
-        id: _bar;
+    Label {
+        id: _visu_label
 
         anchors.top: _form_selector.bottom
         anchors.left: parent.left
-        anchors.right: parent.right
         anchors.topMargin: G.Style.sizes.s5
         anchors.bottomMargin: G.Style.sizes.s4
 
-        currentIndex: _menu_container.currentIndex
-
-        G.TabButton {
-            text: "Visualization"
-            font: G.Style.fonts.formLabel
-        }
-        G.TabButton {
-            text: "View Settings"
-            font: G.Style.fonts.formLabel
-        }
+        text: "Visualization"
+        font: G.Style.fonts.header
+        color: G.Style.colors.textColorBase
     }
 
-    StackLayout {
-        id: _menu_container;
-
-        anchors.top: _bar.bottom;
+    ColumnLayout {
+        anchors.top: _visu_label.bottom;
         anchors.right: parent.right;
         anchors.left: parent.left;
         anchors.bottom: _button_container.top;
 
-        currentIndex: _bar.currentIndex;
+        anchors.margins: 12;
 
-        Control {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+        G.ComboBoxWithLabel {
+            id: _visu_combobox;
 
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 12;
+            label: "Type:"
+            textRole: "name"
+            valueRole: "counter"
+            model: view? view.viewLogic.formVisualizations(_form_selector.currentValue) : null;
+            currentIndex: 0
 
-                G.ComboBoxWithLabel {
-                    id: _visu_combobox;
+            property bool _model_changing: true;
 
-                    label: "Type:"
-                    textRole: "name"
-                    valueRole: "counter"
-                    model: view? view.viewLogic.formVisualizations(_form_selector.currentValue) : null;
-                    currentIndex: 0
+            function changeModel(formType) {
+                let previousVisuSelected = view ? view.viewLogic.lastVisuSelected(formType) : ""
+                let currentVisu = view ? view.viewLogic.formVisuName(formType) : ""
+                _model_changing = true
+                model = view? view.viewLogic.formVisualizations(formType) : null;
+                let index = formVisuIndex(formType, previousVisuSelected)
+                if(index>=0 && count>=1) {
+                    currentIndex = index
+                } else if(count>=1 && index ==-1) {
+                    currentIndex = formVisuIndex(formType, currentVisu)
+                } else if(count>=1 && currentIndex ==-1) {
+                    currentIndex = 0
+                }
+                valueChangeHandler()
+                _model_changing = false;
+            }
 
-                    property bool _model_changing: true;
 
-                    function changeModel(formType) {
-                        let previousVisuSelected = view ? view.viewLogic.lastVisuSelected(formType) : ""
-                        let currentVisu = view ? view.viewLogic.formVisuName(formType) : ""
-                        _model_changing = true
-                        model = view? view.viewLogic.formVisualizations(formType) : null;
-                        let index = formVisuIndex(formType, previousVisuSelected)
-                        if(index>=0 && count>=1) {
-                            currentIndex = index
-                        } else if(count>=1 && index ==-1) {
-                            currentIndex = formVisuIndex(formType, currentVisu)
-                        } else if(count>=1 && currentIndex ==-1) {
-                            currentIndex = 0
+            Layout.fillWidth: true;
+            /* Layout.leftMargin: 20 */
+            /* Layout.rightMargin: 20 */
+            visible: view? view.viewLogic.formNames.length > 0 : false
+
+            function valueChangeHandler() {
+                if(view) {
+                    if (_form_selector.currentValue) {
+                        let previousVisuSelected = view.viewLogic.lastVisuSelected(_form_selector.currentValue)
+                        if(previousVisuSelected!=model[_visu_combobox.currentIndex].key){
+                            view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex].key)
                         }
-                        valueChangeHandler()
-                        _model_changing = false;
-                    }
-
-
-                    Layout.fillWidth: true;
-                    /* Layout.leftMargin: 20 */
-                    /* Layout.rightMargin: 20 */
-                    visible: view? view.viewLogic.formNames.length > 0 : false
-
-                    function valueChangeHandler() {
-                        if(view) {
-                            if (_form_selector.currentValue) {
-                                let previousVisuSelected = view.viewLogic.lastVisuSelected(_form_selector.currentValue)
-                                if(previousVisuSelected!=model[_visu_combobox.currentIndex].key){
-                                    view.viewLogic.setFormVisuName(_form_selector.currentValue, model[_visu_combobox.currentIndex].key)
-                                }
-                                //_auto_render.checked = false
-                                _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
-                                _params.updateParametersModel();
-                                _control.update_menu(_visu_combobox.currentValue.key);
-                            }
-                        }
-                    }
-
-                    onCurrentValueChanged: {
-                        if(!_model_changing){
-                            valueChangeHandler()
-                        }
+                        //_auto_render.checked = false
+                        _params.parameters =  view.viewLogic.formVisuParameters(_form_selector.currentValue);
+                        _params.updateParametersModel();
+                        _control.update_menu(_visu_combobox.currentValue.key);
                     }
                 }
+            }
 
-                G.Parameters {
-                    id: _params;
-                }
-
-                Item {
-                    Layout.fillWidth: true
-                    height: G.Style.sizes.s4
-                }
-
-                Item {
-                    id: _menu;
-
-                    Layout.fillWidth: true;
-                    height: G.Style.mediumPanelHeight
-                    Layout.fillHeight: true;
-
-                }
-
-                Item {
-                    id: _spacer
-
-                    Layout.fillWidth: true;
-                    Layout.fillHeight: true;
+            onCurrentValueChanged: {
+                if(!_model_changing){
+                    valueChangeHandler()
                 }
             }
         }
 
-        Control {
+        G.Parameters {
+            id: _params;
+        }
+
+        Item {
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            height: G.Style.sizes.s4
+        }
 
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 12;
+        Item {
+            id: _menu;
 
-                G.ViewParameters {
-                    Layout.fillWidth: true
-                    view: _control.view
-                }
+            Layout.fillWidth: true;
+            height: G.Style.mediumPanelHeight
+            Layout.fillHeight: true;
 
-                Item { // spacer
-                    Layout.fillWidth: true;
-                    Layout.fillHeight: true;
-                }
-            }
+        }
+
+        Item {
+            id: _spacer
+
+            Layout.fillWidth: true;
+            Layout.fillHeight: true;
         }
     }
 
@@ -307,6 +267,29 @@ Control {
                     view.viewLogic.update();
                 }
             }
+        }
+    }
+
+    G.ViewParameters {
+        id: _view_parameters
+
+        anchors.right: parent.right;
+        anchors.left: parent.left;
+        anchors.bottom: parent.bottom;
+        anchors.bottomMargin: -5*G.Style.smallPadding
+
+        view: _control.view
+    }
+
+    G.Dragger {
+        anchors.horizontalCenter: _view_parameters.horizontalCenter;
+        anchors.bottom: _view_parameters.top;
+        anchors.bottomMargin: -1 * height/2;
+
+        z: _view_parameters.z+1
+
+        onClicked: {
+            _view_parameters.collapsed = !_view_parameters.collapsed
         }
     }
 
