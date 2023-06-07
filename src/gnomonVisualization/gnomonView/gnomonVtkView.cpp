@@ -1208,65 +1208,65 @@ void gnomonVtkView::setCameraYZ(bool flip, bool turn)
 void gnomonVtkView::setCameraAzimuth(double angle)
 {
     vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto p = new gnomonCameraParameters();
-    p->fromVtkCamera(cam);
-    p->azimuth = angle;
-    p->toVtkCamera(cam);
+    gnomonCameraParameters p;
+    p.fromVtkCamera(cam);
+    p.azimuth = angle;
+    p.toVtkCamera(cam);
     this->render();
 }
 
 double gnomonVtkView::cameraAzimuth(void)
 {
     vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto p = new gnomonCameraParameters();
-    p->fromVtkCamera(cam);
-    return p->azimuth;
+    gnomonCameraParameters p;
+    p.fromVtkCamera(cam);
+    return p.azimuth;
 }
 
 void gnomonVtkView::setCameraElevation(double angle)
 {
     vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto p = new gnomonCameraParameters();
-    p->fromVtkCamera(cam);
-    p->elevation = angle;
-    p->toVtkCamera(cam);
+    gnomonCameraParameters p;
+    p.fromVtkCamera(cam);
+    p.elevation = angle;
+    p.toVtkCamera(cam);
     this->render();
 }
 
 double gnomonVtkView::cameraElevation(void)
 {
     vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto p = new gnomonCameraParameters();
-    p->fromVtkCamera(cam);
-    return p->elevation;
+    gnomonCameraParameters p;
+    p.fromVtkCamera(cam);
+    return p.elevation;
 }
 
 void gnomonVtkView::setCameraRoll(double angle)
 {
     vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto p = new gnomonCameraParameters();
-    p->fromVtkCamera(cam);
-    p->roll = angle;
-    p->toVtkCamera(cam);
+    gnomonCameraParameters p;
+    p.fromVtkCamera(cam);
+    p.roll = angle;
+    p.toVtkCamera(cam);
     this->render();
 }
 
 double gnomonVtkView::cameraRoll(void)
 {
     vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto p = new gnomonCameraParameters();
-    p->fromVtkCamera(cam);
-    return p->roll;
+    gnomonCameraParameters p;
+    p.fromVtkCamera(cam);
+    return p.roll;
 }
 
 void gnomonVtkView::setCameraDistance(double distance)
 {
     if (distance > 0) {
         vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-        auto p = new gnomonCameraParameters();
-        p->fromVtkCamera(cam);
-        p->distance = distance;
-        p->toVtkCamera(cam);
+        gnomonCameraParameters p;
+        p.fromVtkCamera(cam);
+        p.distance = distance;
+        p.toVtkCamera(cam);
         this->render();
         emit cameraChanged();
     }
@@ -1275,9 +1275,9 @@ void gnomonVtkView::setCameraDistance(double distance)
 double gnomonVtkView::cameraDistance(void)
 {
     vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto p = new gnomonCameraParameters();
-    p->fromVtkCamera(cam);
-    return p->distance;
+    gnomonCameraParameters p;
+    p.fromVtkCamera(cam);
+    return p.distance;
 }
 
 void gnomonVtkView::setCamera(vtkCamera *cam)
@@ -1302,9 +1302,9 @@ void gnomonVtkView::resetCamera()
 void gnomonVtkView::saveCamera(const QString& file_url)
 {
     vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto p = new gnomonCameraParameters();
-    p->fromVtkCamera(cam);
-    QJsonObject camera_json = p->toJson();
+    gnomonCameraParameters p;
+    p.fromVtkCamera(cam);
+    QJsonObject camera_json = p.toJson();
 
     QJsonDocument document;
     document.setObject(camera_json);
@@ -1359,9 +1359,9 @@ void gnomonVtkView::loadCamera(const QString& file_url)
     }
 
     vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-    auto p = new gnomonCameraParameters();
-    p->fromJson(camera_json);
-    p->toVtkCamera(cam);
+    auto p = gnomonCameraParameters();
+    p.fromJson(camera_json);
+    p.toVtkCamera(cam);
     this->render();
 }
 
