@@ -1342,16 +1342,43 @@ void gnomonVtkView::saveScreenshot(const QString& filename)
         file_path = filename;
     }
 
+    QImage image = this->toImage();
+    image.save(file_path);
+}
+
+QImage gnomonVtkView::toImage(void)
+{
     if (dd->window) {
+        // TODO: allow user to pass a size (through a dialog)
+        // auto old_size = dd->window->GetSize();
+        // dd->window->SetSize(1000, 1000);
+
         vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
         windowToImageFilter->SetInput(dd->window);
         windowToImageFilter->SetInputBufferTypeToRGBA();
         windowToImageFilter->ReadFrontBufferOff();
+        windowToImageFilter->Update();
 
-        vtkSmartPointer<vtkPNGWriter> writer = vtkSmartPointer<vtkPNGWriter>::New();
-        writer->SetFileName(file_path.toStdString().c_str());
-        writer->SetInputConnection(windowToImageFilter->GetOutputPort());
-        writer->Write();
+        vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();
+        int height = renderedImage->GetDimensions()[0];
+        int width = renderedImage->GetDimensions()[1];
+        QImage image(height, width, QImage::Format_RGBA64);
+
+        QRgba64 *rgbaPtr = reinterpret_cast<QRgba64 *>(image.bits());
+        for (int col = 0; col < width; ++col) {
+            for (int row = 0; row < height; ++row) {
+                double r, g, b, a;
+                r = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row , width-1 - col, 0))[0];
+                g = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row , width-1 - col, 0))[1];
+                b = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row , width-1 - col, 0))[2];
+                a = reinterpret_cast<unsigned char *>(renderedImage->GetScalarPointer(row , width-1 - col, 0))[3];
+                *(rgbaPtr) = QColor(r, g, b, a).rgba64();
+                ++rgbaPtr;
+            }
+        }
+        return image;
+    } else {
+        return QImage();
     }
 }
 
