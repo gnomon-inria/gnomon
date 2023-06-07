@@ -37,6 +37,7 @@ signals:
 public slots:
     void render(void) override;
     void clear(void) override;
+    void saveScreenshot(const QString& filename) override;
 
 private:
     class gnomonMplViewPrivate *dd;

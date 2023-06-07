@@ -261,6 +261,28 @@ void gnomonMplView::clear(void)
     dd->clearFigure();
 }
 
+void gnomonMplView::saveScreenshot(const QString& filename)
+{
+    QString file_path;
+    const QUrl url(filename);
+    if (url.isLocalFile()) {
+        file_path = QDir::toNativeSeparators(url.toLocalFile());
+    } else {
+        file_path = filename;
+    }
+
+    if (dd->figureNumber != -1) {
+        int stat;
+        QString screenshotStatement = "";
+        screenshotStatement += "from gnomon.utils.matplotlib_tools import gnomon_figure\n";
+        screenshotStatement += "figure = gnomon_figure(" + QString::number(dd->figureNumber) + ")\n";
+        // TODO: allow user to pass a size (through a dialog)
+        // screenshotStatement += "figure.set_size_inches(10, 10)\n";
+        screenshotStatement += "figure.savefig('" + file_path + "')";
+        dtkScriptInterpreterPython::instance()->interpret(screenshotStatement, &stat);
+    }
+}
+
 int gnomonMplView::figureNumber(void)
 {
     return dd->figureNumber;
