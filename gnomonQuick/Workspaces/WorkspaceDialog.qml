@@ -387,6 +387,14 @@ G.Dialog {
             highlightElement: false
         }
         ListElement {
+            type: "gnomonWorkspacePointCloudQuantification"
+            title: "Point Cloud Quantification"
+            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePointCloudQuantification.qml"
+            available: true
+            initial: false
+            highlightElement: false
+        }
+        ListElement {
             type: "gnomonWorkspacePointDetection"
             title: "Point Detection"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePointDetection.qml"
@@ -465,6 +473,7 @@ G.Dialog {
         _internal.workspace_groups["gnomonWorkspaceLSystemModel"] = "lStringEvolutionModel"
         _internal.workspace_groups["gnomonWorkspaceMorphonet"] = ""
         _internal.workspace_groups["gnomonWorkspaceCellImageTracking"] = "cellImageTracking"
+        _internal.workspace_groups["gnomonWorkspacePointCloudQuantification"] = "pointCloudQuantification"
         _internal.workspace_groups["gnomonWorkspacePointDetection"] = "pointCloudFromImage"
         _internal.workspace_groups["gnomonWorkspacePreprocess"] = "imageFilter"
         _internal.workspace_groups["gnomonWorkspacePythonAlgorithm"] = "formAlgorithm"
@@ -475,13 +484,14 @@ G.Dialog {
 
 
         _internal.workspace_forms["gnomonWorkspaceBinarization"] = ["gnomonImage", "gnomonBinaryImage"]
-        _internal.workspace_forms["gnomonWorkspaceCellImageQuantification"] = ["gnomonCellImage"]
+        _internal.workspace_forms["gnomonWorkspaceCellImageQuantification"] = ["gnomonCellImage", "gnomonImage"]
         _internal.workspace_forms["gnomonWorkspaceLSystemModel"] = ["gnomonLString", "gnomonTree"]
         _internal.workspace_forms["gnomonWorkspaceMorphonet"] = ["gnomonCellImage"]
         _internal.workspace_forms["gnomonWorkspaceCellImageTracking"] = ["gnomonCellImage", "gnomonDataDict", "gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspacePointCloudQuantification"] = ["gnomonPointCloud", "gnomonImage"]
         _internal.workspace_forms["gnomonWorkspacePointDetection"] = ["gnomonImage"]
         _internal.workspace_forms["gnomonWorkspacePreprocess"] = ["gnomonImage", "gnomonBinaryImage"]
-        _internal.workspace_forms["gnomonWorkspacePythonAlgorithm"] = ["gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspacePythonAlgorithm"] = ["gnomonBinaryImage", "gnomonCellImage", "gnomonImage", "gnomonMesh", "gnomonPointCloud"]
         _internal.workspace_forms["gnomonWorkspaceRegistration"] = ["gnomonImage"]
         _internal.workspace_forms["gnomonWorkspaceSegmentation"] = ["gnomonImage", "gnomonBinaryImage", "gnomonPointCloud"]
         _internal.workspace_forms["gnomonWorkspaceSimulation"] = ["gnomonMesh", "gnomonDataDict"]
