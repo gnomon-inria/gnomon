@@ -53,8 +53,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspacePointCloudConstructor.h
   gnomonWorkspacePointDetection
   gnomonWorkspacePointDetection.h
-  # gnomonWorkspacePointCloudQuantification
-  # gnomonWorkspacePointCloudQuantification.h
+  gnomonWorkspacePointCloudQuantification
+  gnomonWorkspacePointCloudQuantification.h
   gnomonWorkspacePreprocess
   gnomonWorkspacePreprocess.h
   gnomonWorkspacePythonAlgorithm
@@ -100,7 +100,7 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspacePlantScan3D.cpp
   # gnomonWorkspacePointCloudConstructor.cpp
   gnomonWorkspacePointDetection.cpp
-  # gnomonWorkspacePointCloudQuantification.cpp
+  gnomonWorkspacePointCloudQuantification.cpp
   gnomonWorkspacePreprocess.cpp
   gnomonWorkspacePythonAlgorithm.cpp
   # gnomonWorkspacePythonSimulator.cpp
