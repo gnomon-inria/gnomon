@@ -438,7 +438,7 @@ G.Workspace {
                             if (_remember_workspace.checked) {
                                 _settings.default_workspace = _pipeline_workspace.currentText
                             }
-                            switch_from_launcher(_pipeline_workspace.currentValue)
+                            launching_toast.open()
                         }
                     }
 
@@ -610,6 +610,19 @@ G.Workspace {
                     }
                 }
             }
+        }
+    }
+
+    G.Toast {
+        id: launching_toast
+        parent: Overlay.overlay
+        header: "Launching Workspace " + _pipeline_workspace.currentText
+        message: "Wait while loading data for your workspace !!!"
+
+        type: G.Style.ButtonType.Base
+
+        onOpened: {
+            switch_from_launcher(_pipeline_workspace.currentValue);
         }
     }
 
