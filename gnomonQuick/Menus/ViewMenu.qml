@@ -13,6 +13,7 @@ import xQuick.Vis           1.0 as XVis
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
 
 Control {
     id: _control;
@@ -74,6 +75,22 @@ Control {
         color: G.Style.colors.textColorBase
     }
 
+    G.IconButton {
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: -G.Style.smallPadding/2
+        anchors.rightMargin: -G.Style.smallPadding
+
+        size: G.Style.iconMedium;
+        iconName: G.Icons.icons["cog"]
+
+        tooltip: "View Parameters"
+
+        onClicked: {
+            _view_parameters.collapsed = !_view_parameters.collapsed;
+        }
+    }
+
     G.FormSelector {
 
         id: _form_selector
@@ -82,6 +99,7 @@ Control {
         currentIndex: -1
 
         anchors.top: _form_label.bottom
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: parent.left
         anchors.right: parent.right
 
