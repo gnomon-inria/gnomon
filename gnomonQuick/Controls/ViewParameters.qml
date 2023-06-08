@@ -26,7 +26,7 @@ Control {
     property bool collapsed: true;
 
     implicitWidth: G.Style.smallPanelWidth;
-    implicitHeight: _header.height + 3*G.Style.smallPadding + _camera_panel.height
+    height: _header.height + 3*G.Style.smallPadding + _camera_panel.height
     clip: true;
 
     background: Rectangle {
@@ -50,7 +50,10 @@ Control {
     }
 
     Behavior on height {
-      NumberAnimation { duration: 1000 }
+        NumberAnimation {
+            duration: 100
+            easing.type: Easing.Linear;
+        }
     }
 
     Control {
@@ -59,11 +62,13 @@ Control {
         anchors.top: parent.top;
         anchors.left: parent.left;
         anchors.right: parent.right;
-        anchors.margins: G.Style.smallPadding
-        height: G.Style.collapsibleMinHeight;
+        anchors.topMargin: G.Style.smallPadding
+        anchors.bottomMargin: G.Style.smallPadding
+        height: _control.collapsed ? 0 : _label.implicitHeight
 
         Label {
-            anchors.fill: parent
+            id: _label
+
             visible: !_control.collapsed
 
             text: "View Parameters"

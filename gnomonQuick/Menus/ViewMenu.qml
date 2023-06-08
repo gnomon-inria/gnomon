@@ -276,7 +276,7 @@ Control {
         anchors.right: parent.right;
         anchors.left: parent.left;
         anchors.bottom: parent.bottom;
-        anchors.bottomMargin: -5*G.Style.smallPadding
+        anchors.bottomMargin: -3*G.Style.smallPadding
 
         view: _control.view
     }
@@ -287,6 +287,7 @@ Control {
         anchors.bottomMargin: -1 * height/2;
 
         z: _view_parameters.z+1
+        tooltip: "View Parameters"
 
         onClicked: {
             _view_parameters.collapsed = !_view_parameters.collapsed
