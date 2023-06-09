@@ -996,7 +996,10 @@ void gnomonVtkView::updateBounds(void)
     if(propsList->GetNumberOfItems()>0) {
         for(vtkIdType a = 0; a < propsList->GetNumberOfItems(); ++a) {
             vtkProp *prop = propsList->GetNextProp();
-            boundingBox.AddBounds(prop->GetBounds());
+            double *bounds = prop->GetBounds();
+            if(bounds) {
+                boundingBox.AddBounds(bounds);
+            }
         }
         double bounds[6];
         boundingBox.GetBounds(bounds);
