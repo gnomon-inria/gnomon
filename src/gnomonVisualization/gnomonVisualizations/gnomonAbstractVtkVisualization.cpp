@@ -119,8 +119,8 @@ QImage gnomonAbstractVtkVisualization::offscreenImageRendering(void)
     windowToImageFilter->Update();
 
     vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();
-    int width = renderedImage->GetDimensions()[0];
-    int height = renderedImage->GetDimensions()[1];
+    int height = renderedImage->GetDimensions()[0];
+    int width = renderedImage->GetDimensions()[1];
     QImage image( width, height, QImage::Format_RGB32);
 
     QRgb *rgbPtr = reinterpret_cast<QRgb *>(image.bits());

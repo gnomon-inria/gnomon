@@ -224,6 +224,8 @@ public:
 public slots:
     void render(void) override;
     void clear(void) override;
+    void saveScreenshot(const QString& filename) override;
+    QImage toImage(void) override;
 
 public slots:
     void setEnableLinking(bool);
