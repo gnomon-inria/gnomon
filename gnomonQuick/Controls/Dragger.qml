@@ -2,6 +2,7 @@ import QtQuick            2.15
 import QtQuick.Controls   2.15
 import QtQuick.Layouts    1.15
 
+import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
 import xQuick.Controls    1.0 as X
@@ -13,6 +14,7 @@ Rectangle {
     id: self;
 
     property int orientation: Qt.Horizontal;
+    property string tooltip: "";
 
     property int l_size: 100;
     property int s_size: 13;
@@ -44,16 +46,24 @@ Rectangle {
     }
 
     MouseArea {
+        id: _mouse_area
         anchors.fill: parent;
         hoverEnabled: true;
         onClicked: self.clicked();
+
         onEntered: {
             //color = G.Style.colors.hoveredBaseColor;
             _center_rectangle.color = G.Style.colors.hoveredBaseColor;
         }
+
         onExited: {
             //color = G.Style.colors.gutterColor;
             _center_rectangle.color = G.Style.colors.embossColorNeutral;
         }
+    }
+
+    G.ToolTip {
+        text: self.tooltip;
+        visible: self.tooltip && _mouse_area.containsMouse
     }
 }
