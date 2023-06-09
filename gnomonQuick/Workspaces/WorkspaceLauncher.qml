@@ -617,7 +617,7 @@ G.Workspace {
         id: launching_toast
         parent: Overlay.overlay
         header: "Launching Workspace " + _pipeline_workspace.currentText
-        message: "Wait while loading data for your workspace !!!"
+        message: "Please wait while the corresponding plugins are being loaded. This may take a few seconds."
 
         type: G.Style.ButtonType.Base
 
