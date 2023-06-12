@@ -64,6 +64,10 @@ G.Workspace {
                 _editor.markers = msg_json
             }
         }
+
+        onFileChanged: {
+            _editor.fileName = d.fileName
+        }
     }
 
     property string _path: d.defaultReadPath()
@@ -81,14 +85,29 @@ G.Workspace {
         fileMode: P.FileDialog.OpenFile;
 
         modality: Qt.NonModal;
-        nameFilters: ["L-Py source files (*.lpy)"]
+        nameFilters: ["L-Py source files (*.lpy *.py)"]
 
         onAccepted: {
             d.read(decodeURIComponent(_file_dialog.file));
             _editor.contents = d.text
-            _self._current_file = _file_dialog.file;
+            _self._current_file = decodeURIComponent(_file_dialog.file);
+            _editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
             _self._path = folder;
+
+            if (!_self._current_file.endsWith(".lpy")) {
+                _non_lpy_toast.open()
+            }
         }
+    }
+
+    G.Toast {
+        id: _non_lpy_toast
+
+        parent: Overlay.overlay
+        header: "Not a .lpy file"
+        message: "The file you opened is not a .lpy file, and can therefore not be run as a LSystem model."
+
+        type: G.Style.ButtonType.Warning
     }
 
     P.FileDialog {
@@ -100,13 +119,31 @@ G.Workspace {
         fileMode: P.FileDialog.SaveFile
 
         modality: Qt.WindowModal;
-        nameFilters: ["L-Py source files (*.lpy)"]
+        nameFilters: ["L-Py source files (*.lpy *.py)"]
 
         onAccepted: {
-            d.save(decodeURIComponent(_file_dialog_save.file));
-            _self._current_file = _file_dialog_save.file;
-            _self._path = folder;
+            let save_path = decodeURIComponent(_file_dialog_save.file)
+            let save_filename = save_path.split('/').pop()
+            if ((d.fileName.split('.').length == 1) || (d.fileName.split('.').pop() == save_filename.split('.').pop())) { //same extension
+                _editor.tabName = save_filename
+                d.save(save_path);
+                d.fileName = save_filename
+                _self._current_file = save_path;
+                _self._path = folder;
+            } else {
+                _extension_change_toast.open()
+            }
         }
+    }
+
+    G.Toast {
+        id: _extension_change_toast
+
+        parent: Overlay.overlay
+        header: "Impossible to change extension"
+        message: "You can not save this file using a different extension, please save it as a ." + d.fileName.split('.').pop() + " file."
+
+        type: G.Style.ButtonType.Danger
     }
 
     RowLayout {
@@ -146,12 +183,7 @@ G.Workspace {
                     empty: true
 
                     onClicked: {
-                        if(_self._current_file == "") {
-                            _file_dialog_save.open()
-
-                        } else {
-                            _message_dialog.open();
-                        }
+                        _file_dialog_save.open()
                     }
                 }
 
@@ -183,10 +215,15 @@ G.Workspace {
                 anchors.right: parent.right
 
                 theme: X.Style.variant == 'LIGHT' ? 'vs-light' : 'vs-dark';
-                language: 'lpy';
+                language: "lpy";
+                fileName: d.fileName
 
                 onModified: (contents) => {
                     d.text = eval(contents);
+                }
+
+                onFileSwitched: (name) => {
+                    d.fileName = eval(name)
                 }
             }
         }
@@ -209,7 +246,6 @@ G.Workspace {
                 G.TabButton {
                     text: "Text View"
                 }
-
             }
 
             StackLayout {
@@ -248,6 +284,7 @@ G.Workspace {
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
 
+        _editor.tabName = d.fileName;
         _editor.contents = d.text;
         d.onParametersChanged();
         d.reset();
