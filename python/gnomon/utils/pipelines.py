@@ -129,10 +129,15 @@ class PNodeRunner:
                 lsys_file.close()
                 self.algo.setLSystem(lsys_file.name)
 
+            self.set_parameters()
+
+    def set_parameters(self):
+        if self._node:
+            node = self._node
             # setting parameters
             for param_name in node.parametersName():
                 print(param_name)
-                if param_name not in ("python_code", "lsystem_code", "derivation_length"):
+                if param_name not in ("python_code", "lsystem_code", "derivation_length") and param_name in self.algo._parameters:
                     param = self.algo._parameters[param_name]
                     node.configureParameter(param_name, param)
                     self.algo.setParameter(param_name, param)
@@ -234,6 +239,7 @@ class PipelineRunner:
             node.inputs[target_port](tmp)
         if node.algo:
             node.algo.refreshParameters()
+            node.set_parameters()
 
     def run(self):
         """
