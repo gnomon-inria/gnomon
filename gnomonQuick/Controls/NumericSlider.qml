@@ -21,12 +21,6 @@ Control {
 
     hoverEnabled: true
 
-    QtObject {
-        id: _internal;
-
-        property bool textEdit: false;
-    }
-
     G.ToolTip {
         visible: _control.hovered && !_slider.pressed
         text: _control.doc
@@ -90,7 +84,6 @@ Control {
 
 		onEditingFinished: {
             _control.value = parseFloat(text);
-            _internal.textEdit = false
         }
 
         Keys.onReturnPressed: editingFinished()
