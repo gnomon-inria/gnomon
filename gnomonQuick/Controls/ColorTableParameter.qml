@@ -45,15 +45,46 @@ Control {
             property int colorIndex: _control.param ? _control.param.colorIndexAt(index) : -1
             property bool isColor: _control.param ? _control.param.isColor(colorIndex) : false
             property bool isMaterial: _control.param ? _control.param.isMaterial(colorIndex) : false
+            property bool isTexture: _control.param ? _control.param.isTexture(colorIndex) : false
             text: "Appearance " + colorIndex
-            background: Rectangle {
-               color: isColor ? param.color(colorIndex) : (isMaterial ? param.ambient(colorIndex) : G.Style.colors.transparent)
-            }
             Image {
+                id: _image
                 anchors.fill: parent
-                fillMode: Image.Stretch
-                visible: _control.param ? _control.param.isTexture(colorIndex) : false
-                source: visible ? "file://" + param.texture(colorIndex) : ""
+                fillMode: Image.PreserveAspectCrop
+                visible: isTexture
+                cache: false
+                asynchronous: true
+                source: isTexture ? "file://" + param.texture(colorIndex) : ""
+            }
+
+            G.SimpleView {
+                id: _d_view
+                anchors.fill: parent
+                visible: isMaterial
+                enabled: false
+
+                color: G.Style.colors.gutterColor
+
+                viewLogic: _d_material_preview.view;
+                export_enabled: false;
+
+
+            }
+            GV.MaterialPreview {
+                id: _d_material_preview
+
+                ambient: isMaterial ? param.ambient(colorIndex) : G.Style.colors.warningColor
+                diffuse: isMaterial ? param.diffuse(colorIndex) : 3
+                specular: isMaterial ? param.specular(colorIndex) : transparent
+                emission: isMaterial ? param.emission(colorIndex) : transparent
+                shininess: isMaterial ? param.shininess(colorIndex) : 0.2
+                transparency: isMaterial ? param.transparency(colorIndex) : 0
+            }
+
+            Component.onCompleted: {
+                G.Associator.associate(_d_view, _d_material_preview.view);
+                _d_material_preview.init()
+                _d_material_preview.setCamera()
             }
         }
 
@@ -63,6 +94,7 @@ Control {
             property int _colorIndex: param.colorIndexAt(_colors.currentValue)
             property bool _isColor: param ? param.isColor(_colorIndex) : false
             property bool _isMaterial: param ? param.isMaterial(_colorIndex) : false
+            property bool _isTexture: param ? param.isTexture(_colorIndex) : false
 
             color: _isColor ? param.color(_colorIndex) : (_isMaterial ? param.ambient(_colorIndex) : G.Style.colors.transparent)
 
@@ -75,6 +107,35 @@ Control {
                 fillMode: Image.Stretch
                 visible: param && param.isTexture(param.colorIndexAt(_colors.currentValue))
                 source: visible? "file://" + param.texture(param.colorIndexAt(_colors.currentValue)) : ""
+            }
+
+            G.SimpleView {
+                id: _b_view
+                anchors.fill: parent
+                visible: _color_bg._isMaterial
+                enabled: false
+
+                color: G.Style.colors.gutterColor
+
+                viewLogic: _b_material_preview.view;
+                export_enabled: false;
+
+            }
+            GV.MaterialPreview {
+                id: _b_material_preview
+
+                ambient: _color_bg._isMaterial ? param.ambient(_color_bg._colorIndex) : G.Style.colors.warningColor
+                diffuse: _color_bg._isMaterial ? param.diffuse(_color_bg._colorIndex) : 3
+                specular: _color_bg._isMaterial ? param.specular(_color_bg._colorIndex) : transparent
+                emission: _color_bg._isMaterial ? param.emission(_color_bg._colorIndex) : transparent
+                shininess: _color_bg._isMaterial ? param.shininess(_color_bg._colorIndex) : 0.2
+                transparency:_color_bg._isMaterial ? param.transparency(_color_bg._colorIndex) : 0
+            }
+
+            Component.onCompleted: {
+                G.Associator.associate(_b_view, _b_material_preview.view);
+                _b_material_preview.init()
+                _b_material_preview.setCamera()
             }
         }
     }
@@ -209,7 +270,7 @@ Control {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                G.View {
+                G.SimpleView {
                     id: preview
                     anchors.top: parent.top
                     anchors.left: parent.left
@@ -217,14 +278,11 @@ Control {
                     anchors.rightMargin: G.mediumColumnSpacing
                     width: height
                     color: G.Style.colors.gutterColor
-                    icons_enabled: false
-                    ts_enabled: false
 
                     viewLogic: material_preview.view;
                     export_enabled: false;
 
                     Component.onCompleted: {
-                        console.log("=========", material_preview.view, viewLogic)
                         G.Associator.associate(preview, material_preview.view);
                         material_preview.init()
                     }
@@ -316,7 +374,7 @@ Control {
                         }
 
                     }
-
+                    /*
                     Label {
                         id: _specular_label
                         Layout.row: 2
@@ -405,7 +463,7 @@ Control {
                                 _edit_dialog.emission = _emission_dialog.color
                             }
                         }
-                    }
+                    }*/
 
 
                     Label {
@@ -559,9 +617,7 @@ Control {
         onAccepted: {
             if (_container.currentIndex == 0) {
 
-                //param.setColor(color_index, _edit_dialog.color)
-                console.log("---------------")
-                console.log(_edit_dialog.ambient, _edit_dialog.diffuse, _edit_dialog.specular, _edit_dialog.emission, _edit_dialog.shininess, _edit_dialog.transparency)
+
                 let v = param.value
                 v[color_index] = {
                     "ambient": _edit_dialog.ambient,
@@ -571,15 +627,6 @@ Control {
                     "shininess": _edit_dialog.shininess,
                     "transparency": _edit_dialog.transparency,
                 }
-                /*
-                param.setAmbient(color_index, _edit_dialog.ambient)
-                param.setDiffuse(color_index, _edit_dialog.diffuse)
-                param.setSpecular(color_index, _edit_dialog.specular)
-                param.setEmission(color_index, _edit_dialog.emission)
-                param.setShininess(color_index, _edit_dialog.shininess)
-                param.setTransparency(color_index, _edit_dialog.transparency)
-                */
-                console.log(JSON.stringify(v[color_index]))
 
                 param.value = v
             } else {
