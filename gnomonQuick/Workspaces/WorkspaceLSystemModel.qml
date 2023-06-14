@@ -282,7 +282,8 @@ G.Workspace {
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
 
-        _editor.tabName = d.fileName;
+        if (d.fileName)
+            _editor.tabName = d.fileName;
         _editor.contents = d.text;
         d.onParametersChanged();
         d.reset();
