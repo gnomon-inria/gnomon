@@ -54,7 +54,7 @@ Control {
 
         contentItem: TextInput {
             z: 2
-            text: _spinbox.textFromValue(_spinbox.value, _spinbox.locale)
+            text: _spinbox.textFromValue(_spinbox.value)
 
             font: _spinbox.font
             color: G.Style.colors.textColorBase
@@ -69,7 +69,7 @@ Control {
             validator: _spinbox.validator
 
             onTextEdited: {
-                _spinbox.value = _spinbox.valueFromText(text, _spinbox.locale)
+                _spinbox.value = _spinbox.valueFromText(text)
             }
         }
 
@@ -134,12 +134,12 @@ Control {
             top:  Math.max(_spinbox.from, _spinbox.to)
         }
 
-        textFromValue: function(value, locale) {
-            return Number(value / Math.pow(10, _control.decimals)).toLocaleString(locale, 'f',  _control.decimals)
+        textFromValue: function(value) {
+            return (value / Math.pow(10, _control.decimals)).toFixed(_control.decimals)
         }
 
-        valueFromText: function(text, locale) {
-            return Number.fromLocaleString(locale, text) * Math.pow(10, _control.decimals)
+        valueFromText: function(text) {
+            return parseFloat(text) * Math.pow(10, _control.decimals)
         }
 
         onValueChanged: {
