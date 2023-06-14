@@ -94,5 +94,15 @@ Control {
 	    z: _value_input.z - 1
 
         color: G.Style.colors.gutterColor
+
+	    Rectangle {
+	        anchors.top: parent.top
+	        anchors.horizontalCenter: parent.horizontalCenter
+	        height: 1
+	        width: parent.width - G.Style.smallPadding
+	        radius: 1
+
+            color: G.Style.colors.bgColor
+	    }
     }
 }

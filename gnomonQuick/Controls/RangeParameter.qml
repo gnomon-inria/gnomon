@@ -126,9 +126,20 @@ Control {
         color: G.Style.colors.gutterColor
 
 	    Rectangle {
-	        anchors.centerIn : parent
-	        width: 2
-	        height: parent.height - 2
+	        anchors.top: parent.top
+	        anchors.horizontalCenter: parent.horizontalCenter
+	        width: 1
+	        height: parent.height - G.Style.smallPadding/2
+	        radius: 1
+
+            color: G.Style.colors.bgColor
+	    }
+
+	    Rectangle {
+	        anchors.top: parent.top
+	        anchors.horizontalCenter: parent.horizontalCenter
+	        height: 1
+	        width: parent.width - G.Style.smallPadding
 	        radius: 1
 
             color: G.Style.colors.bgColor
