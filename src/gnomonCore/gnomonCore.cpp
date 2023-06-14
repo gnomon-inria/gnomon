@@ -48,7 +48,7 @@ void initialize(const QString& path, bool from_python)
         manager().initialize(v_path);
     }
 
-    gnomonCore::meshData::pluginFactory().record("gnomonMeshDataStdVector", gnomonMeshDataStdVectorCreator);
+    gnomonCore::gui_thread = QObject().thread();
 }
 
 void uninitialize(void)
@@ -66,6 +66,8 @@ void setAutoLoading(bool auto_load)
 {
     manager().setAutoLoading(auto_load);
 }
+
+QThread *gui_thread = nullptr;
 
 };
 

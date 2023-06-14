@@ -2,6 +2,7 @@
 #include "gnomonCommand/gnomonAbstractEvolutionModelCommand.h"
 #include "gnomonModel/gnomonAbstractModel.h"
 
+#include <gnomonCore>
 #include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
@@ -111,9 +112,15 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
             if(this->simulationType == SimulationType::run) {
                 this->model->run(0, d->derivationLength, 0);
                 this->postdo();
+                if (gnomonCore::gui_thread) {
+                    d->lString->metadata()->moveToThread(gnomonCore::gui_thread);
+                }
             } else {
                 if ((i+1) % d->animation_step == 0) {
                     d->lString->insert(i+1, lstring_model->stepAndReturn(i, 1));
+                    if (gnomonCore::gui_thread) {
+                        d->lString->metadata()->moveToThread(gnomonCore::gui_thread);
+                    }
                     promise.setProgressValue(i+1);
                     if(this->simulationType == SimulationType::animate) {
                         int remainingTime = sleeptime - timer.restart();
@@ -123,6 +130,12 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
                     }
                 } else {
                     lstring_model->step(i,1);
+                    if (gnomonCore::gui_thread) {
+                        auto lString = ((gnomonAbstractLStringEvolutionModel *) this->model)->state();
+                        if (lString) {
+                            lString->metadata()->moveToThread(gnomonCore::gui_thread);
+                        }
+                    }
                 }
             }
 
