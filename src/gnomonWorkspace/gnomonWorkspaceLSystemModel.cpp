@@ -11,6 +11,7 @@
 #include "gnomonCommand/gnomonLString/gnomonLStringEvolutionModelCommand.h"
 #include "gnomonForm/gnomonLString/gnomonLString.h"
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization"
+#include <dtkScript>
 
 QString vonKochLSystem(void)
 {
@@ -67,9 +68,11 @@ public:
     QString workspace;
     QStringList keys;
     QString model;
+    QString file;
     int currentIndex = 0;
 
-    QTemporaryFile *model_file = nullptr;
+    QTemporaryDir* tmpDir = nullptr;
+    QFile* model_file = nullptr;
     QFuture<int> redo_future;
 
     //QMutex mutex;
@@ -107,6 +110,18 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
+
+    d->tmpDir = new QTemporaryDir(".GNOMON_LPY_TEMP");
+
+    int stat;
+    QString temp_working_directory = "";
+    temp_working_directory += "import sys \n";
+    temp_working_directory += "cwdir = ";
+    temp_working_directory += "'" + d->tmpDir->path() + "'" + "\n";
+    temp_working_directory += "if not sys.path.__contains__(f'{cwdir}'): \n";
+    temp_working_directory += " sys.path.append(f'{cwdir}')\n";
+
+    dtkScriptInterpreterPython::instance()->interpret(temp_working_directory, &stat);
 
     d->view = new gnomonVtkView(this);
     d->view->setNodePortNames({});
@@ -148,7 +163,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
             this->messageChanged();
     });
 
-    this->setText(vonKochLSystem());
+    this->setDefaultLSystem();
 }
 
 gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
@@ -165,6 +180,10 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
         d->model_file = nullptr;
     }
 
+    if(d->tmpDir){
+        d->tmpDir->remove();
+        delete d->tmpDir;
+    }
 
     delete d;
 }
@@ -184,17 +203,18 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
     if (text != d->text) {
         d->text = text;
 
-        if(!d->model_file) {
-            d->model_file = new QTemporaryFile();
+        if(!d->model_file || d->model_file->fileName() != d->tmpDir->filePath(d->file)) {
+            d->model_file = new QFile(d->tmpDir->filePath(d->file));
         }
 
-        if (d->model_file->open()) {
+        if (d->model_file->open(QIODevice::WriteOnly)) {
             QTextStream model_stream(d->model_file);
             model_stream<<d->text;
             model_stream.flush();
 
             d->model_file->close();
             d->command->setLSystem(d->model_file->fileName());
+            this->reset();
         } else {
             qWarning() << "cannot open temp file for writing" << d->model_file;
         }
@@ -241,6 +261,7 @@ void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
 
 void gnomonWorkspaceLSystemModel::read(const QString& file_url)
 {
+    QString file_name = file_url.split(QRegularExpression("/")).last();
     QString file_path = filePathFromUrl(file_url);
 
     QFile f(file_path);
@@ -251,8 +272,9 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url)
         if(d->model_file) {
             delete d->model_file;
         }
-        QString temp_file = finfo.absolutePath() + QDir::separator() + ".XXXXXX" + finfo.fileName();
-        d->model_file = new QTemporaryFile(temp_file);
+
+        d->model_file = new QFile(d->tmpDir->filePath(file_name));
+        this->setFileName(file_name);
         this->setText(in.readAll());
         this->reset();
     } else {
@@ -272,6 +294,12 @@ void gnomonWorkspaceLSystemModel::save(const QString& file_url) const
     } else {
         dtkWarn()<<"Could not save to file"<<file_path;
     }
+}
+
+void gnomonWorkspaceLSystemModel::setDefaultLSystem(void)
+{
+    this->setFileName("vonKoch.lpy");
+    this->setText(vonKochLSystem());
 }
 
 void gnomonWorkspaceLSystemModel::animate()
@@ -420,6 +448,11 @@ QString gnomonWorkspaceLSystemModel::modelName(void) const
     return d->model;
 }
 
+QString gnomonWorkspaceLSystemModel::fileName(void) const
+{
+    return d->file;
+}
+
 QStringList gnomonWorkspaceLSystemModel::models(void) const
 {
     return d->keys;
@@ -434,6 +467,14 @@ void gnomonWorkspaceLSystemModel::setModelName(const QString &model)
         d->command->undo();
         this->setInitialState();
         emit parametersChanged();
+    }
+}
+
+void gnomonWorkspaceLSystemModel::setFileName(const QString &filename)
+{
+    if(filename != d->file) {
+        d->file = filename;
+        emit fileChanged(filename);
     }
 }
 
