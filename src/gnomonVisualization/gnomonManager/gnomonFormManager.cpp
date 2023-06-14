@@ -89,7 +89,6 @@ int gnomonFormManagerPrivate::item_counter = 0;
 
 gnomonFormManagerPrivate::gnomonFormManagerPrivate(QObject *parent) : QObject(parent)
 {
-    gnomonAbstractCommand::gui_thread = this->thread();
 }
 
 gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
@@ -384,7 +383,6 @@ void gnomonFormManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form,
 {
     if (!d->forms.values().contains(form)) {
         int item = d->item_counter++;
-        form->metadata()->moveToThread(QThread::currentThread());
         d->insertForm(item, form, image);
         d->formVisualizations.insert(item, visualization);
         emit added(item, form->formName());
