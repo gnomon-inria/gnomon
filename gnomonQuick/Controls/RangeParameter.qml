@@ -74,8 +74,12 @@ Control {
         errorText: "Enter a number"
 
 		onEditingFinished: {
-            _control.param.rmin = parseFloat(_left_value_input.text);
-            _control.param.rmax = parseFloat(_right_value_input.text);
+            if (_left_value_input.acceptableInput) {
+                _control.param.rmin = parseFloat(_left_value_input.text);
+            }
+            if (_right_value_input.acceptableInput) {
+                _control.param.rmax = parseFloat(_right_value_input.text);
+            }
         }
 
         Keys.onReturnPressed: editingFinished()
@@ -110,8 +114,12 @@ Control {
         errorText: "Enter a number"
 
         onEditingFinished: {
-            _control.param.rmin = parseFloat(_left_value_input.text);
-            _control.param.rmax = parseFloat(_right_value_input.text);
+            if (_left_value_input.acceptableInput) {
+                _control.param.rmin = parseFloat(_left_value_input.text);
+            }
+            if (_right_value_input.acceptableInput) {
+                _control.param.rmax = parseFloat(_right_value_input.text);
+            }
         }
 
         Keys.onReturnPressed: editingFinished()
