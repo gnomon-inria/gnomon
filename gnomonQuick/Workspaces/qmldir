@@ -14,6 +14,7 @@ WorkspaceDescriptionDelegate     1.0 WorkspaceDescriptionDelegate.qml
 WorkspaceLauncher                1.0 WorkspaceLauncher.qml
 WorkspaceLSystemModel            1.0 WorkspaceLSystemModel.qml
 WorkspaceMorphonet               1.0 WorkspaceMorphonet.qml
+WorkspacePointCloudQuantification 1.0 WorkspacePointCloudQuantification.qml
 WorkspacePointDetection          1.0 WorkspacePointDetection.qml
 WorkspacePreprocess              1.0 WorkspacePreprocess.qml
 WorkspacePythonAlgorithm         1.0 WorkspacePythonAlgorithm.qml
