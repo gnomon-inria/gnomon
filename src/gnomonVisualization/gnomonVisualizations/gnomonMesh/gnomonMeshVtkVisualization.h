@@ -19,12 +19,9 @@ public:
     virtual const QString name(void) override;
 
 public:
-	void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) override;
-	std::shared_ptr<gnomonMeshSeries> mesh(void) override;
-
-public slots:
-    void updateOpacity(void);
-    void updateValueRange(void);
+    void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) override;
+    std::shared_ptr<gnomonMeshSeries> mesh(void) override;
+    void setView(gnomonAbstractView* view) override;
 
 public:
     QImage imageRendering(void) override;
@@ -51,11 +48,12 @@ public slots:
 public:
     void setParameter(const QString&, const QVariant&) override;
     void setParameters(const dtkCoreParameters&) override;
+    void refreshParameters(void) override;
     dtkCoreParameters parameters(void) const override;
     QMap<QString, QString> parameterGroups(void) override;
 
 private:
-	class gnomonMeshVtkVisualizationPrivate *ddd;
+    class gnomonMeshVtkVisualizationPrivate *ddd;
 };
 
 inline gnomonAbstractMeshVtkVisualization *gnomonMeshVtkVisualizationCreator(void)

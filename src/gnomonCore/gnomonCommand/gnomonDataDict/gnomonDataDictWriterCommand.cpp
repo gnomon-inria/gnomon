@@ -14,6 +14,7 @@ gnomonDataDictWriterCommand::gnomonDataDictWriterCommand() : d(new gnomonDataDic
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
+        //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::dataDictWriter::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];

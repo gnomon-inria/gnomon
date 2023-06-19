@@ -114,17 +114,18 @@ QMap<QString, QString> pluginMetadata(const QString &group, const QString &plugi
 
             PyObject *key, *value;
             Py_ssize_t pos = 0;
-
-            while (PyDict_Next(py_metadata, &pos, &key, &value)) {
-                Py_ssize_t size_key = 0;
-                Py_ssize_t size_val = 0;
-                metadata.insert(
-                        PyUnicode_AsUTF8AndSize(key, &size_key),
-                        PyUnicode_AsUTF8AndSize(value, &size_val)
-                );
+            if(py_metadata) {
+                while (PyDict_Next(py_metadata, &pos, &key, &value)) {
+                    Py_ssize_t size_key = 0;
+                    Py_ssize_t size_val = 0;
+                    metadata.insert(
+                                    PyUnicode_AsUTF8AndSize(key, &size_key),
+                                    PyUnicode_AsUTF8AndSize(value, &size_val)
+                                    );
+                }
             }
             Py_DECREF(args);
-            Py_DECREF(py_metadata);
+            Py_XDECREF(py_metadata);
         }
         else
         {

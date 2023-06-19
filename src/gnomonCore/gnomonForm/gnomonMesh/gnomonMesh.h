@@ -69,6 +69,31 @@ public:
         m_data->deserialize(serialization["data"].toString());
     }
 
+
+public:
+    int geometricalDimension(void) const {return m_data->geometricalDimension();};
+    int topologicalDimension(void) const {return m_data->topologicalDimension();};
+
+    void pointCoordinates(gnomonAbstractMeshData::IdxType id, double* point_coordinates) const {
+        return m_data->pointCoordinates(id, point_coordinates); };
+    const double* pointsCoordinates(void) const {
+        return m_data->pointsCoordinates();};
+    gnomonAbstractMeshData::CntType pointsCount(void) const {
+        return m_data->pointsCount();};
+    void  cellPoints(gnomonAbstractMeshData::IdxType cell_id, int &out_nb_points_cell, const gnomonAbstractMeshData::IdxType*& out_first_point) const {
+        return m_data->cellPoints(cell_id, out_nb_points_cell, out_first_point);}; // out nb points of cell , out_first_point pointer to the first point of the cell
+    gnomonAbstractMeshData::CellType cellType(gnomonAbstractMeshData::IdxType cell_id) const {return m_data->cellType(cell_id);};
+    gnomonAbstractMeshData::CntType cellsCount(int geo_dimension = 4) const {return m_data->cellsCount(geo_dimension);};
+    const gnomonAbstractMeshData::IdxType* cellsIdx(gnomonAbstractMeshData::CntType& out_nb_cells, int geo_dimension = 4) const {return m_data->cellsIdx(out_nb_cells, geo_dimension);};
+    const gnomonAbstractMeshData::IdxType* cellsPoints(gnomonAbstractMeshData::CntType& out_nb_points, int geo_dimension = 4) const {return m_data->cellsPoints(out_nb_points, geo_dimension);};
+
+    const gnomonAbstractMeshData::CellType* cellsType(int geo_dimension = 4) const {return m_data->cellsType(geo_dimension);};
+    const gnomonAbstractMeshData::IdxType* cellsTopologyLocation(int geo_dimension = 4) const {return m_data->cellsTopologyLocation(geo_dimension);};
+
+    const gnomonMeshAttribute* attribute(const QString& name) const {return m_data->attribute(name);};
+    const gnomonMeshAttribute* attributes(void) const {return m_data->attributes();};
+    gnomonAbstractMeshData::CntType attributesCount(void) const {return m_data->attributesCount();};
+
 public:
     static inline QString formName(void) { return "gnomonMesh"; }
 
@@ -77,39 +102,8 @@ public:
           gnomonAbstractMeshData *data(void)       { return m_data; }
 
     void setData(gnomonAbstractMeshData* data) { m_data = data; }
-
-public:
-    QList<long> vertexIds(void) const { return m_data->vertexIds(); }
-    long vertexCount(void) const { return m_data->vertexCount(); }
-
-public:
-    QList<long> triangleIds(void) const { return m_data->triangleIds(); }
-    long triangleCount(void) const { return m_data->triangleCount(); }
-
-    QList<long> triangleVertexIds(long triangleId) const { return m_data->triangleVertexIds(triangleId); }
-
-public:
-    long addVertex(void) { return m_data->addVertex(); }
-    long addVertex(long vertexId) { return m_data->addVertex(vertexId); }
-    void removeVertex(long vertexId) { return m_data->removeVertex(vertexId); }
-
-    long addTriangle(const QList<long>& vertexIds) { return m_data->addTriangle(vertexIds); }
-    long addTriangle(const QList<long>& vertexIds, long triangleId) { return m_data->addTriangle(vertexIds, triangleId); }
-    void removeTriangle(long triangleId) { return m_data->removeTriangle(triangleId); }
-
-public:
-    QStringList vertexPropertyNames(void) const { return m_data->vertexPropertyNames(); }
-    bool hasVertexProperty(const QString& propertyName) const { return m_data->hasVertexProperty(propertyName); }
-    QMap<long, QVariant> vertexProperty(const QString& propertyName) const { return m_data->vertexProperty(propertyName); }
-    QMap<long, QVariant> addVertexProperty(const QString& propertyName) { return m_data->addVertexProperty(propertyName); }
-    void removeVertexProperty(const QString& propertyName) { return m_data->removeVertexProperty(propertyName); }
-
-    QStringList trianglePropertyNames(void) const { return m_data->trianglePropertyNames(); }
-    bool hasTriangleProperty(const QString& propertyName) const { return m_data->hasTriangleProperty(propertyName); }
-    QMap<long, QVariant> triangleProperty(const QString& propertyName) const { return m_data->triangleProperty(propertyName); }
-    QMap<long, QVariant> addTriangleProperty(const QString& propertyName) { return m_data->addTriangleProperty(propertyName); }
-    void removeTriangleProperty(const QString& propertyName) { return m_data->removeTriangleProperty(propertyName); }
 };
+
 
 // ///////////////////////////////////////////////////////////////////
 

@@ -22,6 +22,8 @@ gnomonCellImageWriterCommand::gnomonCellImageWriterCommand() : d(new gnomonCellI
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
+    //see MeshWriterCommand for what to do when there is multiple writers
+
     QStringList keys = gnomonCore::cellImageWriter::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];

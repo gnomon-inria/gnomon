@@ -10,7 +10,7 @@ namespace gnomonCore {
 
     GNOMONCORE_EXPORT void activateObjectManager(void);
 
-    GNOMONCORE_EXPORT void   initialize(const QString& path = QString());
+    GNOMONCORE_EXPORT void   initialize(const QString& path = QString(), bool from_python=false);
     GNOMONCORE_EXPORT void uninitialize(void);
 
     GNOMONCORE_EXPORT void setVerboseLoading(bool b);

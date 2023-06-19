@@ -39,6 +39,7 @@ swig_add_library(gnomonform LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/
 swig_link_libraries(gnomonform
   ${LAYER_NAME}
   Python3::Python
+  Python3::NumPy
   dtkCore
   Qt6::Core)
 

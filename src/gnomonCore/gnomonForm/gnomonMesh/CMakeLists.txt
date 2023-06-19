@@ -1,32 +1,15 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
-
-## #################################################################
-## Sources
-## #################################################################
-
-
 ADD_GNOMON_SUBDIRECTORY_HEADERS(
   gnomonAbstractMeshData
   gnomonAbstractMeshData.h
   gnomonMesh
-  gnomonMesh.h)
+  gnomonMesh.h
+  gnomonMeshAttribute.h
+  gnomonMeshDataStdVector.h)
 
 
 ADD_GNOMON_SUBDIRECTORY_SOURCES(
-  gnomonAbstractMeshData.cpp)
+  gnomonAbstractMeshData.cpp
+  gnomonMeshDataStdVector.cpp)
 
 
 ######################################################################

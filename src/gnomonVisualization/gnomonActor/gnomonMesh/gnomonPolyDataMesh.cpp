@@ -72,10 +72,10 @@ void gnomonPolyDataMesh::update(void)
     if(!d->mesh)
         return;
 
-    vtkSmartPointer<vtkPoints> polydataPoints = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkDoubleArray> polydataPointData = vtkSmartPointer<vtkDoubleArray>::New();
     vtkSmartPointer<vtkCellArray> polydataFaces = vtkSmartPointer<vtkCellArray>::New();
 
+    /*
     QMap<long, QVariant> positions_x = d->mesh->vertexProperty("barycenter_x");
     QMap<long, QVariant> positions_y = d->mesh->vertexProperty("barycenter_y");
     QMap<long, QVariant> positions_z = d->mesh->vertexProperty("barycenter_z");
@@ -125,6 +125,7 @@ void gnomonPolyDataMesh::update(void)
     this->SetPolys(polydataFaces);
 
     d->modified = false;
+    */
 }
 
 gnomonPolyDataMesh::gnomonPolyDataMesh(void) : gnomonPolyData(), d(new gnomonPolyDataMeshPrivate)
