@@ -1,5 +1,18 @@
 %module(directors="1", doctring="Wrapping of gnomonForm for python usage", package="gnomon.core", moduleimport="import _gnomonform") gnomonform
 
+%{
+#define SWIG_FILE_WITH_INIT
+%}
+
+%include "numpy.i"
+
+%init %{
+import_array();
+%}
+
+%include "std_array.i"
+%include "std_vector.i"
+
 %include "std_shared_ptr.i"
 %include <dtkBase/dtkBase.i>
 %include <gnomonMacro.i>
@@ -65,6 +78,7 @@
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMeshAttribute.h>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonAbstractPointCloudData.h>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
@@ -75,6 +89,85 @@
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
 
+// /////////////////////////////////////////////////////////////////
+// Mesh Attributes
+// /////////////////////////////////////////////////////////////////
+
+//python to c++
+%typemap(in) gnomonMeshAttribute * {
+    if (PyDict_Check($input)) {
+        QString name;
+        gnomonMeshAttribute::KindType kind;
+        gnomonMeshAttribute::SupportType support;
+        std::vector<double> data;
+
+        PyObject *py_name = PyDict_GetItemString($input, "name");
+        if(py_name)
+            name = PyUnicode_AsUTF8(py_name);
+        else {
+            qWarning() << "gnomonMeshAttribute wrapper: dict doesn't have Name";
+        }
+
+        PyObject *py_kind = PyDict_GetItemString($input, "kind");
+        if(py_kind)
+            kind = (gnomonMeshAttribute::KindType)PyLong_AsLong(py_kind);
+        else {
+            qWarning() << "gnomonMeshAttribute wrapper: dict doesn't have Kind";
+        }
+
+        PyObject *py_support = PyDict_GetItemString($input, "support");
+        if(py_support)
+            support = (gnomonMeshAttribute::SupportType)PyLong_AsLong(py_support);
+        else {
+            qWarning() << "gnomonMeshAttribute wrapper: dict doesn't have Support";
+        }
+
+        PyObject *py_array = PyDict_GetItemString($input, "data");
+        if(py_array && PyArray_Check(py_array)) {
+            npy_intp array_size = PyArray_DIM((PyArrayObject*)py_array, 0);
+
+            //May be optimized by setting the data pointer directly
+            // is necessary
+            data.reserve(array_size);
+            double *py_arr_data = (double *)PyArray_DATA((PyArrayObject*)py_array);
+            for(int i=0; i<array_size; ++i) {
+                data.push_back(py_arr_data[i]);
+            }
+        } else {
+            qWarning() << "gnomonMeshAttribute wrapper: dict 'data' is not an np array";
+        }
+
+        $1 = new gnomonMeshAttribute(name, kind, support, data);
+    } else {
+        qDebug("gnomonMeshAttribute wrapper: PyDict is expected as input. nullptr is returned.");
+    }
+}
+
+%typemap(freearg) gnomonMeshAttribute * {
+    if($1) {
+        delete $1;
+    }
+ }
+
+//c++ to python
+%typemap(out) gnomonMeshAttribute * {
+    $result = PyDict_New();
+    PyDict_SetItem($result, PyUnicode_FromString("name"), PyUnicode_FromString($1->m_name.toStdString().c_str()));
+    PyDict_SetItem($result, PyUnicode_FromString("kind"), PyLong_FromLong($1->m_kind));
+    PyDict_SetItem($result, PyUnicode_FromString("support"), PyLong_FromLong($1->m_support));
+
+    npy_intp dims[1] = { (long)$1->m_data.size() };
+    PyObject *array = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if(!array) {
+        qWarning() << "gnomonMeshAttribute Wrapper, cant create new python array";
+        return nullptr;
+    }
+    double *array_data = (double *)PyArray_DATA((PyArrayObject*)array);
+    for(int i=0; i< $1->m_data.size(); ++i) {
+        array_data[i] = $1->m_data[i];
+    }
+    PyDict_SetItem($result, PyUnicode_FromString("data"), array);
+ }
 // /////////////////////////////////////////////////////////////////
 // Form dictionary
 // /////////////////////////////////////////////////////////////////
@@ -738,6 +831,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 }
 
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
+%include <gnomonCore/gnomonForm/gnomonMesh/gnomonMeshAttribute.h>
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 %extend gnomonMesh {
     const char* __repr__()
@@ -745,7 +839,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         static std::string s;
         auto&& mesh = $self;
         QString str("<gnomoncore.gnomonMesh");
-        str += QString(" with %1 triangle(s) and %1 vertices").arg(mesh->triangleCount(), mesh->vertexCount());
+        str += QString(" with %1 vertices(s) and %1 cells").arg(mesh->data()->vertexCount(), mesh->data()->cellsCount());
         str += QString(" at 0x%1>").arg((quintptr)mesh, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();

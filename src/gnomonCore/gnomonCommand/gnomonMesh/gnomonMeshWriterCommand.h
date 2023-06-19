@@ -25,6 +25,7 @@ public:
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
+    QStringList extensions(void) override;
     orderedMap inputTypes() override;
 
 public:

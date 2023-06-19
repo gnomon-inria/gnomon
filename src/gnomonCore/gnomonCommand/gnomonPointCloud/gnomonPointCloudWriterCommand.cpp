@@ -22,6 +22,7 @@ gnomonPointCloudWriterCommand::gnomonPointCloudWriterCommand() : d(new gnomonPoi
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
+        //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::pointCloudWriter::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];

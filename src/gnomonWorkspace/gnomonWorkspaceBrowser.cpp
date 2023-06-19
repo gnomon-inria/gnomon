@@ -106,7 +106,10 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
                     fileReaderImagePath[ext] = empty_desc;
                 }
 
-                fileReaderDescriptions[ext][algo_name] = descriptions[algo_name].split("\n")[1];
+                if(descriptions[algo_name].split("\n").size() >=1)
+                    fileReaderDescriptions[ext][algo_name] = descriptions[algo_name].split("\n")[1];
+                else
+                    fileReaderDescriptions[ext][algo_name] = descriptions[algo_name];
                 fileReaderCommands[ext][algo_name] = command;
                 fileReaderImagePath[ext][algo_name] = preview[algo_name];
                 fileReaderMetadata[ext][algo_name] = pluginsMetadata2[algo_name];
@@ -588,7 +591,7 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
                 ext = i.key();
             }
         }
-                    
+
 
 
         if(filename.endsWith(".zip")) {
@@ -643,7 +646,7 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
 
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
         settings.setValue("path", QUrl(filenames[0]).adjusted(QUrl::RemoveFilename).toString());
-        
+
         emit readerPathChanged();
     }
 }

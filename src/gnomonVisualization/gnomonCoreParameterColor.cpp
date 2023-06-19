@@ -192,6 +192,7 @@ void gnomonCoreParameterColorMap::setValue(const gnomonColorMap& c)
 {
     m_c = c;
     m_object->notifyColorMap(m_c);
+    this->sync();
 }
 
 void gnomonCoreParameterColorMap::setValue(const QString& clut)
@@ -246,6 +247,7 @@ void gnomonCoreParameterColorMap::setValue(const QString& clut)
         m_n = clut;
         m_object->notifyColorMap(m_c);
         m_object->notifyName(m_n);
+        this->sync();
     }
 }
 
@@ -298,7 +300,7 @@ void gnomonCoreParameterColorMap::setValue(const QVariant& v)
         m_object->notifyDoc(m_doc);
         m_object->notifyColorMap(m_c);
         m_object->notifyName(m_n);
-
+        this->sync();
     } else {
         dtkWarn() << Q_FUNC_INFO << "QVariant type" << v.typeName()
                   << "is not compatible with current type"

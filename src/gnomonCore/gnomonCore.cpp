@@ -2,6 +2,8 @@
 
 #include "gnomonCore.h"
 #include "gnomonCoreSettings.h"
+#include "gnomonForm/gnomonMesh/gnomonAbstractMeshData.h"
+#include "gnomonForm/gnomonMesh/gnomonMeshDataStdVector.h"
 
 #include <dtkLog>
 #include <dtkScript>
@@ -15,10 +17,13 @@ void activateObjectManager(void)
     manager().setObjectManager(dtkCoreObjectManager::instance());
 }
 
-void initialize(const QString& path)
+void initialize(const QString& path, bool from_python)
 {
     // Should work with an future dtkScript version
-    dtkScriptInterpreterPython::instance()->allowThreads();
+    if(!from_python) {
+        dtkScriptInterpreterPython::instance()->allowThreads();
+    }
+
     QString realpath = path;
     QStringList pathslist;
 
@@ -42,6 +47,8 @@ void initialize(const QString& path)
     for(const QString& v_path : pathslist) {
         manager().initialize(v_path);
     }
+
+    gnomonCore::meshData::pluginFactory().record("gnomonMeshDataStdVector", gnomonMeshDataStdVectorCreator);
 }
 
 void uninitialize(void)

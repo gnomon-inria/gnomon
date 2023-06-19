@@ -14,6 +14,7 @@ gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand() : d(new gnomonC
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
+        //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::cellComplexWriter::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];
