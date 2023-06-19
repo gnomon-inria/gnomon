@@ -8,6 +8,7 @@
 #include <QtConcurrent>
 #include <QtCore>
 #include <qthread.h>
+
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
@@ -18,6 +19,7 @@ public:
     std::shared_ptr<gnomonLStringSeries> init_lString = nullptr;
     std::shared_ptr<gnomonLStringSeries> lString = nullptr;
 
+    QStringList opened_files;
     int derivationLength = 0;
     int animation_step = 1;
     double animation_time = 10;
@@ -159,6 +161,9 @@ std::shared_ptr<gnomonLStringSeries> gnomonLStringEvolutionModelCommand::lString
 
 void gnomonLStringEvolutionModelCommand::setLSystem(const QString& code)
 {
+    // code is an opened file
+    if(!d->opened_files.contains(code))
+        d->opened_files.append(code);
     ((gnomonAbstractLStringEvolutionModel *) this->model)->setLSystem(code);
 }
 

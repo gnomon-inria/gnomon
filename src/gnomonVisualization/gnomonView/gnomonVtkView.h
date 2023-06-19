@@ -79,6 +79,10 @@ public:
     Q_PROPERTY(Orientation gridOrientation READ gridOrientation WRITE setGridOrientation NOTIFY gridOrientationChanged);
     Q_PROPERTY(bool axesVisible READ axesVisible WRITE setAxesVisible NOTIFY axesVisibleChanged);
     Q_PROPERTY(bool cameraFixed READ cameraFixed WRITE setCameraFixed NOTIFY cameraFixedChanged);
+    Q_PROPERTY(double cameraAzimuth READ cameraAzimuth WRITE setCameraAzimuth NOTIFY cameraChanged);
+    Q_PROPERTY(double cameraElevation READ cameraElevation WRITE setCameraElevation NOTIFY cameraChanged);
+    Q_PROPERTY(double cameraRoll READ cameraRoll WRITE setCameraRoll NOTIFY cameraChanged);
+    Q_PROPERTY(double cameraDistance READ cameraDistance WRITE setCameraDistance NOTIFY cameraChanged);
 
     Q_PROPERTY(QList<long> pickedCells READ pickedCells NOTIFY pickedCellsChanged)
 
@@ -122,6 +126,7 @@ signals:
     void gridOrientationChanged(void);
     void axesVisibleChanged(void);
     void cameraFixedChanged(void);
+    void cameraChanged(void);
 
 signals:
     void pickedCellsChanged();
@@ -181,6 +186,7 @@ public slots:
 
     void setBounds(double bounds[6]);
     void setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
+    void updateBounds(void);
 
     void getBounds(double bounds[6]);
     double xMin(void) const;
@@ -211,10 +217,25 @@ public slots:
     void setCameraFixed(bool fixed);
     bool cameraFixed(void);
 
+    void setCameraAzimuth(double angle);
+    double cameraAzimuth(void);
+
+    void setCameraElevation(double angle);
+    double cameraElevation(void);
+
+    void setCameraRoll(double angle);
+    double cameraRoll(void);
+
+    void setCameraDistance(double distance);
+    double cameraDistance(void);
+
 public slots:
     void setCameraXY(bool flip=false, bool turn=false);
     void setCameraXZ(bool flip=false, bool turn=false);
     void setCameraYZ(bool flip=false, bool turn=false);
+
+    void saveCamera(const QString& file_url);
+    void loadCamera(const QString& file_url);
 
 public:
     void setCamera(vtkCamera *);
@@ -223,6 +244,8 @@ public:
 public slots:
     void render(void) override;
     void clear(void) override;
+    void saveScreenshot(const QString& filename) override;
+    QImage toImage(void) override;
 
 public slots:
     void setEnableLinking(bool);
