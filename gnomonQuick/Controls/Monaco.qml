@@ -5,7 +5,6 @@ import QtWebChannel
 import QtWebEngine
 
 Control {
-
     id: self;
 
     property var connected: false;
@@ -13,13 +12,47 @@ Control {
     property var language;
     property var contents;
     property var markers
+    property var fileName;
+    property var tabName;
+
+    QtObject {
+        id: _internal;
+
+        property var tab_filenames: []
+    }
 
     signal modified(var content);
+    signal fileSwitched(var name);
 
-       onThemeChanged: if(self.connected) bridge.send('theme',    self.theme);
+    onThemeChanged: if(self.connected) bridge.send('theme',    self.theme);
     onLanguageChanged: if(self.connected) bridge.send('language', self.language);
     onContentsChanged: if(self.connected) bridge.send('value',    self.contents);
-     onMarkersChanged: if(self.connected) bridge.send('markers',  self.markers);
+    onMarkersChanged: if(self.connected) bridge.send('markers',  self.markers);
+
+    onFileNameChanged: {
+        if (!_internal.tab_filenames.includes(self.fileName)) {
+            if (self.connected) {
+                bridge.send('fileName', self.fileName);
+            }
+            _internal.tab_filenames.push(self.fileName)
+            self.tabName = self.fileName
+        }
+    }
+
+    onTabNameChanged: {
+        if (self.tabName != self.fileName) {
+            if (self.connected) {
+                bridge.send('rename', self.tabName);
+            }
+            let i = _internal.tab_filenames.indexOf(self.fileName)
+            _internal.tab_filenames.splice(i, 1)
+            _internal.tab_filenames.push(self.tabName)
+            self.fileName = self.tabName
+        }
+    }
+
+    //to create a new tab with a name:
+    //if(self.connected) bridge.send('newTab', "{\"name\": \"toto\"}");
 
     QtObject {
         id: bridge;
@@ -27,24 +60,33 @@ Control {
         signal sendDataChanged(string name, string value);
 
         function send(name, value) {
-            //console.log("QML: sending", name, value);
-
             sendDataChanged(name, JSON.stringify(value));
         }
 
         function receive(name, value) {
-            //console.log("QML: receiving", name, value);
-
             switch(name) {
             case "theme":
-                console.log("Theme changed:", value);
                 break;
             case "language":
-                console.log("Language changed:", value);
                 break;
             case "value":
-                //  console.log("Contents changed", value);
                 self.modified(value);
+                break;
+            case "filename":
+                self.fileSwitched(value);
+                break;
+            case "new":
+                let new_file = eval(value)
+                if (!_internal.tab_filenames.includes(new_file)) {
+                    _internal.tab_filenames.push(new_file)
+                }
+                break;
+            case "close":
+                let closed_file = eval(value)
+                if (_internal.tab_filenames.includes(closed_file)) {
+                    let i = _internal.tab_filenames.indexOf(closed_file)
+                    _internal.tab_filenames.splice(i, 1)
+                }
                 break;
             default:
                 break;
@@ -57,6 +99,7 @@ Control {
             bridge.send('theme',    self.theme);
             bridge.send('language', self.language);
             bridge.send('value',    self.contents);
+            bridge.send('rename',    self.tabName);
         }
     }
 
@@ -86,5 +129,9 @@ Control {
         onJavaScriptConsoleMessage: (level, message, lineNumber, sourceID) => {
             console.log(message, lineNumber, sourceID);
         }
+    }
+
+    Component.onCompleted: {
+        _internal.tab_filenames.push("Tab 0")
     }
 }

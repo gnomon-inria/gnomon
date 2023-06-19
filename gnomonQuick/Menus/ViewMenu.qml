@@ -13,6 +13,7 @@ import xQuick.Vis           1.0 as XVis
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
+import gnomonQuick.Icons as G
 
 Control {
     id: _control;
@@ -74,6 +75,22 @@ Control {
         color: G.Style.colors.textColorBase
     }
 
+    G.IconButton {
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: -G.Style.smallPadding/2
+        anchors.rightMargin: -G.Style.smallPadding
+
+        size: G.Style.iconMedium;
+        iconName: G.Icons.icons["cog"]
+
+        tooltip: "View Parameters"
+
+        onClicked: {
+            _view_parameters.collapsed = !_view_parameters.collapsed;
+        }
+    }
+
     G.FormSelector {
 
         id: _form_selector
@@ -82,6 +99,7 @@ Control {
         currentIndex: -1
 
         anchors.top: _form_label.bottom
+        anchors.topMargin: G.Style.smallPadding
         anchors.left: parent.left
         anchors.right: parent.right
 
@@ -119,7 +137,7 @@ Control {
         anchors.top: _visu_label.bottom;
         anchors.right: parent.right;
         anchors.left: parent.left;
-        anchors.bottom: parent.bottom;
+        anchors.bottom: _button_container.top;
 
         anchors.margins: 12;
 
@@ -203,70 +221,94 @@ Control {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
         }
+    }
 
-        Item {
-            id: _button_container
+    Item {
+        id: _button_container
 
-            height: G.Style.sizes.s8
-            Layout.fillWidth: true;
+        anchors.right: parent.right;
+        anchors.left: parent.left;
+        anchors.bottom: parent.bottom;
+        height: G.Style.sizes.s8
 
-            G.Button {
+        G.Button {
+            id: _render
 
-                id: _render
+            anchors.right: _button_container.right;
+            anchors.verticalCenter: _button_container.verticalCenter
+            anchors.margins: G.Style.smallPadding
 
-                anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
+            text: "Render"
+            enabled: view? view.viewLogic.formNames.length > 0 : false;
 
-                text: "Render"
-                enabled: view? view.viewLogic.formNames.length > 0 : false;
+            onClicked: {
+                view.viewLogic.update();
+            }
 
-                onClicked: {
+        }
+
+        G.Button {
+            id: _clear
+
+            anchors.right: _render.left
+            anchors.verticalCenter: _button_container.verticalCenter
+            anchors.margins: G.Style.smallPadding
+
+            text: "Clear"
+            flat: true
+            enabled: view ? view.viewLogic.formNames.length > 0 : false;
+
+            onClicked: {
+                view.viewLogic.clear();
+                _internal.menu.destroy();
+            }
+
+        }
+
+        G.CheckBox {
+            id: _auto_render
+
+            anchors.left: _button_container.left
+            anchors.verticalCenter: _button_container.verticalCenter
+            anchors.bottomMargin: G.Style.smallPadding
+
+            text: "Auto render"
+            checked: true
+
+            Settings {
+                property alias auto_render: _auto_render.checked
+            }
+
+            onClicked: {
+                if (_auto_render.checked) {
+                    console.info('launching Render!')
                     view.viewLogic.update();
                 }
-
             }
+        }
+    }
 
-            G.Button {
-                id: _clear
+    G.ViewParameters {
+        id: _view_parameters
 
-                anchors.right: _render.left
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding
+        anchors.right: parent.right;
+        anchors.left: parent.left;
+        anchors.bottom: parent.bottom;
+        anchors.bottomMargin: -3*G.Style.smallPadding
 
-                text: "Clear"
-                flat: true
-                enabled: view ? view.viewLogic.formNames.length > 0 : false;
+        view: _control.view
+    }
 
-                onClicked: {
-                    view.viewLogic.clear();
-                    _internal.menu.destroy();
-                }
+    G.Dragger {
+        anchors.horizontalCenter: _view_parameters.horizontalCenter;
+        anchors.bottom: _view_parameters.top;
+        anchors.bottomMargin: -1 * height/2;
 
-            }
+        z: _view_parameters.z+1
+        tooltip: "View Parameters"
 
-            G.CheckBox {
-
-                id: _auto_render
-
-                anchors.left: _button_container.left
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.bottomMargin: G.Style.smallPadding
-
-                text: "Auto render"
-                checked: true
-
-                Settings {
-                    property alias auto_render: _auto_render.checked
-                }
-
-                onClicked: {
-                    if (_auto_render.checked) {
-                        console.info('launching Render!')
-                        view.viewLogic.update();
-                    }
-                }
-            }
+        onClicked: {
+            _view_parameters.collapsed = !_view_parameters.collapsed
         }
     }
 
