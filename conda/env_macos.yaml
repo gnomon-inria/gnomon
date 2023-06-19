@@ -22,7 +22,7 @@ dependencies:
     - ipython
     - numpy
     - scipy != 1.8.1
-    - swig
+    - swig >=4.1
     - pymongo
     - matplotlib-base
     - timagetk =3
