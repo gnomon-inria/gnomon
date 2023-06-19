@@ -55,7 +55,7 @@ Control {
         }
     }
 
-	TextInput {
+	TextField {
 		id: _value_input;
 
         anchors.top: _slider.bottom
@@ -81,6 +81,7 @@ Control {
             decimals: _control.decimals
             notation: DoubleValidator.StandardNotation
         }
+        errorText: "Enter a number between "+_control.min+" and "+_control.max;
 
 		onEditingFinished: {
             _control.value = parseFloat(text);

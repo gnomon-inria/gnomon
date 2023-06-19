@@ -45,7 +45,7 @@ Control {
 		}
     }
 
-    TextInput {
+    TextField {
 		id: _left_value_input;
 
         anchors.top: _range.bottom
@@ -71,6 +71,7 @@ Control {
             decimals: _control.decimals
             notation: DoubleValidator.StandardNotation
         }
+        errorText: "Enter a number"
 
 		onEditingFinished: {
             _control.param.rmin = parseFloat(_left_value_input.text);
@@ -80,7 +81,7 @@ Control {
         Keys.onReturnPressed: editingFinished()
 	}
 
-    TextInput {
+    TextField {
         id: _right_value_input;
 
         anchors.top: _range.bottom
@@ -106,6 +107,7 @@ Control {
             decimals: _control.decimals
             notation: DoubleValidator.StandardNotation
         }
+        errorText: "Enter a number"
 
         onEditingFinished: {
             _control.param.rmin = parseFloat(_left_value_input.text);
