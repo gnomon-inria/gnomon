@@ -430,9 +430,9 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
                     series = ToLStringSeries(value);
                 } else if(v->asMesh()) {
                     series = ToMeshSeries(value);
-                /*} else if(v->asPointCloud()) {
+                } else if(v->asPointCloud()) {
                     series = ToPointCloudSeries(value);
-                } else if(v->asSphere()) {
+                /*} else if(v->asSphere()) {
                     series = ToSphereSeries(value);
                 } else if(v->asTree()) {
                     series = ToTreeSeries(value);
@@ -492,9 +492,9 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
                     series = ToLStringSeries(value);
                 } else if(v->asMesh()) {
                     series = ToMeshSeries(value);
-                /*} else if(v->asPointCloud()) {
+                } else if(v->asPointCloud()) {
                     series = ToPointCloudSeries(value);
-                } else if(v->asSphere()) {
+                /*} else if(v->asSphere()) {
                     series = ToSphereSeries(value);
                 } else if(v->asTree()) {
                     series = ToTreeSeries(value);
@@ -539,9 +539,11 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
             v = FromImageSeries(std::dynamic_pointer_cast<gnomonImageSeries>(series));
         } else if(series->formName() == "gnomonLString") {
             v = FromLStringSeries(std::dynamic_pointer_cast<gnomonLStringSeries>(series));
-        }else if(series->formName() == "gnomonMesh") {
+        } else if(series->formName() == "gnomonMesh") {
             v = FromMeshSeries(std::dynamic_pointer_cast<gnomonMeshSeries>(series));
-        }else {
+        } else if(series->formName() == "gnomonPointCloud") {
+            v = FromPointCloudSeries(std::dynamic_pointer_cast<gnomonPointCloudSeries>(series));
+        } else {
             qWarning() << Q_FUNC_INFO << "Not implemented for form: " << series->formName();
             v = PyDict_New();
         }
