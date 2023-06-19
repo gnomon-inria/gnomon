@@ -11,6 +11,7 @@ class gnomonPointCloudFromImageCommandPrivate
 {
 public:
     std::shared_ptr<gnomonImageSeries> input;
+    std::shared_ptr<gnomonCellImageSeries> cellImage;
     std::shared_ptr<gnomonPointCloudSeries> output;
 };
 
@@ -82,6 +83,23 @@ std::shared_ptr<gnomonImageSeries> gnomonPointCloudFromImageCommand::input()
     return d->input;
 }
 
+void gnomonPointCloudFromImageCommand::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage)
+{
+    if ((!cellImage)||(cellImage->times().empty())) {
+        d->cellImage = nullptr;
+    } else {
+        d->cellImage = cellImage;
+    }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractPointCloudFromImage *) this->action)->setCellImage(d->cellImage);
+    this->action->refreshParameters();
+}
+
+std::shared_ptr<gnomonCellImageSeries> gnomonPointCloudFromImageCommand::cellImage()
+{
+    return d->cellImage;
+}
+
 std::shared_ptr<gnomonPointCloudSeries> gnomonPointCloudFromImageCommand::output()
 {
     return d->output;
@@ -91,6 +109,7 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudFromI
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
+    inputs["cellImage"] = this->cellImage();
     return inputs;
 }
 
@@ -113,6 +132,7 @@ QStringList gnomonPointCloudFromImageCommand::availablePlugins() {
 gnomonAbstractCommand::orderedMap gnomonPointCloudFromImageCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
     return input_types;
 }
 
@@ -125,6 +145,8 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudFromImageCommand::outputTypes(
 void gnomonPointCloudFromImageCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
         this->setInput(std::dynamic_pointer_cast<gnomonImageSeries>(form));
+    } else if (name == "cellImage") {
+        this->setCellImage(std::dynamic_pointer_cast<gnomonCellImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
