@@ -79,7 +79,7 @@ Item {
                 Image {
                     id: _desc_image
                     visible: _self.show_description
-                    source: "file:qml/gnomonQuick/assets/" + _self.preview
+                    source: "qrc:/qml/gnomonQuick/assets/" + _self.preview
                     Layout.preferredWidth: _description_view.width;
                     fillMode: Image.PreserveAspectFit
                     Layout.preferredHeight: G.Style.sizes.s11 - G.Style.smallPadding;
