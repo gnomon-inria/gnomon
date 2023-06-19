@@ -223,7 +223,10 @@ G.Workspace {
                 }
 
                 onFileSwitched: (name) => {
-                    d.fileName = eval(name)
+                    // Only takes into account .py and .lpy files
+                    name = eval(name)
+                    if(name.endsWith("py"))
+                        d.fileName = name
                 }
             }
         }
