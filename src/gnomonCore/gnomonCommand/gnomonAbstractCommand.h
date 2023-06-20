@@ -96,9 +96,6 @@ public:
     virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() = 0;
     virtual orderedMap outputTypes() = 0;
 
-public:
-    static QThread *gui_thread;
-
 protected:
     class gnomonAbstractAlgorithm *action = nullptr;
     QString algorithm_name = "";

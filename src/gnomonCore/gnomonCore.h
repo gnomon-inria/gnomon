@@ -15,6 +15,8 @@ namespace gnomonCore {
 
     GNOMONCORE_EXPORT void setVerboseLoading(bool b);
     GNOMONCORE_EXPORT void setAutoLoading(bool auto_loading);
+
+    GNOMONCORE_EXPORT extern QThread *gui_thread;
 };
 
 //
