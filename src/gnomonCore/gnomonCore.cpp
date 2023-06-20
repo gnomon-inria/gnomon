@@ -47,7 +47,8 @@ void initialize(const QString& path, bool from_python)
     for(const QString& v_path : pathslist) {
         manager().initialize(v_path);
     }
-
+    
+    gnomonCore::meshData::pluginFactory().record("gnomonMeshDataStdVector", gnomonMeshDataStdVectorCreator);
     gnomonCore::gui_thread = QObject().thread();
 }
 
