@@ -200,7 +200,7 @@ Item {
                 enabled: d.running
                 text: "Stop"
                 empty: true
-                type: enalbed? G.Style.ButtonType.Danger : G.Style.ButtonType.Neutral
+                type: enabled? G.Style.ButtonType.Danger : G.Style.ButtonType.Neutral
                 iconName: G.Icons.icons["stop"]
 
                 onClicked: {

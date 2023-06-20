@@ -261,8 +261,7 @@ G.Workspace {
                     Layout.fillWidth: true;
                     Layout.fillHeight: true;
                     viewLogic: d.view;
-                    // TODO: Enable when export issue is fixed
-                    export_enabled: false;
+                    export_enabled: true;
                 }
 
                 G.DataDict {
@@ -270,8 +269,7 @@ G.Workspace {
                     Layout.fillWidth: true;
                     Layout.fillHeight: true;
                     viewLogic: d.textView;
-                    // TODO: Enable when export issue is fixed
-                    export_enabled: false;
+                    export_enabled: true;
                 }
 
                 onCurrentIndexChanged: {
@@ -284,7 +282,8 @@ G.Workspace {
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
 
-        _editor.tabName = d.fileName;
+        if (d.fileName)
+            _editor.tabName = d.fileName;
         _editor.contents = d.text;
         d.onParametersChanged();
         d.reset();
