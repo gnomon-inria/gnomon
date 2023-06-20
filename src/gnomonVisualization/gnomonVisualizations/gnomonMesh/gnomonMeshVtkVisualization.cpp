@@ -15,6 +15,7 @@
 #include "gnomonActor/gnomonPolyData/gnomonActorPolyData.h"
 #include "gnomonActor/gnomonPolyData/gnomonActor2DPolyData.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecorator.h"
+#include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorIsoContours.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorSurfaceColor.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorVectorGlyphs.h"
 
@@ -137,6 +138,7 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
 
 gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMeshVtkVisualization(), ddd(new gnomonMeshVtkVisualizationPrivate)
 {
+    ddd->decorators.append(new gnomonVtkDecoratorIsoContours());
     ddd->decorators.append(new gnomonVtkDecoratorSurfaceColor());
     //ddd->decorators.append(new gnomonVtkDecoratorVectorGlyphs());
 
