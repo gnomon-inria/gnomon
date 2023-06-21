@@ -7,6 +7,7 @@
 #include <QtGui>
 
 #include <dtkCore/dtkCoreParameter>
+#include "gnomonMaterial.h"
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterColorTable declaration
@@ -42,13 +43,28 @@ public:
     bool isColor(long index) const;
     QColor color(long index) const;
 
+    bool isMaterial(long index) const;
+    QColor ambient(long index) const;
+    QColor specular(long index) const;
+    QColor emission(long index) const;
+    double diffuse(long index) const;
+    double shininess(long index) const;
+    double transparency(long index) const;
+
 public:
-    void setColor(long index, const QColor& color);
     void setTexture(long index, const QString& texture);
+    void setColor(long index, const QColor& color);
+    void setAmbient(long index, const QColor& color);
+    void setSpecular(long index, const QColor& color);
+    void setEmission(long index, const QColor& color);
+    void setDiffuse(long index, const double v);
+    void setShininess(long index, const double v);
+    void setTransparency(long index, const double v);
 
 private:
     QMap<long, QString> textures;
     QMap<long, QColor> colors;
+    QMap<long, gnomonMaterial> materials;
 };
 
 
@@ -73,7 +89,7 @@ public:
     void setValue(const gnomonColorTable&);
     void setValue(const QVariant&) override;
 
-    gnomonColorTable value(void) const;
+    gnomonColorTable& value(void);
 
 public:
     QColor color(long i) const;
@@ -81,6 +97,19 @@ public:
 
     QString texture(long i) const;
     void setTexture(long i, const QString& texture);
+
+    QColor ambient(long index) const;
+    QColor specular(long index) const;
+    QColor emission(long index) const;
+    double diffuse(long index) const;
+    double shininess(long index) const;
+    double transparency(long index) const;
+    void setAmbient(long index, const QColor& color);
+    void setSpecular(long index, const QColor& color);
+    void setEmission(long index, const QColor& color);
+    void setDiffuse(long index, const double v);
+    void setShininess(long index, const double v);
+    void setTransparency(long index, const double v);
 
     void clearColors(void);
 
