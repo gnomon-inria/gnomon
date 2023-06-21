@@ -37,6 +37,9 @@ Rectangle {
     property bool ctrl_pressed: false;
     property bool export_enabled: !viewLogic.inputView;
 
+    property bool icons_enabled: true;
+    property bool ts_enabled: true;
+
     signal droppedFromFile(string path)
     signal droppedFromManager(int index)
 
@@ -78,7 +81,7 @@ Rectangle {
             icon: G.Icons.icons["arrow-down-drop-circle"];
             size: G.Style.smallDelegateHeight;
             color: G.Style.colors.fgColor
-            visible: _drop.containsDrag & viewLogic.inputView;
+            visible: _drop.containsDrag && viewLogic.inputView;
             anchors.centerIn: parent;
         }
 
@@ -134,7 +137,8 @@ Rectangle {
     G.TimeSeriesSlider {
         id: _ts_slider;
         times: viewLogic.times
-        visible: viewLogic.times.length > 1
+        visible: viewLogic.times.length > 1 && ts_enabled
+        enabled: visible
 
         onValueChanged: {
             viewLogic.currentTime = times[value]
@@ -148,6 +152,8 @@ Rectangle {
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "2D mode"
+        enabled: icons_enabled
+        visible: enabled
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -239,6 +245,8 @@ Rectangle {
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "3D mode";
+        enabled: icons_enabled
+        visible: enabled
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -276,6 +284,8 @@ Rectangle {
         size: G.Style.iconLarge;
         color: G.Style.colors.textColorNeutral;
         tooltip: "Choose background color"
+        enabled: icons_enabled
+        visible: enabled
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -301,8 +311,9 @@ Rectangle {
         iconName: G.Icons.icons["video"];
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
-        visible: viewLogic.mode == GV.View.VIEW_MODE_3D
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && icons_enabled
         tooltip: "Reset camera to default positions"
+        enabled: visible
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -321,8 +332,9 @@ Rectangle {
         rotation: self.shift_pressed? 180 : 0
         flip: self.ctrl_pressed
         color: G.Style.colors.textColorNeutral;
-        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active && icons_enabled
         tooltip: "Reset camera to XY axes"
+        enabled: visible
 
         anchors.top: _camera_icon.bottom
         anchors.topMargin: G.Style.smallPadding
@@ -342,8 +354,9 @@ Rectangle {
         rotation: self.ctrl_pressed ? 180 : 0
         flip: (self.shift_pressed ? !self.ctrl_pressed : self.ctrl_pressed)
         color: G.Style.colors.textColorNeutral;
-        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active && icons_enabled
         tooltip: "Reset camera to XZ"
+        enabled: visible
 
         anchors.top: _camera_xy_icon.bottom
         anchors.topMargin: G.Style.smallPadding
@@ -362,8 +375,9 @@ Rectangle {
         rotation: self.ctrl_pressed ? 180 : 0
         flip: (self.shift_pressed ? !self.ctrl_pressed : self.ctrl_pressed)
         color: G.Style.colors.textColorNeutral;
-        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active
+        visible: viewLogic.mode == GV.View.VIEW_MODE_3D && _camera_icon.active && icons_enabled
         tooltip: "Reset camera to YZ"
+        enabled: visible
 
         anchors.top: _camera_xz_icon.bottom
         anchors.topMargin: G.Style.smallPadding
@@ -381,6 +395,8 @@ Rectangle {
         size: G.Style.iconLarge;
         color: G.Style.colors.textColorNeutral;
         tooltip: "Set representation to Point/Wireframe/Surface"
+        enabled: icons_enabled
+        visible: enabled
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -398,6 +414,8 @@ Rectangle {
         size: G.Style.iconLarge;
         color: viewLogic.gridVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Show/Hide the grid around the objects"
+        enabled: icons_enabled
+        visible: enabled
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -441,6 +459,8 @@ Rectangle {
         size: G.Style.iconLarge;
         color: viewLogic.axesVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Show/Hide the axes orientation widget"
+        enabled: icons_enabled
+        visible: enabled
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -458,6 +478,8 @@ Rectangle {
         size: G.Style.iconLarge;
         color: viewLogic.cameraFixed ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Forbid/Allow visualization updates to change the field of view"
+        enabled: icons_enabled
+        visible: enabled
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -474,8 +496,9 @@ Rectangle {
         iconName: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
         size: G.Style.iconLarge;
         color: viewLogic.synced ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
-        visible: viewLogic.inPool
+        visible: viewLogic.inPool && icons_enabled
         tooltip: "(Un)Link with other views for this workspace"
+        enabled: visible
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
@@ -563,8 +586,8 @@ Rectangle {
     G.IconButton {
         id: _export_icon;
         iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
-        enabled: self.export_enabled
-        visible: !viewLogic.inputView
+        enabled: self.export_enabled && icons_enabled
+        visible: !viewLogic.inputView && icons_enabled
         size: G.Style.iconLarge;
         color: self.export_enabled ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         hoverColor : self.export_enabled ? G.Style.colors.hoveredBaseColor : G.Style.colors.fgColor;
