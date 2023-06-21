@@ -7,6 +7,7 @@
 #include <QtGui>
 
 #include <dtkCore/dtkCoreParameter>
+#include "gnomonMaterial.h"
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonCoreParameterColorTable declaration
@@ -63,12 +64,7 @@ public:
 private:
     QMap<long, QString> textures;
     QMap<long, QColor> colors;
-    QMap<long, QColor> ambientMap;
-    QMap<long, QColor> specularMap;
-    QMap<long, QColor> emissionMap;
-    QMap<long, double> diffuseMap;
-    QMap<long, double> shininessMap;
-    QMap<long, double> transparencyMap;
+    QMap<long, gnomonMaterial> materials;
 };
 
 

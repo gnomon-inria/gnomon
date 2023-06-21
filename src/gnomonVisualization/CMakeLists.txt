@@ -29,6 +29,7 @@ set(${PROJECT_NAME}_HEADERS
     gnomonCoreParameterColorTableObject
     gnomonCoreParameterColorTableObject.h
     gnomonLookupTable.h # NOTE: Transitional ?
+    gnomonMaterial.h
     gnomonCoreParameterLookupTable # NOTE: Transitional ?
     gnomonCoreParameterLookupTable.h # NOTE: Transitional ?
     gnomonCoreParameterLookupTableObject # NOTE: Transitional ?

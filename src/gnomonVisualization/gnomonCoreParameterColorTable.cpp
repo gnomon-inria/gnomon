@@ -9,8 +9,7 @@
 // ///////////////////////////////////////////////////////////////////
 
 gnomonColorTable::gnomonColorTable(const gnomonColorTable& o) :
-colors(o.colors), textures(o.textures), ambientMap(o.ambientMap), specularMap(o.specularMap), emissionMap(o.emissionMap),
-diffuseMap(o.diffuseMap), shininessMap(o.shininessMap), transparencyMap(o.transparencyMap)
+colors(o.colors), textures(o.textures), materials(o.materials)
 {
 }
 
@@ -19,12 +18,7 @@ gnomonColorTable& gnomonColorTable::operator = (const gnomonColorTable& o)
     if(this != &o) {
         this->colors = o.colors;
         this->textures = o.textures;
-        this->ambientMap = o.ambientMap;
-        this->specularMap = o.specularMap;
-        this->emissionMap = o.emissionMap;
-        this->diffuseMap = o.diffuseMap;
-        this->shininessMap = o.shininessMap;
-        this->transparencyMap = o.transparencyMap;
+        this->materials = o.materials;
     }
 
     return *this;
@@ -33,12 +27,7 @@ gnomonColorTable& gnomonColorTable::operator = (const gnomonColorTable& o)
 bool gnomonColorTable::operator != (const gnomonColorTable& o)
 {
     return (this->colors == o.colors)
-    && (this->ambientMap == o.ambientMap)
-    && (this->specularMap == o.specularMap)
-    && (this->emissionMap == o.emissionMap)
-    && (this->diffuseMap == o.diffuseMap)
-    && (this->shininessMap == o.shininessMap)
-    && (this->transparencyMap == o.transparencyMap)
+    && (this->materials == o.materials)
     && (this->textures == o.textures);
 }
 
@@ -52,7 +41,7 @@ QList<long> gnomonColorTable::gnomonColorTable::indices(void) const
     QList<long> indices;
     indices.append(this->colors.keys());
     indices.append(this->textures.keys());
-    indices.append(this->ambientMap.keys());
+    indices.append(this->materials.keys());
     std::sort(indices.begin(), indices.end());
     return indices;
 }
@@ -105,60 +94,55 @@ void gnomonColorTable::setTexture(long index, const QString& texture)
 }
 
 bool gnomonColorTable::isMaterial(long index) const {
-    /*
-    qDebug() << this;
-    qDebug() << ambientMap;
-    qDebug() << ambientMap.keys() << index << ambientMap.contains(index);
-     */
-    return ambientMap.contains(index);
+    return materials.contains(index);
 }
 
 QColor gnomonColorTable::ambient(long index) const {
-    return ambientMap[index];
+    return materials[index].ambient;
 }
 
 QColor gnomonColorTable::specular(long index) const {
-    return specularMap[index];
+    return materials[index].specular;
 }
 
 QColor gnomonColorTable::emission(long index) const {
-    return emissionMap[index];
+    return materials[index].emission;
 }
 
 double gnomonColorTable::diffuse(long index) const {
-    return diffuseMap[index];
+    return materials[index].diffuse;
 }
 
 double gnomonColorTable::shininess(long index) const {
-    return shininessMap[index];
+    return materials[index].shininess;
 }
 
 double gnomonColorTable::transparency(long index) const {
-    return transparencyMap[index];
+    return materials[index].transparency;
 }
 
 void gnomonColorTable::setAmbient(long index, const QColor &color) {
-    ambientMap[index] = color;
+    materials[index].ambient = color;
 }
 
 void gnomonColorTable::setSpecular(long index, const QColor &color) {
-    specularMap[index] = color;
+    materials[index].specular = color;
 }
 
 void gnomonColorTable::setEmission(long index, const QColor &color) {
-    emissionMap[index] = color;
+    materials[index].emission = color;
 }
 
 void gnomonColorTable::setDiffuse(long index, const double v) {
-    diffuseMap[index] = v;
+    materials[index].diffuse = v;
 }
 
 void gnomonColorTable::setShininess(long index, const double v) {
-    shininessMap[index] = v;
+    materials[index].shininess = v;
 }
 
 void gnomonColorTable::setTransparency(long index, const double v) {
-    transparencyMap[index] = v;
+    materials[index].transparency = v;
 }
 
 
