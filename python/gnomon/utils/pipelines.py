@@ -330,7 +330,7 @@ def load_pipeline(path: str, data_dir: str = ""):
     """
 
     pipeline = gnomonPipeline()
-    ok = pipeline.readFromJson(path)
+    ok = pipeline.readFromJson(path, False)
     if (not ok):
         print("cannot read pipeline from path " + path)
         return None
