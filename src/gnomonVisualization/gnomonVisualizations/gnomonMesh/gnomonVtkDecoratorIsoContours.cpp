@@ -21,12 +21,9 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
+#include <vtkUnstructuredGrid.h>
 
 #include <gnomonVisualization/gnomonCoreParameterColor.h>
-#include <vtkSmartPointerBase.h>
-#include <vtkUnstructuredGrid.h>
-#include "gnomonView/gnomonVtkView.h"
-#include "gnomonVisualizations/gnomonMesh/gnomonVtkDecorator.h"
 
 struct gnomonVtkDecoratorIsoContoursPrivate {
     gnomonVtkDecoratorIsoContours *q = nullptr;

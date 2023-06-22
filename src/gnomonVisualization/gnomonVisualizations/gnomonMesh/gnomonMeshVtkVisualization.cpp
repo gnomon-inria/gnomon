@@ -16,6 +16,7 @@
 #include "gnomonActor/gnomonPolyData/gnomonActor2DPolyData.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecorator.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorIsoContours.h"
+#include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorStreamTracer.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorSurfaceColor.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorVectorGlyphs.h"
 
@@ -140,7 +141,8 @@ gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMes
 {
     ddd->decorators.append(new gnomonVtkDecoratorIsoContours());
     ddd->decorators.append(new gnomonVtkDecoratorSurfaceColor());
-    //ddd->decorators.append(new gnomonVtkDecoratorVectorGlyphs());
+    ddd->decorators.append(new gnomonVtkDecoratorStreamTracer());
+    ddd->decorators.append(new gnomonVtkDecoratorVectorGlyphs());
 
     for(auto decorator : ddd->decorators) {
         auto params = decorator->parameters();
