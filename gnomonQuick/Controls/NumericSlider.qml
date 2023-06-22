@@ -17,15 +17,9 @@ Control {
     property var label: "";
     property var doc: "";
 
-    implicitHeight: _label.implicitHeight + _slider.implicitHeight + _value.implicitHeight
+    implicitHeight: _label.implicitHeight + _slider.implicitHeight + _value_input.implicitHeight
 
     hoverEnabled: true
-
-    QtObject {
-        id: _internal;
-
-        property bool textEdit: false;
-    }
 
     G.ToolTip {
         visible: _control.hovered && !_slider.pressed
@@ -42,24 +36,6 @@ Control {
         text: _control.label.toUpperCase()
         font: G.Style.fonts.label
         color: G.Style.colors.textColorBase
-    }
-
-    G.IconButton {
-
-        id: _enable_text;
-
-        anchors.right: parent.right
-        anchors.top: parent.top
-        enabled: !_internal.textEdit
-
-        size: G.Style.iconSmall;
-        color: G.Style.colors.textColorBase
-
-        iconName: G.Icons.icons["pencil"];
-
-        onClicked: {
-            _internal.textEdit = !_internal.textEdit
-        }
     }
 
     G.Slider {
@@ -79,64 +55,55 @@ Control {
         }
     }
 
-    Label {
-        id: _value
-
-        anchors.topMargin: G.Style.sizes.s1
-        anchors.top: _slider.bottom
-        x: 0 //_slider.gaugeWidth
-        visible: !_internal.textEdit
-
-        text: _slider.value.toFixed(_control.decimals)
-        font: G.Style.fonts.value
-        color: G.Style.colors.hoveredBaseColor
-    }
-
-	TextInput {
+	TextField {
 		id: _value_input;
 
-        anchors.topMargin: G.Style.sizes.s1
         anchors.top: _slider.bottom
-        anchors.left: _slider.left
-        anchors.right: _slider.horizontalCenter
-        x: 0 //_slider.gaugeWidth
-        visible: _internal.textEdit
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        horizontalAlignment: Qt.AlignHCenter
+        verticalAlignment: Qt.AlignVCenter
+
+        selectByMouse: true
+        mouseSelectionMode: TextInput.SelectCharacters
+        readOnly: false
 
 		text: _slider.value.toFixed(_control.decimals)
         font: G.Style.fonts.value
-		color: G.Style.colors.textColorBase
+		color: _value_input.activeFocus? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
+        selectionColor: G.Style.colors.fgColor
+        selectedTextColor: G.Style.colors.hoveredBaseColor
 
-		validator: DoubleValidator{
+		validator: DoubleValidator {
             bottom: _control.min
             top: _control.max
             decimals: _control.decimals
             notation: DoubleValidator.StandardNotation
         }
+        errorText: "Enter a number between "+_control.min+" and "+_control.max;
 
 		onEditingFinished: {
             _control.value = parseFloat(text);
-            _internal.textEdit = false
         }
 
         Keys.onReturnPressed: editingFinished()
 	}
 
-    G.IconButton {
+	Rectangle {
+	    anchors.fill: _value_input
+	    z: _value_input.z - 1
 
-        id: _validate_text;
+        color: G.Style.colors.gutterColor
 
-        anchors.right: parent.right
-        anchors.topMargin: G.Style.sizes.s1
-        anchors.top: _slider.bottom
+	    Rectangle {
+	        anchors.top: parent.top
+	        anchors.horizontalCenter: parent.horizontalCenter
+	        height: 1
+	        width: parent.width - G.Style.smallPadding
+	        radius: 1
 
-        visible: _internal.textEdit
-        enabled: _internal.textEdit
-
-        size: G.Style.iconSmall;
-        color: G.Style.colors.textColorBase
-
-        iconName: G.Icons.icons["check"];
-
-        onClicked: _value_input.editingFinished()
+            color: G.Style.colors.bgColor
+	    }
     }
 }
