@@ -3,6 +3,7 @@
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 #include "gnomonVisualizations/gnomonAbstractVtkVisualization_p.h"
 
+#include <dtkCoreParameterInListStringList.h>
 #include <dtkLog.h>
 #include <gnomonVisualization/gnomonCoreParameterColor.h>
 
@@ -51,7 +52,7 @@ public:
 public:
     vtkSmartPointer<vtkUnstructuredGrid> grid = nullptr;
     vtkSmartPointer<vtkPlane> clipping_plane = nullptr;
-    QList<gnomonVtkDecorator *> decorators;
+    QMap<QString, gnomonVtkDecorator *> decorators;
 
 public:
     void updateGrid(void);
@@ -156,21 +157,93 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
 
 gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMeshVtkVisualization(), ddd(new gnomonMeshVtkVisualizationPrivate)
 {
-    ddd->decorators.append(new gnomonVtkDecoratorIsoContours());
-    ddd->decorators.append(new gnomonVtkDecoratorSurfaceColor());
-    ddd->decorators.append(new gnomonVtkDecoratorStreamTracer());
-    ddd->decorators.append(new gnomonVtkDecoratorVectorGlyphs());
+    d->parameters["1_decorators"] = new dtk::d_inliststringlist("Decorators", {"SurfaceColor"}, {"SurfaceColor", "IsoContours", "StreamTracer", "VectorGlyphs"}, "Create new decorators for your visualization");
 
-    for(auto decorator : ddd->decorators) {
-        auto params = decorator->parameters();
-        QString dec_name = decorator->name();
-        for(auto param_key : params.keys()) {
-
-            QString param_name = dec_name + "_" + param_key;
-            d->parameters.insert(param_name, params[param_key]);
-            ddd->parameters_groups[param_name] = dec_name;
+    d->parameters["1_decorators"]->connect([=] (QVariant v) {
+        QStringList new_decorators = v.value<dtk::d_inliststringlist>().value();
+        bool params_changed = false;
+        qDebug() << "CALLED "
+                 << "current" << ddd->decorators.keys()
+                 << "new " << new_decorators;
+        //1 for each current decorator, remove them
+        // if not in new list
+        QStringList to_remove;
+        auto it = ddd->decorators.begin();
+        while(it !=ddd->decorators.end()) {
+            if(!new_decorators.contains(it.key())) {
+                to_remove.append(it.key());
+            }
+            ++it;
         }
-    }
+
+        for(auto k : to_remove) {
+            params_changed = true;
+            auto *decorator = ddd->decorators.take(k);
+
+            //unset view
+            decorator->unsetView();
+
+            //remove parameters
+            auto params = decorator->parameters();
+            QString dec_name = decorator->name();
+            for(auto param_key : params.keys()) {
+                QString param_name = dec_name + "_" + param_key;
+                d->parameters.remove(param_name);
+                ddd->parameters_groups.remove(param_name);
+            }
+            qDebug() << "Remove !! " << k;
+
+            //delete
+            delete decorator;
+        }
+
+        //2 create new decorators and add them
+        for(int i=0; i < new_decorators.size(); ++i) {
+            if(!ddd->decorators.contains(new_decorators.at(i))) {
+                params_changed = true;
+                gnomonVtkDecorator *dec = nullptr;
+                if(new_decorators.at(i) == "SurfaceColor")
+                    dec = new gnomonVtkDecoratorSurfaceColor();
+                if(new_decorators.at(i) == "IsoContours")
+                    dec = new gnomonVtkDecoratorIsoContours();
+                if(new_decorators.at(i) == "StreamTracer")
+                    dec = new gnomonVtkDecoratorStreamTracer();
+                if(new_decorators.at(i) == "VectorGlyphs")
+                    dec = new gnomonVtkDecoratorVectorGlyphs();
+
+                ddd->decorators[new_decorators.at(i)] = dec;
+                qDebug() << "new decorator created " << new_decorators.at(i);
+                //set params
+                auto params = dec->parameters();
+                QString dec_name = dec->name();
+                for(auto param_key : params.keys()) {
+                    QString param_name = dec_name + "_" + param_key;
+                    d->parameters.insert(param_name, params[param_key]);
+                    ddd->parameters_groups[param_name] = dec_name;
+                }
+
+                if(d->view) {
+                    auto vtk_view = dynamic_cast<gnomonVtkView *>(d->view);
+                    dec->setView(vtk_view);
+                }
+                if(ddd->grid) {
+                    dec->setGrid(ddd->grid);
+                }
+                //TODO clipping plane for 2D
+                /*
+            decorator->set2DClippingPlane(ddd->clipping_plane);
+                */
+            }
+        }
+
+        if(params_changed) {
+            qDebug() << "CallParams changed";
+            emit parametersChanged();
+        }
+    });
+
+    //create first decorator !
+    d->parameters["1_decorators"]->sync();
 }
 
 gnomonMeshVtkVisualization::~gnomonMeshVtkVisualization(void)
