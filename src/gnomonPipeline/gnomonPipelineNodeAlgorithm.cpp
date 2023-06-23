@@ -44,7 +44,8 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString &algorith
     }
 
     dd->metadata = metadata;
-    if (algorithm_class != "formAlgorithm") {
+    // FIXME: Calling availablePluginsFromGroup from a Python toplevel should not cause a crash
+    /*if (algorithm_class != "formAlgorithm") {
         auto plugins = availablePluginsFromGroup(algorithm_class);
         if (plugins.contains(algorithm)) {
             auto localMetadata = pluginMetadata(algorithm_class, algorithm);
@@ -56,7 +57,7 @@ gnomonPipelineNodeAlgorithm::gnomonPipelineNodeAlgorithm(const QString &algorith
             qWarning() << Q_FUNC_INFO << algorithm_class << " doesn't have algorithm " << algorithm
                        << " available algorithms are: " << plugins;
         }
-    }
+    }*/
 }
 
 gnomonPipelineNodeAlgorithm::~gnomonPipelineNodeAlgorithm(void)
