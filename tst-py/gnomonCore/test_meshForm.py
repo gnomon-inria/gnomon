@@ -24,7 +24,7 @@ class TestMesh(unittest.TestCase):
         assert self.mesh.data().dataName() == "gnomonMesh"
         assert self.mesh.data().pluginName() == "gnomonMeshDataStdVector"
 
-    def test_gnomonMesh_attribute(self):
+    def test_gnomonMesh_attribute_double(self):
         data = np.ones(5, dtype=np.float64)
         att = {'name': 'titi', 'kind': 1, 'support': 1, 'data': data}
 
@@ -37,3 +37,18 @@ class TestMesh(unittest.TestCase):
         assert att_back['support'] == 1
         assert att_back['data'].size == 5
         assert att_back['data'][0] == 1.
+
+
+    def test_gnomonMesh_attribute_int(self):
+        data = np.ones(5, dtype=np.int32)
+        att = {'name': 'toto', 'kind': 1, 'support': 1, 'data': data}
+
+        self.mesh.data().addAttribute(att);
+        assert(self.mesh.attributesCount() == 1)
+
+        att_back = self.mesh.attribute('toto')
+        assert att_back
+        assert att_back['kind'] == 1
+        assert att_back['support'] == 1
+        assert att_back['data'].size == 5
+        assert att_back['data'][0] == 1

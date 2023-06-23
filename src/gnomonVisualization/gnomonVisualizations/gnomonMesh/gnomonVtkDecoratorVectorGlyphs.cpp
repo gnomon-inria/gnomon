@@ -149,7 +149,7 @@ gnomonVtkDecoratorVectorGlyphs::gnomonVtkDecoratorVectorGlyphs(void)
     //d->parameters["4_glyph_stride"] = new dtk::d_int("Stride", 2, "Stride of the glyph");
     m_parameters["5_scale_factor"] = new dtk::d_real("Scale Factor", 0.1, 0, 10, "Scale Factor");
 
-    m_parameters["6_colormap"] = new gnomonCoreParameterColorMap("colormap", "gray", "Colormap to apply to the mesh");
+    m_parameters["6_colormap"] = new gnomonCoreParameterColorMap("colormap", "temperature", "Colormap to apply to the mesh");
     //m_parameters["7_color_array"] = new dtk::d_inliststring("Color by", "Magnitude", {"Magnitude", "X", "Y", "Z"}, "what to use to color the arrow?");
     //if glyph3d->SetColorModeToCOlorByScalar, will use the scalar array provided as
     //         d->glyph3d->SetInputArrayToProcess(3, 0, 0, vtkDataObject::FIELD_ASSOCIATION_POINTS,

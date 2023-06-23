@@ -99,7 +99,8 @@ import_array();
         QString name;
         gnomonMeshAttribute::KindType kind;
         gnomonMeshAttribute::SupportType support;
-        std::vector<double> data;
+        std::vector<int> data_int;
+        std::vector<double> data_double;
 
         PyObject *py_name = PyDict_GetItemString($input, "name");
         if(py_name)
@@ -128,16 +129,29 @@ import_array();
 
             //May be optimized by setting the data pointer directly
             // is necessary
-            data.reserve(array_size);
-            double *py_arr_data = (double *)PyArray_DATA((PyArrayObject*)py_array);
-            for(int i=0; i<array_size; ++i) {
-                data.push_back(py_arr_data[i]);
+
+            int type = PyArray_TYPE((PyArrayObject*)py_array);
+            if(type == NPY_INT) { // (NPY_INT || NPY_UINT || NPY_LONG || NPY_ULONG )) {
+                data_int.reserve(array_size);
+                int *py_arr_data = (int *)PyArray_DATA((PyArrayObject*)py_array);
+                for(int i=0; i<array_size; ++i) {
+                    data_int.push_back(py_arr_data[i]);
+                }
+                $1 = new gnomonMeshAttribute(name, kind, support, data_int);
+            } else if (type == NPY_DOUBLE) {
+                data_double.reserve(array_size);
+                double *py_arr_data = (double *)PyArray_DATA((PyArrayObject*)py_array);
+                for(int i=0; i<array_size; ++i) {
+                    data_double.push_back(py_arr_data[i]);
+                }
+                $1 = new gnomonMeshAttribute(name, kind, support, data_double);
+            } else {
+                qWarning() << "gnomonMeshAttribute type not supported (only Int or Double)" << type;
             }
         } else {
             qWarning() << "gnomonMeshAttribute wrapper: dict 'data' is not an np array";
         }
 
-        $1 = new gnomonMeshAttribute(name, kind, support, data);
     } else {
         qDebug("gnomonMeshAttribute wrapper: PyDict is expected as input. nullptr is returned.");
     }
@@ -156,16 +170,33 @@ import_array();
     PyDict_SetItem($result, PyUnicode_FromString("kind"), PyLong_FromLong($1->m_kind));
     PyDict_SetItem($result, PyUnicode_FromString("support"), PyLong_FromLong($1->m_support));
 
-    npy_intp dims[1] = { (long)$1->m_data.size() };
-    PyObject *array = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    npy_intp dims[1] = {0};
+    PyObject *array;
+    if(std::holds_alternative<std::vector<int>>($1->m_data)) {
+        dims[0] = (long)(std::get<std::vector<int>>($1->m_data).size());
+       array  = PyArray_SimpleNew(1, dims, NPY_INT);
+    } else if(std::holds_alternative<std::vector<double>>($1->m_data)) {
+        dims[0] = (long)(std::get<std::vector<double>>($1->m_data).size());
+        array  = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    }
     if(!array) {
         qWarning() << "gnomonMeshAttribute Wrapper, cant create new python array";
         return nullptr;
     }
-    double *array_data = (double *)PyArray_DATA((PyArrayObject*)array);
-    for(int i=0; i< $1->m_data.size(); ++i) {
-        array_data[i] = $1->m_data[i];
+    if(std::holds_alternative<std::vector<int>>($1->m_data)) {
+        int *array_data = (int *)PyArray_DATA((PyArrayObject*)array);
+        auto && cxx_data = std::get<std::vector<int>>($1->m_data);
+        for(npy_intp i=0; i< dims[0]; ++i) {
+            array_data[i] = cxx_data[i];
+        }
+    } else if(std::holds_alternative<std::vector<double>>($1->m_data)) {
+        double *array_data = (double *)PyArray_DATA((PyArrayObject*)array);
+        auto && cxx_data = std::get<std::vector<double>>($1->m_data);
+        for(npy_intp i=0; i<  dims[0]; ++i) {
+            array_data[i] = cxx_data[i];
+        }
     }
+
     PyDict_SetItem($result, PyUnicode_FromString("data"), array);
  }
 // /////////////////////////////////////////////////////////////////
