@@ -157,14 +157,11 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
 
 gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMeshVtkVisualization(), ddd(new gnomonMeshVtkVisualizationPrivate)
 {
-    d->parameters["1_decorators"] = new dtk::d_inliststringlist("Decorators", {"SurfaceColor"}, {"SurfaceColor", "IsoContours", "StreamTracer", "VectorGlyphs"}, "Create new decorators for your visualization");
+    d->parameters["1_decorators"] = new dtk::d_inliststringlist("", {"SurfaceColor"}, {"SurfaceColor", "IsoContours", "StreamTracer", "VectorGlyphs"}, "Create new decorators for your visualization");
 
     d->parameters["1_decorators"]->connect([=] (QVariant v) {
         QStringList new_decorators = v.value<dtk::d_inliststringlist>().value();
-        bool params_changed = false;
-        qDebug() << "CALLED "
-                 << "current" << ddd->decorators.keys()
-                 << "new " << new_decorators;
+
         //1 for each current decorator, remove them
         // if not in new list
         QStringList to_remove;
@@ -177,7 +174,6 @@ gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMes
         }
 
         for(auto k : to_remove) {
-            params_changed = true;
             auto *decorator = ddd->decorators.take(k);
 
             //unset view
@@ -191,7 +187,6 @@ gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMes
                 d->parameters.remove(param_name);
                 ddd->parameters_groups.remove(param_name);
             }
-            qDebug() << "Remove !! " << k;
 
             //delete
             delete decorator;
@@ -200,7 +195,6 @@ gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMes
         //2 create new decorators and add them
         for(int i=0; i < new_decorators.size(); ++i) {
             if(!ddd->decorators.contains(new_decorators.at(i))) {
-                params_changed = true;
                 gnomonVtkDecorator *dec = nullptr;
                 if(new_decorators.at(i) == "SurfaceColor")
                     dec = new gnomonVtkDecoratorSurfaceColor();
@@ -212,7 +206,7 @@ gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMes
                     dec = new gnomonVtkDecoratorVectorGlyphs();
 
                 ddd->decorators[new_decorators.at(i)] = dec;
-                qDebug() << "new decorator created " << new_decorators.at(i);
+
                 //set params
                 auto params = dec->parameters();
                 QString dec_name = dec->name();
@@ -234,11 +228,6 @@ gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMes
             decorator->set2DClippingPlane(ddd->clipping_plane);
                 */
             }
-        }
-
-        if(params_changed) {
-            qDebug() << "CallParams changed";
-            emit parametersChanged();
         }
     });
 
@@ -319,7 +308,6 @@ std::shared_ptr<gnomonMeshSeries> gnomonMeshVtkVisualization::mesh(void)
 
 QImage gnomonMeshVtkVisualization::imageRendering(void)
 {
-    qDebug() << Q_FUNC_INFO;
     double bounds[6];
     ddd->grid->GetBounds(bounds);
 
