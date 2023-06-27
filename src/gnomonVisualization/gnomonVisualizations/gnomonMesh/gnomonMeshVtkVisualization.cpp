@@ -3,6 +3,7 @@
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 #include "gnomonVisualizations/gnomonAbstractVtkVisualization_p.h"
 
+#include <dtkCoreParameterInListStringList.h>
 #include <dtkLog.h>
 #include <gnomonVisualization/gnomonCoreParameterColor.h>
 
@@ -15,6 +16,8 @@
 #include "gnomonActor/gnomonPolyData/gnomonActorPolyData.h"
 #include "gnomonActor/gnomonPolyData/gnomonActor2DPolyData.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecorator.h"
+#include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorIsoContours.h"
+#include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorStreamTracer.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorSurfaceColor.h"
 #include "gnomonVisualizations/gnomonMesh/gnomonVtkDecoratorVectorGlyphs.h"
 
@@ -49,7 +52,7 @@ public:
 public:
     vtkSmartPointer<vtkUnstructuredGrid> grid = nullptr;
     vtkSmartPointer<vtkPlane> clipping_plane = nullptr;
-    QList<gnomonVtkDecorator *> decorators;
+    QMap<QString, gnomonVtkDecorator *> decorators;
 
 public:
     void updateGrid(void);
@@ -92,36 +95,53 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
     gnomonAbstractMeshData::CntType attr_nb = mesh_data->attributesCount();
     for(gnomonAbstractMeshData::IdxType i = 0; i < attr_nb; ++i) {
         const gnomonMeshAttribute& attr = attributes[i];
-        vtkSmartPointer<vtkDoubleArray> vtk_attr = vtkSmartPointer<vtkDoubleArray>::New();
+
+        // 1 get the data
+        vtkSmartPointer<vtkDataArray> vtk_attr = nullptr;
+        long attr_size;
+        void *attr_array = nullptr;
+        if(std::holds_alternative<std::vector<int>>(attr.m_data)) {
+            vtk_attr = vtkSmartPointer<vtkIntArray>::New();
+            attr_size = std::get<std::vector<int>>(attr.m_data).size();
+            attr_array = (void *) (std::get<std::vector<int>>(attr.m_data).data());
+        } else if(std::holds_alternative<std::vector<double>>(attr.m_data)) {
+            vtk_attr = vtkSmartPointer<vtkDoubleArray>::New();
+            attr_size = std::get<std::vector<double>>(attr.m_data).size();
+            attr_array = (void *) (std::get<std::vector<double>>(attr.m_data).data());
+        }
+
+        // 2 do some checks
+        if(!attr_array) {
+            dtkWarn() << " Empty array for attribute " << attr;
+            continue;
+        }
+
+
+        if(attr.m_support == gnomonMeshAttribute::Cell && (cells_nb*attr.m_kind != attr_size)) {
+            dtkWarn() << "For Cell field " << attr.m_name
+                      << "kind " <<  attr.m_kind
+                      << "nb values : " << attr_size
+                      << "but kind*numberOfTuples : " << cells_nb*attr.m_kind;
+            continue;
+        }
+
+        if(attr.m_support == gnomonMeshAttribute::Point && (points_nb*attr.m_kind != attr_size)) {
+            dtkWarn() << "For Point field " << attr.m_name
+                      << "kind " <<  attr.m_kind
+                      << "nb values : " << attr_size
+                      << "but kind*numberOfTuples : " << points_nb*attr.m_kind;
+            continue;
+        }
+
+        // 3 set the vtk array
         vtk_attr->SetName(qPrintable(attr.m_name));
         vtk_attr->SetNumberOfComponents(attr.m_kind);
+        vtk_attr->SetVoidArray(attr_array, attr_size, 1);
 
+        // 4 add it to the grid
         if(attr.m_support == gnomonMeshAttribute::Cell) {
-            vtk_attr->SetNumberOfTuples(cells_nb);
-            if((cells_nb-1)*attr.m_kind > attr.m_data.size()) {
-                dtkWarn() << "For field " << attr.m_name
-                          << "kind " <<  attr.m_kind
-                          << "nb values : " << attr.m_data.size()
-                          << "but kind*numberOfTuples : " << cells_nb*attr.m_kind;
-                continue;
-            }
-            for(gnomonAbstractMeshData::IdxType cell_id = 0; cell_id < cells_nb; ++cell_id)
-                vtk_attr->SetTuple(cell_id, &attr.m_data.data()[cell_id*attr.m_kind]);
-
             grid->GetCellData()->AddArray(vtk_attr);
         } else if(attr.m_support == gnomonMeshAttribute::Point) {
-            vtk_attr->SetNumberOfTuples(points_nb);
-
-            if((points_nb-1)*attr.m_kind > attr.m_data.size()) {
-                dtkWarn() << "For field " << attr.m_name
-                          << "kind " <<  attr.m_kind
-                          << "nb values : " << attr.m_data.size()
-                          << "but kind*numberOfTuples : " << points_nb*attr.m_kind;
-                continue;
-            }
-
-            for(gnomonAbstractMeshData::IdxType point_id = 0; point_id < points_nb; ++point_id)
-                vtk_attr->SetTuple(point_id, &attr.m_data.data()[point_id*attr.m_kind]);
             grid->GetPointData()->AddArray(vtk_attr);
         }
     }
@@ -137,19 +157,82 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
 
 gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMeshVtkVisualization(), ddd(new gnomonMeshVtkVisualizationPrivate)
 {
-    ddd->decorators.append(new gnomonVtkDecoratorSurfaceColor());
-    //ddd->decorators.append(new gnomonVtkDecoratorVectorGlyphs());
+    d->parameters["1_decorators"] = new dtk::d_inliststringlist("", {"SurfaceColor"}, {"SurfaceColor", "IsoContours", "StreamTracer", "VectorGlyphs"}, "Create new decorators for your visualization");
 
-    for(auto decorator : ddd->decorators) {
-        auto params = decorator->parameters();
-        QString dec_name = decorator->name();
-        for(auto param_key : params.keys()) {
+    d->parameters["1_decorators"]->connect([=] (QVariant v) {
+        QStringList new_decorators = v.value<dtk::d_inliststringlist>().value();
 
-            QString param_name = dec_name + "_" + param_key;
-            d->parameters.insert(param_name, params[param_key]);
-            ddd->parameters_groups[param_name] = dec_name;
+        //1 for each current decorator, remove them
+        // if not in new list
+        QStringList to_remove;
+        auto it = ddd->decorators.begin();
+        while(it !=ddd->decorators.end()) {
+            if(!new_decorators.contains(it.key())) {
+                to_remove.append(it.key());
+            }
+            ++it;
         }
-    }
+
+        for(auto k : to_remove) {
+            auto *decorator = ddd->decorators.take(k);
+
+            //unset view
+            decorator->unsetView();
+
+            //remove parameters
+            auto params = decorator->parameters();
+            QString dec_name = decorator->name();
+            for(auto param_key : params.keys()) {
+                QString param_name = dec_name + "_" + param_key;
+                d->parameters.remove(param_name);
+                ddd->parameters_groups.remove(param_name);
+            }
+
+            //delete
+            delete decorator;
+        }
+
+        //2 create new decorators and add them
+        for(int i=0; i < new_decorators.size(); ++i) {
+            if(!ddd->decorators.contains(new_decorators.at(i))) {
+                gnomonVtkDecorator *dec = nullptr;
+                if(new_decorators.at(i) == "SurfaceColor")
+                    dec = new gnomonVtkDecoratorSurfaceColor();
+                if(new_decorators.at(i) == "IsoContours")
+                    dec = new gnomonVtkDecoratorIsoContours();
+                if(new_decorators.at(i) == "StreamTracer")
+                    dec = new gnomonVtkDecoratorStreamTracer();
+                if(new_decorators.at(i) == "VectorGlyphs")
+                    dec = new gnomonVtkDecoratorVectorGlyphs();
+
+                ddd->decorators[new_decorators.at(i)] = dec;
+
+                //set params
+                auto params = dec->parameters();
+                QString dec_name = dec->name();
+                for(auto param_key : params.keys()) {
+                    QString param_name = dec_name + "_" + param_key;
+                    d->parameters.insert(param_name, params[param_key]);
+                    ddd->parameters_groups[param_name] = dec_name;
+                }
+
+                if(d->view) {
+                    auto vtk_view = dynamic_cast<gnomonVtkView *>(d->view);
+                    dec->setView(vtk_view);
+                }
+                if(ddd->grid) {
+                    dec->setGrid(ddd->grid);
+                }
+                //TODO clipping plane for 2D
+                /*
+            decorator->set2DClippingPlane(ddd->clipping_plane);
+                */
+            }
+        }
+    });
+
+    //create first decorator !
+    d->parameters["1_decorators"]->sync();
 }
 
 gnomonMeshVtkVisualization::~gnomonMeshVtkVisualization(void)
@@ -225,7 +308,6 @@ std::shared_ptr<gnomonMeshSeries> gnomonMeshVtkVisualization::mesh(void)
 
 QImage gnomonMeshVtkVisualization::imageRendering(void)
 {
-    qDebug() << Q_FUNC_INFO;
     double bounds[6];
     ddd->grid->GetBounds(bounds);
 

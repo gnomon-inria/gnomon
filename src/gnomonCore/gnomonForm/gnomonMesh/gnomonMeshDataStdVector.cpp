@@ -158,13 +158,27 @@ void gnomonMeshDataStdVector::setPoints(const double* points_coordinates, gnomon
         std::copy(points_coordinates, points_coordinates + m_nb_points*((m_geo_dim==3)? 3 : 2), m_points_coordinates.begin());
 }
 
-
 void gnomonMeshDataStdVector::cellPoints(gnomonAbstractMeshData::IdxType cell_id, int &out_nb_points_cell, const gnomonAbstractMeshData::IdxType*& out_first_point) const // out nb points of cell , out_first_point pointer to the first point of the cell
 {
     Q_ASSERT(cell_id <  m_nb_cells[4]);
     out_nb_points_cell = m_cells_points[m_cells_first_point_idx[cell_id]];
     out_first_point = &m_cells_points[m_cells_first_point_idx[cell_id]];
     ++out_first_point;
+}
+
+QList<long> gnomonMeshDataStdVector::cellPointIdx(gnomonAbstractMeshData::IdxType cell_id) const // out nb points of cell
+{
+    Q_ASSERT(cell_id <  m_nb_cells[4]);
+    auto nb_points_cell = m_cells_points[m_cells_first_point_idx[cell_id]];
+
+    const gnomonAbstractMeshData::IdxType* first_point = &m_cells_points[m_cells_first_point_idx[cell_id]];
+    ++first_point;
+    QList<long> cell_points;
+    for (auto i=0; i<nb_points_cell; i++) {
+        cell_points.append(*first_point);
+        ++first_point;
+    }
+    return cell_points;
 }
 
 gnomonAbstractMeshData::CellType gnomonMeshDataStdVector::cellType(gnomonAbstractMeshData::IdxType cell_id) const

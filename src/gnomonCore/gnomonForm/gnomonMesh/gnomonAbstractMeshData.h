@@ -96,7 +96,9 @@ public:
 //  ///////////////////////////////////////////////////////////////////
 public:
     virtual void  cellPoints(IdxType cell_id, int &out_nb_points_cell, const IdxType*& out_first_point) const = 0; // out nb points of cell , out_first_point pointer to the first point of the cell
-    [[deprecated]] QList<long> triangleVertexIds(long triangleId) const {qDebug() << "see cellPoints method"; return QList<long>(); }
+    virtual QList<long> cellPointIdx(IdxType cell_id) const = 0;
+
+    [[deprecated]] QList<long> triangleVertexIds(long triangleId) const {qDebug() << "see cellPointIdx method"; return QList<long>(); }
     virtual CellType cellType(IdxType cell_id) const = 0;
     virtual CntType cellsCount(int geo_dimension = 4) const = 0;
     virtual const IdxType* cellsIdx(CntType& out_nb_cells, int geo_dimension = 4) const = 0;
