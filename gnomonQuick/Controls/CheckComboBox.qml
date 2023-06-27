@@ -33,13 +33,13 @@ ComboBox {
         if(!values.includes(text)) {
           values.push(text);
         }
-        ischecked = false
+        ischecked = true
       } else {
         let pos = values.indexOf(text);
         if( pos != -1) {
             values.splice(pos, 1);
         }
-        ischecked = true
+        ischecked = false
       }
       _control.displayText = values.toString()
     }
