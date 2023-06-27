@@ -47,7 +47,7 @@ Item {
 
     Component {
         id: _liststringlist_component
-        C.InListStringList {param: lparam}
+        G.InListStringList {param: lparam}
     }
 
     Component {
