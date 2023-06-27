@@ -162,7 +162,8 @@ import_array();
         QString name;
         gnomonMeshAttribute::KindType kind;
         gnomonMeshAttribute::SupportType support;
-        std::vector<double> data;
+        std::vector<int> data_int;
+        std::vector<double> data_double;
 
         PyObject *py_name = PyDict_GetItemString(attr, "name");
         if(py_name)
@@ -191,16 +192,27 @@ import_array();
 
             //May be optimized by setting the data pointer directly
             // is necessary
-            data.reserve(array_size);
-            double *py_arr_data = (double *)PyArray_DATA((PyArrayObject*)py_array);
-            for(int i=0; i<array_size; ++i) {
-                data.push_back(py_arr_data[i]);
+            int type = PyArray_TYPE((PyArrayObject*)py_array);
+            if(type == NPY_INT) { // (NPY_INT || NPY_UINT || NPY_LONG || NPY_ULONG )) {
+                data_int.reserve(array_size);
+                int *py_arr_data = (int *)PyArray_DATA((PyArrayObject*)py_array);
+                for(int i=0; i<array_size; ++i) {
+                    data_int.push_back(py_arr_data[i]);
+                }
+                $result = new gnomonMeshAttribute(name, kind, support, data_int);
+            } else if (type == NPY_DOUBLE) {
+                data_double.reserve(array_size);
+                double *py_arr_data = (double *)PyArray_DATA((PyArrayObject*)py_array);
+                for(int i=0; i<array_size; ++i) {
+                    data_double.push_back(py_arr_data[i]);
+                }
+                $result = new gnomonMeshAttribute(name, kind, support, data_double);
+            } else {
+                qWarning() << "gnomonMeshAttribute type not supported (only Int or Double)" << type;
             }
         } else {
             qWarning() << "gnomonMeshAttribute wrapper: dict 'data' is not an np array";
         }
-
-        $result = new gnomonMeshAttribute(name, kind, support, data);
     } else {
         qDebug("gnomonMeshAttribute wrapper: PyDict is expected as input. nullptr is returned.");
     }
