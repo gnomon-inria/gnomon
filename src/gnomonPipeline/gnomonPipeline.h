@@ -51,7 +51,7 @@ public:
 
 public slots:
     Q_INVOKABLE void exportToJson(const QString& url);
-    Q_INVOKABLE bool readFromJson(const QString& url);
+    Q_INVOKABLE bool readFromJson(const QString& url, bool check_plugins=true);
     void exportToToml(const QString& path);
     void exportToLuigiScript(const QString& path);
 

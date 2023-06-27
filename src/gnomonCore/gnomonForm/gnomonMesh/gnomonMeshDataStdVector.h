@@ -39,6 +39,7 @@ public:
 
 public:
     void cellPoints(gnomonAbstractMeshData::IdxType cell_id, int &out_nb_points_cell, const gnomonAbstractMeshData::IdxType*& out_first_point) const override; // out nb points of cell , out_first_point pointer to the first point of the cell
+    QList<long> cellPointIdx(gnomonAbstractMeshData::IdxType cell_id) const override; // out nb points of cell
     gnomonAbstractMeshData::CellType cellType(gnomonAbstractMeshData::IdxType cell_id) const override;
     gnomonAbstractMeshData::CntType cellsCount(int geo_dimension = 4) const override;
     const gnomonAbstractMeshData::IdxType* cellsIdx(gnomonAbstractMeshData::CntType& out_nb_cells, int geo_dimension = 4) const override;

@@ -32,7 +32,8 @@ gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString &algorithm_clas
         this->addOutputPort(output, new gnomonPipelinePort(gnomonPipelinePort::Output, output, this));
     }
     dd->metadata = metadata;
-    auto plugins = availablePluginsFromGroup(algorithm_class);
+    // FIXME: Calling availablePluginsFromGroup from a Python toplevel should not cause a crash
+    /*auto plugins = availablePluginsFromGroup(algorithm_class);
     if(plugins.contains(algorithm)) {
         auto localMetadata = pluginMetadata(algorithm_class, algorithm);
         QMap<QString, QString>::key_value_iterator ptr;
@@ -41,7 +42,7 @@ gnomonPipelineNodeReader::gnomonPipelineNodeReader(const QString &algorithm_clas
         }
     } else {
         qWarning() << Q_FUNC_INFO << algorithm_class << " doesn't have algorithm " << algorithm << " available algorithms are: " << plugins;
-    }
+    }*/
 }
 
 gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)

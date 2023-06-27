@@ -82,6 +82,8 @@ public:
         return m_data->pointsCount();};
     void  cellPoints(gnomonAbstractMeshData::IdxType cell_id, int &out_nb_points_cell, const gnomonAbstractMeshData::IdxType*& out_first_point) const {
         return m_data->cellPoints(cell_id, out_nb_points_cell, out_first_point);}; // out nb points of cell , out_first_point pointer to the first point of the cell
+    const QList<long> cellPointIdx(gnomonAbstractMeshData::IdxType cell_id) const {
+        return m_data->cellPointIdx(cell_id); }; // out nb points of cell
     gnomonAbstractMeshData::CellType cellType(gnomonAbstractMeshData::IdxType cell_id) const {return m_data->cellType(cell_id);};
     gnomonAbstractMeshData::CntType cellsCount(int geo_dimension = 4) const {return m_data->cellsCount(geo_dimension);};
     const gnomonAbstractMeshData::IdxType* cellsIdx(gnomonAbstractMeshData::CntType& out_nb_cells, int geo_dimension = 4) const {return m_data->cellsIdx(out_nb_cells, geo_dimension);};

@@ -157,6 +157,9 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     connect(d->view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         gnomonPipelineManager::instance()->addForm(f);
     });
+    connect(d->text_view, &gnomonQmlView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+        gnomonPipelineManager::instance()->addForm(f);
+    });
 
     connect(d->command, &gnomonAbstractEvolutionModelCommand::modelMessage, [=](QString msg) {
             d->message = msg;

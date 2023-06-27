@@ -4,6 +4,7 @@
 
 #include <dtkScript>
 
+#include "gnomonCore.h"
 #include "gnomonAbstractCommand.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 
@@ -71,13 +72,11 @@ extern void runner(gnomonAbstractCommand* command) {
     command->action->run();
     command->postdo();
 
-    if(gnomonAbstractCommand::gui_thread ) {
+    if (gnomonCore::gui_thread) {
         for(const QString& k : command->outputs().keys()) {
             if(command->outputs()[k])
-                command->outputs()[k]->metadata()->moveToThread(gnomonAbstractCommand::gui_thread);
+                command->outputs()[k]->metadata()->moveToThread(gnomonCore::gui_thread);
         }
     }
     command->action->clearOutputs();
 }
-
-QThread *gnomonAbstractCommand::gui_thread = nullptr;

@@ -46,7 +46,6 @@ import_array();
 %shared_ptr(gnomonPointCloudSeries)
 %shared_ptr(gnomonTreeSeries)
 
-
 %{
 #include <QtCore>
 
@@ -152,6 +151,56 @@ import_array();
             qWarning() << "gnomonMeshAttribute wrapper: dict 'data' is not an np array";
         }
 
+    } else {
+        qDebug("gnomonMeshAttribute wrapper: PyDict is expected as input. nullptr is returned.");
+    }
+}
+
+%typemap(directorout) gnomonMeshAttribute * {
+    PyObject *attr = static_cast<PyObject *>($1);
+    if (PyDict_Check(attr)) {
+        QString name;
+        gnomonMeshAttribute::KindType kind;
+        gnomonMeshAttribute::SupportType support;
+        std::vector<double> data;
+
+        PyObject *py_name = PyDict_GetItemString(attr, "name");
+        if(py_name)
+            name = PyUnicode_AsUTF8(py_name);
+        else {
+            qWarning() << "gnomonMeshAttribute wrapper: dict doesn't have Name";
+        }
+
+        PyObject *py_kind = PyDict_GetItemString(attr, "kind");
+        if(py_kind)
+            kind = (gnomonMeshAttribute::KindType)PyLong_AsLong(py_kind);
+        else {
+            qWarning() << "gnomonMeshAttribute wrapper: dict doesn't have Kind";
+        }
+
+        PyObject *py_support = PyDict_GetItemString(attr, "support");
+        if(py_support)
+            support = (gnomonMeshAttribute::SupportType)PyLong_AsLong(py_support);
+        else {
+            qWarning() << "gnomonMeshAttribute wrapper: dict doesn't have Support";
+        }
+
+        PyObject *py_array = PyDict_GetItemString(attr, "data");
+        if(py_array && PyArray_Check(py_array)) {
+            npy_intp array_size = PyArray_DIM((PyArrayObject*)py_array, 0);
+
+            //May be optimized by setting the data pointer directly
+            // is necessary
+            data.reserve(array_size);
+            double *py_arr_data = (double *)PyArray_DATA((PyArrayObject*)py_array);
+            for(int i=0; i<array_size; ++i) {
+                data.push_back(py_arr_data[i]);
+            }
+        } else {
+            qWarning() << "gnomonMeshAttribute wrapper: dict 'data' is not an np array";
+        }
+
+        $result = new gnomonMeshAttribute(name, kind, support, data);
     } else {
         qDebug("gnomonMeshAttribute wrapper: PyDict is expected as input. nullptr is returned.");
     }
