@@ -40,7 +40,7 @@ gnomonAbstractMeshData* gnomonMeshDataStdVector::clone(void) const
 }
 
 void gnomonMeshDataStdVector::fromGnomonForm(gnomonAbstractForm* other_f) {
-    if(other_f->name() != "gnomonMesh" || other_f->dataName() != "gnomonMeshDataDefaut") {
+    if(other_f->name() != "gnomonMesh" || other_f->dataName() != "gnomonMeshDataStdVector") {
         dtkWarn() << "cannot make a gnomonMeshDataStdVector from " << other_f->name() << " with data of type" << other_f->dataName();
         return;
     }
@@ -69,7 +69,7 @@ void gnomonMeshDataStdVector::fromGnomonForm(gnomonAbstractForm* other_f) {
         }
     }
 
-                                                                                       dtkWarn() << Q_FUNC_INFO << "something went wrong, cast to mesh: " << other_mesh;
+    dtkWarn() << Q_FUNC_INFO << "something went wrong, cast to mesh: " << other_mesh;
 }
 
 QMap<QString,QString> gnomonMeshDataStdVector::metadata(void) const
@@ -157,16 +157,6 @@ void gnomonMeshDataStdVector::setPoints(const double* points_coordinates, gnomon
     else
         std::copy(points_coordinates, points_coordinates + m_nb_points*((m_geo_dim==3)? 3 : 2), m_points_coordinates.begin());
 }
-/*
-std::vector<gnomonAbstractMeshData::IdxType> cellPointsIdx gnomonMeshDataStdVector::cellPointsIdx(gnomonAbstractMeshData::IdxType cell_id) const
-{
-    Q_ASSERT(cell_id <  m_nb_cells[4]);
-    gnomonAbstractMeshData::IdxType out_nb_points_cell = m_cells_points[m_cells_first_point_idx[cell_id]];
-    gnomonAbstractMeshData::IdxType *out_first_point = &m_cells_points[m_cells_first_point_idx[cell_id]];
-    ++out_first_point;
-
-    return std::vector<gnomonAbstractMeshData::IdxType>(out_first_point, out_first_point + out_nb_points_cell);
-}*/
 
 std::vector<gnomonAbstractMeshData::IdxType> gnomonMeshDataStdVector::cellPointsIdx(gnomonAbstractMeshData::IdxType cell_id) const // out nb points of cell
 {
@@ -174,6 +164,7 @@ std::vector<gnomonAbstractMeshData::IdxType> gnomonMeshDataStdVector::cellPoints
     auto nb_points_cell = m_cells_points[m_cells_first_point_idx[cell_id]];
 
     const gnomonAbstractMeshData::IdxType* first_point = &m_cells_points[m_cells_first_point_idx[cell_id]];
+    ++first_point; // data are stored : nb_points, point_idx_0, point_idx_1, ..
     return std::vector<gnomonAbstractMeshData::IdxType>(first_point, first_point + nb_points_cell);
 }
 
@@ -188,7 +179,6 @@ gnomonAbstractMeshData::CntType gnomonMeshDataStdVector::cellsCount(int geo_dime
 }
 
 const  std::vector<gnomonAbstractMeshData::IdxType> gnomonMeshDataStdVector::cellsIdx(int geo_dimension) const
-//const gnomonAbstractMeshData::IdxType* gnomonMeshDataStdVector::cellsIdx(gnomonAbstractMeshData::CntType& out_nb_cells, int geo_dimension) const
 {
     Q_ASSERT(geo_dimension>=0 && geo_dimension<5);
 

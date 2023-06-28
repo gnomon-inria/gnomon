@@ -38,8 +38,7 @@ public:
     void setPoints(const double* points_coordinates, gnomonAbstractMeshData::CntType points_count = 0) override;
 
 public:
-    //void cellPoints(gnomonAbstractMeshData::IdxType cell_id, int &out_nb_points_cell, const gnomonAbstractMeshData::IdxType*& out_first_point) const override; // out nb points of cell , out_first_point pointer to the first point of the cell
-    std::vector<gnomonAbstractMeshData::IdxType> cellPointsIdx(gnomonAbstractMeshData::IdxType cell_id) const override; // out nb points of cell
+    std::vector<gnomonAbstractMeshData::IdxType> cellPointsIdx(gnomonAbstractMeshData::IdxType cell_id) const override;
     gnomonAbstractMeshData::CellType cellType(gnomonAbstractMeshData::IdxType cell_id) const override;
     gnomonAbstractMeshData::CntType cellsCount(int geo_dimension = 4) const override;
     const std::vector<gnomonAbstractMeshData::IdxType> cellsIdx(int geo_dimension = 4) const override;

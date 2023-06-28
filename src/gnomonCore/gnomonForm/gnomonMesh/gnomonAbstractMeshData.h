@@ -108,11 +108,9 @@ public:
     [[deprecated]] QList<long> triangleIds(void) const { qDebug() << "see cellsIdx method"; return QList<long>(); }
 
     virtual const std::vector<IdxType> cellsPoints(int geo_dimension = 4) const = 0;
-    //virtual const IdxType* cellsPoints(CntType& out_nb_points, int geo_dimension = 4) const = 0;
 
     virtual const CellType* cellsType(int geo_dimension = 4) const = 0;
     virtual const IdxType* cellsTopologyLocation(int geo_dimension = 4) const = 0;
-    //virtual void typedCellPointsIds(const CellType cell_type, unsigned int cell_id, IdxType* out_points_ids) const = 0;
 
     virtual void setCellsCount(CntType cells_count, int geo_dimension) = 0;
     virtual void setCellsType(const CellType* cells_type, CntType cells_count = 0, CntType offset=0 ) = 0;
