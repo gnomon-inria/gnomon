@@ -24,7 +24,6 @@ gnomonAbstractViewPrivate::~gnomonAbstractViewPrivate(void)
 void gnomonAbstractViewPrivate::exportToManager(void)
 {
     for(const auto& key: this->forms.keys()) {
-        qDebug()<<Q_FUNC_INFO<<key<<this->forms[key].get();
         QImage image;
         std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr;
         if (this->visualizationCommands.contains(key)) {
@@ -182,7 +181,6 @@ void gnomonAbstractView::clear(void)
 void gnomonAbstractView::drop(int index)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
-    qDebug()<<Q_FUNC_INFO<<form.get();
     this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
     this->render();
     gnomonFormManager::instance()->setFormDropped(form);
