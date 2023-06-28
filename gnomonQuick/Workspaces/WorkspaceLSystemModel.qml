@@ -224,6 +224,11 @@ G.Workspace {
 
                 onFileSwitched: (name) => {
                     // Only takes into account .py and .lpy files
+                    // python files needs to be taken into account because for now
+                    // we are writing a copy of these files into a temporary dir. 
+                    // if the python files are not written into this temporary dir, local import of 
+                    // these files won't work.
+                    // a fix would be to add the original directory into python syspath
                     name = eval(name)
                     if(name.endsWith("py"))
                         d.fileName = name
