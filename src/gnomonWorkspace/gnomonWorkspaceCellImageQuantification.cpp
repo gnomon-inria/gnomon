@@ -24,9 +24,9 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
 
     this->addInputView();
 
-    this->m_target_mpl = new gnomonMplView(this);
-    this->m_target_mpl->setAcceptForm("gnomonDataFrame",true);
-    connect(this->m_target_mpl, &gnomonMplView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+    d->figure = new gnomonMplView(this);
+    d->figure->setAcceptForm("gnomonDataFrame",true);
+    connect(d->figure, &gnomonMplView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         d->pipeline_manager->addForm(f);
     });
     emit parametersChanged();
@@ -76,12 +76,16 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
         d->sources->views()[0]->setInputView(false);
     }
     if(command->dataFrame()) {
-        this->m_target_mpl->setForm("gnomonDataFrame", command->dataFrame());
+        d->figure->setForm("gnomonDataFrame", command->dataFrame());
         int form_count = gnomonFormManager::instance()->formCount(command->dataFrame()->formName());
         command->dataFrame()->metadata()->set("name", command->dataFrame()->formName().remove("gnomon") + QString::number(form_count+1));
         command->dataFrame()->metadata()->set("source", d->algorithm);
     }
+}
 
+gnomonVtkViewList* gnomonWorkspaceCellImageQuantification::targets(void) const
+{
+    return d->sources;
 }
 
 //

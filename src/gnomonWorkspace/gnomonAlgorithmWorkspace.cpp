@@ -29,6 +29,8 @@ gnomonAlgorithmWorkspacePrivate::~gnomonAlgorithmWorkspacePrivate(void)
     if(this->targets)
         delete this->targets;
 
+    if (this->figure)
+        delete this->figure;
 }
 
 bool gnomonAlgorithmWorkspacePrivate::setAlgorithm(const QString& algorithm)
@@ -171,6 +173,11 @@ gnomonVtkViewList* gnomonAlgorithmWorkspace::sources(void) const
 gnomonVtkViewList* gnomonAlgorithmWorkspace::targets(void) const
 {
     return d->targets;
+}
+
+gnomonMplView* gnomonAlgorithmWorkspace::figure(void) const
+{
+    return d->figure;
 }
 
 void gnomonAlgorithmWorkspace::run(bool no_async)

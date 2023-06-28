@@ -24,6 +24,7 @@ gnomonAbstractViewPrivate::~gnomonAbstractViewPrivate(void)
 void gnomonAbstractViewPrivate::exportToManager(void)
 {
     for(const auto& key: this->forms.keys()) {
+        qDebug()<<Q_FUNC_INFO<<key<<this->forms[key].get();
         QImage image;
         std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr;
         if (this->visualizationCommands.contains(key)) {
@@ -181,6 +182,7 @@ void gnomonAbstractView::clear(void)
 void gnomonAbstractView::drop(int index)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
+    qDebug()<<Q_FUNC_INFO<<form.get();
     this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
     this->render();
     gnomonFormManager::instance()->setFormDropped(form);
@@ -189,6 +191,23 @@ void gnomonAbstractView::drop(int index)
 void gnomonAbstractView::transmit(void)
 {
     d->exportToManager();
+}
+
+void gnomonAbstractView::transmitForm(const QString& form_type)
+{
+    if (d->forms.contains(form_type)) {
+        QImage image;
+        std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr;
+        if (d->visualizationCommands.contains(form_type)) {
+            image = d->visualizationCommands[form_type]->visualization()->imageRendering();
+            visualization = d->visualizationCommands[form_type]->visualization();
+        } else {
+            image = QImage(1500, 1500, QImage::Format_RGB32);
+            image.fill(Qt::GlobalColor::black);
+        }
+        gnomonFormManager::instance()->addForm(d->forms[form_type], image, visualization);
+        emit exportedForm(d->forms[form_type]);
+    }
 }
 
 void gnomonAbstractView::restoreState(void)

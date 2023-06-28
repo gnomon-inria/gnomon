@@ -8,6 +8,7 @@ class gnomonAbstractCommand;
 class gnomonVtkView;
 class gnomonVtkViewList;
 class gnomonVtkViewPool;
+class gnomonMplView;
 
 
 #define WORKSPACEINIT(name, group, thecommand)                          \
@@ -60,4 +61,6 @@ public:
     gnomonVtkViewList *sources = nullptr;
     gnomonVtkViewList *targets = nullptr;
     gnomonVtkViewPool *pool = nullptr;
+
+    gnomonMplView *figure = nullptr;
 };
