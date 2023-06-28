@@ -71,8 +71,10 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
     // Set points
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
     points->SetDataTypeToDouble();
-    auto *point_array = static_cast<vtkDataArray*>(points->GetData());
-    point_array->SetVoidArray(const_cast<double*>(mesh_data->pointsCoordinates()), mesh_data->pointsCount() * mesh_data->geometricalDimension(), 1);
+    for (gnomonAbstractMeshData::IdxType point_id=0; point_id<mesh_data->pointsCount(); ++point_id) {
+        auto point = mesh_data->pointCoordinates(point_id);
+        points->InsertNextPoint(point.data());
+    }
     grid->SetPoints(points);
 
     //set cells
@@ -90,59 +92,63 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
 
     // Set attributes
     const gnomonAbstractMeshData::IdxType points_nb = mesh_data->pointsCount();
-    const gnomonMeshAttribute* attributes = mesh_data->attributes();
-
-    gnomonAbstractMeshData::CntType attr_nb = mesh_data->attributesCount();
+    
+    QStringList attr_names = mesh_data->attributesNames();
+    gnomonAbstractMeshData::CntType attr_nb = attr_names.size();
+    
     for(gnomonAbstractMeshData::IdxType i = 0; i < attr_nb; ++i) {
-        const gnomonMeshAttribute& attr = attributes[i];
+        QString attr_name = attr_names[i];
+        const gnomonMeshAttribute* attr = mesh_data->attribute(attr_name);
 
-        // 1 get the data
-        vtkSmartPointer<vtkDataArray> vtk_attr = nullptr;
-        long attr_size;
-        void *attr_array = nullptr;
-        if(std::holds_alternative<std::vector<int>>(attr.m_data)) {
-            vtk_attr = vtkSmartPointer<vtkIntArray>::New();
-            attr_size = std::get<std::vector<int>>(attr.m_data).size();
-            attr_array = (void *) (std::get<std::vector<int>>(attr.m_data).data());
-        } else if(std::holds_alternative<std::vector<double>>(attr.m_data)) {
-            vtk_attr = vtkSmartPointer<vtkDoubleArray>::New();
-            attr_size = std::get<std::vector<double>>(attr.m_data).size();
-            attr_array = (void *) (std::get<std::vector<double>>(attr.m_data).data());
-        }
+        if (attr) {
+            // 1 get the data
+            vtkSmartPointer<vtkDataArray> vtk_attr = nullptr;
+            long attr_size;
+            void *attr_array = nullptr;
+            if (std::holds_alternative<std::vector<int>>(attr->m_data)) {
+                vtk_attr = vtkSmartPointer<vtkIntArray>::New();
+                attr_size = std::get<std::vector<int>>(attr->m_data).size();
+                attr_array = (void *) (std::get<std::vector<int>>(attr->m_data).data());
+            } else if (std::holds_alternative<std::vector<double>>(attr->m_data)) {
+                vtk_attr = vtkSmartPointer<vtkDoubleArray>::New();
+                attr_size = std::get<std::vector<double>>(attr->m_data).size();
+                attr_array = (void *) (std::get<std::vector<double>>(attr->m_data).data());
+            }
 
-        // 2 do some checks
-        if(!attr_array) {
-            dtkWarn() << " Empty array for attribute " << attr;
-            continue;
-        }
+            // 2 do some checks
+            if (!attr_array) {
+                dtkWarn() << " Empty array for attribute " << attr;
+                continue;
+            }
 
 
-        if(attr.m_support == gnomonMeshAttribute::Cell && (cells_nb*attr.m_kind != attr_size)) {
-            dtkWarn() << "For Cell field " << attr.m_name
-                      << "kind " <<  attr.m_kind
-                      << "nb values : " << attr_size
-                      << "but kind*numberOfTuples : " << cells_nb*attr.m_kind;
-            continue;
-        }
+            if (attr->m_support == gnomonMeshAttribute::Cell && (cells_nb * attr->m_kind != attr_size)) {
+                dtkWarn() << "For Cell field " << attr->m_name
+                          << "kind " << attr->m_kind
+                          << "nb values : " << attr_size
+                          << "but kind*numberOfTuples : " << cells_nb * attr->m_kind;
+                continue;
+            }
 
-        if(attr.m_support == gnomonMeshAttribute::Point && (points_nb*attr.m_kind != attr_size)) {
-            dtkWarn() << "For Point field " << attr.m_name
-                      << "kind " <<  attr.m_kind
-                      << "nb values : " << attr_size
-                      << "but kind*numberOfTuples : " << points_nb*attr.m_kind;
-            continue;
-        }
+            if (attr->m_support == gnomonMeshAttribute::Point && (points_nb * attr->m_kind != attr_size)) {
+                dtkWarn() << "For Point field " << attr->m_name
+                          << "kind " << attr->m_kind
+                          << "nb values : " << attr_size
+                          << "but kind*numberOfTuples : " << points_nb * attr->m_kind;
+                continue;
+            }
 
-        // 3 set the vtk array
-        vtk_attr->SetName(qPrintable(attr.m_name));
-        vtk_attr->SetNumberOfComponents(attr.m_kind);
-        vtk_attr->SetVoidArray(attr_array, attr_size, 1);
+            // 3 set the vtk array
+            vtk_attr->SetName(qPrintable(attr->m_name));
+            vtk_attr->SetNumberOfComponents(attr->m_kind);
+            vtk_attr->SetVoidArray(attr_array, attr_size, 1);
 
-        // 4 add it to the grid
-        if(attr.m_support == gnomonMeshAttribute::Cell) {
-            grid->GetCellData()->AddArray(vtk_attr);
-        } else if(attr.m_support == gnomonMeshAttribute::Point) {
-            grid->GetPointData()->AddArray(vtk_attr);
+            // 4 add it to the grid
+            if (attr->m_support == gnomonMeshAttribute::Cell) {
+                grid->GetCellData()->AddArray(vtk_attr);
+            } else if (attr->m_support == gnomonMeshAttribute::Point) {
+                grid->GetPointData()->AddArray(vtk_attr);
+            }
         }
     }
 
