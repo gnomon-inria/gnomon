@@ -88,6 +88,55 @@ import_array();
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
 
+
+%typemap(in) std::vector<gnomonAbstractMeshData::IdxType> {
+    if (PyList_Check($input)) {
+        int size = PyList_Size($input);
+        for (int i=0; i<size; ++i) {
+            PyObject *py_idx = PyList_GET_ITEM($input, i);
+            gnomonAbstractMeshData::IdxType idx = (gnomonAbstractMeshData::IdxType)PyLong_AsLongLong(py_idx);
+            $1.push_back(idx);
+        }
+    } else {
+        qDebug("PyList is expected as input. std::vector<gnomonAbstractMeshData::IdxType> is returned.");
+    }
+}
+
+%typemap(directorout) std::vector<gnomonAbstractMeshData::IdxType> {
+    PyObject *list = static_cast<PyObject *>($1);
+    if (PyList_Check(list)) {
+        int size = PyList_Size(list);
+        for (int i=0; i<size; ++i) {
+            PyObject *py_idx = PyList_GET_ITEM(list, i);
+            gnomonAbstractMeshData::IdxType idx = (gnomonAbstractMeshData::IdxType)PyLong_AsLongLong(py_idx);
+            $result.push_back(idx);
+        }
+    } else {
+        qDebug("PyList is expected as input. Empty std::vector<gnomonAbstractMeshData::IdxType> is returned.");
+    }
+}
+
+%typemap(out) std::vector<gnomonAbstractMeshData::IdxType> {
+    int size = $1.size();
+    $result = PyList_New(size);
+    for(int i=0; i<size; ++i) {
+        gnomonAbstractMeshData::IdxType idx = $1.at(i);
+        PyObject *py_idx = PyLong_FromLongLong(idx);
+        PyList_SET_ITEM($result, i, py_idx);
+    }
+}
+
+%typemap(directorin) std::vector<gnomonAbstractMeshData::IdxType> {
+    int size = $1.size();
+    PyObject *list = PyList_New(size);
+    for(int i=0; i<size; ++i) {
+        gnomonAbstractMeshData::IdxType idx = $1.at(i);
+        PyObject *py_idx = PyLong_FromLongLong(idx);
+        PyList_SET_ITEM(list, i, py_idx);
+    }
+    $input = list;
+}
+
 // /////////////////////////////////////////////////////////////////
 // Mesh Attributes
 // /////////////////////////////////////////////////////////////////
@@ -911,17 +960,18 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
 
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonAbstractLStringData.h>
 %include <gnomonCore/gnomonForm/gnomonLString/gnomonLString.h>
-%extend gnomonLString {
-    const char* __repr__()
-    {
-        static std::string s;
-        auto&& lString = $self;
-        QString str("<gnomoncore.gnomonLString");
-        str += QString(" with %1 module(s)").arg(lString->moduleCount());
-        str += QString(" at 0x%1>").arg((quintptr)lString, 12, 16, QChar('0'));
-        s = str.toStdString();
-        return s.data();
-    }
+%extend gnomonLString{
+        const char* __repr__()
+        {
+            static std::string s;
+            auto&& lString = $self;
+            QString
+            str("<gnomoncore.gnomonLString");
+            str += QString(" with %1 module(s)").arg(lString->moduleCount());
+            str += QString(" at 0x%1>").arg((quintptr) lString, 12, 16, QChar('0'));
+            s = str.toStdString();
+            return s.data();
+        }
 }
 
 %include <gnomonCore/gnomonForm/gnomonMesh/gnomonAbstractMeshData.h>
