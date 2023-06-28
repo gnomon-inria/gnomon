@@ -80,14 +80,16 @@ public:
         return m_data->pointsCoordinates();};
     gnomonAbstractMeshData::CntType pointsCount(void) const {
         return m_data->pointsCount();};
-    void  cellPoints(gnomonAbstractMeshData::IdxType cell_id, int &out_nb_points_cell, const gnomonAbstractMeshData::IdxType*& out_first_point) const {
-        return m_data->cellPoints(cell_id, out_nb_points_cell, out_first_point);}; // out nb points of cell , out_first_point pointer to the first point of the cell
-    const QList<long> cellPointIdx(gnomonAbstractMeshData::IdxType cell_id) const {
-        return m_data->cellPointIdx(cell_id); }; // out nb points of cell
+    std::vector<gnomonAbstractMeshData::IdxType> cellPointsIdx(gnomonAbstractMeshData::IdxType cell_id) const {
+        return m_data->cellPointsIdx(cell_id);
+    }
+        //void  cellPoints(gnomonAbstractMeshData::IdxType cell_id, int &out_nb_points_cell, const gnomonAbstractMeshData::IdxType*& out_first_point) const {
+        //return m_data->cellPoints(cell_id, out_nb_points_cell, out_first_point);}; // out nb points of cell , out_first_point pointer to the first point of the cell
+
     gnomonAbstractMeshData::CellType cellType(gnomonAbstractMeshData::IdxType cell_id) const {return m_data->cellType(cell_id);};
     gnomonAbstractMeshData::CntType cellsCount(int geo_dimension = 4) const {return m_data->cellsCount(geo_dimension);};
-    const gnomonAbstractMeshData::IdxType* cellsIdx(gnomonAbstractMeshData::CntType& out_nb_cells, int geo_dimension = 4) const {return m_data->cellsIdx(out_nb_cells, geo_dimension);};
-    const gnomonAbstractMeshData::IdxType* cellsPoints(gnomonAbstractMeshData::CntType& out_nb_points, int geo_dimension = 4) const {return m_data->cellsPoints(out_nb_points, geo_dimension);};
+    const std::vector<gnomonAbstractMeshData::IdxType> cellsIdx(int geo_dimension = 4) const {return m_data->cellsIdx(geo_dimension);};
+    const std::vector<gnomonAbstractMeshData::IdxType> cellsPoints(int geo_dimension = 4) const {return m_data->cellsPoints(geo_dimension);};
 
     const gnomonAbstractMeshData::CellType* cellsType(int geo_dimension = 4) const {return m_data->cellsType(geo_dimension);};
     const gnomonAbstractMeshData::IdxType* cellsTopologyLocation(int geo_dimension = 4) const {return m_data->cellsTopologyLocation(geo_dimension);};

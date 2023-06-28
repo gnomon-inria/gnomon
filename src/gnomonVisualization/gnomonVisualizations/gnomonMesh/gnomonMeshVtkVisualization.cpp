@@ -80,12 +80,12 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
     grid->Allocate(cells_nb);
     for(gnomonAbstractMeshData::IdxType cell_id = 0; cell_id < cells_nb; ++cell_id) {
         gnomonAbstractMeshData::CellType type = mesh_data->cellType(cell_id);
-        int cell_pts_nb;
-        const gnomonAbstractMeshData::IdxType* cell_pt_ids;
-        mesh_data->cellPoints(cell_id, cell_pts_nb, cell_pt_ids);
+        //int cell_pts_nb;
+        //const gnomonAbstractMeshData::IdxType* cell_pt_ids;
+        std::vector<gnomonAbstractMeshData::IdxType>&& vec_cell_pt_ids =  mesh_data->cellPointsIdx(cell_id); //, cell_pts_nb, cell_pt_ids
         grid->InsertNextCell(type,
-                             cell_pts_nb,
-                             const_cast<gnomonAbstractMeshData::IdxType*>(cell_pt_ids));
+                             vec_cell_pt_ids.size(),
+                             vec_cell_pt_ids.data());
     }
 
     // Set attributes

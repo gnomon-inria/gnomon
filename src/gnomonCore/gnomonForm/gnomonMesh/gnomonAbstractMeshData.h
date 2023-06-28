@@ -95,17 +95,20 @@ public:
 //  Cells list concept
 //  ///////////////////////////////////////////////////////////////////
 public:
-    virtual void  cellPoints(IdxType cell_id, int &out_nb_points_cell, const IdxType*& out_first_point) const = 0; // out nb points of cell , out_first_point pointer to the first point of the cell
-    virtual QList<long> cellPointIdx(IdxType cell_id) const = 0;
+    virtual std::vector<IdxType> cellPointsIdx(IdxType cell_id) const = 0;
 
     [[deprecated]] QList<long> triangleVertexIds(long triangleId) const {qDebug() << "see cellPointIdx method"; return QList<long>(); }
     virtual CellType cellType(IdxType cell_id) const = 0;
     virtual CntType cellsCount(int geo_dimension = 4) const = 0;
-    virtual const IdxType* cellsIdx(CntType& out_nb_cells, int geo_dimension = 4) const = 0;
+
+    virtual const std::vector<IdxType> cellsIdx(int geo_dimension = 4) const = 0;
+
+
     [[deprecated]] QList<long> vertexIds(void) const { qDebug() << "see cellsIdx method"; return QList<long>(); }
     [[deprecated]] QList<long> triangleIds(void) const { qDebug() << "see cellsIdx method"; return QList<long>(); }
 
-    virtual const IdxType* cellsPoints(CntType& out_nb_points, int geo_dimension = 4) const = 0;
+    virtual const std::vector<IdxType> cellsPoints(int geo_dimension = 4) const = 0;
+    //virtual const IdxType* cellsPoints(CntType& out_nb_points, int geo_dimension = 4) const = 0;
 
     virtual const CellType* cellsType(int geo_dimension = 4) const = 0;
     virtual const IdxType* cellsTopologyLocation(int geo_dimension = 4) const = 0;
