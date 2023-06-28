@@ -118,6 +118,17 @@ void gnomonMeshDataStdVector::pointCoordinates(gnomonAbstractMeshData::IdxType i
     if( m_geo_dim==3 ) point_coordinates[2] = m_points_coordinates[3*id+2];
 }
 
+const std::vector<double> gnomonMeshDataStdVector::pointCoordinates(gnomonAbstractMeshData::IdxType id) const
+{
+    Q_ASSERT(id<m_nb_points);
+    //point_coordinates should be an array of size geometrical_dimension
+    std::vector<double> point_coordinates(m_geo_dim);
+    point_coordinates[0] = m_points_coordinates[3*id];
+    point_coordinates[1] = m_points_coordinates[3*id+1];
+    if( m_geo_dim==3 ) point_coordinates[2] = m_points_coordinates[3*id+2];
+    return point_coordinates;
+}
+
 const double* gnomonMeshDataStdVector::pointsCoordinates(void) const
 {
     return m_points_coordinates.data();
@@ -350,8 +361,17 @@ const gnomonMeshAttribute* gnomonMeshDataStdVector::attributes(void) const
     return m_attributes.data();
 }
 
-
 gnomonAbstractMeshData::CntType gnomonMeshDataStdVector::attributesCount(void) const
 {
     return m_attributes.size();
+}
+
+QStringList gnomonMeshDataStdVector::attributesNames(void) const
+{
+    QStringList names;
+    for (auto i=0u; i< m_attributes.size(); ++i)
+    {
+        names.append(m_attributes[i].m_name);
+    }
+    return names;
 }

@@ -76,6 +76,8 @@ public:
 
     void pointCoordinates(gnomonAbstractMeshData::IdxType id, double* point_coordinates) const {
         return m_data->pointCoordinates(id, point_coordinates); };
+    const std::vector<double> pointCoordinates(gnomonAbstractMeshData::IdxType id) const {
+        return m_data->pointCoordinates(id); };
     const double* pointsCoordinates(void) const {
         return m_data->pointsCoordinates();};
     gnomonAbstractMeshData::CntType pointsCount(void) const {
@@ -97,6 +99,7 @@ public:
     const gnomonMeshAttribute* attribute(const QString& name) const {return m_data->attribute(name);};
     const gnomonMeshAttribute* attributes(void) const {return m_data->attributes();};
     gnomonAbstractMeshData::CntType attributesCount(void) const {return m_data->attributesCount();};
+    QStringList attributesNames(void) const {return m_data->attributesNames();};
 
 public:
     static inline QString formName(void) { return "gnomonMesh"; }

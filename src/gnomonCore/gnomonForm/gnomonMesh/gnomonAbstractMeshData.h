@@ -82,6 +82,7 @@ public:
 //  ///////////////////////////////////////////////////////////////////
 public:
     virtual void pointCoordinates(IdxType id, double* point_coordinates) const = 0;
+    virtual const std::vector<double> pointCoordinates(IdxType id) const = 0;
     virtual const double* pointsCoordinates(void) const = 0;
     virtual CntType pointsCount(void) const = 0;
 
@@ -136,6 +137,7 @@ public:
     virtual const gnomonMeshAttribute* attribute(const QString& name) const = 0;
     virtual const gnomonMeshAttribute* attributes(void) const = 0;
     virtual CntType attributesCount(void) const = 0;
+    virtual QStringList attributesNames(void) const = 0;
 
 /*
     virtual QStringList vertexPropertyNames(void) const = 0;

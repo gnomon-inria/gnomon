@@ -30,6 +30,7 @@ public:
 
 public:
     void pointCoordinates(gnomonAbstractMeshData::IdxType id, double* point_coordinates) const override;
+    const std::vector<double> pointCoordinates(IdxType id) const override;
     const double* pointsCoordinates(void) const override;
     gnomonAbstractMeshData::CntType pointsCount(void) const override;
 
@@ -56,6 +57,7 @@ public:
     const gnomonMeshAttribute* attribute(const QString& name) const override;
     const gnomonMeshAttribute* attributes(void) const override;
     gnomonAbstractMeshData::CntType attributesCount(void) const override;
+    QStringList attributesNames(void) const override;
 
 private:
     int m_geo_dim;
