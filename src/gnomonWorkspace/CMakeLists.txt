@@ -43,8 +43,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspaceMeshConstructor.h
   # gnomonWorkspaceMeshFromImage
   # gnomonWorkspaceMeshFromImage.h
-  # gnomonWorkspaceMeshFilter
-  # gnomonWorkspaceMeshFilter.h
+  gnomonWorkspaceMeshFilter
+  gnomonWorkspaceMeshFilter.h
   gnomonWorkspaceMorphonet
   gnomonWorkspaceMorphonet.h
   # gnomonWorkspacePlantScan3D
@@ -94,7 +94,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceLSystemModel.cpp
   # gnomonWorkspaceLSystemSimulator.cpp
   # gnomonWorkspaceMeshConstructor.cpp
-  # gnomonWorkspaceMeshFilter.cpp
+  gnomonWorkspaceMeshFilter.cpp
   # gnomonWorkspaceMeshFromImage.cpp
   gnomonWorkspaceMorphonet.cpp
   # gnomonWorkspacePlantScan3D.cpp

@@ -1,15 +1,25 @@
 #include "gnomonWorkspaceMeshFilter.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
-//#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractCellImageFromImage>
+#include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshFilter.h>
 #include <gnomonCore/gnomonCommand/gnomonMesh/gnomonMeshFilterCommand.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
-#include <gnomonConfig.h>
 
+// ///////////////////////////////////////////////////////////////////
+// gnomonWorkspaceMeshFilter
+// ///////////////////////////////////////////////////////////////////
 
 gnomonWorkspaceMeshFilter::gnomonWorkspaceMeshFilter(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
-    WORKSPACEINIT(Solver, meshFilter, gnomonMeshFilterCommand)
+    loadPluginGroup("meshFilter");
+
+    d->workspace = "Mesh Processing";
+    d->command = new gnomonMeshFilterCommand;
+    d->keys = gnomonCore::meshFilter::pluginFactory().keys();
+    d->algorithmsData = gnomonCore::meshFilter::pluginFactory().dataList();
+    d->algorithm = d->command->algorithmName();
+
+    emit algorithmsLoaded();
 
     //create the views
     this->addInputView();
