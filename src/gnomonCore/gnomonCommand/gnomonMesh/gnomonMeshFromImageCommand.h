@@ -3,6 +3,8 @@
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
+#include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
 class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractCommand
@@ -17,9 +19,13 @@ public:
     void   undo(void) override;
 
 public:
-    void setInput(std::shared_ptr<gnomonImageSeries> image_series);
+    void setImage(std::shared_ptr<gnomonImageSeries> image);
+    std::shared_ptr<gnomonImageSeries> image();
+    void setCellImage(std::shared_ptr<gnomonCellImageSeries> celllImage);
+    std::shared_ptr<gnomonCellImageSeries> cellImage();
+    void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binaryImage);
+    std::shared_ptr<gnomonBinaryImageSeries> binaryImage();;
 
-    std::shared_ptr<gnomonImageSeries> input();
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;

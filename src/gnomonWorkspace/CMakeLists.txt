@@ -33,6 +33,8 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspaceFusion.h
   # gnomonWorkspaceImageConstructor
   # gnomonWorkspaceImageConstructor.h
+  gnomonWorkspaceImageMeshing
+  gnomonWorkspaceImageMeshing.h
   # gnomonWorkspaceLStringTranslation
   # gnomonWorkspaceLStringTranslation.h
   gnomonWorkspaceLSystemModel
@@ -41,8 +43,6 @@ set(${PROJECT_NAME}_HEADERS
   # gnomonWorkspaceLSystemSimulator.h
   # gnomonWorkspaceMeshConstructor
   # gnomonWorkspaceMeshConstructor.h
-  # gnomonWorkspaceMeshFromImage
-  # gnomonWorkspaceMeshFromImage.h
   gnomonWorkspaceMeshFilter
   gnomonWorkspaceMeshFilter.h
   gnomonWorkspaceMorphonet
@@ -89,13 +89,13 @@ set(${PROJECT_NAME}_SOURCES
   gnomonWorkspaceCellImageQuantification.cpp
   gnomonWorkspaceCellImageTracking.cpp
   # gnomonWorkspaceImageConstructor.cpp
+  gnomonWorkspaceImageMeshing.cpp
   # gnomonWorkspaceFusion.cpp
   # gnomonWorkspaceLStringTranslation.cpp
   gnomonWorkspaceLSystemModel.cpp
   # gnomonWorkspaceLSystemSimulator.cpp
   # gnomonWorkspaceMeshConstructor.cpp
   gnomonWorkspaceMeshFilter.cpp
-  # gnomonWorkspaceMeshFromImage.cpp
   gnomonWorkspaceMorphonet.cpp
   # gnomonWorkspacePlantScan3D.cpp
   # gnomonWorkspacePointCloudConstructor.cpp
