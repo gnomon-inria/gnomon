@@ -604,8 +604,6 @@ void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
     dd->window->AddRenderer(dd->renderer2D);
     dd->window->AddRenderer(dd->renderer3D);
 
-    this->switchTo2D();
-    this->switchTo2DXY();
     this->switchTo3D();
 
     dd->updateOrientation();
@@ -645,6 +643,9 @@ void gnomonVtkView::switchTo2D(void)
         dd->updateGrid();
         dd->updateAxes();
         switch(dd->ori) {
+            case gnomonVtkView::NONE:
+                this->switchTo2DXY();
+                break;
             case gnomonVtkView::SLICE_ORIENTATION_XY:
                 this->switchTo2DXY();
                 break;
@@ -668,13 +669,12 @@ void gnomonVtkView::switchTo2D(void)
 
 void gnomonVtkView::switchTo2DXY(void)
 {
-    emit sliceOrientationChanged(gnomonVtkView::SLICE_ORIENTATION_XY);
-    emit sliceChanged(dd->c_z);
-
     bool hasChanged = dd->ori != gnomonVtkView::SLICE_ORIENTATION_XY;
-    dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_XY);
-
     if (hasChanged) {
+        dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_XY);
+        emit sliceOrientationChanged(gnomonVtkView::SLICE_ORIENTATION_XY);
+        emit sliceChanged(dd->c_z);
+
         dd->updateGrid();
         emit switchedTo2DXY();
         emit orientationChanged();
@@ -684,30 +684,30 @@ void gnomonVtkView::switchTo2DXY(void)
 
 void gnomonVtkView::switchTo2DXZ(void)
 {
-    emit sliceOrientationChanged(gnomonVtkView::SLICE_ORIENTATION_XZ);
-    emit sliceChanged(dd->c_y);
-
     bool hasChanged = dd->ori != gnomonVtkView::SLICE_ORIENTATION_XZ;
-    dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_XZ);
+    if(hasChanged) {
+        dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_XZ);
+        emit sliceOrientationChanged(gnomonVtkView::SLICE_ORIENTATION_XZ);
+        emit sliceChanged(dd->c_y);
 
-    if (hasChanged)
         dd->updateGrid();
         emit switchedTo2DXZ();
         emit orientationChanged();
+    }
 }
 
 void gnomonVtkView::switchTo2DYZ(void)
 {
-    emit sliceOrientationChanged(gnomonVtkView::SLICE_ORIENTATION_YZ);
-    emit sliceChanged(dd->c_x);
-
     bool hasChanged = dd->ori != gnomonVtkView::SLICE_ORIENTATION_YZ;
-    dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_YZ);
+    if (hasChanged) {
+        dd->setSliceOrientation(gnomonVtkView::SLICE_ORIENTATION_YZ);
+        emit sliceOrientationChanged(gnomonVtkView::SLICE_ORIENTATION_YZ);
+        emit sliceChanged(dd->c_x);
 
-    if (hasChanged)
         dd->updateGrid();
         emit switchedTo2DYZ();
         emit orientationChanged();
+    }
 }
 
 void gnomonVtkView::sliceChange(int value)
