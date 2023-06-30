@@ -371,6 +371,14 @@ G.Dialog {
             highlightElement: false
         }
         ListElement {
+            type: "gnomonWorkspaceImageMeshing"
+            title: "Image Meshing"
+            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceImageMeshing.qml"
+            available: true
+            initial: false
+            highlightElement: false
+        }
+        ListElement {
             type: "gnomonWorkspaceLSystemModel"
             title: "L-System Model"
             source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
@@ -478,6 +486,7 @@ G.Dialog {
         _internal.workspace_groups["gnomonWorkspaceBinarization"] = "binaryImageFromImage"
         _internal.workspace_groups["gnomonWorkspaceBrowser"] = ["binaryImageReader", "cellImageReader", "cellComplexReader", "imageReader", "meshReader", "pointCloudReader"]
         _internal.workspace_groups["gnomonWorkspaceCellImageQuantification"] = "cellImageQuantification"
+        _internal.workspace_groups["gnomonWorkspaceImageMeshing"] = "meshFromImage"
         _internal.workspace_groups["gnomonWorkspaceLSystemModel"] = "lStringEvolutionModel"
         _internal.workspace_groups["gnomonWorkspaceMorphonet"] = ""
         _internal.workspace_groups["gnomonWorkspaceMeshFilter"] = "meshFilter"
@@ -492,6 +501,7 @@ G.Dialog {
 
         _internal.workspace_forms["gnomonWorkspaceBinarization"] = ["gnomonImage", "gnomonBinaryImage"]
         _internal.workspace_forms["gnomonWorkspaceCellImageQuantification"] = ["gnomonCellImage", "gnomonImage"]
+        _internal.workspace_forms["gnomonWorkspaceImageMeshing"] = ["gnomonImage", "gnomonCellImage", "gnomonBinaryImage"]
         _internal.workspace_forms["gnomonWorkspaceLSystemModel"] = ["gnomonLString", "gnomonTree"]
         _internal.workspace_forms["gnomonWorkspaceMorphonet"] = ["gnomonCellImage"]
         _internal.workspace_forms["gnomonWorkspaceMeshFilter"] = ["gnomonMesh"]
