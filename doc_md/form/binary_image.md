@@ -18,9 +18,9 @@ Extensions supported by this reader are : `inr, inr.gz, mha, tif`.
 
 ![Gnomon Bimary Image illustration](../_static/binary_image.png)
 
-## Plugins which took Binary Image as input
+## Plugins which take Binary Image as input
 
->Here is a non exhaustive list of some algorithms which took this form as input.  
+>Here is a non exhaustive list of some algorithms which take this form as input.  
 - edgeEnhancementBinaryImage
 - lsmContour
 

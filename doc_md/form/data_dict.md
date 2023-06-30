@@ -17,8 +17,8 @@ This reader supports one extension `json`.
 ![Gnomon Data Dict illustration Image](../_static/data_dict_image.png)
 
 
-## Plugins which took Data Dict as input
->Here is an algorithm which took this form as input.  
+## Plugins which take Data Dict as input
+>Here is an algorithm which take this form as input.  
 - cellSuperpositionTracking
 
 ## Plugins which produce Data Dict as output
