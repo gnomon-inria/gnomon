@@ -96,6 +96,7 @@ import_array();
 %typemap(in) std::vector<double> {
     if (PyList_Check($input)) {
         int size = PyList_Size($input);
+        $1.reserve(size);
         for (int i=0; i<size; ++i) {
             PyObject *py_val = PyList_GET_ITEM($input, i);
             double val = PyFloat_AsDouble(py_val);
@@ -110,6 +111,7 @@ import_array();
     PyObject *list = static_cast<PyObject *>($1);
     if (PyList_Check(list)) {
         int size = PyList_Size(list);
+        $result.reserve(size);
         for (int i=0; i<size; ++i) {
             PyObject *py_val = PyList_GET_ITEM(list, i);
             double val = PyFloat_AsDouble(py_val);
@@ -149,6 +151,7 @@ import_array();
 %typemap(in) std::vector<long long> {
     if (PyList_Check($input)) {
         int size = PyList_Size($input);
+        $1.reserve(size);
         for (int i=0; i<size; ++i) {
             PyObject *py_val = PyList_GET_ITEM($input, i);
             long long val = PyLong_AsLongLong(py_val);
@@ -163,6 +166,7 @@ import_array();
     PyObject *list = static_cast<PyObject *>($1);
     if (PyList_Check(list)) {
         int size = PyList_Size(list);
+        $result.reserve(size);
         for (int i=0; i<size; ++i) {
             PyObject *py_val = PyList_GET_ITEM(list, i);
             long long val = PyLong_AsLongLong(py_val);
