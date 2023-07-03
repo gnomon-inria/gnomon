@@ -11,9 +11,6 @@ import gnomonQuick.Style as G
 import gnomon.Visualization 1.0 as GV
 import gnomon.Mpl           1.0 as GV
 
-
-import dtkCore
-
 Control {
     id: _control
 

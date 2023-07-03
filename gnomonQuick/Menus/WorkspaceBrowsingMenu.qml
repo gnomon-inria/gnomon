@@ -10,9 +10,6 @@ import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
 import xQuick.Style      1.0 as X
 
-import crossQuick        1.0 as C
-import crossParameters   1.0 as C
-
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
@@ -86,7 +83,7 @@ Item {
             id: _finder;
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-            
+
             extensionFilters: _extensions_model;
 
             onFileDoubleClicked: (fileUrl) => {

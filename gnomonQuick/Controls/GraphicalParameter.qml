@@ -8,8 +8,6 @@ import xQuick.Style    1.0 as X
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
-import dtkCore
-
 Control {
     id: _control
 

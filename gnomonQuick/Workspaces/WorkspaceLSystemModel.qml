@@ -11,9 +11,6 @@ import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
 import xQuick.Style      1.0 as X
 
-import crossQuick        1.0 as C
-import crossParameters   1.0 as C
-
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
@@ -225,8 +222,8 @@ G.Workspace {
                 onFileSwitched: (name) => {
                     // Only takes into account .py and .lpy files
                     // python files needs to be taken into account because for now
-                    // we are writing a copy of these files into a temporary dir. 
-                    // if the python files are not written into this temporary dir, local import of 
+                    // we are writing a copy of these files into a temporary dir.
+                    // if the python files are not written into this temporary dir, local import of
                     // these files won't work.
                     // a fix would be to add the original directory into python syspath
                     name = eval(name)
@@ -283,7 +280,7 @@ G.Workspace {
                 onCurrentIndexChanged: {
                     window.currentView = currentIndex == 1 ? _lstring_view : _view
                 }
-            }            
+            }
         }
     }
 

@@ -8,12 +8,10 @@ import xQuick.Style    1.0 as X
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
-import dtkCore
-
 Control {
-	id: _control
+  id: _control
 
-	required property var param;
+  required property var param;
 
     implicitHeight: _label.implicitHeight + _cluts.implicitHeight
         + _controls_row.implicitHeight + _controls_row.anchors.topMargin + _value.implicitHeight
@@ -24,7 +22,7 @@ Control {
         text: param ? param.doc : ""
     }
 
-	Label {
+  Label {
 
         id: _label
 
@@ -105,7 +103,7 @@ Control {
         color: G.Style.colors.hoveredBaseColor
     }
 
-	background: Rectangle{
+  background: Rectangle{
         color: "transparent"
     }
 

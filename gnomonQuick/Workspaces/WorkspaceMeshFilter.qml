@@ -10,9 +10,6 @@ import xQuick.Controls   1.0 as X
 import xQuick.Fonts      1.0 as X
 import xQuick.Style      1.0 as X
 
-import crossQuick        1.0 as C
-import crossParameters   1.0 as C
-
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
