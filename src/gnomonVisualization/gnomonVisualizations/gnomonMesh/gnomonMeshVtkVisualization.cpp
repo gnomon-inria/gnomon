@@ -350,7 +350,14 @@ dtkCoreParameters gnomonMeshVtkVisualization::parameters(void) const
 void gnomonMeshVtkVisualization::setParameter(const QString& parameter, const QVariant& value)
 {
     if (d->parameters.contains(parameter)) {
-        d->parameters[parameter]->setValue(value);
+        // TODO: this should actually be fixed in dtk-core
+        if (value.canConvert<dtk::d_inliststringlist>()) {
+             auto param = value.value<dtk::d_inliststringlist>();
+            ((dtk::d_inliststringlist *) d->parameters[parameter])->setList(param.list());
+            ((dtk::d_inliststringlist *) d->parameters[parameter])->setValue(param.value());
+        } else {
+            d->parameters[parameter]->setValue(value);
+        }
     }
     else
         qWarning()<<parameter<<"is not a valid parameter!";
