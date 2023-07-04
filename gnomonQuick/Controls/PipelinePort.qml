@@ -2,8 +2,6 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
 
-import xQuick.Style       1.0 as X
-
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 

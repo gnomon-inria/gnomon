@@ -2,12 +2,6 @@ import QtQuick          2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts  1.15
 
-import xQuick           1.0 as X
-import xQuick.Controls  1.0 as X
-import xQuick.Fonts     1.0 as X
-import xQuick.Models    1.0 as X
-import xQuick.Style     1.0 as X
-
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
 import gnomonQuick.Icons      1.0 as G
@@ -138,7 +132,7 @@ G.Dialog {
             focus: true;
             currentIndex: -1
 
-            model: X.FilterProxyModel {
+            model: G.FilterProxyModel {
                 id: _model;
 
                 model: _available_workspaces;

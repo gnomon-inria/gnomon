@@ -7,10 +7,6 @@ import QtQml.Models      2.15
 import Qt.labs.platform  1.0 as P
 import Qt.labs.settings
 
-import xQuick.Controls   1.0 as X
-import xQuick.Fonts      1.0 as X
-import xQuick.Style      1.0 as X
-
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
@@ -211,7 +207,7 @@ G.Workspace {
                 anchors.left: parent.left
                 anchors.right: parent.right
 
-                theme: X.Style.variant == 'LIGHT' ? 'vs-light' : 'vs-dark';
+                theme: G.Style.mode == G.Style.Mode.Dark ? 'vs-dark' : 'vs-light';
                 language: "lpy";
                 fileName: d.fileName
 

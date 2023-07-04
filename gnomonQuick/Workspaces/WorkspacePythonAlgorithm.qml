@@ -2,12 +2,6 @@ import QtQuick           2.15
 import QtQuick.Controls  2.15
 import QtQuick.Layouts   1.15
 
-import xQuick            1.0 as X
-import xQuick.Controls   1.0 as X
-import xQuick.Fonts      1.0 as X
-import xQuick.Style      1.0 as X
-
-
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
@@ -66,7 +60,7 @@ G.Workspace {
                 Layout.fillHeight: true
                 visible: d.editMode
 
-                theme: X.Style.variant == 'LIGHT' ? 'vs-light' : 'vs-dark';
+                theme: G.Style.mode == G.Style.Mode.Dark ? 'vs-dark' : 'vs-light';
                 language: 'python';
 
                 onModified: (contents) => {
@@ -111,7 +105,7 @@ G.Workspace {
 
             focus: true;
 
-            Component.onCompleted: _console.set_style_sheet(X.Style.alternateBaseColor);
+            Component.onCompleted: _console.set_style_sheet(G.Style.colors.bgColor);
         }
     }
 
@@ -121,36 +115,36 @@ G.Workspace {
         function onCodeUpdated() { _editor.contents = d.code.text; }
     }
 
-    Connections {
-        target: X.Style
-
-        function onVariantChanged() {
-            console.log('Setting color for', X.Style.flavors, 'and', X.Style.variant);
-
-            var color;
-
-            if (X.Style.flavors == 'MACOS' && X.Style.variant == 'LIGHT')
-                color = X.Style.flavor_macos.base07;
-            if (X.Style.flavors == 'MACOS' && X.Style.variant == 'DARK')
-                color = X.Style.flavor_macos.base00;
-            if (X.Style.flavors == 'UBUNTU' && X.Style.variant == 'LIGHT')
-                color = X.Style.flavor_ubuntu.base07;
-            if (X.Style.flavors == 'UBUNTU' && X.Style.variant == 'DARK')
-                color = X.Style.flavor_ubuntu.base00;
-            if (X.Style.flavors == 'FEDORA' && X.Style.variant == 'LIGHT')
-                color = X.Style.flavor_fedora.base07;
-            if (X.Style.flavors == 'FEDORA' && X.Style.variant == 'DARK')
-                color = X.Style.flavor_fedora.base00;
-
-            if(X.Style.variant == 'LIGHT')
-                _editor.theme = "vs-light";
-            else
-                _editor.theme = "vs-dark";
-
-            _console.set_style_sheet(color);
-            _console.update();
-        }
-    }
+   // Connections {
+   //     target: X.Style
+   //
+   //     function onVariantChanged() {
+   //         console.log('Setting color for', X.Style.flavors, 'and', X.Style.variant);
+   //
+   //         var color;
+   //
+   //         if (X.Style.flavors == 'MACOS' && X.Style.variant == 'LIGHT')
+   //             color = X.Style.flavor_macos.base07;
+   //         if (X.Style.flavors == 'MACOS' && X.Style.variant == 'DARK')
+   //             color = X.Style.flavor_macos.base00;
+   //         if (X.Style.flavors == 'UBUNTU' && X.Style.variant == 'LIGHT')
+   //             color = X.Style.flavor_ubuntu.base07;
+   //         if (X.Style.flavors == 'UBUNTU' && X.Style.variant == 'DARK')
+   //             color = X.Style.flavor_ubuntu.base00;
+   //         if (X.Style.flavors == 'FEDORA' && X.Style.variant == 'LIGHT')
+   //             color = X.Style.flavor_fedora.base07;
+   //         if (X.Style.flavors == 'FEDORA' && X.Style.variant == 'DARK')
+   //             color = X.Style.flavor_fedora.base00;
+   //
+   //         if(X.Style.variant == 'LIGHT')
+   //             _editor.theme = "vs-light";
+   //         else
+   //             _editor.theme = "vs-dark";
+   //
+   //         _console.set_style_sheet(color);
+   //         _console.update();
+   //     }
+   // }
 
     Component.onCompleted: {
         G.Associator.associate(_source_view, d.source);

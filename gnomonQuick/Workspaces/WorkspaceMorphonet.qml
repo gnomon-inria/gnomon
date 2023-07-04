@@ -2,11 +2,6 @@ import QtQuick           2.15
 import QtQuick.Controls  2.15
 import QtQuick.Layouts   1.15
 
-import xQuick            1.0 as X
-import xQuick.Controls   1.0 as X
-import xQuick.Fonts      1.0 as X
-import xQuick.Style      1.0 as X
-
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
@@ -55,7 +50,7 @@ G.Workspace {
         id: mn_datasets_info
     }
 
-    X.ButtonRaw {
+    G.Button {
         x: parent.width / 2 - 10;
         y: parent.height /2 - 10;
         visible: !d.connected;
@@ -99,7 +94,7 @@ G.Workspace {
         drawel.close();
     }
 
-    X.Dialog {
+    G.Dialog {
         id: _message_dialog;
 
         property string text: "";
@@ -108,7 +103,7 @@ G.Workspace {
         x: parent.width/6
         parent: Overlay.overlay
 
-        X.Label {
+        G.Label {
             anchors.fill: parent
             text: _message_dialog.text;
             font {
@@ -118,7 +113,7 @@ G.Workspace {
         }
     }
 
-    X.Dialog {
+    G.Dialog {
         id: _connection_dialog
 
         x: Math.round((window.width - width) / 2)
@@ -138,7 +133,7 @@ G.Workspace {
             columns: 2
             width: parent.width
 
-            X.Label {
+            G.Label {
                 text: "login";
                 font {
                     pointSize: 14;
@@ -146,7 +141,7 @@ G.Workspace {
                 }
             }
 
-            X.TextField {
+            G.TextField {
                 id: _morphonet_login
                 placeholderText: qsTr("Enter login here")
                 text: ""
@@ -159,7 +154,7 @@ G.Workspace {
 
             }
 
-            X.Label {
+            G.Label {
                 text: "Password";
                 font {
                     pointSize: 14;
@@ -167,7 +162,7 @@ G.Workspace {
                 }
             }
 
-            X.TextField {
+            G.TextField {
                 id: _morphonet_passwd
                 placeholderText: qsTr("Enter password here")
                 text: ""

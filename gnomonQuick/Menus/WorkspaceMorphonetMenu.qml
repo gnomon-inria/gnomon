@@ -6,10 +6,6 @@ import QtQml.Models      2.15
 
 import Qt.labs.platform  1.0 as P
 
-import xQuick.Controls   1.0 as X
-import xQuick.Fonts      1.0 as X
-import xQuick.Style      1.0 as X
-
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
@@ -360,7 +356,7 @@ Control {
                     }
 
                     G.Icon {
-                        icon: X.Icons.icons.sync;
+                        icon: G.Icons.icons["sync"];
                         color: G.Style.colors.textColorBase;
 
                         anchors.left: _sync_infos.left;
@@ -439,7 +435,7 @@ Control {
                         text: "Voxel size (x,y,z) for mesh generation"
                     }
                 }
-                
+
                 Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true

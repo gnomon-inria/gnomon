@@ -6,10 +6,6 @@ import Qt5Compat.GraphicalEffects
 
 import Qt.labs.platform  1.0 as P
 
-import xQuick.Controls   1.0 as X
-import xQuick.Fonts      1.0 as X
-import xQuick.Style      1.0 as X
-
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 

@@ -6,10 +6,6 @@ import QtQml.Models      2.15
 
 import Qt.labs.platform  1.0 as P
 
-import xQuick.Controls   1.0 as X
-import xQuick.Fonts      1.0 as X
-import xQuick.Style      1.0 as X
-
 import gnomonQuick.Workspaces as G
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
@@ -94,20 +90,20 @@ G.Workspace {
                         d.sourceDict.drop(index);
                     }
 
-                    X.Label {
+                    G.Label {
                         anchors.top: parent.top
                         anchors.left: parent.left
 
                         text: "Transformation matrix"
-                        color: X.Style.foregroundColor
+                        color: G.Style.colors.fgColor
                     }
 
-                    X.Label {
+                    G.Label {
                         anchors.centerIn: parent
 
                         text: d.sourceDict.dataDict
                         horizontalAlignment: Text.AlignRight
-                        color: X.Style.foregroundColor
+                        color: G.Style.colors.fgColor
                         font {
                             pointSize: 14
                             bold: true

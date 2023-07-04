@@ -5,11 +5,6 @@ import QtQuick.Layouts   1.15
 import Qt.labs.platform  1.0 as P
 import Qt.labs.settings
 
-import xQuick.Controls   1.0 as X
-import xQuick.Fonts      1.0 as X
-import xQuick.Models     1.0 as X
-import xQuick.Style      1.0 as X
-
 import gnomonQuick.Controls as G
 import gnomonQuick.Workspaces as G
 import gnomonQuick.Style as G
@@ -277,7 +272,7 @@ G.Workspace {
                             }
                         }
                     }
-                    
+
                     G.Dialog {
                         id: new_project_dialog
 
@@ -290,7 +285,7 @@ G.Workspace {
                         modal: true
                         title: "Create a new Project"
                         standardButtons:  Dialog.Open | Dialog.Cancel
-                        
+
                         background: Rectangle {
                             anchors.fill: parent
                             color: G.Style.colors.bgColor;
@@ -431,7 +426,7 @@ G.Workspace {
                                 property var default_workspace: "Browsing"
                             }
                         }
-                        
+
                         onAccepted: {
                             GP.PipelineManager.pipeline.name = _pipeline_title.text
                             GP.PipelineManager.pipeline.description = _pipeline_description.text

@@ -4,19 +4,15 @@ import QtQuick.Layouts    1.15
 
 import Qt5Compat.GraphicalEffects
 
-import xQuick.Controls    1.0 as X
-import xQuick.Fonts       1.0 as X
-import xQuick.Style       1.0 as X
-import xQuick.Vis         1.0 as XVis
-
 import gnomonQuick.Controls  1.0 as G
+import gnomonQuick.Style  1.0 as G
 
 import gnomon.Visualization 1.0 as GV
 import gnomon.MetaData    1.0 as GM
 
 Rectangle {
     id: _self;
-    
+
     property int formId;
     property var dynamicFormMetadata : GV.World.contains(_self.formId) ? GV.World.getDynamicFormMetadata(_self.formId) : undefined;
 
@@ -29,9 +25,9 @@ Rectangle {
         //width: 2*parent.width/3;
         width: _img_rect.width + (parent.width - _img_rect.width)/2
 
-        border.color: X.Style.foregroundColor;
+        border.color: G.Style.colors.fgColor;
         border.width: 1;
-        color: Qt.darker(X.Style.backgroundColor)
+        color: Qt.darker(G.Style.colors.bgColor)
 
         Rectangle {
             id: _img_rect;
@@ -68,13 +64,13 @@ Rectangle {
 
             ListView {
                 id: form_metadata;
-                
+
                 anchors.top: parent.top;
                 anchors.bottom: time_slider.top;
                 anchors.right: parent.right;
                 anchors.left: parent.left;
                 anchors.margins: 12;
-                
+
                 model : GV.World.contains(_self.formId) ? GV.World.formMetadataKeysAtT(_self.formId, time_slider.t) : undefined;
 
                 delegate: ItemDelegate {
@@ -115,7 +111,7 @@ Rectangle {
             G.TimeSeriesSlider {
                 id: time_slider;
                 property var times : GV.World.contains(_self.formId) ? GV.World.timeKeys(_self.formId) : [0.];
-                property double t  
+                property double t
 
                 to: time_slider.times.length - 1;
                 enabled: from != to;

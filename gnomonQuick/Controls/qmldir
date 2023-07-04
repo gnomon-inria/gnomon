@@ -15,6 +15,8 @@ ComboBoxWithLabel 1.0 ComboBoxWithLabel.qml
 InList 1.0 InList.qml
 InListStringList 1.0 InListStringList.qml
 CheckBox 1.0 CheckBox.qml
+Finder 1.0 Finder.qml
+FilterProxyModel 1.0 FilterProxyModel.qml
 SimpleView 1.0 SimpleView.qml
 Switch 1.0 Switch.qml
 CollapsiblePanel 1.0 CollapsiblePanel.qml
