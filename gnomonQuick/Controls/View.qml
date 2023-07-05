@@ -50,7 +50,7 @@ Rectangle {
     signal switchTo2DXZ();
     signal switchTo2DYZ();
     signal switchTo3D();
-    signal sliceChange(int value);
+    signal sliceChange(double value);
     signal clear();
 
     XVis.Viewer {
@@ -130,7 +130,7 @@ Rectangle {
         useRadius: true
 
         onValueChanged: {
-            self.sliceChange(value);
+          self.sliceChange(value);
         }
     }
 
