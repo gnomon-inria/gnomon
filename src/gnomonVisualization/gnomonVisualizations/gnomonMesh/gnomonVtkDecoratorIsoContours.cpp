@@ -59,6 +59,7 @@ void gnomonVtkDecoratorIsoContoursPrivate::updateColorFunction(void)
     this->colorFunction->ClampingOn();
     if(q->m_mapper3d) {
         q->m_mapper3d->Modified();
+        q->m_mapper2d->Modified();
     }
 }
 
@@ -199,6 +200,9 @@ void gnomonVtkDecoratorIsoContours::setGrid(vtkSmartPointer<vtkUnstructuredGrid>
     m_mapper2d->SetInputConnection(d->isolines->GetOutputPort());
     m_mapper2d->SetColorModeToMapScalars();
     m_mapper2d->SetScalarVisibility(true);
+
+    if(m_clippingPlane)
+        m_mapper2d->AddClippingPlane(m_clippingPlane);
 
     if(!d->colorFunction)
         d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();

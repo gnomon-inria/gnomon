@@ -4,11 +4,14 @@
 
 void gnomonVtkDecorator::set2DClippingPlane(vtkSmartPointer<vtkPlane> plane)
 {
-    if(m_mapper2d) {
-        m_mapper2d->RemoveAllClippingPlanes();
-        m_mapper2d->AddClippingPlane(plane);
-        m_mapper2d->Update();
-    }
+    m_clippingPlane = plane;
+
+    //it's up to decorators to do things like this or not
+    //if(m_mapper2d) {
+    //    m_mapper2d->RemoveAllClippingPlanes();
+    //    m_mapper2d->AddClippingPlane(plane);
+    //    m_mapper2d->Update();
+    //}
 }
 
 void gnomonVtkDecorator::AddActorIfPossible(void)

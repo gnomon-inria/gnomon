@@ -252,10 +252,10 @@ public:
 
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
-    double c_x = 0, c_y = 0, c_z = 0;
+    double c_x = 0., c_y = 0., c_z = 0.;
 
 public:
-    double c_t = 0;
+    double c_t = 0.;
 
 public:
     QSettings *settings;
@@ -446,7 +446,7 @@ void gnomonVtkViewPrivate::updateGrid(void)
             double l = std::max(std::max(dx, dy), dz);
             double golden_ratio = 1.61803398875;
             double ml = l / golden_ratio;
-            
+
             double x_b[2] = {this->xBounds[0], this->xBounds[1]};
             if (dx < ml) {
                 x_b[0] += dx / 2 - ml / 2;
@@ -478,7 +478,7 @@ void gnomonVtkViewPrivate::updateGrid(void)
     }
 }
 
-void gnomonVtkViewPrivate::updateAxes(void) 
+void gnomonVtkViewPrivate::updateAxes(void)
 {
     if (this->axes_widget) {
         if (this->renderer3D) {
@@ -710,7 +710,7 @@ void gnomonVtkView::switchTo2DYZ(void)
     }
 }
 
-void gnomonVtkView::sliceChange(int value)
+void gnomonVtkView::sliceChange(double value)
 {
     bool valueChanged = false;
 
@@ -1698,7 +1698,7 @@ void gnomonVtkView::stopPicking() {
     this->render();
 }
 
-void gnomonVtkView::onSliceChanged(int slice)
+void gnomonVtkView::onSliceChanged(double slice)
 {
     // d->slice_slider->setValue(slice);
     Q_UNUSED(slice);

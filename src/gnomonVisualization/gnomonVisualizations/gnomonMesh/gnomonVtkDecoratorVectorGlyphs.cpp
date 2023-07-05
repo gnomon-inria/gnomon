@@ -128,6 +128,13 @@ void gnomonVtkDecoratorVectorGlyphsPrivate::updateColorFunction(void)
     q->m_mapper3d->Modified();
     q->m_mapper3d->Update();
 
+    if(q->m_mapper2d) {
+        q->m_mapper2d->SetLookupTable(this->colorFunction);
+        q->m_mapper2d->SetScalarRange(range[0], range[1]);
+        q->m_mapper2d->Modified();
+        q->m_mapper2d->Update();
+    }
+
     if(q->m_view)
         q->m_view->interactor()->Render();
 }
@@ -191,6 +198,8 @@ gnomonVtkDecoratorVectorGlyphs::gnomonVtkDecoratorVectorGlyphs(void)
                                            d->current_property.c_str());
         d->updateColorFunction();
         m_mapper3d->Modified();
+        if(m_mapper2d)
+            m_mapper2d->Modified();
     });
 
     m_parameters["2_alpha"]->connect([=] (QVariant v) {
@@ -278,13 +287,6 @@ void gnomonVtkDecoratorVectorGlyphs::setGrid(vtkSmartPointer<vtkUnstructuredGrid
     d->glyph3d->SetScaleFactor(((dtk::d_real *)m_parameters["5_scale_factor"])->value());
     d->glyph3d->Update();
 
-    //create mapper and actor
-    if(!d->colorFunction)
-        d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
-
-    m_mapper3d = vtkSmartPointer<vtkDataSetMapper>::New();
-    m_mapper3d->SetInputConnection(d->glyph3d->GetOutputPort());
-
     //set first field
     dtk::d_inliststring *propertyParam = (dtk::d_inliststring *)m_parameters["1_property_name"];
     QStringList properties = {};
@@ -315,24 +317,35 @@ void gnomonVtkDecoratorVectorGlyphs::setGrid(vtkSmartPointer<vtkUnstructuredGrid
     }
     d->current_property = propertyParam->value().toStdString();
 
+    //create mapper and actor
+    if(!d->colorFunction)
+        d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
+
+    m_mapper3d = vtkSmartPointer<vtkDataSetMapper>::New();
+    m_mapper3d->SetInputConnection(d->glyph3d->GetOutputPort());
+
+    m_mapper2d = vtkSmartPointer<vtkDataSetMapper>::New();
+    m_mapper2d->SetInputConnection(d->glyph3d->GetOutputPort());
+
+    if(m_clippingPlane)
+        m_mapper2d->AddClippingPlane(m_clippingPlane);
+
     //set mapper
     m_mapper3d->SetLookupTable(d->colorFunction);
-    //d->mapper3d->Update();
-    //d->mapper2d->SetLookupTable(d->colorFunction);
-    //d->mapper2d->Update();
+    m_mapper2d->SetLookupTable(d->colorFunction);
 
     m_actor3d = vtkSmartPointer<vtkActor>::New();
     m_actor3d->SetMapper(m_mapper3d);
     m_actor3d->Modified();
 
-    //d->actor2d = vtkSmartPointer<vtkActor>::New();
-    //d->actor2d->SetMapper(d->mapper2d);
-    //d->actor2d->Modified();
+    m_actor2d = vtkSmartPointer<vtkActor>::New();
+    m_actor2d->SetMapper(m_mapper2d);
+    m_actor2d->Modified();
 
     if(m_view && m_is_decorating) {
         m_view->renderer3D()->AddActor(m_actor3d);
         m_view->renderer3D()->ResetCamera();
-        //d->view->renderer2D()->AddActor(d->actor2d);
+        m_view->renderer2D()->AddActor(m_actor2d);
         m_view->renderer2D()->ResetCamera();
         m_view->interactor()->Render();
     }

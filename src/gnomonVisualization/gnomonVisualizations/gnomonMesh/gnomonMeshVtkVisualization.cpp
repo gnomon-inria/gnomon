@@ -45,6 +45,7 @@
 class gnomonMeshVtkVisualizationPrivate
 {
 public:
+    gnomonMeshVtkVisualization *q = nullptr;
     std::shared_ptr<gnomonMeshSeries> meshSeries;
     std::shared_ptr<gnomonMesh> mesh;
     QMap<QString, QString> parameters_groups;
@@ -92,10 +93,10 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
 
     // Set attributes
     const gnomonAbstractMeshData::IdxType points_nb = mesh_data->pointsCount();
-    
+
     QStringList attr_names = mesh_data->attributesNames();
     gnomonAbstractMeshData::CntType attr_nb = attr_names.size();
-    
+
     for(gnomonAbstractMeshData::IdxType i = 0; i < attr_nb; ++i) {
         QString attr_name = attr_names[i];
         const gnomonMeshAttribute* attr = mesh_data->attribute(attr_name);
@@ -152,8 +153,16 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
         }
     }
 
+    if(!this->clipping_plane) {
+        this->clipping_plane = vtkSmartPointer<vtkPlane>::New();
+        this->clipping_plane->SetDebug(true);
+        this->clipping_plane->SetOrigin(this->grid->GetCenter());
+        this->clipping_plane->SetNormal(1., 0., 0.);
+    }
+
     for(auto decorator : decorators) {
-        decorator->setGrid(grid);
+        decorator->set2DClippingPlane(this->clipping_plane);
+        decorator->setGrid(this->grid);
     }
 }
 
@@ -163,6 +172,7 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
 
 gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMeshVtkVisualization(), ddd(new gnomonMeshVtkVisualizationPrivate)
 {
+    ddd->q = this;
     d->parameters["1_decorators"] = new dtk::d_inliststringlist("", {"SurfaceColor"}, {"SurfaceColor", "IsoContours", "StreamTracer", "VectorGlyphs"}, "Create new decorators for your visualization");
 
     d->parameters["1_decorators"]->connect([=] (QVariant v) {
@@ -229,10 +239,6 @@ gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMes
                 if(ddd->grid) {
                     dec->setGrid(ddd->grid);
                 }
-                //TODO clipping plane for 2D
-                /*
-            decorator->set2DClippingPlane(ddd->clipping_plane);
-                */
             }
         }
     });
@@ -384,16 +390,7 @@ QMap<QString, QString> gnomonMeshVtkVisualization::parameterGroups(void)
 
 void gnomonMeshVtkVisualization::onSliceOrientationChanged(int value)
 {
-    if(!ddd->clipping_plane) {
-        ddd->clipping_plane = vtkSmartPointer<vtkPlane>::New();
-        ddd->clipping_plane->SetDebug(true);
-
-        for(auto decorator : ddd->decorators) {
-            decorator->set2DClippingPlane(ddd->clipping_plane);
-        }
-    }
-
-    if(!ddd->grid) {
+    if(!ddd->grid || !ddd->clipping_plane) {
         dtkTrace() << Q_FUNC_INFO << "Grid not set";
         return;
     }
@@ -415,7 +412,7 @@ void gnomonMeshVtkVisualization::onSliceOrientationChanged(int value)
     }
 }
 
-void gnomonMeshVtkVisualization::onSliceChanged(int value)
+void gnomonMeshVtkVisualization::onSliceChanged(double value)
 {
     if(!d->view)
         return;
@@ -423,6 +420,7 @@ void gnomonMeshVtkVisualization::onSliceChanged(int value)
     double origin[3];
     ddd->clipping_plane->GetOrigin(origin);
     auto ori = (dynamic_cast<gnomonVtkView *>(d->view))->orientation();
+    qDebug() << Q_FUNC_INFO << ori << value << origin[0] <<  origin[1] <<  origin[2];
     if(ori == -1) {
         dtkWarn() << Q_FUNC_INFO << "bad orientation: " << ori;
         return;

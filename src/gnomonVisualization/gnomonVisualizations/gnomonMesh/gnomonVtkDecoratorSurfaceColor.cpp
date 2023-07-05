@@ -9,6 +9,7 @@
 #include <vtkActor.h>
 #include <vtkCellData.h>
 #include <vtkColorTransferFunction.h>
+#include <vtkCutter.h>
 #include <vtkDataArray.h>
 #include <vtkDataSetMapper.h>
 #include <vtkDoubleArray.h>
@@ -30,6 +31,7 @@ struct gnomonVtkDecoratorSurfaceColorPrivate {
     gnomonVtkDecoratorSurfaceColor *q = nullptr;
 
     vtkSmartPointer<vtkColorTransferFunction> colorFunction;
+    vtkSmartPointer<vtkCutter> cutter = nullptr;
 
     void updateValueRange(void);
     void updateColorFunction(void);
@@ -138,7 +140,6 @@ gnomonVtkDecoratorSurfaceColor::~gnomonVtkDecoratorSurfaceColor(void)
     delete d;
 }
 
-
 void gnomonVtkDecoratorSurfaceColor::setGrid(vtkSmartPointer<vtkUnstructuredGrid> grid)
 {
     //remove actor if existing
@@ -149,18 +150,6 @@ void gnomonVtkDecoratorSurfaceColor::setGrid(vtkSmartPointer<vtkUnstructuredGrid
     }
 
     m_grid = grid;
-
-    //create new actor
-    if(!m_mapper3d)
-        m_mapper3d = vtkSmartPointer<vtkDataSetMapper>::New();
-    if(!m_mapper2d)
-        m_mapper2d = vtkSmartPointer<vtkDataSetMapper>::New();
-
-    m_mapper3d->SetInputData(m_grid);
-    m_mapper2d->SetInputData(m_grid);
-
-    if(!d->colorFunction)
-        d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
 
     //check param
     dtk::d_inliststring *propertyParam = (dtk::d_inliststring *)m_parameters["1_property_name"];
@@ -188,12 +177,31 @@ void gnomonVtkDecoratorSurfaceColor::setGrid(vtkSmartPointer<vtkUnstructuredGrid
     }
 
     //set mapper
-    d->updateValueRange();
+    if(!m_mapper3d)
+        m_mapper3d = vtkSmartPointer<vtkDataSetMapper>::New();
+    if(!m_mapper2d)
+        m_mapper2d = vtkSmartPointer<vtkDataSetMapper>::New();
+    if(!d->colorFunction)
+        d->colorFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
+
+    m_mapper3d->SetInputData(m_grid);
     m_mapper3d->SetLookupTable(d->colorFunction);
     m_mapper3d->Update();
-    m_mapper2d->SetLookupTable(d->colorFunction);
-    m_mapper2d->Update();
 
+    if(m_clippingPlane) {
+        d->cutter = vtkSmartPointer<vtkCutter>::New();
+        d->cutter->SetCutFunction(m_clippingPlane);
+        d->cutter->SetInputData(m_grid);
+
+        m_mapper2d->SetInputConnection(d->cutter->GetOutputPort());
+
+        m_mapper2d->SetLookupTable(d->colorFunction);
+        m_mapper2d->Update();
+    }
+
+    d->updateValueRange();
+
+    //create new actor
     m_actor3d = vtkSmartPointer<vtkActor>::New();
     m_actor3d->SetMapper(m_mapper3d);
     m_actor3d->Modified();

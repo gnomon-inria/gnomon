@@ -4,6 +4,8 @@
 
 #include <gnomonVisualizationExport.h>
 
+
+//this decorator will display the same thing in 2d and in 3d
 class GNOMONVISUALIZATION_EXPORT gnomonVtkDecoratorStreamTracer : public gnomonVtkDecorator
 {
  public:

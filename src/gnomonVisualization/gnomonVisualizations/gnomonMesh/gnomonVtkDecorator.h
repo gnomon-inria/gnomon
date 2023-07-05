@@ -31,7 +31,6 @@ class GNOMONVISUALIZATION_EXPORT gnomonVtkDecorator : public QObject
     virtual void removeActor(void);
     virtual void setVisibility(bool);
 
-
     virtual void set2DClippingPlane(vtkSmartPointer<vtkPlane> plane);
     virtual void setView(gnomonVtkView *);
     virtual void unsetView(void);
@@ -48,4 +47,5 @@ class GNOMONVISUALIZATION_EXPORT gnomonVtkDecorator : public QObject
     vtkSmartPointer<vtkDataSetMapper> m_mapper3d = nullptr;
     vtkSmartPointer<vtkActor> m_actor2d = nullptr;
     vtkSmartPointer<vtkDataSetMapper> m_mapper2d = nullptr;
+    vtkSmartPointer<vtkPlane> m_clippingPlane = nullptr;
 };

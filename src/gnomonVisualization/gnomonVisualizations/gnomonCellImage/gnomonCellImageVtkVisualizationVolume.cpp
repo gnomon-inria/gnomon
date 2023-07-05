@@ -294,7 +294,7 @@ void gnomonCellImageVtkVisualizationVolume::onSliceOrientationChanged(int value)
     ddd->actor2D->setSliceOrientation(value);
 }
 
-void gnomonCellImageVtkVisualizationVolume::onSliceChanged(int value)
+void gnomonCellImageVtkVisualizationVolume::onSliceChanged(double value)
 {
     ddd->actor2D->setSlice(value);
     this->render();

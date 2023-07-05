@@ -19,7 +19,7 @@ public:
     virtual const QString name(void) override;
 
 public:
-	void setImage(std::shared_ptr<gnomonImageSeries> image) override;
+    void setImage(std::shared_ptr<gnomonImageSeries> image) override;
     std::shared_ptr<gnomonImageSeries> image(void) override;
 
 public slots:
@@ -46,7 +46,7 @@ public slots:
     void onXY(void) override;
     void onXZ(void) override;
     void onYZ(void) override;
-    void onSliceChanged(int) override;
+    void onSliceChanged(double) override;
     void onSliceOrientationChanged(int) override;
     void onTimeChanged(double) override;
 
@@ -57,7 +57,7 @@ public:
     QMap<QString, QString> parameterGroups(void) override;
 
 private:
-	class gnomonImageVtkVisualizationChannelBlendingPrivate *ddd;
+    class gnomonImageVtkVisualizationChannelBlendingPrivate *ddd;
     friend gnomonImageVtkVisualizationChannelBlendingPrivate;
 };
 
