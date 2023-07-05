@@ -25,18 +25,12 @@ public:
     explicit gnomonWorkspacePointCloudQuantification(QObject *parent = nullptr);
     ~gnomonWorkspacePointCloudQuantification(void) override;
 
-public:
-    Q_PROPERTY(gnomonMplView* targetMpl READ targetMpl CONSTANT);
-
 public slots:
     void setInputs(void) override;
     void viewOutputs(void) override;
 
-public:
-    gnomonMplView *targetMpl(void) const { return this->m_target_mpl;};
+    gnomonVtkViewList *targets(void) const override;
 
-private:
-    gnomonMplView *m_target_mpl = nullptr;
 };
 
 //

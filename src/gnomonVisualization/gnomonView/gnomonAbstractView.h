@@ -43,6 +43,7 @@ public:
 public slots:
     virtual void drop(int);
     virtual void transmit(void);
+    virtual void transmitForm(const QString&);
     virtual void restoreState(void);
 
 public slots:
