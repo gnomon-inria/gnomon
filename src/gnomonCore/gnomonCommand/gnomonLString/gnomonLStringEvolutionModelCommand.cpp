@@ -55,6 +55,7 @@ gnomonLStringEvolutionModelCommand::~gnomonLStringEvolutionModelCommand()
 
 void gnomonLStringEvolutionModelCommand::predo(void)
 {
+    gnomonAbstractEvolutionModelCommand::predo();
 }
 
 void gnomonLStringEvolutionModelCommand::postdo(void)

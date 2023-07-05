@@ -28,6 +28,9 @@ public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
+
+public:
+    void setLogServerAddress(QString addr) {};
 };
 
 DTK_DECLARE_OBJECT        (gnomonAbstractModel *)

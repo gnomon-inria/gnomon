@@ -3,6 +3,7 @@
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
 
 #include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel>
+#include "gnomonAlgorithmsLogs/gnomonLogCaptureServer"
 
 class GNOMONCORE_EXPORT gnomonAbstractEvolutionModelCommand : public QObject
 {
@@ -13,7 +14,9 @@ public:
     ~gnomonAbstractEvolutionModelCommand(void) = default;
 
 public slots:
-    virtual void  predo(void) = 0;
+    virtual void  predo(void) {
+        this->model->setLogServerAddress(gnomonLogCaptureServer::instance()->completeAddress());
+};
     virtual void postdo(void) = 0;
     virtual void   undo(void) = 0;
     virtual void   redo(void) = 0;

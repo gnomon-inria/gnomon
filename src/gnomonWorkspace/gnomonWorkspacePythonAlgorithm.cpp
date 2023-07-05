@@ -10,6 +10,7 @@
 #include <gnomonVisualization/gnomonView/gnomonVtkViewPool.h>
 
 #include "gnomonPythonAlgorithmPluginCode.h"
+#include "gnomonAlgorithmsLogs/gnomonLogCaptureServer"
 
 #include <dtkScript>
 
@@ -230,6 +231,7 @@ void gnomonWorkspacePythonAlgorithm::run(void) {
 
     if(d->algorithm) {
         emit started();
+        d->algorithm->setLogServerAddress(gnomonLogCaptureServer::instance()->completeAddress());
         d->algorithm->run();
         this->viewOutputs();
         emit finished();

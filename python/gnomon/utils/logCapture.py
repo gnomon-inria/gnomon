@@ -4,7 +4,9 @@ import socket
 import threading
 from time import sleep
 
-ADDR = ("localhost", 54600)
+# port number if server in the same process
+port = os.getpid() % 10000 + 44600
+ADDR = ("localhost", port)
 TIMEOUT = 10  # second
 
 
@@ -12,14 +14,14 @@ class StreamCapture:
     """
     Adapted from https://stackoverflow.com/a/66808947
     """
-    def __init__(self, streams: list, echo=True, monkeypatch=None):
+    def __init__(self, streams: list, echo=True, monkeypatch=None, address=ADDR):
         self.monkeypatch = None
         self.active = False
         self.streams = streams
         self.echo = echo
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(TIMEOUT)
-        self.sock.connect(ADDR)
+        self.sock.connect(address)
         # connected
         self.fd = {}
         self.dup_fd = {}

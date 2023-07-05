@@ -35,11 +35,7 @@ gnomonLogConnection::gnomonLogConnection(QObject *parent, QTcpSocket *socket, bo
 QObject(parent), d(new gnomonLogConnectionPrivate(socket, server_alive)) {
     if(socket){
         connect(d->socket, &QTcpSocket::readyRead, this, &gnomonLogConnection::readConnection);
-        connect(d->socket, &QAbstractSocket::errorOccurred, [this] (auto error) {
-            if(error != QAbstractSocket::RemoteHostClosedError)
-                qWarning() << "socket error: " << error;
-            this->close();
-        });
+        connect(d->socket, &QAbstractSocket::errorOccurred, this, &gnomonLogConnection::errorHandler);
         connect(d->socket, &QTcpSocket::disconnected,
                 d->socket, &QTcpSocket::deleteLater);
     } else {
@@ -83,5 +79,11 @@ void gnomonLogConnection::readConnection() {
         this->d->text.append(data_string);
         emit this->textChanged();
     }
+}
+
+void gnomonLogConnection::errorHandler(QAbstractSocket::SocketError error) {
+    if(error != QAbstractSocket::RemoteHostClosedError)
+        qWarning() << "socket error: " << error;
+    this->close();
 }
 

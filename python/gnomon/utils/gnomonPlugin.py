@@ -809,6 +809,12 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
     # TCP Logging
     # -----------------------------------------------------
 
+    def _setLogServerAddress(self, addr: str):
+        address, port = addr.split(":")
+        self._log_server_address = (address, int(port))
+
+    cls.setLogServerAddress = _setLogServerAddress
+
     # attach output capture to run method
     if hasattr(cls, "run"):
         _old_run = cls.run
@@ -818,7 +824,10 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
             # logger init
             _logger = None
             try:
-                _logger = StreamCapture([sys.stdout, sys.stderr], echo=True)
+                if hasattr(self, "_log_server_address"):
+                    _logger = StreamCapture([sys.stdout, sys.stderr], echo=True, address=self._log_server_address)
+                else:
+                    _logger = StreamCapture([sys.stdout, sys.stderr], echo=True)
             except Exception as e:
                 logging.warning("Could not initialize logger. Server probably not found.")
                 pass

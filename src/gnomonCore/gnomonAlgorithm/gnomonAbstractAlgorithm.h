@@ -41,6 +41,8 @@ public:
     virtual void stop(void) {};
     virtual int progress(void) {return -1;}
 
+    virtual void setLogServerAddress(QString addr) {};
+
     virtual void clearInputs(void) {};
     virtual void clearOutputs(void) {};
 

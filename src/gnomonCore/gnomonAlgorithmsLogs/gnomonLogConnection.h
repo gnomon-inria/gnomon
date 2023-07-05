@@ -31,6 +31,7 @@ public:
 
 private slots:
     void readConnection();
+    void errorHandler(QAbstractSocket::SocketError error);
 
 private:
     gnomonLogConnectionPrivate *d;
