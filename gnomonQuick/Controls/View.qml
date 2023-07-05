@@ -124,7 +124,7 @@ Rectangle {
         to:   _2d_xy.active? viewLogic.zMax : _2d_xz.active? viewLogic.yMax : viewLogic.xMax;
 
         value: 10
-        stepSize: 1
+        stepSize: (to - from) < 5. ? (to - from)/20 : 1; // ensure that stepSize is somewhat ok for small data
         snapMode: Slider.SnapAlways
 
         useRadius: true
