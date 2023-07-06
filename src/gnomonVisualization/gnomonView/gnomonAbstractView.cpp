@@ -178,10 +178,14 @@ void gnomonAbstractView::clear(void)
     emit formsChanged();
 }
 
-void gnomonAbstractView::drop(int index)
+void gnomonAbstractView::drop(int index, bool new_visu)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
-    this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
+    std::shared_ptr<gnomonAbstractVisualization> visu = gnomonFormManager::instance()->getVisualization(index);
+    if (new_visu) {
+        visu = nullptr;
+    }
+    this->setForm("formManager", form, visu);
     this->render();
     gnomonFormManager::instance()->setFormDropped(form);
 }

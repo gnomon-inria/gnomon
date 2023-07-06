@@ -8,6 +8,7 @@
 #include <gnomonVisualization/gnomonView/gnomonVtkViewList>
 #include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 #include <gnomonVisualization/gnomonView/gnomonMplView.h>
+#include <gnomonVisualization/gnomonView/gnomonQmlView.h>
 
 class gnomonAbstractCommand;
 
@@ -29,6 +30,7 @@ public:
     Q_PROPERTY(gnomonVtkView* source READ source CONSTANT); //for ease of use
     Q_PROPERTY(gnomonVtkView* target READ target CONSTANT); //for ease of use
     Q_PROPERTY(gnomonMplView* figure READ figure CONSTANT);
+    Q_PROPERTY(gnomonQmlView* textView READ textView CONSTANT);
     Q_PROPERTY(int progress READ progress NOTIFY progressChanged)
 
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
@@ -71,6 +73,7 @@ public:
     gnomonVtkView *target(void) const {return (*this->targets())[0]; };
 
     gnomonMplView *figure(void) const;
+    gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
     QJsonObject serialize(void);

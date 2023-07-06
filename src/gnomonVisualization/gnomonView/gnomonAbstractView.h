@@ -41,7 +41,7 @@ public:
     void setNodePortNames(const QStringList&);
 
 public slots:
-    virtual void drop(int);
+    virtual void drop(int, bool new_visu=false);
     virtual void transmit(void);
     virtual void transmitForm(const QString&);
     virtual void restoreState(void);
