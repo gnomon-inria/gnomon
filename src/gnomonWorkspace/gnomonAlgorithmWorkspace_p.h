@@ -63,4 +63,5 @@ public:
     gnomonVtkViewPool *pool = nullptr;
 
     gnomonMplView *figure = nullptr;
+    gnomonQmlView *text_view = nullptr;
 };

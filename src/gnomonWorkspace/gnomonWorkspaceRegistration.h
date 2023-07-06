@@ -4,8 +4,6 @@
 
 #include "gnomonAlgorithmWorkspace.h"
 
-#include "gnomonVisualization/gnomonView/gnomonQmlView.h"
-
 class gnomonVtkView;
 class gnomonVtkViewList;
 
@@ -28,7 +26,6 @@ public:
 public:
     Q_PROPERTY(int stackSize READ stackSize NOTIFY stackSizeChanged);
     Q_PROPERTY(int stackLevel READ stackLevel WRITE setStackLevel NOTIFY stackLevelChanged);
-    Q_PROPERTY(gnomonQmlView* targetDict READ targetDict CONSTANT);
 
 public:
     int stackSize(void) const;
@@ -48,12 +45,8 @@ public slots:
     virtual void viewOutputs(void) override;
     void iterate(void);
 
-public: 
-    gnomonQmlView *targetDict(void) const {return this->m_target_dict;};
-
 protected:
     class gnomonWorkspaceRegistrationPrivate *dd = nullptr;
-    gnomonQmlView *m_target_dict = nullptr;
 };
 
 //
