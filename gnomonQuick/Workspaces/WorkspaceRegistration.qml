@@ -68,7 +68,7 @@ G.Workspace {
                 window.currentView = _source_view_other
                 d.sources.views[1].drop(index);
                 if(GV.World.timeKeys(index).length > 1) {
-                    d.sources.views[0].drop(index);
+                    d.sources.views[0].drop(index, true);
                     ts_slider.value = Math.max(_source_view_ref.ts_slider.value - 1, ts_slider.from)
                 }
             }
@@ -114,10 +114,10 @@ G.Workspace {
                     Layout.fillWidth: true;
                     height: window.height/8;
 
-                    viewLogic: d.targetDict;
+                    viewLogic: d.textView;
 
                     onDroppedFromManager: (index) => {
-                        d.targetDict.drop(index);
+                        d.textView.drop(index);
                     }
                 }
 
@@ -158,7 +158,7 @@ G.Workspace {
                 window.currentView = _source_view_ref
                 d.sources.views[0].drop(index);
                 if(GV.World.timeKeys(index).length > 1) {
-                    d.sources.views[1].drop(index);
+                    d.sources.views[1].drop(index, true);
                     ts_slider.value =  Math.min(_source_view_other.ts_slider.value + 1, ts_slider.to)
                 }
             }
