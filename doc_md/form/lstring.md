@@ -34,7 +34,7 @@ from gnomon.utils.decorators import lStringInput
 import openalea.lpy as lpy
 
 
-@visualizationPlugin(version="0.4.0", coreversion="0.80.0")
+@visualizationPlugin(version="0.4.0", coreversion="0.81.0")
 @lStringInput('lstring', "lStringDataLPy", name="LString Module Sequence")
 class gnomonLStringMplVisualization(gnomon.visualization.gnomonAbstractLStringMplVisualization):
     

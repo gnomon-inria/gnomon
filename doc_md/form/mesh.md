@@ -2,7 +2,7 @@
 
 ## Description
 >A gnomon Mesh is a data structure modelling the geometry of a biological object using smaller discrete elements. It consists in a set of topological elements (typically polygonal or polyhedral) built upon a list of points. The embedding of the points in the 3D space is what defines the resuting geometry of the object.
-The default data classes implementing Mesh in gnomon are `gnomonMeshDataStdVector` relying on c++ vector containers and, `gnomonMeshDataPropertyTopomesh` using the mesh implementation provided by the [cellcomplex](https://mosaic.gitlabpages.inria.fr/cellcomplex/examples/property_topomesh.html) Python package.
+The default data classes implementing Mesh in gnomon are `gnomonMeshDataStdVector` relying on c++ vector containers, and `gnomonMeshDataPropertyTopomesh` using the mesh implementation provided by the [cellcomplex](https://mosaic.gitlabpages.inria.fr/cellcomplex/examples/property_topomesh.html) Python package.
 
 ## Default reader plugin
 >The default reader for mesh forms is **gnomonMeshReaderPropertyTopomesh** that reads `.ply` files representing 3D meshes written in the (ASCII) [Polygon File Format](http://paulbourke.net/dataformats/ply/).
@@ -36,7 +36,7 @@ from cellcomplex.property_topomesh.optimization import property_topomesh_vertice
 from cellcomplex.property_topomesh.analysis import compute_topomesh_property
 
 
-@algorithmPlugin(version="0.2.0", coreversion="0.71.0")
+@algorithmPlugin(version="0.2.0", coreversion="0.81.0")
 @meshInput('mesh_in', data_plugin="gnomonMeshDataPropertyTopomesh")
 @meshOutput('mesh_out', data_plugin="gnomonMeshDataPropertyTopomesh")
 class meshLaplacianSmoothingCellcomplex(gnomon.core.gnomonAbstractMeshFilter):

@@ -1,6 +1,6 @@
 # ChangeLog
 
-## version 0.80.0 - 2023-04-12
+## version 0.81.0 - 2023-04-12
 * LSP server for python workspace
 * connect for python parameters
 * fix morphonet curation
