@@ -7,6 +7,7 @@
 #include "gnomonCore.h"
 #include "gnomonAbstractCommand.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithmsLogs/gnomonLogCaptureServer"
 
 gnomonAbstractCommand::gnomonAbstractCommand(void)
 {
@@ -28,7 +29,9 @@ void gnomonAbstractCommand::redo(void)
     if(override_async) {
         this->action->is_async = false;  //TODO delete now not needed anymore on pipeline load!!!!!!!
     }
-    
+
+    this->action->setLogServerAddress(gnomonLogCaptureServer::instance()->completeAddress());
+
     if(this->action->is_async) {
 
         // cleaning watcher

@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "gnomonLogCaptureServer.h"
 
 #include "gnomonLogConnection"
@@ -14,6 +15,8 @@ public:
     // first they are in pending then they may be opened, then they are closed
     QList<gnomonLogConnection*> pending_connections; 
     std::list<gnomonLogConnection*> opened_connections;
+    QHostAddress address = QHostAddress::LocalHost;
+    unsigned int port = getpid()%(10000) + 44600;
     static bool alive;
 };
 bool gnomonLogCaptureServerPrivate::alive = false;
@@ -39,6 +42,15 @@ gnomonLogCaptureServerPrivate::~gnomonLogCaptureServerPrivate() {
 // --- gnomonLogCaptureServer ------------------------------------------------------------------------------------------
 
 gnomonLogCaptureServer::gnomonLogCaptureServer(QObject *parent): QTcpServer(parent), d(new gnomonLogCaptureServerPrivate()) {
+    if(!this->listen(d->address, d->port)) {
+        qWarning() << Q_FUNC_INFO << "Not listening";
+    }
+    connect(this, &QTcpServer::newConnection, this, &gnomonLogCaptureServer::newServerConnectionHandler);
+    connect(this, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
+        qWarning() << Q_FUNC_INFO << "Error:" << error;
+    });
+
+    qInfo() << "log server listening on " << this->serverAddress() << ":" << this->serverPort();
 }
 
 gnomonLogCaptureServer::~gnomonLogCaptureServer() {
@@ -95,16 +107,7 @@ gnomonLogConnection *gnomonLogCaptureServer::getPendingConnection() {
 
 gnomonLogCaptureServer *gnomonLogCaptureServer::instance(void) {
     if(!s_instance) {
-        s_instance = new gnomonLogCaptureServer(0);
-        if(!s_instance->listen(QHostAddress::LocalHost, 54600)) {
-            qWarning() << Q_FUNC_INFO << "Not listening";
-        }
-        connect(s_instance, &QTcpServer::newConnection, s_instance, &gnomonLogCaptureServer::newServerConnectionHandler);
-        connect(s_instance, &QTcpServer::acceptError, [=](QAbstractSocket::SocketError error) {
-            qWarning() << Q_FUNC_INFO << "Error:" << error;
-        });
-
-        qInfo() << "log server listening on " << s_instance->serverAddress() << ":" << s_instance->serverPort();
+        s_instance = new gnomonLogCaptureServer(nullptr);
     }
     return s_instance;
 }
@@ -115,6 +118,18 @@ bool gnomonLogCaptureServer::newConnectionAvailable() {
 
 void gnomonLogCaptureServer::incomingConnection(qintptr handle) {
     QTcpServer::incomingConnection(handle);
+}
+
+QHostAddress gnomonLogCaptureServer::address(void) {
+    return d->address;
+}
+
+unsigned int gnomonLogCaptureServer::port(void) {
+    return d->port;
+}
+
+QString gnomonLogCaptureServer::completeAddress(void) {
+    return QString("%1:%2").arg(d->address.toString()).arg(d->port);
 }
 
 //void gnomonLogCaptureServer::clear() {
