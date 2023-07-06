@@ -1,6 +1,19 @@
 # ChangeLog
 
-## version 0.81.0 - 2023-04-12
+## version 0.81.0 - 2023-07-06
+* Enable screenshots in views
+* Support opening several (interdependent) files in LPy workspace
+* Quantification workspace for (nuclei) point clouds
+* More generic mesh API, mesh processing & solver workspaces
+* Advanced 3D mesh visualization (color, isocontours, streams)
+* Fix pipeline reloading / running functionalities
+* Additional buttons for 3D view camera/grid control
+* Additional view camera menu for 3D view
+* Fix reset and derivation length in LPy workspace
+* Textual visualization of LStrings in LPy workspace
+* Remove plugin forms/parameters from Python workspace menu
+
+## version 0.80.0 - 2023-04-12
 * LSP server for python workspace
 * connect for python parameters
 * fix morphonet curation
@@ -11,7 +24,6 @@
 * picker for curve2d
 * fix lpy bugs
 * lpy 2.13
-
 
 ## version 0.72.0 - 2023-02-03
 * L-Py modelling workspace
