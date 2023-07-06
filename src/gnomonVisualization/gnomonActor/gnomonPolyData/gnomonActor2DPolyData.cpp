@@ -256,7 +256,7 @@ void gnomonActor2DPolyData::setSliceOrientation(int value)
     d->updateVisibility();
 }
 
-void gnomonActor2DPolyData::setSlice(int value)
+void gnomonActor2DPolyData::setSlice(double value)
 {
     d->slicePositions[d->orientation] = value;
     d->updateSlice(d->orientation);

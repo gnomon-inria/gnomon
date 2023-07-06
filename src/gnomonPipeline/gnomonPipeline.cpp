@@ -410,7 +410,10 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
 void gnomonPipeline::removeNode(gnomonPipelineNode *node) 
 {
     d->node_type_count[node->algorithmClass()] -= 1;
-    d->pipeline_node_names.removeAt(d->pipeline_node_names.indexOf(node->name()));
+    auto index = d->pipeline_node_names.indexOf(node->name());
+    if(index >=0) {
+        d->pipeline_node_names.removeAt(index);
+    }
     d->pipeline_nodes.remove(node->name());
     emit nodeRemoved(node);
 }
@@ -663,7 +666,7 @@ void gnomonPipeline::updateLayout(void)
 }
 
 
-bool gnomonPipeline::readFromJson(const QString& url)
+bool gnomonPipeline::readFromJson(const QString& url, bool check_plugins)
 {
     QString path;
     const QUrl q_url(url);
@@ -700,7 +703,7 @@ bool gnomonPipeline::readFromJson(const QString& url)
             QString algorithm_plugin = node_json.value("plugin_name").toString();
             QJsonObject metadatas = node_json.contains("metadata") ? node_json.value("metadata").toObject() : QJsonObject();
 
-            if ( (!algorithm_class.contains("morphonetCellImage")) && (algorithm_class != "task") && (algorithm_class != "formAlgorithm"))  {
+            if (check_plugins && (!algorithm_class.contains("morphonetCellImage")) && (algorithm_class != "task") && (algorithm_class != "formAlgorithm"))  {
                 auto plugins = availablePluginsFromGroup(algorithm_class);
                 if(!plugins.contains(algorithm_plugin)) {
                     dtkWarn() << algorithm_plugin << " is not available in group" << algorithm_class << " available algorithms are " << plugins;

@@ -16,16 +16,19 @@ public:
     gnomonQmlView(QObject *parent = nullptr);
     ~gnomonQmlView(void);
 
-    void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr) override;
-
 public:
-    Q_PROPERTY(QString dataDict READ dataDict WRITE setDataDict NOTIFY dictChanged);
+    Q_PROPERTY(QString displayText READ displayText WRITE setDisplayText NOTIFY displayTextChanged);
+    Q_PROPERTY(int fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged);
 
-    void setDataDict(QString);
-    QString dataDict(void);
+    void setDisplayText(const QString&);
+    const QString& displayText(void);
+
+    void setFontSize(int);
+    int fontSize(void);
 
 signals:
-    void dictChanged(void);
+    void displayTextChanged(void);
+    void fontSizeChanged(void);
 
 private:
     class gnomonQmlViewPrivate *dd;

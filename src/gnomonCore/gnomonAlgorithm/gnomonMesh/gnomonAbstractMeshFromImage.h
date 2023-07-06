@@ -10,29 +10,58 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
+#include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
+#include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 
-class dtkImage;
 
 class GNOMONCORE_EXPORT gnomonAbstractMeshFromImage : public gnomonAbstractAlgorithm
 {
 public:
-  virtual void setInput(std::shared_ptr<gnomonImageSeries> images) = 0;
+    virtual inline void setImage(std::shared_ptr<gnomonImageSeries> image) {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+    };
+    virtual inline void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+    };
+    virtual inline void setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binaryImage) {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+    };
 
-    // Outputs
+public:
+    virtual inline std::shared_ptr<gnomonImageSeries> image(void) {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
+    virtual inline std::shared_ptr<gnomonCellImageSeries> cellImage(void) const {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
+    virtual inline std::shared_ptr<gnomonBinaryImageSeries> binaryImage() const {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
+
 public:
     virtual std::shared_ptr<gnomonMeshSeries> output() const = 0;
-    virtual std::shared_ptr<gnomonImageSeries> input() const = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
-        if(formName == "gnomonImage") {
-            return {"setInput"};
+        if (formName == "gnomonImage") {
+            return {"setImage"};
+        } else if (formName == "gnomonCellImage") {
+            return {"setCellImage"};
+        } else if (formName == "gnomonBinaryImage") {
+            return {"setBinaryImage"};
         }
         return {};
     };
     static inline QString defaultGetter(QString formName) {
-        if(formName == "gnomonImage") {
-            return {"input"};
+        if (formName == "gnomonImage") {
+            return {"image"};
+        } else if (formName == "gnomonCellImage") {
+            return {"cellImage"};
+        } else if (formName == "gnomonBinaryImage") {
+            return {"binaryImage"};
         }
         return {};
     };

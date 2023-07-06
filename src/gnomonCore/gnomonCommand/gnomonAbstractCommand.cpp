@@ -4,8 +4,10 @@
 
 #include <dtkScript>
 
+#include "gnomonCore.h"
 #include "gnomonAbstractCommand.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
+#include "gnomonAlgorithmsLogs/gnomonLogCaptureServer"
 
 gnomonAbstractCommand::gnomonAbstractCommand(void)
 {
@@ -27,7 +29,9 @@ void gnomonAbstractCommand::redo(void)
     if(override_async) {
         this->action->is_async = false;  //TODO delete now not needed anymore on pipeline load!!!!!!!
     }
-    
+
+    this->action->setLogServerAddress(gnomonLogCaptureServer::instance()->completeAddress());
+
     if(this->action->is_async) {
 
         // cleaning watcher
@@ -71,13 +75,11 @@ extern void runner(gnomonAbstractCommand* command) {
     command->action->run();
     command->postdo();
 
-    if(gnomonAbstractCommand::gui_thread ) {
+    if (gnomonCore::gui_thread) {
         for(const QString& k : command->outputs().keys()) {
             if(command->outputs()[k])
-                command->outputs()[k]->metadata()->moveToThread(gnomonAbstractCommand::gui_thread);
+                command->outputs()[k]->metadata()->moveToThread(gnomonCore::gui_thread);
         }
     }
     command->action->clearOutputs();
 }
-
-QThread *gnomonAbstractCommand::gui_thread = nullptr;

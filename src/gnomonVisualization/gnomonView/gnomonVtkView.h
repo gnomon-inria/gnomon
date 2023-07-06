@@ -44,6 +44,16 @@ public:
         NONE = -1
     };
 
+    enum Representation {
+        VTK_REPRESENTATION_POINTS = 0,
+        VTK_REPRESENTATION_WIREFRAME  = 1,
+        VTK_REPRESENTATION_SURFACE = 2,
+    };
+
+    enum Grid {
+        GRID_CUBE = 0,
+        GRID_PLANES = 1,
+    };
 
 public:
     Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged);
@@ -57,10 +67,23 @@ public:
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
     Q_PROPERTY(Mode mode READ mode NOTIFY modeChanged);
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
+    Q_PROPERTY(Representation representation READ representation WRITE setRepresentation NOTIFY representationChanged)
     Q_PROPERTY(bool inPool READ inPool WRITE setInPool NOTIFY inPoolChanged);
     Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
     Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
     Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
+
+    Q_PROPERTY(QColor bgColor READ bgColor WRITE setBgColor NOTIFY bgColorChanged);
+    Q_PROPERTY(bool gridVisible READ gridVisible WRITE setGridVisible NOTIFY gridVisibleChanged);
+    Q_PROPERTY(Grid gridType READ gridType WRITE setGridType NOTIFY gridTypeChanged)
+    Q_PROPERTY(Orientation gridOrientation READ gridOrientation WRITE setGridOrientation NOTIFY gridOrientationChanged);
+    Q_PROPERTY(bool axesVisible READ axesVisible WRITE setAxesVisible NOTIFY axesVisibleChanged);
+    Q_PROPERTY(bool cameraFixed READ cameraFixed WRITE setCameraFixed NOTIFY cameraFixedChanged);
+    Q_PROPERTY(double cameraAzimuth READ cameraAzimuth WRITE setCameraAzimuth NOTIFY cameraChanged);
+    Q_PROPERTY(double cameraElevation READ cameraElevation WRITE setCameraElevation NOTIFY cameraChanged);
+    Q_PROPERTY(double cameraRoll READ cameraRoll WRITE setCameraRoll NOTIFY cameraChanged);
+    Q_PROPERTY(double cameraDistance READ cameraDistance WRITE setCameraDistance NOTIFY cameraChanged);
+
     Q_PROPERTY(QList<long> pickedCells READ pickedCells NOTIFY pickedCellsChanged)
 
     Q_INVOKABLE void startPicking();
@@ -86,6 +109,7 @@ signals:
     void boundsChanged(void);
     void modeChanged(void);
     void orientationChanged(void);
+    void representationChanged(void);
     void inPoolChanged(void);
 
     void syncedChanged(void);
@@ -94,6 +118,15 @@ signals:
 signals:
     void   linking(void);
     void unlinking(void);
+
+signals:
+    void bgColorChanged(void);
+    void gridVisibleChanged(void);
+    void gridTypeChanged(void);
+    void gridOrientationChanged(void);
+    void axesVisibleChanged(void);
+    void cameraFixedChanged(void);
+    void cameraChanged(void);
 
 signals:
     void pickedCellsChanged();
@@ -111,6 +144,7 @@ public slots:
 
 public slots:
     void tryLinking(void);
+    void setAcceptForm(const QString&, bool) override;
 
     void   link(gnomonVtkView *other);
     void unlink(gnomonVtkView *other);
@@ -133,7 +167,7 @@ public:
     std::shared_ptr<gnomonPointCloudSeries> pointCloud(void);
 
 public slots:
-    void drop(int) override;
+    void drop(int, bool new_visu=false) override;
     void removeForm(const QString& name) override;
 
 public:
@@ -145,10 +179,14 @@ public:
 
 public:
     Orientation orientation(void);
+    Representation representation(void);
 
 public slots:
+    void setRepresentation(Representation representation);
+
     void setBounds(double bounds[6]);
     void setBounds(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
+    void updateBounds(void);
 
     void getBounds(double bounds[6]);
     double xMin(void) const;
@@ -161,25 +199,66 @@ public slots:
     double currentTime(void) const;
     double timeMax(void);
 
+    void setBgColor(const QColor& color);
+    const QColor& bgColor(void);
+
+    void setGridVisible(bool visible);
+    bool gridVisible(void);
+
+    void setGridType(Grid type);
+    Grid gridType(void);
+
+    void setGridOrientation(Orientation orientation);
+    Orientation gridOrientation(void);
+
+    void setAxesVisible(bool visible);
+    bool axesVisible(void);
+
+    void setCameraFixed(bool fixed);
+    bool cameraFixed(void);
+
+    void setCameraAzimuth(double angle);
+    double cameraAzimuth(void);
+
+    void setCameraElevation(double angle);
+    double cameraElevation(void);
+
+    void setCameraRoll(double angle);
+    double cameraRoll(void);
+
+    void setCameraDistance(double distance);
+    double cameraDistance(void);
+
+public slots:
+    void setCameraXY(bool flip=false, bool turn=false);
+    void setCameraXZ(bool flip=false, bool turn=false);
+    void setCameraYZ(bool flip=false, bool turn=false);
+
+    void saveCamera(const QString& file_url);
+    void loadCamera(const QString& file_url);
+
 public:
     void setCamera(vtkCamera *);
+    void resetCamera(void);
 
 public slots:
     void render(void) override;
     void clear(void) override;
+    void saveScreenshot(const QString& filename) override;
+    QImage toImage(void) override;
 
 public slots:
     void setEnableLinking(bool);
 
 public slots:
-    void onSliceChanged(int);
+    void onSliceChanged(double);
 
 public slots:
-    void sliceChange(int);
+    void sliceChange(double);
 
 signals:
     void sliceOrientationChanged(int);
-    void sliceChanged(int);
+    void sliceChanged(double);
 
 signals:
     void timeChanged(double);

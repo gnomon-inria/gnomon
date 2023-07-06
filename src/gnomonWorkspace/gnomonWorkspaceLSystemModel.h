@@ -7,7 +7,7 @@
 #include <QJSValue>
 
 class gnomonVtkView;
-
+class gnomonQmlView;
 
 class GNOMONWORKSPACE_EXPORT gnomonWorkspaceLSystemModel : public gnomonAbstractWorkspace
 {
@@ -30,8 +30,10 @@ public:
     Q_PROPERTY(QStringList models READ models NOTIFY modelsLoaded);
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged);
     Q_PROPERTY(gnomonVtkView* view READ view CONSTANT);
+    Q_PROPERTY(gnomonQmlView* textView READ textView CONSTANT);
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
+    Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileChanged);
 
 signals:
     void textChanged(const QString&);
@@ -41,6 +43,7 @@ signals:
 
     void modelsLoaded(void);
     void modelChanged(const QString& model);
+    void fileChanged(const QString& file_name);
     void parametersChanged(void);
     void currentIndexChanged(void);
 
@@ -48,7 +51,7 @@ public:
     QString message(void) const;
 
     QString text(void);
-    void setText(const QString& text);
+    Q_INVOKABLE void setText(const QString& text);
 
     int derivationLength(void);
     void setDerivationLength(int l);
@@ -62,6 +65,8 @@ public:
 public slots:
     void read(const QString& file_url);
     void save(const QString& file_url) const;
+
+    void setDefaultLSystem(void);
 
 public slots:
     void step(void);
@@ -79,11 +84,14 @@ public slots:
 public:
     QString modelName(void) const;
     QStringList models(void) const;
+    QString fileName(void) const;
     void setModelName(const QString &);
+    void setFileName(const QString &);
     int currentIndex(void) const;
     void setCurrentIndex(int);
 
     gnomonVtkView *view(void) const;
+    gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
 

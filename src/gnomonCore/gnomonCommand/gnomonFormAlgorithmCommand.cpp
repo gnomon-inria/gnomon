@@ -105,6 +105,7 @@ void gnomonFormAlgorithmCommand::addInput(std::shared_ptr<gnomonAbstractDynamicF
     if (std::shared_ptr<gnomonPointCloudSeries> pointCloud = std::dynamic_pointer_cast<gnomonPointCloudSeries>(input)) {
         d->inputPointCloud = pointCloud;
     }
+    ((gnomonAbstractFormAlgorithm *) this->action)->refreshParameters();
 }
 
 void gnomonFormAlgorithmCommand::addOutput(std::shared_ptr<gnomonAbstractDynamicForm> output)

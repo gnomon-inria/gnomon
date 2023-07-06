@@ -25,18 +25,11 @@ public:
      explicit gnomonWorkspaceCellImageQuantification(QObject *parent = nullptr);
     ~gnomonWorkspaceCellImageQuantification(void) override;
 
-public:
-    Q_PROPERTY(gnomonMplView* targetMpl READ targetMpl CONSTANT);
-
 public slots:
     void setInputs(void) override;
     void viewOutputs(void) override;
 
-public:
-    gnomonMplView *targetMpl(void) const { return this->m_target_mpl;};
-
-private: 
-    gnomonMplView *m_target_mpl = nullptr;
+    gnomonVtkViewList *targets(void) const override;
 };
 
 //

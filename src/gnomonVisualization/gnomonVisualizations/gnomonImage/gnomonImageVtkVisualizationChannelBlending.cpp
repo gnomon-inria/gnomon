@@ -344,7 +344,7 @@ void gnomonImageVtkVisualizationChannelBlending::onSliceOrientationChanged(int v
     ddd->actor2D->setSliceOrientation(value);
 }
 
-void gnomonImageVtkVisualizationChannelBlending::onSliceChanged(int value)
+void gnomonImageVtkVisualizationChannelBlending::onSliceChanged(double value)
 {
     ddd->actor2D->setSlice(value);
     this->render();

@@ -63,12 +63,12 @@ def load_plugin_group(group_name: str):
     group_name: str
         Entry point group
     """
-    for i, entry_point in enumerate(iter_entry_points(group=group_name, name=None)):
+    for entry_point in iter_entry_points(group=group_name, name=None):
         logging.info(f"loading {entry_point.name}: ")
         try:
-            importlib.import_module(entry_point.module_name)
+            entry_point.load()
         except Exception as e:
-            logging.info(" --> FAIL")
+            logging.info(" --> FAILED to load plugin")
             print(e)
 
 
@@ -809,6 +809,12 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
     # TCP Logging
     # -----------------------------------------------------
 
+    def _setLogServerAddress(self, addr: str):
+        address, port = addr.split(":")
+        self._log_server_address = (address, int(port))
+
+    cls.setLogServerAddress = _setLogServerAddress
+
     # attach output capture to run method
     if hasattr(cls, "run"):
         _old_run = cls.run
@@ -818,7 +824,10 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
             # logger init
             _logger = None
             try:
-                _logger = StreamCapture([sys.stdout, sys.stderr], echo=True)
+                if hasattr(self, "_log_server_address"):
+                    _logger = StreamCapture([sys.stdout, sys.stderr], echo=True, address=self._log_server_address)
+                else:
+                    _logger = StreamCapture([sys.stdout, sys.stderr], echo=True)
             except Exception as e:
                 logging.warning("Could not initialize logger. Server probably not found.")
                 pass

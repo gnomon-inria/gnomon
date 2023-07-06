@@ -1,5 +1,6 @@
 #include "gnomonMeshWriterCommand.h"
 
+#include <dtkLog.h>
 #include <gnomonCore/gnomonAlgorithm/gnomonMesh/gnomonAbstractMeshWriter.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
@@ -11,6 +12,8 @@ class gnomonMeshWriterCommandPrivate
 {
 public:
     std::shared_ptr<gnomonMeshSeries> mesh = nullptr;
+    QMap<QString, QStringList> extensions;
+    QMap<QString, gnomonAbstractAlgorithm*> actions;
 };
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -22,28 +25,47 @@ gnomonMeshWriterCommand::gnomonMeshWriterCommand() : d(new gnomonMeshWriterComma
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
-    QStringList keys = gnomonCore::meshWriter::pluginFactory().keys();
-    if (!keys.empty()) {
-        this->algorithm_name = keys[0];
-        this->action = gnomonCore::meshWriter::pluginFactory().create(this->algorithm_name);
+    for (const auto& key: gnomonCore::meshWriter::pluginFactory().keys()) {
+        auto algo = gnomonCore::meshWriter::pluginFactory().create(key);
+        if (!this->action) {
+            this->algorithm_name = key;
+            this->action = algo;
+        }
+        d->extensions.insert(key, algo->extensions());
+        d->actions.insert(key, algo);
     }
 }
 
 gnomonMeshWriterCommand::~gnomonMeshWriterCommand()
 {
+    for (auto algo : d->actions) {
+        delete algo;
+    }
+    d->actions.clear();
+
     delete d;
 }
 
 void gnomonMeshWriterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
-
-        delete this->action;
-    this->action = gnomonCore::meshWriter::pluginFactory().create(algo_name);
+    this->action = d->actions[algo_name];
 }
 
 void gnomonMeshWriterCommand::predo(void)
 {
+    //check extension, and set algo depending on extension!
+    QFileInfo f_info(this->m_path);
+    QString extension = f_info.completeSuffix().toLower();
+    if(!((gnomonAbstractMeshWriter *) this->action)->extensions().contains(extension)) {
+        for(auto algo : d->extensions.keys()) {
+            if(d->extensions[algo].contains(extension)) {
+                dtkInfo() << "Set writer to " << algo << " to write with extension " << extension;
+                this->setAlgorithmName(algo);
+            }
+        }
+    }
+
     ((gnomonAbstractMeshWriter *) this->action)->setPath(this->m_path);
     ((gnomonAbstractMeshWriter *) this->action)->setMesh(d->mesh);
 }
@@ -82,6 +104,14 @@ bool gnomonMeshWriterCommand::isEmpty()
 
 QStringList gnomonMeshWriterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
+}
+
+QStringList gnomonMeshWriterCommand::extensions(void)
+{
+    QStringList res;
+    for(auto ext : d->extensions)
+        res += ext;
+    return res;
 }
 
 gnomonAbstractCommand::orderedMap gnomonMeshWriterCommand::inputTypes() {

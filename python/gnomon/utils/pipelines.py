@@ -1,3 +1,4 @@
+import os.path
 from typing import Tuple, List, Dict, Callable
 from threading import Thread
 from functools import partial
@@ -129,10 +130,14 @@ class PNodeRunner:
                 lsys_file.close()
                 self.algo.setLSystem(lsys_file.name)
 
+            self.set_parameters()
+
+    def set_parameters(self):
+        if self._node:
+            node = self._node
             # setting parameters
             for param_name in node.parametersName():
-                print(param_name)
-                if param_name not in ("python_code", "lsystem_code", "derivation_length"):
+                if param_name not in ("python_code", "lsystem_code", "derivation_length") and param_name in self.algo._parameters:
                     param = self.algo._parameters[param_name]
                     node.configureParameter(param_name, param)
                     self.algo.setParameter(param_name, param)
@@ -234,6 +239,7 @@ class PipelineRunner:
             node.inputs[target_port](tmp)
         if node.algo:
             node.algo.refreshParameters()
+            node.set_parameters()
 
     def run(self):
         """
@@ -322,12 +328,12 @@ def load_pipeline(path: str, data_dir: str = ""):
     ----------
     PipelineRunner object
     """
-
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"No file found at {path}")
     pipeline = gnomonPipeline()
-    ok = pipeline.readFromJson(path)
-    if (not ok):
-        print("cannot read pipeline from path " + path)
-        return None
+    ok = pipeline.readFromJson(path, False)
+    if not ok:
+        raise IOError("Cannot read pipeline from path " + path)
     else:
         return PipelineRunner(pipeline, data_dir=data_dir)
 
@@ -358,7 +364,7 @@ def run_pipeline(path: str, data_dir: str = "", ios: Dict[str, str]= None):
             if node_name in pipeline_runner.path_dict: 
                 pipeline_runner.path_dict[node_name] = path
             else:
-                print("wrong key: ", node_name , " available nodes are :",  pipeline_runner.path_dict.keys())
+                print("wrong key: ", node_name, " available nodes are :",  pipeline_runner.path_dict.keys())
                 is_ok = False
 
     if is_ok:

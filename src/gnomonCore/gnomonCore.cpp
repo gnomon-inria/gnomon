@@ -1,8 +1,9 @@
-
 #include <gnomonConfig.h>
 
 #include "gnomonCore.h"
 #include "gnomonCoreSettings.h"
+#include "gnomonForm/gnomonMesh/gnomonAbstractMeshData.h"
+#include "gnomonForm/gnomonMesh/gnomonMeshDataStdVector.h"
 
 #include <dtkLog>
 #include <dtkScript>
@@ -16,10 +17,13 @@ void activateObjectManager(void)
     manager().setObjectManager(dtkCoreObjectManager::instance());
 }
 
-void initialize(const QString& path)
+void initialize(const QString& path, bool from_python)
 {
     // Should work with an future dtkScript version
-    dtkScriptInterpreterPython::instance()->allowThreads();
+    if(!from_python) {
+        dtkScriptInterpreterPython::instance()->allowThreads();
+    }
+
     QString realpath = path;
     QStringList pathslist;
 
@@ -30,7 +34,7 @@ void initialize(const QString& path)
         settings.endGroup();
 
         if (realpath.isEmpty()) {
-            realpath = QDir(GNOMON_INSTALL_PREFIX).filePath("plugins/gnomonCore");
+            realpath = QDir(GNOMON_INSTALL_PREFIX).filePath("plugins");
             dtkDebug() << "no plugin path configured for gnomonCore, using default" << realpath;
         }
 
@@ -43,6 +47,9 @@ void initialize(const QString& path)
     for(const QString& v_path : pathslist) {
         manager().initialize(v_path);
     }
+    
+    gnomonCore::meshData::pluginFactory().record("gnomonMeshDataStdVector", gnomonMeshDataStdVectorCreator);
+    gnomonCore::gui_thread = QObject().thread();
 }
 
 void uninitialize(void)
@@ -60,6 +67,8 @@ void setAutoLoading(bool auto_load)
 {
     manager().setAutoLoading(auto_load);
 }
+
+QThread *gui_thread = nullptr;
 
 };
 

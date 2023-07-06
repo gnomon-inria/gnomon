@@ -29,6 +29,9 @@ public:
     virtual void setLSystem(const QString& code) = 0;
     virtual const QString& lSystemCode(void) = 0;
 
+    virtual int derivationLength(void) = 0;
+    virtual void setDerivationLength(int) = 0;
+
 public:
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonLString") {

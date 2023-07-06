@@ -8,6 +8,17 @@ class gnomonAbstractCommand;
 class gnomonVtkView;
 class gnomonVtkViewList;
 class gnomonVtkViewPool;
+class gnomonMplView;
+
+
+#define WORKSPACEINIT(name, group, thecommand)                          \
+    d->workspace = #name;                                              \
+    d->command = new thecommand;                                        \
+    d->keys = gnomonCore::group::pluginFactory().keys();                \
+    d->algorithmsData = gnomonCore::group::pluginFactory().dataList();  \
+    d->algorithm = d->command->algorithmName();                         \
+                                                                        \
+    emit algorithmsLoaded();
 
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonAlgorithmWorkspacePrivate
@@ -50,4 +61,7 @@ public:
     gnomonVtkViewList *sources = nullptr;
     gnomonVtkViewList *targets = nullptr;
     gnomonVtkViewPool *pool = nullptr;
+
+    gnomonMplView *figure = nullptr;
+    gnomonQmlView *text_view = nullptr;
 };

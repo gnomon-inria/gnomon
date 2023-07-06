@@ -24,6 +24,8 @@ public:
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
 
+    Q_PROPERTY(bool empty READ empty NOTIFY formsChanged);
+
 public:
     virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr);
     virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
@@ -39,9 +41,14 @@ public:
     void setNodePortNames(const QStringList&);
 
 public slots:
-    virtual void drop(int);
+    virtual void drop(int, bool new_visu=false);
     virtual void transmit(void);
+    virtual void transmitForm(const QString&);
     virtual void restoreState(void);
+
+public slots:
+    virtual inline void saveScreenshot(const QString& filename) {};
+    virtual inline QImage toImage(void) { return QImage(); };
 
 public slots:
     virtual void setAcceptForm(const QString&, bool);
@@ -83,7 +90,7 @@ signals:
     void formsChanged(void);
 
     void formVisuParametersChanged(void);
-    void formVisualizationChanged(void);
+    void formVisualizationChanged(const QString&);
 
     void badFormDropped(const QString& form_type, const QString& acceptedForms);
 

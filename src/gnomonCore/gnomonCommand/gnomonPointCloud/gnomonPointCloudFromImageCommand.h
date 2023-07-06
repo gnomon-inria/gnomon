@@ -3,6 +3,7 @@
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
 class GNOMONCORE_EXPORT gnomonPointCloudFromImageCommand : public gnomonAbstractCommand
@@ -19,6 +20,8 @@ public:
 public:
     void setInput(std::shared_ptr<gnomonImageSeries> image);
     std::shared_ptr<gnomonImageSeries> input();
+    void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage);
+    std::shared_ptr<gnomonCellImageSeries> cellImage();
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;

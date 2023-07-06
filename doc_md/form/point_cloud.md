@@ -18,8 +18,8 @@ This reader supports one extension `csv`.
 
 ![Gnomon Image illustration](../_static/point_cloud_image.png)
 
-## Plugins which took Image as input
->Here is a non exhaustive list of some algorithms which took this form as input.  
+## Plugins which take Image as input
+>Here is a non exhaustive list of some algorithms which take this form as input.  
 - seededWatershedSegmentationTimagetk
 - nucleiSignalQuantificationTimagetk
 
@@ -50,7 +50,7 @@ from gnomon.core import gnomonAbstractPointCloudQuantification
 from timagetk.algorithms.signal_quantification import quantify_nuclei_signal_intensity
 
 
-@algorithmPlugin(version="0.3.1", coreversion="0.80.0")
+@algorithmPlugin(version="0.3.1", coreversion="0.81.0")
 @imageInput('img', data_plugin='gnomonImageDataMultiChannelImage')
 @pointCloudInput("df", data_plugin="gnomonPointCloudDataPandas")
 @pointCloudOutput('out_df', data_plugin="gnomonPointCloudDataPandas")

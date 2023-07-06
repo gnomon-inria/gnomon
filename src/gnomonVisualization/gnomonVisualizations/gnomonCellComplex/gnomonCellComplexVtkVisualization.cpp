@@ -313,7 +313,7 @@ void gnomonCellComplexVtkVisualization::onSliceOrientationChanged(int value)
     ddd->actor2D->setSliceOrientation(value);
 }
 
-void gnomonCellComplexVtkVisualization::onSliceChanged(int value)
+void gnomonCellComplexVtkVisualization::onSliceChanged(double value)
 {
     ddd->actor2D->setSlice(value);
     this->render();

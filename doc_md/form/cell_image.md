@@ -20,9 +20,9 @@ Extensions supported by this reader are: `tif, inr.gz, inr`.
 
 ![Gnomon Image illustration](../_static/cell_image.png)
 
-## Plugins which took Cell Image as input
+## Plugins which take Cell Image as input
 
->Here is a non exhaustive list of some algorithms which took this form as input.  
+>Here is a non exhaustive list of some algorithms which take this form as input.  
 - morphoCellFilter
 - seededWatershedSegmentationTimagetk
 - signalQuantificationImageSignal
@@ -48,7 +48,7 @@ from timagetk.components.tissue_image import TissueImage3D
 
 load_plugin_group("cellImageData")
 
-@algorithmPlugin(version="0.3.1", coreversion="0.80.0")
+@algorithmPlugin(version="0.3.1", coreversion="0.81.0")
 @cellImageInput("in_tissue", data_plugin="gnomonCellImageDataTissueImage")
 @cellImageOutput("out_tissue", data_plugin="gnomonCellImageDataTissueImage")
 class morphoCellFilter(gnomonAbstractCellImageFilter):

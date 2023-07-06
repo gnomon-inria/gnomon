@@ -23,6 +23,7 @@ gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand() : d(new gnomonDataF
     this->factory_name = groupName;
     loadPluginGroup(this->factoryName());
 
+        //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::dataFrameWriter::pluginFactory().keys();
     if (!keys.empty()) {
         this->algorithm_name = keys[0];

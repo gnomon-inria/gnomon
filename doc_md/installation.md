@@ -1,4 +1,4 @@
-# How to install gnomon 
+# How to install gnomon
 
 ## [Mac and Linux] Install gnomon using conda
 
@@ -15,7 +15,7 @@ conda
 :::{admonition} About Conda and Miniconda
 Conda is an open source package management system and environment management system that runs on Windows, macOS and Linux. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your local computer. Find out more on [the official documentation](https://docs.conda.io/en/latest/)
 
-[Miniconda](https://docs.conda.io/en/latest/miniconda.html) is a free minimal installer for conda. It is a small, bootstrap version of Anaconda that includes only `conda`, Python, the packages they depend on, and a small number of other useful packages, including pip, zlib and a few others. 
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html) is a free minimal installer for conda. It is a small, bootstrap version of Anaconda that includes only `conda`, Python, the packages they depend on, and a small number of other useful packages, including pip, zlib and a few others.
 :::
 
 ### Install Gnomon
@@ -34,6 +34,14 @@ conda install -n base -c conda-forge mamba
 conda create -n gnomon python=3.9
 
 conda activate gnomon
+```
+
+For Mac M1, you need to tell conda to use x86 architecture like this:
+
+```shell script
+CONDA_SUBDIR=osx-64 conda create -n gnomon python=3.9
+conda activate gnomon
+conda config --env --set subdir osx-64
 ```
 
 - **Step 3:** Install **gnomon** and its **dependencies**
@@ -63,13 +71,13 @@ mamba update -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
 Sources used for these instructions are:
 
  - [Open GUI apps on Windows Subsystem for Linux](https://www.youtube.com/watch?v=ymV7j003ETA&t=6s) (youtube)
- - [VcXsrv](https://sourceforge.net/p/vcxsrv/wiki/VcXsrv%20%26%20Win10/) sur SourceForge. 
+ - [VcXsrv](https://sourceforge.net/p/vcxsrv/wiki/VcXsrv%20%26%20Win10/) sur SourceForge.
 
 ### 1. Install the following dependencies
 
 1. [WSL 2](https://docs.microsoft.com/fr-fr/windows/wsl/install).
 2. [Putty](https://www.putty.org).
-3. **VcXsrv**, avalable on [Source Forge](https://sourceforge.net/p/vcxsrv/wiki/VcXsrv%20%26%20Win10/). 
+3. **VcXsrv**, avalable on [Source Forge](https://sourceforge.net/p/vcxsrv/wiki/VcXsrv%20%26%20Win10/).
 
 ### 2. Configure WSL
 
@@ -87,7 +95,7 @@ Now, if you print `$DISPLAY`, you should see an IP followed by `:0` such as:
 > \> 131.254.160.46:0
 ```
 
-This IP is not constant and as to be set at each start of the WSL. You can tune your `~/.bashrc` to set this variable at each WSL startup is you want. 
+This IP is not constant and as to be set at each start of the WSL. You can tune your `~/.bashrc` to set this variable at each WSL startup is you want.
 
 Install `awk` is needed (for example on debian based distributions:  `sudo apt install awk` ).
 
@@ -137,7 +145,7 @@ Launch Putty and configure the following parameters before connecting to WSL:
 
 ### 4. Launch gnomon
 
-You can now launch gnomon through the *WSL console*: 
+You can now launch gnomon through the *WSL console*:
 ```
 gnomon
 ```

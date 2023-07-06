@@ -1,256 +1,91 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonWorkspacePointCloudQuantification.h"
-#include "gnomonWorkspaceTemplate_p.h"
+#include "gnomonAlgorithmWorkspace_p.h"
 
-#include <gnomonCore>
+#include <gnomonCore/gnomonAlgorithm/gnomonPointCloud/gnomonAbstractPointCloudQuantification>
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudQuantificationCommand>
-#include <gnomonWidgets>
-#include <gnomonVisualization>
+#include <gnomonCore/gnomonPythonPluginLoader.h>
 
-#include <dtkImagingCore>
-#include <dtkScript>
-#include <dtkWidgets>
-#include <dtkWidgetsMenuBar_p.h>
-#include <dtkWidgetsMenu+ux.h>
-
-// ///////////////////////////////////////////////////////////////////
-// gnomonWorkspacePointCloudQuantificationPrivate
-// ///////////////////////////////////////////////////////////////////
-
-class gnomonWorkspacePointCloudQuantificationPrivate : public gnomonWorkspaceTemplatePrivate<gnomonPointCloudQuantificationCommand>
-{
-public:
-     gnomonWorkspacePointCloudQuantificationPrivate(void);
-    ~gnomonWorkspacePointCloudQuantificationPrivate(void);
-
-public:
-    QString workspace(void) const override;
-    QStringList keys(void) const override;
-
-public:
-    gnomonVtkView *view = nullptr;
-    gnomonMplView *mpl_figure = nullptr;
-
-public:
-    QStackedWidget *target_stack = nullptr;
-    gnomonMessageBoard *target_message = nullptr;
-
-    QSplitter *splitter = nullptr;
-
-public:
-    dtkWidgetsMenu *menu_;
-
-public:
-    dtkWidgetsMenuBarContainer *dashboard;
-
-public:
-    QVBoxLayout *mpl_layout = nullptr;
-    QWidget *mpl_view = nullptr;
-};
-
-gnomonWorkspacePointCloudQuantificationPrivate::gnomonWorkspacePointCloudQuantificationPrivate(void) : gnomonWorkspaceTemplatePrivate< gnomonPointCloudQuantificationCommand >()
-{
-
-}
-
-gnomonWorkspacePointCloudQuantificationPrivate::~gnomonWorkspacePointCloudQuantificationPrivate(void)
-{
-
-}
-
-QString gnomonWorkspacePointCloudQuantificationPrivate::workspace(void) const
-{
-    return "Point Cloud Analysis";
-}
-
-QStringList gnomonWorkspacePointCloudQuantificationPrivate::keys(void) const
-{
-    return gnomonCore::pointCloudQuantification::pluginFactory().keys();
-}
-
+#include <gnomonPipeline/gnomonPipelineManager.h>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePointCloudQuantification
 // ///////////////////////////////////////////////////////////////////
 
-gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification(QWidget *parent) : dtkWidgetsWorkspace(parent)
+gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification(QObject *parent) : gnomonAlgorithmWorkspace(parent)
 {
-    loadPluginGroup("pointCloudQuantification");
+    d->workspace = "Point Cloud Quantification";
+    d->command = new gnomonPointCloudQuantificationCommand;
+    d->keys = gnomonCore::pointCloudQuantification::pluginFactory().keys();
+    d->algorithmsData = gnomonCore::pointCloudQuantification::pluginFactory().dataList();
+    d->algorithm = d->command->algorithmName();
 
-    d = new gnomonWorkspacePointCloudQuantificationPrivate;
+    emit algorithmsLoaded();
 
-    d->view = new gnomonVtkView(this);
-    d->view->setNodePortNames({});
-    d->view->setExportColor(this->color);
-    d->view->setAcceptForm("gnomonPointCloud",true);
-    d->view->setAcceptForm("gnomonImage",true);
-    d->view->setInputView(true);
-    d->view->setEnableLinking(false);
+    this->addInputView();
 
-    connect(d->view, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
-
-    d->mpl_figure = new gnomonMplView(this);
-    d->mpl_figure->setAcceptForm("gnomonDataFrame",true);
-
-    connect(d->mpl_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
-
-    d->mpl_layout = new QVBoxLayout;
-    d->mpl_layout->setContentsMargins(0, 0, 0, 0);
-    d->mpl_layout->setSpacing(0);
-    d->mpl_layout->addWidget(d->mpl_figure);
-
-    d->mpl_view = new QWidget(this);
-    d->mpl_view->setLayout(d->mpl_layout);
-
-// /////////////////////////////////////////////////////////////////////////////
-// NOTE: Stacked target view
-// /////////////////////////////////////////////////////////////////////////////
-
-    d->target_message = new gnomonMessageBoard(this);
-    d->target_message->setMessage("Result will be displayed here");
-
-    d->target_stack = new QStackedWidget(this);
-    d->target_stack->addWidget(d->target_message);
-    d->target_stack->addWidget(d->mpl_figure);
-
-
-    d->splitter = new QSplitter(this);
-    d->splitter->addWidget(d->view);
-    d->splitter->addWidget(d->target_stack);
-
-// /////////////////////////////////////////////////////////////////////////////
-// NOTE: Dashboard inception
-// /////////////////////////////////////////////////////////////////////////////
-
-    d->dashboard = new dtkWidgetsMenuBarContainer(this);
-    d->dashboard->navigator->deleteLater();
-    d->dashboard->build(QVector<dtkWidgetsMenu *>() << d->menu(this));
-    d->dashboard->setFixedWidth(300);
-
-// /////////////////////////////////////////////////////////////////////////////
-
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(d->splitter);
-    layout->addWidget(d->dashboard);
-
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-    connect(d->view, &gnomonVtkView::formAdded, [=] ()
-    {
-        if(d->view->pointCloud()) {
-            d->command->setPointCloud(d->view->pointCloud());
-        }
-        if(d->view->image()) {
-            d->command->setImage(d->view->image());
-        }
-        d->configure(d->algorithm);
+    d->figure = new gnomonMplView(this);
+    d->figure->setAcceptForm("gnomonDataFrame",true);
+    connect(d->figure, &gnomonMplView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+        d->pipeline_manager->addForm(f);
     });
-
-    connect(d, &gnomonWorkspacePointCloudQuantificationPrivate::algorithmChanged, [=] (const QString& algorithm)
-    {
-        if(d->view->pointCloud()) {
-            d->command->setPointCloud(d->view->pointCloud());
-        }
-        if(d->view->image()) {
-            d->command->setImage(d->view->image());
-        }
-        d->configure(algorithm);
-    });
-
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-//  connect(d->command, SIGNAL(finished()), this, SIGNAL(finished()));
-
-// /////////////////////////////////////////////////////////////////////////////
-//
-// /////////////////////////////////////////////////////////////////////////////
-
-    this->enter();
+    emit parametersChanged();
+    d->updatePool(); //unused here
 }
 
 gnomonWorkspacePointCloudQuantification::~gnomonWorkspacePointCloudQuantification(void)
 {
-    delete d;
+    delete d->command;
 }
 
-void gnomonWorkspacePointCloudQuantification::enter(void)
+void gnomonWorkspacePointCloudQuantification::setInputs()
 {
-//    dtkApp->window()->menubar()->addMenu(d->view->menu());
-//    dtkApp->window()->menubar()->addMenu(d->mpl_figure->menu());
-    dtkApp->window()->menubar()->touch();
-}
+    d->command->undo(); //clean
 
-void gnomonWorkspacePointCloudQuantification::leave(void)
-{
-//    dtkApp->window()->menubar()->removeMenu(d->view->menu());
-//    dtkApp->window()->menubar()->removeMenu(d->mpl_figure->menu());
-    dtkApp->window()->menubar()->touch();
-}
-
-void gnomonWorkspacePointCloudQuantification::apply(void)
-{
-    Q_ASSERT(d->command);
-
-    if(d->view->pointCloud()) {
-        d->command->setPointCloud(d->view->pointCloud());
+    auto *command = dynamic_cast<gnomonPointCloudQuantificationCommand *>(d->command);
+    for(gnomonVtkView *f : d->sources->views()) {
+        if (f->image()) {
+            command->setInputForm("image", f->image());
+        }
+        if (f->pointCloud()) {
+            command->setInputForm("pointCloud", f->pointCloud());
+        }
     }
-    if(d->view->image()) {
-        d->command->setImage(d->view->image());
-    }
+}
 
-    d->view->setInputView(true);
 
-    d->command->redo();
-    
-    if(d->command->pointCloud() != nullptr | d->command->dataFrame() != nullptr) {
+void gnomonWorkspacePointCloudQuantification::viewOutputs()
+{
+    gnomonPointCloudQuantificationCommand * command = dynamic_cast<gnomonPointCloudQuantificationCommand *>(d->command);
+
+    std::shared_ptr<gnomonAbstractDynamicForm> inputForm = d->command->inputs()["pointCloud"];
+
+    if ((command->pointCloud() != nullptr) || (command->dataFrame() != nullptr)) {
         d->registerPipeline();
     }
 
-    if(d->command->pointCloud()) {
-        d->view->setForm("gnomonPointCloud", d->command->pointCloud());
-        //d->pipeline_manager->addClonedForm(d->command->pointCloud(),d->view->pointCloud());
-        d->pipeline_manager->addForm(d->command->pointCloud());
-        d->view->setInputView(false);
-        d->view->setAcceptDrops(true);
+    if(command->pointCloud()) {
+        d->sources->views()[0]->removeForm("gnomonPointCloud");
+        d->sources->views()[0]->setForm("gnomonPointCloud", command->pointCloud());
+        std::shared_ptr<gnomonPointCloudSeries> out_pointCloud = d->sources->views()[0]->pointCloud();
+        int form_count = gnomonFormManager::instance()->formCount(out_pointCloud->formName());
+        out_pointCloud->metadata()->set("name", out_pointCloud->formName().remove("gnomon") + QString::number(form_count+1));
+        out_pointCloud->metadata()->set("source", d->algorithm);
+        //gnomonPipelineManager::instance()->addClonedForm(command->pointCloud(), out_pointCloud);
+        gnomonPipelineManager::instance()->addForm(command->pointCloud());
+        d->sources->views()[0]->setInputView(false);
     }
-
-    if(d->command->dataFrame()) {
-        d->target_stack->setCurrentWidget(d->mpl_figure);
-        d->mpl_figure->setForm("gnomonDataFrame",d->command->dataFrame());
-    } else {
-        d->target_stack->setCurrentWidget(d->target_message);
+    if(command->dataFrame()) {
+        d->figure->setForm("gnomonDataFrame", command->dataFrame());
+        int form_count = gnomonFormManager::instance()->formCount(command->dataFrame()->formName());
+        command->dataFrame()->metadata()->set("name", command->dataFrame()->formName().remove("gnomon") + QString::number(form_count+1));
+        command->dataFrame()->metadata()->set("source", d->algorithm);
     }
 }
 
-void gnomonWorkspacePointCloudQuantification::configure(const QString& algorithm)
+gnomonVtkViewList* gnomonWorkspacePointCloudQuantification::targets(void) const
 {
-    d->configure(algorithm);
-}
-
-const QColor gnomonWorkspacePointCloudQuantification::color = QColor("#d94c64");
-
-bool gnomonWorkspacePointCloudQuantification::isEmpty(void)
-{
-    return gnomonWorkspacePointCloudQuantificationPrivate::isEmpty();
+    return d->sources;
 }
 
 //

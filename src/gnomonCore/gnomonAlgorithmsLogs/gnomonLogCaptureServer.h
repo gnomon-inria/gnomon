@@ -26,6 +26,11 @@ public:
     bool newConnectionAvailable(void);
     static gnomonLogCaptureServer *instance(void);
 
+public:
+    QHostAddress address(void);
+    unsigned int port(void);
+    QString completeAddress(void);
+
 protected:
     void incomingConnection(qintptr handle) override;
 

@@ -44,7 +44,7 @@ public slots:
     void onXY(void) override;
     void onXZ(void) override;
     void onYZ(void) override;
-    void onSliceChanged(int) override;
+    void onSliceChanged(double) override;
     void onSliceOrientationChanged(int) override;
     void onTimeChanged(double) override;
 

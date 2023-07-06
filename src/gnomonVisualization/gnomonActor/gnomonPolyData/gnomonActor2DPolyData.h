@@ -61,7 +61,7 @@ public slots:
 
 public slots:
     void setSliceOrientation(int);
-    void setSlice(int);
+    void setSlice(double);
 
 public slots:
     void setOpacity(double);

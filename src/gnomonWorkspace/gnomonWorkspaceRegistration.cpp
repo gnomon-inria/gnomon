@@ -12,6 +12,29 @@
 #include <gnomonVisualization/gnomonView/gnomonQmlView>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
+std::shared_ptr<gnomonDataDictSeries> identityDataDict(void)
+{
+    std::shared_ptr<gnomonDataDictSeries> dict = nullptr;
+    QStringList data_dict_plugins = gnomonCore::dataDictData::pluginFactory().keys();
+    if (data_dict_plugins.size() > 0) {
+        gnomonAbstractDataDictData *data_dict_data = gnomonCore::dataDictData::pluginFactory().create(
+                data_dict_plugins[0]);
+        std::shared_ptr<gnomonDataDict> data_dict = std::make_shared<gnomonDataDict>();
+        data_dict->setData(data_dict_data);
+
+        QVector<QVector<double>> eye4 = {{1, 0, 0, 0},
+                                         {0, 1, 0, 0},
+                                         {0, 0, 1, 0},
+                                         {0, 0, 0, 1}};
+        QString eye4_str = transformMatrixString(eye4);
+        data_dict->set("transform", eye4_str);
+
+        dict = std::make_shared<gnomonDataDictSeries>();
+        dict->insert(0, data_dict);
+    }
+    return dict;
+}
+
 
 // /////////////////////////////////////////////////////////////////////////////
 // gnomonWorkspaceRegistrationPrivate
@@ -53,8 +76,6 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
 {
     dd = new gnomonWorkspaceRegistrationPrivate;
 
-    loadPluginGroup("imageRegistration");
-
     d->workspace = "Time Registration";
     d->command = new gnomonImageRegistrationCommand;
     d->keys = gnomonCore::imageRegistration::pluginFactory().keys();
@@ -69,13 +90,18 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     this->addInputView({}, {"floating", "image"}); // floating
     this->addOutputView(); // registered
 
-    this->m_target_dict = new gnomonQmlView(this);
-    this->m_target_dict->setAcceptForm("gnomonDataDict", true);
+    d->text_view = new gnomonQmlView(this);
+    d->text_view->setAcceptForm("gnomonDataDict", true);
 
-    // TODO: actually create a dataDict and add it to the transformation stack
-    QVector<QVector<double>> eye4 = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-    m_target_dict->setDataDict(transformMatrixString(eye4));
-    
+    std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->text_view->form("gnomonDataDict"));
+    if (!input_dict) {
+        d->text_view->setForm("gnomonDataDict", identityDataDict());
+    } else {
+        d->text_view->setForm("gnomonDataDict", input_dict);
+    }
+    dd->transformation_stack.insert(0, std::dynamic_pointer_cast<gnomonDataDictSeries>(d->text_view->form("gnomonDataDict")));
+    emit stackSizeChanged();
+
     if(!d->pool)
         d->pool = new gnomonVtkViewPool(this);
     d->pool->addView(this->sources()->views()[0]);
@@ -96,7 +122,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
         });
     }
 
-    connect(this->m_target_dict, &gnomonAbstractView::exportedForm, [=](auto form) {
+    connect(d->text_view, &gnomonAbstractView::exportedForm, [=](auto form) {
         gnomonPipelineManager::instance()->addForm(form);
     });
 }
@@ -125,16 +151,15 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
         dd->stack_level = level;
 
         if (dd->image_stack.contains(dd->stack_level)) {
-            if (level>=1) {
+            if (dd->transformation_stack.contains(dd->stack_level) && dd->transformation_stack[dd->stack_level]) {
                 std::shared_ptr<gnomonDataDictSeries> data_dict = dd->transformation_stack[dd->stack_level];
                 if (data_dict) {
                     // Force display of floating transformation
                     data_dict->at(0);
                 }
-                m_target_dict->setForm("gnomonDataDict", data_dict);
+                d->text_view->setForm("gnomonDataDict", data_dict);
             } else {
-                QVector<QVector<double>> eye4 = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-                m_target_dict->setDataDict(transformMatrixString(eye4));
+                d->text_view->setForm("gnomonDataDict", identityDataDict());
             }
 
             std::shared_ptr<gnomonImageSeries> input_image = dd->image_stack[0];
@@ -145,7 +170,6 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
                 this->targets()->views()[0]->clear();
             }
         }
-
         emit stackLevelChanged();
     }
 }
@@ -157,8 +181,8 @@ void gnomonWorkspaceRegistration::setInputs(void)
 
     //gnomonAlgorithmWorkspace::setInputs();
     d->command->setInputForm("image", d->sources->views()[1]->image());
-    if(m_target_dict->contains("gnomonDataDict")) {
-        d->command->setInputForm("initialTransformation", m_target_dict->form("gnomonDataDict"));
+    if(d->text_view->contains("gnomonDataDict")) {
+        d->command->setInputForm("initialTransformation", d->text_view->form("gnomonDataDict"));
     }
 
     if (empty_input || !d->command->inputs()["image"]) {
@@ -175,29 +199,6 @@ void gnomonWorkspaceRegistration::setInputs(void)
         }
     }
 }
-
-/* QString gnomonWorkspaceRegistration::transformStringAt(int level) const
-{
-    if (dd->image_stack.contains(level)) {
-        if (dd->transformation_stack.contains(level)) {
-            gnomonDataDictSeries *transformation = dd->transformation_stack[level];
-            if (transformation->current()->keys().contains("transform")) {
-                QVariant transform = transformation->current()->get("transform");
-                QVector<QVector< double>> transform_matrix = transform.value<QVector<QVector< double> > >();
-                return transformMatrixString(transform_matrix);
-            } else {
-                dtkWarn()<<Q_FUNC_INFO<<"Transformation info has no transform matrix, Identity is returned";
-                return transformMatrixString(identity_matrix);
-            }
-        } else {
-            dtkWarn()<<Q_FUNC_INFO<<"Level"<<level<<"has no Transformation info, Identity is returned";
-            return transformMatrixString(identity_matrix);
-        }
-    } else {
-        dtkWarn()<<Q_FUNC_INFO<<"Level"<<level<<"is invalid! Image stack only contains"<<dd->image_stack.keys();
-        return "";
-    }
-} */
 
 void gnomonWorkspaceRegistration::iterate(void)
 {
@@ -216,7 +217,7 @@ void gnomonWorkspaceRegistration::iterate(void)
 }
 
 void gnomonWorkspaceRegistration::viewOutputs()
-{   
+{
     auto * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["outputTransformation"]) {
         std::shared_ptr<gnomonAbstractDynamicForm> data_dict = command->outputs()["outputTransformation"];
@@ -224,7 +225,7 @@ void gnomonWorkspaceRegistration::viewOutputs()
         data_dict->metadata()->set("name", data_dict->formName().remove("gnomon") + QString::number(form_count+1));
         data_dict->metadata()->set("source", d->algorithm);
         iterate();
-        this->m_target_dict->setForm("gnomonDataDict", data_dict);
+        d->text_view->setForm("gnomonDataDict", data_dict);
     }
     gnomonAlgorithmWorkspace::viewOutputs();
 }

@@ -56,7 +56,7 @@ void gnomonAbstractViewPrivate::setFormVisualization(const QString& form_type, c
     this->visualizationCommands[form_type]->setForm(this->forms[form_type]);
     // Set the visualization name and parameters and update it
     this->visualizationCommands[form_type]->setFormVisualization(visu_name, visu_parameters);
-    emit q->formVisualizationChanged();
+    emit q->formVisualizationChanged(form_type);
 
     this->viewParameters.visuSelected[form_type] = visu_name;
     emit q->formVisuParametersChanged();
@@ -95,14 +95,14 @@ gnomonAbstractView::~gnomonAbstractView(void)
 void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractVisualization> visualization)
 {
     QString form_type = form->formName();
-    if (d->acceptForms[form_type]) {
+    if (d->acceptForms.contains(form_type)  && d->acceptForms[form_type]) {
         // If another form of the same type is already in the view, we need to create a new visualization instance
         bool existing_visu = d->forms.contains(form_type) && (form != d->visualizationCommands[form_type]->inputs()[form_type]);
         d->forms[form_type] = form;
         // If the form comes with a visualization (drop from manager) we pass it on to the command (no update)
         if (visualization) {
             d->visualizationCommands[form_type]->setVisualization(visualization);
-            emit formVisualizationChanged();
+            emit formVisualizationChanged(form_type);
             d->visualizationCommands[form_type]->setForm(d->forms[form_type]);
             emit formVisuParametersChanged();
         } else {
@@ -178,10 +178,14 @@ void gnomonAbstractView::clear(void)
     emit formsChanged();
 }
 
-void gnomonAbstractView::drop(int index)
+void gnomonAbstractView::drop(int index, bool new_visu)
 {
     std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
-    this->setForm("formManager", form, gnomonFormManager::instance()->getVisualization(index));
+    std::shared_ptr<gnomonAbstractVisualization> visu = gnomonFormManager::instance()->getVisualization(index);
+    if (new_visu) {
+        visu = nullptr;
+    }
+    this->setForm("formManager", form, visu);
     this->render();
     gnomonFormManager::instance()->setFormDropped(form);
 }
@@ -189,6 +193,23 @@ void gnomonAbstractView::drop(int index)
 void gnomonAbstractView::transmit(void)
 {
     d->exportToManager();
+}
+
+void gnomonAbstractView::transmitForm(const QString& form_type)
+{
+    if (d->forms.contains(form_type)) {
+        QImage image;
+        std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr;
+        if (d->visualizationCommands.contains(form_type)) {
+            image = d->visualizationCommands[form_type]->visualization()->imageRendering();
+            visualization = d->visualizationCommands[form_type]->visualization();
+        } else {
+            image = QImage(1500, 1500, QImage::Format_RGB32);
+            image.fill(Qt::GlobalColor::black);
+        }
+        gnomonFormManager::instance()->addForm(d->forms[form_type], image, visualization);
+        emit exportedForm(d->forms[form_type]);
+    }
 }
 
 void gnomonAbstractView::restoreState(void)

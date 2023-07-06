@@ -1,47 +1,36 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include "gnomonAlgorithmWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspacePointCloudQuantification : public dtkWidgetsWorkspace
+#include <gnomonVisualization/gnomonView/gnomonMplView.h>
+
+#include <QtCore>
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspacePointCloudQuantification : public gnomonAlgorithmWorkspace
 {
-    Q_OBJECT
+Q_OBJECT
+    Q_CLASSINFO("description", "\
+This workspace allows to compute properties over the points of a PointCloud form \
+and to display them in a 2D interactive figure.\n\
+\n\
+Depending on the chosen plugin, the properties are computed either only on \
+the PointCloud itself, or using an optional Image a input. In any case, point \
+properties are added to the input PointCloud, and a DataFrame representing \
+the data asociated with each point is returned as an output.\n\
+\n")
 
 public:
-     gnomonWorkspacePointCloudQuantification(QWidget *parent = nullptr);
-    ~gnomonWorkspacePointCloudQuantification(void);
-
-public:
-    void enter(void) override;
-    void leave(void) override;
+    explicit gnomonWorkspacePointCloudQuantification(QObject *parent = nullptr);
+    ~gnomonWorkspacePointCloudQuantification(void) override;
 
 public slots:
-    void apply(void) override;
-    void configure(const QString& text);
+    void setInputs(void) override;
+    void viewOutputs(void) override;
 
-public:
-    static const QColor color;
+    gnomonVtkViewList *targets(void) const override;
 
-public:
-    static bool isEmpty(void);
-
-private:
-    class gnomonWorkspacePointCloudQuantificationPrivate *d;
 };
 
 //

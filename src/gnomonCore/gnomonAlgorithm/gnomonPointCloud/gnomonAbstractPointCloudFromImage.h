@@ -15,30 +15,39 @@
 
 class GNOMONCORE_EXPORT gnomonAbstractPointCloudFromImage : public gnomonAbstractAlgorithm
 {
-    //Inputs
 public:
   virtual void setInput(std::shared_ptr<gnomonImageSeries> image) = 0;
+    virtual inline void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage) {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+    };
 
-    // Outputs
 public:
-    virtual std::shared_ptr<gnomonPointCloudSeries> output() const = 0;
     virtual std::shared_ptr<gnomonImageSeries> input() const = 0;
+    virtual inline std::shared_ptr<gnomonCellImageSeries> cellImage(void) const {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
+    virtual std::shared_ptr<gnomonPointCloudSeries> output() const = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
-        if(formName == "gnomonImage") {
+        if (formName == "gnomonImage") {
             return {"setInput"};
+        } else if (formName == "gnomonCellImage") {
+            return {"setCellImage"};
         }
         return {};
     };
     static inline QString defaultGetter(QString formName) {
-        if(formName == "gnomonImage") {
+        if (formName == "gnomonImage") {
             return {"input"};
+        } else if (formName == "gnomonCellImage") {
+            return {"cellImage"};
         }
         return {};
     };
     static inline QString defaultOutput(QString formName) {
-        if(formName == "gnomonPointCloud") {
+        if (formName == "gnomonPointCloud") {
             return {"output"};
         }
         return {};

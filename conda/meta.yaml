@@ -10,7 +10,7 @@ build:
 
 requirements:
   build:
-    - cmake >=3.17
+    - cmake >=3.20
     - make
     - python
     - numpy {{numpy}}
@@ -54,7 +54,7 @@ requirements:
     - dtk-script >=2.5
     - python
     - numpy {{numpy}}
-    - swig =4.0
+    - swig >=4.1
     - vtk =9.1.0
     - libtiff <4.5
 
@@ -70,7 +70,7 @@ requirements:
     - python
     - numpy {{numpy}}
     - pymongo
-    - swig =4.0
+    - swig >=4.1
     - vtk =9.1.0
     - libtiff <4.5
 

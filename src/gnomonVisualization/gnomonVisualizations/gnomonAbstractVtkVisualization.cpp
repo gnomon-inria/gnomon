@@ -40,7 +40,7 @@ void gnomonAbstractVtkVisualization::setView(gnomonAbstractView* view)
 
         dd->connectSliceOrientation = connect(vtk_view, SIGNAL(sliceOrientationChanged(int)), this,
                                               SLOT(onSliceOrientationChanged(int)));
-        dd->connectSlice = connect(vtk_view, SIGNAL(sliceChanged(int)), this, SLOT(onSliceChanged(int)));
+        dd->connectSlice = connect(vtk_view, SIGNAL(sliceChanged(double)), this, SLOT(onSliceChanged(double)));
 
         dd->connectTime = connect(vtk_view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
     }
@@ -119,8 +119,8 @@ QImage gnomonAbstractVtkVisualization::offscreenImageRendering(void)
     windowToImageFilter->Update();
 
     vtkSmartPointer<vtkImageData> renderedImage = windowToImageFilter->GetOutput();
-    int width = renderedImage->GetDimensions()[0];
-    int height = renderedImage->GetDimensions()[1];
+    int height = renderedImage->GetDimensions()[0];
+    int width = renderedImage->GetDimensions()[1];
     QImage image( width, height, QImage::Format_RGB32);
 
     QRgb *rgbPtr = reinterpret_cast<QRgb *>(image.bits());

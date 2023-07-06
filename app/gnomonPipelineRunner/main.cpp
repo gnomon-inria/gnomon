@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
     dtkCoreApplication app = dtkCoreApplication(argc, argv);
     app.setApplicationName("gnomonPipelineRunner");
-    app.setApplicationVersion("0.80");
+    app.setApplicationVersion("0.81");
     app.setOrganizationName("inria");
 
     //Option parser
