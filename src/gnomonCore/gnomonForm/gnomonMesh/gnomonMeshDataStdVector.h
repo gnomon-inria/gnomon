@@ -30,6 +30,7 @@ public:
 
 public:
     void pointCoordinates(gnomonAbstractMeshData::IdxType id, double* point_coordinates) const override;
+    const std::vector<double> pointCoordinates(IdxType id) const override;
     const double* pointsCoordinates(void) const override;
     gnomonAbstractMeshData::CntType pointsCount(void) const override;
 
@@ -38,12 +39,11 @@ public:
     void setPoints(const double* points_coordinates, gnomonAbstractMeshData::CntType points_count = 0) override;
 
 public:
-    void cellPoints(gnomonAbstractMeshData::IdxType cell_id, int &out_nb_points_cell, const gnomonAbstractMeshData::IdxType*& out_first_point) const override; // out nb points of cell , out_first_point pointer to the first point of the cell
-    QList<long> cellPointIdx(gnomonAbstractMeshData::IdxType cell_id) const override; // out nb points of cell
+    std::vector<gnomonAbstractMeshData::IdxType> cellPointsIdx(gnomonAbstractMeshData::IdxType cell_id) const override;
     gnomonAbstractMeshData::CellType cellType(gnomonAbstractMeshData::IdxType cell_id) const override;
     gnomonAbstractMeshData::CntType cellsCount(int geo_dimension = 4) const override;
-    const gnomonAbstractMeshData::IdxType* cellsIdx(gnomonAbstractMeshData::CntType& out_nb_cells, int geo_dimension = 4) const override;
-    const gnomonAbstractMeshData::IdxType* cellsPoints(gnomonAbstractMeshData::CntType& out_nb_cells, int geo_dimension = 4) const override;
+    const std::vector<gnomonAbstractMeshData::IdxType> cellsIdx(int geo_dimension = 4) const override;
+    const std::vector<IdxType> cellsPoints(int geo_dimension = 4) const override;
     const gnomonAbstractMeshData::CellType* cellsType(int geo_dimension = 4) const override;
     const gnomonAbstractMeshData::IdxType* cellsTopologyLocation(int geo_dimension = 4) const override;
     unsigned int facet_corner_id(const gnomonAbstractMeshData::IdxType face_id, const gnomonAbstractMeshData::IdxType corner_id) const;
@@ -57,6 +57,7 @@ public:
     const gnomonMeshAttribute* attribute(const QString& name) const override;
     const gnomonMeshAttribute* attributes(void) const override;
     gnomonAbstractMeshData::CntType attributesCount(void) const override;
+    QStringList attributesNames(void) const override;
 
 private:
     int m_geo_dim;

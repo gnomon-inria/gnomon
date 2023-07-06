@@ -251,14 +251,14 @@ public slots:
     void setEnableLinking(bool);
 
 public slots:
-    void onSliceChanged(int);
+    void onSliceChanged(double);
 
 public slots:
-    void sliceChange(int);
+    void sliceChange(double);
 
 signals:
     void sliceOrientationChanged(int);
-    void sliceChanged(int);
+    void sliceChanged(double);
 
 signals:
     void timeChanged(double);

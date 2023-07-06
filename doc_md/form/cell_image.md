@@ -20,9 +20,9 @@ Extensions supported by this reader are: `tif, inr.gz, inr`.
 
 ![Gnomon Image illustration](../_static/cell_image.png)
 
-## Plugins which took Cell Image as input
+## Plugins which take Cell Image as input
 
->Here is a non exhaustive list of some algorithms which took this form as input.  
+>Here is a non exhaustive list of some algorithms which take this form as input.  
 - morphoCellFilter
 - seededWatershedSegmentationTimagetk
 - signalQuantificationImageSignal

@@ -286,7 +286,7 @@ void gnomonImageVtkVisualization::onSliceOrientationChanged(int value)
 }
 
 
-void gnomonImageVtkVisualization::onSliceChanged(int value)
+void gnomonImageVtkVisualization::onSliceChanged(double value)
 {
     ddd->actor2D->setSlice(value);
     this->render();

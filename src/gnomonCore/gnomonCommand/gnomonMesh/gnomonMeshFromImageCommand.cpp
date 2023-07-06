@@ -6,7 +6,9 @@
 class gnomonMeshFromImageCommandPrivate
 {
 public:
-    std::shared_ptr<gnomonImageSeries> input = nullptr;
+    std::shared_ptr<gnomonImageSeries> image = nullptr;
+    std::shared_ptr<gnomonCellImageSeries> cellImage = nullptr;
+    std::shared_ptr<gnomonBinaryImageSeries> binaryImage = nullptr;
     std::shared_ptr<gnomonMeshSeries> output = nullptr;
 };
 
@@ -53,25 +55,61 @@ void gnomonMeshFromImageCommand::postdo(void)
 
 void gnomonMeshFromImageCommand::undo()
 {
-    ((gnomonAbstractMeshFromImage *) this->action)->setInput(nullptr);
+    ((gnomonAbstractMeshFromImage *) this->action)->setImage(nullptr);
+    ((gnomonAbstractMeshFromImage *) this->action)->setCellImage(nullptr);
+    ((gnomonAbstractMeshFromImage *) this->action)->setBinaryImage(nullptr);
     this->action->refreshParameters();
 }
 
-void gnomonMeshFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries> input)
+void gnomonMeshFromImageCommand::setImage(std::shared_ptr<gnomonImageSeries> image)
 {
-    if ((!input)||(input->times().empty())) {
-        d->input = nullptr;
+    if ((!image)||(image->times().empty())) {
+        d->image = nullptr;
     } else {
-        d->input = input;
+        d->image = image;
     }
     Q_ASSERT(this->action);
-    ((gnomonAbstractMeshFromImage *) this->action)->setInput(d->input);
+    ((gnomonAbstractMeshFromImage *) this->action)->setImage(d->image);
     this->action->refreshParameters();
 }
 
-std::shared_ptr<gnomonImageSeries> gnomonMeshFromImageCommand::input()
+std::shared_ptr<gnomonImageSeries> gnomonMeshFromImageCommand::image()
 {
-    return d->input;
+    return d->image;
+}
+
+void gnomonMeshFromImageCommand::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage)
+{
+    if ((!cellImage)||(cellImage->times().empty())) {
+        d->cellImage = nullptr;
+    } else {
+        d->cellImage = cellImage;
+    }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractMeshFromImage *) this->action)->setCellImage(d->cellImage);
+    this->action->refreshParameters();
+}
+
+std::shared_ptr<gnomonCellImageSeries> gnomonMeshFromImageCommand::cellImage()
+{
+    return d->cellImage;
+}
+
+void gnomonMeshFromImageCommand::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binaryImage)
+{
+    if ((!binaryImage)||(binaryImage->times().empty())) {
+        d->binaryImage = nullptr;
+    } else {
+        d->binaryImage = binaryImage;
+    }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractMeshFromImage *) this->action)->setBinaryImage(d->binaryImage);
+    this->action->refreshParameters();
+}
+
+std::shared_ptr<gnomonBinaryImageSeries> gnomonMeshFromImageCommand::binaryImage()
+{
+    return d->binaryImage;
 }
 
 std::shared_ptr<gnomonMeshSeries> gnomonMeshFromImageCommand::output()
@@ -82,7 +120,9 @@ std::shared_ptr<gnomonMeshSeries> gnomonMeshFromImageCommand::output()
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshFromImageCommand::inputs()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
-    inputs["input"] = this->input();
+    inputs["image"] = this->image();
+    inputs["cellImage"] = this->cellImage();
+    inputs["binaryImage"] = this->binaryImage();
     return inputs;
 }
 
@@ -104,7 +144,9 @@ QStringList gnomonMeshFromImageCommand::availablePlugins() {
 
 gnomonAbstractCommand::orderedMap gnomonMeshFromImageCommand::inputTypes() {
     orderedMap input_types;
-    input_types.emplace_back(std::make_pair("input", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("image", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
+    input_types.emplace_back(std::make_pair("binaryImage", "gnomonBinaryImage"));
     return input_types;
 }
 
@@ -115,8 +157,12 @@ gnomonAbstractCommand::orderedMap gnomonMeshFromImageCommand::outputTypes() {
 }
 
 void gnomonMeshFromImageCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
-    if (name == "input") {
-        this->setInput(std::dynamic_pointer_cast<gnomonImageSeries>(form));
+    if (name == "image") {
+        this->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
+    } else if (name == "cellImage") {
+        this->setCellImage(std::dynamic_pointer_cast<gnomonCellImageSeries>(form));
+    } else if (name == "binaryImage") {
+        this->setBinaryImage(std::dynamic_pointer_cast<gnomonBinaryImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

@@ -45,6 +45,7 @@
 class gnomonMeshVtkVisualizationPrivate
 {
 public:
+    gnomonMeshVtkVisualization *q = nullptr;
     std::shared_ptr<gnomonMeshSeries> meshSeries;
     std::shared_ptr<gnomonMesh> mesh;
     QMap<QString, QString> parameters_groups;
@@ -71,8 +72,10 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
     // Set points
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
     points->SetDataTypeToDouble();
-    auto *point_array = static_cast<vtkDataArray*>(points->GetData());
-    point_array->SetVoidArray(const_cast<double*>(mesh_data->pointsCoordinates()), mesh_data->pointsCount() * mesh_data->geometricalDimension(), 1);
+    for (gnomonAbstractMeshData::IdxType point_id=0; point_id<mesh_data->pointsCount(); ++point_id) {
+        auto point = mesh_data->pointCoordinates(point_id);
+        points->InsertNextPoint(point.data());
+    }
     grid->SetPoints(points);
 
     //set cells
@@ -80,74 +83,86 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
     grid->Allocate(cells_nb);
     for(gnomonAbstractMeshData::IdxType cell_id = 0; cell_id < cells_nb; ++cell_id) {
         gnomonAbstractMeshData::CellType type = mesh_data->cellType(cell_id);
-        int cell_pts_nb;
-        const gnomonAbstractMeshData::IdxType* cell_pt_ids;
-        mesh_data->cellPoints(cell_id, cell_pts_nb, cell_pt_ids);
+        //int cell_pts_nb;
+        //const gnomonAbstractMeshData::IdxType* cell_pt_ids;
+        std::vector<gnomonAbstractMeshData::IdxType>&& vec_cell_pt_ids =  mesh_data->cellPointsIdx(cell_id); //, cell_pts_nb, cell_pt_ids
         grid->InsertNextCell(type,
-                             cell_pts_nb,
-                             const_cast<gnomonAbstractMeshData::IdxType*>(cell_pt_ids));
+                             vec_cell_pt_ids.size(),
+                             vec_cell_pt_ids.data());
     }
 
     // Set attributes
     const gnomonAbstractMeshData::IdxType points_nb = mesh_data->pointsCount();
-    const gnomonMeshAttribute* attributes = mesh_data->attributes();
 
-    gnomonAbstractMeshData::CntType attr_nb = mesh_data->attributesCount();
+    QStringList attr_names = mesh_data->attributesNames();
+    gnomonAbstractMeshData::CntType attr_nb = attr_names.size();
+
     for(gnomonAbstractMeshData::IdxType i = 0; i < attr_nb; ++i) {
-        const gnomonMeshAttribute& attr = attributes[i];
+        QString attr_name = attr_names[i];
+        const gnomonMeshAttribute* attr = mesh_data->attribute(attr_name);
 
-        // 1 get the data
-        vtkSmartPointer<vtkDataArray> vtk_attr = nullptr;
-        long attr_size;
-        void *attr_array = nullptr;
-        if(std::holds_alternative<std::vector<int>>(attr.m_data)) {
-            vtk_attr = vtkSmartPointer<vtkIntArray>::New();
-            attr_size = std::get<std::vector<int>>(attr.m_data).size();
-            attr_array = (void *) (std::get<std::vector<int>>(attr.m_data).data());
-        } else if(std::holds_alternative<std::vector<double>>(attr.m_data)) {
-            vtk_attr = vtkSmartPointer<vtkDoubleArray>::New();
-            attr_size = std::get<std::vector<double>>(attr.m_data).size();
-            attr_array = (void *) (std::get<std::vector<double>>(attr.m_data).data());
-        }
+        if (attr) {
+            // 1 get the data
+            vtkSmartPointer<vtkDataArray> vtk_attr = nullptr;
+            long attr_size;
+            void *attr_array = nullptr;
+            if (std::holds_alternative<std::vector<int>>(attr->m_data)) {
+                vtk_attr = vtkSmartPointer<vtkIntArray>::New();
+                attr_size = std::get<std::vector<int>>(attr->m_data).size();
+                attr_array = (void *) (std::get<std::vector<int>>(attr->m_data).data());
+            } else if (std::holds_alternative<std::vector<double>>(attr->m_data)) {
+                vtk_attr = vtkSmartPointer<vtkDoubleArray>::New();
+                attr_size = std::get<std::vector<double>>(attr->m_data).size();
+                attr_array = (void *) (std::get<std::vector<double>>(attr->m_data).data());
+            }
 
-        // 2 do some checks
-        if(!attr_array) {
-            dtkWarn() << " Empty array for attribute " << attr;
-            continue;
-        }
+            // 2 do some checks
+            if (!attr_array) {
+                dtkWarn() << " Empty array for attribute " << attr;
+                continue;
+            }
 
 
-        if(attr.m_support == gnomonMeshAttribute::Cell && (cells_nb*attr.m_kind != attr_size)) {
-            dtkWarn() << "For Cell field " << attr.m_name
-                      << "kind " <<  attr.m_kind
-                      << "nb values : " << attr_size
-                      << "but kind*numberOfTuples : " << cells_nb*attr.m_kind;
-            continue;
-        }
+            if (attr->m_support == gnomonMeshAttribute::Cell && (cells_nb * attr->m_kind != attr_size)) {
+                dtkWarn() << "For Cell field " << attr->m_name
+                          << "kind " << attr->m_kind
+                          << "nb values : " << attr_size
+                          << "but kind*numberOfTuples : " << cells_nb * attr->m_kind;
+                continue;
+            }
 
-        if(attr.m_support == gnomonMeshAttribute::Point && (points_nb*attr.m_kind != attr_size)) {
-            dtkWarn() << "For Point field " << attr.m_name
-                      << "kind " <<  attr.m_kind
-                      << "nb values : " << attr_size
-                      << "but kind*numberOfTuples : " << points_nb*attr.m_kind;
-            continue;
-        }
+            if (attr->m_support == gnomonMeshAttribute::Point && (points_nb * attr->m_kind != attr_size)) {
+                dtkWarn() << "For Point field " << attr->m_name
+                          << "kind " << attr->m_kind
+                          << "nb values : " << attr_size
+                          << "but kind*numberOfTuples : " << points_nb * attr->m_kind;
+                continue;
+            }
 
-        // 3 set the vtk array
-        vtk_attr->SetName(qPrintable(attr.m_name));
-        vtk_attr->SetNumberOfComponents(attr.m_kind);
-        vtk_attr->SetVoidArray(attr_array, attr_size, 1);
+            // 3 set the vtk array
+            vtk_attr->SetName(qPrintable(attr->m_name));
+            vtk_attr->SetNumberOfComponents(attr->m_kind);
+            vtk_attr->SetVoidArray(attr_array, attr_size, 1);
 
-        // 4 add it to the grid
-        if(attr.m_support == gnomonMeshAttribute::Cell) {
-            grid->GetCellData()->AddArray(vtk_attr);
-        } else if(attr.m_support == gnomonMeshAttribute::Point) {
-            grid->GetPointData()->AddArray(vtk_attr);
+            // 4 add it to the grid
+            if (attr->m_support == gnomonMeshAttribute::Cell) {
+                grid->GetCellData()->AddArray(vtk_attr);
+            } else if (attr->m_support == gnomonMeshAttribute::Point) {
+                grid->GetPointData()->AddArray(vtk_attr);
+            }
         }
     }
 
+    if(!this->clipping_plane) {
+        this->clipping_plane = vtkSmartPointer<vtkPlane>::New();
+        this->clipping_plane->SetDebug(true);
+        this->clipping_plane->SetOrigin(this->grid->GetCenter());
+        this->clipping_plane->SetNormal(1., 0., 0.);
+    }
+
     for(auto decorator : decorators) {
-        decorator->setGrid(grid);
+        decorator->set2DClippingPlane(this->clipping_plane);
+        decorator->setGrid(this->grid);
     }
 }
 
@@ -157,6 +172,7 @@ void gnomonMeshVtkVisualizationPrivate::updateGrid(void)
 
 gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMeshVtkVisualization(), ddd(new gnomonMeshVtkVisualizationPrivate)
 {
+    ddd->q = this;
     d->parameters["1_decorators"] = new dtk::d_inliststringlist("", {"SurfaceColor"}, {"SurfaceColor", "IsoContours", "StreamTracer", "VectorGlyphs"}, "Create new decorators for your visualization");
 
     d->parameters["1_decorators"]->connect([=] (QVariant v) {
@@ -223,10 +239,6 @@ gnomonMeshVtkVisualization::gnomonMeshVtkVisualization(void) : gnomonAbstractMes
                 if(ddd->grid) {
                     dec->setGrid(ddd->grid);
                 }
-                //TODO clipping plane for 2D
-                /*
-            decorator->set2DClippingPlane(ddd->clipping_plane);
-                */
             }
         }
     });
@@ -344,7 +356,14 @@ dtkCoreParameters gnomonMeshVtkVisualization::parameters(void) const
 void gnomonMeshVtkVisualization::setParameter(const QString& parameter, const QVariant& value)
 {
     if (d->parameters.contains(parameter)) {
-        d->parameters[parameter]->setValue(value);
+        // TODO: this should actually be fixed in dtk-core
+        if (value.canConvert<dtk::d_inliststringlist>()) {
+             auto param = value.value<dtk::d_inliststringlist>();
+            ((dtk::d_inliststringlist *) d->parameters[parameter])->setList(param.list());
+            ((dtk::d_inliststringlist *) d->parameters[parameter])->setValue(param.value());
+        } else {
+            d->parameters[parameter]->setValue(value);
+        }
     }
     else
         qWarning()<<parameter<<"is not a valid parameter!";
@@ -371,16 +390,7 @@ QMap<QString, QString> gnomonMeshVtkVisualization::parameterGroups(void)
 
 void gnomonMeshVtkVisualization::onSliceOrientationChanged(int value)
 {
-    if(!ddd->clipping_plane) {
-        ddd->clipping_plane = vtkSmartPointer<vtkPlane>::New();
-        ddd->clipping_plane->SetDebug(true);
-
-        for(auto decorator : ddd->decorators) {
-            decorator->set2DClippingPlane(ddd->clipping_plane);
-        }
-    }
-
-    if(!ddd->grid) {
+    if(!ddd->grid || !ddd->clipping_plane) {
         dtkTrace() << Q_FUNC_INFO << "Grid not set";
         return;
     }
@@ -402,7 +412,7 @@ void gnomonMeshVtkVisualization::onSliceOrientationChanged(int value)
     }
 }
 
-void gnomonMeshVtkVisualization::onSliceChanged(int value)
+void gnomonMeshVtkVisualization::onSliceChanged(double value)
 {
     if(!d->view)
         return;
@@ -410,6 +420,7 @@ void gnomonMeshVtkVisualization::onSliceChanged(int value)
     double origin[3];
     ddd->clipping_plane->GetOrigin(origin);
     auto ori = (dynamic_cast<gnomonVtkView *>(d->view))->orientation();
+    qDebug() << Q_FUNC_INFO << ori << value << origin[0] <<  origin[1] <<  origin[2];
     if(ori == -1) {
         dtkWarn() << Q_FUNC_INFO << "bad orientation: " << ori;
         return;

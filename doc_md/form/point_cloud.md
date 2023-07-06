@@ -18,8 +18,8 @@ This reader supports one extension `csv`.
 
 ![Gnomon Image illustration](../_static/point_cloud_image.png)
 
-## Plugins which took Image as input
->Here is a non exhaustive list of some algorithms which took this form as input.  
+## Plugins which take Image as input
+>Here is a non exhaustive list of some algorithms which take this form as input.  
 - seededWatershedSegmentationTimagetk
 - nucleiSignalQuantificationTimagetk
 

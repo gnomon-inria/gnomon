@@ -2,7 +2,7 @@
 
 ## Description
 >A gnomon Image is a data strucure which could hold time series image in one channel or multi-channel (4D data set).  
-The correspoonding class in gnomon is `gnomonImageDataMultiChannelImage`.  
+The corresponding class in gnomon is `gnomonImageDataMultiChannelImage`.  
 It gives possibility to access some information about image like: 
 - Number of channels
 - Dimensions
@@ -21,9 +21,9 @@ It gives possibility to access some information about image like:
 ![Gnomon Image illustration](../_static/image.png)
 
 
-## Plugins which took Image as input
+## Plugins which take Image as input
 
->Here is a non exhaustive list of some algorithms which took this form as input.  
+>Here is a non exhaustive list of some algorithms which take this form as input.  
 - boundaryEdgeEnhancement
 - linearFilterTimagetk
 - binarization

@@ -19,10 +19,11 @@ In Gnomon, **Forms** are archetypes of data structures that are commonly used to
 
 The following Forms interfaces are currently supported by the Gnomon platform:
 * [Image](form/image) (multi-channel 3D intensity images)
-* [CellImage](form/cellimage) (connected-regions 3D labelled images)
-* [BinaryImage](form/binaryimage) ("black or white" 3D binary mask images)
-* [PointCloud](form/pointcloud) (3D point clouds with point attributes)
+* [CellImage](form/cell_image) (connected-regions 3D labelled images)
+* [BinaryImage](form/binary_image) ("black or white" 3D binary mask images)
+* [PointCloud](form/point_cloud) (3D point clouds with point attributes)
 * [LString](form/lstring) (branching structure proceeding from a L-System)
+* [Mesh](form/mesh) (3D meshes made of polygonal or polyhedral cells)
 * [DataFrame](form/data_frame) (multi-row data table of named columns)
 * [DataDict](form/data_dict) (flexible key-value structure)
 

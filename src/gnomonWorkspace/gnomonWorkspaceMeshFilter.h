@@ -13,7 +13,13 @@ class GNOMONWORKSPACE_EXPORT gnomonWorkspaceMeshFilter : public gnomonAlgorithmW
 {
     Q_OBJECT
     Q_CLASSINFO("description", "\
-This workspace allows to apply an algorithm on a mesh to edit it \n\
+This workspace allows to apply an processing algorithm on a Mesh form to edit \
+it.\n\
+\n\
+Using the Mesh provided in the left input view, the algorithm will compute \
+a new Mesh, generally by applying topological, geometrical or attribute-\
+related filters. The processed Mesh will then be displayed in the right \
+output view.\n\
 \n")
 
 public:

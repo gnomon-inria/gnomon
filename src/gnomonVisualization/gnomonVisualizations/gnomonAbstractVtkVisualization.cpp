@@ -40,7 +40,7 @@ void gnomonAbstractVtkVisualization::setView(gnomonAbstractView* view)
 
         dd->connectSliceOrientation = connect(vtk_view, SIGNAL(sliceOrientationChanged(int)), this,
                                               SLOT(onSliceOrientationChanged(int)));
-        dd->connectSlice = connect(vtk_view, SIGNAL(sliceChanged(int)), this, SLOT(onSliceChanged(int)));
+        dd->connectSlice = connect(vtk_view, SIGNAL(sliceChanged(double)), this, SLOT(onSliceChanged(double)));
 
         dd->connectTime = connect(vtk_view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
     }

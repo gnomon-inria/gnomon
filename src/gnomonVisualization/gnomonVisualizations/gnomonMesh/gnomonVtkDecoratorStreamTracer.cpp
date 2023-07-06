@@ -138,10 +138,16 @@ void gnomonVtkDecoratorStreamTracerPrivate::updateColorFunction(void)
 
     vtkDataArray *array = q->m_grid->GetPointData()->GetArray(property_name.c_str());
     q->m_mapper3d->SetScalarModeToUsePointFieldData();
+    if(q->m_mapper2d)
+            q->m_mapper2d->SetScalarModeToUsePointFieldData();
+
     if(!array) {
         array = q->m_grid->GetCellData()->GetArray(property_name.c_str());
         q->m_mapper3d->SetScalarModeToUseCellFieldData();
-            if(!array) {
+        if(q->m_mapper2d)
+            q->m_mapper2d->SetScalarModeToUseCellFieldData();
+
+       if(!array) {
             dtkWarn() << Q_FUNC_INFO << "Cannot get attribute " << this->property_name.c_str();
             return;
         }
@@ -177,6 +183,13 @@ void gnomonVtkDecoratorStreamTracerPrivate::updateColorFunction(void)
     q->m_mapper3d->SelectColorArray(property_name.c_str());
     q->m_mapper3d->SetScalarRange(range[0], range[1]);
     q->m_mapper3d->Modified();
+
+    if(q->m_mapper2d) {
+        q->m_mapper2d->SetLookupTable(this->colorFunction);
+        q->m_mapper2d->SelectColorArray(property_name.c_str());
+        q->m_mapper2d->SetScalarRange(range[0], range[1]);
+        q->m_mapper2d->Modified();
+    }
 
     if(q->m_view)
         q->m_view->interactor()->Render();

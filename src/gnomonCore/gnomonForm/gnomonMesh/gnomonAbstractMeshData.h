@@ -82,6 +82,7 @@ public:
 //  ///////////////////////////////////////////////////////////////////
 public:
     virtual void pointCoordinates(IdxType id, double* point_coordinates) const = 0;
+    virtual const std::vector<double> pointCoordinates(IdxType id) const = 0;
     virtual const double* pointsCoordinates(void) const = 0;
     virtual CntType pointsCount(void) const = 0;
 
@@ -95,21 +96,22 @@ public:
 //  Cells list concept
 //  ///////////////////////////////////////////////////////////////////
 public:
-    virtual void  cellPoints(IdxType cell_id, int &out_nb_points_cell, const IdxType*& out_first_point) const = 0; // out nb points of cell , out_first_point pointer to the first point of the cell
-    virtual QList<long> cellPointIdx(IdxType cell_id) const = 0;
+    virtual std::vector<IdxType> cellPointsIdx(IdxType cell_id) const = 0;
 
     [[deprecated]] QList<long> triangleVertexIds(long triangleId) const {qDebug() << "see cellPointIdx method"; return QList<long>(); }
     virtual CellType cellType(IdxType cell_id) const = 0;
     virtual CntType cellsCount(int geo_dimension = 4) const = 0;
-    virtual const IdxType* cellsIdx(CntType& out_nb_cells, int geo_dimension = 4) const = 0;
+
+    virtual const std::vector<IdxType> cellsIdx(int geo_dimension = 4) const = 0;
+
+
     [[deprecated]] QList<long> vertexIds(void) const { qDebug() << "see cellsIdx method"; return QList<long>(); }
     [[deprecated]] QList<long> triangleIds(void) const { qDebug() << "see cellsIdx method"; return QList<long>(); }
 
-    virtual const IdxType* cellsPoints(CntType& out_nb_points, int geo_dimension = 4) const = 0;
+    virtual const std::vector<IdxType> cellsPoints(int geo_dimension = 4) const = 0;
 
     virtual const CellType* cellsType(int geo_dimension = 4) const = 0;
     virtual const IdxType* cellsTopologyLocation(int geo_dimension = 4) const = 0;
-    //virtual void typedCellPointsIds(const CellType cell_type, unsigned int cell_id, IdxType* out_points_ids) const = 0;
 
     virtual void setCellsCount(CntType cells_count, int geo_dimension) = 0;
     virtual void setCellsType(const CellType* cells_type, CntType cells_count = 0, CntType offset=0 ) = 0;
@@ -135,6 +137,7 @@ public:
     virtual const gnomonMeshAttribute* attribute(const QString& name) const = 0;
     virtual const gnomonMeshAttribute* attributes(void) const = 0;
     virtual CntType attributesCount(void) const = 0;
+    virtual QStringList attributesNames(void) const = 0;
 
 /*
     virtual QStringList vertexPropertyNames(void) const = 0;
