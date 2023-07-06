@@ -3,9 +3,11 @@
 ## version 0.81.0 - 2023-07-06
 * Enable screenshots in views
 * Support opening several (interdependent) files in LPy workspace
+* Edit all material properties (not just color) in LPy visualization
 * Quantification workspace for (nuclei) point clouds
 * More generic mesh API, mesh processing & solver workspaces
 * Advanced 3D mesh visualization (color, isocontours, streams)
+* More intuitive dialog for new project creation
 * Fix pipeline reloading / running functionalities
 * Additional buttons for 3D view camera/grid control
 * Additional view camera menu for 3D view
