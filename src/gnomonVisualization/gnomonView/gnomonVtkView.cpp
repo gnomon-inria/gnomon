@@ -1734,14 +1734,14 @@ void gnomonVtkView::updateShortcutKeys(void)
     // d->updateKeys();
 }
 
-void gnomonVtkView::drop(int index)
+void gnomonVtkView::drop(int index, bool new_visu)
 {
     if (this->empty()) {
         if (vtkCamera *cam = gnomonFormManager::instance()->getCamera(index)) {
             this->setCamera(cam);
         }
     }
-    gnomonAbstractView::drop(index);
+    gnomonAbstractView::drop(index, new_visu);
 }
 
 // ///////////////////////////////////////////////////////////////////

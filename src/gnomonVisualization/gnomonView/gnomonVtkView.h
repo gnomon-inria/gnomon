@@ -167,7 +167,7 @@ public:
     std::shared_ptr<gnomonPointCloudSeries> pointCloud(void);
 
 public slots:
-    void drop(int) override;
+    void drop(int, bool new_visu=false) override;
     void removeForm(const QString& name) override;
 
 public:
