@@ -90,7 +90,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     this->addInputView({}, {"floating", "image"}); // floating
     this->addOutputView(); // registered
 
-q    d->text_view = new gnomonQmlView(this);
+    d->text_view = new gnomonQmlView(this);
     d->text_view->setAcceptForm("gnomonDataDict", true);
 
     std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->text_view->form("gnomonDataDict"));
