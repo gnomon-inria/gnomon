@@ -204,6 +204,7 @@ G.Workspace {
                     onClicked: {
                         _new_picking.text = "Add Cells"
                         _swipe.currentIndex = 0;
+                        d.setInputs()
                     }
                 }
 
