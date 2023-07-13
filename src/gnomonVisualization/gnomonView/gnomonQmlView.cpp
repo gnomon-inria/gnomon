@@ -44,7 +44,7 @@ public:
 
 public:
     QString display_text;
-    int font_size;
+    int font_size = 12;
 };
 
 gnomonQmlViewPrivate::gnomonQmlViewPrivate(QObject *parent): QObject(parent)
