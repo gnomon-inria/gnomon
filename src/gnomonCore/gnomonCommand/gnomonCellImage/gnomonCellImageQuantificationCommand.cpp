@@ -7,6 +7,7 @@ class gnomonCellImageQuantificationCommandPrivate
 {
 public:
     std::shared_ptr<gnomonImageSeries> image = nullptr;
+    std::shared_ptr<gnomonMeshSeries> mesh = nullptr;
     std::shared_ptr<gnomonCellImageSeries> input_cellImage = nullptr;
 
     std::shared_ptr<gnomonCellImageSeries> cellImage = nullptr;
@@ -66,6 +67,7 @@ void gnomonCellImageQuantificationCommand::postdo(void)
 void gnomonCellImageQuantificationCommand::undo()
 {
     ((gnomonAbstractCellImageQuantification *) this->action)->setImage(nullptr);
+    ((gnomonAbstractCellImageQuantification *) this->action)->setMesh(nullptr);
     ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(nullptr);
     this->action->refreshParameters();
 }
@@ -79,6 +81,18 @@ void gnomonCellImageQuantificationCommand::setImage(std::shared_ptr<gnomonImageS
     }
     Q_ASSERT(this->action);
     ((gnomonAbstractCellImageQuantification *) this->action)->setImage(d->image);
+    this->action->refreshParameters();
+}
+
+void gnomonCellImageQuantificationCommand::setMesh(std::shared_ptr<gnomonMeshSeries> mesh)
+{
+    if ((!mesh)||(mesh->times().empty())) {
+        d->mesh = nullptr;
+    } else {
+        d->mesh = mesh;
+    }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractCellImageQuantification *) this->action)->setMesh(d->mesh);
     this->action->refreshParameters();
 }
 
@@ -108,6 +122,7 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageQuanti
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["image"] = d->image;
+    inputs["mesh"] = d->mesh;
     inputs["cellImage"] = d->input_cellImage;
     return inputs;
 }
@@ -128,6 +143,7 @@ bool gnomonCellImageQuantificationCommand::isEmpty()
 gnomonAbstractCommand::orderedMap gnomonCellImageQuantificationCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("image", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("mesh", "gnomonMesh"));
     input_types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
     return input_types;
 }

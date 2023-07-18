@@ -47,6 +47,9 @@ void gnomonWorkspacePointCloudQuantification::setInputs()
         if (f->image()) {
             command->setInputForm("image", f->image());
         }
+        if (f->mesh()) {
+            command->setInputForm("mesh", f->mesh());
+        }
         if (f->pointCloud()) {
             command->setInputForm("pointCloud", f->pointCloud());
         }

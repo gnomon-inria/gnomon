@@ -47,6 +47,9 @@ void gnomonWorkspaceCellImageQuantification::setInputs()
         if (f->image()) {
             command->setInputForm("image", f->image());
         }
+        if (f->mesh()) {
+            command->setInputForm("mesh", f->mesh());
+        }
         if (f->cellImage()) {
             command->setInputForm("cellImage", f->cellImage());
         }
