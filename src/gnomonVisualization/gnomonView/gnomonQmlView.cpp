@@ -106,6 +106,15 @@ void gnomonQmlView::setFontSize(int size)
     }
 }
 
+void gnomonQmlView::render(void) {
+    for(auto it = d->visualizationCommands.keyValueBegin(); it != d->visualizationCommands.keyValueEnd(); it++) {
+        auto command = it->second;
+        if(!command->inputs().contains(nullptr)) {
+            command->update();
+        }
+    }
+}
+
 // ///////////////////////////////////////////////////////////////////
 
 #include "gnomonQmlView.moc"
