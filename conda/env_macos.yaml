@@ -24,6 +24,7 @@ dependencies:
     - scipy != 1.8.1
     - swig >=4.1
     - pymongo
+    - jinja2
     - matplotlib-base
     - timagetk =3
     - python-lsp-server
