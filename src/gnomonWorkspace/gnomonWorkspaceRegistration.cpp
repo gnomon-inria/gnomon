@@ -125,6 +125,10 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     connect(d->text_view, &gnomonAbstractView::exportedForm, [=](auto form) {
         gnomonPipelineManager::instance()->addForm(form);
     });
+
+    connect(d->text_view, &gnomonQmlView::formsChanged, [=]() {
+        this->setInputs();
+    });
 }
 
 gnomonWorkspaceRegistration::~gnomonWorkspaceRegistration(void)
@@ -218,6 +222,7 @@ void gnomonWorkspaceRegistration::iterate(void)
 
 void gnomonWorkspaceRegistration::viewOutputs()
 {
+    gnomonAlgorithmWorkspace::viewOutputs();
     auto * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["outputTransformation"]) {
         std::shared_ptr<gnomonAbstractDynamicForm> data_dict = command->outputs()["outputTransformation"];
@@ -227,7 +232,6 @@ void gnomonWorkspaceRegistration::viewOutputs()
         iterate();
         d->text_view->setForm("gnomonDataDict", data_dict);
     }
-    gnomonAlgorithmWorkspace::viewOutputs();
 }
 
 
