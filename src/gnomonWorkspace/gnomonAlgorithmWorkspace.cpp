@@ -251,7 +251,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     int i=0;
 
     for(auto [name, output_type] : d->command->outputTypes()) {
-        if(d->command->outputs()[name]) {
+        if(d->command->outputs()[name] && (*d->targets)[i]->acceptedForms().contains(output_type)) {
             auto form =  d->command->outputs()[name];
             int form_count = gnomonFormManager::instance()->formCount(output_type);
             form->metadata()->set("name", output_type.remove("gnomon") + QString::number(form_count+1));

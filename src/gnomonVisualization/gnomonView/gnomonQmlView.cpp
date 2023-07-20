@@ -44,7 +44,7 @@ public:
 
 public:
     QString display_text;
-    int font_size;
+    int font_size = 12;
 };
 
 gnomonQmlViewPrivate::gnomonQmlViewPrivate(QObject *parent): QObject(parent)
@@ -103,6 +103,15 @@ void gnomonQmlView::setFontSize(int size)
     if (size != dd->font_size && size >= 0) {
         dd->font_size = size;
         emit fontSizeChanged();
+    }
+}
+
+void gnomonQmlView::render(void) {
+    for(auto it = d->visualizationCommands.keyValueBegin(); it != d->visualizationCommands.keyValueEnd(); it++) {
+        auto command = it->second;
+        if(!command->inputs().contains(nullptr)) {
+            command->update();
+        }
     }
 }
 
