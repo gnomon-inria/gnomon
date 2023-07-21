@@ -21,7 +21,7 @@ From: ubuntu:latest
     conda create -n gnm-singularity python=3.9
     conda activate gnm-singularity
     conda install -y -c conda-forge mamba python=3.9
-    mamba install -y -c gnomon -c mosaic -c morpheme -c dtk-forge6 -c conda-forge gnomon=0.81.0 jinja2
+    mamba install -y -c gnomon -c mosaic -c morpheme -c dtk-forge6 -c conda-forge gnomon=0.81.1 jinja2
 
     # activate env at next startup
     conda init bash
