@@ -156,10 +156,12 @@ gnomonAbstractCommand::orderedMap gnomonCellImageQuantificationCommand::outputTy
 }
 
 void gnomonCellImageQuantificationCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
-    if (name == "image") {
-        this->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
-    } else if (name == "cellImage") {
+    if (name == "cellImage") {
         this->setCellImage(std::dynamic_pointer_cast<gnomonCellImageSeries>(form));
+    } else if (name == "image") {
+        this->setImage(std::dynamic_pointer_cast<gnomonImageSeries>(form));
+    } else if (name == "mesh") {
+        this->setMesh(std::dynamic_pointer_cast<gnomonMeshSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
