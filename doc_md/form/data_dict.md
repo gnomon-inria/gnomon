@@ -45,7 +45,7 @@ from timagetk.tasks.registration import consecutive_registration
 from timagetk import MultiChannelImage, SpatialImage
 
 
-@algorithmPlugin(version="0.3.1", coreversion="0.81.0")
+@algorithmPlugin(version="0.3.1", coreversion="0.81.1")
 @imageInput("_in_img", data_plugin="gnomonImageDataMultiChannelImage")
 @dataDictOutput("_out_img_transform_dict", data_plugin="gnomonNumpyDataDictData")
 @imageOutput("_out_img", data_plugin="gnomonImageDataMultiChannelImage")

@@ -36,7 +36,7 @@ from cellcomplex.property_topomesh.optimization import property_topomesh_vertice
 from cellcomplex.property_topomesh.analysis import compute_topomesh_property
 
 
-@algorithmPlugin(version="0.2.0", coreversion="0.81.0")
+@algorithmPlugin(version="0.2.0", coreversion="0.81.1")
 @meshInput('mesh_in', data_plugin="gnomonMeshDataPropertyTopomesh")
 @meshOutput('mesh_out', data_plugin="gnomonMeshDataPropertyTopomesh")
 class meshLaplacianSmoothingCellcomplex(gnomon.core.gnomonAbstractMeshFilter):

@@ -1,5 +1,8 @@
 # ChangeLog
 
+## version 0.81.1 - 2023-07-20
+* fixing the registration workspace
+
 ## version 0.81.0 - 2023-07-06
 * Enable screenshots in views
 * Support opening several (interdependent) files in LPy workspace

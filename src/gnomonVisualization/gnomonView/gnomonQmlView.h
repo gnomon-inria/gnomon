@@ -30,6 +30,9 @@ signals:
     void displayTextChanged(void);
     void fontSizeChanged(void);
 
+public:
+    void render(void) override;
+
 private:
     class gnomonQmlViewPrivate *dd;
 

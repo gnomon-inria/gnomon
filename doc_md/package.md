@@ -235,7 +235,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.9
-  - libgnomon>=0.81.0
+  - libgnomon>=0.81.1
   - gnomon_package_data
   - ipython
   - nose2
@@ -276,7 +276,7 @@ requirements:
     - python=3.9
   run:
     - python=3.9
-    - libgnomon>=0.81.0
+    - libgnomon>=0.81.1
     - gnomon_package_data
     - ipython
     - nose2
