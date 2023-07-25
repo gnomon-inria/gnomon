@@ -3,6 +3,7 @@
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
 
 class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractCommand
@@ -18,6 +19,7 @@ public:
 
 public:
     void setImage(std::shared_ptr<gnomonImageSeries> image);
+    void setMesh(std::shared_ptr<gnomonMeshSeries> mesh);
     void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage);
 
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;

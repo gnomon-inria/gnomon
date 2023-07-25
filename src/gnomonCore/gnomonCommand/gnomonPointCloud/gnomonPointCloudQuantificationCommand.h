@@ -4,6 +4,7 @@
 
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
 class GNOMONCORE_EXPORT gnomonPointCloudQuantificationCommand : public gnomonAbstractCommand
@@ -19,6 +20,7 @@ public:
 
 public:
     void setImage(std::shared_ptr<gnomonImageSeries> image);
+    void setMesh(std::shared_ptr<gnomonMeshSeries> mesh);
     void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud);
     void setAlgorithmName(const QString &) override;
 
