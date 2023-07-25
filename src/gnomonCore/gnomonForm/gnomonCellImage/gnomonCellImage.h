@@ -100,6 +100,16 @@ public:
     virtual void removeCellProperty(const QString& propertyName) { return m_data->removeCellProperty(propertyName); }
 
     virtual QMap<long, QVariant> computeCellProperty(const QString& propertyName) { return m_data->computeCellProperty(propertyName); };
+
+    virtual QStringList wallPropertyNames(void) const { return m_data->wallPropertyNames(); };
+    virtual bool hasWallProperty(const QString& propertyName) const { return m_data->hasWallProperty(propertyName); }
+
+    virtual QMap<long, QVariant> wallProperty(const QString& propertyName) const { return m_data->wallProperty(propertyName); }
+
+    virtual void addWallProperty(const QString& propertyName) { return m_data->addWallProperty(propertyName); }
+    virtual void updateWallProperty(const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) { return m_data->updateWallProperty(propertyName, values, eraseProperty); }
+    virtual void removeWallProperty(const QString& propertyName) { return m_data->removeWallProperty(propertyName); }
+
 };
 
 // ///////////////////////////////////////////////////////////////////

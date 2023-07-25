@@ -52,6 +52,15 @@ public:
     virtual void removeCellProperty(const QString& propertyName) = 0;
 
     virtual QMap<long, QVariant> computeCellProperty(const QString& propertyName) = 0;
+
+    virtual QStringList wallPropertyNames(void) const = 0;
+    virtual bool hasWallProperty(const QString& propertyName) const = 0;
+
+    virtual QMap<long, QVariant> wallProperty(const QString& propertyName) const = 0;
+
+    virtual void addWallProperty(const QString& propertyName) = 0;
+    virtual void updateWallProperty(const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) = 0;
+    virtual void removeWallProperty(const QString& propertyName) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
