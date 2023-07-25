@@ -73,13 +73,13 @@ G.Workspace {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            viewLogic: d.targetMpl;
+            viewLogic: d.figure;
         }
     }
 
     Component.onCompleted: {
         d.onParametersChanged();
         console.log("Setting figure number",_target_figure.number)
-        d.targetMpl.figureNumber = _target_figure.number
+        d.figure.figureNumber = _target_figure.number
     }
 }
