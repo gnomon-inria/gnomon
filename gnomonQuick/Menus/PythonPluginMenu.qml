@@ -6,7 +6,6 @@ import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
-import gnomonQuick.Icons      1.0 as G
 
 Control {
 
@@ -41,7 +40,7 @@ Control {
             }
 
             G.IconButton {
-                iconName: G.Icons.icons["plus"]
+                iconName: "plus"
                 tooltip: "Add " + _self.type
                 hoverColor: G.Style.colors.hoveredBaseColor
 
@@ -99,7 +98,7 @@ Control {
                         hoverColor: G.Style.colors.hoveredDangerColor
                         color: active? G.Style.colors.textColorNeutral : G.Style.colors.dangerColor;
 
-                        iconName: G.Icons.icons["minus"]
+                        iconName: "minus"
                         tooltip: "Delete"
 
                         onClicked: {

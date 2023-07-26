@@ -88,44 +88,48 @@ Control
             spacing: 10;
 
             G.Button {
-                text: L.Controller.infoCount;
-                backgroundColor: G.Style.colors.bgColor;
-                foregroundColor: G.Style.colors.infoColor;
-                iconName: G.Icons.icons["info"];
+              text: L.Controller.infoCount;
+              down: true
+              type: G.Style.ButtonType.OK
+              //foregroundColor: G.Style.colors.infoColor;
+              iconName: "info";
 
-                Layout.minimumWidth: 42;
-                Layout.maximumWidth: 42;
+              Layout.minimumWidth: 42;
+              Layout.maximumWidth: 42;
+          }
+
+            G.Button {
+              text: L.Controller.debugCount;
+              down: true
+              type: G.Style.ButtonType.Base
+              //foregroundColor: G.Style.colors.debugColor;
+              iconName: "info";
+
+              Layout.minimumWidth: 42;
+              Layout.maximumWidth: 42;
             }
 
             G.Button {
-                text: L.Controller.debugCount;
-                backgroundColor: G.Style.colors.bgColor;
-                foregroundColor: G.Style.colors.debugColor;
-                iconName: G.Icons.icons["info"];
+              text: L.Controller.warningCount;
+              down: true
+              type: G.Style.ButtonType.Warning
+              //foregroundColor: G.Style.colors.warningColor;
+              iconName: "warning";
 
-                Layout.minimumWidth: 42;
-                Layout.maximumWidth: 42;
-            }
-
-            G.Button {
-                text: L.Controller.warningCount;
-                backgroundColor: G.Style.colors.bgColor;
-                foregroundColor: G.Style.colors.warningColor;
-                iconName: G.Icons.icons["warning"];
-
-                Layout.minimumWidth: 42;
-                Layout.maximumWidth: 42;
-            }
+              Layout.minimumWidth: 42;
+              Layout.maximumWidth: 42;
+          }
 
             G.Button {
-                text: L.Controller.errorCount;
-                backgroundColor: G.Style.colors.bgColor;
-                foregroundColor: G.Style.colors.errorColor;
-                iconName: G.Icons.icons["error"];
+              text: L.Controller.errorCount;
+              down: true
+              type: G.Style.ButtonType.Danger
+              //foregroundColor: G.Style.colors.errorColor;
+              iconName: "error";
 
-                Layout.minimumWidth: 42;
-                Layout.maximumWidth: 42;
-            }
+              Layout.minimumWidth: 42;
+              Layout.maximumWidth: 42;
+          }
 
             G.Separator { Layout.fillHeight: true; }
 
@@ -136,12 +140,11 @@ Control
             G.Separator { Layout.fillHeight: true; }
 
             G.Button {
+              text: 'Clear';
+              type: G.Style.ButtonType.OK
+              implicitHeight: 24;
 
-                text: 'Clear';
-                implicitHeight: 24;
-                outlined: true;
-
-                onClicked: L.Controller.clear();
+              onClicked: L.Controller.clear();
             }
         }
     }

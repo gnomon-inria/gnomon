@@ -8,7 +8,6 @@ import gnomon.Visualization 1.0 as GV
 
 import gnomonQuick.Style     1.0 as G
 import gnomonQuick.Controls  1.0 as G
-import gnomonQuick.Icons     1.0 as G
 
 Item {
 
@@ -127,7 +126,7 @@ Item {
             anchors.fill: parent;
 
             G.IconButton {
-                iconName: G.Icons.icons["arrow-down-drop-circle"];
+                iconName: "arrow-down-drop-circle";
                 size: G.Style.smallDelegateHeight;
                 color: G.Style.colors.lightBlue;
                 visible: _drop.containsDrag;
@@ -149,7 +148,7 @@ Item {
 
         G.IconButton {
             id: _edit_icon;
-            iconName: G.Icons.icons["text-box-edit"];
+            iconName: "text-box-edit";
             size: G.Style.iconMedium;
             color: G.Style.colors.textColorFaded;
             tooltip: "Edit form metadata";
@@ -168,7 +167,7 @@ Item {
 
         G.IconButton {
             id: _delete_icon;
-            iconName: G.Icons.icons["delete"];
+            iconName: "delete";
             size: G.Style.iconMedium;
             color: G.Style.colors.textColorFaded;
             tooltip: "Delete form";
@@ -190,7 +189,7 @@ Item {
 
         G.IconButton {
             id: _save_icon;
-            iconName: G.Icons.icons["content-save"];
+            iconName: "content-save";
             size: G.Style.iconMedium;
             color: G.Style.colors.textColorFaded;
             tooltip: "Save form";

@@ -5,7 +5,6 @@ import Qt.labs.platform  1.0 as P
 
 import gnomonQuick.Style as G
 import gnomonQuick.Controls as G
-import gnomonQuick.Icons as G
 
 Control {
     id: _control

@@ -4,8 +4,6 @@ import QtQuick.Layouts      1.15
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
-
 
 ItemDelegate {
 
@@ -40,7 +38,7 @@ ItemDelegate {
     anchors.rightMargin: 10;
     size: 24;
     checked: true;
-    iconName: checked ? G.Icons.icons["eye-outline"] : G.Icons.icons["eye-off-outline"];
+    iconName: checked ? "eye-outline" : "eye-off-outline";
 
     onClicked: {
       _visibility_icon.checked = !_visibility_icon.checked;
@@ -55,7 +53,7 @@ ItemDelegate {
     anchors.verticalCenter: parent.verticalCenter;
     anchors.margins: 4
     size: 24;
-    iconName: G.Icons.icons["delete"];
+    iconName: "delete";
 
     onClicked: _control.deleteForm()
   }

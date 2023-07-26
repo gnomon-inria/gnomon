@@ -4,7 +4,6 @@ import QtQuick.Layouts  1.15
 
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
-import gnomonQuick.Icons      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 
 import gnomon.MetaData    1.0 as GM
@@ -112,7 +111,7 @@ G.Dialog {
             }
 
             G.Icon {
-                icon: G.Icons.icons["text-search"];
+                icon: "text-search";
                 color: G.Style.colors.neutralColor;
 
                 anchors.right: _workspace_search_bar.right;
@@ -156,7 +155,7 @@ G.Dialog {
                     }
 
                     G.Icon {
-                        icon: G.Icons.icons["cancel"];
+                        icon: "cancel";
                         color: G.Style.colors.dangerColor; // "red"
                         visible: !model.available
 
@@ -273,7 +272,7 @@ G.Dialog {
             G.Icon {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                icon: G.Icons.icons["arrow-up-drop-circle"]
+                icon: "arrow-up-drop-circle"
                 color: G.Style.colors.textColorNeutral
                 font: G.Style.fonts.header
             }
@@ -313,7 +312,7 @@ G.Dialog {
                 anchors.right: parent.right
                 anchors.margins: G.Style.smallRowSpacing
                 text: 'Export and Continue';
-                iconName: G.Icons.icons["arrow-up-drop-circle"]
+                iconName: "arrow-up-drop-circle"
                 flat: false
                 type: G.Style.ButtonType.OK
                 width: G.Style.buttonWidth * 2
@@ -335,7 +334,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceBinarization"
             title: "Binarization"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceBinarization.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceBinarization.qml"
             available: true
             initial: false
             highlightElement: false
@@ -343,7 +342,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceBrowser"
             title: "Browsing"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
             available: true
             initial: true
             highlightElement: false
@@ -351,7 +350,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceCellImageQuantification"
             title: "Cell Image Quantification"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageQuantification.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceCellImageQuantification.qml"
             available: true
             initial: false
             highlightElement: false
@@ -359,7 +358,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceCellImageTracking"
             title: "Cell Image Tracking"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
             available: true
             initial: false
             highlightElement: false
@@ -367,7 +366,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceImageMeshing"
             title: "Image Meshing"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceImageMeshing.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceImageMeshing.qml"
             available: true
             initial: false
             highlightElement: false
@@ -375,7 +374,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceLSystemModel"
             title: "L-System Model"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
             available: true
             initial: true
             highlightElement: false
@@ -383,7 +382,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceMeshFilter"
             title: "Mesh Processing"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceMeshFilter.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceMeshFilter.qml"
             available: true
             initial: false
             highlightElement: false
@@ -391,7 +390,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceMorphonet"
             title: "MorphoNet"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
             available: true
             initial: true
             highlightElement: false
@@ -399,7 +398,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspacePointCloudQuantification"
             title: "Point Cloud Quantification"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePointCloudQuantification.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspacePointCloudQuantification.qml"
             available: true
             initial: false
             highlightElement: false
@@ -407,7 +406,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspacePointDetection"
             title: "Point Detection"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePointDetection.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspacePointDetection.qml"
             available: true
             initial: false
             highlightElement: false
@@ -415,7 +414,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspacePreprocess"
             title: "Preprocessing"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
             available: true
             initial: false
             highlightElement: false
@@ -423,7 +422,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspacePythonAlgorithm"
             title: "Python Algorithm"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspacePythonAlgorithm.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspacePythonAlgorithm.qml"
             available: true
             initial: true
             highlightElement: false
@@ -431,7 +430,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceRegistration"
             title: "Registration"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceRegistration.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceRegistration.qml"
             available: true
             initial: false
             highlightElement: false
@@ -439,7 +438,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceSegmentation"
             title: "Segmentation"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceSegmentation.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceSegmentation.qml"
             available: true
             initial: false
             highlightElement: false
@@ -447,7 +446,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceSimulation"
             title: "Simulation"
-            source: "qrc:/qml/gnomonQuick/Workspaces/WorkspaceSimulation.qml"
+            source: "qrc:/gnomonQuick/Workspaces/WorkspaceSimulation.qml"
             available: true
             highlightElement: false
         }

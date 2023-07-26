@@ -6,10 +6,10 @@ import QtQml.Models      2.15
 
 import Qt.labs.platform  1.0 as P
 
+import gnomon.Utils as G
 import gnomonQuick.Workspaces as G
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 import gnomon.Workspaces 1.0 as GW
 
@@ -121,7 +121,7 @@ G.Workspace {
                         size: G.Style.iconMedium;
                         color: G.Style.colors.textColorBase
 
-                        iconName: G.Icons.icons["pencil"];
+                        iconName: "pencil";
 
                         onClicked: {
                             _swipe.currentIndex = 1;

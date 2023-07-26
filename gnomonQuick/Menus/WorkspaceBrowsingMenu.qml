@@ -10,7 +10,6 @@ import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
-import gnomonQuick.Icons      1.0 as G
 
 import gnomon.MetaData        1.0 as GM
 
@@ -115,7 +114,7 @@ Item {
 
                 text: "File";
                 type: G.Style.ButtonType.Base
-                iconName: G.Icons.icons["folder-multiple-plus"]
+                iconName: "folder-multiple-plus"
                 empty: true
 
                 onClicked: {
@@ -131,7 +130,7 @@ Item {
 
                 text: "URL";
                 type: G.Style.ButtonType.Base
-                iconName: G.Icons.icons["cloud-download"]
+                iconName: "cloud-download"
                 empty: true
 
                 onClicked: {

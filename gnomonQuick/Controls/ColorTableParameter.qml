@@ -6,9 +6,9 @@ import Qt.labs.platform  1.0 as P
 import Qt5Compat.GraphicalEffects
 
 import gnomon.Visualization 1.0 as GV
+import gnomon.Utils as G
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 Control {
     id: _control
@@ -147,7 +147,7 @@ Control {
         anchors.right: _add_color.left
         anchors.rightMargin: G.Style.smallPadding
         size: G.Style.iconSmall;
-        iconName: G.Icons.icons["pencil"]
+        iconName: "pencil"
 
         onClicked: {
             let i = param.colorIndexAt(_colors.currentValue)
@@ -175,7 +175,7 @@ Control {
         anchors.right: _control.right
         anchors.rightMargin: G.Style.smallPadding
         size: G.Style.iconSmall;
-        iconName: G.Icons.icons["plus"]
+        iconName: "plus"
 
         onClicked: {
             console.log("Add color!")
@@ -602,7 +602,7 @@ Control {
                     anchors.right: parent.right
                     anchors.rightMargin: G.Style.smallPadding
                     size: G.Style.iconSmall;
-                    iconName: G.Icons.icons["folder-open"]
+                    iconName: "folder-open"
 
                     onClicked: {
                         _texture_dialog.folder = _edit_dialog.texture

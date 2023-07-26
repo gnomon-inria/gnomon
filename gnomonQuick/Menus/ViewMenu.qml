@@ -8,7 +8,6 @@ import Qt.labs.settings
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 Control {
     id: _control;
@@ -77,7 +76,7 @@ Control {
         anchors.rightMargin: -G.Style.smallPadding
 
         size: G.Style.iconMedium;
-        iconName: G.Icons.icons["cog"]
+        iconName: "cog"
 
         tooltip: "View Parameters"
 
@@ -325,8 +324,8 @@ Control {
             _auto_render_connect.target = null;
         }
 
-        var source = "qrc:/qml/gnomonQuick/Menus/" + name + ".menu.qml"
-        var defaultSource = "qrc:/qml/gnomonQuick/Menus/gnomonVisualization.defaultMenu.qml"
+        var source = "qrc:/gnomonQuick/Menus/" + name + ".menu.qml"
+        var defaultSource = "qrc:/gnomonQuick/Menus/gnomonVisualization.defaultMenu.qml"
 
         var menu_component = Qt.createComponent(source)
         if(menu_component.status != Component.Ready) {

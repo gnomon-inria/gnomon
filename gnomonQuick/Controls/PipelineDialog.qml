@@ -4,7 +4,6 @@ import QtQuick.Layouts  1.15
 
 import gnomonQuick.Controls      1.0 as G
 import gnomonQuick.Style         1.0 as G
-import gnomonQuick.Icons         1.0 as G
 import gnomonQuick.Workspaces    1.0 as G
 import "."                       1.0 as G
 

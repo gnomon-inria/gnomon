@@ -6,8 +6,6 @@ import Qt5Compat.GraphicalEffects
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
-
 
 Dialog {
 

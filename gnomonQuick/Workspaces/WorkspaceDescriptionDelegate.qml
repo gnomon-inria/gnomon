@@ -4,7 +4,6 @@ import QtQuick.Layouts  1.15
 
 import gnomonQuick.Controls 1.0 as G
 import gnomonQuick.Style    1.0 as G
-import gnomonQuick.Icons    1.0 as G
 
 
 Item {
@@ -36,7 +35,7 @@ Item {
             }
 
             G.Icon {
-                icon: G.Icons.icons["help-circle"];
+                icon: "help-circle";
                 size: 18;
                 color: hovered ? G.Style.colors.hoveredBaseColor : G.Style.colors.neutralColor;
 

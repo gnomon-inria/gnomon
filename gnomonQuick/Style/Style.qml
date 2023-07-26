@@ -48,7 +48,7 @@ QtObject {
     }
 
     property int mode: Style.Mode.Dark
-    property alias colors: mode == Style.Mode.Dark ? _colorDark : _colorLight
+    property alias colors: _colorDark //mode == Mode.Dark ? _colorDark : _colorLight
     // property alias fonts: _fonts
     property int panelRadius: S.spacing["1"]
 
@@ -139,22 +139,22 @@ QtObject {
 
     property FontLoader regular: FontLoader {
         id: _poppinsRegular
-        source: "qrc:/ttf/Poppins-Regular.ttf"
+        source: "Poppins-Regular.ttf"
     }
 
     property FontLoader medium: FontLoader {
         id: _poppinsMedium
-        source: "qrc:/ttf/Poppins-Medium.ttf"
+        source: "Poppins-Medium.ttf"
     }
 
     property FontLoader light: FontLoader {
         id: _poppinsLight
-        source: "qrc:/ttf/Poppins-Light.ttf"
+        source: "Poppins-Light.ttf"
     }
 
     property FontLoader bold: FontLoader {
         id: _poppinsBold
-        source: "qrc:/ttf/Poppins-Bold.ttf"
+        source: "Poppins-Bold.ttf"
     }
 
 
@@ -186,7 +186,7 @@ QtObject {
     // Color definitions
     // /////////////////////////////////////////////////////////////////////////////
 
-    property QtObject Darkcolors: QtObject {
+    property QtObject darkcolors: QtObject {
         id: _colorDark;
 
         //From previous style (gnomon)
@@ -247,7 +247,7 @@ QtObject {
     }
 
     // TODO edit the colors
-    property QtObject Lightcolors: QtObject {
+    property QtObject lightcolors: QtObject {
         id: _colorLight;
 
         //From previous style (gnomon)

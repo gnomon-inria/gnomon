@@ -7,10 +7,10 @@ import QtQml.Models      2.15
 import Qt.labs.platform  1.0 as P
 import Qt.labs.settings
 
+import gnomon.Utils as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
-import gnomonQuick.Icons      1.0 as G
 
 import gnomon.Workspaces 1.0 as GW
 
@@ -172,7 +172,7 @@ G.Workspace {
                     text: "Save";
 
                     type: G.Style.ButtonType.Base
-                    iconName: G.Icons.icons["content-save"]
+                    iconName: "content-save"
                     empty: true
 
                     onClicked: {
@@ -190,7 +190,7 @@ G.Workspace {
                     text: "Load";
 
                     type: G.Style.ButtonType.Base
-                    iconName: G.Icons.icons["folder-open"]
+                    iconName: "folder-open"
                     empty: true
 
                     onClicked: {

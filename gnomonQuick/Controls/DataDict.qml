@@ -5,7 +5,6 @@ import QtQuick.Layouts    1.15
 
 import gnomonQuick.Controls  1.0 as G
 import gnomonQuick.Style     1.0 as G
-import gnomonQuick.Icons     1.0 as G
 
 import gnomon.Visualization 1.0 as GV
 
@@ -77,7 +76,7 @@ Rectangle {
         anchors.fill: parent;
 
         G.Icon {
-            icon: G.Icons.icons["arrow-down-drop-circle"];
+            icon: "arrow-down-drop-circle";
             size: G.Style.smallDelegateHeight;
             color: G.Style.colors.fgColor
             visible: _drop.containsDrag;
@@ -108,7 +107,7 @@ Rectangle {
         anchors.right: self.right
         anchors.rightMargin: G.Style.smallPadding + _scrollbar.width
 
-        iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
+        iconName: viewLogic.inputView ? "arrow-down-drop-circle" : "arrow-up-drop-circle";
         enabled: self.export_enabled
         size: G.Style.iconLarge;
         color: self.export_enabled ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;

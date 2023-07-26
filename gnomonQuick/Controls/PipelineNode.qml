@@ -5,7 +5,6 @@ import QtQuick.Layouts  1.15
 
 import gnomonQuick.Controls  1.0 as G
 import gnomonQuick.Style     1.0 as G
-import gnomonQuick.Icons     1.0 as G
 
 import gnomon.Visualization     1.0 as GV
 
@@ -68,7 +67,7 @@ Rectangle {
         size: G.Style.iconSmall;
         color: G.Style.colors.textColorDarkNeutral
 
-        icon: G.Icons.icons["pencil"]
+        icon: "pencil"
 
     }
 

@@ -4,10 +4,9 @@ import QtQuick.Layouts
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 Control {
-	id: _control
+  id: _control
 
     property var value: 1
     property var min: 0
@@ -26,7 +25,7 @@ Control {
         text: _control.doc
     }
 
-	Label {
+  Label {
 
         id: _label
 
@@ -45,8 +44,8 @@ Control {
         anchors.left: parent.left
         anchors.right: parent.right
 
-		from: _control.min
-		to: _control.max
+    from: _control.min
+    to: _control.max
         value: _control.value
 
         onValueChanged: {
@@ -55,55 +54,55 @@ Control {
         }
     }
 
-	TextField {
-		id: _value_input;
+  TextField {
+    id: _value_input;
 
-        anchors.top: _slider.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
+    anchors.top: _slider.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
 
-        horizontalAlignment: Qt.AlignHCenter
-        verticalAlignment: Qt.AlignVCenter
+    horizontalAlignment: Qt.AlignHCenter
+    verticalAlignment: Qt.AlignVCenter
 
-        selectByMouse: true
-        mouseSelectionMode: TextInput.SelectCharacters
-        readOnly: false
+    selectByMouse: true
+    mouseSelectionMode: TextInput.SelectCharacters
+    readOnly: false
 
-		text: _slider.value.toFixed(_control.decimals)
-        font: G.Style.fonts.value
-		color: _value_input.activeFocus? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
-        selectionColor: G.Style.colors.fgColor
-        selectedTextColor: G.Style.colors.hoveredBaseColor
+    text: _slider.value.toFixed(_control.decimals)
+    font: G.Style.fonts.value
+    color: _value_input.activeFocus? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
+    selectionColor: G.Style.colors.fgColor
+    selectedTextColor: G.Style.colors.hoveredBaseColor
 
-		validator: DoubleValidator {
-            bottom: _control.min
-            top: _control.max
-            decimals: _control.decimals
-            notation: DoubleValidator.StandardNotation
-        }
-        errorText: "Enter a number between "+_control.min+" and "+_control.max;
+    validator: DoubleValidator {
+      bottom: _control.min
+      top: _control.max
+      decimals: _control.decimals
+      notation: DoubleValidator.StandardNotation
+    }
+    //errorText: "Enter a number between "+_control.min+" and "+_control.max;
 
-		onEditingFinished: {
-            _control.value = parseFloat(text);
-        }
+    onEditingFinished: {
+      _control.value = parseFloat(text);
+    }
 
-        Keys.onReturnPressed: editingFinished()
-	}
+    Keys.onReturnPressed: editingFinished()
+  }
 
-	Rectangle {
-	    anchors.fill: _value_input
-	    z: _value_input.z - 1
+  Rectangle {
+      anchors.fill: _value_input
+      z: _value_input.z - 1
 
         color: G.Style.colors.gutterColor
 
-	    Rectangle {
-	        anchors.top: parent.top
-	        anchors.horizontalCenter: parent.horizontalCenter
-	        height: 1
-	        width: parent.width - G.Style.smallPadding
-	        radius: 1
+      Rectangle {
+          anchors.top: parent.top
+          anchors.horizontalCenter: parent.horizontalCenter
+          height: 1
+          width: parent.width - G.Style.smallPadding
+          radius: 1
 
             color: G.Style.colors.bgColor
-	    }
+      }
     }
 }

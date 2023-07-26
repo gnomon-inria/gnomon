@@ -35,6 +35,7 @@ QML_FILES
   GraphicalParameter.qml
   Gutter.qml
   Icon.qml
+  Icons.js
   IconButton.qml
   InList.qml
   InListStringList.qml
@@ -96,6 +97,7 @@ RESOURCES
   View-YZ.pxm
   View-YZ-off.png
   View-YZ-off.pxm
+  materialdesignicons-webfont.ttf
 OUTPUT_DIRECTORY
   ${CMAKE_BINARY_DIR}/qml/gnomonQuick/Controls
 OUTPUT_TARGETS

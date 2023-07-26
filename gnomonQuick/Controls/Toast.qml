@@ -4,8 +4,6 @@ import QtQuick.Layouts  1.15
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
-
 
 Popup {
   id: _control
@@ -47,16 +45,16 @@ Popup {
     radius: G.Style.panelRadius
 
     border.width: 1
-    border.color: _getButtonColor()  
+    border.color: _getButtonColor()
     color: _getBgColor()
 
   }
   contentItem: Rectangle {
     id : _popup_content
-        
+
     implicitHeight: Math.round(G.Style.smallDialogHeight / 2)
-    implicitWidth: G.Style.smallDialogWidth 
-    color: _getBgColor() 
+    implicitWidth: G.Style.smallDialogWidth
+    color: _getBgColor()
 
     G.Icon {
       id: _icon
@@ -84,7 +82,7 @@ Popup {
         left: _icon.right
         margins: G.Style.smallPadding
       }
-    }    
+    }
 
     Text {
       id: _message
@@ -164,24 +162,24 @@ Popup {
 
     if(_control.type === G.Style.ButtonType.Base)
       return G.Style.colors.textColorBase
-    
+
     return G.Style.colors.textColorNeutral
   }
 
   function _getIcon() {
     if(_control.type === G.Style.ButtonType.Danger)
-      return G.Icons.icons["close-circle-outline"]
+      return "close-circle-outline"
 
     if(_control.type === G.Style.ButtonType.Warning)
-      return G.Icons.icons["alert-circle-outline"]
+      return "alert-circle-outline"
 
     if(_control.type === G.Style.ButtonType.OK)
-      return G.Icons.icons["check-circle-outline"]
+      return "check-circle-outline"
 
     if(_control.type === G.Style.ButtonType.Base)
-      return G.Icons.icons["information-outline"]
+      return "information-outline"
 
-    return G.Icons.icons["chevron-right-circle-outline"]
+    return "chevron-right-circle-outline"
   }
 
 }

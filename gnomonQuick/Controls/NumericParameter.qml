@@ -4,12 +4,11 @@ import QtQuick.Layouts
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 Control {
-	id: _control
+  id: _control
 
-	required property var param;
+  required property var param;
     //for crossParameters
     readonly property var paramType: _control.param ? _control.param.type : undefined
 
@@ -33,8 +32,8 @@ Control {
         doc: _control.param ? _control.param.doc : ""
 
         onValueChanged: {
-			if(_control.param)
-            	_control.param.value = _slider.value
+      if(_control.param)
+              _control.param.value = _slider.value
         }
     }
 }

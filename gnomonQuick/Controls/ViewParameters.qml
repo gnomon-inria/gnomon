@@ -11,7 +11,6 @@ import gnomon.Visualization 1.0 as GV
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 
 Control {
@@ -203,7 +202,7 @@ Control {
                 anchors.rightMargin: G.Style.smallPadding
 
                 size: G.Style.iconSmall;
-                iconName: G.Icons.icons["file-upload-outline"]
+                iconName: "file-upload-outline"
                 color: G.Style.colors.textColorBase;
 
                 onClicked: {
@@ -218,7 +217,7 @@ Control {
                 anchors.verticalCenter: _button_container.verticalCenter
 
                 size: G.Style.iconSmall;
-                iconName: G.Icons.icons["content-save-outline"]
+                iconName: "content-save-outline"
                 color: G.Style.colors.textColorBase;
 
                 onClicked: {

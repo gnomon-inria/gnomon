@@ -6,7 +6,6 @@ import Qt5Compat.GraphicalEffects
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 import gnomon.Visualization 1.0 as GV
 import gnomon.MetaData    1.0 as GM

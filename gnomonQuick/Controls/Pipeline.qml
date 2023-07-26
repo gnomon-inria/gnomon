@@ -5,7 +5,6 @@ import QtQuick.Shapes 1.15
 import gnomonQuick.Controls 1.0 as G
 import gnomonQuick.Style    1.0 as G
 import gnomonQuick.Graph    1.0 as G
-import gnomonQuick.Icons    1.0 as G
 
 import gnomon.Pipeline 1.0 as GP
 import gnomon.Visualization 1.0 as GV
@@ -37,7 +36,7 @@ Control {
 
         size: G.Style.iconMedium;
 
-        iconName: G.Icons.icons["content-save"];
+        iconName: "content-save";
         tooltip: "Save the pipeline"
 
         onClicked: {
@@ -70,7 +69,7 @@ Control {
             size: G.Style.iconSmall;
             color: GP.PipelineManager.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDeEmphasize
 
-            icon: G.Icons.icons["pencil"]
+            icon: "pencil"
         }
 
         MouseArea {

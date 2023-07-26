@@ -114,7 +114,7 @@ G.Dialog { id: _self;
                 validator: DoubleValidator{
                     notation: DoubleValidator.StandardNotation
                 }
-                errorText: "Enter a number";
+                //errorText: "Enter a number";
             }
 
 
@@ -156,7 +156,7 @@ G.Dialog { id: _self;
                 validator: DoubleValidator{
                     notation: DoubleValidator.StandardNotation
                 }
-                errorText: "Enter a double";
+                //errorText: "Enter a double";
             }
 
             Label{
@@ -175,7 +175,7 @@ G.Dialog { id: _self;
                 validator: DoubleValidator{
                     notation: DoubleValidator.StandardNotation
                 }
-                errorText: "Enter a number";
+                //errorText: "Enter a number";
             }
 
             Label{
@@ -197,7 +197,7 @@ G.Dialog { id: _self;
                     decimals: 4
                     notation: DoubleValidator.StandardNotation
                 }
-                errorText: "Enter a number";
+                //errorText: "Enter a number";
             }
 
 

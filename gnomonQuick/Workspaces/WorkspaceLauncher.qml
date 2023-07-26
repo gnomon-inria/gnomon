@@ -8,7 +8,6 @@ import Qt.labs.settings
 import gnomonQuick.Controls as G
 import gnomonQuick.Workspaces as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 import gnomon.Pipeline  1.0 as GP
 
@@ -232,7 +231,7 @@ G.Workspace {
                             size: G.Style.ButtonSize.Large
 
                             text: "Load"
-                            iconName: G.Icons.icons["play"]
+                            iconName: "play"
                             empty: true
 
                             onClicked: {
@@ -251,7 +250,7 @@ G.Workspace {
                             type: G.Style.ButtonType.Base
 
                             text: "New"
-                            iconName: G.Icons.icons["plus"]
+                            iconName: "plus"
 
                             Timer {
                                 id: _timer
@@ -467,7 +466,7 @@ G.Workspace {
                                 anchors.margins: G.Style.smallPadding
 
                                 size: G.Style.iconMedium;
-                                iconName: G.Icons.icons["plus"]
+                                iconName: "plus"
                                 color: G.Style.colors.bgColor
 
                                 onClicked: {
@@ -497,7 +496,7 @@ G.Workspace {
                                 anchors.margins: G.Style.smallPadding
 
                                 size: G.Style.iconMedium;
-                                iconName: G.Icons.icons["play"]
+                                iconName: "play"
                                 color: G.Style.colors.bgColor
 
                                 onClicked: {
@@ -570,7 +569,7 @@ G.Workspace {
 
                                 G.IconButton {
                                     id: _load_icon;
-                                    iconName: G.Icons.icons["arrow-down"];
+                                    iconName: "arrow-down";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
                                     tooltip: "Load"
@@ -586,7 +585,7 @@ G.Workspace {
                                 }
                                 G.IconButton {
                                     id: _trash_icon;
-                                    iconName: G.Icons.icons["trash-can"];
+                                    iconName: "trash-can";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
                                     tooltip: "Delete"

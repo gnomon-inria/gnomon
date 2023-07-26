@@ -4,10 +4,9 @@ import QtQuick.Layouts
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 Control {
-	id: _control
+  id: _control
 
     property var value: _spinbox.value / Math.pow(10, _control.decimals)
     property var min: 0
@@ -26,7 +25,7 @@ Control {
         text: _control.doc
     }
 
-	Label {
+  Label {
         id: _label
 
         anchors.left: parent.left
@@ -44,9 +43,9 @@ Control {
         anchors.left: parent.left
         anchors.right: parent.right
 
-		from: _control.min * Math.pow(10, _control.decimals)
-		to: _control.max * Math.pow(10, _control.decimals)
-		stepSize: 1
+    from: _control.min * Math.pow(10, _control.decimals)
+    to: _control.max * Math.pow(10, _control.decimals)
+    stepSize: 1
         value: _control.value * Math.pow(10, _control.decimals)
         editable: true
 
@@ -93,7 +92,7 @@ Control {
             anchors.right: parent.right
             anchors.top: parent.top
 
-            iconName: G.Icons.icons["plus"]
+            iconName: "plus"
             size: G.Style.iconMedium
 
             onClicked: {
@@ -111,7 +110,7 @@ Control {
             anchors.left: parent.left
             anchors.top: parent.top
 
-            iconName: G.Icons.icons["minus"]
+            iconName: "minus"
             size: G.Style.iconMedium
 
             onClicked: {

@@ -3,8 +3,6 @@ import QtQuick.Controls
 
 import gnomonQuick.Style as G
 import gnomonQuick.Controls as G
-import gnomonQuick.Icons as G
-
 
 ScrollIndicator {
     id: _control

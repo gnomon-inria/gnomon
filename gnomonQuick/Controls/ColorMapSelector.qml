@@ -6,7 +6,6 @@ import Qt5Compat.GraphicalEffects
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 ComboBox {
 
@@ -45,7 +44,7 @@ ComboBox {
         // anchors.leftMargin: G.Style.sizes.s6
 
         size: G.Style.iconSmall
-        icon: G.Icons.icons["apple-keyboard-control"]
+        icon: "apple-keyboard-control"
 
         rotation: _control.down ? 0 : 180
 

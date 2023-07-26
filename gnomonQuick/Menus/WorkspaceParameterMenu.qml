@@ -11,7 +11,6 @@ import gnomonQuick.Menus as G
 import gnomonQuick.Workspaces as G
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 Control {
     id: _menu;
@@ -122,7 +121,7 @@ Control {
                 type: !running ? G.Style.ButtonType.Base : paused? G.Style.ButtonType.OK : G.Style.ButtonType.Neutral
 
                 text: !running ? "Run" : paused ? "Resume" : "Pause"
-                iconName: !running ? G.Icons.icons["play"] : paused ? G.Icons.icons["play"] : G.Icons.icons["pause"]
+                iconName: !running ? "play" : paused ? "play" : "pause"
 
                 Connections {
                     target: d
@@ -157,7 +156,7 @@ Control {
                 anchors.verticalCenter: _button_container.verticalCenter
                 anchors.margins: G.Style.smallPadding
                 type: enabled ? G.Style.ButtonType.Danger : G.Style.ButtonType.Neutral
-                iconName: G.Icons.icons["stop"]
+                iconName: "stop"
                 text: "stop"
                 tooltip: "stop"
                 enabled: _apply.running

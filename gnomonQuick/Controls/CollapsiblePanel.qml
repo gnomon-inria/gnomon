@@ -5,7 +5,6 @@ import QtQuick.Controls
 //Atomic
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 Control {
 
@@ -45,7 +44,7 @@ Control {
 
       anchors.right: _header.right;
       anchors.verticalCenter: _header.verticalCenter;
-      iconName: _control.collapsed ? G.Icons.icons["plus"] : G.Icons.icons["minus"]
+      iconName: _control.collapsed ? "plus" : "minus"
       color: _control.collapsed ? G.Style.colors.textColorBase : G.Style.colors.textColorDeEmphasize
       size: G.Style.iconMedium;
 

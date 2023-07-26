@@ -15,7 +15,6 @@ import gnomon.MetaData    1.0 as GM
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 Rectangle {
 
@@ -75,7 +74,7 @@ Rectangle {
         anchors.fill: parent;
 
         G.Icon {
-            icon: G.Icons.icons["arrow-down-drop-circle"];
+            icon: "arrow-down-drop-circle";
             size: G.Style.smallDelegateHeight;
             color: G.Style.colors.fgColor
             visible: _drop.containsDrag && viewLogic.inputView;
@@ -145,7 +144,7 @@ Rectangle {
     G.IconButton {
         id: _2d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_2D;
-        iconName: G.Icons.icons["crop-free"];
+        iconName: "crop-free";
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "2D mode"
@@ -238,7 +237,7 @@ Rectangle {
     G.IconButton {
         id: _3d_icon;
         property bool active: viewLogic.mode == GV.View.VIEW_MODE_3D;
-        iconName: G.Icons.icons["cube-outline"];
+        iconName: "cube-outline";
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "3D mode";
@@ -277,7 +276,7 @@ Rectangle {
     G.IconButton {
         id: _color_icon;
 
-        iconName: G.Icons.icons["palette"]
+        iconName: "palette"
         size: G.Style.iconLarge;
         color: G.Style.colors.textColorNeutral;
         tooltip: "Choose background color"
@@ -305,7 +304,7 @@ Rectangle {
     G.IconButton {
         id: _camera_icon;
         property bool active: false;
-        iconName: G.Icons.icons["video"];
+        iconName: "video";
         size: G.Style.iconLarge;
         color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         visible: viewLogic.mode == GV.View.VIEW_MODE_3D && icons_enabled
@@ -324,7 +323,7 @@ Rectangle {
 
     G.IconButton {
         id: _camera_xy_icon;
-        iconName: G.Icons.icons["axis-z-arrow"];
+        iconName: "axis-z-arrow";
         size: G.Style.iconLarge;
         rotation: self.shift_pressed? 180 : 0
         flip: self.ctrl_pressed
@@ -346,7 +345,7 @@ Rectangle {
     G.IconButton {
         id: _camera_xz_icon;
 
-        iconName: G.Icons.icons["axis-y-arrow"];
+        iconName: "axis-y-arrow";
         size: G.Style.iconLarge;
         rotation: self.ctrl_pressed ? 180 : 0
         flip: (self.shift_pressed ? !self.ctrl_pressed : self.ctrl_pressed)
@@ -367,7 +366,7 @@ Rectangle {
 
     G.IconButton {
         id: _camera_yz_icon;
-        iconName: G.Icons.icons["axis-x-arrow"];
+        iconName: "axis-x-arrow"
         size: G.Style.iconLarge;
         rotation: self.ctrl_pressed ? 180 : 0
         flip: (self.shift_pressed ? !self.ctrl_pressed : self.ctrl_pressed)
@@ -388,7 +387,7 @@ Rectangle {
 
     G.IconButton {
         id: _representation_button
-        iconName: G.Icons.icons[["dots-triangle", "vector-triangle", "triangle"][viewLogic.representation]]
+        iconName: ["dots-triangle", "vector-triangle", "triangle"][viewLogic.representation]
         size: G.Style.iconLarge;
         color: G.Style.colors.textColorNeutral;
         tooltip: "Set representation to Point/Wireframe/Surface"
@@ -407,7 +406,7 @@ Rectangle {
 
     G.IconButton {
         id: _grid_button;
-        iconName: viewLogic.gridVisible ? G.Icons.icons["grid"] : G.Icons.icons["grid-off"];
+        iconName: viewLogic.gridVisible ? "grid" : "grid-off";
         size: G.Style.iconLarge;
         color: viewLogic.gridVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Show/Hide the grid around the objects"
@@ -427,7 +426,7 @@ Rectangle {
     G.IconButton {
         id: _grid_type_button;
         visible: viewLogic.gridVisible
-        iconName: viewLogic.gridType == 0 ? G.Icons.icons["cube"] : G.Icons.icons[["alpha-x-box", "alpha-y-box", "alpha-z-box"][viewLogic.gridOrientation]];
+        iconName: viewLogic.gridType == 0 ? "cube" : ["alpha-x-box", "alpha-y-box", "alpha-z-box"][viewLogic.gridOrientation];
         size: G.Style.iconLarge;
         color: viewLogic.gridVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Display grid cube or only X/Y/Z grid plane"
@@ -452,7 +451,7 @@ Rectangle {
 
     G.IconButton {
         id: _axes_button;
-        iconName: G.Icons.icons["axis-arrow"]
+        iconName: "axis-arrow"
         size: G.Style.iconLarge;
         color: viewLogic.axesVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Show/Hide the axes orientation widget"
@@ -471,7 +470,7 @@ Rectangle {
 
     G.IconButton {
         id: _fixed_camera_button;
-        iconName: G.Icons.icons["axis-lock"]
+        iconName: "axis-lock"
         size: G.Style.iconLarge;
         color: viewLogic.cameraFixed ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Forbid/Allow visualization updates to change the field of view"
@@ -490,7 +489,7 @@ Rectangle {
 
     G.IconButton {
         id: _link;
-        iconName: viewLogic.synced ? G.Icons.icons["lock"] : G.Icons.icons["lock-open"];
+        iconName: viewLogic.synced ? "lock" : "lock-open";
         size: G.Style.iconLarge;
         color: viewLogic.synced ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         visible: viewLogic.inPool && icons_enabled
@@ -558,7 +557,7 @@ Rectangle {
         anchors.right: _export_icon.visible? _export_icon.left : _view.right
         anchors.rightMargin: G.Style.smallPadding
 
-        iconName: G.Icons.icons["camera"];
+        iconName: "camera";
         size: G.Style.iconLarge;
         color: G.Style.colors.textColorNeutral
 
@@ -582,7 +581,7 @@ Rectangle {
 
     G.IconButton {
         id: _export_icon;
-        iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
+        iconName: viewLogic.inputView ? "arrow-down-drop-circle" : "arrow-up-drop-circle";
         enabled: self.export_enabled && icons_enabled
         visible: !viewLogic.inputView && icons_enabled
         size: G.Style.iconLarge;

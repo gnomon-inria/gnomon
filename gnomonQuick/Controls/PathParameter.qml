@@ -5,7 +5,6 @@ import Qt.labs.platform  1.0 as P
 
 import gnomonQuick.Style as G
 import gnomonQuick.Controls as G
-import gnomonQuick.Icons as G
 
 Control {
     id: _control
@@ -37,7 +36,7 @@ Control {
         anchors.right: _control.right
         anchors.margins: G.Style.smallPadding
 
-        iconName: G.Icons.icons["folder-open"]
+        iconName: "folder-open"
         enabled: _control.param
 
         size: G.Style.iconMedium;

@@ -6,6 +6,7 @@ import QtQml.Models      2.15
 
 import Qt.labs.platform  1.0 as P
 
+import gnomon.Utils as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G

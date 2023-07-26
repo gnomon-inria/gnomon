@@ -8,7 +8,7 @@ Button
 {
   id: _control;
 
-  property alias iconName: _icon.icon;
+  required property string iconName;
   property alias size: _icon.size;
   property alias rotation: _icon.rotation;
   property alias flip: _icon.flip
@@ -29,6 +29,7 @@ Button
   contentItem: G.Icon {
     id: _icon;
 
+    icon : _control.iconName
     color: _control.hoverColor && _icon_area.containsMouse ? _control.hoverColor : _control.color
 
     MouseArea {

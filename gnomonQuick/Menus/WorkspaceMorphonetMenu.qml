@@ -10,8 +10,6 @@ import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
-import gnomonQuick.Icons      1.0 as G
-
 
 Control {
 
@@ -156,7 +154,7 @@ Control {
                         text: "1.0";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
-                        errorText: "Incorrect value";
+                        //errorText: "Incorrect value";
                         Layout.fillWidth: true;
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
@@ -177,7 +175,7 @@ Control {
                         text: "";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
-                        errorText: "Incorrect value";
+                        //errorText: "Incorrect value";
                         validator: IntValidator{bottom: 0; top: 10000;}
                     }
                     Label { text: "Time  End:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel;}
@@ -185,7 +183,7 @@ Control {
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
                         Layout.fillWidth: true;
-                        errorText: "Incorrect value";
+                        //errorText: "Incorrect value";
                         validator: IntValidator{bottom: 0; top: 10000;}
                     }
                     G.ToolTip {
@@ -254,7 +252,7 @@ Control {
                         text: "0";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
-                        errorText: "Incorrect value";
+                        //errorText: "Incorrect value";
                         validator: IntValidator{bottom: 0; top: 10000; }
                     }
                     G.ToolTip {
@@ -304,7 +302,7 @@ Control {
                         text: "1.0";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
-                        errorText: "Incorrect value";
+                        //errorText: "Incorrect value";
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }
 
@@ -356,7 +354,7 @@ Control {
                     }
 
                     G.Icon {
-                        icon: G.Icons.icons["sync"];
+                        icon: "sync";
                         color: G.Style.colors.textColorBase;
 
                         anchors.left: _sync_infos.left;
@@ -425,7 +423,7 @@ Control {
                         text: "0.5";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
-                        errorText: "Incorrect value";
+                        //errorText: "Incorrect value";
                         Layout.fillWidth: true;
                         //validator: DoubleValidator{bottom: 0.01; top: 10; locale: Qt.locale("en"); notation: DoubleValidator.StandardNotation}
                     }

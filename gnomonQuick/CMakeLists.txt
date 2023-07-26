@@ -1,7 +1,5 @@
 add_subdirectory(Controls)
 add_subdirectory(Graph)
-add_subdirectory(Icons)
 add_subdirectory(Menus)
 add_subdirectory(Style)
 add_subdirectory(Workspaces)
-#add_subdirectory(assets)

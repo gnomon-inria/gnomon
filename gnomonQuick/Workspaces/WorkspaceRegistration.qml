@@ -6,10 +6,10 @@ import QtQml.Models      2.15
 
 import Qt.labs.platform  1.0 as P
 
+import gnomon.Utils as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
-import gnomonQuick.Icons      1.0 as G
 
 import gnomon.Workspaces 1.0 as GW
 import gnomon.Visualization 1.0 as GV
@@ -210,7 +210,7 @@ G.Workspace {
             }
 
             G.IconButton {
-                iconName: _target_view._fullscreen ? G.Icons.icons["fullscreen-exit"] : G.Icons.icons["fullscreen"]
+                iconName: _target_view._fullscreen ? "fullscreen-exit" : "fullscreen"
                 size: G.Style.iconLarge;
                 color: G.Style.colors.textColorNeutral
                 tooltip: _target_view._fullscreen ? "Reduce View" : "Expand View"

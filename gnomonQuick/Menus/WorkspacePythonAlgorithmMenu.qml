@@ -8,7 +8,6 @@ import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
-import gnomonQuick.Icons      1.0 as G
 
 Item {
 
@@ -172,7 +171,7 @@ Item {
                     }
 
                     G.IconButton { id: _update_icon;
-                        iconName: G.Icons.icons["refresh"];
+                        iconName: "refresh";
                         size: G.Style.iconLarge;
                         tooltip: "Update code";
 
@@ -239,7 +238,7 @@ Item {
                         text: "Save";
 
                         type: G.Style.ButtonType.Base
-                        iconName: G.Icons.icons["content-save"]
+                        iconName: "content-save"
                         empty: true
 
                         onClicked: {
@@ -262,7 +261,7 @@ Item {
                         text: "Load";
 
                         type: G.Style.ButtonType.Base
-                        iconName: G.Icons.icons["folder-open"]
+                        iconName: "folder-open"
                         empty: true
 
                         onClicked: {

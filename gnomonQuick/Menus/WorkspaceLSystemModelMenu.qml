@@ -8,7 +8,6 @@ import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
-import gnomonQuick.Icons      1.0 as G
 
 Item {
 
@@ -197,7 +196,7 @@ Item {
                 text: "Stop"
                 empty: true
                 type: enabled? G.Style.ButtonType.Danger : G.Style.ButtonType.Neutral
-                iconName: G.Icons.icons["stop"]
+                iconName: "stop"
 
                 onClicked: {
                     console.info('Stopping the simulation.')
@@ -217,7 +216,7 @@ Item {
                 text: "Run"
                 type: enabled? G.Style.ButtonType.Base : G.Style.ButtonType.Neutral
                 tooltip: "run the simulation from the beginning"
-                iconName: G.Icons.icons["play"]
+                iconName: "play"
 
                 onClicked: {
                     console.info('launching Run!')
@@ -238,7 +237,7 @@ Item {
                 text: "Animate"
                 type: enabled? G.Style.ButtonType.Base : G.Style.ButtonType.Neutral
                 tooltip: "Animate: do " + _derivation_spinbox.value + " steps and display them"
-                iconName: G.Icons.icons["animation-play"]
+                iconName: "animation-play"
 
                 onClicked: {
                     console.info('launching animation...')
@@ -259,7 +258,7 @@ Item {
                 tooltip: "Step: do one more step and visualize it"
                 empty: true
                 type: enabled? G.Style.ButtonType.Base : G.Style.ButtonType.Neutral
-                iconName: G.Icons.icons["step-forward"]
+                iconName: "step-forward"
 
                 onClicked: {
                     console.info('launching Step.')
@@ -279,7 +278,7 @@ Item {
                 text: "Reset"
                 empty: true
                 type: enabled? G.Style.ButtonType.Base : G.Style.ButtonType.Neutral
-                iconName: G.Icons.icons["replay"]
+                iconName: "replay"
 
                 onClicked: {
                     console.info('launching Reset?')

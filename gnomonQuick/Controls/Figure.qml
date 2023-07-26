@@ -11,7 +11,6 @@ import gnomon.Mpl           1.0 as GV
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
-import gnomonQuick.Icons as G
 
 Rectangle {
 
@@ -54,7 +53,7 @@ Rectangle {
         anchors.fill: parent;
 
         G.Icon {
-            icon: G.Icons.icons["arrow-down-drop-circle"];
+            icon: "arrow-down-drop-circle";
             size: G.Style.smallDelegateHeight;
             color: G.Style.colors.bgColor
             visible: _drop.containsDrag;
@@ -84,7 +83,7 @@ Rectangle {
         anchors.right: _export_icon.visible? _export_icon.left : _view.right
         anchors.rightMargin: G.Style.smallPadding
 
-        iconName: G.Icons.icons["camera"];
+        iconName: "camera";
         size: G.Style.iconLarge;
         color: G.Style.colors.fgColor
 
@@ -107,7 +106,7 @@ Rectangle {
     }
 
     G.IconButton { id: _export_icon;
-        iconName: viewLogic.inputView ? G.Icons.icons["arrow-down-drop-circle"] : G.Icons.icons["arrow-up-drop-circle"];
+        iconName: viewLogic.inputView ? "arrow-down-drop-circle" : "arrow-up-drop-circle";
         enabled: !viewLogic.inputView
         visible: !viewLogic.inputView
         size: G.Style.iconLarge;
