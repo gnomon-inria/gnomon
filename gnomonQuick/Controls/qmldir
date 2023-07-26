@@ -3,6 +3,9 @@ module gnomonQuick.Controls
 Application 1.0 Application.qml
 Page 1.0 Page.qml
 Panel 1.0 Panel.qml
+Console 1.0 Console.qml
+ConsoleDelegate 1.0 ConsoleDelegate.qml
+Separator 1.0 Separator.qml
 FormSelector 1.0 FormSelector.qml
 FormSelectorDelegate 1.0 FormSelectorDelegate.qml
 Card 1.0 Card.qml

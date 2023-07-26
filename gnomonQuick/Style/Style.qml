@@ -6,7 +6,6 @@ import QtQuick.Controls 2.15
 // js style
 import "./style.qml.js" as S
 
-
 QtObject {
     id: _self
 
@@ -48,9 +47,8 @@ QtObject {
         Bottom
     }
 
-    // TODO: Define light theme and make the colors in colorTheme object conditional
-    property int mode: Style.Mode ? Style.Mode.Dark : 0
-    // property alias colors: _colorTheme
+    property int mode: Style.Mode.Dark
+    property alias colors: mode == Style.Mode.Dark ? _colorDark : _colorLight
     // property alias fonts: _fonts
     property int panelRadius: S.spacing["1"]
 
@@ -188,8 +186,69 @@ QtObject {
     // Color definitions
     // /////////////////////////////////////////////////////////////////////////////
 
-    property QtObject colors: QtObject {
-        id: _colorTheme;
+    property QtObject Darkcolors: QtObject {
+        id: _colorDark;
+
+        //From previous style (gnomon)
+        property color highlightColor: "#20E8C0"
+
+        //panel colors (neutral)
+        property color bgColor: S.colors.gray["700"]
+        property color gutterColor: S.colors.gray["900"]
+        property color fgColor: S.colors.gray["600"]
+        property color embossColor: S.colors.gray["600"]
+
+        //basic color theme
+        property color baseColor: S.colors.blue["500"]
+        property color neutralColor: S.colors.gray["300"]
+        property color dangerColor: S.colors.red["500"]
+        property color warningColor: S.colors.orange["500"]
+        property color okColor: S.colors.green["500"]
+        property color noteColor: S.colors.yellow["500"]
+        property color exampleColor: S.colors.purple["500"]
+
+        //hovered color theme
+        property color hoveredBaseColor: S.colors.blue["400"]
+        property color hoveredNeutralColor: S.colors.gray["400"]
+        property color hoveredDangerColor: S.colors.red["400"]
+        property color hoveredWarningColor: S.colors.orange["400"]
+        property color hoveredOkColor: S.colors.green["400"]
+
+        //text colors
+        property color textColorBase: S.colors.blue["100"]
+        property color textColorOk: S.colors.green["100"]
+        property color textColorDanger: S.colors.red["100"]
+        property color textColorWarning: S.colors.orange["100"]
+        property color textColorNeutral: S.colors.gray["100"]
+        property color textColorFaded: S.colors.gray["200"]
+        property color textColorDeEmphasize: S.colors.gray["600"]
+
+        //text colors
+        property color textColorDarkBase: S.colors.blue["900"]
+        property color textColorDarkOk: S.colors.green["900"]
+        property color textColorDarkDanger: S.colors.red["900"]
+        property color textColorDarkWarning: S.colors.orange["900"]
+        property color textColorDarkNeutral: S.colors.gray["900"]
+        property color textColorDarkFaded: S.colors.gray["800"]
+
+        //emboss for different colors
+        property color embossColorBlue: S.colors.blue["400"]
+        property color embossColorNeutral: S.colors.gray["500"]
+
+        //otherColors
+        property color lightBlue: S.colors.blue["200"]
+        property color lightGreen: S.colors.green["200"]
+        property color lightRed: S.colors.red["200"]
+        property color lightOrange: S.colors.orange["200"]
+        property color lightYellow: S.colors.yellow["200"]
+        property color lightPurple: S.colors.purple["200"]
+
+        property color transparent: "#00000000"
+    }
+
+    // TODO edit the colors
+    property QtObject Lightcolors: QtObject {
+        id: _colorLight;
 
         //From previous style (gnomon)
         property color highlightColor: "#20E8C0"

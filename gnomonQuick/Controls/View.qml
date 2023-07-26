@@ -166,7 +166,7 @@ Rectangle {
     Image {
         id: _2d_xy;
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XY;
-        source: active? "qrc:/qml/gnomonQuick/assets/View-XY.png" : "qrc:/qml/gnomonQuick/assets/View-XY-off.png";
+        source: active? "View-XY.png" : "View-XY-off.png";
         visible: _2d_icon.active
 
         height: G.Style.iconLarge
@@ -190,7 +190,7 @@ Rectangle {
     Image {
         id: _2d_xz;
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_XZ;
-        source: active? "qrc:/qml/gnomonQuick/assets/View-XZ.png" : "qrc:/qml/gnomonQuick/assets/View-XZ-off.png";
+        source: active? "View-XZ.png" : "View-XZ-off.png";
         visible: _2d_icon.active;
 
         height: G.Style.iconLarge
@@ -214,7 +214,7 @@ Rectangle {
     Image {
         id: _2d_yz;
         property bool active: viewLogic.orientation == GV.View.SLICE_ORIENTATION_YZ;
-        source: active? "qrc:/qml/gnomonQuick/assets/View-YZ.png" : "qrc:/qml/gnomonQuick/assets/View-YZ-off.png";
+        source: active? "View-YZ.png" : "View-YZ-off.png";
         visible: _2d_icon.active;
 
         height: G.Style.iconLarge

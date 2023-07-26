@@ -70,8 +70,8 @@ G.Workspace {
 
                             height: 0.75 * parent.height
                             fillMode: Image.PreserveAspectFit
-
-                            source: "qrc:/assets/gnomon_logo.png"
+                            // it's in the app resources. to move in this module?
+                            source: "qrc:/gnomon_x/assets/gnomon_logo.png"
                         }
 
                         Label {
