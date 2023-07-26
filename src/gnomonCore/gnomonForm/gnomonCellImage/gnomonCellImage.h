@@ -101,6 +101,9 @@ public:
 
     virtual QMap<long, QVariant> computeCellProperty(const QString& propertyName) { return m_data->computeCellProperty(propertyName); };
 
+    QList<long> wallIds(void) const { return m_data->wallIds(); };
+    QList<long> wallCellIds(long wallId) { return m_data->wallCellIds(wallId); };
+
     virtual QStringList wallPropertyNames(void) const { return m_data->wallPropertyNames(); };
     virtual bool hasWallProperty(const QString& propertyName) const { return m_data->hasWallProperty(propertyName); }
 
