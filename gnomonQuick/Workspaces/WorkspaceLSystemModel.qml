@@ -1,10 +1,11 @@
-import QtQuick           2.15
-import QtQuick.Controls  2.15
-import QtQuick.Layouts   1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
 
-import QtQml.Models      2.15
+import QtQml.Models
 
-import Qt.labs.platform  1.0 as P
+//import Qt.labs.platform  1.0 as P
 import Qt.labs.settings
 
 import gnomon.Utils as G
@@ -71,20 +72,20 @@ G.Workspace {
         property alias path: _self._path
     }
 
-    P.FileDialog {
+    FileDialog {
         id: _file_dialog;
 
         currentFile: _self._current_file;
-        folder: _self._path;
-        fileMode: P.FileDialog.OpenFile;
+        currentFolder: _self._path;
+        fileMode: FileDialog.OpenFile;
 
         modality: Qt.NonModal;
         nameFilters: ["L-Py source files (*.lpy *.py)"]
 
         onAccepted: {
-            d.read(decodeURIComponent(_file_dialog.file));
+            d.read(decodeURIComponent(_file_dialog.selectedFile));
             _editor.contents = d.text
-            _self._current_file = decodeURIComponent(_file_dialog.file);
+            _self._current_file = decodeURIComponent(_file_dialog.selectedFile);
             _editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
             _self._path = folder;
 
@@ -104,19 +105,19 @@ G.Workspace {
         type: G.Style.ButtonType.Warning
     }
 
-    P.FileDialog {
+    FileDialog {
         id: _file_dialog_save
 
         title: "Save L-System model"
 
-        folder: _self._path;
-        fileMode: P.FileDialog.SaveFile
+        currentFolder: _self._path;
+        fileMode: FileDialog.SaveFile
 
         modality: Qt.WindowModal;
         nameFilters: ["L-Py source files (*.lpy *.py)"]
 
         onAccepted: {
-            let save_path = decodeURIComponent(_file_dialog_save.file)
+            let save_path = decodeURIComponent(_file_dialog_save.selectedFfile)
             let save_filename = save_path.split('/').pop()
             if ((d.fileName.split('.').length == 1) || (d.fileName.split('.').pop() == save_filename.split('.').pop())) { //same extension
                 _editor.tabName = save_filename

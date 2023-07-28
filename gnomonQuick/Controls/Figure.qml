@@ -1,8 +1,8 @@
-import QtQuick            2.15
-import QtQuick.Controls   2.15
-import QtQuick.Window     2.15
-import QtQuick.Layouts    1.15
-import Qt.labs.platform  1.0 as P
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Window
+import QtQuick.Layouts
 
 import Qt5Compat.GraphicalEffects
 
@@ -91,16 +91,16 @@ Rectangle {
             _screenshot_dialog.open()
         }
 
-        P.FileDialog {
+        FileDialog {
             id: _screenshot_dialog
 
             nameFilters: [ "Image files (*.png)" ]
             title: "Save screenshot"
             modality: Qt.WindowModal;
-            fileMode: P.FileDialog.SaveFile
+            fileMode: FileDialog.SaveFile
 
             onAccepted: {
-                viewLogic.saveScreenshot(decodeURIComponent(_screenshot_dialog.file));
+                viewLogic.saveScreenshot(decodeURIComponent(_screenshot_dialog.selectedFile));
             }
         }
     }

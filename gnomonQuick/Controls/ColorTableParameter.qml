@@ -1,9 +1,10 @@
-import QtQuick              2.15
-import QtQuick.Controls     2.15
-import QtQuick.Layouts      1.15
-import Qt.labs.platform  1.0 as P
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
 
 import Qt5Compat.GraphicalEffects
+import Qt.labs.platform 1.1 as P
 
 import gnomon.Visualization 1.0 as GV
 import gnomon.Utils as G
@@ -639,16 +640,16 @@ Control {
 
     }
 
-    P.FileDialog {
+    FileDialog {
         id: _texture_dialog
 
         nameFilters: [ "Image files (*.jpg)" ]
-        title: "Open texrture file"
+        title: "Open texture file"
         modality: Qt.WindowModal;
-        fileMode: P.FileDialog.OpenFile
+        fileMode: FileDialog.OpenFile
 
         onAccepted: {
-            _edit_dialog.texture = urlToPath(_texture_dialog.file.toString())
+            _edit_dialog.texture = urlToPath(_texture_dialog.selectedFile.toString())
         }
     }
 

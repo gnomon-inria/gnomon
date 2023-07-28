@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Dialogs
 
-import Qt.labs.platform  1.0 as P
 
 import gnomonQuick.Style as G
 import gnomonQuick.Controls as G
@@ -60,17 +60,17 @@ Control {
         font: G.Style.fonts.value
     }
 
-    P.FileDialog {
+    FileDialog {
         id: _file_dialog
 
         currentFile: _control.param ? _control.param.baseName : "";
-        folder: _control.param ? _control.param.dirName : "";
+        currentFolder: _control.param ? _control.param.dirName : "";
         nameFilters: _control.param ? _control.param.filters : [];
 
         modality: Qt.NonModal;
 
         onAccepted: {
-            _control.param.path = decodeURIComponent(_file_dialog.file);
+            _control.param.path = decodeURIComponent(_file_dialog.selectedFile);
         }
     }
 }

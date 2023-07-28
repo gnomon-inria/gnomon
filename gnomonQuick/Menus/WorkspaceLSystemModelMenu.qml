@@ -65,6 +65,9 @@ Item {
             // signal valueChanged();
 
             delegate: G.ParameterGroup {
+                required property var parameters;
+                required property string group;
+
                 title: _menu.getTitleString(group);
                 model: parameters;
                 width: _control.width;

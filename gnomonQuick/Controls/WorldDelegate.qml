@@ -1,6 +1,7 @@
-import QtQuick            2.15
-import QtQuick.Controls   2.15
-import QtQuick.Layouts    1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
 
 import Qt.labs.platform  1.0 as P
 
@@ -61,17 +62,17 @@ Item {
 
         signal droppedFromManager(int index)
 
-        P.FileDialog {
+        FileDialog {
             id: _file_dialog
 
             nameFilters: [ GV.World.formWriterNameFilter(form_id), "All files (*)" ]
             title: "save Gnomon Form"
-            folder: shortcuts ? shortcuts.home : ""
+            currentFolder: shortcuts ? shortcuts.home : ""
             modality: Qt.WindowModal;
-            fileMode: P.FileDialog.SaveFile
+            fileMode: FileDialog.SaveFile
 
             onAccepted: {
-                GV.World.saveAs(form_id, _file_dialog.file);
+                GV.World.saveAs(form_id, _file_dialog.selectedFile);
             }
         }
 

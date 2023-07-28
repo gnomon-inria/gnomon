@@ -73,6 +73,7 @@ Control {
                 delegate: G.ListItemDelegate {
                     width: _list_view.width
                     highlighted: false
+                    required property var modelData
 
                     Label {
                         id: _name_label

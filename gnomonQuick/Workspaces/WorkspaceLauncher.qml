@@ -1,9 +1,11 @@
-import QtQuick           2.15
-import QtQuick.Controls  2.15
-import QtQuick.Layouts   1.15
+import QtCore
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
 
-import Qt.labs.platform  1.0 as P
 import Qt.labs.settings
+import Qt.labs.platform as P
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Workspaces as G
@@ -21,18 +23,18 @@ G.Workspace {
 
     property string current_file: "";
 
-    P.FileDialog {
+    FileDialog {
         id: _file_dialog;
 
         currentFile: _workspace.current_file;
-        folder: P.StandardPaths.writableLocation(P.StandardPaths.HomeLocation);
+        currentFolder: P.StandardPaths.writableLocation(P.StandardPaths.HomeLocation);
         modality: Qt.NonModal;
         nameFilters: ["Json files (*.json)"]
 
         onAccepted: {
             console.log('Loading an existing project');
-            load_session(_file_dialog.file);
-            add_to_history(_file_dialog.file)
+            load_session(_file_dialog.selectedFile);
+            add_to_history(_file_dialog.selectedFile)
         }
     }
 

@@ -119,8 +119,8 @@ Control {
 
         anchors.top: _form_selector.bottom
         anchors.left: parent.left
-        anchors.topMargin: G.Style.sizes.s5
-        anchors.bottomMargin: G.Style.sizes.s4
+        anchors.topMargin: G.Style.mediumPadding
+        anchors.bottomMargin: G.Style.smallPadding
 
         text: "Visualization"
         font: G.Style.fonts.header
@@ -133,7 +133,7 @@ Control {
         anchors.left: parent.left;
         anchors.bottom: _button_container.top;
 
-        anchors.margins: 12;
+        anchors.margins: 8;
 
         G.ComboBoxWithLabel {
             id: _visu_combobox;
@@ -197,7 +197,7 @@ Control {
 
         Item {
             Layout.fillWidth: true
-            height: G.Style.sizes.s4
+            height: G.Style.sizes.s3
         }
 
         Item {

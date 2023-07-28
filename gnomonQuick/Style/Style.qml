@@ -87,8 +87,8 @@ QtObject {
 
     property int toolBarHeight: S.spacing["6"]
 
-    property int formSelectorHeight: S.spacing["12"]
-    property int formDelegateHeight: S.spacing["7"]
+    property int formSelectorHeight: S.spacing["10"]
+    property int formDelegateHeight: S.spacing["6"]
 
     property int iconSmall: S.spacing["4"]
     property int iconMedium: S.spacing["5"]

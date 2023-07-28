@@ -1,20 +1,18 @@
-import QtQuick            2.15
-import QtQuick.Controls   2.15
-import QtQuick.Layouts    1.15
-import Qt.labs.platform  1.0 as P
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
 
 import Qt5Compat.GraphicalEffects
+import Qt.labs.platform as P
 
-import xQuick.Vis         1.0 as XVis
-
-import gnomonQuick.Controls  1.0 as G
-import gnomonQuick.Style  1.0 as G
-
-import gnomon.Visualization 1.0 as GV
-import gnomon.MetaData    1.0 as GM
+import xQuick.Vis as XVis
 
 import gnomonQuick.Controls as G
-import gnomonQuick.Style as G
+import gnomonQuick.Style    as G
+
+import gnomon.Visualization as GV
+import gnomon.MetaData      as GM
 
 Rectangle {
 
@@ -565,16 +563,16 @@ Rectangle {
             _screenshot_dialog.open()
         }
 
-        P.FileDialog {
+        FileDialog {
             id: _screenshot_dialog
 
             nameFilters: [ "Image files (*.png)" ]
             title: "Save screenshot"
             modality: Qt.WindowModal;
-            fileMode: P.FileDialog.SaveFile
+            fileMode: FileDialog.SaveFile
 
             onAccepted: {
-                viewLogic.saveScreenshot(decodeURIComponent(_screenshot_dialog.file));
+                viewLogic.saveScreenshot(decodeURIComponent(_screenshot_dialog.selectedFile));
             }
         }
     }
