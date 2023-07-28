@@ -1,5 +1,3 @@
-
-
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -56,6 +54,9 @@ Control {
         interactive: _list_view.contentHeight > _control.height
 
         delegate: G.ParameterGroup {
+            required property var parameters;
+            required property string group;
+
             title: _control.getTitleString(group)
             model: parameters
             width: _list_view.width - 10

@@ -26,7 +26,7 @@ Row {
     Image {
       anchors.fill: _thumbnail;
       fillMode: Image.PreserveAspectFit
-      source: "image://thumbnails/" + formId
+      source: formId != -1 ? "image://thumbnails/" + formId : null
     }
 
   }

@@ -545,6 +545,10 @@ G.Workspace {
                             }
 
                             delegate: G.Card {
+                                required property string name
+                                required property string source
+                                required property string description
+
                                 height: _project_grid.cellHeight - G.Style.smallPadding
                                 width: _project_grid.cellWidth - G.Style.smallPadding
 

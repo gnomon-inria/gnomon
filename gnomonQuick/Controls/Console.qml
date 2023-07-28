@@ -28,6 +28,7 @@ Control
 
             Label {
                 text: "Type"
+                color: G.Style.colors.textColorBase
 
                 Layout.leftMargin: 10;
                 Layout.minimumWidth: 64;
@@ -38,7 +39,7 @@ Control
 
             Label {
                 text: "Description";
-
+                color: G.Style.colors.textColorBase
                 Layout.fillWidth: true;
             }
 
@@ -46,7 +47,7 @@ Control
 
             Label {
                 text: "Time"
-
+                color: G.Style.colors.textColorBase
                 Layout.minimumWidth: 64;
                 Layout.maximumWidth: 64;
             }
@@ -92,10 +93,10 @@ Control
               down: true
               type: G.Style.ButtonType.OK
               //foregroundColor: G.Style.colors.infoColor;
-              iconName: "info";
+              iconName: "information";
 
-              Layout.minimumWidth: 42;
-              Layout.maximumWidth: 42;
+              Layout.minimumWidth: 46;
+              Layout.maximumWidth: 46;
           }
 
             G.Button {
@@ -103,10 +104,10 @@ Control
               down: true
               type: G.Style.ButtonType.Base
               //foregroundColor: G.Style.colors.debugColor;
-              iconName: "info";
+              iconName: "information";
 
-              Layout.minimumWidth: 42;
-              Layout.maximumWidth: 42;
+              Layout.minimumWidth: 46;
+              Layout.maximumWidth: 46;
             }
 
             G.Button {
@@ -114,10 +115,10 @@ Control
               down: true
               type: G.Style.ButtonType.Warning
               //foregroundColor: G.Style.colors.warningColor;
-              iconName: "warning";
+              iconName: "dots-triangle";
 
-              Layout.minimumWidth: 42;
-              Layout.maximumWidth: 42;
+              Layout.minimumWidth: 46;
+              Layout.maximumWidth: 46;
           }
 
             G.Button {
@@ -125,10 +126,10 @@ Control
               down: true
               type: G.Style.ButtonType.Danger
               //foregroundColor: G.Style.colors.errorColor;
-              iconName: "error";
+              iconName: "cross";
 
-              Layout.minimumWidth: 42;
-              Layout.maximumWidth: 42;
+              Layout.minimumWidth: 46;
+              Layout.maximumWidth: 46;
           }
 
             G.Separator { Layout.fillHeight: true; }
@@ -158,6 +159,6 @@ Control
     }
 
     background: Rectangle {
-        color: G.Style.colors.baseColor;
+        color: G.Style.colors.gutterColor;
     }
 }

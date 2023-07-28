@@ -36,6 +36,8 @@ G.CollapsiblePanel {
     interactive: false
 
     delegate: Loader {
+        required property var param;
+        required property var component;
 
       property var lparam: param
 

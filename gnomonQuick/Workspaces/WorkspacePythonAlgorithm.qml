@@ -3,12 +3,13 @@ import QtQuick.Controls  2.15
 import QtQuick.Layouts   1.15
 
 import gnomon.Utils as G
-import gnomonQuick.Workspaces 1.0 as G
-import gnomonQuick.Controls   1.0 as G
-import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Workspaces as G
+import gnomonQuick.Controls   as G
+import gnomonQuick.Style      as G
+import gnomonQuick.Monaco     as G
 
-import gnomon.Workspaces    1.0 as GW
-import gnomon.Jupyter    1.0 as G
+import gnomon.Workspaces as GW
+import gnomon.Jupyter    as G
 
 
 G.Workspace {

@@ -37,7 +37,11 @@ Control {
         Label {
             text: modelData.description;
             clip: true;
-
+            color:
+              modelData.type == 0 ? G.Style.colors.neutralColor
+            : modelData.type == 2 ? G.Style.colors.warningColor
+            : modelData.type == 3 ? G.Style.colors.dangerColor
+            :                       G.Style.colors.exampleColor;
             leftPadding: 6;
 
             Layout.fillWidth: true;
@@ -45,6 +49,11 @@ Control {
 
         Label {
             text: modelData.time;
+            color:
+              modelData.type == 0 ? G.Style.colors.neutralColor
+            : modelData.type == 2 ? G.Style.colors.warningColor
+            : modelData.type == 3 ? G.Style.colors.dangerColor
+            :                       G.Style.colors.exampleColor;
 
             Layout.minimumWidth: 64;
             Layout.maximumWidth: 64;

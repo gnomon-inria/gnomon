@@ -4,10 +4,11 @@ import QtQuick.Shapes 1.15
 
 import gnomonQuick.Controls 1.0 as G
 import gnomonQuick.Style    1.0 as G
-import gnomonQuick.Graph    1.0 as G
 
 import gnomon.Pipeline 1.0 as GP
 import gnomon.Visualization 1.0 as GV
+
+import "./pipeline.js" as PJS
 
 Control {
 
@@ -176,7 +177,7 @@ Control {
 
                 console.log(node)
 
-                let n = new G.PipelineLayout.Node(node.name, node)
+                let n = new PJS.Node(node.name, node)
                 _self.addNode(n);
 
                 if (node.inputEdgeCount > 0) {
@@ -390,7 +391,7 @@ Control {
         // /////////////////////////////////////////////////////////////////////////////
         // Internal variables kept for the graph layout calculation
         // /////////////////////////////////////////////////////////////////////////////
-        property var layout: new G.PipelineLayout.Layout.ForceDirected(new G.PipelineLayout.Graph(), 10, 6, 0.2)
+        property var layout: new PJS.Layout.ForceDirected(new PJS.Graph(), 10, 6, 0.2)
         property var nodeComponents: new Object()
         property var edgeComponents: []
 

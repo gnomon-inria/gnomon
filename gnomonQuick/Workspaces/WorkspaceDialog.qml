@@ -138,12 +138,20 @@ G.Dialog {
 
                 delegate: G.ListItemDelegate {
                     id: _delegate
+                    required property string type
+                    required property string title
+                    required property string source
+                    required property bool available
+                    required property bool initial
+                    required property bool highlightElement
+                    required property int index
+
                     width: _list_view.width
                     highlighted: _list_view.currentIndex == index
 
-                    text: model.title;
+                    text: title;
                     font: G.Style.fonts.cardLabel
-                    enabled: model.available
+                    enabled: available
 
                     onClicked: {
                         _list_view.currentIndex = index
@@ -157,7 +165,7 @@ G.Dialog {
                     G.Icon {
                         icon: "cancel";
                         color: G.Style.colors.dangerColor; // "red"
-                        visible: !model.available
+                        visible: !available
 
                         anchors.right: parent.right;
                         anchors.rightMargin: G.Style.smallPadding;
@@ -169,7 +177,7 @@ G.Dialog {
                         anchors.topMargin: -1;
                         anchors.bottomMargin: -1;
 
-                        visible: model.highlightElement
+                        visible: highlightElement
                         z: -1
                         color: G.Style.colors.hoveredOkColor;
                     }
@@ -177,7 +185,7 @@ G.Dialog {
                     contentItem: Text {
                         text: _delegate.text
                         font: _delegate.font
-                        color: model.highlightElement ? G.Style.colors.lightGreen : G.Style.colors.textColorNeutral
+                        color: highlightElement ? G.Style.colors.lightGreen : G.Style.colors.textColorNeutral
                     }
                 }
 

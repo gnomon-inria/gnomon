@@ -65,10 +65,10 @@ G.Page {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.margins: G.Style.mediumPadding
+            contentWidth: availableWidth
 
             G.TextArea {
                 id: _console
-                anchors.fill: parent
 
                 text: _logs_control.log_connection ? _logs_control.log_connection.text : "/!\\ Disconnected /!\\"
                 readOnly: true

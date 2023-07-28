@@ -29,6 +29,10 @@ QML_FILES
   Figure.qml
   FilterProxyModel.qml
   Finder.qml
+  FinderGridDelegate.qml
+  FinderGridView.qml
+  FinderListDelegate.qml
+  FinderListView.qml
   FormIdentifier.qml
   FormSelector.qml
   FormSelectorDelegate.qml
@@ -45,7 +49,6 @@ QML_FILES
   MenuItemDelegate.qml
   MetadataDialog.qml
   MetadataExplorer.qml
-  Monaco.qml
   NumericParameter.qml
   NumericSlider.qml
   NumericSpinBox.qml
@@ -56,6 +59,7 @@ QML_FILES
   Parameters.qml
   PathParameter.qml
   Pipeline.qml
+  pipeline.js
   PipelineDialog.qml
   PipelineEdge.qml
   PipelineNode.qml

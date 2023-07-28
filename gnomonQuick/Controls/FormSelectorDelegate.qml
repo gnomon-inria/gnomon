@@ -6,67 +6,68 @@ import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
 ItemDelegate {
+    id: _control;
+    required property int index;
+    required property string modelData;
 
-  id: _control;
+    property string thumbnailIndex;
+    signal toggleVisibility(bool flag);
+    signal deleteForm();
 
-  property string thumbnailIndex;
-  signal toggleVisibility(bool flag);
-  signal deleteForm();
+    implicitHeight: G.Style.formDelegateHeight;
 
-  implicitHeight: G.Style.formDelegateHeight;
+    font: G.Style.fonts.formLabel;
 
-  font: G.Style.fonts.formLabel;
-
-  background: Rectangle {
-    opacity: enabled ? 0.8 : 0.1
-    color: getBgColor()
-    border.width: 0.5
-    border.color: getEmbossColor()
-  }
-
-  contentItem: G.FormIdentifier {
-    formId: _control.thumbnailIndex
-    formName: _control.text
-  }
-
-  G.IconButton {
-    id: _visibility_icon;
-
-    anchors.right: parent.right;
-    anchors.verticalCenter: parent.verticalCenter;
-    anchors.leftMargin: 4;
-    anchors.rightMargin: 10;
-    size: 24;
-    checked: true;
-    iconName: checked ? "eye-outline" : "eye-off-outline";
-
-    onClicked: {
-      _visibility_icon.checked = !_visibility_icon.checked;
-      _control.toggleVisibility(_visibility_icon.checked)
-
+    background: Rectangle {
+        opacity: enabled ? 0.8 : 0.1
+        color: getBgColor()
+        border.width: 0.5
+        border.color: getEmbossColor()
     }
-  }
 
-  G.IconButton {
+    contentItem: G.FormIdentifier {
+        formId: _control.thumbnailIndex
+        formName: _control.text
+    }
 
-    anchors.right: _visibility_icon.left;
-    anchors.verticalCenter: parent.verticalCenter;
-    anchors.margins: 4
-    size: 24;
-    iconName: "delete";
+    G.IconButton {
+        id: _visibility_icon;
 
-    onClicked: _control.deleteForm()
-  }
+        anchors.right: parent.right;
+        anchors.verticalCenter: parent.verticalCenter;
+        anchors.leftMargin: 4;
+        anchors.rightMargin: 10;
+        size: 24;
+        checked: true;
+        iconName: checked ? "eye-outline" : "eye-off-outline";
 
-  function getEmbossColor() {
-    if(down || highlighted) return G.Style.colors.embossColorBlue;
-    return G.Style.colors.embossColorNeutral;
-  }
+        onClicked: {
+            _visibility_icon.checked = !_visibility_icon.checked;
+            _control.toggleVisibility(_visibility_icon.checked)
 
-  function getBgColor() {
-    if(down || highlighted) return G.Style.colors.baseColor;
-    if(hovered) return G.Style.colors.neutralColor;
-    return G.Style.colors.fgColor;
-  }
+        }
+    }
+
+    G.IconButton {
+
+        anchors.right: _visibility_icon.left;
+        anchors.verticalCenter: parent.verticalCenter;
+        anchors.margins: 4
+        size: 24;
+        iconName: "delete";
+
+        onClicked: _control.deleteForm()
+    }
+
+    function getEmbossColor() {
+        if(down || highlighted) return G.Style.colors.embossColorBlue;
+        return G.Style.colors.embossColorNeutral;
+    }
+
+    function getBgColor() {
+        if(down || highlighted) return G.Style.colors.baseColor;
+        if(hovered) return G.Style.colors.neutralColor;
+        return G.Style.colors.fgColor;
+    }
 
 }

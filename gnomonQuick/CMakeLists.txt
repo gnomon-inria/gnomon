@@ -1,5 +1,5 @@
 add_subdirectory(Controls)
-add_subdirectory(Graph)
 add_subdirectory(Menus)
+add_subdirectory(Monaco)
 add_subdirectory(Style)
 add_subdirectory(Workspaces)
