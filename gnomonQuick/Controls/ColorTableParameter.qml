@@ -44,9 +44,9 @@ Control {
         delegate: G.ComboBoxDelegate {
             width: _colors.width
             property int colorIndex: _control.param ? _control.param.colorIndexAt(index) : -1
-            property bool isColor: _control.param ? _control.param.isColor(colorIndex) : false
-            property bool isMaterial: _control.param ? _control.param.isMaterial(colorIndex) : false
-            property bool isTexture: _control.param ? _control.param.isTexture(colorIndex) : false
+            property bool isColor: _control.param && colorIndex !=-1 ? _control.param.isColor(colorIndex) : false
+            property bool isMaterial: _control.param  && colorIndex !=-1 ? _control.param.isMaterial(colorIndex) : false
+            property bool isTexture: _control.param  && colorIndex !=-1 ? _control.param.isTexture(colorIndex) : false
             text: "Appearance " + colorIndex
             Image {
                 id: _image
@@ -92,10 +92,10 @@ Control {
         background: Rectangle {
             id: _color_bg
 
-            property int _colorIndex: param.colorIndexAt(_colors.currentValue)
-            property bool _isColor: param ? param.isColor(_colorIndex) : false
-            property bool _isMaterial: param ? param.isMaterial(_colorIndex) : false
-            property bool _isTexture: param ? param.isTexture(_colorIndex) : false
+            property int _colorIndex: _colors.currentValue>=0 ? param.colorIndexAt(_colors.currentValue) : -1
+            property bool _isColor: param && _colorIndex != -1 ? param.isColor(_colorIndex) : false
+            property bool _isMaterial: param  && _colorIndex != -1 ? param.isMaterial(_colorIndex) : false
+            property bool _isTexture: param  && _colorIndex != -1 ? param.isTexture(_colorIndex) : false
 
             color: _isColor ? param.color(_colorIndex) : (_isMaterial ? param.ambient(_colorIndex) : G.Style.colors.transparent)
 
@@ -127,8 +127,8 @@ Control {
 
                 ambient: _color_bg._isMaterial ? param.ambient(_color_bg._colorIndex) : G.Style.colors.warningColor
                 diffuse: _color_bg._isMaterial ? param.diffuse(_color_bg._colorIndex) : 3
-                specular: _color_bg._isMaterial ? param.specular(_color_bg._colorIndex) : transparent
-                emission: _color_bg._isMaterial ? param.emission(_color_bg._colorIndex) : transparent
+                specular: _color_bg._isMaterial ? param.specular(_color_bg._colorIndex) : G.Style.colors.transparent
+                emission: _color_bg._isMaterial ? param.emission(_color_bg._colorIndex) : G.Style.colors.transparent
                 shininess: _color_bg._isMaterial ? param.shininess(_color_bg._colorIndex) : 0.2
                 transparency:_color_bg._isMaterial ? param.transparency(_color_bg._colorIndex) : 0
             }
