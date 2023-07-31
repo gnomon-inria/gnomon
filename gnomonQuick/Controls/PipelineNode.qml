@@ -130,7 +130,7 @@ Rectangle {
         font: _self.workspaceIndex === window.current_workspace_index() ? G.Style.fonts.nodeBodySelected : G.Style.fonts.nodeBody
 
         anchors.bottom: parent.bottom
-        anchors.right: _thumbnail.left
+        anchors.left: parent.left
         anchors.margins: G.Style.smallPadding
         horizontalAlignment: Text.AlignRight;
     }

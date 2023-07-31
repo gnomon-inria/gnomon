@@ -175,8 +175,6 @@ Control {
             target: GP.PipelineManager.pipeline
             function onNodeAdded (node) {
 
-                console.log(node)
-
                 let n = new PJS.Node(node.name, node)
                 _self.addNode(n);
 

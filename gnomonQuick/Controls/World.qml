@@ -28,6 +28,8 @@ ListView {
     }
 
     delegate: G.WorldDelegate {
+        required property string form_name
+        required property int form_id
         world: _control;
     }
 
