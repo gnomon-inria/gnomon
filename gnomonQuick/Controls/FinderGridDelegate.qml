@@ -23,7 +23,7 @@ Control {
     width: _self.height;
 
     background: Rectangle {
-        color: _self.isSelected ? G.Style.colors.bgColor : X.Style.colors.baseColor;
+        color: _self.isSelected ? G.Style.colors.bgColor : G.Style.colors.baseColor;
         border.width: _mouse_area.containsMouse ? 1 : 0;
         border.color: G.Style.colors.embossColor;
         radius: 9;
@@ -63,7 +63,7 @@ Control {
         anchors.centerIn: _self;
 
         icon: fileIsDir ? "folder" : "insert_drive_file"
-        color: G.Style.colors.foregroundColor;
+        color: G.Style.colors.fgColor;
         size: 33;
 
         //TODO: EXPERIMENT WITH TOOLTIP POSITIONING
