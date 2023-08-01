@@ -1,0 +1,26 @@
+#include "gnomonProjectManager.h"
+
+// /////////////////////////////////////////////////////////////////
+// gnomonProjectManagerPrivate
+// /////////////////////////////////////////////////////////////////
+class gnomonProjectManagerPrivate
+{
+public:
+};
+
+// /////////////////////////////////////////////////////////////////
+// gnomonProjectManager
+// /////////////////////////////////////////////////////////////////
+
+gnomonProjectManager::gnomonProjectManager(QObject *parent) : QObject(parent)
+{
+    d = new gnomonProjectManagerPrivate;
+}
+
+gnomonProjectManager::~gnomonProjectManager(void)
+{
+    delete d;
+}
+
+//
+// gnomonProjectManager.cpp ends here
