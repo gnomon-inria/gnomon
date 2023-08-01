@@ -9,6 +9,7 @@
 #include "gnomonActor/gnomonImageData/gnomonActorImageRGBAVolume.h"
 #include "gnomonActor/gnomonImageData/gnomonActor2DImageRGBA.h"
 
+#include <dtkLog.h>
 #include <gnomonVisualization/gnomonCoreParameterLookupTable>
 #include <gnomonVisualization/gnomonLookupTable.h>
 
@@ -217,6 +218,10 @@ void gnomonImageVtkVisualizationChannelBlending::updateChannelImages(void)
 
             // Fill vtk maps
             dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
+            if(!converter) {
+                dtkWarn() << Q_FUNC_INFO << "Cannot create dtkVtkImageConverter, check plugins!";
+                return;
+            }
             converter->setInput(dtk_img);
             converter->convert();
             ddd->vtk_img_by_channel[channel] = static_cast<vtkImageData *>(converter->output());

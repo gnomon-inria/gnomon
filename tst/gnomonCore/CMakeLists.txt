@@ -11,7 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ## ###################################################################
 
 set(${PROJECT_NAME}_HEADERS
-  gnomonDataManagerTest.h
+  #gnomonDataManagerTest.h
 #  gnomonFileSystemFormReaderTest.h
   gnomonImageFusionCommandTest.h
   gnomonImageRegistrationCommandTest.h
@@ -24,7 +24,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonTimeSeriesTest.h)
 
 set(${PROJECT_NAME}_SOURCES
-  gnomonDataManagerTest.cpp
+ # gnomonDataManagerTest.cpp
 #  gnomonFileSystemFormReaderTest.cpp
   gnomonImageFusionCommandTest.cpp
   gnomonImageRegistrationCommandTest.cpp

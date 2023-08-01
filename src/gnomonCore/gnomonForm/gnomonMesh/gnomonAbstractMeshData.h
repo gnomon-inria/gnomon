@@ -89,8 +89,6 @@ public:
     virtual void setPoint(IdxType point_id, const double* points_coordinates) = 0;
     virtual void setPointsCount(CntType point_count) = 0;
     virtual void setPoints(const double* points_coordinates, CntType points_count = 0) = 0;
-    [[deprecated]] long vertexCount(void) const { return this->pointsCount(); }
-    [[deprecated]] long triangleCount(void) const { return this->cellsCount(2); }
 
 //  ///////////////////////////////////////////////////////////////////
 //  Cells list concept
@@ -98,16 +96,10 @@ public:
 public:
     virtual std::vector<IdxType> cellPointsIdx(IdxType cell_id) const = 0;
 
-    [[deprecated]] QList<long> triangleVertexIds(long triangleId) const {qDebug() << "see cellPointIdx method"; return QList<long>(); }
     virtual CellType cellType(IdxType cell_id) const = 0;
     virtual CntType cellsCount(int geo_dimension = 4) const = 0;
 
     virtual const std::vector<IdxType> cellsIdx(int geo_dimension = 4) const = 0;
-
-
-    [[deprecated]] QList<long> vertexIds(void) const { qDebug() << "see cellsIdx method"; return QList<long>(); }
-    [[deprecated]] QList<long> triangleIds(void) const { qDebug() << "see cellsIdx method"; return QList<long>(); }
-
     virtual const std::vector<IdxType> cellsPoints(int geo_dimension = 4) const = 0;
 
     virtual const CellType* cellsType(int geo_dimension = 4) const = 0;
@@ -118,18 +110,6 @@ public:
     virtual void setCellsPoints(const IdxType* cells_points, CntType size_cells_point = 0) = 0;
 
 //  ///////////////////////////////////////////////////////////////////
-//  Mutation concept
-//  ///////////////////////////////////////////////////////////////////
-public:
-    [[deprecated]] long addVertex(void) { qDebug() <<"method removed"; return -1; }
-    [[deprecated]] long addVertex(long vertexId) { qDebug() <<"method removed"; return -1; }
-    [[deprecated]] void removeVertex(long vertexId) {qDebug() <<"method removed"; }
-
-    [[deprecated]] long addTriangle(const QList<long>& vertexIds) { qDebug() <<"method removed"; return -1; }
-    [[deprecated]] long addTriangle(const QList<long>& vertexIds, long triangleId) { qDebug() <<"method removed"; return -1; }
-    [[deprecated]] void removeTriangle(long triangleId) { qDebug() <<"method removed"; }
-
-//  ///////////////////////////////////////////////////////////////////
 //  Property concept
 //  ///////////////////////////////////////////////////////////////////
 public:
@@ -138,21 +118,6 @@ public:
     virtual const gnomonMeshAttribute* attributes(void) const = 0;
     virtual CntType attributesCount(void) const = 0;
     virtual QStringList attributesNames(void) const = 0;
-
-/*
-    virtual QStringList vertexPropertyNames(void) const = 0;
-    virtual bool hasVertexProperty(const QString& propertyName) const = 0;
-    virtual QMap<long, QVariant> vertexProperty(const QString& propertyName) const = 0;
-    virtual QMap<long, QVariant> addVertexProperty(const QString& propertyName) = 0;
-    virtual void removeVertexProperty(const QString& propertyName) = 0;
-
-
-    virtual QStringList trianglePropertyNames(void) const = 0;
-    virtual bool hasTriangleProperty(const QString& propertyName) const = 0;
-    virtual QMap<long, QVariant> triangleProperty(const QString& propertyName) const = 0;
-    virtual QMap<long, QVariant> addTriangleProperty(const QString& OrientedPropertyName) = 0;
-    virtual void removeTriangleProperty(const QString& OrientedPropertyName) = 0;
-*/
 };
 
 // ///////////////////////////////////////////////////////////////////

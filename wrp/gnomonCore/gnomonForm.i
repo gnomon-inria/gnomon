@@ -1046,7 +1046,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         static std::string s;
         auto&& mesh = $self;
         QString str("<gnomoncore.gnomonMesh");
-        str += QString(" with %1 vertices(s) and %1 cells").arg(mesh->data()->vertexCount(), mesh->data()->cellsCount());
+        str += QString(" with %1 points(s) and %1 cells").arg(mesh->data()->pointsCount(), mesh->data()->cellsCount());
         str += QString(" at 0x%1>").arg((quintptr)mesh, 12, 16, QChar('0'));
         s = str.toStdString();
         return s.data();
