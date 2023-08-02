@@ -167,18 +167,13 @@ Control
             }
 
 
-            TextField {
+            G.TextField {
                 id: _text_field;
 
                 Layout.fillWidth: true;
                 Layout.fillHeight: true;
 
                 font.pointSize: 10;
-
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: G.Style.colors.gutterColor
-                }
 
                 text: _folder_model.folder;
                 color: G.Style.colors.textColorNeutral

@@ -47,7 +47,7 @@ G.Dialog {
             verticalAlignment: Text.AlignVCenter
         }
 
-        TextField {
+        G.TextField {
             id: _name
 
             Layout.fillWidth: true

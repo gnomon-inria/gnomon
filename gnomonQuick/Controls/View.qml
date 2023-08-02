@@ -703,7 +703,7 @@ Rectangle {
                             anchors.bottom: parent.bottom;
                             anchors.margins: G.Style.smallPadding
 
-                            TextField {
+                            G.TextField {
                                 id: _form_name;
                                 anchors.fill: parent
                                 leftPadding: G.Style.smallPadding

@@ -73,7 +73,7 @@ Button {
         anchors.verticalCenter: parent.verticalCenter
         anchors.margins: G.Style.buttonPadding
 
-        height: parent.height - 4
+        height: _control.height - 4
         width: 2
 
         visible: _control.iconName && !_control.flat

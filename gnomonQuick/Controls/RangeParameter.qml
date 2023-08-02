@@ -44,7 +44,7 @@ Control {
         }
     }
 
-    TextField {
+    G.TextField {
         id: _left_value_input;
         implicitHeight: G.Style.sizes.s6
         implicitWidth: G.Style.controlWidth/2 //contentWidth + 2*G.Style.mediumPadding
@@ -66,12 +66,6 @@ Control {
         selectionColor: G.Style.colors.fgColor
         selectedTextColor: G.Style.colors.hoveredBaseColor
 
-        background: Rectangle
-        {
-            radius: G.Style.panelRadius
-            color: G.Style.colors.gutterColor
-        }
-
         validator: DoubleValidator {
             bottom: _range.from
             top: _range.second.value
@@ -92,7 +86,7 @@ Control {
         Keys.onReturnPressed: editingFinished()
     }
 
-    TextField {
+    G.TextField {
         id: _right_value_input;
         implicitHeight: G.Style.sizes.s6
         implicitWidth: G.Style.controlWidth/2 //contentWidth + 2*G.Style.mediumPadding
@@ -113,11 +107,6 @@ Control {
         color: _right_value_input.activeFocus? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
         selectionColor: G.Style.colors.fgColor
         selectedTextColor: G.Style.colors.hoveredBaseColor
-        background: Rectangle
-        {
-            radius: G.Style.panelRadius
-            color: G.Style.colors.gutterColor
-        }
 
         validator: DoubleValidator {
             bottom: _range.first.value

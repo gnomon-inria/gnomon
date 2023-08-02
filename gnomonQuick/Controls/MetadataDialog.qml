@@ -92,7 +92,7 @@ G.Dialog {
                         text: modelData;
                     }
 
-                    TextField {
+                    G.TextField {
                         id: _form_name;
 
                         anchors.left: _name_label.right;
@@ -184,7 +184,7 @@ G.Dialog {
                         text: modelData;
                     }
 
-                    TextField {
+                    G.TextField {
                         id: _form_name;
 
                         anchors.left: _name_label.right;

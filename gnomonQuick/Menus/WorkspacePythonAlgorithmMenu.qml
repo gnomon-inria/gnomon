@@ -183,7 +183,7 @@ Item {
 
                 }
 
-                TextField {
+                G.TextField {
                     id: _plugin_name
 
                     Layout.fillWidth: true

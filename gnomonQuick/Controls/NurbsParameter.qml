@@ -69,7 +69,7 @@ Control {
             color: G.Style.colors.hoveredBaseColor
         }
 /*
-        TextField {
+        G.TextField {
             id: _value
 
             anchors.margins: G.Style.smallPadding

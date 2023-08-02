@@ -149,7 +149,7 @@ Control {
                     color: G.Style.colors.textColorBase
                 }
 
-                TextField {
+                G.TextField {
                     id: _text
 
                     anchors.top: _label.bottom

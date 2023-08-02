@@ -11,6 +11,20 @@ Dialog {
 
     id: _self
 
+    padding: G.Style.dialogPadding
+    topPadding: G.Style.dialogPadding
+    enter: Transition
+    {
+        NumberAnimation { property: "scale";from: 0.9;to: 1.0;easing.type: Easing.OutQuint;duration: 220 }
+        NumberAnimation { property: "opacity";from: 0.0;to: 1.0;easing.type: Easing.OutCubic;duration: 150 }
+    }
+
+    exit: Transition
+    {
+        NumberAnimation { property: "scale";from: 1.0;to: 0.9;easing.type: Easing.OutQuint;duration: 220 }
+        NumberAnimation { property: "opacity";from: 1.0;to: 0.0;easing.type: Easing.OutCubic;duration: 150 }
+    }
+
     property var standardButtonsStyle: [
         [Dialog.Ok, G.Style.ButtonType.Base, false],
         [Dialog.Open, G.Style.ButtonType.Base, false],
@@ -39,16 +53,22 @@ Dialog {
         color: G.Style.colors.bgColor
     }
 
+    Overlay.modal: Rectangle
+    {
+        color: G.Style.colors.overlayColor
+        Behavior on opacity { NumberAnimation { duration: 150 } }
+    }
+
     header: ToolBar {
         height: footer.height
+        padding: G.Style.mediumPadding
 
         Label {
             anchors.verticalCenter: parent.verticalCenter
-            leftPadding: G.Style.mediumPadding
             verticalAlignment: Qt.AlignVCenter
             text: _self.title
             font: G.Style.fonts.header
-            color: G.Style.colors.textColorNeutral
+            color: G.Style.colors.neutralColor
         }
 
         background: Rectangle {
@@ -61,6 +81,8 @@ Dialog {
     footer: DialogButtonBox {
         id: _dbox
         alignment: Qt.AlignRight
+        spacing: G.Style.smallPadding
+
         background: Rectangle {
             anchors.fill: parent
             color: G.Style.colors.gutterColor

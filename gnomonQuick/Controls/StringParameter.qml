@@ -29,7 +29,7 @@ Control {
         color: G.Style.colors.textColorBase
     }
 
-    TextField {
+    G.TextField {
         id: _value
 
         anchors.right: _control.right

@@ -116,7 +116,7 @@ Item {
                 color: G.Style.colors.textColorBase
             }
 
-            TextField {
+            G.TextField {
                 id: _anim_time
                 text: "10"
                 color: G.Style.colors.hoveredBaseColor

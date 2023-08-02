@@ -54,7 +54,7 @@ Control {
         }
     }
 
-    TextField {
+    G.TextField {
         id: _value_input;
 
         implicitHeight: G.Style.sizes.s6
@@ -77,11 +77,6 @@ Control {
         selectionColor: G.Style.colors.fgColor
         selectedTextColor: G.Style.colors.hoveredBaseColor
 
-        background: Rectangle
-        {
-            radius: G.Style.panelRadius
-            color: G.Style.colors.gutterColor
-        }
         validator: DoubleValidator {
             bottom: _control.min
             top: _control.max

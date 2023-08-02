@@ -146,7 +146,7 @@ G.Workspace {
                     color: G.Style.colors.textColorBase
                 }
 
-                TextField {
+                G.TextField {
                     id: _lineage_values
 
                     anchors.right: parent.right

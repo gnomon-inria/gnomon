@@ -317,7 +317,7 @@ G.Workspace {
                                 color: G.Style.colors.gutterColor;
                                 radius: G.Style.panelRadius
 
-                                TextField {
+                                G.TextField {
                                     id: _pipeline_title
 
                                     anchors.fill: parent
@@ -333,12 +333,6 @@ G.Workspace {
                                     wrapMode: Text.Wrap
                                     color: G.Style.colors.textColorNeutral
                                     placeholderTextColor: G.Style.colors.textColorDeEmphasize
-
-                                    background: Rectangle {
-                                        anchors.fill: parent
-                                        color: G.Style.colors.gutterColor
-                                    }
-
                                 }
                             }
 

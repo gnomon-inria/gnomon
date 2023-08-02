@@ -15,8 +15,15 @@ TextArea {
     placeholderTextColor: G.Style.colors.textColorDeEmphasize
     wrapMode: TextInput.WrapAnywhere
     selectByMouse: true
-    textMargin: G.Style.smallPadding
+    //textMargin: G.Style.smallPadding
     clip: true
+
+    cursorDelegate: Rectangle
+    {
+        color: G.Style.colors.baseColor;
+        width: 1.5
+        visible: parent.activeFocus && !parent.readOnly && parent.selectionStart === parent.selectionEnd
+    }
 
     background: Rectangle {
         anchors.fill: parent

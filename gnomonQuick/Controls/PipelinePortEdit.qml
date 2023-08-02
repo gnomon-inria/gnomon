@@ -31,7 +31,7 @@ G.ListItemDelegate {
             font: G.Style.fonts.formLabel
         }
 
-        TextField {
+        G.TextField {
             id: _label_edit
 
             Layout.fillWidth: true

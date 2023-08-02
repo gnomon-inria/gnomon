@@ -48,7 +48,7 @@ G.Dialog {
                 horizontalAlignment: Text.AlignLeft
             }
 
-            TextField { id: _name_edit;
+            G.TextField { id: _name_edit;
                 Layout.fillWidth: true
                 text: node.name
                 wrapMode: TextInput.WrapAnywhere

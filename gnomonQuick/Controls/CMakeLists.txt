@@ -79,6 +79,7 @@ QML_FILES
   Switch.qml
   TabButton.qml
   TextArea.qml
+  TextField.qml
   Thumbnail.qml
   TimeSeriesSlider.qml
   Toast.qml

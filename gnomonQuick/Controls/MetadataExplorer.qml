@@ -92,7 +92,7 @@ Rectangle {
                         text: modelData;
                     }
 
-                    TextField {
+                    G.TextField {
                         id: _form_name;
 
                         anchors.left: _name_label.right;
@@ -156,7 +156,7 @@ Rectangle {
                 text: modelData;
             }
 
-            TextField {
+            G.TextField {
                 id: _form_name;
 
                 anchors.left: _name_label.right;

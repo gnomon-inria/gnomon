@@ -64,7 +64,7 @@ G.Dialog { id: _self;
             text: _self.type == "Parameter" ? "Parameter name" : "Variable name"
         }
 
-        TextField { id: _name_field;
+        G.TextField { id: _name_field;
             property int counter: 0;
             Layout.fillWidth: true;
             Layout.preferredHeight: 28;
@@ -78,7 +78,7 @@ G.Dialog { id: _self;
             visible: _self.type == "Parameter"
         }
 
-        TextField { id: _doc_field;
+        G.TextField { id: _doc_field;
             Layout.fillWidth: true
             Layout.preferredHeight: 28;
 
@@ -104,7 +104,7 @@ G.Dialog { id: _self;
                 visible: _type_combobox.currentValue == "Bool"
             }
 
-            TextField  {
+            G.TextField  {
                 id: _num_value_input;
 
                 Layout.preferredWidth: G.Style.sizes.s7
@@ -118,7 +118,7 @@ G.Dialog { id: _self;
             }
 
 
-            TextField  {
+            G.TextField  {
                 id: _str_value_input;
 
                 Layout.preferredWidth: G.Style.sizes.s10
@@ -146,7 +146,7 @@ G.Dialog { id: _self;
                 visible: _type_combobox.currentValue == "Double" || _type_combobox.currentValue == "Int"
             }
 
-            TextField  {
+            G.TextField  {
                 id: _min_input;
 
                 Layout.preferredWidth: G.Style.sizes.s7
@@ -165,7 +165,7 @@ G.Dialog { id: _self;
                 visible: _type_combobox.currentValue == "Double" || _type_combobox.currentValue == "Int"
             }
 
-            TextField  {
+            G.TextField  {
                 id: _max_input;
 
                 Layout.preferredWidth: G.Style.sizes.s7
@@ -184,7 +184,7 @@ G.Dialog { id: _self;
                 visible: _type_combobox.currentValue == "Double"
             }
 
-           TextField  {
+           G.TextField  {
                 id: _decimals_input;
 
                 Layout.preferredWidth:  G.Style.sizes.s7
@@ -207,7 +207,7 @@ G.Dialog { id: _self;
                 visible: _type_combobox.currentValue == "String" || _type_combobox.currentValue == "StringList"
             }
 
-           TextField  {
+           G.TextField  {
                 id: _string_list_input;
 
                 Layout.preferredWidth:  G.Style.sizes.s10

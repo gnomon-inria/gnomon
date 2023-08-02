@@ -80,7 +80,7 @@ G.Dialog {
         anchors.left: parent.left;
         anchors.margins: G.Style.smallPadding;
 
-        TextField {
+        G.TextField {
 
             id: _workspace_search_bar;
 

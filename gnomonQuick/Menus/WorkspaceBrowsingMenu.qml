@@ -52,7 +52,7 @@ Item {
         parent: Overlay.overlay
         modal: true
         standardButtons:  Dialog.Ok | Dialog.Cancel
-        TextField {
+        G.TextField {
             id: _url_text_field
             Layout.fillWidth: true
             width: parent.width

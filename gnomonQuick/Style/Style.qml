@@ -82,6 +82,8 @@ QtObject {
     property int mediumPadding: S.spacing["4"]
     property int largePadding: S.spacing["6"]
 
+    property int dialogPadding: S.spacing["5"]
+
     property int scrollBarWidth: S.spacing["2"]
     property int scrollBarRadius: S.spacing["1"]
 
@@ -244,6 +246,7 @@ QtObject {
         property color lightPurple: S.colors.purple["200"]
 
         property color transparent: "#00000000"
+        property color overlayColor: "#bb000000";
     }
 
     // TODO edit the colors

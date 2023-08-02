@@ -149,7 +149,7 @@ Control {
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.formLabel;
                     }
-                    TextField {
+                    G.TextField {
                         id: _voxelsize;
                         text: "1.0";
                         color: G.Style.colors.textColorBase;
@@ -170,7 +170,7 @@ Control {
                     Layout.fillWidth: true;
 
                     Label { text: "Time start:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
-                    TextField { id: _ds_time_start;
+                    G.TextField { id: _ds_time_start;
                         Layout.fillWidth: true;
                         text: "";
                         color: G.Style.colors.textColorBase;
@@ -179,7 +179,7 @@ Control {
                         validator: IntValidator{bottom: 0; top: 10000;}
                     }
                     Label { text: "Time  End:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel;}
-                    TextField { id: _ds_time_end; text: "";
+                    G.TextField { id: _ds_time_end; text: "";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
                         Layout.fillWidth: true;
@@ -233,7 +233,7 @@ Control {
                 RowLayout {
                     Layout.fillWidth: true;
                     Label { text: "Name:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
-                    TextField {
+                    G.TextField {
                         id: _up_name;
                         Layout.fillWidth: true;
                         helperText: "New Dataset Name";
@@ -245,7 +245,7 @@ Control {
                 RowLayout {
                     Layout.fillWidth: true;
                     Label { text: "NCBI:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
-                    TextField {
+                    G.TextField {
                         id: _up_ncbi;
                         Layout.fillWidth: true;
                         placeholderText: qsTr("NCBI specie if available");
@@ -279,7 +279,7 @@ Control {
                 RowLayout {
                     Layout.fillWidth: true;
                     Label { text: "Description:"; color: G.Style.colors.textColorBase; font: G.Style.fonts.formLabel; }
-                    TextField {
+                    G.TextField {
                         id: _up_description;
                         Layout.fillWidth: true;
                         text: "(Uploaded from Gnomon)";
@@ -296,7 +296,7 @@ Control {
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.formLabel;
                     }
-                    TextField {
+                    G.TextField {
                         id: _upload_voxelsize;
                         Layout.fillWidth: true;
                         text: "1.0";
@@ -418,7 +418,7 @@ Control {
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.formLabel;
                     }
-                    TextField {
+                    G.TextField {
                         id: _curation_voxelsize;
                         text: "0.5";
                         color: G.Style.colors.textColorBase;
