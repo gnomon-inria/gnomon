@@ -331,7 +331,14 @@ G.Workspace {
                                     verticalAlignment: Text.AlignVCenter
 
                                     wrapMode: Text.Wrap
-                                    color: G.Style.colors.textColorBase
+                                    color: G.Style.colors.textColorNeutral
+                                    placeholderTextColor: G.Style.colors.textColorDeEmphasize
+
+                                    background: Rectangle {
+                                        anchors.fill: parent
+                                        color: G.Style.colors.gutterColor
+                                    }
+
                                 }
                             }
 
@@ -359,7 +366,6 @@ G.Workspace {
                                 verticalAlignment: Text.AlignTop
 
                                 wrapMode: Text.Wrap
-                                color: G.Style.colors.textColorBase
                             }
 
                             Label {
@@ -383,7 +389,7 @@ G.Workspace {
 
                                     anchors.left: parent.left
                                     anchors.verticalCenter: parent.verticalCenter
-                                    width: parent.width - _remember_workspace.width - G.Style.smallPadding
+                                    width: parent.width - _remember_workspace.width - G.Style.mediumPadding
 
                                     model: []
                                     textRole: "title"
@@ -414,7 +420,7 @@ G.Workspace {
 
                                     anchors.right: parent.right
                                     anchors.verticalCenter: parent.verticalCenter
-                                    width: G.Style.shortButtonWidth
+                                    width: G.Style.buttonWidth
                                     text: "Make default"
                                     checked: false
                                     tooltip: "Check to make the chosen workspace the default option next time you create a new project."

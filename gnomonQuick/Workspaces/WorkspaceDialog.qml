@@ -84,11 +84,20 @@ G.Dialog {
 
             id: _workspace_search_bar;
 
-            height: G.Style.formDelegateHeight
+            height: G.Style.mediumLabelHeight
 
             anchors.right: _workspace_selection_panel.right;
             anchors.left: _workspace_selection_panel.left;
             anchors.top: _workspace_selection_panel.top;
+
+            placeholderText: "search a plugin or workspace"
+            color: G.Style.colors.textColorNeutral
+            placeholderTextColor: G.Style.colors.textColorDeEmphasize
+
+            background: Rectangle {
+                anchors.fill: parent
+                color: G.Style.colors.gutterColor
+            }
 
             onTextChanged: {
                 _model.refilter();
@@ -138,6 +147,8 @@ G.Dialog {
 
                 delegate: G.ListItemDelegate {
                     id: _delegate
+                    implicitHeight: G.Style.largeButtonHeight
+
                     required property string type
                     required property string title
                     required property string source

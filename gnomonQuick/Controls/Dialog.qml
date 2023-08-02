@@ -48,6 +48,7 @@ Dialog {
             verticalAlignment: Qt.AlignVCenter
             text: _self.title
             font: G.Style.fonts.header
+            color: G.Style.colors.baseColor
         }
 
         background: Rectangle {

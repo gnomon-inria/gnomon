@@ -12,6 +12,7 @@ TextArea {
     text: GP.PipelineManager.pipeline.name
     font: G.Style.fonts.value
     color: G.Style.colors.textColorBase
+    placeholderTextColor: G.Style.colors.textColorDeEmphasize
     wrapMode: TextInput.WrapAnywhere
     selectByMouse: true
     textMargin: G.Style.smallPadding

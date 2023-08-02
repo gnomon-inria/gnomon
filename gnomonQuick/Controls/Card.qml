@@ -82,6 +82,7 @@ Control {
 
         text: _control.title
         font: G.Style.fonts.cardTitle
+        fontSizeMode: Text.Fit
 
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignTop
@@ -105,6 +106,7 @@ Control {
 
         text: _control.body
         font: G.Style.fonts.cardLabel
+        fontSizeMode: Text.Fit
 
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
