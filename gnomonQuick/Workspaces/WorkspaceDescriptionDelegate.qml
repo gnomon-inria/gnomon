@@ -30,7 +30,7 @@ Item {
                 horizontalAlignment: Text.AlignLeft;
 
                 text: _self.title;
-
+                color: G.Style.colors.textColorNeutral
                 font: G.Style.fonts.header;
             }
 
@@ -55,8 +55,8 @@ Item {
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-            Layout.preferredHeight: _self.height * 0.5;
-            Layout.minimumHeight: _self.height * 0.3;
+            Layout.preferredHeight: _self.height * 0.6;
+            Layout.minimumHeight: _self.height * 0.4;
 
             clip: true;
             contentWidth: availableWidth
@@ -85,6 +85,7 @@ Item {
 
                     visible: _self.show_description
                     text: _self.description
+                    color: G.Style.colors.textColorNeutral
                     wrapMode: Text.Wrap
 
                     font: G.Style.fonts.value;
@@ -103,6 +104,7 @@ Item {
             visible: _self.show_description
 
             text: "Algorithms"
+            color: G.Style.colors.textColorNeutral
             font: G.Style.fonts.subHeader;
         }
 

@@ -175,7 +175,13 @@ Control
 
                 font.pointSize: 10;
 
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: G.Style.colors.gutterColor
+                }
+
                 text: _folder_model.folder;
+                color: G.Style.colors.textColorNeutral
 
             }
 
@@ -257,7 +263,7 @@ Control
         anchors.left: _self.left;
     }
 
-    ComboBox {
+    G.ComboBox {
         id: _filter_combobox;
 
         textRole: "text";

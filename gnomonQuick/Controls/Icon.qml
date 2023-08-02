@@ -15,7 +15,7 @@ Control
     property alias rotation: _text.rotation;
     property bool flip: false;
 
-    readonly property real _implicitSize: icon.toString() ? size : 0
+    readonly property real _implicitSize: I.icons[_control.icon].toString() ? size : 0
 
     implicitWidth: _implicitSize
     implicitHeight: _implicitSize

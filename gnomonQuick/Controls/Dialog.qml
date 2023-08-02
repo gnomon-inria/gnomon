@@ -48,7 +48,7 @@ Dialog {
             verticalAlignment: Qt.AlignVCenter
             text: _self.title
             font: G.Style.fonts.header
-            color: G.Style.colors.baseColor
+            color: G.Style.colors.textColorNeutral
         }
 
         background: Rectangle {
@@ -60,6 +60,7 @@ Dialog {
 
     footer: DialogButtonBox {
         id: _dbox
+        alignment: Qt.AlignRight
         background: Rectangle {
             anchors.fill: parent
             color: G.Style.colors.gutterColor
@@ -67,6 +68,8 @@ Dialog {
 
         delegate: G.Button {
             id: _bdel
+            width: G.Style.buttonWidth
+
         }
         Component.onCompleted: {
             for (const [buttonCode, style, flat] of standardButtonsStyle) {

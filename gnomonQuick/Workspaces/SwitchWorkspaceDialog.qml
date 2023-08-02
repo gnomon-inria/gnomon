@@ -25,10 +25,17 @@ G.Dialog {
     {
         visible: true
 
+        alignment: Qt.AlignRight
+        background: Rectangle {
+            anchors.fill: parent
+            color: G.Style.colors.gutterColor
+        }
+
         G.Button {
             text: 'Close';
             flat: true
             type: G.Style.ButtonType.Neutral
+            width: G.Style.buttonWidth
             onClicked: self.reject();
         }
 
@@ -36,7 +43,7 @@ G.Dialog {
             text: 'New';
             flat: true
             type: G.Style.ButtonType.Base
-
+            width: G.Style.buttonWidth
             onClicked: {
                 self.reject();
                 _workspace_dialog.update_highlight();

@@ -71,7 +71,7 @@ Button {
 
         anchors.left: _icon.right
         anchors.verticalCenter: parent.verticalCenter
-        //anchors.margins: G.Style.buttonPadding
+        anchors.margins: G.Style.buttonPadding
 
         height: parent.height - 4
         width: 2
