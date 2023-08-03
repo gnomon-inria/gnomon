@@ -1,10 +1,10 @@
-import QtQuick          2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts  1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import gnomonQuick.Controls 1.0 as G
-import gnomonQuick.Style 1.0 as G
-import gnomon.Visualization   1.0 as GV
+import gnomonQuick.Controls as G
+import gnomonQuick.Style    as G
+import gnomon.Visualization as GV
 
 G.Page {
 
@@ -136,11 +136,13 @@ G.Page {
 
         visible: false;
 
-        ProgressBar {
+        G.ProgressBar {
+            id: _banner_progress_bar
             anchors.fill: parent
-            value: sessionLoader.progress
+            value: window.load_in_progress ? sessionLoader.progress : d ? d.progress : 0
             visible: window.load_in_progress
             opacity: 0.5
+            to: 100
         }
 
         BusyIndicator {
@@ -150,6 +152,7 @@ G.Page {
             anchors.verticalCenter: parent.verticalCenter;
             anchors.margins: G.Style.smallPadding
 
+            palette.dark: G.Style.colors.neutralColor
             height: G.Style.thumbnailLarge;
         }
 
@@ -175,11 +178,13 @@ G.Page {
         _banner.visible = true;
         _banner_indicator.running = true;
         _logs_control.show = true;
+        _banner_progress_bar.visible = true
         GV.LogServer.newPendingLogConnection.connect(_logs_control.new_connection)
     }
 
     function idleStop() {
         _banner.visible = false;
+        _banner_progress_bar.visible = window.load_in_progress
         _logs_control.show = false;
         _logs_control.close_console()
     }

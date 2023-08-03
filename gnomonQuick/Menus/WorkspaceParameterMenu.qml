@@ -97,14 +97,6 @@ Control {
             }
         }
 
-        ProgressBar {
-            Layout.fillWidth: true;
-            indeterminate: d.progress == -1
-            from: 0
-            to: 100
-            value: d.progress
-        }
-
         Item {
             id: _button_container
 

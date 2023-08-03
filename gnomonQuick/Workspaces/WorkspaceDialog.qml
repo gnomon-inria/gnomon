@@ -188,7 +188,7 @@ G.Dialog {
                         anchors.topMargin: -1;
                         anchors.bottomMargin: -1;
 
-                        visible: highlightElement
+                        visible: highlightElement && available
                         z: -1
                         color: G.Style.colors.hoveredOkColor;
                     }
@@ -196,7 +196,7 @@ G.Dialog {
                     contentItem: Text {
                         text: _delegate.text
                         font: _delegate.font
-                        color: highlightElement ? G.Style.colors.lightGreen : G.Style.colors.textColorNeutral
+                        color: highlightElement && available ? G.Style.colors.lightGreen : G.Style.colors.textColorNeutral
                     }
                 }
 
