@@ -4,6 +4,8 @@
 
 #include <QtCore>
 
+class gnomonSessionProcess
+
 class GNOMONPROJECT_EXPORT gnomonSessionManager : public QObject
 {
     Q_OBJECT
@@ -18,6 +20,10 @@ public:
 protected:
     gnomonSessionManager(QObject *parent);
     ~gnomonSessionManager(void);
+
+public:
+    bool save(const string &id, const string &path);
+    void load(const string &id, const string &path);
 
 private:
     static gnomonSessionManager *s_instance;
