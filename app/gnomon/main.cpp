@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
     //TODO for qt >= 6.5 !
     //engine.addImportPath("qrc:/qt/qml/");
-    //engine.load(QUrl("qrc:/qt/qml/gnomon_x/main.qml"));
+    //engine.load(QUrl("qrc:/qt/qml/gnomon/main.qml"));
     engine.addImportPath("qrc:/");
     //engine.set_property("_title", QVariant::from(QString::from("gnomon")));
 

@@ -33,7 +33,7 @@ Control {
             left: rect_bg.left
             top: rect_bg.top
             bottom: rect_bg.bottom
-            margins: id_rec1.height * 0.1
+            margins: rect_bg.height * 0.1
         }
         width: _control.value * rect_bg.width / _control.to
         height: _control.height
