@@ -1,0 +1,441 @@
+{
+    "binaryImageFromImage1": {
+        "description": "",
+        "inputs": {
+            "initialization": null,
+            "input": "imageFilter2 -> output"
+        },
+        "metadata": {
+            "conda_channel": "gnomon",
+            "package": "gnomon-package-imageenhancement"
+        },
+        "name": "binaryImageFromImage1",
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "greater_or_lower": {
+                "doc": "Channel on which to apply the algorithm",
+                "index": 0,
+                "label": "> or <",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "greater >",
+                    "lower <"
+                ]
+            },
+            "threshold": {
+                "decimals": 0,
+                "doc": "Image is true where intensity > threshold",
+                "label": "Threshold",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 100
+            }
+        },
+        "plugin_group": "binaryImageFromImage",
+        "plugin_name": "binarization",
+        "plugin_version": "0.4.0"
+    },
+    "cellImageFromImage1": {
+        "description": "",
+        "inputs": {
+            "binaryImage": null,
+            "cellPoints": null,
+            "input": "imageReader1 -> image"
+        },
+        "metadata": {
+            "conda_channel": "gnomon",
+            "package": "gnomon-package-tissueimage"
+        },
+        "name": "cellImageFromImage1",
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "equalize": {
+                "decimals": 0,
+                "doc": "Whether to perform *adaptive histogram equalization* to image prior to any other step.",
+                "label": "Equalize",
+                "max": true,
+                "min": false,
+                "type": "dtkCoreParameterNumeric<bool>",
+                "value": true
+            },
+            "gaussian_sigma": {
+                "decimals": 2,
+                "doc": "Standard deviation of the Gaussian kernel used for the detection of seeds",
+                "label": "Gaussian sigma",
+                "max": 50,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.5
+            },
+            "h_min": {
+                "decimals": 0,
+                "doc": "High threshold of the H-transform for the detection of seeds",
+                "label": "H-min",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 2
+            },
+            "volume_max": {
+                "decimals": 0,
+                "doc": "Volume threshold for the suppression of oversized cells",
+                "label": "Volume max",
+                "max": 1000000,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 1000
+            },
+            "volume_min": {
+                "decimals": 0,
+                "doc": "Volume threshold for the suppression of undersized cells",
+                "label": "Volume min",
+                "max": 1000000,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 0
+            }
+        },
+        "plugin_group": "cellImageFromImage",
+        "plugin_name": "seededWatershedSegmentationTimagetk",
+        "plugin_version": "0.4.0"
+    },
+    "cellImageFromImage2": {
+        "description": "",
+        "inputs": {
+            "binaryImage": null,
+            "cellPoints": null,
+            "input": "imageFilter1 -> output"
+        },
+        "metadata": {
+            "conda_channel": "gnomon",
+            "package": "gnomon-package-tissueimage"
+        },
+        "name": "cellImageFromImage2",
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "equalize": {
+                "decimals": 0,
+                "doc": "Whether to perform *adaptive histogram equalization* to image prior to any other step.",
+                "label": "Equalize",
+                "max": true,
+                "min": false,
+                "type": "dtkCoreParameterNumeric<bool>",
+                "value": true
+            },
+            "gaussian_sigma": {
+                "decimals": 2,
+                "doc": "Standard deviation of the Gaussian kernel used for the detection of seeds",
+                "label": "Gaussian sigma",
+                "max": 50,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.5
+            },
+            "h_min": {
+                "decimals": 0,
+                "doc": "High threshold of the H-transform for the detection of seeds",
+                "label": "H-min",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 2
+            },
+            "volume_max": {
+                "decimals": 0,
+                "doc": "Volume threshold for the suppression of oversized cells",
+                "label": "Volume max",
+                "max": 1000000,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 1000
+            },
+            "volume_min": {
+                "decimals": 0,
+                "doc": "Volume threshold for the suppression of undersized cells",
+                "label": "Volume min",
+                "max": 1000000,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 0
+            }
+        },
+        "plugin_group": "cellImageFromImage",
+        "plugin_name": "seededWatershedSegmentationTimagetk",
+        "plugin_version": "0.4.0"
+    },
+    "cellImageFromImage3": {
+        "description": "",
+        "inputs": {
+            "binaryImage": null,
+            "cellPoints": null,
+            "input": "imageFilter3 -> output"
+        },
+        "metadata": {
+            "conda_channel": "gnomon",
+            "package": "gnomon-package-tissueimage"
+        },
+        "name": "cellImageFromImage3",
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "equalize": {
+                "decimals": 0,
+                "doc": "Whether to perform *adaptive histogram equalization* to image prior to any other step.",
+                "label": "Equalize",
+                "max": true,
+                "min": false,
+                "type": "dtkCoreParameterNumeric<bool>",
+                "value": true
+            },
+            "gaussian_sigma": {
+                "decimals": 2,
+                "doc": "Standard deviation of the Gaussian kernel used for the detection of seeds",
+                "label": "Gaussian sigma",
+                "max": 50,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.5
+            },
+            "h_min": {
+                "decimals": 0,
+                "doc": "High threshold of the H-transform for the detection of seeds",
+                "label": "H-min",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 2
+            },
+            "volume_max": {
+                "decimals": 0,
+                "doc": "Volume threshold for the suppression of oversized cells",
+                "label": "Volume max",
+                "max": 1000000,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 1000
+            },
+            "volume_min": {
+                "decimals": 0,
+                "doc": "Volume threshold for the suppression of undersized cells",
+                "label": "Volume min",
+                "max": 1000000,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 0
+            }
+        },
+        "plugin_group": "cellImageFromImage",
+        "plugin_name": "seededWatershedSegmentationTimagetk",
+        "plugin_version": "0.4.0"
+    },
+    "description": "Improving image segmentation with image enhancement methods\nWe use binarization algorithm in workspace binarization",
+    "fileFormatVersion": "0.0.1",
+    "gnomonVersion": "0.61.0",
+    "imageFilter1": {
+        "description": "",
+        "inputs": {
+            "input": "imageReader1 -> image",
+            "mask": null
+        },
+        "metadata": {
+            "conda_channel": "gnomon",
+            "package": "gnomon-package-imageenhancement"
+        },
+        "name": "imageFilter1",
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "boundary_sigma": {
+                "decimals": 1,
+                "doc": "Standard deviation of the Gaussian kernel used to compute the boundary",
+                "label": "Boundary sigma",
+                "max": 5,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.5
+            },
+            "edge_intensity": {
+                "decimals": 0,
+                "doc": "Intensity factor for the added boundary edge",
+                "label": "Edge intensity",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 255
+            },
+            "gaussian_sigma": {
+                "decimals": 1,
+                "doc": "Standard deviation of the Gaussian kernel used to smooth signal",
+                "label": "Gaussian Sigma",
+                "max": 50,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 2
+            },
+            "threshold": {
+                "decimals": 0,
+                "doc": "Intensity threshold used to detect the tissue boundary",
+                "label": "Threshold",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 15
+            }
+        },
+        "plugin_group": "imageFilter",
+        "plugin_name": "boundaryEdgeEnhancement",
+        "plugin_version": "0.4.0"
+    },
+    "imageFilter2": {
+        "description": "",
+        "inputs": {
+            "input": "imageReader1 -> image",
+            "mask": null
+        },
+        "metadata": {
+            "conda_channel": "gnomon",
+            "package": "gnomon-package-imageenhancement"
+        },
+        "name": "imageFilter2",
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "K": {
+                "decimals": 1,
+                "doc": "Proportional to the cell walls width",
+                "label": "Const K",
+                "max": 0.3,
+                "min": 0.1,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.2
+            },
+            "gamma": {
+                "decimals": 1,
+                "doc": "Amount of gamma correction on the image signal (add contrast in low intensties)",
+                "label": "Gamma",
+                "max": 15,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 1
+            },
+            "nbIter": {
+                "decimals": 0,
+                "doc": "Number of iterations",
+                "label": "Iteration",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 15
+            },
+            "sigma": {
+                "decimals": 2,
+                "doc": "Standard deviation (in µm) of the Gaussian kernel used to smooth signal",
+                "label": "Gaussian Sigma",
+                "max": 10,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.5
+            },
+            "upDir": {
+                "decimals": 0,
+                "doc": "Diffusion tensor is updated every upDiter iteration",
+                "label": "Tensor",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 10
+            }
+        },
+        "plugin_group": "imageFilter",
+        "plugin_name": "anisotropic3dImageEnhancement",
+        "plugin_version": "0.4.0"
+    },
+    "imageFilter3": {
+        "description": "",
+        "inputs": {
+            "input": "imageFilter2 -> output",
+            "mask": "binaryImageFromImage1 -> output"
+        },
+        "metadata": {
+            "conda_channel": "gnomon",
+            "package": "gnomon-package-imageenhancement"
+        },
+        "name": "imageFilter3",
+        "outputs": [
+            "output"
+        ],
+        "parameters": {
+            "boundary_sigma": {
+                "decimals": 1,
+                "doc": "Standard deviation of the Gaussian kernel used to compute the boundary",
+                "label": "Boundary sigma",
+                "max": 5,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.5
+            },
+            "edge_intensity": {
+                "decimals": 0,
+                "doc": "Intensity factor for the added boundary edge",
+                "label": "Edge intensity",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 255
+            },
+            "gaussian_sigma": {
+                "decimals": 1,
+                "doc": "Standard deviation of the Gaussian kernel used to smooth signal",
+                "label": "Gaussian Sigma",
+                "max": 50,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.88
+            },
+            "threshold": {
+                "decimals": 0,
+                "doc": "Intensity threshold used to detect the tissue boundary",
+                "label": "Threshold",
+                "max": 255,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 15
+            }
+        },
+        "plugin_group": "imageFilter",
+        "plugin_name": "boundaryEdgeEnhancement",
+        "plugin_version": "0.4.0"
+    },
+    "imageReader1": {
+        "description": "",
+        "inputs": {
+        },
+        "name": "imageReader1",
+        "outputs": [
+            "image"
+        ],
+        "path": "YR01_t40_crop.inr.gz",
+        "plugin_group": "imageReader",
+        "plugin_name": "imageReaderTimagetk",
+        "plugin_version": "0.4.0"
+    },
+    "input": [
+        {
+            "imageReader1_path": "imageReader1 -> path"
+        }
+    ],
+    "name": "image_enhancement_scenario",
+    "output": [
+    ],
+    "type": "pipeline"
+}

@@ -10,9 +10,10 @@ dependencies:
     - cmake
     - qt >=6.2
     - git
-    - rust
+    - x-vis =1.0
     - vtk =9.1.0
     - dtk-core
+    - dtk-log
     - dtk-script >= 2.5.1
     - dtk-core-python
     - dtk-imaging
@@ -30,6 +31,11 @@ dependencies:
     - python-lsp-server
     - pyside6
     - qtconsole-base
+    - python-lsp-server=1.7.1
+    - jedi=0.18.2
+    - scipy != 1.8.1
+    - importlib_metadata
     - pip
     - pip:
         - morphonet
+        - python-lsp-server[websockets]
