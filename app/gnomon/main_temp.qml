@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 
 import gnomonQuick.Style    as G
-import gnomonQuick.Controls as G
+//import gnomonQuick.Controls as G
 import "." as G
 
 //window containing the application
@@ -22,49 +22,27 @@ ApplicationWindow {
         color: G.Style.colors.baseColor
     }
 
-    SplitView {
-
-        id: _split;
-
-        anchors.fill: parent;
-        anchors.leftMargin: 0;
-        anchors.rightMargin: 0;
-        Drawel {
-            id: drawel;
-            SplitView.fillHeight: true;
-            implicitWidth: 400;
+    SwitchDelegate {
+        width: parent.width;
+        text: G.Style.mode == G.Style.Mode.Dark ? "Dark" : "Light";
+        palette.text: G.Style.colors.textColorBase
+        onToggled: {
+            G.Style.mode = checked ? G.Style.Mode.Dark :  G.Style.Mode.Light;
+            console.log("new mode", G.Style.mode)
         }
-
-        StackLayout {
-            id: stack_launcher
-
-            currentIndex: 0
-
-            SplitView.fillHeight: true;
-            SplitView.fillWidth: true;
-
-            StackLayout {
-                id: workspaces;
-            }
-        }
-
-        G.Drawer {
-            id: drawer;
-            SplitView.fillHeight: true;
-            implicitWidth: 400;
-        }
+        checked: G.Style.mode = G.Style.Mode.Dark;
     }
 
     Component.onCompleted: {
         console.log("Style" , G.Style);
-        console.log("Icons" , G.Icons);
 
-        for (var p in G.Icons)
-        {
+        //for (var p in G.Icons)
+        //{
             //if( typeof G.Style[p] != "function" )
-            console.log(p + ":" + G.Icons[p]);
-        }
-        console.log(JSON.stringify(G.Icons))
+        //    console.log(p + ":" + G.Icons[p]);
+        //}
+        //console.log(JSON.stringify(G.Icons))
         console.log(G.Style.mode);
+        console.log(G.Style.colors);
     }
 }

@@ -48,7 +48,7 @@ QtObject {
     }
 
     property int mode: Style.Mode.Dark
-    property alias colors: _colorDark //mode == Mode.Dark ? _colorDark : _colorLight
+    property QtObject colors:  _self.mode == Style.Mode.Dark ? _colorDark : _colorLight
     // property alias fonts: _fonts
     property int panelRadius: S.spacing["1"]
 
@@ -257,35 +257,35 @@ QtObject {
         property color highlightColor: "#20E8C0"
 
         //panel colors (neutral)
-        property color bgColor: S.colors.gray["700"]
-        property color gutterColor: S.colors.gray["900"]
-        property color fgColor: S.colors.gray["600"]
-        property color embossColor: S.colors.gray["600"]
+        property color bgColor: S.colors.gray["100"]
+        property color gutterColor: S.colors.gray["300"]
+        property color fgColor: S.colors.gray["200"]
+        property color embossColor: S.colors.gray["200"]
 
         //basic color theme
-        property color baseColor: S.colors.blue["500"]
-        property color neutralColor: S.colors.gray["300"]
-        property color dangerColor: S.colors.red["500"]
-        property color warningColor: S.colors.orange["500"]
-        property color okColor: S.colors.green["500"]
-        property color noteColor: S.colors.yellow["500"]
-        property color exampleColor: S.colors.purple["500"]
+        property color baseColor: S.colors.blue["600"]
+        property color neutralColor: S.colors.gray["500"]
+        property color dangerColor: S.colors.red["600"]
+        property color warningColor: S.colors.orange["600"]
+        property color okColor: S.colors.green["600"]
+        property color noteColor: S.colors.yellow["600"]
+        property color exampleColor: S.colors.purple["600"]
 
         //hovered color theme
-        property color hoveredBaseColor: S.colors.blue["400"]
-        property color hoveredNeutralColor: S.colors.gray["400"]
-        property color hoveredDangerColor: S.colors.red["400"]
-        property color hoveredWarningColor: S.colors.orange["400"]
-        property color hoveredOkColor: S.colors.green["400"]
+        property color hoveredBaseColor: S.colors.blue["700"]
+        property color hoveredNeutralColor: S.colors.gray["700"]
+        property color hoveredDangerColor: S.colors.red["700"]
+        property color hoveredWarningColor: S.colors.orange["700"]
+        property color hoveredOkColor: S.colors.green["700"]
 
         //text colors
-        property color textColorBase: S.colors.blue["100"]
-        property color textColorOk: S.colors.green["100"]
-        property color textColorDanger: S.colors.red["100"]
-        property color textColorWarning: S.colors.orange["100"]
-        property color textColorNeutral: S.colors.gray["100"]
-        property color textColorFaded: S.colors.gray["200"]
-        property color textColorDeEmphasize: S.colors.gray["600"]
+        property color textColorBase: S.colors.blue["900"]
+        property color textColorOk: S.colors.green["900"]
+        property color textColorDanger: S.colors.red["900"]
+        property color textColorWarning: S.colors.orange["900"]
+        property color textColorNeutral: S.colors.gray["900"]
+        property color textColorFaded: S.colors.gray["800"]
+        property color textColorDeEmphasize: S.colors.gray["400"]
 
         //text colors
         property color textColorDarkBase: S.colors.blue["900"]
@@ -296,8 +296,8 @@ QtObject {
         property color textColorDarkFaded: S.colors.gray["800"]
 
         //emboss for different colors
-        property color embossColorBlue: S.colors.blue["400"]
-        property color embossColorNeutral: S.colors.gray["500"]
+        property color embossColorBlue: S.colors.blue["600"]
+        property color embossColorNeutral: S.colors.gray["600"]
 
         //otherColors
         property color lightBlue: S.colors.blue["200"]
@@ -432,5 +432,4 @@ QtObject {
             pointSize: S.fontScale["50"],
         })
     }
-
 }

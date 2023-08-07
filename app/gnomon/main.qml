@@ -48,6 +48,7 @@ G.Application {
         property alias width: window.width
         property alias height: window.height
         property alias opened_projects: window.opened_files;
+        property int mode: 0
     }
 
     FileDialog {
@@ -647,6 +648,7 @@ G.Application {
         //if (Qt.platform.os === "osx")
         //    X.Style.flavors = 'MACOS';
 
+        G.Style.mode = stt.mode
         window.width = Math.max(window.width, G.Style.windowMinWidth)
         window.height = Math.max(window.height, G.Style.windowMinHeight)
 

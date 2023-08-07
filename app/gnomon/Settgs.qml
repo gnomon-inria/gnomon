@@ -72,13 +72,6 @@ G.Dialog {
 
                         spacing: 10;
 
-                        Label {
-                          width: parent.width;
-                          color: G.Style.colors.textColorBase
-                          font: G.Style.fonts.subHeader
-                          text: "Flavor";
-                        }
-
                       Label {
                         width: parent.width;
                         color: G.Style.colors.textColorBase
@@ -87,12 +80,14 @@ G.Dialog {
                       }
 
                       SwitchDelegate {
-                        width: parent.width; text: "Dark";
-                        onToggled: {
-                          G.Style.mode = checked ? G.Style.Mode.Dark :  G.Style.Mode.Light;
+                          width: parent.width;
+                          text: G.Style.mode == G.Style.Mode.Dark ? "Dark" : "Light";
+                          palette.text: G.Style.colors.textColorBase
+                          onToggled: {
+                              G.Style.mode = checked ? G.Style.Mode.Light :  G.Style.Mode.Dark;
+                          }
+                          checked: G.Style.mode == G.Style.Mode.Light;
                         }
-                        checked: G.Style.mode = G.Style.Mode.Dark;
-                      }
 
                       Label {
                         width: parent.width
@@ -378,10 +373,10 @@ G.Dialog {
 
     Settings {
         id: settings
+        property int mode: G.Style.Mode.Dark
     }
 
     function setDataPath(new_path) {
-        console.log(new_path, GUtils.isValidPath(new_path))
         if(GUtils.isValidPath(new_path)) {
             GUtils.dataPath = new_path
         }
@@ -399,10 +394,12 @@ G.Dialog {
     onAccepted: {
         setDataPath(data_path_edit.text)
         settings.setValue("data_path", GUtils.dataPath)
+        settings.mode = G.Style.mode
         settingsDialog.close()
     }
 
     onRejected: {
+        G.Style.mode = settings.mode
         settingsDialog.close()
     }
 
