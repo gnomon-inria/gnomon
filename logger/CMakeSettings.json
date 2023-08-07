@@ -1,0 +1,15 @@
+{
+    "configurations": [{
+        "name": "x-logger Development",
+        "generator": "Unix Makefiles",
+        "configurationType" : "RelWithDebInfo",
+        "buildRoot":  "${projectDir}/build",
+        "cmakeCommandArgs":  "",
+        "buildCommandArgs": "",
+        "ctestCommandArgs":  "",
+        "variables": [{
+            "name": "TEST_VAR",
+            "value": "ON"
+        }]
+    }]
+}

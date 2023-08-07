@@ -1,0 +1,7 @@
+#include <QtCore>
+#include <QtGui>
+#include <QtQml>
+
+#include "xLogger.hpp"
+#include "xLoggerConsoleController.hpp"
+#include "xLoggerConsoleItem.hpp"
