@@ -19,6 +19,7 @@
 #include <gnomonVisualization>
 #include <gnomonWorkspace>
 
+#include <qobjectdefs.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <csignal>
 
@@ -126,10 +127,9 @@ private:
 
 QString gnomonMetaDataFetcher::workspaceMetaData(const QString& type, const QString& key)
 {
-    int type_id = QMetaType::type((type+" *").toLocal8Bit());
-
-    if (type_id != QMetaType::UnknownType) {
-        const QMetaObject *object = QMetaType::metaObjectForType(type_id);
+    auto metaT = QMetaType::fromName((type+" *").toLocal8Bit());
+    if(metaT.isValid()) {
+        const QMetaObject *object = metaT.metaObject();
         int info_id = object->indexOfClassInfo(key.toLocal8Bit());
         if (info_id > -1) {
             QMetaClassInfo info = object->classInfo(info_id);
@@ -138,10 +138,10 @@ QString gnomonMetaDataFetcher::workspaceMetaData(const QString& type, const QStr
             dtkWarn()<<Q_FUNC_INFO<<"No"<<key<<"found in metatype info for type"<<type;
             return "";
         }
-    } else {
-        dtkWarn()<<Q_FUNC_INFO<<"No registered metatype found for type"<<type;
-        return "";
     }
+
+    dtkWarn()<<Q_FUNC_INFO<<"No valid metatype found for type"<<type;
+    return "";
 }
 
 QStringList gnomonMetaDataFetcher::pluginGroupMetaData(const QString& key)
