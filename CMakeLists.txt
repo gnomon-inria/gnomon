@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.20.0)
 
 ######################################################################
 
-project(gnomon)
+project(gnomon
+  VERSION 0.81.1
+  LANGUAGES C CXX)
 
 ## ###################################################################
 ## cmake modules folder
@@ -84,6 +86,7 @@ endif("${isSystemDir}" STREQUAL "-1")
 ## #################################################################
 
 option(GNOMON_ENABLE_VISU "Enable Visualization and workspaces" true)
+option(GNOMON_ENABLE_GUI "Enable Gui" true)
 
 ## ###################################################################
 ## Test setup
@@ -123,6 +126,10 @@ find_package(xtensor     REQUIRED) # because of dtkImaging
 if(GNOMON_ENABLE_VISU)
   add_definitions(-DGNOMON_USE_VISU)
   find_package(Qt6 REQUIRED COMPONENTS Gui Quick QuickWidgets)
+  if(GNOMON_ENABLE_GUI)
+    find_package(Qt6 REQUIRED COMPONENTS Qml QuickControls2 WebEngineQuick Widgets)
+    find_package(xVis REQUIRED)
+  endif()
 endif(GNOMON_ENABLE_VISU)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
@@ -143,6 +150,10 @@ include(gnomonSubdirectoryAddFiles)
 add_subdirectory(src)
 add_subdirectory(app)
 add_subdirectory(wrp)
+if(GNOMON_ENABLE_GUI)
+  add_subdirectory(qml)
+endif()
+
 add_subdirectory(python)
 # add_subdirectory(doc)
 

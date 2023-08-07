@@ -1,17 +1,3 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
 set(layer_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 ## #################################################################
@@ -26,6 +12,8 @@ if(GNOMON_ENABLE_VISU)
   add_subdirectory(gnomonVisualization)
   add_subdirectory(gnomonWorkspace)
 endif(GNOMON_ENABLE_VISU)
+
+add_subdirectory(logger)
 
 ## #################################################################
 ## Targets

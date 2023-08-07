@@ -38,22 +38,18 @@ int main(int argc, char *argv[])
     engine.addImportPath("qrc:/");
     //engine.set_property("_title", QVariant::from(QString::from("gnomon")));
 
-    engine.load(QUrl("qrc:/gnomon_x/main.qml"));
-    //engine.load(QUrl("qrc:/gnomon_x/main_temp.qml"));
+    engine.load(QUrl("qrc:/gnomon/main.qml"));
+    //engine.load(QUrl("qrc:/gnomon/main_temp.qml"));
 
     workspaceImageProvider *imageProvider = new workspaceImageProvider;
     engine.addImageProvider("thumbnails", new gnomonImageProvider);
     engine.addImageProvider("workspaces", imageProvider);
 
-    // QQuickView *qiew = static_cast<QQuickView *>(static_cast<QQmlApplicationEngine *>(engine_p)->rootObjects().first());
-    // qDebug() << Q_FUNC_INFO << "View" << qiew;
-    // QQuickItem *root = static_cast<QQuickItem *>(qiew->rootObject());
-
     QObject *root = engine.rootObjects().first();
     QObject::connect(root, SIGNAL(getScreenshot(QString)), imageProvider, SLOT(makeScreenshot(QString)));
 
     gnomonInitLogServer();
-    app.setWindowIcon(QIcon("qrc:/gnomon_x/assets/gnomon_logo.png"));
+    app.setWindowIcon(QIcon("qrc:/gnomon/assets/gnomon_logo.png"));
 
     // from x_quick
 #if __APPLE__
