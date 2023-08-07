@@ -51,39 +51,39 @@ G.Application {
         property int mode: 0
     }
 
-    FileDialog {
+    P.FileDialog {
         id: loadFileDialog
-        currentFolder: P.StandardPaths.writableLocation(P.StandardPaths.DocumentsLocation)
+        folder: P.StandardPaths.writableLocation(P.StandardPaths.DocumentsLocation)
 
         Settings {
-            property alias last_open_folder: loadFileDialog.currentFolder
+            property alias last_open_folder: loadFileDialog.folder
         }
         nameFilters: ["Json files (*.json)"]
 
         onAccepted: {
-            load_session(loadFileDialog.selectedFile);
-            add_to_history(loadFileDialog.selectedFile)
+            load_session(loadFileDialog.file);
+            add_to_history(loadFileDialog.file)
         }
     }
 
-    FileDialog {
+    P.FileDialog {
         id: saveFileDialog
 
         title: "save Gnomon Pipeline"
 
-        fileMode: FileDialog.SaveFile
+        fileMode: P.FileDialog.SaveFile
         currentFile: "file:///" + GP.PipelineManager.pipeline.name + ".json"
 
         Settings {
-            property alias last_save_folder: saveFileDialog.currentFolder
+            property alias last_save_folder: saveFileDialog.folder
         }
 
         modality: Qt.WindowModal;
         nameFilters: [ "Json files (*.json)" ]
 
          onAccepted: {
-            GP.PipelineManager.pipeline.exportToJson(saveFileDialog.selectedFile);
-            add_to_history(saveFileDialog.selectedFile)
+            GP.PipelineManager.pipeline.exportToJson(saveFileDialog.file);
+            add_to_history(saveFileDialog.file)
         }
     }
 

@@ -4,6 +4,7 @@ import QtQuick.Dialogs
 import QtQuick.Window
 import QtQuick.Layouts
 
+import Qt.labs.platform as P
 import Qt5Compat.GraphicalEffects
 
 import gnomon.Visualization 1.0 as GV
@@ -91,16 +92,16 @@ Rectangle {
             _screenshot_dialog.open()
         }
 
-        FileDialog {
+        P.FileDialog {
             id: _screenshot_dialog
 
             nameFilters: [ "Image files (*.png)" ]
             title: "Save screenshot"
             modality: Qt.WindowModal;
-            fileMode: FileDialog.SaveFile
+            fileMode: P.FileDialog.SaveFile
 
             onAccepted: {
-                viewLogic.saveScreenshot(decodeURIComponent(_screenshot_dialog.selectedFile));
+                viewLogic.saveScreenshot(decodeURIComponent(_screenshot_dialog.file));
             }
         }
     }

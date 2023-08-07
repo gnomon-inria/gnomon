@@ -34,7 +34,7 @@ Control
     Settings {
         id: _settings;
         property string last_path;
-        property string mode: "grid";
+        property string finderMode: "grid";
 
     }
 
@@ -213,7 +213,7 @@ Control
                         width: 24;
 
                         background: Rectangle {
-                            color: _settings.mode === name ? G.Style.colors.hoveredBaseColor : G.Style.colors.gutterColor;
+                            color: _settings.finderMode === name ? G.Style.colors.hoveredBaseColor : G.Style.colors.gutterColor;
                             radius: 9;
                         }
 
@@ -226,7 +226,7 @@ Control
                             anchors.fill: _mode_rectangle;
 
                             onClicked: {
-                                if(name !== _internal.mode) _self.toolBarButtonHandler(name)
+                                if(name !== _settings.finderMode) _self.toolBarButtonHandler(name)
                             }
 
                         }
@@ -363,13 +363,13 @@ Control
         }
 
         if(buttonName === "grid") {
-            _settings.mode = buttonName
-            _loader.setSource("FinderGridView.qml", {"model": _folder_model})
+            _settings.finderMode = buttonName
+            _loader.setSource("FinderGridView.qml", {"foldermodel": _folder_model})
         }
 
         if(buttonName === "list") {
-            _settings.mode = buttonName
-            _loader.setSource("FinderListView.qml", {"model": _folder_model})
+            _settings.finderMode = buttonName
+            _loader.setSource("FinderListView.qml", {"foldermodel": _folder_model})
         }
 
     }
@@ -378,13 +378,8 @@ Control
         if(_settings.last_path) _self.folder = _settings.last_path;
         else _self.folder = StandardPaths.standardLocations(StandardPaths.HomeLocation)[0];
 
-        if(_settings.mode === "grid") _loader.setSource("FinderGridView.qml", {"foldermodel": _folder_model})
-        if(_settings.mode === "list") _loader.setSource("FinderListView.qml", {"foldermodel": _folder_model})
-
-        // for(let i = 0; i < _self.extensionFilters.count; i++) {
-
-        //   console.log("MODEL", extensionFilters.get(i).regexp.split())
-        // }
+        if(_settings.finderMode === "grid") _loader.setSource("FinderGridView.qml", {"foldermodel": _folder_model})
+        if(_settings.finderMode === "list") _loader.setSource("FinderListView.qml", {"foldermodel": _folder_model})
     }
 
 

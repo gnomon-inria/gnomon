@@ -1,9 +1,8 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Dialogs
 import QtQuick.Layouts
 
-import Qt.labs.platform  1.0 as P
+import Qt.labs.platform  as P
 
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
@@ -18,36 +17,36 @@ Item {
     property var d;
     property string _current_file: "";
 
-    FileDialog {
+    P.FileDialog {
         id: _file_dialog;
 
         currentFile: _self._current_file;
-        currentFolder: d.defaultReadPath();
-        fileMode: FileDialog.OpenFile;
+        folder: d.defaultReadPath();
+        fileMode: P.FileDialog.OpenFile;
 
         modality: Qt.NonModal;
         nameFilters: ["Python source files (*.py)"]
 
         onAccepted: {
-            d.read(decodeURIComponent(_file_dialog.selectedFfile));
-            _self._current_file = _file_dialog.selectedFfile;
+            d.read(decodeURIComponent(_file_dialog.file));
+            _self._current_file = _file_dialog.file;
         }
     }
 
-    FileDialog {
+    P.FileDialog {
         id: _file_dialog_save
 
         title: "Save Python algorithm"
 
-        currentFolder: d.defaultReadPath();
-        fileMode: FileDialog.SaveFile
+        folder: d.defaultReadPath();
+        fileMode: P.FileDialog.SaveFile
 
         modality: Qt.WindowModal;
         nameFilters: ["Python source files (*.py)"]
 
         onAccepted: {
-            d.save(decodeURIComponent(_file_dialog_save.selectedFfile));
-            _self._current_file = _file_dialog_save.selectedFfile;
+            d.save(decodeURIComponent(_file_dialog_save.file));
+            _self._current_file = _file_dialog_save.file;
             if (_message_dialog.visible) {
                 _message_dialog.close()
             }

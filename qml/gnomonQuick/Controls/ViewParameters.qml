@@ -5,6 +5,7 @@ import QtQuick.Layouts
 
 import Qt5Compat.GraphicalEffects
 
+import Qt.labs.platform as P
 import Qt.labs.settings
 
 import gnomon.Visualization 1.0 as GV
@@ -227,31 +228,31 @@ Control {
         }
     }
 
-    FileDialog {
+    P.FileDialog {
         id: _file_dialog_load;
 
         title: "Load camera parameters"
 
-        fileMode: FileDialog.OpenFile;
+        fileMode: P.FileDialog.OpenFile;
         modality: Qt.NonModal;
         nameFilters: ["Json camera files (*.json)"]
 
         onAccepted: {
-            view.viewLogic.loadCamera(decodeURIComponent(_file_dialog_load.selectedFile));
+            view.viewLogic.loadCamera(decodeURIComponent(_file_dialog_load.file));
         }
     }
 
-    FileDialog {
+    P.FileDialog {
         id: _file_dialog_save
 
         title: "Save camera parameters"
 
-        fileMode: FileDialog.SaveFile
+        fileMode: P.FileDialog.SaveFile
         modality: Qt.WindowModal;
         nameFilters: ["Json camera files (*.json)"]
 
         onAccepted: {
-            view.viewLogic.saveCamera(decodeURIComponent(_file_dialog_save.selectedFile));
+            view.viewLogic.saveCamera(decodeURIComponent(_file_dialog_save.file));
         }
     }
 }

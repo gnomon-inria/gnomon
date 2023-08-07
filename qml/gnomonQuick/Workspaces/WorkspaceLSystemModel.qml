@@ -5,7 +5,7 @@ import QtQuick.Layouts
 
 import QtQml.Models
 
-//import Qt.labs.platform  1.0 as P
+import Qt.labs.platform as P
 import Qt.labs.settings
 
 import gnomon.Utils as G
@@ -72,20 +72,20 @@ G.Workspace {
         property alias path: _self._path
     }
 
-    FileDialog {
+    P.FileDialog {
         id: _file_dialog;
 
         currentFile: _self._current_file;
-        currentFolder: _self._path;
-        fileMode: FileDialog.OpenFile;
+        folder: _self._path;
+        fileMode: P.FileDialog.OpenFile;
 
         modality: Qt.NonModal;
         nameFilters: ["L-Py source files (*.lpy *.py)"]
 
         onAccepted: {
-            d.read(decodeURIComponent(_file_dialog.selectedFile));
+            d.read(decodeURIComponent(_file_dialog.file));
             _editor.contents = d.text
-            _self._current_file = decodeURIComponent(_file_dialog.selectedFile);
+            _self._current_file = decodeURIComponent(_file_dialog.file);
             _editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
             _self._path = folder;
 
@@ -105,7 +105,7 @@ G.Workspace {
         type: G.Style.ButtonType.Warning
     }
 
-    FileDialog {
+    P.FileDialog {
         id: _file_dialog_save
 
         title: "Save L-System model"
@@ -117,7 +117,7 @@ G.Workspace {
         nameFilters: ["L-Py source files (*.lpy *.py)"]
 
         onAccepted: {
-            let save_path = decodeURIComponent(_file_dialog_save.selectedFfile)
+            let save_path = decodeURIComponent(_file_dialog_save.file)
             let save_filename = save_path.split('/').pop()
             if ((d.fileName.split('.').length == 1) || (d.fileName.split('.').pop() == save_filename.split('.').pop())) { //same extension
                 _editor.tabName = save_filename

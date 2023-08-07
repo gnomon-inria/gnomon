@@ -23,18 +23,18 @@ G.Workspace {
 
     property string current_file: "";
 
-    FileDialog {
+    P.FileDialog {
         id: _file_dialog;
 
         currentFile: _workspace.current_file;
-        currentFolder: P.StandardPaths.writableLocation(P.StandardPaths.HomeLocation);
+        folder: P.StandardPaths.writableLocation(P.StandardPaths.HomeLocation);
         modality: Qt.NonModal;
         nameFilters: ["Json files (*.json)"]
 
         onAccepted: {
             console.log('Loading an existing project');
-            load_session(_file_dialog.selectedFile);
-            add_to_history(_file_dialog.selectedFile)
+            load_session(_file_dialog.file);
+            add_to_history(_file_dialog.file)
         }
     }
 

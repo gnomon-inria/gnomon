@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Dialogs
 import QtQuick.Layouts
 
+import Qt.labs.platform  1.0 as P
 import QtQml.Models
 
 import gnomonQuick.Menus      1.0 as G
@@ -28,17 +28,17 @@ Item {
         }
     }
 
-    FileDialog {
+    P.FileDialog {
         id: _file_dialog;
 
         currentFile: _self._current_file;
-        currentFolder: d.defaultReadPath();
+        folder: d.defaultReadPath();
 
         modality: Qt.NonModal;
-        fileMode: FileDialog.OpenFiles;
+        fileMode: P.FileDialog.OpenFiles;
 
         onAccepted: {
-            window.current_workspace().requestOpenFiles(_file_dialog.selectedFiles)
+            window.current_workspace().requestOpenFiles(_file_dialog.files)
         }
     }
 
