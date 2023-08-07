@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Dialogs
 import QtQuick.Layouts
 
 import Qt.labs.platform  1.0 as P
@@ -62,17 +61,17 @@ Item {
 
         signal droppedFromManager(int index)
 
-        FileDialog {
+        P.FileDialog {
             id: _file_dialog
 
             nameFilters: [ GV.World.formWriterNameFilter(form_id), "All files (*)" ]
             title: "save Gnomon Form"
-            currentFolder: P.StandardPaths.writableLocation(P.StandardPaths.HomeLocation);
+            folder: P.StandardPaths.writableLocation(P.StandardPaths.HomeLocation);
             modality: Qt.WindowModal;
-            fileMode: FileDialog.SaveFile
+            fileMode: P.FileDialog.SaveFile
 
             onAccepted: {
-                GV.World.saveAs(form_id, _file_dialog.selectedFile);
+                GV.World.saveAs(form_id, _file_dialog.file);
             }
         }
 
@@ -99,10 +98,10 @@ Item {
                 parent.Drag.imageSource = result.url
             }, Qt.size(world.height, world.height));
 
-            onClicked: {
+            onClicked: (mouse)=> {
 
                 if (mouse.button === Qt.LeftButton) {
-                    world.currentIndex = model.index;
+                    world.currentIndex = index;
                     world.currentRef = _self.ref;
                 }
 

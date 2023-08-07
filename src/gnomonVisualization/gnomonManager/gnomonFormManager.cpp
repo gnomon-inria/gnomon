@@ -334,6 +334,13 @@ void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) c
     QUrl url(file_name);
     if (url.isLocalFile()){
         file_name = url.toLocalFile();
+
+        //check if there is an extension, if not add one
+        QFileInfo f_info(file_name);
+        if(f_info.completeSuffix().isEmpty()) {
+            dtkWarn() << "No extension provided on : " << file_name << " I will add " << d->formWriterCommand[id]->extensions()[0];
+            file_name += "." + d->formWriterCommand[id]->extensions()[0];
+        }
     }
 
     if(!file_name.isEmpty()) {

@@ -49,7 +49,7 @@ G.Dialog {
             }
 
             G.TextField { id: _name_edit;
-                Layout.fillWidth: true
+                //Layout.fillWidth: true
                 text: node.name
                 wrapMode: TextInput.WrapAnywhere
                 font: G.Style.fonts.value
