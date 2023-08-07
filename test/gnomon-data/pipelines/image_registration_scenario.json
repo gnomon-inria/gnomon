@@ -1,0 +1,291 @@
+{
+    "description": "Perform iterative registration within one registration workspace",
+    "fileFormatVersion": "0.0.1",
+    "gnomonVersion": "0.61.0",
+    "imageReader1": {
+        "description": "",
+        "inputs": {
+        },
+        "name": "imageReader1",
+        "outputs": [
+            "image"
+        ],
+        "path": "qDII-CLV3-PIN1-PI-E37-LD-SAM7-T0-P3.czi,qDII-CLV3-PIN1-PI-E37-LD-SAM7-T10-P3.czi",
+        "plugin_group": "imageReader",
+        "plugin_name": "imageReaderTimagetk",
+        "plugin_version": "0.4.0"
+    },
+    "imageRegistration1": {
+        "description": "",
+        "inputs": {
+            "image": "imageReader1 -> image"
+        },
+        "name": "imageRegistration1",
+        "outputs": [
+            "output",
+            "outputTransformation"
+        ],
+        "parameters": {
+            "channel": {
+                "doc": "Signal channel on which to perform the temporal registration",
+                "index": 0,
+                "label": "Channel",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "ChS1-T1",
+                    "ChS1-T2",
+                    "Ch2-T2",
+                    "Ch1-T3",
+                    "Ch2-T3"
+                ]
+            },
+            "elastic_sigma": {
+                "decimals": 1,
+                "doc": "Transformation regularization, sigma for elastic regularization (only for vector field). This is equivalent to a gaussian filtering of the final deformation field.",
+                "label": "Elastic sigma",
+                "max": 3,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 1
+            },
+            "estimator": {
+                "doc": "Transformation estimator",
+                "index": 0,
+                "label": "Estimator",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "wlts",
+                    "lts",
+                    "wls",
+                    "ls"
+                ]
+            },
+            "fluid_sigma": {
+                "decimals": 1,
+                "doc": "Sigma for fluid regularization ie field interpolation and regularization for pairings (only for vector field). This is equivalent to a gaussian filtering of the incremental deformation field.",
+                "label": "Fluid sigma",
+                "max": 3,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 1
+            },
+            "method": {
+                "doc": "Method for the image registration : rigid, affine or deformable (vectorfield)",
+                "index": 0,
+                "label": "Method",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "rigid",
+                    "affine",
+                    "vectorfield"
+                ]
+            },
+            "pyramid_highest": {
+                "decimals": 0,
+                "doc": "Highest level at which to compute deformation.",
+                "label": "Pyramid highest",
+                "max": 5,
+                "min": 1,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 5
+            },
+            "pyramid_lowest": {
+                "decimals": 0,
+                "doc": "Lowest level at which to compute deformation.",
+                "label": "Pyramid lowest",
+                "max": 4,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 2
+            }
+        },
+        "plugin_group": "imageRegistration",
+        "plugin_name": "registrationTimagetk",
+        "plugin_version": "0.4.0"
+    },
+    "imageRegistration2": {
+        "description": "",
+        "inputs": {
+            "image": "imageRegistration1 -> output"
+        },
+        "name": "imageRegistration2",
+        "outputs": [
+            "output",
+            "outputTransformation"
+        ],
+        "parameters": {
+            "channel": {
+                "doc": "Signal channel on which to perform the temporal registration",
+                "index": 0,
+                "label": "Channel",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "ChS1-T1",
+                    "ChS1-T2",
+                    "Ch2-T2",
+                    "Ch1-T3",
+                    "Ch2-T3"
+                ]
+            },
+            "elastic_sigma": {
+                "decimals": 1,
+                "doc": "Transformation regularization, sigma for elastic regularization (only for vector field). This is equivalent to a gaussian filtering of the final deformation field.",
+                "label": "Elastic sigma",
+                "max": 3,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 1
+            },
+            "estimator": {
+                "doc": "Transformation estimator",
+                "index": 0,
+                "label": "Estimator",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "wlts",
+                    "lts",
+                    "wls",
+                    "ls"
+                ]
+            },
+            "fluid_sigma": {
+                "decimals": 1,
+                "doc": "Sigma for fluid regularization ie field interpolation and regularization for pairings (only for vector field). This is equivalent to a gaussian filtering of the incremental deformation field.",
+                "label": "Fluid sigma",
+                "max": 3,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 1
+            },
+            "method": {
+                "doc": "Method for the image registration : rigid, affine or deformable (vectorfield)",
+                "index": 1,
+                "label": "Method",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "rigid",
+                    "affine",
+                    "vectorfield"
+                ]
+            },
+            "pyramid_highest": {
+                "decimals": 0,
+                "doc": "Highest level at which to compute deformation.",
+                "label": "Pyramid highest",
+                "max": 5,
+                "min": 1,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 5
+            },
+            "pyramid_lowest": {
+                "decimals": 0,
+                "doc": "Lowest level at which to compute deformation.",
+                "label": "Pyramid lowest",
+                "max": 4,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 2
+            }
+        },
+        "plugin_group": "imageRegistration",
+        "plugin_name": "registrationTimagetk",
+        "plugin_version": "0.4.0"
+    },
+    "imageRegistration3": {
+        "description": "",
+        "inputs": {
+            "image": "imageRegistration1 -> output"
+        },
+        "name": "imageRegistration3",
+        "outputs": [
+            "output",
+            "outputTransformation"
+        ],
+        "parameters": {
+            "channel": {
+                "doc": "Signal channel on which to perform the temporal registration",
+                "index": 0,
+                "label": "Channel",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "ChS1-T1",
+                    "ChS1-T2",
+                    "Ch2-T2",
+                    "Ch1-T3",
+                    "Ch2-T3"
+                ]
+            },
+            "elastic_sigma": {
+                "decimals": 1,
+                "doc": "Transformation regularization, sigma for elastic regularization (only for vector field). This is equivalent to a gaussian filtering of the final deformation field.",
+                "label": "Elastic sigma",
+                "max": 3,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.9
+            },
+            "estimator": {
+                "doc": "Transformation estimator",
+                "index": 0,
+                "label": "Estimator",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "wlts",
+                    "lts",
+                    "wls",
+                    "ls"
+                ]
+            },
+            "fluid_sigma": {
+                "decimals": 1,
+                "doc": "Sigma for fluid regularization ie field interpolation and regularization for pairings (only for vector field). This is equivalent to a gaussian filtering of the incremental deformation field.",
+                "label": "Fluid sigma",
+                "max": 3,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 1.1
+            },
+            "method": {
+                "doc": "Method for the image registration : rigid, affine or deformable (vectorfield)",
+                "index": 1,
+                "label": "Method",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "rigid",
+                    "affine",
+                    "vectorfield"
+                ]
+            },
+            "pyramid_highest": {
+                "decimals": 0,
+                "doc": "Highest level at which to compute deformation.",
+                "label": "Pyramid highest",
+                "max": 5,
+                "min": 1,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 5
+            },
+            "pyramid_lowest": {
+                "decimals": 0,
+                "doc": "Lowest level at which to compute deformation.",
+                "label": "Pyramid lowest",
+                "max": 4,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<qlonglong>",
+                "value": 2
+            }
+        },
+        "plugin_group": "imageRegistration",
+        "plugin_name": "registrationTimagetk",
+        "plugin_version": "0.4.0"
+    },
+    "input": [
+        {
+            "imageReader1_path": "imageReader1 -> path"
+        }
+    ],
+    "name": "image_registration_scenario",
+    "output": [
+    ],
+    "type": "pipeline"
+}
