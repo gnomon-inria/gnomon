@@ -64,4 +64,5 @@ public:
 
     gnomonMplView *figure = nullptr;
     gnomonQmlView *text_view = nullptr;
+    bool canBeDestroyed = true;
 };

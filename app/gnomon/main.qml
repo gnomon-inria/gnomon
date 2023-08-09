@@ -619,6 +619,24 @@ G.Application {
         stack_launcher.currentIndex = 1;
     }
 
+    function closeWorkspace(index) {
+        if(workspaces.currentIndex = index) {
+            if(index > 0) {
+                switch_workspace(index-1);
+            } else {
+                if (index < window.workspace_list.count) {
+                    switch_workspace(index+1);
+                } else {
+                    workspaces.currentIndex = -1
+                    workspaces.children = []
+                    _workspaces_model.clear()
+                }
+            }
+        }
+
+        workspaces.children[index].destroy()
+    }
+
     function reset() {
         console.log("reset called");
 

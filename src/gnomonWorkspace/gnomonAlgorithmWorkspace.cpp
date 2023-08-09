@@ -23,7 +23,7 @@ gnomonAlgorithmWorkspacePrivate::~gnomonAlgorithmWorkspacePrivate(void)
     if(this->pool)
         delete pool;
 
-    if(this->sources) 
+    if(this->sources)
         delete this->sources;
 
     if(this->targets)
@@ -82,6 +82,8 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
     connect(d->targets, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
         connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
             d->pipeline_manager->addForm(f);
+            this->m_can_be_destroyed = false;
+            emit canBeDestroyedChanged(false);
         });
     });
 
@@ -107,7 +109,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
 }
 
 gnomonAlgorithmWorkspace::~gnomonAlgorithmWorkspace(void)
-{    
+{
     delete d;
 }
 
