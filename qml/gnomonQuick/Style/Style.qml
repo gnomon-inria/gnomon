@@ -90,7 +90,7 @@ QtObject {
     property int toolBarHeight: S.spacing["6"]
 
     property int formSelectorHeight: S.spacing["10"]
-    property int formDelegateHeight: S.spacing["6"]
+    property int formDelegateHeight: S.spacing["7"]
 
     property int iconSmall: S.spacing["4"]
     property int iconMedium: S.spacing["5"]
@@ -198,6 +198,7 @@ QtObject {
         property color bgColor: S.colors.gray["700"]
         property color gutterColor: S.colors.gray["900"]
         property color fgColor: S.colors.gray["600"]
+        property color alternateFgColor: S.colors.gray["500"]
         property color embossColor: S.colors.gray["600"]
 
         //basic color theme
@@ -258,8 +259,9 @@ QtObject {
 
         //panel colors (neutral)
         property color bgColor: S.colors.gray["100"]
-        property color gutterColor: S.colors.gray["300"]
+        property color gutterColor: S.colors.gray["400"]
         property color fgColor: S.colors.gray["200"]
+        property color alternateFgColor: S.colors.gray["300"]
         property color embossColor: S.colors.gray["200"]
 
         //basic color theme
