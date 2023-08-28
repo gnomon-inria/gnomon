@@ -217,18 +217,18 @@ Button {
   function _getTextColor() {
 
     if(_control.type === G.Style.ButtonType.Danger)
-      return G.Style.colors.textColorDanger
+      return G.Style.colors.textColorLightDanger
 
     if(_control.type === G.Style.ButtonType.Warning)
-      return G.Style.colors.textColorWarning
+      return G.Style.colors.textColorLightWarning
 
     if(_control.type === G.Style.ButtonType.OK)
-      return G.Style.colors.textColorOk
+      return G.Style.colors.textColorLightOk
 
     if(_control.type === G.Style.ButtonType.Base)
-      return G.Style.colors.textColorBase
+      return G.Style.colors.textColorLightBase
 
-    return G.Style.colors.textColorNeutral
+    return G.Style.colors.textColorLightNeutral
   }
 
   function _getButtonHeight() {

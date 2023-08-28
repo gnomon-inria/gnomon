@@ -73,7 +73,7 @@ Shape {
 
     //     height: G.Style.thumbnailLarge + _thumbnail.padding
     //     width: _thumbnail.height
-    //     padding: G.Style.xSmallPadding
+    //     padding: G.Style.tinyPadding
 
     //     background: Rectangle {
     //         color: window.world.currentIndex === _self.formIndex
