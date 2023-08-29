@@ -110,7 +110,7 @@ G.Workspace {
 
         title: "Save L-System model"
 
-        currentFolder: _self._path;
+        currentFile: _self._path;
         fileMode: FileDialog.SaveFile
 
         modality: Qt.WindowModal;
