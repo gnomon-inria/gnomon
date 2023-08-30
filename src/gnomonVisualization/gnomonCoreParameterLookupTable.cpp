@@ -379,6 +379,10 @@ dtkCoreParameterObject *gnomonCoreParameterLookupTable::object(void)
     return m_object;
 }
 
+gnomonColorMap & gnomonCoreParameterLookupTable::getColorMap(const QString &clut) {
+    return m_l.getColorMap(clut);
+}
+
 
 GNOMONVISUALIZATION_EXPORT QDataStream& operator << (QDataStream& s, const gnomonCoreParameterLookupTable& p)
 {
