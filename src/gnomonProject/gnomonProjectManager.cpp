@@ -15,7 +15,7 @@ public:
 gnomonProjectManager *gnomonProjectManager::instance() {
     std::lock_guard<std::mutex> lock(s_mutex);
     if(!s_instance)
-        s_instance = new gnomonSessionManager;
+        s_instance = new gnomonProjectManager;
     return s_instance;
 }
 

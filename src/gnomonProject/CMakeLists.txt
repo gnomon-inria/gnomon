@@ -7,15 +7,12 @@ project(gnomonProject VERSION ${gnomon_VERSION})
 set(${PROJECT_NAME}_HEADERS
     gnomonProject.h
     gnomonProjectManager.h
-    gnomonAbstractSessionManager.h
-    gnomonSessionProcess.h)
+    gnomonAbstractSessionManager.h)
     
 set(${PROJECT_NAME}_SOURCES
     gnomonProject.cpp
     gnomonProjectManager.cpp
-    gnomonAbstractSessionManager.cpp
-    gnomonAbstractSessionManager.cpp
-    gnomonSessionProcess.cpp)
+    gnomonAbstractSessionManager.cpp)
 
 
 ## #################################################################
