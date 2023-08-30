@@ -45,7 +45,7 @@ Slider {
     }
 
     handle: Rectangle {
-        x: _ts_slider.leftPadding + _ts_slider.visualPosition * (_ts_slider.availableWidth - width)
+        x: _ts_slider.visualPosition*(_ts_slider.width - width)
         implicitWidth: 14
         implicitHeight: 14
         radius: 7
