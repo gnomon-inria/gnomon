@@ -13,6 +13,7 @@
 // Code:
 
 #include "gnomonCoreParameterColor.h"
+#include "gnomonLookupTable.h"
 
 #include "gnomonCoreParameterColorObject.h"
 
@@ -186,6 +187,10 @@ QStringList gnomonCoreParameterColorMap::availableCluts(void)
         cluts << clut_filename.split(".clut")[0];
     }
     return cluts;
+}
+
+gnomonColorMap & gnomonCoreParameterColorMap::getColorMap(const QString &clut) {
+    return gnomonLookupTable().getColorMap(clut);
 }
 
 void gnomonCoreParameterColorMap::setValue(const gnomonColorMap& c)

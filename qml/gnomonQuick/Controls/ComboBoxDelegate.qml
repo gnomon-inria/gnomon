@@ -9,6 +9,7 @@ import gnomonQuick.Style as G
 ItemDelegate {
 
   id: _control;
+  property int textStyle: Text.Normal;
 
   implicitHeight: G.Style.comboBoxHeight;
 
@@ -25,8 +26,10 @@ ItemDelegate {
     anchors.leftMargin: 8;
 
     font: G.Style.fonts.formLabel;
-    color: G.Style.colors.textColorBase;
+    color: style === Text.Outline ? G.Style.colors.textColorLightNeutral : G.Style.colors.textColorNeutral;
     text: _control.text;
+    style: _control.textStyle;
+    styleColor: G.Style.colors.textColorDarkNeutral;
     verticalAlignment: Text.AlignVCenter;
     elide: Text.ElideRight
   }

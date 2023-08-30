@@ -114,7 +114,17 @@ void gnomonLookupTable::setColorMap(const gnomonColorMap& c)
 
 void gnomonLookupTable::setColorMap(const QString& clut)
 {
-    this->name = clut;
+    gnomonColorMap colormap = getColorMap(clut);
+
+    this->colormap = colormap;
+}
+
+gnomonColorMap & gnomonLookupTable::getColorMap(const QString &clut) {
+    static QHash<QString, gnomonColorMap> memoize;
+    if(memoize.contains(clut)) {
+        return memoize[clut];
+    }
+    name = clut;
 
     QString fileName = QString(":gnomon/cluts/%1.clut").arg(clut);
 
@@ -123,16 +133,16 @@ void gnomonLookupTable::setColorMap(const QString& clut)
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly))
-        return;
+        return this->colormap;
 
     if (!doc.setContent(&file)) {
         file.close();
-        return;
+        return this->colormap;
     }
 
     file.close();
 
-    gnomonColorMap colormap;
+    gnomonColorMap _colormap;
 
     QDomElement root = doc.documentElement();
     double min = root.attribute("min").toDouble();
@@ -156,12 +166,13 @@ void gnomonLookupTable::setColorMap(const QString& clut)
             int b = e.attribute("b").toInt();
 
             double val = (v-min)/(max-min);
-            colormap[val] = QColor(r,g,b);
+            _colormap[val] = QColor(r, g, b);
         }
         n = n.nextSibling();
     }
 
-    this->colormap = colormap;
+    memoize.insert(clut, _colormap);
+    return memoize[clut];
 }
 
 

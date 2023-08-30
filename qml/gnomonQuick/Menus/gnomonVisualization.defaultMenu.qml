@@ -12,10 +12,6 @@ Control {
     property alias model: _list_view.model
 
     clip: true
-    topPadding: 2
-    bottomPadding: 2
-    rightPadding: G.Style.mediumPadding
-    leftPadding: 2
 
     background: Rectangle {
         color: G.Style.colors.gutterColor
@@ -44,8 +40,11 @@ Control {
 
         id: _list_view
 
-        //anchors.horizontalCenter: parent.horizontalCenter
-        anchors.centerIn: parent
+        anchors.fill: parent
+        anchors.topMargin: 2
+        anchors.rightMargin: 0
+        anchors.bottomMargin: 2
+        anchors.leftMargin: G.Style.sizes.s1 + G.Style.smallPadding
 
         height: _control.availableHeight
         width: _control.availableWidth
@@ -59,7 +58,7 @@ Control {
 
             title: _control.getTitleString(group)
             model: parameters
-            width: _list_view.width - 10
+            width: _list_view.width - scroll_indicator.width
             collapsed: title != "General";
 
             onValueChanged: {
@@ -68,6 +67,8 @@ Control {
         }
 
         ScrollIndicator.vertical: G.ScrollIndicator {
+            id: scroll_indicator
+
             anchors.right: parent.right
             visible: _list_view.contentHeight > _control.height
         }

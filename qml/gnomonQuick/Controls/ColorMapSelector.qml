@@ -29,9 +29,19 @@ ComboBox {
     }
 
     delegate: G.ComboBoxDelegate {
-        width: _control.width
+        width: _box.width
         text: modelData
+        textStyle: Text.Outline
         highlighted: _control.highlightedIndex === index
+
+        background: Rectangle {
+            anchors.fill: parent
+            //color: G.Style.colors.exampleColor
+
+            gradient: G.ClutGradient {
+                cmap: _control.param.getColorMap(modelData)
+            }
+        }
     }
 
     indicator: G.Icon {
@@ -54,9 +64,10 @@ ComboBox {
     }
 
     contentItem: Rectangle {
+        id: _box
 
         anchors.left: _control.left
-        //anchors.right: _indicator.left
+        anchors.right: _indicator.left
 
 
         height: _control.height
@@ -73,7 +84,7 @@ ComboBox {
     //TODO: MAKE A BETTER LOOKING POPUP
     popup: Popup {
         y: _control.height - 1
-        width: _control.width
+        width: _box.width
         implicitHeight: contentItem.implicitHeight
         padding: 1
 

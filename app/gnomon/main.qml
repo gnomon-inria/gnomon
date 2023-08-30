@@ -37,6 +37,29 @@ G.Application {
     signal workspaceThumbnailUpdated(int id);
     signal insideParamFigure();
 
+
+    palette {
+        window: G.Style.colors.bgColor
+        windowText: G.Style.colors.textColorNeutral
+        base: G.Style.colors.fgColor
+        alternateBase: G.Style.colors.alternateFgColor
+        //toolTipBase: G.Style.colors.
+        //toolTipText: G.Style.colors.
+        placeholderText: G.Style.colors.textColorFaded
+        text: G.Style.colors.textColorBase
+        button: G.Style.colors.baseColor
+        buttonText: G.Style.colors.textColorBase
+        brightText: G.Style.colors.textColorDarkNeutral
+
+        disabled {
+
+        }
+
+        inactive {
+
+        }
+    }
+
 // /////////////////////////////////////////////////////////////////////////////
 // PoC Menu
 // /////////////////////////////////////////////////////////////////////////////

@@ -15,7 +15,7 @@ Control {
   height: G.Style.thumbnailLarge + _self.padding
   width: _self.height
 
-  padding: G.Style.xSmallPadding
+  padding: G.Style.tinyPadding
 
   background: Rectangle {
     color: _self.bgColor

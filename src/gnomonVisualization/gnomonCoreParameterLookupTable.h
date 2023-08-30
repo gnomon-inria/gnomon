@@ -38,6 +38,8 @@ public:
     void setColorMap(const gnomonColorMap&);
     void setColorMap(const QString&);
 
+    gnomonColorMap & getColorMap(const QString &clut);
+
     void setValue(const QVariant&) override;
     void setValue(const gnomonLookupTable&);
 

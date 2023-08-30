@@ -22,7 +22,7 @@ MenuItem {
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignLeft
 
-            leftPadding: G.Style.xSmallPadding;
+            leftPadding: G.Style.tinyPadding;
 
             text: self.text;
             visible: text;

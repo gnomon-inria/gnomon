@@ -25,25 +25,27 @@ Control {
 
     anchors.top: parent.top;
     width: parent.width;
-    height: G.Style.collapsibleMinHeight;
+    implicitHeight: G.Style.collapsibleMinHeight;
     padding: G.Style.smallPadding;
 
     Label {
       id: _panel_name
 
-      height: _header.height;
       anchors.left: _header.left;
-      anchors.verticalCenter: _header.verticalCenter;
+      anchors.top: _header.top;
+      anchors.bottom: _header.bottom;
+      topPadding: G.Style.tinyPadding;
 
       font: G.Style.fonts.subHeader
       color: G.Style.colors.textColorBase;
+      verticalAlignment: Text.alignVCenter
     }
 
     G.IconButton {
       id: _collapse_button
 
       anchors.right: _header.right;
-      anchors.verticalCenter: _header.verticalCenter;
+      anchors.top: _header.top;
       iconName: _control.collapsed ? "plus" : "minus"
       color: _control.collapsed ? G.Style.colors.textColorBase : G.Style.colors.textColorDeEmphasize
       size: G.Style.iconMedium;

@@ -32,6 +32,11 @@ public:
     void setColorMap(const QVariantMap&);
     QVariantMap colorMap(void) const;
 
+public:
+    Q_INVOKABLE QVariantMap getColorMap(const QString &clut);
+
+public:
+
     void setColorMapName(const QString&);
     QString colorMapName(void) const;
 

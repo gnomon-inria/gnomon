@@ -77,7 +77,7 @@ QtObject {
     property int mediumRowSpacing: S.spacing["4"]
     property int largeRowSpacing: S.spacing["6"]
 
-    property int xSmallPadding: S.spacing["0"]
+    property int tinyPadding: S.spacing["0"]
     property int smallPadding: S.spacing["2"]
     property int mediumPadding: S.spacing["4"]
     property int largePadding: S.spacing["6"]
@@ -90,7 +90,7 @@ QtObject {
     property int toolBarHeight: S.spacing["6"]
 
     property int formSelectorHeight: S.spacing["10"]
-    property int formDelegateHeight: S.spacing["6"]
+    property int formDelegateHeight: S.spacing["7"]
 
     property int iconSmall: S.spacing["4"]
     property int iconMedium: S.spacing["5"]
@@ -198,6 +198,7 @@ QtObject {
         property color bgColor: S.colors.gray["700"]
         property color gutterColor: S.colors.gray["900"]
         property color fgColor: S.colors.gray["600"]
+        property color alternateFgColor: S.colors.gray["500"]
         property color embossColor: S.colors.gray["600"]
 
         //basic color theme
@@ -224,6 +225,14 @@ QtObject {
         property color textColorNeutral: S.colors.gray["100"]
         property color textColorFaded: S.colors.gray["200"]
         property color textColorDeEmphasize: S.colors.gray["600"]
+
+        //text colors
+        property color textColorLightBase: S.colors.blue["100"]
+        property color textColorLightOk: S.colors.green["100"]
+        property color textColorLightDanger: S.colors.red["100"]
+        property color textColorLightWarning: S.colors.orange["100"]
+        property color textColorLightNeutral: S.colors.gray["100"]
+        property color textColorLightFaded: S.colors.gray["200"]
 
         //text colors
         property color textColorDarkBase: S.colors.blue["900"]
@@ -257,19 +266,20 @@ QtObject {
         property color highlightColor: "#20E8C0"
 
         //panel colors (neutral)
-        property color bgColor: S.colors.gray["100"]
-        property color gutterColor: S.colors.gray["300"]
-        property color fgColor: S.colors.gray["200"]
-        property color embossColor: S.colors.gray["200"]
+        property color bgColor: S.colors.gray["200"]
+        property color gutterColor: S.colors.gray["100"]
+        property color fgColor: S.colors.gray["300"]
+        property color alternateFgColor: S.colors.gray["400"]
+        property color embossColor: S.colors.gray["300"]
 
         //basic color theme
-        property color baseColor: S.colors.blue["600"]
-        property color neutralColor: S.colors.gray["500"]
-        property color dangerColor: S.colors.red["600"]
-        property color warningColor: S.colors.orange["600"]
-        property color okColor: S.colors.green["600"]
-        property color noteColor: S.colors.yellow["600"]
-        property color exampleColor: S.colors.purple["600"]
+        property color baseColor: S.colors.blue["500"]
+        property color neutralColor: S.colors.gray["700"]
+        property color dangerColor: S.colors.red["500"]
+        property color warningColor: S.colors.orange["500"]
+        property color okColor: S.colors.green["500"]
+        property color noteColor: S.colors.yellow["500"]
+        property color exampleColor: S.colors.purple["500"]
 
         //hovered color theme
         property color hoveredBaseColor: S.colors.blue["700"]
@@ -286,6 +296,14 @@ QtObject {
         property color textColorNeutral: S.colors.gray["900"]
         property color textColorFaded: S.colors.gray["800"]
         property color textColorDeEmphasize: S.colors.gray["400"]
+
+        //text colors
+        property color textColorLightBase: S.colors.blue["100"]
+        property color textColorLightOk: S.colors.green["100"]
+        property color textColorLightDanger: S.colors.red["100"]
+        property color textColorLightWarning: S.colors.orange["100"]
+        property color textColorLightNeutral: S.colors.gray["100"]
+        property color textColorLightFaded: S.colors.gray["200"]
 
         //text colors
         property color textColorDarkBase: S.colors.blue["900"]
@@ -308,6 +326,7 @@ QtObject {
         property color lightPurple: S.colors.purple["200"]
 
         property color transparent: "#00000000"
+        property color overlayColor: "#ddffffff";
     }
 
     // /////////////////////////////////////////////////////////////////////////////
