@@ -40,6 +40,9 @@ public:
     QString name(void) const;
 
 public:
+    Q_INVOKABLE QVariantMap getColorMap(const QString &clut);
+
+public:
     QStringList availableCluts(void) const;
 
 signals:
