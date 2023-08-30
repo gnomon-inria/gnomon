@@ -1,5 +1,6 @@
 #include "gnomon.hpp"
 #include "MaterialPreview.hpp"
+#include "gnomonSessionManager.h"
 
 #include <memory>
 
@@ -571,6 +572,9 @@ void gnomon_rinit()
     gnomonCore::setVerboseLoading(false);
     gnomonCore::activateObjectManager();
     gnomonCore::initialize();
+    // --
+    gnomonSessionManager::initialize();
+
     gnomonVisualization::initialize();
     // --
     int stat;

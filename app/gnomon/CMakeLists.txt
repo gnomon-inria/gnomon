@@ -8,6 +8,8 @@ qt_add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   main.cpp
   MaterialPreview.hpp
   MaterialPreview.cpp
+  gnomonSessionManager.h
+  gnomonSessionManager.cpp
   gnomon.hpp
   gnomon.cpp
   ${app_icon_macos})
@@ -48,6 +50,7 @@ target_link_libraries(${PROJECT_NAME}
   xLogger
   ${VTK_LIBRARIES}
   gnomonCore
+  gnomonProject
   gnomonPipeline
   gnomonVisualization
   gnomonWorkspace

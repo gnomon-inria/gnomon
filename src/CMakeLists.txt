@@ -7,6 +7,7 @@ set(layer_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(gnomon)
 add_subdirectory(gnomonCore)
 add_subdirectory(gnomonPipeline)
+add_subdirectory(gnomonProject)
 
 if(GNOMON_ENABLE_VISU)
   add_subdirectory(gnomonVisualization)
