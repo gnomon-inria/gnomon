@@ -620,21 +620,19 @@ G.Application {
     }
 
     function closeWorkspace(index) {
-        if(workspaces.currentIndex = index) {
-            if(index > 0) {
-                switch_workspace(index-1);
-            } else {
-                if (index < window.workspace_list.count) {
-                    switch_workspace(index+1);
-                } else {
-                    workspaces.currentIndex = -1
-                    workspaces.children = []
-                    _workspaces_model.clear()
-                }
-            }
+        if (window.workspace_list.count == 1) {
+            _switch_workspace_dialog.reject();
+            reset();
+            return;
         }
 
+        _workspaces_model.remove(index)
         workspaces.children[index].destroy()
+
+        //if we remove from index < to currentIndex, the currentIndex needs to change
+        if(workspaces.currentIndex >= index) {
+            switch_workspace(workspaces.currentIndex-1);
+        }
     }
 
     function reset() {
