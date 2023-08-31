@@ -18,13 +18,22 @@ public:
 
     QDir projectDir;
     QDir currentDir;
+    QString url;
 
 };
 
-gnomonProjectPrivate::gnomonProjectPrivate(const QString &path): projectDir(path), currentDir(path) {
+gnomonProjectPrivate::gnomonProjectPrivate(const QString &path): 
+    projectDir(path), 
+    currentDir(path),
+    url(path)
+{
     QDir::setCurrent(path);
 }
 
+gnomonProjectPrivate::~gnomonProjectPrivate()
+{
+
+}
 
 // /////////////////////////////////////////////////////////////////
 // gnomonProject
@@ -52,6 +61,10 @@ gnomonProject::~gnomonProject(void)
     delete d;
 }
 
+void gnomonProject::readProjectInfo() 
+{
+
+}
 void gnomonProject::populateNewProject() {
     d->projectDir.mkdir(PROJECT_INFO_FOLDER);
 
@@ -62,5 +75,17 @@ bool gnomonProject::isDirAProject(const QDir &dir) {
     return dir.exists(PROJECT_INFO_FOLDER) && dir.exists(PROJECT_BACKUP_FOLDER);
 }
 
+const QString& gnomonProject::projectDir(void)
+{
+    return d->url;
+}
+
+void gnomonProject::setProjectDir(const QString& url)
+{
+    if(url != d->url) {
+        d->url = url;
+        emit projectDirChanged();
+    }
+}
 //
 // gnomonProject.cpp ends here

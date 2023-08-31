@@ -17,6 +17,9 @@ public:
     gnomonProjectManager(gnomonProjectManager &) = delete;
     void operator=(const gnomonProjectManager &) = delete;
 
+public:
+    gnomonProject *project(void);
+
 protected:
     gnomonProjectManager(QObject *parent = nullptr);
     ~gnomonProjectManager(void);

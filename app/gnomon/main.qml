@@ -18,6 +18,7 @@ import gnomonQuick.Menus       as G
 import gnomonQuick.Style       as G
 
 import gnomon.Pipeline  as GP
+import gnomon.Project as GP
 import "." as G
 
 G.Application {
@@ -110,6 +111,17 @@ G.Application {
         }
     }
 
+    P.FolderDialog {
+        id: folderDialog
+        folder: P.StandardPaths.standardLocations(P.StandardPaths.PicturesLocation)[0]
+        onAccepted : {
+            console.log("################")
+            console.log(folderDialog.currentFolder)
+        
+            console.log(GP.ProjectManager.project.projectDir) //= "folderDialog.currentFolder";
+        }
+    }
+
     Component {
         id: platform_menu
 
@@ -131,6 +143,14 @@ G.Application {
                     shortcut: StandardKey.Save
                     onTriggered: {
                         saveFileDialog.open();
+                    }
+                }
+
+                P.MenuItem {
+                    text: qsTr("New Project")
+                    shortcut: StandardKey.New
+                    onTriggered: {
+                        folderDialog.open();
                     }
                 }
 

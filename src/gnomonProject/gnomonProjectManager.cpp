@@ -1,11 +1,12 @@
 #include "gnomonProjectManager.h"
-
+#include "gnomonProject.h"
 // /////////////////////////////////////////////////////////////////
 // gnomonProjectManagerPrivate
 // /////////////////////////////////////////////////////////////////
 class gnomonProjectManagerPrivate
 {
 public:
+    gnomonProject *project;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -22,11 +23,18 @@ gnomonProjectManager *gnomonProjectManager::instance() {
 gnomonProjectManager::gnomonProjectManager(QObject *parent) : QObject(parent)
 {
     d = new gnomonProjectManagerPrivate;
+    d->project = new gnomonProject("");
 }
 
 gnomonProjectManager::~gnomonProjectManager(void)
 {
+    delete d->project;
     delete d;
+}
+
+gnomonProject *gnomonProjectManager::project(void)
+{
+    return d->project;
 }
 
 gnomonProjectManager *gnomonProjectManager::s_instance = nullptr;
