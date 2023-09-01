@@ -1,6 +1,6 @@
 # Gnomon distribution
 
-To share algotrithms, gnomon provides abstractions that can be used to create **plugins**. Then a set of plugins that all together provide a high-level functionality (cell-segmenting and tracking, 3D plant architecture modeling, multi-cellular simulation, etc) are group into a **package**. 
+To share algorithms, gnomon provides abstractions that can be used to create **plugins**. Then a set of plugins that all together provide a high-level functionality (cell-segmenting and tracking, 3D plant architecture modeling, multi-cellular simulation, etc) are group into a **package**.
 
 ## Plugins
 
@@ -15,4 +15,3 @@ The workspace right panel offers a selection of plugins (see popup menu) that ar
 A Gnomon package is a set of data structures, plugins and possibly workspaces and form abstractions that are defined by a user or a group of users. A protocole to set-up a Gnomon package is provided in the Gnomon documentation.
 
 ~If a package is mature, the developers may want to register it in the Gnomon store. The package must then comply stricly with the Gnomon package publication recommendations and will be reviewed for acceptance in  the  store.~
-
