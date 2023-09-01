@@ -42,6 +42,10 @@ void gnomonSessionManager::initialize() {
     gnomonAbstractSessionManager::registerInstance(new gnomonSessionManager(nullptr));
 }
 
+void gnomonSessionManager::loadFromPipeline(const QString &path) {
+
+}
+
 
 //
 // gnomonSessionManager.cpp ends here

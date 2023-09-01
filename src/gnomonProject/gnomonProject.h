@@ -4,6 +4,13 @@
 
 #include <QtCore>
 
+
+struct gnomonProjectInfo {
+    QString name;
+    QString path;
+    QDateTime lastModified;
+};
+
 class GNOMONPROJECT_EXPORT gnomonProject : public QObject
 {
     Q_OBJECT
@@ -18,9 +25,10 @@ public:
 
 public:
     static gnomonProject *newProject(const QString &path, const QString &name);
+    void loadSessionFromPipeline(const QString &path);
 
 public:
-    const QString& projectDir(void);
+    QString projectDir(void);
 
 public:
     void setProjectDir(const QString& url);

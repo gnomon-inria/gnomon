@@ -21,6 +21,8 @@ public:
     bool save(const QString &id, const QString &path) override;
     void load(const QString &id, const QString &path) override;
 
+    void loadFromPipeline(const QString &path) override;
+
 public:
     static void initialize();
 

@@ -1,4 +1,5 @@
 #include "gnomonProject.h"
+#include "gnomonProject"
 
 
 #define PROJECT_INFO_FOLDER ".gnomon"
@@ -16,18 +17,19 @@ public:
 
 public:
 
+    gnomonProjectInfo projectInfo;
+
     QDir projectDir;
     QDir currentDir;
-    QString url;
 
 };
 
 gnomonProjectPrivate::gnomonProjectPrivate(const QString &path): 
     projectDir(path), 
-    currentDir(path),
-    url(path)
+    currentDir(path)
 {
     QDir::setCurrent(path);
+    projectInfo.path = path;
 }
 
 gnomonProjectPrivate::~gnomonProjectPrivate()
@@ -52,7 +54,10 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
     if(isProject) {
         readProjectInfo();
     } else {
+        auto pName = d->projectDir.dirName();
         populateNewProject();
+        d->projectInfo.name = pName;
+        d->projectInfo.lastModified = QDateTime::currentDateTime();
     }
 }
 
@@ -75,17 +80,31 @@ bool gnomonProject::isDirAProject(const QDir &dir) {
     return dir.exists(PROJECT_INFO_FOLDER) && dir.exists(PROJECT_BACKUP_FOLDER);
 }
 
-const QString& gnomonProject::projectDir(void)
+QString gnomonProject::projectDir(void)
 {
-    return d->url;
+    return d->projectDir.path();
 }
 
 void gnomonProject::setProjectDir(const QString& url)
 {
-    if(url != d->url) {
-        d->url = url;
+    if(url != d->currentDir.path()) {
+        d->projectDir.setPath(url);
         emit projectDirChanged();
     }
+}
+
+void gnomonProject::loadSessionFromPipeline(const QString &path) {
+    GNOMON_SESSION->loadFromPipeline(path);
+}
+
+gnomonProject *gnomonProject::newProject(const QString &path, const QString &name) {
+    QDir current_dir = QDir::current();
+    if(!current_dir.exists(path)) {
+        current_dir.mkpath(path);
+    }
+    auto project = new gnomonProject(path);
+    project->d->projectInfo.name = name;
+    return project;
 }
 //
 // gnomonProject.cpp ends here
