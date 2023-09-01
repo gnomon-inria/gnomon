@@ -16,7 +16,9 @@ public:
 public:
     gnomonProjectManager(gnomonProjectManager &) = delete;
     void operator=(const gnomonProjectManager &) = delete;
-
+public:
+    Q_PROPERTY(gnomonProject *project READ project CONSTANT);
+    
 public:
     gnomonProject *project(void);
 

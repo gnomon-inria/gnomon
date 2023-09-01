@@ -114,11 +114,8 @@ G.Application {
     P.FolderDialog {
         id: folderDialog
         folder: P.StandardPaths.standardLocations(P.StandardPaths.PicturesLocation)[0]
-        onAccepted : {
-            console.log("################")
-            console.log(folderDialog.currentFolder)
-        
-            console.log(GP.ProjectManager.project.projectDir) //= "folderDialog.currentFolder";
+        onAccepted : {        
+            GP.ProjectManager.project.projectDir = folderDialog.currentFolder;
         }
     }
 
