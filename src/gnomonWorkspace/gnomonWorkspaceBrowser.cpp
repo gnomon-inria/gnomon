@@ -364,6 +364,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
 
     connect(d->browse_view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         d->pipeline_manager->addForm(f);
+        this->m_can_be_destroyed = false;
+        emit canBeDestroyedChanged(false);
     });
 }
 

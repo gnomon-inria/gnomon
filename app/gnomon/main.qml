@@ -642,6 +642,22 @@ G.Application {
         stack_launcher.currentIndex = 1;
     }
 
+    function closeWorkspace(index) {
+        if (window.workspace_list.count == 1) {
+            _switch_workspace_dialog.reject();
+            reset();
+            return;
+        }
+
+        _workspaces_model.remove(index)
+        workspaces.children[index].destroy()
+
+        //if we remove from index < to currentIndex, the currentIndex needs to change
+        if(workspaces.currentIndex >= index) {
+            switch_workspace(workspaces.currentIndex-1);
+        }
+    }
+
     function reset() {
         console.log("reset called");
 
