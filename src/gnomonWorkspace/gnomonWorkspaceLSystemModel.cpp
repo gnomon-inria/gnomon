@@ -5,6 +5,8 @@
 #include <gnomonCore/gnomonPythonPluginLoader>
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
+#include <gnomonProject/gnomonProjectManager.h>
+#include <gnomonProject/gnomonProject.h>
 
 #include <gnomonVisualization/gnomonView/gnomonVtkView>
 #include <gnomonVisualization/gnomonView/gnomonQmlView>
@@ -71,7 +73,7 @@ public:
     QString file;
     int currentIndex = 0;
 
-    QTemporaryDir* tmpDir = nullptr;
+    QDir* tmpDir = nullptr;
     QFile* model_file = nullptr;
     QFuture<int> redo_future;
 
@@ -84,6 +86,7 @@ public:
 public:
     gnomonVtkView *view = nullptr;
     gnomonQmlView *text_view = nullptr;
+    gnomonProjectManager *project_manager = nullptr;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -110,9 +113,10 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
-
-    d->tmpDir = new QTemporaryDir(".GNOMON_LPY_TEMP");
-
+    d->project_manager = gnomonProjectManager::instance();
+    auto temp_dir = d->project_manager->project()->projectDir() + "/.gnomon";
+    d->tmpDir =  new QDir(temp_dir);
+    
     int stat;
     QString temp_working_directory = "";
     temp_working_directory += "import sys \n";
@@ -183,10 +187,6 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
         d->model_file = nullptr;
     }
 
-    if(d->tmpDir){
-        d->tmpDir->remove();
-        delete d->tmpDir;
-    }
 
     delete d;
 }

@@ -137,6 +137,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonVisualization)
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonPipeline)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonProject)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
 

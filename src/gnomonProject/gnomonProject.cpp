@@ -53,12 +53,13 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
     bool isProject = isDirAProject(d->projectDir);
     if(isProject) {
         readProjectInfo();
-    } else {
+    } 
+    connect(this, &gnomonProject::projectDirChanged, [=](){
         auto pName = d->projectDir.dirName();
         populateNewProject();
         d->projectInfo.name = pName;
         d->projectInfo.lastModified = QDateTime::currentDateTime();
-    }
+    });
 }
 
 gnomonProject::~gnomonProject(void)
@@ -87,8 +88,10 @@ QString gnomonProject::projectDir(void)
 
 void gnomonProject::setProjectDir(const QString& url)
 {
-    if(url != d->currentDir.path()) {
-        d->projectDir.setPath(url);
+    auto path = QString(url);
+    path.remove("file://");
+    if(path != d->currentDir.path()) {
+        d->projectDir.setPath(path);
         emit projectDirChanged();
     }
 }
