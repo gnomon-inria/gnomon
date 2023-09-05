@@ -46,6 +46,10 @@ G.Workspace {
             GP.ProjectManager.project.projectDir = folderDialog.currentFolder;
             _folder_path.text = folderDialog.currentFolder;
         }
+
+        Settings {
+            property alias last_open_folder: folderDialog.folder
+        }
     }
 
     G.Panel {
