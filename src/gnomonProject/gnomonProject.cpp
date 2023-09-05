@@ -69,7 +69,7 @@ gnomonProject::~gnomonProject(void)
 
 void gnomonProject::readProjectInfo() 
 {
-
+    qWarning()<<Q_FUNC_INFO<<"Not implemented.";
 }
 void gnomonProject::populateNewProject() {
     d->projectDir.mkdir(PROJECT_INFO_FOLDER);

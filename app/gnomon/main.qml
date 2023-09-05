@@ -17,8 +17,8 @@ import gnomonQuick.Workspaces  as G
 import gnomonQuick.Menus       as G
 import gnomonQuick.Style       as G
 
-import gnomon.Pipeline 1.0  as GP
-import gnomon.Project  1.0 as  GP
+import gnomon.Pipeline  as GP
+import gnomon.Project   as  GP
 import "." as G
 
 G.Application {

@@ -6,7 +6,7 @@
 class gnomonProjectManagerPrivate
 {
 public:
-    gnomonProject *project;
+    gnomonProject *project = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////
