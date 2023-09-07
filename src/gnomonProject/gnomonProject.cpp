@@ -96,8 +96,9 @@ void gnomonProject::setProjectDir(const QString& url)
     }
 }
 
-void gnomonProject::loadSessionFromPipeline(const QString &path) {
-    GNOMON_SESSION->loadFromPipeline(path);
+bool gnomonProject::loadSessionFromPipeline(const QString &path, QObject *window)
+{
+    GNOMON_SESSION->loadFromPipeline(path, window);
 }
 
 gnomonProject *gnomonProject::newProject(const QString &path, const QString &name) {
@@ -108,6 +109,11 @@ gnomonProject *gnomonProject::newProject(const QString &path, const QString &nam
     auto project = new gnomonProject(path);
     project->d->projectInfo.name = name;
     return project;
+}
+
+gnomonAbstractSessionManager* gnomonProject::currentSession(void)
+{
+    return GNOMON_SESSION;
 }
 //
 // gnomonProject.cpp ends here

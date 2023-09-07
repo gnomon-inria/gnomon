@@ -4,7 +4,7 @@
 
 #include <QtCore>
 
-
+class gnomonAbstractSessionManager;
 struct gnomonProjectInfo {
     QString name;
     QString path;
@@ -22,11 +22,12 @@ public:
 
 public:
     Q_PROPERTY(QString projectDir READ projectDir WRITE setProjectDir NOTIFY projectDirChanged);
+    Q_PROPERTY(gnomonAbstractSessionManager *currentSession READ currentSession CONSTANT);
 
 public:
     static gnomonProject *newProject(const QString &path, const QString &name);
-    void loadSessionFromPipeline(const QString &path);
-
+    Q_INVOKABLE bool loadSessionFromPipeline(const QString &path, QObject *window);
+    gnomonAbstractSessionManager *currentSession(void);
 public:
     QString projectDir(void);
 

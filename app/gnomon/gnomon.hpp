@@ -33,36 +33,6 @@ void gnomonInitLogServer();
 
 class gnomonPipeline;
 
-class gnomonSessionLoader: public QObject
-{
-    Q_OBJECT
-
-public:
-    gnomonSessionLoader() = default;
-    ~gnomonSessionLoader() = default;
-
-public:
-    Q_PROPERTY(double progress READ progress NOTIFY progressChanged);
-    Q_INVOKABLE bool load(const QString& url, QObject *window);
-
-    double progress();
-    void setProgress(double);
-
-    bool runNodes(QStringList scheduled_nodes, QObject *window, std::shared_ptr<gnomonPipeline> pipeline, double progress_increment);
-
-signals:
-    void progressChanged();
-    void finished();
-    void failed(QString);
-
-private:
-    double m_progress = 0.; // from 0 to 1
-    QString file_path;
-    bool res = true;
-    QMetaObject::Connection callbackConnection;
-
-};
-
 class gnomonQMLUtils: public QObject
 {
   Q_OBJECT

@@ -351,12 +351,13 @@ G.Application {
 
     G.Settgs { id: settgs; }
     G.Journl { id: journl; }
-    GP.SessionLoader {
-        id: sessionLoader;
-        onFinished : {
+    
+    Connections {
+        target: GP.ProjectManager.project.currentSession;
+        function onFinished() {
             window.load_in_progress = false;
         }
-        onFailed: (file) => {
+        function onFailed(file) {
             _failed_pipeline_toast.file_path = file
             _failed_pipeline_toast.open()
             remove_from_history(file)
@@ -649,7 +650,7 @@ G.Application {
     function load_session(json_path) {
         console.log("Loading session from ", json_path);
         window.load_in_progress = true;
-        let res = sessionLoader.load(json_path, window);
+        let res = GP.ProjectManager.project.loadSessionFromPipeline(json_path, window);
         if(res) {
             console.log("Session Loaded ");
         } else {
