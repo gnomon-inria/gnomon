@@ -35,20 +35,13 @@ gnomonProjectManager::~gnomonProjectManager(void)
 
 gnomonProject *gnomonProjectManager::project(void)
 {
-    Q_ASSERT_X(d->project, "project", "no project created yet");
+    if(!d->project)
+        qWarning()<<"no project created yet.";
     return d->project;
 }
 
-gnomonProjectManager *gnomonProjectManager::s_instance = nullptr;
 
-gnomonProject *gnomonProjectManager::openProject(const QString &path) {
-    closeProject();
-    d->project = new gnomonProject(path);
-    QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
-    return d->project;
-}
-
-gnomonProject *gnomonProjectManager::newProject(const QString &path, const QString &name) {
+gnomonProject *gnomonProjectManager::createProject(const QString &path, const QString &name="") {
     closeProject();
     d->project = gnomonProject::newProject(path, name);
     QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
@@ -63,6 +56,7 @@ void gnomonProjectManager::closeProject() {
     }
 }
 
+gnomonProjectManager *gnomonProjectManager::s_instance = nullptr;
 std::mutex gnomonProjectManager::s_mutex;
 
 //

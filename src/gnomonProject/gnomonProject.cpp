@@ -141,7 +141,7 @@ gnomonProject *gnomonProject::newProject(const QString &path, const QString &nam
 }
 
 void gnomonProject::close() {
-
+    qWarning()<<Q_FUNC_INFO<<"Not implemented.";
 }
 
 QString gnomonProject::currentDir(void) {

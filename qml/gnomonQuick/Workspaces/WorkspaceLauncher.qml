@@ -486,7 +486,7 @@ G.Workspace {
                         }
 
                         onAccepted: {
-                            GP.ProjectManager.newProject(_folder_path.text, _pipeline_title.text)
+                            GP.ProjectManager.createProject(_folder_path.text, _pipeline_title.text)
                             GP.PipelineManager.pipeline.name = _pipeline_title.text
                             GP.PipelineManager.pipeline.description = _pipeline_description.text
                             if (_remember_workspace.checked) {

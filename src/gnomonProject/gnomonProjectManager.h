@@ -22,8 +22,7 @@ public:
     Q_PROPERTY(gnomonProject *project READ project CONSTANT);
     
 public:
-    Q_INVOKABLE gnomonProject *openProject(const QString &path);
-    Q_INVOKABLE gnomonProject *newProject(const QString &path, const QString & name);
+    Q_INVOKABLE gnomonProject *createProject(const QString &path, const QString & name);
     Q_INVOKABLE void closeProject();
 
     gnomonProject *project(void);
