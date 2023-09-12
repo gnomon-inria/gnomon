@@ -89,7 +89,6 @@ void gnomonProject::readProjectInfo()
 
 void gnomonProject::saveProjectInfo() {
     QFile projectInfoFile(d->projectDir.absoluteFilePath(PROJECT_INFO_FILE));
-    qDebug() << "=======================" << d->projectDir.absoluteFilePath(PROJECT_INFO_FILE);
     if(projectInfoFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
         auto &pInfo = d->projectInfo;
         QJsonObject storage;
