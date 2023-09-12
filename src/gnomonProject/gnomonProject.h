@@ -21,20 +21,23 @@ public:
     ~gnomonProject(void) override;
 
 public:
-    Q_PROPERTY(QString projectDir READ projectDir WRITE setProjectDir NOTIFY projectDirChanged);
+    Q_PROPERTY(QString projectDir READ projectDir);
+    Q_PROPERTY(QString currentDir READ currentDir WRITE setCurrentDir NOTIFY currentDirChanged);
 
 public:
     static gnomonProject *newProject(const QString &path, const QString &name);
     void loadSessionFromPipeline(const QString &path);
+    void close();
 
 public:
     QString projectDir(void);
+    QString currentDir(void);
 
 public:
-    void setProjectDir(const QString& url);
+    void setCurrentDir(const QString& url);
 
 signals:
-    void projectDirChanged(void);
+    void currentDirChanged(void);
     
 private:
     bool isDirAProject(const QDir &dir);

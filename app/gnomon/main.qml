@@ -114,8 +114,8 @@ G.Application {
     P.FolderDialog {
         id: folderDialog
         folder: P.StandardPaths.standardLocations(P.StandardPaths.PicturesLocation)[0]
-        onAccepted : {        
-            GP.ProjectManager.project.projectDir = folderDialog.currentFolder;
+        onAccepted : {
+            GP.projectManager.newProject(folderDialog.currentFolder, "")
         }
     }
 
@@ -147,6 +147,8 @@ G.Application {
                     text: qsTr("New Project")
                     shortcut: StandardKey.New
                     onTriggered: {
+                        //TODO: come back on the behavior of new project from anywhere (should it close everything?)
+                        //TODO: should use the new project dialog as well
                         folderDialog.open();
                     }
                 }

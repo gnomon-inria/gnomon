@@ -44,7 +44,9 @@ gnomonProjectPrivate::~gnomonProjectPrivate()
 
 
 gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
-    d = new gnomonProjectPrivate(path);
+    QString path_copy(path);
+    path_copy.remove("file://");
+    d = new gnomonProjectPrivate(path_copy);
 
     if(!d->projectDir.exists()) {
         QDir::current().mkpath(path);
@@ -54,12 +56,12 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
     if(isProject) {
         readProjectInfo();
     } 
-    connect(this, &gnomonProject::projectDirChanged, [=](){
+    else {
         auto pName = d->projectDir.dirName();
         populateNewProject();
         d->projectInfo.name = pName;
         d->projectInfo.lastModified = QDateTime::currentDateTime();
-    });
+    };
 }
 
 gnomonProject::~gnomonProject(void)
@@ -83,16 +85,16 @@ bool gnomonProject::isDirAProject(const QDir &dir) {
 
 QString gnomonProject::projectDir(void)
 {
-    return d->projectDir.path();
+    return d->currentDir.path();
 }
 
-void gnomonProject::setProjectDir(const QString& url)
+void gnomonProject::setCurrentDir(const QString& url)
 {
     auto path = QString(url);
     path.remove("file://");
     if(path != d->currentDir.path()) {
-        d->projectDir.setPath(path);
-        emit projectDirChanged();
+        d->currentDir.setPath(path);
+        emit currentDirChanged();
     }
 }
 
@@ -108,6 +110,14 @@ gnomonProject *gnomonProject::newProject(const QString &path, const QString &nam
     auto project = new gnomonProject(path);
     project->d->projectInfo.name = name;
     return project;
+}
+
+void gnomonProject::close() {
+
+}
+
+QString gnomonProject::currentDir(void) {
+    return d->currentDir.path();
 }
 //
 // gnomonProject.cpp ends here

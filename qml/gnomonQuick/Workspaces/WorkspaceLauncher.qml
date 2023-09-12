@@ -42,8 +42,7 @@ G.Workspace {
     P.FolderDialog {
         id: folderDialog
         folder: P.StandardPaths.standardLocations(P.StandardPaths.PicturesLocation)[0]
-        onAccepted : {        
-            GP.ProjectManager.project.projectDir = folderDialog.currentFolder;
+        onAccepted : {
             _folder_path.text = folderDialog.currentFolder;
         }
 
@@ -487,6 +486,7 @@ G.Workspace {
                         }
 
                         onAccepted: {
+                            GP.ProjectManager.newProject(_folder_path.text, _pipeline_title.text)
                             GP.PipelineManager.pipeline.name = _pipeline_title.text
                             GP.PipelineManager.pipeline.description = _pipeline_description.text
                             if (_remember_workspace.checked) {
