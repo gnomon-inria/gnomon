@@ -1,3 +1,4 @@
+#include <QQmlEngine>
 #include "gnomonProjectManager.h"
 #include "gnomonProject.h"
 // /////////////////////////////////////////////////////////////////
@@ -41,21 +42,25 @@ gnomonProject *gnomonProjectManager::project(void)
 gnomonProjectManager *gnomonProjectManager::s_instance = nullptr;
 
 gnomonProject *gnomonProjectManager::openProject(const QString &path) {
-    if(d->project) {
-        d->project->close();
-        delete d->project;
-    }
+    closeProject();
     d->project = new gnomonProject(path);
+    QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
     return d->project;
 }
 
 gnomonProject *gnomonProjectManager::newProject(const QString &path, const QString &name) {
+    closeProject();
+    d->project = gnomonProject::newProject(path, name);
+    QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
+    return d->project;
+}
+
+void gnomonProjectManager::closeProject() {
     if(d->project) {
         d->project->close();
         delete d->project;
+        d->project = nullptr;
     }
-    d->project = gnomonProject::newProject(path, name);
-    return d->project;
 }
 
 std::mutex gnomonProjectManager::s_mutex;
