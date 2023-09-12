@@ -3,8 +3,6 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 
-import Qt5Compat.GraphicalEffects
-
 import Qt.labs.platform as P
 import Qt.labs.settings
 

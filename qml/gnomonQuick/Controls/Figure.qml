@@ -3,9 +3,9 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Window
 import QtQuick.Layouts
+import QtQuick.Controls.Imagine.impl
 
 import Qt.labs.platform as P
-import Qt5Compat.GraphicalEffects
 
 import gnomon.Visualization 1.0 as GV
 import gnomon.Mpl           1.0 as GV

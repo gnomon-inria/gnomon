@@ -122,6 +122,7 @@ find_package(dtkImaging  REQUIRED)
 find_package(dtkScript   REQUIRED)
 find_package(VTK         REQUIRED) # only for vtkImageData in gnomonImageDtk
 find_package(xtensor     REQUIRED) # because of dtkImaging
+find_package(libzip         REQUIRED) # for workspaceBrowsing
 
 if(GNOMON_ENABLE_VISU)
   add_definitions(-DGNOMON_USE_VISU)

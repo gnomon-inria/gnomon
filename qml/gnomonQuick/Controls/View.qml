@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
+import QtQuick.Controls.Imagine.impl
 
-import Qt5Compat.GraphicalEffects
 import Qt.labs.platform as P
 
 import xQuick.Vis as XVis

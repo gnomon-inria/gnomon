@@ -8,10 +8,11 @@ channels:
   - gnomon
 dependencies:
     - cmake
-    - qt >=6.2
+    - qt6-main >=6.5
+    - qt6-webengine
     - git
-    - x-vis =1.0
-    - vtk =9.1.0
+    - x-vis =1.1
+    - vtk =9.2.6
     - dtk-core
     - dtk-log
     - dtk-script >= 2.5.1
@@ -20,6 +21,8 @@ dependencies:
     - dtk-imaging-python
     - dtk-plugins-imaging
     - python =3.9
+    - openalea.lpy >=3.13
+    - libzip
     - ipython
     - numpy
     - scipy != 1.8.1

@@ -1,4 +1,4 @@
-name: gnomon-dev
+name: gnomon
 
 channels:
   - dtk-forge6
@@ -8,10 +8,11 @@ channels:
   - gnomon
 dependencies:
     - cmake
-    - qt >=6.2
+    - qt6-main >=6.5
+    - qt6-webengine
     - git
-    - x-vis =1.0
-    - vtk =9.1.0
+    - x-vis =1.1.0
+    - vtk =9.2.6
     - dtk-core
     - dtk-log
     - dtk-script >= 2.5.1
@@ -28,7 +29,8 @@ dependencies:
     - jinja2
     - matplotlib-base
     - timagetk =3
-    - openalea.lpy
+    - openalea.lpy >=3.13
+    - libzip
     - python-lsp-server
     - gcc_linux-64 >= 11.2.0
     - gxx_linux-64 >= 11.2.0
