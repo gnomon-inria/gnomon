@@ -49,7 +49,7 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
     d = new gnomonProjectPrivate(path_copy);
 
     if(!d->projectDir.exists()) {
-        QDir::current().mkpath(path);
+        QDir::current().mkpath(path_copy);
     }
 
     bool isProject = isDirAProject(d->projectDir);
