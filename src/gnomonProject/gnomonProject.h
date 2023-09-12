@@ -43,6 +43,7 @@ private:
     bool isDirAProject(const QDir &dir);
     void populateNewProject();
     void readProjectInfo();
+    void saveProjectInfo();
 
 private:
    class gnomonProjectPrivate *d;

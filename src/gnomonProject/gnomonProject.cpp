@@ -3,6 +3,7 @@
 
 
 #define PROJECT_INFO_FOLDER ".gnomon"
+#define PROJECT_INFO_FILE ".gnomon/project.json"
 #define PROJECT_BACKUP_FOLDER ".backup_gnomon"
 
 // /////////////////////////////////////////////////////////////////
@@ -71,11 +72,42 @@ gnomonProject::~gnomonProject(void)
 
 void gnomonProject::readProjectInfo() 
 {
-    qWarning()<<Q_FUNC_INFO<<"Not implemented.";
+    QFile projectInfoFile(d->projectDir.absoluteFilePath(PROJECT_INFO_FILE));
+    if(projectInfoFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&projectInfoFile);
+        auto content = in.readAll().toUtf8();
+        QJsonDocument doc = QJsonDocument::fromJson(content);
+        QJsonObject storage = doc.object();
+        auto &pInfo = d->projectInfo;
+        pInfo.name = storage["name"].toString();
+        pInfo.path = storage["path"].toString();
+        pInfo.lastModified = QDateTime::fromString(storage["lastModified"].toString());
+
+        projectInfoFile.close();
+    }
 }
+
+void gnomonProject::saveProjectInfo() {
+    QFile projectInfoFile(d->projectDir.absoluteFilePath(PROJECT_INFO_FILE));
+    qDebug() << "=======================" << d->projectDir.absoluteFilePath(PROJECT_INFO_FILE);
+    if(projectInfoFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        auto &pInfo = d->projectInfo;
+        QJsonObject storage;
+        storage["name"] = pInfo.name;
+        storage["path"] = pInfo.path;
+        pInfo.lastModified.setSecsSinceEpoch(QDateTime::currentSecsSinceEpoch());
+        storage["lastModified"] = pInfo.lastModified.toString();
+        QJsonDocument doc(storage);
+        QTextStream out(&projectInfoFile);
+        out << doc.toJson();
+        out.flush();
+        projectInfoFile.close();
+    }
+}
+
 void gnomonProject::populateNewProject() {
     d->projectDir.mkdir(PROJECT_INFO_FOLDER);
-
+    saveProjectInfo();
     d->projectDir.mkdir(PROJECT_BACKUP_FOLDER);
 }
 
@@ -103,12 +135,9 @@ void gnomonProject::loadSessionFromPipeline(const QString &path) {
 }
 
 gnomonProject *gnomonProject::newProject(const QString &path, const QString &name) {
-    QDir current_dir = QDir::current();
-    if(!current_dir.exists(path)) {
-        current_dir.mkpath(path);
-    }
     auto project = new gnomonProject(path);
     project->d->projectInfo.name = name;
+    project->saveProjectInfo();
     return project;
 }
 
