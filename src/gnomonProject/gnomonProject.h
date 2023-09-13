@@ -43,6 +43,8 @@ private:
     bool isDirAProject(const QDir &dir);
     void populateNewProject();
     void readProjectInfo();
+
+private slots:
     void saveProjectInfo();
 
 private:

@@ -45,8 +45,8 @@ gnomonProjectPrivate::~gnomonProjectPrivate()
 
 
 gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
-    QString path_copy(path);
-    path_copy.remove("file://");
+    QUrl url(path);
+    QString path_copy(url.isValid() && url.isLocalFile() ? url.toLocalFile() : path);
     d = new gnomonProjectPrivate(path_copy);
 
     if(!d->projectDir.exists()) {
@@ -135,7 +135,9 @@ void gnomonProject::loadSessionFromPipeline(const QString &path) {
 
 gnomonProject *gnomonProject::newProject(const QString &path, const QString &name) {
     auto project = new gnomonProject(path);
-    project->d->projectInfo.name = name;
+    if(!name.isEmpty()) {
+        project->d->projectInfo.name = name;
+    }
     project->saveProjectInfo();
     return project;
 }
