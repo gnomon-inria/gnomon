@@ -38,7 +38,7 @@ Control {
 
       font: G.Style.fonts.subHeader
       color: G.Style.colors.textColorBase;
-      verticalAlignment: Text.alignVCenter
+      verticalAlignment: Text.AlignVCenter
     }
 
     G.IconButton {

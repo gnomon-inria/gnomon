@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import Qt.labs.settings
+import QtCore
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G

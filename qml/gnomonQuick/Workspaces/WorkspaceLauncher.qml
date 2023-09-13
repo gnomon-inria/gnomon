@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 
-import Qt.labs.settings
+import QtCore
 import Qt.labs.platform as P
 
 import gnomonQuick.Controls as G

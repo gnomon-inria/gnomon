@@ -1,9 +1,9 @@
-import QtQuick          2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts  1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import Qt.labs.platform 1.1 as P
-import Qt.labs.settings 1.0
+import Qt.labs.platform as P
+import QtCore
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G

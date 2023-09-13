@@ -4,7 +4,7 @@ import QtQuick.Layouts
 
 import Qt.labs.platform
 import Qt.labs.folderlistmodel
-import Qt.labs.settings
+import QtCore
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G

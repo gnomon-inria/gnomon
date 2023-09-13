@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Window
 
 import Qt.labs.platform as P
-import Qt.labs.settings
+import QtCore
 
 import xLogger  as L
 

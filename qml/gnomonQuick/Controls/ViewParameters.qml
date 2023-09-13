@@ -4,7 +4,7 @@ import QtQuick.Dialogs
 import QtQuick.Layouts
 
 import Qt.labs.platform as P
-import Qt.labs.settings
+import QtCore
 
 import gnomon.Visualization 1.0 as GV
 

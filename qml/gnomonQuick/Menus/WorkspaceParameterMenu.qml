@@ -5,7 +5,7 @@ import QtQuick.Layouts   1.15
 import QtQml.Models      2.15
 
 import Qt.labs.platform  1.0 as P
-import Qt.labs.settings
+import QtCore
 
 import gnomonQuick.Menus as G
 import gnomonQuick.Workspaces as G
