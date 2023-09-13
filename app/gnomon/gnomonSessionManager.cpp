@@ -31,15 +31,21 @@ bool gnomonSessionManager::save(const QString &id, const QString &path)
     the session is retrivable wit it's Id
     */
    // d->session_process->save_session(d->session);
+   qWarning()<<Q_FUNC_INFO<<"Not implemented.";
 }
 void gnomonSessionManager::load(const QString &id, const QString &path)
 {
     /* Should return a session */
     // d->session_process->load_session(id, path)
+    qWarning()<<Q_FUNC_INFO<<"Not implemented.";
 }
 
 void gnomonSessionManager::initialize() {
     gnomonAbstractSessionManager::registerInstance(new gnomonSessionManager(nullptr));
+}
+
+void gnomonSessionManager::loadFromPipeline(const QString &path) {
+    qWarning()<<Q_FUNC_INFO<<"Not implemented.";
 }
 
 

@@ -1,0 +1,3 @@
+#include "gnomonProject.h"
+#include "gnomonProjectManager.h"
+#include "gnomonAbstractSessionManager.h"

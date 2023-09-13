@@ -104,7 +104,7 @@ G.Workspace {
         x: parent.width/6
         parent: Overlay.overlay
 
-        G.Label {
+        Label {
             anchors.fill: parent
             text: _message_dialog.text;
             font {
@@ -134,7 +134,7 @@ G.Workspace {
             columns: 2
             width: parent.width
 
-            G.Label {
+            Label {
                 text: "login";
                 font {
                     pointSize: 14;
@@ -155,7 +155,7 @@ G.Workspace {
 
             }
 
-            G.Label {
+            Label {
                 text: "Password";
                 font {
                     pointSize: 14;

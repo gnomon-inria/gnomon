@@ -3,6 +3,8 @@
 #include <QtCore>
 #include <gnomonProjectExport.h>
 
+#define GNOMON_SESSION gnomonAbstractSessionManager::instance()
+
 class GNOMONPROJECT_EXPORT gnomonAbstractSessionManager: public QObject {
     Q_OBJECT
 public:
@@ -12,6 +14,8 @@ public:
     virtual bool save(const QString &id, const QString &path) = 0;
 
     virtual void load(const QString &id, const QString &path) = 0;
+
+    virtual void loadFromPipeline(const QString &path) = 0;
 
 public:
     static gnomonAbstractSessionManager *instance();

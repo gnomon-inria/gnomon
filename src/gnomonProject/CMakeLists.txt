@@ -5,6 +5,7 @@ project(gnomonProject VERSION ${gnomon_VERSION})
 ## #################################################################
 
 set(${PROJECT_NAME}_HEADERS
+    gnomonProject
     gnomonProject.h
     gnomonProjectManager.h
     gnomonAbstractSessionManager.h)

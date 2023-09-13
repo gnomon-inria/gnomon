@@ -12,6 +12,7 @@ import gnomonQuick.Workspaces as G
 import gnomonQuick.Style as G
 
 import gnomon.Pipeline  1.0 as GP
+import gnomon.Project   1.0 as GP
 
 
 G.Workspace {
@@ -35,6 +36,18 @@ G.Workspace {
             console.log('Loading an existing project');
             load_session(_file_dialog.file);
             add_to_history(_file_dialog.file)
+        }
+    }
+
+    P.FolderDialog {
+        id: folderDialog
+        folder: P.StandardPaths.standardLocations(P.StandardPaths.PicturesLocation)[0]
+        onAccepted : {
+            _folder_path.text = folderDialog.currentFolder;
+        }
+
+        Settings {
+            property alias last_open_folder: folderDialog.folder
         }
     }
 
@@ -300,6 +313,50 @@ G.Workspace {
 
                             Label {
                                 Layout.fillWidth: true;
+                                text: "Folder"
+                                font: G.Style.fonts.formLabel
+
+                                horizontalAlignment: Text.AlignLeft
+                                verticalAlignment: Text.AlignTop
+
+                                wrapMode: Text.Wrap
+                                color: G.Style.colors.textColorBase
+                            }
+
+                            Rectangle {
+                                Layout.fillWidth: true;
+                                height: G.Style.mediumLabelHeight
+
+                                color: G.Style.colors.gutterColor;
+                                radius: G.Style.panelRadius
+
+                                G.TextField {
+                                    id: _folder_path
+                                    Layout.fillWidth: true
+                                    anchors.right: _folder_button.left
+                                    anchors.left: parent.left
+                                    anchors.bottom: parent.bottom;
+                                    anchors.bottomMargin: G.Style.tinyPadding
+                                    placeholderText: qsTr("Enter folder path like: file://...")
+                                }
+                                G.Button {
+                                    id: _folder_button
+                                    anchors.bottom: parent.bottom;
+                                    anchors.right: parent.right;
+
+                                    text: "Folder";
+                                    type: G.Style.ButtonType.Neutral
+                                    iconName: "folder"
+                                    empty: true
+
+                                    onClicked: {
+                                        folderDialog.open()
+                                    }
+                                }
+                            }
+                            
+                            Label {
+                                Layout.fillWidth: true;
                                 text: "Title"
                                 font: G.Style.fonts.formLabel
 
@@ -429,6 +486,7 @@ G.Workspace {
                         }
 
                         onAccepted: {
+                            GP.ProjectManager.createProject(_folder_path.text, _pipeline_title.text)
                             GP.PipelineManager.pipeline.name = _pipeline_title.text
                             GP.PipelineManager.pipeline.description = _pipeline_description.text
                             if (_remember_workspace.checked) {

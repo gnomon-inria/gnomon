@@ -18,6 +18,7 @@ import gnomonQuick.Menus       as G
 import gnomonQuick.Style       as G
 
 import gnomon.Pipeline  as GP
+import gnomon.Project   as  GP
 import "." as G
 
 G.Application {
@@ -110,6 +111,14 @@ G.Application {
         }
     }
 
+    P.FolderDialog {
+        id: folderDialog
+        folder: P.StandardPaths.standardLocations(P.StandardPaths.PicturesLocation)[0]
+        onAccepted : {
+            GP.projectManager.newProject(folderDialog.currentFolder, "")
+        }
+    }
+
     Component {
         id: platform_menu
 
@@ -131,6 +140,16 @@ G.Application {
                     shortcut: StandardKey.Save
                     onTriggered: {
                         saveFileDialog.open();
+                    }
+                }
+
+                P.MenuItem {
+                    text: qsTr("New Project")
+                    shortcut: StandardKey.New
+                    onTriggered: {
+                        //TODO: come back on the behavior of new project from anywhere (should it close everything?)
+                        //TODO: should use the new project dialog as well
+                        folderDialog.open();
                     }
                 }
 

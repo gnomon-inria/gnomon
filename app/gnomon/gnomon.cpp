@@ -17,6 +17,7 @@
 
 #include <gnomonCore>
 #include <gnomonPipeline>
+#include <gnomonProject>
 #include <gnomonVisualization>
 #include <gnomonWorkspace>
 
@@ -590,6 +591,9 @@ void gnomon_rinit()
 
     // -- Project Management
     qmlRegisterType<gnomonSessionLoader>("gnomon.Pipeline", 1, 0, "SessionLoader");
+
+    qmlRegisterType<gnomonProject>("gnomon.Project", 1, 0, "Project");
+    qmlRegisterSingletonInstance("gnomon.Project", 1, 0, "ProjectManager", gnomonProjectManager::instance());
 
     // -- Visualization logic registration
     qmlRegisterType<gnomonVtkView>("gnomon.Visualization", 1, 0, "View");

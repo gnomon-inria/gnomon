@@ -375,8 +375,8 @@ Control
     }
 
     Component.onCompleted: {
-        if(_settings.last_path) _self.folder = _settings.last_path;
-        else _self.folder = StandardPaths.standardLocations(StandardPaths.HomeLocation)[0];
+        // if(_settings.last_path) _self.folder = _settings.last_path;
+        // else _self.folder = StandardPaths.standardLocations(StandardPaths.HomeLocation)[0];
 
         if(_settings.finderMode === "grid") _loader.setSource("FinderGridView.qml", {"foldermodel": _folder_model})
         if(_settings.finderMode === "list") _loader.setSource("FinderListView.qml", {"foldermodel": _folder_model})
