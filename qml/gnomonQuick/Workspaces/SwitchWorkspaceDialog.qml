@@ -64,8 +64,11 @@ G.Dialog {
         anchors.margins: 0
 
         delegate: G.ListItemDelegate {
+            required property int index
+            required property string title
+
             width: listView.width
-            text: model.title
+            text: title
             font: G.Style.fonts.cardLabel
             highlighted: ListView.isCurrentItem
             onClicked: {
@@ -73,6 +76,7 @@ G.Dialog {
                 window.switch_workspace(index)
                 self.close();
             }
+
 
             Item {
                 id: _icon_container;
@@ -82,9 +86,30 @@ G.Dialog {
                 anchors.right: parent.right;
                 anchors.rightMargin: G.Style.smallPadding;
 
+                G.IconButton {
+                    id: _close_workspace
+
+                    anchors.right: parent.right;
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+
+                    size: G.Style.iconSmall;
+                    iconName: "close"
+                    color: G.Style.colors.textColorBase;
+
+                    visible: window.workspace_at(index).canBeDestroyed
+                    onClicked: {
+                        console.log("close wp... ", index );
+                        closeWorkspace(index);
+                    }
+                }
+
                 Image {
                     id: _icon
-                    anchors.fill: parent
+                    anchors.right: _close_workspace.left
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+
                     fillMode: Image.PreserveAspectFit
                     source: "image://workspaces/" + index;
                 }

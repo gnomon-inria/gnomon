@@ -13,13 +13,13 @@ gnomon-package-pkgname
 │   README.md
 │   setup.py
 │   pyproject.toml
-│   LICENSE   
+│   LICENSE
 │
 └───conda
 │   │   build.sh
 │   │   env.yaml
 │   │   meta.yaml
-│   
+│
 └───src
     └───plugin_name
         └───algorithm
@@ -46,7 +46,7 @@ gnomon-package-pkgname
 #### `setup.py`
 To write the `setup.py` you can follow this minimal template:
 
-```python 
+```python
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
@@ -62,7 +62,7 @@ setup_kwds = {
     name: 'plugin_name',
     version: "X.X.X",
     description: short_descr,
-    long_description: readme,  
+    long_description: readme,
     author: "Author",
     author_email: "author@email.com",
     url: '',
@@ -117,7 +117,7 @@ This python file includes the following functions from [`setuptools`](https://se
 
 Before your plugins can be used by gnomon they need to be advertised so gnomon can dynamically discover them.
 To achieve that we use a feature called [entry points](https://setuptools.pypa.io/en/latest/userguide/entry_point.html)
-With entry points one can register a console command (console-script) which would run a specific function in the library or 
+With entry points one can register a console command (console-script) which would run a specific function in the library or
 advertise modules or objects. What interest us is the second use case.
 
 The format for declaring entry points is as follows:
@@ -140,7 +140,7 @@ In the context of gnomon we will only be advertising modules, the group name is 
 minus the `gnomonAbstract` part and the entry point name should be the same name as the module name and the class name of the plugin.
 
 For example, if we were to register a plugin called `downsampleFilter` which implements the abstract base class
-`gnomonAbstractImageFilter` and is located in `src/plugin_name/algorithm` we would get: 
+`gnomonAbstractImageFilter` and is located in `src/plugin_name/algorithm` we would get:
 ```python
 entry_points = {
     'imageFilter': [
@@ -168,7 +168,7 @@ omit = ["*__init__.py", "test/*", "setup.py"]
 ```
 
 ## Package installation
-**At the root of the package** 
+**At the root of the package**
 - activate your local environment e.g.: `conda activate gnomon-x`
 - run `pip install .`
 
@@ -187,12 +187,12 @@ You can check that everything is okay by importing your package in your python i
 
 ```
 gnomon-package-pkgname
-│   ...   
+│   ...
 │
-└───src   
+└───src
 │   │   ...
 │
-└───test  
+└───test
     └───resources
     │   │   ...
     │
@@ -218,7 +218,7 @@ cd gnomon-package-pkgname
 conda env create -f conda/env.yaml
 ```
 
-There are two ways to make an `env.yaml` file: 
+There are two ways to make an `env.yaml` file:
 1. by exporting an existing env with `conda env export`
 2. by hand
 
@@ -299,13 +299,13 @@ about:
 As you can see `jinja2` templating can be used here.
 
 #### package
-In this section the package name and version are defined. 
+In this section the package name and version are defined.
 Here we use the template `{{ environ.get('GIT_DESCRIBE_TAG', 'default') }}`
 to get the tag from git if you're using git to hold the version.
 Otherwise put the version manually.
 
 #### source
-We only have one source and it is local. The path should be the relative 
+We only have one source and it is local. The path should be the relative
 path to the root of the package where the `setup.py` is located.
 
 #### build
@@ -314,7 +314,7 @@ For a pure python package this section should stay the same.
 The line `preserve_egg_dir: True` **must** be there.
 
 #### requirements
-In this section we define the different requirements needed to build, 
+In this section we define the different requirements needed to build,
 to link and to run. There are three sections which basically go like this:
 - `build`: what packages are needed in order to build the package
 - `host`: what packages should be linked in the destination platform
@@ -324,7 +324,7 @@ More information on the definition of `meta.yaml` [here](https://docs.conda.io/p
 
 ### Build script: `build.sh`
 
-This one is rather easy. It is simply the bash script that needs to be called in order 
+This one is rather easy. It is simply the bash script that needs to be called in order
 to build what needs to be packaged, in our case a python package.
 
 The content should therefor simply be:

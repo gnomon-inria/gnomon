@@ -9,6 +9,7 @@
 #include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 #include <gnomonVisualization/gnomonView/gnomonMplView.h>
 #include <gnomonVisualization/gnomonView/gnomonQmlView.h>
+#include <qtmetamacros.h>
 
 class gnomonAbstractCommand;
 
@@ -31,8 +32,7 @@ public:
     Q_PROPERTY(gnomonVtkView* target READ target CONSTANT); //for ease of use
     Q_PROPERTY(gnomonMplView* figure READ figure CONSTANT);
     Q_PROPERTY(gnomonQmlView* textView READ textView CONSTANT);
-    Q_PROPERTY(int progress READ progress NOTIFY progressChanged)
-
+    Q_PROPERTY(int progress READ progress NOTIFY progressChanged);
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:

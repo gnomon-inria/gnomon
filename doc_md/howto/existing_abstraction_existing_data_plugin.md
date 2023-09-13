@@ -16,8 +16,8 @@ some kind.
 
 If you want to choose another workspace/abstraction see [TODO](linktofile)
 
-First, let's create the module in the algorithm section of the package 
-(see [making a package](package.md) for more information on how to make
+First, let's create the module in the algorithm section of the package
+(see [making a package](new_package.md) for more information on how to make
 a plugin package)
 
     linearFilterTimagetk.py
@@ -31,7 +31,7 @@ class linearFilterTimagetk(gnomonAbstractImageFilter):
         super().__init__()
 ```
 
-In order for the plugin to be registered to the plugin factory some 
+In order for the plugin to be registered to the plugin factory some
 specific decorators must be added to the class.
 
 
@@ -43,13 +43,13 @@ line of code.
 
 ```{eval-rst}
 .. py:function:: gnomonPlugin(version, coreversion, cls=None, namespace=gnomoncore, base_class=None)
-   
+
    :param str version: version of the plugin
    :param str coreversion: version of gnomoncore
 ```
 
 
-```{warning} 
+```{warning}
 Keep the cls arg equal to `None`
 ```
 
@@ -123,10 +123,10 @@ class linearFilterTimagetk(gnomonAbstractImageFilter):
 
 ### Define the parameters of the algorithm
 
-To provide parameters for the algorithm which will be accessible from the interface, 
-**gnomon** uses the parameter classes provided by the **dtkcore** module. 
+To provide parameters for the algorithm which will be accessible from the interface,
+**gnomon** uses the parameter classes provided by the **dtkcore** module.
 
-**dtkcore** provides for a variety of classes for different types notably for 
+**dtkcore** provides for a variety of classes for different types notably for
 integers, real numbers, character strings, boolean and so on:
 
 #### simple
@@ -136,7 +136,7 @@ integers, real numbers, character strings, boolean and so on:
  - dtk::d_uchar
  - dtk::d_char
  - dtk::d_uint
- - dtk::d_int 
+ - dtk::d_int
  - dtk::d_real
  - dtk::d_bool
 
@@ -155,7 +155,7 @@ integers, real numbers, character strings, boolean and so on:
  - dtk::d_range_uchar
  - dtk::d_range_char
  - dtk::d_range_uint
- - dtk::d_range_int 
+ - dtk::d_range_int
  - dtk::d_range_real
 
 
@@ -207,7 +207,7 @@ class linearFilterTimagetk(gnomonAbstractImageFilter):
         self.filtered_images = {}
 
         self._parameters = {}
-        self._parameters["sigma"] = dtkcore.d_real("sigma", 1., 0, 10., 2, 
+        self._parameters["sigma"] = dtkcore.d_real("sigma", 1., 0, 10., 2,
             "Standard deviation of the Gaussian kernel")
 ```
 
@@ -258,7 +258,7 @@ def run(self):
             img = self.images[time][channel]
             filtered_img = linear_filtering(img, method='gaussian_smoothing', sigma=self['gaussian_sigma'])
             self.filtered_images[time][channel] = filtered_img
-            
+
         self.filtered_images[time] = MultiChannelImage(self.filtered_images[time])
 ```
 
@@ -276,10 +276,10 @@ user using a graphical interface) is passed to the function as
 Now that we have a functioning plugin we might want to give some
 information on the progress of the computation back to _gnomon_.
 To achieve that, gnomon provides 2 pre-implemented methods to
-every plugins: `set_max_progress(self, v: int)` and 
+every plugins: `set_max_progress(self, v: int)` and
 `increment_progress(self, increase: int = 1)`
 
-First, we need to call `self.increment_progress()` every so often 
+First, we need to call `self.increment_progress()` every so often
 inside `run()`. Then, for this to work properly, we must set max progress to the number
 of expected calls to `increment_progress`.
 
@@ -298,7 +298,7 @@ def run(self):
             filtered_img = linear_filtering(img, method='gaussian_smoothing', sigma=self['gaussian_sigma'])
             self.increment_progress()
             self.filtered_images[time][channel] = filtered_img
-            
+
         self.filtered_images[time] = MultiChannelImage(self.filtered_images[time])
 ```
 
@@ -346,7 +346,7 @@ To be dynamically discovered by the Gnomon platform, the plugin class
 should be referenced in the entry points of your Python interpreter. To
 do so, Gnomon offers a function that introspects a package looking for
 Gnomon plugins, and include them in a way that they will be found by the
-platform. 
+platform.
 
 For more, see how they are declared [here](entry_points)
 
@@ -388,15 +388,15 @@ class linearFilterTimagetk(gnomonAbstractImageFilter):
     def run(self):
         self.set_max_progress(1*sum(len(img) for img in self.images.values))
         self.filtered_images = {}
-    
+
         for time in self.images.keys():
             self.filtered_images[time] = {}
-    
+
             for channel in self.images[time].keys():
                 img = self.images[time][channel]
                 filtered_img = linear_filtering(img, method='gaussian_smoothing', sigma=self['gaussian_sigma'])
                 self.increment_progress()
                 self.filtered_images[time][channel] = filtered_img
-                
+
             self.filtered_images[time] = MultiChannelImage(self.filtered_images[time])
 ```

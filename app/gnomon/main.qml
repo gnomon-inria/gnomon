@@ -114,8 +114,8 @@ G.Application {
     P.FolderDialog {
         id: folderDialog
         folder: P.StandardPaths.standardLocations(P.StandardPaths.PicturesLocation)[0]
-        onAccepted : {        
-            GP.ProjectManager.project.projectDir = folderDialog.currentFolder;
+        onAccepted : {
+            GP.projectManager.newProject(folderDialog.currentFolder, "")
         }
     }
 
@@ -147,6 +147,8 @@ G.Application {
                     text: qsTr("New Project")
                     shortcut: StandardKey.New
                     onTriggered: {
+                        //TODO: come back on the behavior of new project from anywhere (should it close everything?)
+                        //TODO: should use the new project dialog as well
                         folderDialog.open();
                     }
                 }
@@ -658,6 +660,22 @@ G.Application {
         }
 
         stack_launcher.currentIndex = 1;
+    }
+
+    function closeWorkspace(index) {
+        if (window.workspace_list.count == 1) {
+            _switch_workspace_dialog.reject();
+            reset();
+            return;
+        }
+
+        _workspaces_model.remove(index)
+        workspaces.children[index].destroy()
+
+        //if we remove from index < to currentIndex, the currentIndex needs to change
+        if(workspaces.currentIndex >= index) {
+            switch_workspace(workspaces.currentIndex-1);
+        }
     }
 
     function reset() {

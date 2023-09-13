@@ -139,6 +139,8 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
         v->setAcceptForm("gnomonPointCloud",true);
         connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
             gnomonPipelineManager::instance()->addForm(f);
+            this->m_can_be_destroyed = false;
+            emit canBeDestroyedChanged(false);
         });
     });
 

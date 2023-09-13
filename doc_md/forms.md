@@ -3,13 +3,14 @@
 :::{toctree}
 :maxdepth: 1
 :hidden:
-form_abstraction
+howto/form_abstraction
 form/binary_image
 form/cell_image
 form/data_dict
 form/data_frame
 form/image
 form/lstring
+form/mesh
 form/point_cloud
 :::
 
@@ -29,4 +30,4 @@ The following Forms interfaces are currently supported by the Gnomon platform:
 
 ## Adding Custom Forms
 
-It is possible to extend the possible forms, yet it currently requires significant additions to the source code of Gnomon, for which we detail the procedure: [](form_abstraction) 
+It is possible to extend the possible forms, yet it currently requires significant additions to the source code of Gnomon, for which we detail the procedure: [](howto/form_abstraction)

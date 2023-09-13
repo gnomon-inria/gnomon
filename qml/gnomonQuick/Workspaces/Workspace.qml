@@ -17,6 +17,7 @@ G.Page {
     // default property alias contents: _contents.children;
     property alias parameters: _params.params_model;
     property var d: undefined;
+    property bool canBeDestroyed: d? d.canBeDestroyed : true;
 
     G.Parameters {
         id: _params;
