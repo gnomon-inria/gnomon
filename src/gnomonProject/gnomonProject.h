@@ -7,6 +7,7 @@
 class gnomonAbstractSessionManager;
 struct gnomonProjectInfo {
     QString name;
+    QString description;
     QString path;
     QDateTime lastModified;
 };
@@ -26,8 +27,7 @@ public:
     Q_PROPERTY(gnomonAbstractSessionManager *currentSession READ currentSession CONSTANT);
 
 public:
-    static gnomonProject *newProject(const QString &path, const QString &name);
-    void loadSessionFromPipeline(const QString &path);
+    static gnomonProject *newProject(const QString &path, const QString &name, const QString &description);
     void close();
 
     Q_INVOKABLE bool loadSessionFromPipeline(const QString &path, QObject *window);
@@ -39,6 +39,9 @@ public:
 public:
     void setCurrentDir(const QString& url);
 
+public:
+    static QVariantMap readProjectInfoFromPath(const QString &path);
+
 signals:
     void currentDirChanged(void);
     
@@ -46,6 +49,7 @@ private:
     bool isDirAProject(const QDir &dir);
     void populateNewProject();
     void readProjectInfo();
+    static inline QString sanitizeUrlToPath(const QString &url);
 
 private slots:
     void saveProjectInfo();

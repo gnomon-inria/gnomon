@@ -40,10 +40,17 @@ gnomonProject *gnomonProjectManager::project(void)
     return d->project;
 }
 
-
-gnomonProject *gnomonProjectManager::createProject(const QString &path, const QString &name="") {
+gnomonProject *gnomonProjectManager::openProject(const QString &path) {
     closeProject();
-    d->project = gnomonProject::newProject(path, name);
+    d->project = new gnomonProject(path);
+    QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
+    return d->project;
+}
+
+gnomonProject *gnomonProjectManager::createProject(const QString &path, const QString &name,
+                                                   const QString &description) {
+    closeProject();
+    d->project = gnomonProject::newProject(path, name, description);
     QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
     return d->project;
 }
@@ -57,6 +64,11 @@ void gnomonProjectManager::closeProject() {
 }
 
 gnomonProjectManager *gnomonProjectManager::s_instance = nullptr;
+
+QVariantMap gnomonProjectManager::readProjectInfo(const QString &path) {
+    return gnomonProject::readProjectInfoFromPath(path);
+}
+
 std::mutex gnomonProjectManager::s_mutex;
 
 //

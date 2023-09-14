@@ -24,18 +24,16 @@ G.Workspace {
 
     property string current_file: "";
 
-    P.FileDialog {
-        id: _file_dialog;
+    P.FolderDialog {
+        id: _open_project_folder_dialog;
 
-        currentFile: _workspace.current_file;
         folder: P.StandardPaths.writableLocation(P.StandardPaths.HomeLocation);
         modality: Qt.NonModal;
-        nameFilters: ["Json files (*.json)"]
 
         onAccepted: {
             console.log('Loading an existing project');
-            load_session(_file_dialog.file);
-            add_to_history(_file_dialog.file)
+            load_project(_open_project_folder_dialog.folder);
+            add_to_history(_open_project_folder_dialog.folder)
         }
     }
 
@@ -245,12 +243,12 @@ G.Workspace {
 
                             size: G.Style.ButtonSize.Large
 
-                            text: "Load"
-                            iconName: "play"
+                            text: "Open"
+                            iconName: "folder-open"
                             empty: true
 
                             onClicked: {
-                                _file_dialog.open()
+                                _open_project_folder_dialog.open()
                             }
                         }
 
@@ -375,7 +373,7 @@ G.Workspace {
                                 radius: G.Style.panelRadius
 
                                 G.TextField {
-                                    id: _pipeline_title
+                                    id: _project_title
 
                                     anchors.fill: parent
                                     anchors.margins: G.Style.smallPadding
@@ -406,7 +404,7 @@ G.Workspace {
                             }
 
                             G.TextArea {
-                                id: _pipeline_description
+                                id: _project_description
                                 Layout.fillWidth: true;
                                 Layout.fillHeight: true;
                                 text: ""
@@ -486,12 +484,13 @@ G.Workspace {
                         }
 
                         onAccepted: {
-                            GP.ProjectManager.createProject(_folder_path.text, _pipeline_title.text)
-                            GP.PipelineManager.pipeline.name = _pipeline_title.text
-                            GP.PipelineManager.pipeline.description = _pipeline_description.text
+                            GP.ProjectManager.createProject(_folder_path.text, _project_title.text, _project_description.text)
+                            GP.PipelineManager.pipeline.name = _project_title.text
+                            GP.PipelineManager.pipeline.description = _project_description.text
                             if (_remember_workspace.checked) {
                                 _settings.default_workspace = _pipeline_workspace.currentText
                             }
+                            add_to_history(_folder_path.text)
                             launching_toast.open()
                         }
                     }
@@ -513,15 +512,15 @@ G.Workspace {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
 
-                            width: G.Style.smallPanelWidth
-                            height: G.Style.smallDelegateHeight
+                            width: G.Style.mediumPanelWidth
+                            height: G.Style.mediumDelegateHeight
 
                             visible: window.recent_projects.count == 0
 
                             G.IconButton {
                                 id: _no_project_new_button
 
-                                anchors.top: parent.top
+                                anchors.verticalCenter: _no_project_new_label.verticalCenter
                                 anchors.left: parent.left
                                 anchors.margins: G.Style.smallPadding
 
@@ -535,11 +534,14 @@ G.Workspace {
                             }
 
                             Label {
-                                anchors.verticalCenter: _no_project_new_button.verticalCenter
+                                id: _no_project_new_label
+                                anchors.bottom: parent.verticalCenter
                                 anchors.left: _no_project_new_button.right
+                                anchors.right: parent.right
                                 anchors.margins: G.Style.smallPadding
 
-                                text: "Start by creating a NEW project"
+                                text: "Start by creating a **new** project"
+                                textFormat: Text.MarkdownText
                                 horizontalAlignment: Text.AlignLeft
                                 verticalAlignment: Text.AlignTop
 
@@ -551,12 +553,12 @@ G.Workspace {
                             G.IconButton {
                                 id: _no_project_load_button
 
-                                anchors.top: _no_project_new_button.bottom
+                                anchors.verticalCenter: _no_project_load_label.verticalCenter
                                 anchors.left: parent.left
                                 anchors.margins: G.Style.smallPadding
 
                                 size: G.Style.iconMedium;
-                                iconName: "play"
+                                iconName: "folder-open"
                                 color: G.Style.colors.bgColor
 
                                 onClicked: {
@@ -565,11 +567,14 @@ G.Workspace {
                             }
 
                             Label {
-                                anchors.verticalCenter: _no_project_load_button.verticalCenter
+                                id: _no_project_load_label
+                                anchors.top: parent.verticalCenter
                                 anchors.left: _no_project_load_button.right
+                                anchors.right: parent.right
                                 anchors.margins: G.Style.smallPadding
 
-                                text: "Or simply LOAD an existing one"
+                                text: "Or simply **open** an existing one"
+                                textFormat: Text.MarkdownText
                                 horizontalAlignment: Text.AlignLeft
                                 verticalAlignment: Text.AlignTop
 
@@ -608,6 +613,7 @@ G.Workspace {
                                 required property string name
                                 required property string source
                                 required property string description
+                                required property string lastModified
 
                                 height: _project_grid.cellHeight - G.Style.smallPadding
                                 width: _project_grid.cellWidth - G.Style.smallPadding
@@ -615,7 +621,7 @@ G.Workspace {
                                 type: G.Style.CardType.Background
                                 outline: true
                                 title: name
-                                body: description
+                                body: "last modified: " + lastModified + "\n" +description
                                 tooltip: source
                                 background: Rectangle {
                                     color: _getBgColor()
@@ -628,7 +634,7 @@ G.Workspace {
                                 //thumbnail: "image://thumbnails/project_" + index
 
                                 onDoubleClicked: {
-                                    load_session(source)
+                                    load_project(source)
                                 }
 
                                 G.IconButton {
@@ -636,7 +642,7 @@ G.Workspace {
                                     iconName: "arrow-down";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
-                                    tooltip: "Load"
+                                    tooltip: "Open"
 
                                     anchors.top: parent.top
                                     anchors.topMargin: G.Style.smallPadding
@@ -644,7 +650,7 @@ G.Workspace {
                                     anchors.rightMargin: G.Style.smallPadding
 
                                     onClicked: {
-                                        load_session(source)
+                                        load_project(source)
                                     }
                                 }
                                 G.IconButton {

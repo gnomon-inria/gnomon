@@ -45,8 +45,7 @@ gnomonProjectPrivate::~gnomonProjectPrivate()
 
 
 gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
-    QUrl url(path);
-    QString path_copy(url.isValid() && url.isLocalFile() ? url.toLocalFile() : path);
+    QString path_copy = sanitizeUrlToPath(path);
     d = new gnomonProjectPrivate(path_copy);
 
     if(!d->projectDir.exists()) {
@@ -70,21 +69,30 @@ gnomonProject::~gnomonProject(void)
     delete d;
 }
 
-void gnomonProject::readProjectInfo() 
-{
-    QFile projectInfoFile(d->projectDir.absoluteFilePath(PROJECT_INFO_FILE));
+QVariantMap gnomonProject::readProjectInfoFromPath(const QString &path) {
+    QVariantMap pInfo;
+    QString path2 = sanitizeUrlToPath(path);
+    QDir projectDir(path2);
+    QFile projectInfoFile(projectDir.absoluteFilePath(PROJECT_INFO_FILE));
     if(projectInfoFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&projectInfoFile);
         auto content = in.readAll().toUtf8();
         QJsonDocument doc = QJsonDocument::fromJson(content);
         QJsonObject storage = doc.object();
-        auto &pInfo = d->projectInfo;
-        pInfo.name = storage["name"].toString();
-        pInfo.path = storage["path"].toString();
-        pInfo.lastModified = QDateTime::fromString(storage["lastModified"].toString());
+        pInfo = storage.toVariantMap();
 
         projectInfoFile.close();
     }
+    return pInfo;
+}
+
+void gnomonProject::readProjectInfo() {
+    auto storage = readProjectInfoFromPath(projectDir());
+    auto &pInfo = d->projectInfo;
+    pInfo.name = storage["name"].toString();
+    pInfo.description = storage["description"].toString();
+    pInfo.path = storage["path"].toString();
+    pInfo.lastModified = QDateTime::fromString(storage["lastModified"].toString(), Qt::ISODate);
 }
 
 void gnomonProject::saveProjectInfo() {
@@ -93,9 +101,10 @@ void gnomonProject::saveProjectInfo() {
         auto &pInfo = d->projectInfo;
         QJsonObject storage;
         storage["name"] = pInfo.name;
+        storage["description"] = pInfo.description;
         storage["path"] = pInfo.path;
         pInfo.lastModified.setSecsSinceEpoch(QDateTime::currentSecsSinceEpoch());
-        storage["lastModified"] = pInfo.lastModified.toString();
+        storage["lastModified"] = pInfo.lastModified.toString("yyyy-MM-ddTHH:mm:ss");
         QJsonDocument doc(storage);
         QTextStream out(&projectInfoFile);
         out << doc.toJson();
@@ -121,8 +130,7 @@ QString gnomonProject::projectDir(void)
 
 void gnomonProject::setCurrentDir(const QString& url)
 {
-    auto path = QString(url);
-    path.remove("file://");
+    auto path = sanitizeUrlToPath(url);
     if(path != d->currentDir.path()) {
         d->currentDir.setPath(path);
         emit currentDirChanged();
@@ -134,11 +142,10 @@ bool gnomonProject::loadSessionFromPipeline(const QString &path, QObject *window
     GNOMON_SESSION->loadFromPipeline(path, window);
 }
 
-gnomonProject *gnomonProject::newProject(const QString &path, const QString &name) {
+gnomonProject *gnomonProject::newProject(const QString &path, const QString &name, const QString &description) {
     auto project = new gnomonProject(path);
-    if(!name.isEmpty()) {
-        project->d->projectInfo.name = name;
-    }
+    project->d->projectInfo.name = name;
+    project->d->projectInfo.description = description;
     project->saveProjectInfo();
     return project;
 }
@@ -155,5 +162,11 @@ gnomonAbstractSessionManager* gnomonProject::currentSession(void)
 {
     return GNOMON_SESSION;
 }
+
+QString gnomonProject::sanitizeUrlToPath(const QString &url) {
+    QUrl _url(url);
+    return QString(_url.isValid() && _url.isLocalFile() ? _url.toLocalFile() : url);
+}
+
 //
 // gnomonProject.cpp ends here
