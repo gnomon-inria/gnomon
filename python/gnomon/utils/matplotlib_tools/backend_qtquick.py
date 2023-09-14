@@ -7,8 +7,14 @@ from matplotlib import cbook
 from matplotlib.backend_bases import FigureCanvasBase, NavigationToolbar2, MouseButton
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import TimerQT, SPECIAL_KEYS, _MODIFIER_KEYS, cursord
-from .qt_compat import QtCore, QtGui, QtQuick, QtWidgets, QT_API, QT_API_PYSIDE6
-from qtpy.QtCore import Slot
+
+from PySide6 import QtCore, QtGui, QtWidgets, QtQuick, QtQml,  __version__
+from PySide6.QtCore import Slot
+import shiboken6
+def _isdeleted(obj): return not shiboken6.isValid(obj)
+
+#from .qt_compat import QtCore, QtGui, QtQuick, QtWidgets, QT_API, QT_API_PYSIDE6
+#from qtpy.QtCore import Slot
 
 class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     """ This class creates a QtQuick Item encapsulating a Matplotlib
@@ -34,7 +40,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
             figure = Figure((6.0, 4.0))
 
         # It seems like Qt doesn't implement cooperative inheritance
-        QtQuick.QQuickPaintedItem.__init__(self, parent=parent)
+        QtQuick.QQuickPaintedItem.__init__(self)
         FigureCanvasBase.__init__(self, figure=figure)
 
         # The dpi ratio (property without leading _)
