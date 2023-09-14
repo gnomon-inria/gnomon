@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$(HAS_GUI)" == "FALSE" ]; then
+    # This post-link script is only for the GUI app
+    exit 0;
+fi
+
 ${PREFIX}/bin/pip install morphonet
 ${PREFIX}/bin/pip install 'python-lsp-server[websockets]'
 
@@ -40,6 +45,3 @@ then
 EOF
     chmod +x ${PREFIX}/bin/Gnomon.app/Contents/MacOs/gnomon
 fi
-
-#TODO
-#if macos make a ln -s ???/gnomon.app ~/Applications/gnomon
