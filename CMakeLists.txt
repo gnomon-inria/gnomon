@@ -115,6 +115,10 @@ find_package(Python3 3.9 EXACT COMPONENTS Interpreter Development NumPy)
 set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Concurrent Network Qml Test Xml)
+if(QT_KNOWN_POLICY_QTP0001)
+  qt_policy(SET QTP0001 OLD)
+endif()
+
 
 find_package(dtkLog      REQUIRED)
 find_package(dtkCore     REQUIRED)

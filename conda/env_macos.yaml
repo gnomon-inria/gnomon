@@ -38,6 +38,7 @@ dependencies:
     - jedi=0.18.2
     - scipy != 1.8.1
     - importlib_metadata
+    - pyvista
     - pip
     - pip:
         - morphonet

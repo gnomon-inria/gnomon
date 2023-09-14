@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Window
 import QtQuick.Layouts
-import QtQuick.Controls.Imagine.impl
 
 import Qt.labs.platform as P
 
@@ -127,16 +126,16 @@ Rectangle {
         }
     }
 
-    layer.enabled: true
-    layer.effect: OpacityMask
-    {
-        maskSource: Rectangle
-        {
-             width: self.width
-            height: self.height
-            radius: G.Style.panelRadius;
-        }
-    }
+    //layer.enabled: true
+    //layer.effect: OpacityMask
+    //{
+    //    maskSource: Rectangle
+    //    {
+    //         width: self.width
+    //        height: self.height
+    //        radius: G.Style.panelRadius;
+    //    }
+    //}
 
     Rectangle {
 

@@ -2,6 +2,7 @@
 #include "gnomonCommand/gnomonAbstractEvolutionModelCommand.h"
 #include "gnomonModel/gnomonAbstractModel.h"
 
+#include <dtkLog.h>
 #include <gnomonCore>
 #include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
@@ -43,7 +44,11 @@ gnomonLStringEvolutionModelCommand::gnomonLStringEvolutionModelCommand() : d(new
         this->model_name = keys[0];
         this->model = gnomonCore::lStringEvolutionModel::pluginFactory().create(this->model_name);
         connect(this->model, &gnomonAbstractModel::modelMessage, this, &gnomonAbstractEvolutionModelCommand::modelMessage);
+    } else {
+        dtkWarn() << "lStringEvolutionModel factory is empty";
+        dtkWarn() << "No model created, I may crash!!";
     }
+
 }
 
 gnomonLStringEvolutionModelCommand::~gnomonLStringEvolutionModelCommand()

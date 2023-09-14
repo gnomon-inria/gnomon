@@ -541,7 +541,7 @@ G.Dialog {
                 }
             }
             _internal.workspace_plugins[w.type] = plugins
-            _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm" || w.type === "gnomonWorkspaceMorphonet" || w.type === "gnomonWorkspaceLSystemModel"))
+            _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm" || w.type === "gnomonWorkspaceMorphonet" ))
         }
     }
 }

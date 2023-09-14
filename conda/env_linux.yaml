@@ -70,6 +70,7 @@ dependencies:
     - scipy != 1.8.1
     - importlib_metadata
     - qtpy >=2.0
+    - pyvista
     - pip
     - pip:
         - morphonet
