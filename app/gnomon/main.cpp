@@ -24,8 +24,10 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     app.setApplicationName("gnomon");
     app.setOrganizationName("inria");
-    app.setOrganizationDomain("fr");
+    app.setOrganizationDomain("inria.fr");
+    QSettings::setDefaultFormat(QSettings::IniFormat);
 
+    
     QQuickStyle::setStyle("Basic");
     QGuiApplication::styleHints()->setUseHoverEffects(true);
     QLoggingCategory::setFilterRules(QStringLiteral("qt.qml.binding.removal.info=true"));

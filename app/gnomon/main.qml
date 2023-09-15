@@ -494,7 +494,7 @@ G.Application {
                 _internal.menu_sources.push(specific_menu);
                 drawer.update_menu(specific_menu);
                 workspace.fill()
-                /* window.create_workspace_screenshot(); */
+                // window.create_workspace_screenshot();
                 _workspaces_model.append({"title": workspace.workspace_title, "index": workspace_index});
                 return workspace_index;
             }
@@ -521,6 +521,7 @@ G.Application {
         drawer.update_menu(_internal.menu_sources[index]);
         window.current_workspace().d.restoreState();
     }
+
 
 // /////////////////////////////////////////////////////////////////////////////
 // Load session API:
@@ -684,19 +685,17 @@ G.Application {
     }
 
     Component.onCompleted: {
-        //if (Qt.platform.os === "osx")
-        //    X.Style.flavors = 'MACOS';
-
         G.Style.mode = stt.mode
         window.width = Math.max(window.width, G.Style.windowMinWidth)
         window.height = Math.max(window.height, G.Style.windowMinHeight)
 
         window.recent_projects.clear()
-        let files = JSON.parse(stt.opened_projects)
-        for(let i=0; i<files.length; i++){
-            window.recent_projects.append(files[i])
-        }
-
+	if(stt.opened_projects) {
+	    let files = JSON.parse(stt.opened_projects)
+            for(let i=0; i<files.length; i++){
+                window.recent_projects.append(files[i])
+            }
+	}
         footer.workspaceName = ""
     }
 }

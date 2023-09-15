@@ -546,8 +546,8 @@ void gnomon_rinit()
     QtWebEngineQuick::initialize();
 
     //qputenv("QT_PLUGIN_PATH", "1");
-    qputenv("LC_ALL", "C");
-    QLocale::setDefault(QLocale::c());
+    //qputenv("LC_ALL", "C");
+    //QLocale::setDefault(QLocale::c());
 
     dtkLogger::instance().setLevel("info");
     dtkLogger::instance().attachConsole();
