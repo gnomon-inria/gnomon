@@ -14,3 +14,15 @@ gnomonAbstractSessionManager *gnomonAbstractSessionManager::instance() {
 void gnomonAbstractSessionManager::registerInstance(gnomonAbstractSessionManager *o) {
     s_instance = o;
 }
+
+double gnomonAbstractSessionManager::progress()
+{
+    return this->m_progress;
+}
+
+void gnomonAbstractSessionManager::setProgress(double progress)
+{
+    this->m_progress = progress;
+    qInfo() << "Session Loading at "<< int(100*this->m_progress) << "%";
+    emit progressChanged();
+}

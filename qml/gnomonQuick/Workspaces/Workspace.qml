@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import gnomonQuick.Controls as G
 import gnomonQuick.Style    as G
 import gnomon.Visualization as GV
+import gnomon.Project   as  GP
 
 G.Page {
 
@@ -140,7 +141,7 @@ G.Page {
         G.ProgressBar {
             id: _banner_progress_bar
             anchors.fill: parent
-            value: window.load_in_progress ? sessionLoader.progress : d ? d.progress : 0
+            value: window.load_in_progress ? GP.ProjectManager.project.currentSession.progress : d ? d.progress : 0
             visible: window.load_in_progress
             opacity: 0.5
             to: 100
