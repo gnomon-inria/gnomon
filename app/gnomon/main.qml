@@ -440,22 +440,27 @@ G.Application {
             let folder_path = _folder.toString()
             project_name = folder_path.slice(folder_path.lastIndexOf("/")+1)
         }
-
-        if (window.recent_projects.count > 15) {
-            window.recent_projects.remove(0)
+        const recent_projects_array = [];
+        for(let idx = 0; idx < window.recent_projects.count; idx++) {
+            recent_projects_array.push(window.recent_projects.get(idx))
         }
-        window.recent_projects.append({
-            name: project_name,
-            source : folder_source,
-            description: project_description,
-            lastModified: project_last_modified,
-        })
-        let _projects = []
-        for(let i=0; i<window.recent_projects.count; i++){
-            _projects.push(window.recent_projects.get(i))
-        }
-        window.opened_files = JSON.stringify(_projects)
+        const add_project = !recent_projects_array.some(project => (
+            project.name === project_name && project.source === folder_source
+        ));
 
+        if(add_project) {
+            if (window.recent_projects.count > 15) {
+                window.recent_projects.remove(0)
+            }
+            window.recent_projects.append({
+                name: project_name,
+                source : folder_source,
+                description: project_description,
+                lastModified: project_last_modified,
+            })
+            recent_projects_array.push(window.recent_projects.get(window.recent_projects.count-1))
+            window.opened_files = JSON.stringify(recent_projects_array)
+        }
     }
 
     function remove_from_history(folder) {
