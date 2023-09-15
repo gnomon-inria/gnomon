@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gnomonWorkspaceExport>
+#include <gnomonProject>
 
 #include <QtCore>
 
@@ -24,6 +25,9 @@ public slots:
 public:
     bool canBeDestroyed(void) { return this->m_can_be_destroyed; };
 
+public:
+    gnomonProjectManager *project_manager = gnomonProjectManager::instance();
+    
 protected:
     bool m_can_be_destroyed = true;
 };

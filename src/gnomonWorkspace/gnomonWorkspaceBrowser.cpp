@@ -194,7 +194,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     readerCommand->setPath(path);
     readerCommand->setSource(source);
     readerCommand->redo();
-
+    q->project_manager->project()->addToManifest(readerCommand->factoryName(), path, reader_plugin);
     return true;
 }
 

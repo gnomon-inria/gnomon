@@ -5,8 +5,6 @@
 #include <gnomonCore/gnomonPythonPluginLoader>
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
-#include <gnomonProject/gnomonProjectManager.h>
-#include <gnomonProject/gnomonProject.h>
 
 #include <gnomonVisualization/gnomonView/gnomonVtkView>
 #include <gnomonVisualization/gnomonView/gnomonQmlView>
@@ -86,7 +84,6 @@ public:
 public:
     gnomonVtkView *view = nullptr;
     gnomonQmlView *text_view = nullptr;
-    gnomonProjectManager *project_manager = nullptr;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -113,8 +110,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
-    d->project_manager = gnomonProjectManager::instance();
-    auto temp_dir = d->project_manager->project()->projectDir() + "/.gnomon";
+    auto temp_dir = project_manager->project()->projectDir() + "/.gnomon";
     d->tmpDir =  new QDir(temp_dir);
     
     int stat;
@@ -284,6 +280,7 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url)
         this->setFileName(file_name);
         this->setText(in.readAll());
         this->reset();
+        this->backup();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }
@@ -521,4 +518,9 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
         it.value().setProperty("group", group != "" ? group : nullptr);
     }
     return parameters;
+}
+
+bool gnomonWorkspaceLSystemModel::backup(void)
+{
+    return project_manager->project()->backupFile(d->file, d->text);
 }

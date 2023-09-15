@@ -17,12 +17,16 @@ public:
     ~gnomonProjectPrivate();
 
 public:
+    void initManifest(const QString& url);
+
+public:
 
     gnomonProjectInfo projectInfo;
 
     QDir projectDir;
     QDir currentDir;
 
+    QString manifest_url;
 };
 
 gnomonProjectPrivate::gnomonProjectPrivate(const QString &path): 
@@ -38,6 +42,15 @@ gnomonProjectPrivate::~gnomonProjectPrivate()
 
 }
 
+void gnomonProjectPrivate::initManifest(const QString& url)
+{
+    QFile file(url);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << Q_FUNC_INFO << "can't open file " << url;
+        return;
+    }
+    file.close();
+}
 // /////////////////////////////////////////////////////////////////
 // gnomonProject
 // /////////////////////////////////////////////////////////////////
@@ -117,6 +130,9 @@ void gnomonProject::populateNewProject() {
     d->projectDir.mkdir(PROJECT_INFO_FOLDER);
     saveProjectInfo();
     d->projectDir.mkdir(PROJECT_BACKUP_FOLDER);
+
+    d->manifest_url = d->projectDir.filePath(PROJECT_BACKUP_FOLDER + QString("/manifest.json"));
+    d->initManifest(d->manifest_url);
 }
 
 bool gnomonProject::isDirAProject(const QDir &dir) {
@@ -168,5 +184,34 @@ QString gnomonProject::sanitizeUrlToPath(const QString &url) {
     return QString(_url.isValid() && _url.isLocalFile() ? _url.toLocalFile() : url);
 }
 
+void gnomonProject::addToManifest(const QString &factory, const QString &data_path, const QString &plugin_name)
+{
+    QFile file(d->manifest_url);
+    if(file.open(QIODevice::Append | QIODevice::Text)) {
+        QJsonObject session_json;
+        QJsonObject data_json;
+        data_json.insert("path", data_path);
+        data_json.insert("plugin_name", plugin_name);
+        session_json.insert(factory, data_json);
+
+        QJsonDocument session_doc(session_json);
+        file.write(session_doc.toJson());
+        file.close();
+    }
+}
+
+bool gnomonProject::backupFile(const QString &fname, const QString &content)
+{
+    auto file_path = d->projectDir.filePath(PROJECT_BACKUP_FOLDER + QString("/") + fname);
+    QFile f(file_path);
+    if(f.open(QIODevice::WriteOnly| QIODevice::Text)) {
+        QTextStream out(&f);
+        out<<content;
+        f.close();
+    } else {
+        return false;
+    }
+    return true;    
+}
 //
 // gnomonProject.cpp ends here

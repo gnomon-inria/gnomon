@@ -41,7 +41,8 @@ public:
 
 public:
     static QVariantMap readProjectInfoFromPath(const QString &path);
-
+    void addToManifest(const QString &factory, const QString &data_path, const QString &plugin_name);
+    bool backupFile(const QString &fname, const QString &content);
 signals:
     void currentDirChanged(void);
     

@@ -89,6 +89,7 @@ public:
     void setFileName(const QString &);
     int currentIndex(void) const;
     void setCurrentIndex(int);
+    bool backup(void);
 
     gnomonVtkView *view(void) const;
     gnomonQmlView *textView(void) const;
