@@ -116,7 +116,7 @@ set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJ
 
 find_package(Qt6 REQUIRED COMPONENTS Core Concurrent Network Qml Test Xml)
 if(QT_KNOWN_POLICY_QTP0001)
-  qt_policy(SET QTP0001 OLD)
+  qt_policy(SET QTP0001 NEW)
 endif()
 
 

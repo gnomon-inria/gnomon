@@ -124,7 +124,7 @@ Control {
             }
         }
 
-        url: 'qrc:/gnomonQuick/Monaco/monaco.html';
+        url: 'qrc:/qt/qml/gnomonQuick/Monaco/monaco.html';
 
         onJavaScriptConsoleMessage: (level, message, lineNumber, sourceID) => {
             console.log(message, lineNumber, sourceID);

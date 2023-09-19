@@ -322,8 +322,8 @@ Control {
             _auto_render_connect.target = null;
         }
 
-        var source = "qrc:/gnomonQuick/Menus/" + name + ".menu.qml"
-        var defaultSource = "qrc:/gnomonQuick/Menus/gnomonVisualization.defaultMenu.qml"
+        var source = "qrc:/qt/qml/gnomonQuick/Menus/" + name + ".menu.qml"
+        var defaultSource = "qrc:/qt/qml/gnomonQuick/Menus/gnomonVisualization.defaultMenu.qml"
 
         var menu_component = Qt.createComponent(source)
         if(menu_component.status != Component.Ready) {

@@ -45,7 +45,7 @@ G.Page {
         if(menu_component.status != Component.Ready) {
             var specific_error_msg = menu_component.errorString()
 
-            menu_component = Qt.createComponent("qrc:/gnomonQuick/Menus/WorkspaceParameterMenu.qml")
+            menu_component = Qt.createComponent("qrc:/qt/qml/gnomonQuick/Menus/WorkspaceParameterMenu.qml")
 
             if(menu_component.status != Component.Ready) {
                 console.error("Can't create menu for", source, specific_error_msg, menu_component.errorString());

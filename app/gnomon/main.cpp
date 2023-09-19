@@ -35,12 +35,12 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     //TODO for qt >= 6.5 !
-    //engine.addImportPath("qrc:/qt/qml/");
-    //engine.load(QUrl("qrc:/qt/qml/gnomon/main.qml"));
+    engine.addImportPath("qrc:/qt/qml/");
+    engine.load(QUrl("qrc:/qt/qml/gnomon/main.qml"));
     engine.addImportPath("qrc:/");
     //engine.set_property("_title", QVariant::from(QString::from("gnomon")));
 
-    engine.load(QUrl("qrc:/gnomon/main.qml"));
+    //engine.load(QUrl("qrc:/gnomon/main.qml"));
     //engine.load(QUrl("qrc:/gnomon/main_temp.qml"));
 
     workspaceImageProvider *imageProvider = new workspaceImageProvider;

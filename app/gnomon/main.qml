@@ -459,7 +459,7 @@ G.Application {
     function switch_from_launcher(source)
     {
         if (source === undefined) {
-            source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
+            source = "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
         }
         stack_launcher.currentIndex  = 1
         window.drawelr_closed = false
