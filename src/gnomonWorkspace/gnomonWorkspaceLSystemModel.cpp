@@ -5,6 +5,8 @@
 #include <gnomonCore/gnomonPythonPluginLoader>
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
+#include <gnomonProject/gnomonProjectManager.h>
+#include <gnomonProject/gnomonProject.h>
 
 #include <gnomonVisualization/gnomonView/gnomonVtkView>
 #include <gnomonVisualization/gnomonView/gnomonQmlView>
@@ -110,7 +112,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
-    auto temp_dir = project_manager->project()->projectDir() + "/.gnomon";
+    auto temp_dir = GNOMON_PROJECT->projectDir() + "/.gnomon";
     d->tmpDir =  new QDir(temp_dir);
     
     int stat;
@@ -522,5 +524,5 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
 
 bool gnomonWorkspaceLSystemModel::backup(void)
 {
-    return project_manager->project()->backupFile(d->file, d->text);
+    return GNOMON_PROJECT->backupFile(d->file, d->text);
 }
