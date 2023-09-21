@@ -195,7 +195,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     readerCommand->setPath(path);
     readerCommand->setSource(source);
     readerCommand->redo();
-    GNOMON_PROJECT->addToManifest(readerCommand->factoryName(), path, reader_plugin);
+    GNOMON_PROJECT->addToManifest("Workspace Browser", path, reader_plugin);
     return true;
 }
 
@@ -368,6 +368,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
         this->m_can_be_destroyed = false;
         emit canBeDestroyedChanged(false);
     });
+    if(GNOMON_PROJECT->wasSaved)
+        this->restore();
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
@@ -498,6 +500,12 @@ void gnomonWorkspaceBrowser::export_outputs(void) {
     d->browse_view->transmit();
 }
 
+void gnomonWorkspaceBrowser::restore(void)
+{
+   QStringList data_info = GNOMON_PROJECT->restoreFiles("Workspace Browser");
+   this->setReaderPath(data_info[0]);
+   this->readWith(data_info[1]);
+}
 // /////////////////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspaceBrowser.moc"

@@ -152,6 +152,13 @@ G.Application {
                         folderDialog.open();
                     }
                 }
+                P.MenuItem {
+                    text: qsTr("Save Project")
+                    shortcut: StandardKey.Save
+                    onTriggered: {
+                        GP.ProjectManager.project.save()
+                    }
+                }
 
             }
 

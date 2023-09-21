@@ -30,6 +30,7 @@ public:
     static gnomonProject *newProject(const QString &path, const QString &name, const QString &description);
     void close();
 
+    Q_INVOKABLE void save(void);
     Q_INVOKABLE bool loadSessionFromPipeline(const QString &path, QObject *window);
     gnomonAbstractSessionManager *currentSession(void);
 public:
@@ -38,11 +39,13 @@ public:
 
 public:
     void setCurrentDir(const QString& url);
+    bool wasSaved = false;
 
 public:
     static QVariantMap readProjectInfoFromPath(const QString &path);
     void addToManifest(const QString &factory, const QString &data_path, const QString &plugin_name);
     bool backupFile(const QString &fname, const QString &content);
+    QStringList restoreFiles(const QString& workspace);
 signals:
     void currentDirChanged(void);
     

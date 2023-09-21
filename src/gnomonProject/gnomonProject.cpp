@@ -5,6 +5,8 @@
 #define PROJECT_INFO_FOLDER ".gnomon"
 #define PROJECT_INFO_FILE ".gnomon/project.json"
 #define PROJECT_BACKUP_FOLDER ".backup_gnomon"
+#define PROJECT_BACKUP_MANIFEST ".backup_gnomon/manifest.json"
+#define PROJECT_MANIFEST_FILE ".gnomon/manifest.json"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonProjectPrivate
@@ -18,6 +20,7 @@ public:
 
 public:
     void initManifest(const QString& url);
+    QJsonObject readFromJson(const QString& url);
 
 public:
 
@@ -51,6 +54,17 @@ void gnomonProjectPrivate::initManifest(const QString& url)
     }
     file.close();
 }
+
+QJsonObject gnomonProjectPrivate::readFromJson(const QString& url)
+{
+    QByteArray storage;
+    QFile f(url);
+    if(f.open(QIODevice::ReadOnly| QIODevice::Text)) {
+        storage = f.readAll();
+        f.close();
+    }
+    return QJsonDocument::fromJson(storage).object();;
+}
 // /////////////////////////////////////////////////////////////////
 // gnomonProject
 // /////////////////////////////////////////////////////////////////
@@ -68,6 +82,7 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
     bool isProject = isDirAProject(d->projectDir);
     if(isProject) {
         readProjectInfo();
+        wasSaved = QFile::exists(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
     } 
     else {
         auto pName = d->projectDir.dirName();
@@ -131,7 +146,7 @@ void gnomonProject::populateNewProject() {
     saveProjectInfo();
     d->projectDir.mkdir(PROJECT_BACKUP_FOLDER);
 
-    d->manifest_url = d->projectDir.filePath(PROJECT_BACKUP_FOLDER + QString("/manifest.json"));
+    d->manifest_url = d->projectDir.filePath(PROJECT_BACKUP_MANIFEST);
     d->initManifest(d->manifest_url);
 }
 
@@ -184,7 +199,7 @@ QString gnomonProject::sanitizeUrlToPath(const QString &url) {
     return QString(_url.isValid() && _url.isLocalFile() ? _url.toLocalFile() : url);
 }
 
-void gnomonProject::addToManifest(const QString &factory, const QString &data_path, const QString &plugin_name)
+void gnomonProject::addToManifest(const QString &workspace, const QString &data_path, const QString &plugin_name)
 {
     QFile file(d->manifest_url);
     if(file.open(QIODevice::Append | QIODevice::Text)) {
@@ -192,7 +207,7 @@ void gnomonProject::addToManifest(const QString &factory, const QString &data_pa
         QJsonObject data_json;
         data_json.insert("path", data_path);
         data_json.insert("plugin_name", plugin_name);
-        session_json.insert(factory, data_json);
+        session_json.insert(workspace, data_json);
 
         QJsonDocument session_doc(session_json);
         file.write(session_doc.toJson());
@@ -212,6 +227,24 @@ bool gnomonProject::backupFile(const QString &fname, const QString &content)
         return false;
     }
     return true;    
+}
+
+void gnomonProject::save(void)
+{
+    QFile::copy(d->projectDir.filePath(PROJECT_BACKUP_MANIFEST),
+                d->projectDir.filePath(PROJECT_MANIFEST_FILE));
+}
+
+QStringList gnomonProject::restoreFiles(const QString& workspace)
+{
+    QStringList restore_info;
+    QJsonObject doc_obj = d->readFromJson(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
+    QJsonObject data_info = doc_obj.value(workspace).toObject();
+
+    restore_info.append(data_info.value("path").toString());
+    restore_info.append(data_info.value("plugin_name").toString());
+
+    return restore_info;
 }
 //
 // gnomonProject.cpp ends here
