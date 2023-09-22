@@ -53,6 +53,7 @@ public:
     QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
     QMap<QString, QMap<QString, QVariant> > fileReaderMetadata;
     QString filename;
+    QString object_name;
     QString ext;
     QMap<QString, QMap<QString, QString> > fileReaderImagePath;
     QList<gnomonAbstractReaderCommand *> commands;
@@ -195,7 +196,17 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     readerCommand->setPath(path);
     readerCommand->setSource(source);
     readerCommand->redo();
-    GNOMON_PROJECT->addToManifest("Workspace Browser", path, reader_plugin);
+    if(!this->object_name.isEmpty()) {
+        QJsonObject workspace_info;
+        QJsonObject data_json;
+        data_json.insert("path", path);
+        data_json.insert("plugin_name", reader_plugin);
+        data_json.insert("workspace_name", "Browser");
+        workspace_info.insert(this->object_name, data_json);
+
+        GNOMON_PROJECT->addToManifest(workspace_info);
+    }
+
     return true;
 }
 
@@ -362,7 +373,6 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
     d->browse_view->setAcceptForm("gnomonMesh",true);
     d->browse_view->setAcceptForm("gnomonPointCloud",true);
     // d->browse_view->setAcceptDrops(true);
-
     connect(d->browse_view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         d->pipeline_manager->addForm(f);
         this->m_can_be_destroyed = false;
@@ -370,6 +380,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
     });
     if(GNOMON_PROJECT->wasSaved)
         this->restore();
+    d->object_name = QUuid::createUuid().toString(QUuid::WithoutBraces);
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
@@ -502,7 +513,7 @@ void gnomonWorkspaceBrowser::export_outputs(void) {
 
 void gnomonWorkspaceBrowser::restore(void)
 {
-   QStringList data_info = GNOMON_PROJECT->restoreFiles("Workspace Browser");
+   QStringList data_info = GNOMON_PROJECT->restoreFiles("Browser");
    this->setReaderPath(data_info[0]);
    this->readWith(data_info[1]);
 }

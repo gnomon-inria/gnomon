@@ -82,6 +82,7 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
     bool isProject = isDirAProject(d->projectDir);
     if(isProject) {
         readProjectInfo();
+        d->manifest_url = d->projectDir.filePath(PROJECT_BACKUP_MANIFEST);
         wasSaved = QFile::exists(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
     } 
     else {
@@ -199,17 +200,46 @@ QString gnomonProject::sanitizeUrlToPath(const QString &url) {
     return QString(_url.isValid() && _url.isLocalFile() ? _url.toLocalFile() : url);
 }
 
-void gnomonProject::addToManifest(const QString &workspace, const QString &data_path, const QString &plugin_name)
+void gnomonProject::addToManifest(const QJsonObject& workspace_info)
 {
     QFile file(d->manifest_url);
-    if(file.open(QIODevice::Append | QIODevice::Text)) {
-        QJsonObject session_json;
-        QJsonObject data_json;
-        data_json.insert("path", data_path);
-        data_json.insert("plugin_name", plugin_name);
-        session_json.insert(workspace, data_json);
+    QJsonObject old_obj;
+    QJsonObject new_obj;
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QByteArray content = file.readAll();
+        old_obj = QJsonDocument::fromJson(content).object();
+        file.close();
+    }
+    auto object_exist = [&](){
+        for(const QString& key : old_obj.keys()) {
+            for(auto&& item: old_obj[key].toArray()) {
+                if (item == workspace_info[key]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    if(!object_exist()) {
+        if(old_obj.contains(workspace_info.keys()[0])) {
+            QJsonValueRef data_ref = old_obj[workspace_info.keys()[0]];
+            QJsonArray old_data = data_ref.toArray();
+            old_data.append(workspace_info.value(workspace_info.keys()[0]));
+            old_obj[workspace_info.keys()[0]] = old_data;
+        } else {
+            QJsonArray data_info;
+            data_info.append(workspace_info.value(workspace_info.keys()[0]));
+            new_obj.insert(workspace_info.keys()[0], data_info);
+        }
+    }
+    if(!old_obj.empty()) {
+        for(const QString& key: old_obj.keys()){
+            new_obj.insert(key, old_obj.value(key));
+        }
+    }
 
-        QJsonDocument session_doc(session_json);
+    QJsonDocument session_doc(new_obj);
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         file.write(session_doc.toJson());
         file.close();
     }
@@ -239,10 +269,10 @@ QStringList gnomonProject::restoreFiles(const QString& workspace)
 {
     QStringList restore_info;
     QJsonObject doc_obj = d->readFromJson(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
-    QJsonObject data_info = doc_obj.value(workspace).toObject();
+    QJsonArray data_info = doc_obj.value(doc_obj.keys().last()).toArray();
 
-    restore_info.append(data_info.value("path").toString());
-    restore_info.append(data_info.value("plugin_name").toString());
+    restore_info.append(data_info.first().toObject().value("path").toString());
+    restore_info.append(data_info.first().toObject().value("plugin_name").toString());
 
     return restore_info;
 }

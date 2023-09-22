@@ -43,7 +43,7 @@ public:
 
 public:
     static QVariantMap readProjectInfoFromPath(const QString &path);
-    void addToManifest(const QString &factory, const QString &data_path, const QString &plugin_name);
+    void addToManifest(const QJsonObject& workspace_info);
     bool backupFile(const QString &fname, const QString &content);
     QStringList restoreFiles(const QString& workspace);
 signals:
