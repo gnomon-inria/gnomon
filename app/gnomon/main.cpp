@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("inria.fr");
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
-    
+
     QQuickStyle::setStyle("Basic");
     QGuiApplication::styleHints()->setUseHoverEffects(true);
     QLoggingCategory::setFilterRules(QStringLiteral("qt.qml.binding.removal.info=true"));
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     QObject::connect(root, SIGNAL(getScreenshot(QString)), imageProvider, SLOT(makeScreenshot(QString)));
 
     gnomonInitLogServer();
-    app.setWindowIcon(QIcon("qrc:/gnomon/assets/gnomon_logo.png"));
+    app.setWindowIcon(QIcon(":/qt/qml/gnomon/assets/gnomon_logo.png"));
 
     // from x_quick
 #if __APPLE__

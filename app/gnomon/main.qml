@@ -690,12 +690,12 @@ G.Application {
         window.height = Math.max(window.height, G.Style.windowMinHeight)
 
         window.recent_projects.clear()
-	if(stt.opened_projects) {
-	    let files = JSON.parse(stt.opened_projects)
+    if(stt.opened_projects) {
+        let files = JSON.parse(stt.opened_projects)
             for(let i=0; i<files.length; i++){
                 window.recent_projects.append(files[i])
             }
-	}
+    }
         footer.workspaceName = ""
     }
 }
