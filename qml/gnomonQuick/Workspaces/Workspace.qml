@@ -13,6 +13,7 @@ G.Page {
 
     required property string workspace_title;
     required property var fill;
+    property string uuid: undefined;
 
     // default property alias contents: _contents.children;
     property alias parameters: _params.params_model;
@@ -141,7 +142,7 @@ G.Page {
         G.ProgressBar {
             id: _banner_progress_bar
             anchors.fill: parent
-            value: window.load_in_progress ? GP.ProjectManager.project.currentSession.progress : d ? d.progress : 0
+            value: window.load_in_progress ? GP.SessionManager.progress : d ? d.progress : 0
             visible: window.load_in_progress
             opacity: 0.5
             to: 100

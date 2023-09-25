@@ -21,7 +21,12 @@ public:
     bool save(const QString &id, const QString &path) override;
     void load(const QString &id, const QString &path) override;
 
-    bool loadFromPipeline(const QString &path, QObject *window) override;
+    bool loadFromPipeline(const QString &path) override;
+
+public:
+    void setEngine(QQmlApplicationEngine *engine) override;
+
+    void setWindow(QObject* window) override;
 
 public:
     static void initialize();

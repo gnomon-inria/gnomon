@@ -7,6 +7,7 @@ import gnomonQuick.Style      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 
 import gnomon.MetaData    1.0 as GM
+import gnomon.Project   as GP
 
 G.Dialog {
     id: _self;
@@ -63,7 +64,7 @@ G.Dialog {
     }
 
     function openWorkspaceAndClose(source) {
-        window.add_workspace(source)
+        GP.SessionManager.newWorkspace(source)
         if(_internal.algoName != "") {
             window.current_workspace().d.algoName = _internal.algoName
         }

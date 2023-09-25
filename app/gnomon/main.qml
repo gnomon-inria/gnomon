@@ -18,7 +18,7 @@ import gnomonQuick.Menus       as G
 import gnomonQuick.Style       as G
 
 import gnomon.Pipeline  as GP
-import gnomon.Project   as  GP
+import gnomon.Project   as GP
 import "." as G
 
 G.Application {
@@ -355,7 +355,7 @@ G.Application {
     G.Journl { id: journl; }
     
     Connections {
-        target: GP.ProjectManager.project.currentSession;
+        target: GP.SessionManager;
         function onFinished() {
             window.load_in_progress = false;
         }
@@ -488,7 +488,7 @@ G.Application {
         }
         stack_launcher.currentIndex  = 1
         window.drawelr_closed = false
-        add_workspace(source)
+        GP.SessionManager.newWorkspace(source)
     }
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -506,11 +506,12 @@ G.Application {
         return true;
     }
 
-    function add_workspace(source)
+    function add_workspace(source: string, uuid: string): int
     {
-        var workspace_component = Qt.createComponent(source)
+        const workspace_component = Qt.createComponent(source);
         if (workspace_component.status == Component.Ready) {
-            var workspace = workspace_component.createObject(workspaces);
+            console.log("========== Creating workspace ", uuid)
+            const workspace = workspace_component.createObject(workspaces, {uuid: uuid});
             if(workspace.workspace_title != "Launcher") {
                 const workspace_index = workspaces.count - 1;
                 footer.workspaceName = workspace.workspace_title;
@@ -572,13 +573,13 @@ G.Application {
         if(idx_browsing >= 0) {
             window.switch_workspace(idx_browsing)
         } else {
-            idx_browsing = window.add_workspace(workspace_source("gnomonWorkspaceBrowser"))
+            idx_browsing = GP.SessionManager.newWorkspace(workspace_source("gnomonWorkspaceBrowser"))
         }
         return window.current_workspace().d
     }
 
     function workspacePython(parameters: object) : GW.WorkspacePythonAlgorithm {
-        window.add_workspace(workspace_source("gnomonWorkspacePythonAlgorithm"))
+        GP.SessionManager.newWorkspace(workspace_source("gnomonWorkspacePythonAlgorithm"))
         let workspace = window.current_workspace()
         workspace.editor.contents = parameters["python_code"]
         workspace.d.code.text = workspace.editor.contents
@@ -602,7 +603,7 @@ G.Application {
     }
 
     function workspaceLSystem(parameters: object) : GW.WorkspaceLSystemModel {
-        window.add_workspace(workspace_source("gnomonWorkspaceLSystemModel"))
+        GP.SessionManager.newWorkspace(workspace_source("gnomonWorkspaceLSystemModel"))
         let workspace = window.current_workspace()
         workspace.editor.contents = parameters["lsystem_code"]
         workspace.d.text = workspace.editor.contents
@@ -623,7 +624,7 @@ G.Application {
     }
 
     function workspaceMorphonet(data : objet) : GW.WorkspaceMorphonet {
-        window.add_workspace(workspace_source("gnomonWorkspaceMorphonet"))
+        GP.SessionManager.newWorkspace(workspace_source("gnomonWorkspaceMorphonet"))
         let workspace = window.current_workspace()
         workspace.d.importDataset(data["id"], data["voxelsize"], data["start_time"], data["end_time"])
         return workspace.d
@@ -636,7 +637,7 @@ G.Application {
             return null;
         }
         console.log("Loading workspace ", workspace_name , " with plugin ", plugin_name)
-        window.add_workspace(workspace_source(workspace_name))
+        GP.SessionManager.newWorkspace(workspace_source(workspace_name))
         let workspace = window.current_workspace()
         workspace.d.currentIndex = workspace.d.algorithms.indexOf(plugin_name)
         for(let param in parameters) {
@@ -657,7 +658,7 @@ G.Application {
     function load_session(json_path) {
         console.log("Loading session from ", json_path);
         window.load_in_progress = true;
-        let res = GP.ProjectManager.project.loadSessionFromPipeline(json_path, window);
+        let res = GP.ProjectManager.project.loadSessionFromPipeline(json_path);
         if(res) {
             console.log("Session Loaded ");
         } else {
@@ -721,6 +722,7 @@ G.Application {
     Component.onCompleted: {
         //if (Qt.platform.os === "osx")
         //    X.Style.flavors = 'MACOS';
+        GP.SessionManager.setWindow(window)
 
         G.Style.mode = stt.mode
         window.width = Math.max(window.width, G.Style.windowMinWidth)
