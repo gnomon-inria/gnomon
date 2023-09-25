@@ -25,9 +25,12 @@ public:
     QString file_path;
     bool res = false;
 
+    QMap<QString, QJsonObject> workspace_properties;
 
     QObject *window = nullptr;
     QQmlApplicationEngine* engine = nullptr;
+
+    bool alive = true;
 
 private:
     QMetaObject::Connection callbackConnection;   
@@ -380,6 +383,15 @@ int gnomonSessionManager::newWorkspace(const QString &source) {
     return index;
 }
 
+QJsonObject *gnomonSessionManager::getStorageForWorkspace(const QString &uuid) {
+    if(!d->workspace_properties.contains(uuid)) {
+        d->workspace_properties[uuid] = QJsonObject();
+    }
+    return &d->workspace_properties[uuid];
+}
+
+void gnomonSessionManager::sync() {
+    //TODO: store workspace infos
 }
 
 

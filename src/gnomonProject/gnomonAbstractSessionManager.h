@@ -34,6 +34,10 @@ public:
 
     Q_INVOKABLE virtual int newWorkspace(const QString &source) = 0;
 
+    virtual QJsonObject* getStorageForWorkspace(const QString &uuid) = 0;
+
+    virtual void sync() = 0;
+
 public:
     static gnomonAbstractSessionManager *instance();
 

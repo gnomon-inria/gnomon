@@ -10,6 +10,8 @@ qt_add_executable(${PROJECT_NAME} MACOSX_BUNDLE
   MaterialPreview.cpp
   gnomonSessionManager.h
   gnomonSessionManager.cpp
+  gnomonSettings.h
+  gnomonSettings.cpp
   gnomon.hpp
   gnomon.cpp
   ${app_icon_macos})

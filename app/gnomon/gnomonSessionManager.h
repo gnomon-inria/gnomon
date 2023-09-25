@@ -31,6 +31,14 @@ public:
 public:
     static void initialize();
 
+    int loadWorkspace(const QString &source, const QString &uuid) override;
+
+    int newWorkspace(const QString &source) override;
+
+    QJsonObject *getStorageForWorkspace(const QString &uuid) override;
+
+    void sync() override;
+
 private:
     gnomonSessionManagerPrivate *d = nullptr;
 
