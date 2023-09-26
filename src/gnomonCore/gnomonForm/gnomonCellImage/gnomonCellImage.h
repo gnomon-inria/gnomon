@@ -82,8 +82,8 @@ public:
     static inline QString formName(void) { return "gnomonCellImage"; }
 
 public:
-    virtual void setImage(dtkImage *image) { return m_data->setImage(image); }
-    virtual dtkImage* image(void) const { return m_data->image(); }
+    virtual void setImage(vtkImageData *image) { return m_data->setImage(image); }
+    virtual vtkImageData *image(void) const { return m_data->image(); }
 
     virtual QList<long> cellIds(void) const { return m_data->cellIds(); }
     virtual long cellCount(void) const { return m_data->cellCount(); }

@@ -182,7 +182,7 @@ void gnomonImageDataChannelBlending::update(void)
     blend->Update();
     vtkSmartPointer<vtkImageData> blending = blend->GetOutput();
 
-    this->DeepCopy(blending);
+    this->ShallowCopy(blending);
 
     d->modified = false;
 }

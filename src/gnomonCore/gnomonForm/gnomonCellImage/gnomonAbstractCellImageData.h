@@ -1,7 +1,5 @@
 #pragma once
 
-class dtkImage;
-
 #include <QtCore>
 
 #include <dtkCore>
@@ -9,6 +7,8 @@ class dtkImage;
 #include <gnomonCoreExport.h>
 #include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonForm/gnomonAbstractFormData"
+
+class vtkImageData;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -34,8 +34,8 @@ public:
     virtual const QString pluginName(void) = 0;
 
 public:
-    virtual void setImage(dtkImage *image) = 0;
-    virtual dtkImage* image(void) const = 0;
+    virtual void setImage(vtkImageData* image) = 0;
+    virtual vtkImageData* image(void) const = 0;
 
     virtual QList<long> cellIds(void) const = 0;
     virtual long cellCount(void) const = 0;

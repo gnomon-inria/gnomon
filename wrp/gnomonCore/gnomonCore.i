@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 %module(directors="1", doctring="Wrapping of gnomonCore for python usage", package="gnomon.core", moduleimport="import _gnomoncore") gnomoncore
 
 #ifdef SWIGWIN
@@ -91,7 +92,6 @@
 
 #include <gnomonCore/gnomonCore.h>
 #include <gnomonCore/gnomonCorePlugin.h>
-#include <gnomonCore/gnomonDataManager.h>
 #include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonLandmark.h>
@@ -177,9 +177,52 @@
     }
 }
 
-%include <gnomonCore/gnomonForm.i>
-
 // VTK
+/*
+%define VTK_SMARTPOINTER(vtk_t)
+%{
+#include <vtk_t##.h>
+%}
+%typemap(out) vtkSmartPointer<vtk_t>
+{
+    vtkSmartPointer<vtkObjectBase> castObj = static_cast<vtkSmartPointer<vtk_t>>($1);
+    $result = vtkPythonUtil::GetObjectFromPointer(castObj.Get());
+}
+%typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER) vtk_t*
+{
+  $1 = vtkPythonUtil::GetPointerFromObject($input,#vtk_t) ? 1 : 0;
+}
+%enddef
+
+
+%typemap(directorin) vtkSmartPointer<vtk_t> {
+
+    //PyImport_ImportModule("vtk");
+
+    vtkSmartPointer<vtkObjectBase> castObj = static_cast<vtkSmartPointer<vtk_t>>($1);
+    $input = vtkPythonUtil::GetObjectFromPointer (castObj.Get());
+ }
+
+%typemap(in)  vtkSmartPointer<vtk_t> {
+    vtk_t *obj = (vtk_t *) vtkPythonUtil::GetPointerFromObject ( $input, #vtk_t );
+    if(obj == nullptr) {
+        qWarning() << Q_FUNC_INFO << "Fail to convert to vtk_t";
+    }
+    $1 = vtkSmartPointer<vtk_t > (obj);
+    qDebug() << "typemap(in) ptr is " << obj;
+}
+
+%typemap(directorout)  vtkSmartPointer<vtk_t> {
+    vtk_t *obj = (vtk_t *) vtkPythonUtil::GetPointerFromObject ( $input, #vtk_t );
+    if(obj == nullptr) {
+        qWarning() << Q_FUNC_INFO << "Fail to convert to vtk_t";
+    }
+    $result = vtkSmartPointer<vtk_t> (obj);
+    qDebug() << "typemap(dirout) ptr is " << obj;
+}
+
+VTK_SMARTPOINTER(vtkImageData)
+*/
 
 %typemap(out) vtkImageData* {
 
@@ -198,7 +241,8 @@
 %typemap(in) vtkImageData* {
 
     $1 = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkImageData" );
-
+    //$1->Register(NULL);
+    qDebug() << "typemap(in) ptr is " << $1;
     if ( $1 == NULL ) {
         qDebug("Fail to convert to vtkImageData*");
     }
@@ -207,11 +251,14 @@
 %typemap(directorout) vtkImageData* {
 
     $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
-
+    //$result->Register(NULL);
+    qDebug() << "typemap(dirout) ptr is " << $result;
     if ( $result == NULL ) {
         qDebug("Fail to convert to vtkImageData*");
     }
 }
+
+%include <gnomonCore/gnomonForm.i>
 
 // /////////////////////////////////////////////////////////////////
 // Landmarks
@@ -366,7 +413,6 @@ INCLUDE_GNOMON_CONCEPT(gnomonAbstractPointCloudWriter, PointCloudWriter, gnomonC
 %include <gnomonCore/gnomonModel/gnomonSystem.h>
 
 %include <gnomonCore/gnomonCore.h>
-%include <gnomonCore/gnomonDataManager.h>
 %include <gnomonCore/gnomonFileSystemFormReader.h>
 %include <gnomonCore/gnomonFormVisitor.h>
 %include <gnomonCore/gnomonLandmark.h>

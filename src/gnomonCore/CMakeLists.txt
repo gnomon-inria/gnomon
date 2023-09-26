@@ -22,8 +22,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCoreSettings.h
   gnomonCorePlugin.h
   gnomonDataDriver.h
-  gnomonDataManager
-  gnomonDataManager.h
   gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
@@ -53,7 +51,6 @@ set(${PROJECT_NAME}_SOURCES
   gnomonCore.cpp
   gnomonCoreSettings.cpp
   gnomonDataDriver.cpp
-  gnomonDataManager.cpp
   gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
   gnomonMorphonetHelper.cpp
@@ -95,7 +92,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC  dtkLog)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Python3::Python)

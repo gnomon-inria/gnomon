@@ -10,8 +10,6 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 
-class dtkImage;
-
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFilter : public gnomonAbstractAlgorithm
 {
 
