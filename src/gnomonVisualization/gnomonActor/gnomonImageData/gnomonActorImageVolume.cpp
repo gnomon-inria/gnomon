@@ -2,8 +2,6 @@
 
 #include <QtGui>
 
-#include <dtkImagingCore>
-
 #include <vtkActor.h>
 #include <vtkCellData.h>
 #include <vtkColorTransferFunction.h>

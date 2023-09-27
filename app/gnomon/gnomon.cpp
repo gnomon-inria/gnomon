@@ -11,7 +11,6 @@
 #include <QtQuick>
 #include <QtWebEngineQuick>
 
-#include <dtkImagingCore>
 #include <dtkScript>
 #include <dtkLog>
 
@@ -560,10 +559,6 @@ void gnomon_rinit()
 
     // x_vis
     x_vis_initialise();
-
-    // --
-    dtkImaging::setVerboseLoading(false);
-    dtkImaging::initialize();
 
     //--
     dtkScriptInterpreterPython::instance()->init("gnomon-core");

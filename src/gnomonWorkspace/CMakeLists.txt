@@ -129,10 +129,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Gui)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Qml)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 target_link_libraries(${PROJECT_NAME} PRIVATE libzip::zip)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)

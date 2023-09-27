@@ -1,22 +1,6 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonImageDataChannelBlending.h"
 
 #include <gnomonVisualization/gnomonLookupTable.h>
-
-#include <dtkImagingCore>
 
 #include <QtGui>
 

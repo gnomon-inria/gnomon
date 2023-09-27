@@ -50,7 +50,6 @@ swig_link_libraries(${PROJECT_NAME}
   Python3::NumPy
   ${VTK_LIBRARIES}
   dtkCore
-  dtkImagingCore
   Qt6::Core)
 
 #target_link_libraries(${PROJECT_NAME} ${LAYER_NAME})

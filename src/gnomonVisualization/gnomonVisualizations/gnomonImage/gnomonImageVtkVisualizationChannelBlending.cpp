@@ -163,9 +163,6 @@ void gnomonImageVtkVisualizationChannelBlending::setImage(std::shared_ptr<gnomon
 
     ddd->imageSeries = image;
     ddd->image = image->current();
-    qDebug() << Q_FUNC_INFO << ddd->image->name() <<ddd->image->pluginName();
-
-    qDebug() << ddd->image->image();
 
     this->setParameter("alpha", 1.0);
 

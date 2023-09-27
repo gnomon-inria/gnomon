@@ -11,7 +11,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ## ###################################################################
 
 set(${PROJECT_NAME}_HEADERS
-#  gnomonFileSystemFormReaderTest.h
   gnomonImageFusionCommandTest.h
   gnomonImageRegistrationCommandTest.h
   gnomonImageFilterCommandTest.h
@@ -23,7 +22,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonTimeSeriesTest.h)
 
 set(${PROJECT_NAME}_SOURCES
-#  gnomonFileSystemFormReaderTest.cpp
   gnomonImageFusionCommandTest.cpp
   gnomonImageRegistrationCommandTest.cpp
   gnomonImageFilterCommandTest.cpp
@@ -60,8 +58,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkLog)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Test)
@@ -70,7 +66,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Test)
 ## Test rules
 ## ###################################################################
 
-#add_test(gnomonFileSystemFormReaderTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonFileSystemFormReaderTest)
 add_test(gnomonImageFusionCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageFusionCommandTest)
 add_test(gnomonImageRegistrationCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageRegistrationCommandTest)
 add_test(gnomonImageFilterCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageFilterCommandTest)

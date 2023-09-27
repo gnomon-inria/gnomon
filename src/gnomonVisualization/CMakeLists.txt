@@ -103,7 +103,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::QuickWidgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Gui)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
-target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonPipeline)

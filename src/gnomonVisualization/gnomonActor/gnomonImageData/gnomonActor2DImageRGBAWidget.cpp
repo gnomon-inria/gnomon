@@ -14,8 +14,6 @@
 
 #include "gnomonActor2DImageRGBAWidget.h"
 
-#include <dtkImagingCore>
-
 #include <vtkActor.h>
 #include <vtkCellData.h>
 #include <vtkColorTransferFunction.h>

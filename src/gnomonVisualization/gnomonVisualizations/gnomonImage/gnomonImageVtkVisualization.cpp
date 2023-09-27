@@ -4,8 +4,6 @@
 
 #include <gnomonVisualization/gnomonCoreParameterColor.h>
 
-#include <dtkImagingCore>
-
 #include "gnomonView/gnomonVtkView.h"
 #include "gnomonActor/gnomonImageData/gnomonActorImageVolume.h"
 #include "gnomonActor/gnomonImageData/gnomonActor2DImageWidget.h"

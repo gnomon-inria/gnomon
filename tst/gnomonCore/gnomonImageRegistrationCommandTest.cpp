@@ -8,9 +8,6 @@
 
 #include <dtkScript>
 
-#include <dtkImage>
-
-
 namespace registration{
 bool t_run_called = false;
 bool t_set_image_called = false;

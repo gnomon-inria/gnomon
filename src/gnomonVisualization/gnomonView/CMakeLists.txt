@@ -10,8 +10,6 @@ ADD_GNOMON_HEADERS(
     gnomonVtkViewList.h
     gnomonVtkViewPool
     gnomonVtkViewPool.h
-    # gnomonViewManager
-    # gnomonViewManager.h
     gnomonMplView
     gnomonMplView.h
     gnomonQmlView
@@ -24,7 +22,6 @@ ADD_GNOMON_SOURCES(
     gnomonVtkView.cpp
     gnomonVtkViewList.cpp
     gnomonVtkViewPool.cpp
-    # gnomonViewManager.cpp
     gnomonMplView.cpp
     gnomonQmlView.cpp
 )

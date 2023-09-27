@@ -1,6 +1,6 @@
 #pragma once
 
-class dtkImage;
+class vtkImageData;
 
 #include <QtCore>
 
@@ -34,8 +34,8 @@ public:
     virtual const QString pluginName(void) = 0;
 
 public:
-    virtual void setImage(dtkImage *image) = 0;
-    virtual dtkImage* image(void) const = 0;
+    virtual void setImage(vtkImageData *image) = 0;
+    virtual vtkImageData* image(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////

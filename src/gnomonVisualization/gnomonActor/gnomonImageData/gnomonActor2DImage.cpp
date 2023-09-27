@@ -1,7 +1,5 @@
 #include "gnomonActor2DImage.h"
 
-#include <dtkImagingCore>
-
 #include <QtGui>
 
 #include <vtkActor.h>

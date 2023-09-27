@@ -122,10 +122,8 @@ endif()
 
 find_package(dtkLog      REQUIRED)
 find_package(dtkCore     REQUIRED)
-find_package(dtkImaging  REQUIRED)
 find_package(dtkScript   REQUIRED)
-find_package(VTK         REQUIRED) # only for vtkImageData in gnomonImageDtk
-find_package(xtensor     REQUIRED) # because of dtkImaging
+find_package(VTK         REQUIRED)
 find_package(libzip         REQUIRED) # for workspaceBrowsing
 
 if(GNOMON_ENABLE_VISU)

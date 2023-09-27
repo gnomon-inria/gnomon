@@ -10,8 +10,6 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
-class dtkImage;
-
 class GNOMONCORE_EXPORT gnomonAbstractMeshConstructor : public gnomonAbstractAlgorithm
 {
 public:

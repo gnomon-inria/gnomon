@@ -1,20 +1,4 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonActor2DImageRGBA.h"
-
-#include <dtkImagingCore>
 
 #include <vtkActor.h>
 #include <vtkCellData.h>

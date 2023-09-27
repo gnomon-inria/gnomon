@@ -9,7 +9,7 @@
 #include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonForm/gnomonAbstractFormData.h"
 
-class dtkImage;
+class vtkImageData;
 
 class GNOMONCORE_EXPORT gnomonAbstractBinaryImageData: public gnomonAbstractFormData {
 public:
@@ -18,8 +18,8 @@ public:
     virtual gnomonAbstractBinaryImageData* clone(void) const = 0;
 
 public:
-    virtual void setImage(dtkImage* image) = 0;
-    virtual dtkImage* image(void) = 0;
+    virtual void setImage(vtkImageData* image) = 0;
+    virtual vtkImageData* image(void) = 0;
     virtual void fromGnomonForm(gnomonAbstractForm* other) = 0;
 
 public:

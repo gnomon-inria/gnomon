@@ -14,12 +14,10 @@
 %include <gnomonMacro.i>
 %import <dtkBase/dtkBase.i>
 %import <dtkCore/dtkCore.i>
-%import <dtkImagingCore/dtkImagingCore.i>
 
 %{
 
 #include <dtkCore>
-#include <dtkImagingCore>
 
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>

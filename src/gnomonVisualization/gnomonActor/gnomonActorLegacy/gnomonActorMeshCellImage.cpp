@@ -18,8 +18,6 @@
 
 #include "gnomonActor/gnomonCellImage/gnomonPolyDataCellImage.h"
 
-#include <dtkImagingCore>
-
 #include <vtkActor.h>
 #include <vtkCellData.h>
 #include <vtkCommand.h>

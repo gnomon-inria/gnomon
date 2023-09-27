@@ -58,7 +58,6 @@ void gnomonImageVtkVisualizationCommand::setFormVisualization(const QString& vis
 void gnomonImageVtkVisualizationCommand::setForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
 {
     d->image = std::dynamic_pointer_cast<gnomonImageSeries>(form);
-    qDebug() << Q_FUNC_INFO << d->image.get();
 }
 
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageVtkVisualizationCommand::inputs()

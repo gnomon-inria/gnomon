@@ -1,23 +1,7 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonActor/gnomonPolyData/gnomonPolyData.h"
 #include "gnomonPolyDataCellComplex.h"
 
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
-
-#include <dtkImagingCore>
 
 #include <vtkActor.h>
 #include <vtkAppendPolyData.h>

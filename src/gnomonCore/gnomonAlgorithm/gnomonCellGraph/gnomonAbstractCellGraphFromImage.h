@@ -7,7 +7,7 @@
 #include <dtkCore/dtkCorePlugin>
 #include "gnomonCore/gnomonCorePlugin.h"
 
-class dtkImage;
+class vtkImageData;
 class gnomonCellGraph;
 
 class GNOMONCORE_EXPORT gnomonAbstractCellGraphFromImage : public QRunnable
@@ -17,7 +17,7 @@ class GNOMONCORE_EXPORT gnomonAbstractCellGraphFromImage : public QRunnable
 public:
     virtual void setUseMargins(bool use_margins) = 0;
 
-    virtual void setImage(dtkImage *image) = 0;
+    virtual void setImage(vtkImageData *image) = 0;
 
     virtual void setMinContactArea(float min_val) = 0;
 

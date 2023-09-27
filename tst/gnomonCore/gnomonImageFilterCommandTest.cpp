@@ -8,8 +8,6 @@
 
 #include <dtkScript>
 
-#include <dtkImage>
-
 namespace filter{
 bool t_run_called = false;
 bool t_set_input_called = false;

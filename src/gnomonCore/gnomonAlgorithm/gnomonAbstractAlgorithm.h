@@ -6,7 +6,6 @@
 
 #include <dtkCore/dtkCorePlugin>
 #include <dtkCore/dtkCoreParameters>
-#include <dtkImagingCore>
 
 #include "gnomonCore/gnomonCorePlugin.h"
 
@@ -28,7 +27,7 @@ public:
     virtual void connectParameter(const QString& parameter_name);
     virtual void refreshParameters(void);
     virtual void onParameterChanged(const QString& parameter_name = "");
-    
+
 public:
     virtual int run(void) = 0;
     virtual void run_async(gnomonAbstractCommand *c) {};
