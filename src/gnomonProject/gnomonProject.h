@@ -9,6 +9,7 @@ struct gnomonProjectInfo {
     QString name;
     QString description;
     QString path;
+    QString launcher_workspace;
     QDateTime lastModified;
 };
 
@@ -27,7 +28,8 @@ public:
     Q_PROPERTY(gnomonAbstractSessionManager *currentSession READ currentSession CONSTANT);
 
 public:
-    static gnomonProject *newProject(const QString &path, const QString &name, const QString &description);
+    static gnomonProject *newProject(const QString &path, const QString &name,
+                                    const QString &description, const QString &launcher_workspace);
     void close();
 
     Q_INVOKABLE void save(void);

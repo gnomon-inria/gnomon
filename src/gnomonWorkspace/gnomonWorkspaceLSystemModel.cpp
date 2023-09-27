@@ -526,3 +526,27 @@ bool gnomonWorkspaceLSystemModel::backup(void)
 {
     return GNOMON_PROJECT->backupFile(d->file, d->text);
 }
+
+void gnomonWorkspaceLSystemModel::restore()
+{
+    QString backup_path = GNOMON_PROJECT->projectDir()+ "/.backup_gnomon/";
+    QDir backup_dir = QDir(backup_path);
+    QFileInfoList lpy_list = backup_dir.entryInfoList();
+    QStringList lpy_files;
+
+    for(const QFileInfo& file_info: lpy_list) {
+        if(file_info.isFile() && (file_info.suffix()=="lpy" ||
+                                  file_info.suffix()=="py"))
+        {
+            lpy_files.append(file_info.fileName());
+        }
+    }
+
+    if(!lpy_files.isEmpty())
+    {
+        for(auto f : lpy_files) {
+            QString file_path = backup_path + f;
+            emit requestOpenFile(file_path);
+        }
+    }
+}
