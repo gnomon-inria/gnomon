@@ -28,8 +28,7 @@ Item {
         nameFilters: ["Python source files (*.py)"]
 
         onAccepted: {
-            d.read(decodeURIComponent(_file_dialog.file));
-            _self._current_file = _file_dialog.file;
+            _self.open_py_file(_file_dialog.file)
         }
     }
 
@@ -45,7 +44,10 @@ Item {
         nameFilters: ["Python source files (*.py)"]
 
         onAccepted: {
-            d.save(decodeURIComponent(_file_dialog_save.file));
+            let file_path = decodeURIComponent(_file_dialog_save.file);
+            let file_name = file_path.split('/').pop()
+            d.code.fileName = file_name;
+            d.save(file_path);
             _self._current_file = _file_dialog_save.file;
             if (_message_dialog.visible) {
                 _message_dialog.close()
@@ -135,7 +137,13 @@ Item {
         }
 
         onCurrentIndexChanged: {
-            d.editMode = currentIndex == 0;
+            let name = eval(d.code.fileName)
+            if(name.endsWith(".py")) {
+                d.editMode = currentIndex == 0;
+            } else {
+                _bar.setCurrentIndex(0);
+                _file_dialog_save.open();
+            }
         }
     }
 
@@ -301,5 +309,20 @@ Item {
                 algo_combobox.visible: false
             }
         }
+    }
+
+    Connections {
+        target: d
+        function onRequestOpenFile(path) {
+            _self.open_py_file(path)
+        }
+    }
+
+    function open_py_file(path) {
+        let file_path = decodeURIComponent(path);
+        let file_name = file_path.split('/').pop()
+        d.code.fileName = file_name;
+        d.read(file_path);
+        _self._current_file = path;
     }
 }

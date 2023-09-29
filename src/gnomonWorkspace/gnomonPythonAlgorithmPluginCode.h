@@ -24,10 +24,13 @@ public:
 
     Q_PROPERTY(QStringList formTypes READ formTypes CONSTANT)
     Q_PROPERTY(QStringList parameterTypes READ parameterTypes CONSTANT)
+    Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileChanged);
 
 public:
     QString text(void);
     void setText(const QString& text);
+    QString fileName(void);
+    void setFileName(const QString& name);
 
 public:
     QJsonObject inputFormsJson(void) const;
@@ -36,7 +39,7 @@ public:
 
 signals:
     void textChanged(const QString&);
-
+    void fileChanged(const QString&);
     void pluginNameChanged(void);
     void pluginDocumentationChanged(void);
 

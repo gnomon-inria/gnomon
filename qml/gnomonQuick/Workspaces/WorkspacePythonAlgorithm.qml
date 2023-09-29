@@ -69,9 +69,11 @@ G.Workspace {
                     d.code.text = eval(contents);
                     d.code.parseCode()
                 }
-
-                Component.onCompleted: {
-                    _editor.contents = d.code.text;
+                onFileSwitched : (name) => {
+                    d.code.fileName = name;
+                }
+                onIdeIsReady : () => {
+                    d.restore();
                 }
             }
 
@@ -113,8 +115,10 @@ G.Workspace {
 
     Connections {
         target: d.code
-
-        function onCodeUpdated() { _editor.contents = d.code.text; }
+        function onCodeUpdated() {
+            _editor.tabName = d.code.fileName;
+            _editor.contents = d.code.text; 
+        }
     }
 
    // Connections {
@@ -151,6 +155,9 @@ G.Workspace {
     Component.onCompleted: {
         G.Associator.associate(_source_view, d.source);
         G.Associator.associate(_target_view, d.target);
+        if(d.code.fileName)
+            _editor.tabName = d.code.fileName;
+        _editor.contents = d.code.text;
         drawel.close();
     }
 }

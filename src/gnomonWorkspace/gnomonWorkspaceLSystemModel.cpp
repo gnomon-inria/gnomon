@@ -538,15 +538,14 @@ void gnomonWorkspaceLSystemModel::restore()
         if(file_info.isFile() && (file_info.suffix()=="lpy" ||
                                   file_info.suffix()=="py"))
         {
-            lpy_files.append(file_info.fileName());
+            lpy_files.append(file_info.filePath());
         }
     }
 
     if(!lpy_files.isEmpty())
     {
         for(auto f : lpy_files) {
-            QString file_path = backup_path + f;
-            emit requestOpenFile(file_path);
+            emit requestOpenFile(f);
         }
     }
 }

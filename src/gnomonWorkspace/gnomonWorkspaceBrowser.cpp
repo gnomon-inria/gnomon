@@ -58,6 +58,7 @@ public:
     QMap<QString, QMap<QString, QString> > fileReaderImagePath;
     QList<gnomonAbstractReaderCommand *> commands;
     int progress = 0;
+    QJsonObject workspace_info;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -197,14 +198,11 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     readerCommand->setSource(source);
     readerCommand->redo();
     if(!this->object_name.isEmpty()) {
-        QJsonObject workspace_info;
         QJsonObject data_json;
         data_json.insert("path", path);
         data_json.insert("plugin_name", reader_plugin);
         data_json.insert("workspace_name", "Browser");
         workspace_info.insert(this->object_name, data_json);
-
-        GNOMON_PROJECT->addToManifest(workspace_info);
     }
 
     return true;
@@ -376,6 +374,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
     connect(d->browse_view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         d->pipeline_manager->addForm(f);
         this->m_can_be_destroyed = false;
+        if(!d->workspace_info.isEmpty())
+            GNOMON_PROJECT->addToManifest(d->workspace_info);
         emit canBeDestroyedChanged(false);
     });
     if(GNOMON_PROJECT->wasSaved)
@@ -516,6 +516,7 @@ void gnomonWorkspaceBrowser::restore(void)
    QStringList data_info = GNOMON_PROJECT->restoreFiles("Browser");
    this->setReaderPath(data_info[0]);
    this->readWith(data_info[1]);
+   d->browse_view->transmit();
 }
 // /////////////////////////////////////////////////////////////////////////////
 
