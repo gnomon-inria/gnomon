@@ -64,13 +64,17 @@ G.Workspace {
 
                 theme: G.Style.mode == G.Style.Mode.Dark ? 'vs-dark' : 'vs-light';
                 language: 'python';
+                fileName: d.code.fileName
 
                 onModified: (contents) => {
                     d.code.text = eval(contents);
                     d.code.parseCode()
                 }
                 onFileSwitched : (name) => {
-                    d.code.fileName = name;
+                    name = eval(name)
+                    // Don't emit fileNameChanged signal when Tab 0
+                    if(!name.endsWith("0"))
+                        d.code.fileName = name
                 }
                 onIdeIsReady : () => {
                     d.restore();

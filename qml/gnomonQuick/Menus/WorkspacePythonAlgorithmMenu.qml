@@ -55,6 +55,16 @@ Item {
         }
     }
 
+    G.Toast {
+        id: _non_py_toast
+
+        parent: Overlay.overlay
+        header: "Not a saved file"
+        message: "The file you opened is not saved, \nplease save it as python file before running."
+
+        type: G.Style.ButtonType.Warning
+    }
+
     G.Dialog {
         id: _message_dialog;
 
@@ -137,12 +147,12 @@ Item {
         }
 
         onCurrentIndexChanged: {
-            let name = eval(d.code.fileName)
-            if(name.endsWith(".py")) {
+            if(d.code.fileName.endsWith(".py")) {
                 d.editMode = currentIndex == 0;
             } else {
                 _bar.setCurrentIndex(0);
                 _file_dialog_save.open();
+                _non_py_toast.open()
             }
         }
     }
