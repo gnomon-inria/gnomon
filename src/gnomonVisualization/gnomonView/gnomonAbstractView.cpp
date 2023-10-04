@@ -62,6 +62,21 @@ void gnomonAbstractViewPrivate::setFormVisualization(const QString& form_type, c
     emit q->formVisuParametersChanged();
 }
 
+
+void gnomonAbstractViewPrivate::updateFormsTimes(void)
+{
+    this->forms_times.clear();
+
+    for (const auto& key : q->formNames()) {
+        for(auto time : q->form(key)->times()) {
+            this->forms_times.insert(time);
+        }
+    }
+
+    emit q->timeMaxChanged(q->timeMax());
+    q->timesChanged();
+}
+
 // ///////////////////////////////////////////////////////////////////
 // gnomonAbstractView
 // ///////////////////////////////////////////////////////////////////
@@ -72,6 +87,7 @@ gnomonAbstractView::gnomonAbstractView(QObject *parent): QObject(parent)
     d->q  = this;
 
     connect(this, &gnomonAbstractView::formAdded, [=]() {
+        d->updateFormsTimes();
         emit formsChanged();
     });
 
@@ -278,6 +294,40 @@ bool gnomonAbstractView::contains(const QString& form_type) {
 
 bool gnomonAbstractView::empty(void) {
     return d->forms.empty();
+}
+
+QList<double> gnomonAbstractView::times(void)
+{
+    QList<double> sorted_times = QList<double>(d->forms_times.begin(), d->forms_times.end());
+    std::sort(sorted_times.begin(), sorted_times.end());
+
+    return sorted_times;
+}
+
+double gnomonAbstractView::currentTime(void) const
+{
+    return d->current_time;
+}
+
+double gnomonAbstractView::timeMax(void)
+{
+    QList<double> times = this->times();
+    if (times.isEmpty()) {
+        return -1;
+    }  else {
+        return this->times().last();
+    }
+}
+
+void gnomonAbstractView::setCurrentTime(double time)
+{
+    QList<double> sorted_times = this->times();
+    if(sorted_times.contains(time)) {
+        if (d->current_time != time) {
+            d->current_time = time;
+            emit timeChanged(d->current_time);
+        }
+    }
 }
 
 QString gnomonAbstractView::formVisuName(const QString& form_type)
