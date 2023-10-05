@@ -21,16 +21,8 @@ typedef gnomonAbstractFormAdapter<gnomonTreeSeries> gnomonAbstractTreeAdapter;
 
 DTK_DECLARE_OBJECT        (gnomonAbstractTreeAdapter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractTreeAdapter, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeAdapter, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeAdapter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeAdapter, GNOMONCORE_EXPORT, treeAdapter, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractTreeAdapter, GNOMONCORE_EXPORT, treeAdapter);
-}
 
 //
 // gnomonAbstractTreeAdapter.h ends here

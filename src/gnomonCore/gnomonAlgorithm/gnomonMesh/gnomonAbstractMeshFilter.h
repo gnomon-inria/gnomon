@@ -54,16 +54,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractMeshFilter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractMeshFilter, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshFilter, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshFilter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshFilter, GNOMONCORE_EXPORT, meshFilter, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractMeshFilter, GNOMONCORE_EXPORT, meshFilter);
-}
 
 //
 // gnomonAbstractMeshFilter.h ends here

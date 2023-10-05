@@ -45,16 +45,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataFrameWriter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataFrameWriter, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataFrameWriter, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataFrameWriter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataFrameWriter, GNOMONCORE_EXPORT, dataFrameWriter, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractDataFrameWriter, GNOMONCORE_EXPORT, dataFrameWriter);
-}
 
 //
 // gnomonAbstractImageWriter.h ends here

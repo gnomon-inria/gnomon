@@ -46,16 +46,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractBinaryImageVtkVisualization *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractBinaryImageVtkVisualization, GNOMONVISUALIZATION_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractBinaryImageVtkVisualization, GNOMONVISUALIZATION_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractBinaryImageVtkVisualization, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractBinaryImageVtkVisualization, GNOMONVISUALIZATION_EXPORT, binaryImageVtkVisualization, gnomonVisualization)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonVisualization layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonVisualization {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractBinaryImageVtkVisualization, GNOMONVISUALIZATION_EXPORT, binaryImageVtkVisualization);
-}
 
 //
 // gnomonAbstractBinaryImageVtkVisualization.h ends here

@@ -49,16 +49,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataFrameData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataFrameData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataFrameData, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataFrameData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataFrameData, GNOMONCORE_EXPORT, dataFrameData, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractDataFrameData, GNOMONCORE_EXPORT, dataFrameData);
-}
 
 //
 // gnomonDataFrameData.h ends here

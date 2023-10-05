@@ -45,13 +45,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellComplexFromCellImage *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellComplexFromCellImage, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexFromCellImage, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexFromCellImage, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexFromCellImage, GNOMONCORE_EXPORT, cellComplexFromCellImage, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellComplexFromCellImage, GNOMONCORE_EXPORT, cellComplexFromCellImage);
-}
 
 //
 // gnomonAbstractCellComplexFromCellImage.h ends here

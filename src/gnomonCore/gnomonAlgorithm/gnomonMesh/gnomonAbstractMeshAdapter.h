@@ -21,16 +21,8 @@ typedef gnomonAbstractFormAdapter<gnomonMeshSeries> gnomonAbstractMeshAdapter;
 
 DTK_DECLARE_OBJECT        (gnomonAbstractMeshAdapter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractMeshAdapter, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshAdapter, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshAdapter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshAdapter, GNOMONCORE_EXPORT, meshAdapter, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractMeshAdapter, GNOMONCORE_EXPORT, meshAdapter);
-}
 
 //
 // gnomonAbstractMeshAdapter.h ends here

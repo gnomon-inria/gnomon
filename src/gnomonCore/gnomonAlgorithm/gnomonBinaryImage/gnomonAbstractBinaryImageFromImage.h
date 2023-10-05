@@ -52,13 +52,8 @@ public:
 
 DTK_DECLARE_OBJECT(gnomonAbstractBinaryImageFromImage *)
 DTK_DECLARE_PLUGIN(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT, binaryImageFromImage, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractBinaryImageFromImage, GNOMONCORE_EXPORT, binaryImageFromImage);
-}
 
 //
 // gnomonAbstractBinaryImageFromImage.h ends here

@@ -44,15 +44,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractIntensityImageData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT, intensityimagedata, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT, intensityimagedata);
-}
 
 // gnomonAbstractIntensityImageData.h ends here

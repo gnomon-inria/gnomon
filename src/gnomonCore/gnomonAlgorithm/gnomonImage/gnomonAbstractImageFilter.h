@@ -67,16 +67,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractImageFilter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractImageFilter, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageFilter, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageFilter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageFilter, GNOMONCORE_EXPORT, imageFilter, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractImageFilter, GNOMONCORE_EXPORT, imageFilter);
-}
 
 //
 // gnomonAbstractImageFilter.h ends here

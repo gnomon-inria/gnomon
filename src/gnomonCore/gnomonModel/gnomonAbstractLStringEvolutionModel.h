@@ -55,16 +55,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringEvolutionModel *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT, lStringEvolutionModel, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractLStringEvolutionModel, GNOMONCORE_EXPORT, lStringEvolutionModel);
-}
 
 //
 // gnomonAbstractLStringEvolutionModel.h ends here

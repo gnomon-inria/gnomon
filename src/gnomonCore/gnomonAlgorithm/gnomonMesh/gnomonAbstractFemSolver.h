@@ -43,12 +43,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractFemSolver *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractFemSolver, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractFemSolver, GNOMONCORE_EXPORT, femSolver, gnomonCore)
 
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractFemSolver, GNOMONCORE_EXPORT, femSolver);
-}
 
 //
 // gnomonAbstractFemSolver.h ends here

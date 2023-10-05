@@ -54,16 +54,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractCellComplexVtkVisualization *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractCellComplexVtkVisualization, GNOMONVISUALIZATION_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexVtkVisualization, GNOMONVISUALIZATION_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexVtkVisualization, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexVtkVisualization, GNOMONVISUALIZATION_EXPORT, cellComplexVtkVisualization, gnomonVisualization)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonVisualization layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonVisualization {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellComplexVtkVisualization, GNOMONVISUALIZATION_EXPORT, cellComplexVtkVisualization);
-}
 
 //
 // gnomonAbstractCellComplexVtkVisualization.h ends here

@@ -25,16 +25,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonFormVisitor *)
 DTK_DECLARE_PLUGIN        (gnomonFormVisitor, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonFormVisitor, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonFormVisitor, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonFormVisitor, GNOMONCORE_EXPORT, formVisitor, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonFormVisitor, GNOMONCORE_EXPORT, formVisitor);
-}
 
 //
 // gnomonFormVisitor.h ends here

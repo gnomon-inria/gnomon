@@ -54,16 +54,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractImageData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractImageData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageData, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractImageData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractImageData, GNOMONCORE_EXPORT, imageData, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractImageData, GNOMONCORE_EXPORT, imageData);
-}
 
 //
 // gnomonAbstractImageData.h ends here

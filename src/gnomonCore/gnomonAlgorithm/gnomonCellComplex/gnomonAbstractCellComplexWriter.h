@@ -45,16 +45,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractCellComplexWriter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractCellComplexWriter, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexWriter, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexWriter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexWriter, GNOMONCORE_EXPORT, cellComplexWriter, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellComplexWriter, GNOMONCORE_EXPORT, cellComplexWriter);
-}
 
 //
 // gnomonAbstractImageWriter.h ends here
