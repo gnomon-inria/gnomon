@@ -29,6 +29,8 @@ namespace Layer {
     }
 }
 
+%newobject type##PluginFactory::create;
+
 %feature(nodirector) type##PluginFactory;
 class Export type##PluginFactory : public gnomonPluginFactory<type>
 {

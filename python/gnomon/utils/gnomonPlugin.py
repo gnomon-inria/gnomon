@@ -28,6 +28,14 @@ from dtkcore import dtkCoreParameter
 __PLUGINS__ = []
 DEBUG = True if os.environ.get('DEBUG') else False
 
+if DEBUG:
+    logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter(
+        '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)
 
 class InterruptProcess(Exception):
     def __init__(self, *args):
@@ -620,12 +628,12 @@ def algorithmPlugin(version: str, coreversion: str, name: str = "", base_class=N
             setattr(cls, "_output_storage_list", [])
 
         def clearInputs(self):
-            # logging.info(f"Clearing inputs of {cls.__name__}")
+            logging.info(f"Clearing inputs of {cls.__name__}")
             for attr in getattr(cls, "_input_storage_list"):
                 setattr(self, attr, {})
 
         def clearOutputs(self):
-            # logging.info(f"Clearing outputs of {cls.__name__}")
+            logging.info(f"Clearing outputs of {cls.__name__}")
             for attr in getattr(cls, "_output_storage_list"):
                 setattr(self, attr, {})
 
@@ -647,57 +655,6 @@ def algorithmPlugin(version: str, coreversion: str, name: str = "", base_class=N
         return cls
 
     return decorator
-
-
-def corePlugin(version: str, coreversion: str, name: str = "", base_class=None):
-    """
-    Registers gnomon plugins which implements an interface from gnomon.core to the plugin factory.
-
-    Must be the top decorator as it will wrap every method of the class to suppress errors.
-    Error suppression can be deactivated by setting gnomon.utils.gnomonPlugin.DEBUG to True.
-
-    Applies the gnomonParametric decorator:
-        Implements methods and special methods related to dtkCoreParameter use.
-        Those methods access dtkCoreParameter (cross-parameters) which are stored in the dict attribute
-        _parameters mapping keys to dtkCoreParameter.
-
-        Implements:
-            special methods __setitem__ and __getitem__ to set and get values to and from parameters
-
-            setParameter(self, parameter_name, parameter_value)
-                sets parameter_value to self._parameters[parameter_name]
-            setParameters(self, params)
-                params is a dict of (parameter_name, parameter_value) and setParameters sets the value
-                of each self._parameters[parameter_name] to parameter_value.
-                parameter_name must already be a key of self._parameters
-            parameters(self)
-                returns a copy of _parameters
-            parameterDict(self)
-                returns a dict of (parameter_name, parameter_value)
-
-
-    Parameters
-    ----------
-    version: str
-        Version of the plugin.
-    coreversion: str
-        Exact version of gnomon to check for API compatibility.
-    name: str
-        Name of the plugin. Used for the UI
-    base_class
-
-    Returns
-    -------
-
-    """
-
-    def decorator(cls):
-        cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
-        cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, name=name, base_class=base_class)
-        return cls
-
-    return decorator
-
 
 def visualizationPlugin(version: str, coreversion: str, name="", base_class=None):
     """
@@ -798,6 +755,11 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
         def destructor_decorator(f):
             def destructor_wrapper(self):
                 logging.debug(f"{cls.__name__} is dying")
+                if hasattr(cls, "clearInputs"):
+                    self.clearInputs()
+                    self.clearOutputs()
+
+                #TODO acquire data   data.__aquire__() ??
                 f(self)
 
             return destructor_wrapper

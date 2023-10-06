@@ -51,9 +51,10 @@ def getFormDataClass(data_plugin: Union[type, str], form_data_factory, plugin_gr
         load_plugin_group(plugin_group)
         data_plugin_instance: object = form_data_factory.create(data_plugin)
         if data_plugin_instance:
-            return data_plugin_instance.__class__
+            return_class = data_plugin_instance.__class__
+            data_plugin_instance.__swig_destroy__(data_plugin_instance)
+            return return_class
         else:
             raise KeyError(f"Could not find and load data plugin {data_plugin} from plugin group {plugin_group}. "
                            f"The plugin might not be installed")
     raise TypeError("Expected type or str for data_plugin argument")
-

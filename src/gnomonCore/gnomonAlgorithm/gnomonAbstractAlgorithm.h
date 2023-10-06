@@ -42,7 +42,7 @@ public:
 
     virtual void setLogServerAddress(QString addr) {};
 
-    virtual void clearInputs(void) {};
+    virtual void clearInputs(void) {}; // set in decorators for python (see gnomonPlugin.py)
     virtual void clearOutputs(void) {};
 
     bool is_async = false;
