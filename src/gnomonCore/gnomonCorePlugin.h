@@ -13,13 +13,17 @@
     class type##PluginFactory;                                                   \
     class type##PluginManager;                                                   \
     namespace Layer { namespace Namespace {                                      \
-        Export type##PluginFactory& pluginFactory();                                    \
-        Export type##PluginManager& pluginManager();                                    \
+        Export type##PluginFactory& pluginFactory();                             \
+        Export type##PluginManager& pluginManager();                             \
+        Export bool type##Registration(); \
+        extern const bool is_registered; \
     } }                                                                          \
     class Export type##PluginFactory : public gnomonPluginFactory<type>          \
     {                                                                            \
     private:                                                                     \
          type##PluginFactory() {                                                 \
+             pluginsFactories()[#Namespace] = this;                              \
+             Layer::Namespace::pluginManager();                                  \
          };                                                                      \
          type##PluginFactory(type##PluginFactory const& other) = delete;         \
          type##PluginFactory(type##PluginFactory&& other) = delete;              \
@@ -29,6 +33,7 @@
     {                                                                            \
     private:                                                                     \
          type##PluginManager() {                                                 \
+             pluginsManagers()[#Namespace] = this;                               \
          };                                                                      \
          type##PluginManager(type##PluginManager const& other) = delete;         \
          type##PluginManager(type##PluginManager&& other) = delete;              \
@@ -48,4 +53,10 @@
             static type##PluginManager _instance;           \
             return _instance;                               \
         }                                                   \
+        bool type##Registration() {                         \
+            pluginManager();                                \
+            pluginFactory();                                \
+            return true;                                    \
+        }                                                   \
+        const bool is_registered = type##Registration();    \
     }

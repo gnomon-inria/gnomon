@@ -1,7 +1,7 @@
 from typing import Any
 import numpy as np
 
-from gnomon.utils.gnomonPlugin import register_input, register_output
+from gnomon.utils.gnomonPlugin import register_input, register_output,register_swig_disown
 from .form_series import buildFormSeries, formDictFromSeries, getFormDataClass
 
 
@@ -19,15 +19,18 @@ def form_input(cls, attr, method, setter_method, data_plugin, form_data_factory,
     data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
 
     def getter(self, update=True):
-        form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
+        form_dict, data_list = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
                                                data_plugin=data_plugin)
+
+        register_swig_disown(cls, data_list)
         return form_dict
 
     setattr(cls, method, getter)
 
     def setter(self, form):
         if form is not None:
-            form_dict = formDictFromSeries(form=form, data_plugin=data_plugin)
+            form_dict, form_data = formDictFromSeries(form=form, data_plugin=data_plugin)
+            register_swig_disown(cls, data_dict)
             setattr(self, attr, form_dict)
         else:
             setattr(self, attr, {})
@@ -42,8 +45,9 @@ def form_output(cls, attr, method, data_plugin, form_data_factory, plugin_group,
     data_plugin = getFormDataClass(data_plugin, form_data_factory, plugin_group)
 
     def getter(self, update=True):
-        form_dict, data_dict = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
+        form_dict, data_list = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
                                                data_plugin=data_plugin)
+        register_swig_disown(cls, data_list)
         return form_dict
 
     setattr(cls, method, getter)

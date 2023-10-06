@@ -20,16 +20,17 @@ def buildFormSeries(form_dict: dict, form_class: type, data_plugin: type):
     if isinstance(form_dict, dict):
         for time in form_dict.keys():
             form[time] = form_class()
-            form_data[time] = data_plugin()
-            form_data[time].__disown__()
+            form_data[time] = data_plugin() # this is the class constructor, not the factory
+            form_data[time].__disown__()    # so we need a disown here
             form[time].setData(form_data[time])
             form_data[time].__data_setter(form_dict[time])
 
-    return form, form_data
+    return form, form_data.values()
 
 
 def formDictFromSeries(form, data_plugin: type):
     form_dict = {}
+    data_to_clean = []
     for time in form.keys():
         if isinstance(form[time].data(), data_plugin):
             # passing the form from the data plugin directly as it is the one expected
@@ -38,10 +39,11 @@ def formDictFromSeries(form, data_plugin: type):
             # create a new data plugin from the gnomonForm to get expected format
             form_data = data_plugin()
             form_data.__disown__()
+            data_to_clean.append(form_data)
             form_data.fromGnomonForm(form[time])
             form_dict[time] = form_data.__data_getter()
 
-    return form_dict
+    return form_dict, data_to_clean
 
 
 def getFormDataClass(data_plugin: Union[type, str], form_data_factory, plugin_group: str) -> type:

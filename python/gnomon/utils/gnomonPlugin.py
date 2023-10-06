@@ -214,6 +214,12 @@ def register_output(cls: type, attribute: str):
     else:
         setattr(cls, "_output_storage_list", [attribute])
 
+def register_swig_disown(cls: type, attribute: list[object]):
+    if hasattr(cls, "_swig_disown_list"):
+        getattr(cls, "_swig_disown_list").extend(attribute)
+    else:
+        setattr(cls, "_swig_disown_list", attribute)
+
 
 def gnomon_declare_plugins(path: str) -> dict[str, list[str]]:
     """
@@ -748,24 +754,32 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
 
     cls.name = _name
 
+    # swig memory clean
+    if not hasattr(cls, "_swig_disown_list"):
+        setattr(cls, "_swig_disown_list", [])
+
     # -----------------------------------------------------
     # Debugging
     # -----------------------------------------------------
-    if DEBUG:
-        def destructor_decorator(f):
-            def destructor_wrapper(self):
+    def destructor_decorator(f):
+        def destructor_wrapper(self):
+            if DEBUG:
                 logging.debug(f"{cls.__name__} is dying")
-                if hasattr(cls, "clearInputs"):
-                    self.clearInputs()
-                    self.clearOutputs()
+            if hasattr(cls, "clearInputs"):
+                self.clearInputs()
+                self.clearOutputs()
 
-                #TODO acquire data   data.__aquire__() ??
-                f(self)
+            for s in getattr(cls, "_swig_disown_list"):
+                if DEBUG:
+                    logging.debug(f"destroy {s}")
+                s.__swig_destroy__(s)
 
-            return destructor_wrapper
+            f(self)
 
-        original_del = getattr(cls, "__del__") if hasattr(cls, "__del__") else lambda self: None
-        setattr(cls, "__del__", destructor_decorator(original_del))
+        return destructor_wrapper
+
+    original_del = getattr(cls, "__del__") if hasattr(cls, "__del__") else lambda self: None
+    setattr(cls, "__del__", destructor_decorator(original_del))
 
     # -----------------------------------------------------
     # TCP Logging
@@ -824,6 +838,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
         self._max_progress = -1
         self._event = Event()
         self._event.set()  # release the lock
+        self._swigDisownList = []
         return _old_init(self, *args, **kwargs)
     cls.__init__ = init
 
