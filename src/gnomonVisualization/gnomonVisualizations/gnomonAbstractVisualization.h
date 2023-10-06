@@ -13,7 +13,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualization : public QObject
 
 public:
     gnomonAbstractVisualization();
-    ~gnomonAbstractVisualization(void);
+    virtual ~gnomonAbstractVisualization(void);
 
 public:
     virtual void setView(gnomonAbstractView *view);

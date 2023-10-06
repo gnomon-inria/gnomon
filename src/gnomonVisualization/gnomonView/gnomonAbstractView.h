@@ -16,7 +16,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractView : public QObject
 
 public:
     gnomonAbstractView(QObject *parent = nullptr);
-    ~gnomonAbstractView(void);
+    virtual ~gnomonAbstractView(void);
 
 public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);

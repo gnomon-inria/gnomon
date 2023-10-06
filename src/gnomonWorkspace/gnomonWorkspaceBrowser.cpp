@@ -46,7 +46,7 @@ public slots:
 
 public:
     gnomonPipelineManager *pipeline_manager;
-    gnomonVtkView *browse_view;
+    gnomonVtkView *browse_view = nullptr;
     gnomonWorkspaceBrowser *q;
     QMap<QString, QMap<QString, gnomonAbstractReaderCommand *> > fileReaderCommands;
     QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
@@ -371,6 +371,8 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
 {
+    delete d->browse_view;
+    d->browse_view = nullptr;
     delete d;
 }
 

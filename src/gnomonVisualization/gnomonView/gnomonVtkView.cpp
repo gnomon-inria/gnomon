@@ -308,6 +308,13 @@ gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 gnomonVtkViewPrivate::~gnomonVtkViewPrivate(void)
 {
     this->clearConnections();
+
+    for(auto map : adapterCommands) {
+        for(auto command: map) {
+            delete command;
+        }
+        map.clear();
+    }
 }
 
 void gnomonVtkViewPrivate::clearConnections(void)
@@ -595,6 +602,10 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 
 gnomonVtkView::~gnomonVtkView(void)
 {
+    for(auto visuCommand : d->visualizationCommands)
+        delete visuCommand;
+    d->visualizationCommands.clear();
+
     delete dd;
 }
 

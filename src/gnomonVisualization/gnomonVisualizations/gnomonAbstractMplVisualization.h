@@ -14,7 +14,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractMplVisualization : public gnomonA
 
 public:
      gnomonAbstractMplVisualization();
-    ~gnomonAbstractMplVisualization(void);
+    virtual ~gnomonAbstractMplVisualization(void);
 
 public:
     int figureNumber(void);

@@ -17,7 +17,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonMplView  : public gnomonAbstractView
 
 public:
      gnomonMplView(QObject *parent = nullptr);
-    ~gnomonMplView(void);
+    virtual ~gnomonMplView(void);
 
 public:
     Q_PROPERTY(int figureNumber READ figureNumber WRITE setFigureNumber NOTIFY figureNumberChanged);

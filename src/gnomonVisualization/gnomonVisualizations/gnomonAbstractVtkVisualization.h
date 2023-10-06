@@ -21,7 +21,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractVtkVisualization : public gnomonA
 
 public:
      gnomonAbstractVtkVisualization();
-    ~gnomonAbstractVtkVisualization(void);
+    virtual ~gnomonAbstractVtkVisualization(void);
 
 public:
     void setView(gnomonAbstractView* view) override;
