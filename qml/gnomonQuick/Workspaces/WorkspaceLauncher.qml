@@ -19,6 +19,8 @@ G.Workspace {
 
     id: _workspace;
 
+    uuid: "launcher"
+
     workspace_title: "Launcher";
     fill: () => {}
 
@@ -484,7 +486,8 @@ G.Workspace {
                         }
 
                         onAccepted: {
-                            GP.ProjectManager.createProject(_folder_path.text, _project_title.text, _project_description.text)
+                            GP.ProjectManager.createProject(_folder_path.text, _project_title.text,
+                                _project_description.text, _pipeline_workspace.currentValue)
                             GP.PipelineManager.pipeline.name = _project_title.text
                             GP.PipelineManager.pipeline.description = _project_description.text
                             if (_remember_workspace.checked) {
@@ -686,7 +689,7 @@ G.Workspace {
         type: G.Style.ButtonType.Base
 
         onOpened: {
-            switch_from_launcher(_pipeline_workspace.currentValue);
+            //switch_from_launcher(_pipeline_workspace.currentValue);
         }
     }
 

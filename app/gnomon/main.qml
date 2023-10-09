@@ -481,7 +481,7 @@ G.Application {
         window.opened_files = JSON.stringify(_projects)
     }
 
-    function switch_from_launcher(source)
+    function switch_from_launcher(source: string)
     {
         if (source === undefined) {
             source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
@@ -538,8 +538,10 @@ G.Application {
         id: _switch_workspace_dialog;
     }
 
-    function switch_workspace(index)
+    function switch_workspace(index: int)
     {
+        window.drawelr_closed = false
+        stack_launcher.currentIndex  = 1
         workspaces.currentIndex = index;
 
         footer.workspaceName = window.current_workspace().workspace_title;
@@ -672,7 +674,7 @@ G.Application {
         console.log("Loading session from ", project_url);
         //window.load_in_progress = true;
         GP.ProjectManager.openProject(project_url)
-        switch_from_launcher(undefined)
+        //switch_from_launcher(undefined)
         //GP.PrpjectManager.project.loadSession()
 
         stack_launcher.currentIndex = 1;

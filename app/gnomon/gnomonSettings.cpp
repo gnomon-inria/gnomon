@@ -222,7 +222,7 @@ public:
     void init();
     void reset();
 
-    void load();
+    void load(QJsonObject* storage);
     void store();
 
     void _q_propertyChanged();
@@ -240,7 +240,9 @@ QJsonObject * gnomonSettingsPrivate::instance() const
     auto storage = GNOMON_SESSION->getStorageForWorkspace(uuid);
 
     if (initialized)
-        q->d->load(); // not const
+        // in the original code but why so leaving it commented ¯\_(ツ)_/¯
+        // why would calling load multiple times be necessary ?
+        //q->d->load(storage); // not const
 
     return storage;
 }
@@ -249,7 +251,8 @@ void gnomonSettingsPrivate::init()
 {
     if (initialized)
         return;
-    load();
+    qDebug() << "Initializing settings for uuid: " << uuid;
+    load(GNOMON_SESSION->getStorageForWorkspace(uuid));
     initialized = true;
 }
 
@@ -260,7 +263,7 @@ void gnomonSettingsPrivate::reset()
     //TODO: reset the storage
 }
 
-void gnomonSettingsPrivate::load()
+void gnomonSettingsPrivate::load(QJsonObject* storage)
 {
     const QMetaObject *mo = q->metaObject();
     const int offset = mo->propertyOffset();
@@ -275,7 +278,6 @@ void gnomonSettingsPrivate::load()
         const QString propertyName = QString::fromUtf8(property.name());
 
         const QVariant previousValue = readProperty(property);
-        auto storage = instance();
         const QVariant currentValue = storage->contains(propertyName) ? storage->value(propertyName) : previousValue;
 
         if (!currentValue.isNull() && (!previousValue.isValid()
@@ -283,6 +285,7 @@ void gnomonSettingsPrivate::load()
                                            && previousValue != currentValue))) {
             property.write(q, currentValue);
             qCDebug(lcQmlSettings) << "gnomonSettings: load" << property.name() << "setting:" << currentValue << "default:" << previousValue;
+            qDebug() << "gnomonSettings: load" << property.name() << "setting:" << currentValue << "default:" << previousValue;
         }
 
         // ensure that a non-existent setting gets written
@@ -320,6 +323,7 @@ void gnomonSettingsPrivate::_q_propertyChanged()
         const QVariant value = readProperty(property);
         changedProperties.insert(property.name(), value);
         qCDebug(lcQmlSettings) << "gnomonSettings: cache" << property.name() << ":" << value;
+        qDebug() << "gnomonSettings: cache" << property.name() << ":" << value;
     }
     if (timerId != 0)
         q->killTimer(timerId);
@@ -339,8 +343,6 @@ gnomonSettings::gnomonSettings(QObject *parent)
         : QObject(parent), d(new gnomonSettingsPrivate)
 {
     d->q = this;
-    auto context = qmlContext(parent);
-    d->uuid = context->contextProperty("uuid").toString();
 }
 
 gnomonSettings::~gnomonSettings()
@@ -411,5 +413,20 @@ void gnomonSettings::timerEvent(QTimerEvent *event)
     killTimer(d->timerId);
     d->timerId = 0;
     d->store();
+}
+
+QString gnomonSettings::category() {
+    return d->uuid;
+}
+
+void gnomonSettings::setCategory(const QString& value) {
+    if(value != d->uuid) {
+        d->uuid = value;
+        emit categoryChanged(value);
+    }
+}
+
+void gnomonSettings::_q_propertyChanged() {
+    d->_q_propertyChanged();
 }
 

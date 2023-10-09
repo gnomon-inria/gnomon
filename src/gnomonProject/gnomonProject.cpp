@@ -55,8 +55,7 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
     bool isProject = isDirAProject(d->projectDir);
     if(isProject) {
         readProjectInfo();
-    } 
-    else {
+    } else {
         auto pName = d->projectDir.dirName();
         populateNewProject();
         d->projectInfo.name = pName;
@@ -92,6 +91,7 @@ void gnomonProject::readProjectInfo() {
     pInfo.name = storage["name"].toString();
     pInfo.description = storage["description"].toString();
     pInfo.path = storage["path"].toString();
+    pInfo.default_source = storage["default_source"].toString();
     pInfo.lastModified = QDateTime::fromString(storage["lastModified"].toString(), Qt::ISODate);
 }
 
@@ -103,6 +103,7 @@ void gnomonProject::saveProjectInfo() {
         storage["name"] = pInfo.name;
         storage["description"] = pInfo.description;
         storage["path"] = pInfo.path;
+        storage["default_source"] = pInfo.default_source;
         pInfo.lastModified.setSecsSinceEpoch(QDateTime::currentSecsSinceEpoch());
         storage["lastModified"] = pInfo.lastModified.toString("yyyy-MM-ddTHH:mm:ss");
         QJsonDocument doc(storage);
@@ -142,10 +143,12 @@ bool gnomonProject::loadSessionFromPipeline(const QString &path, QObject *window
     GNOMON_SESSION->loadFromPipeline(path);
 }
 
-gnomonProject *gnomonProject::newProject(const QString &path, const QString &name, const QString &description) {
+gnomonProject *gnomonProject::newProject(const QString &path, const QString &name, const QString &description,
+                                         const QString &source) {
     auto project = new gnomonProject(path);
     project->d->projectInfo.name = name;
     project->d->projectInfo.description = description;
+    project->d->projectInfo.default_source = source;
     project->saveProjectInfo();
     return project;
 }
@@ -166,6 +169,10 @@ gnomonAbstractSessionManager* gnomonProject::currentSession(void)
 QString gnomonProject::sanitizeUrlToPath(const QString &url) {
     QUrl _url(url);
     return QString(_url.isValid() && _url.isLocalFile() ? _url.toLocalFile() : url);
+}
+
+const gnomonProjectInfo &gnomonProject::projectInfo() {
+    return d->projectInfo;
 }
 
 //

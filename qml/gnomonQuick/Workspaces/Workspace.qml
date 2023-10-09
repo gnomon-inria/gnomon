@@ -13,12 +13,21 @@ G.Page {
 
     required property string workspace_title;
     required property var fill;
-    property string uuid: undefined;
+    required property string uuid;
+    objectName: uuid  // not sure if it should be kept
 
     // default property alias contents: _contents.children;
     property alias parameters: _params.params_model;
     property var d: undefined;
     property bool canBeDestroyed: d? d.canBeDestroyed : true;
+
+    Component.onCompleted: {
+        // propagate the workspace uuid
+        if(d) {
+            d.objectName = uuid
+            console.log(d.uuid)
+        }
+    }
 
     G.Parameters {
         id: _params;

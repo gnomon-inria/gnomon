@@ -23,7 +23,8 @@ public:
     
 public:
     Q_INVOKABLE gnomonProject *openProject(const QString &path);
-    Q_INVOKABLE gnomonProject *createProject(const QString &path, const QString &name, const QString &description);
+    Q_INVOKABLE gnomonProject *createProject(const QString &path, const QString &name, const QString &description,
+                                             const QString &source);
     Q_INVOKABLE void closeProject();
     Q_INVOKABLE QVariantMap readProjectInfo(const QString &path);
 

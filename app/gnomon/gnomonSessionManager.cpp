@@ -6,6 +6,11 @@
 #include <QtQml>
 
 #include "gnomonSessionManager.h"
+#include "gnomonProject"
+
+#define PROJECT_SESSION_DIRECTORY ".gnomon/session"
+#define PROJECT_SESSION_FILE ".gnomon/session/session.json"
+#define PROJECT_PIPELINE_FILE ".gnomon/session/pipeline.json"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonSessionManagerPrivate
@@ -27,10 +32,13 @@ public:
 
     QMap<QString, QJsonObject> workspace_properties;
 
+    QMap<QString, QString> workspace_sources;
+
     QObject *window = nullptr;
     QQmlApplicationEngine* engine = nullptr;
 
     bool alive = true;
+    bool init = false;
 
 private:
     QMetaObject::Connection callbackConnection;   
@@ -315,10 +323,18 @@ gnomonSessionManager::gnomonSessionManager(QObject *parent) : gnomonAbstractSess
 {
     d = new gnomonSessionManagerPrivate;
     d->q = this;
+
+    connect(gnomonPipelineManager::instance()->pipeline(), &gnomonPipeline::nodeAdded,
+            this, &gnomonAbstractSessionManager::sync);
+    connect(gnomonPipelineManager::instance()->pipeline(), &gnomonPipeline::nodeRemoved,
+            this, &gnomonAbstractSessionManager::sync);
+
+    startTimer(1000); // doesn't work :(
 }
 
 gnomonSessionManager::~gnomonSessionManager(void)
 {
+    gnomonSessionManager::sync();
     delete d;
 }
 
@@ -366,20 +382,26 @@ void gnomonSessionManager::setWindow(QObject *window) {
 
 int gnomonSessionManager::loadWorkspace(const QString &source, const QString &uuid) {
     int index = 0;
-    QMetaObject::invokeMethod(d->window, "add_workspace",
+    auto success = QMetaObject::invokeMethod(d->window, "add_workspace",
                                         Q_RETURN_ARG(int, index),
                                         Q_ARG(QString, source),
                                         Q_ARG(QString, uuid));
+    if(success) {
+        d->workspace_sources[uuid] = source;
+    }
     return index;
 }
 
 int gnomonSessionManager::newWorkspace(const QString &source) {
     int index = 0;
     auto uuid = QUuid::createUuid().toString();
-    QMetaObject::invokeMethod(d->window, "add_workspace",
+    auto success = QMetaObject::invokeMethod(d->window, "add_workspace",
                               Q_RETURN_ARG(int, index),
                               Q_ARG(QString, source),
                               Q_ARG(QString, uuid));
+    if(success) {
+        d->workspace_sources[uuid] = source;
+    }
     return index;
 }
 
@@ -391,8 +413,105 @@ QJsonObject *gnomonSessionManager::getStorageForWorkspace(const QString &uuid) {
 }
 
 void gnomonSessionManager::sync() {
-    //TODO: store workspace infos
+    if(!d->init) {
+        return;
+    }
+    qDebug() << "===========" << "saving session";
+    QDir dir(GNOMON_PROJECT->projectDir());
+    dir.mkpath(PROJECT_SESSION_DIRECTORY);
+    QFile session_file(dir.absoluteFilePath(PROJECT_SESSION_FILE));
+
+    // building json object for properties
+    QJsonObject session_json;
+    QJsonObject workspace_properties;
+    QJsonObject workspace_sources;
+    QJsonArray workspace_order;
+    auto workspaces = qmlContext(d->window)->objectForName("workspaces");
+    for(auto child: workspaces->children()) {
+        if(child && child->property("d").isValid() && child->property("uuid").isValid()) {
+            auto uuid = child->property("uuid").toString();
+            workspace_order.append(uuid);
+            workspace_properties.insert(uuid, d->workspace_properties.value(uuid));
+            workspace_sources.insert(uuid, d->workspace_sources.value(uuid));
+        }
+    }
+    session_json.insert("current_index", workspaces->property("currentIndex").toInt());
+    session_json.insert("workspace_order", workspace_order);
+    session_json.insert("workspace_properties", workspace_properties);
+    session_json.insert("workspace_sources", workspace_sources);
+
+    session_file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&session_file);
+    out << QJsonDocument(session_json).toJson();
+    out.flush();
+    session_file.close();
+
+    // pipeline
+    auto url = QUrl::fromLocalFile(dir.absoluteFilePath(PROJECT_PIPELINE_FILE));
+    gnomonPipelineManager::instance()->pipeline()->exportToJson(url.toString());
+    
+
+    //TODO: forms
+    //TODO: world
+
+
 }
+
+bool gnomonSessionManager::load() {
+    qDebug() << "===========" << "loading session";
+    QDir dir(GNOMON_PROJECT->projectDir());
+    if(dir.exists(PROJECT_SESSION_FILE)) {
+        QFile session_file(dir.absoluteFilePath(PROJECT_SESSION_FILE));
+        QJsonDocument session_doc;
+        if(session_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            session_doc = QJsonDocument::fromJson(session_file.readAll());
+        } else {
+            return false;
+        }
+        QJsonObject workspace_properties = session_doc.object()["workspace_properties"].toObject();
+        QJsonArray workspace_order = session_doc.object()["workspace_order"].toArray();
+        QJsonObject workspace_sources = session_doc.object()["workspace_sources"].toObject();
+        for(const auto &id_: workspace_order) {
+            auto id = id_.toString();
+            d->workspace_properties[id] = workspace_properties[id].toObject();;
+
+            loadWorkspace(workspace_sources[id].toString(), id);
+        }
+
+
+        //TODO: fix pipeline reloading
+        // pipeline reloading is broken because pipelines are build upon the memory addresses of various component
+        // and memory addresses are not transferred when reloading
+        auto pipeline_path = dir.absoluteFilePath(PROJECT_PIPELINE_FILE);
+        if(dir.exists(pipeline_path)) {
+            gnomonPipelineManager::instance()->pipeline()->readFromJson(pipeline_path);
+        }
+
+        //TODO: world
+
+
+        QMetaObject::invokeMethod(d->window, "switch_workspace",
+                                  Q_ARG(int, session_doc.object()["current_index"].toInt()));
+        d->init = true;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool gnomonSessionManager::newSession(const QString &source) {
+    auto res = QMetaObject::invokeMethod(d->window, "switch_from_launcher",
+                                     Q_ARG(QString, source));
+    if(res)
+        d->init = true;
+    return res;
+}
+
+void gnomonSessionManager::timerEvent(QTimerEvent *event) {
+    sync();
+}
+
+
 
 
 //

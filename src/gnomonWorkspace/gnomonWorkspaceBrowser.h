@@ -44,6 +44,8 @@ public slots:
     void setReaderPath(const QString&);
     void requestReaders(QString default_reader);
     bool readWith(const QString&);
+    QJsonObject serialize() override;
+    void unSerialize(const QJsonObject &state) override;
     inline void saveState(void) {};  // nothing to be saved
     void restoreState(void);
     int progress(void);

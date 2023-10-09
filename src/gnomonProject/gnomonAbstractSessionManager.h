@@ -23,6 +23,10 @@ public:
 
     Q_INVOKABLE virtual void load(const QString &id, const QString &path) = 0;
 
+    Q_INVOKABLE virtual bool load() = 0;
+
+    Q_INVOKABLE virtual bool newSession(const QString &source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml") = 0;
+
     virtual bool loadFromPipeline(const QString &path) = 0;
 
 public:
@@ -36,6 +40,7 @@ public:
 
     virtual QJsonObject* getStorageForWorkspace(const QString &uuid) = 0;
 
+public slots:
     virtual void sync() = 0;
 
 public:

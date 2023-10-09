@@ -33,7 +33,7 @@ class gnomonSettings : public QObject, public QQmlParserStatus {
 Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
-    QML_NAMED_ELEMENT(Settings)
+    Q_PROPERTY(QString category READ category WRITE setCategory NOTIFY categoryChanged REQUIRED)
 
     friend class gnomonSettingsPrivate;
 
@@ -42,11 +42,23 @@ public:
 
     ~gnomonSettings() override;
 
+    QString category();
+
+    void setCategory(const QString& value);
+
+signals:
+    void categoryChanged(QString value);
+
+public:
+
     Q_INVOKABLE QVariant value(const QString &key, const QVariant &defaultValue = {}) const;
 
     Q_INVOKABLE void setValue(const QString &key, const QVariant &value);
 
     Q_INVOKABLE void sync();
+
+private slots:
+    void _q_propertyChanged();
 
 
 protected:

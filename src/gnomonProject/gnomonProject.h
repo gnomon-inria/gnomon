@@ -9,6 +9,7 @@ struct gnomonProjectInfo {
     QString name;
     QString description;
     QString path;
+    QString default_source;
     QDateTime lastModified;
 };
 
@@ -27,7 +28,8 @@ public:
     Q_PROPERTY(gnomonAbstractSessionManager *currentSession READ currentSession CONSTANT);
 
 public:
-    static gnomonProject *newProject(const QString &path, const QString &name, const QString &description);
+    static gnomonProject *newProject(const QString &path, const QString &name, const QString &description,
+                                     const QString &source);
     void close();
 
     Q_INVOKABLE bool loadSessionFromPipeline(const QString &path, QObject *window);
@@ -35,6 +37,7 @@ public:
 public:
     QString projectDir(void);
     QString currentDir(void);
+    const gnomonProjectInfo &projectInfo();
 
 public:
     void setCurrentDir(const QString& url);
