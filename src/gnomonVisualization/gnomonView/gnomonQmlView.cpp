@@ -64,12 +64,12 @@ gnomonQmlView::gnomonQmlView(QObject *parent): gnomonAbstractView(parent)
     dd = new gnomonQmlViewPrivate(this);
     d->q  = this;
 
-    d->visualizationCommands["gnomonLString"] = new gnomonLStringQmlVisualizationCommand;
-    d->visualizationCommands["gnomonDataDict"] = new gnomonDataDictQmlVisualizationCommand;
+    d->visualizationCommands["gnomonLString"] = std::make_shared<gnomonLStringQmlVisualizationCommand>();
+    d->visualizationCommands["gnomonDataDict"] = std::make_shared<gnomonDataDictQmlVisualizationCommand>();
 
     for (const auto &form_type: d->visualizationCommands.keys()) {
         d->visualizationCommands[form_type]->setView(this);
-        connect(d->visualizationCommands[form_type], &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
+        connect(d->visualizationCommands[form_type].get(), &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
             emit formVisuParametersChanged();
         });
         d->acceptForms[form_type] = false;

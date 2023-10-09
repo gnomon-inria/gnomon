@@ -40,7 +40,7 @@ public:
     QMap<QString, bool> acceptForms;
 
 public:
-    QMap<QString, gnomonAbstractVisualizationCommand *> visualizationCommands;
+    QMap<QString, std::shared_ptr<gnomonAbstractVisualizationCommand> > visualizationCommands;
     ViewParameters viewParameters;
 
 public:

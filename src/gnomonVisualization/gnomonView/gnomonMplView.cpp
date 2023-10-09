@@ -155,13 +155,13 @@ gnomonMplView::gnomonMplView(QObject *parent) : gnomonAbstractView(parent)
     dd = new gnomonMplViewPrivate(this);
     dd->q = this;
 
-    d->visualizationCommands["gnomonDataFrame"] = new gnomonDataFrameMplVisualizationCommand;
-    d->visualizationCommands["gnomonLString"] = new gnomonLStringMplVisualizationCommand;
-    d->visualizationCommands["gnomonTree"] = new gnomonTreeMplVisualizationCommand;
+    d->visualizationCommands["gnomonDataFrame"] = std::make_shared<gnomonDataFrameMplVisualizationCommand>();
+    d->visualizationCommands["gnomonLString"] = std::make_shared<gnomonLStringMplVisualizationCommand>();
+    d->visualizationCommands["gnomonTree"] = std::make_shared<gnomonTreeMplVisualizationCommand>();
 
     for (const auto &form_type: d->visualizationCommands.keys()) {
         d->visualizationCommands[form_type]->setView(this);
-        connect(d->visualizationCommands[form_type], &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
+        connect(d->visualizationCommands[form_type].get(), &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
             emit formVisuParametersChanged();
         });
         d->acceptForms[form_type] = false;
