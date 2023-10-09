@@ -111,13 +111,10 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspaceTreeConstructor.cpp
   # gnomonWorkspaceTreeFromLString.cpp)
 )
-set(${PROJECT_NAME}_SOURCES_QRC gnomonWorkspace.qrc)
 
 ## #################################################################
 ## Build rules
 ## #################################################################
-
-qt6_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
 
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES}

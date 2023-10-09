@@ -772,7 +772,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
             for s in getattr(cls, "_swig_disown_list"):
                 if DEBUG:
                     logging.debug(f"destroy {s}")
-                s.__swig_destroy__(s)
+                #s.__swig_destroy__(s)
 
             f(self)
 

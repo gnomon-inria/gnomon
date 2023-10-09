@@ -19,6 +19,14 @@ gnomonAbstractCommand::~gnomonAbstractCommand(void)
     delete action;
 }
 
+void  gnomonAbstractCommand::clear(void)
+{
+    if(this->action) {
+        this->action->clearInputs();
+        this->action->clearOutputs();
+    }
+}
+
 void gnomonAbstractCommand::redo(void)
 {
     // TODO: adapters command will probably need to run in main thread due to difficulties in deserialization

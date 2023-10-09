@@ -29,8 +29,8 @@ def form_input(cls, attr, method, setter_method, data_plugin, form_data_factory,
 
     def setter(self, form):
         if form is not None:
-            form_dict, form_data = formDictFromSeries(form=form, data_plugin=data_plugin)
-            register_swig_disown(cls, data_dict)
+            form_dict, data_to_clean = formDictFromSeries(form=form, data_plugin=data_plugin)
+            register_swig_disown(cls, data_to_clean)
             setattr(self, attr, form_dict)
         else:
             setattr(self, attr, {})
