@@ -56,14 +56,6 @@
 %include <gnomonCore/gnomonForm.i>
 
 %{
-// VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
-// with SWIG's preprocessor macro
-#if PY_VERSION_HEX < 0x3020000
-#ifdef Py_hash_t
-#undef Py_hash_t
-#endif
-#endif
-
 
 // /////////////////////////////////////////////////////////////////
 // VTK
@@ -83,6 +75,8 @@
 #define GNOMONVISUALIZATION_EXPORT
 #undef  Q_INVOKABLE
 #define Q_INVOKABLE
+#undef Q_ENUM(x)
+#define Q_ENUM(x)
 
 // /////////////////////////////////////////////////////////////////
 // typemaps

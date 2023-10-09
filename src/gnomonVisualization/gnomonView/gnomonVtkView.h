@@ -33,6 +33,7 @@ public:
         VIEW_MODE_3D = 3,
         VIEW_MODE_2D = 2,
     };
+    Q_ENUM(Mode);
 
     enum Orientation {
         SLICE_ORIENTATION_XY = 2,
@@ -40,8 +41,6 @@ public:
         SLICE_ORIENTATION_YZ = 0,
         NONE = -1
     };
-
-    Q_ENUM(Mode);
     Q_ENUM(Orientation);
 
     enum Representation {
