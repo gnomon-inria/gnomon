@@ -79,7 +79,8 @@ Item {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
             //TODO:  should probably refer to dataDir rather than currentDir as data is meant to be outside the project
-            folder: "file:///" + GP.ProjectManager.project.currentDir
+            folder: "file://" + GP.ProjectManager.project.currentDir
+            ext_folder: "file://" + GP.ProjectManager.project.currentDir;
             extensionFilters: _extensions_model;
 
             onFileDoubleClicked: (fileUrl) => {

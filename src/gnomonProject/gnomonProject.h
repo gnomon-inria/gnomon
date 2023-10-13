@@ -41,6 +41,7 @@ public:
 
 public:
     static QVariantMap readProjectInfoFromPath(const QString &path);
+    QString findFile(const QString& filename) const;
 
 signals:
     void currentDirChanged(void);
