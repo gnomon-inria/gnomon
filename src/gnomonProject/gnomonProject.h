@@ -56,6 +56,7 @@ public:
     QList< QPair<QString, QString> > browserFormInfo(void);
 
 
+    QString findFile(const QString& filename) const;
 
 signals:
     void currentDirChanged(void);
