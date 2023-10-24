@@ -13,8 +13,8 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractMplVisualization : public gnomonA
     Q_OBJECT
 
 public:
-     gnomonAbstractMplVisualization();
-    ~gnomonAbstractMplVisualization(void);
+    gnomonAbstractMplVisualization();
+    virtual ~gnomonAbstractMplVisualization(void);
 
 public:
     int figureNumber(void);

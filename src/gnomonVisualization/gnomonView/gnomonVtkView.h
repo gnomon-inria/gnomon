@@ -26,7 +26,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonVtkView : public gnomonAbstractView
     Q_OBJECT
 public:
      gnomonVtkView(QObject *parent = nullptr);
-    ~gnomonVtkView(void);
+    virtual ~gnomonVtkView(void);
 
 public:
     Q_ENUMS(Mode);

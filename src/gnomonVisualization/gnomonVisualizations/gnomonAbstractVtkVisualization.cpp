@@ -27,11 +27,9 @@ gnomonAbstractVtkVisualization::~gnomonAbstractVtkVisualization(void)
 
 void gnomonAbstractVtkVisualization::setView(gnomonAbstractView* view)
 {
+    this->clearConnections();
     gnomonAbstractVisualization::setView(view);
     if (auto vtk_view = dynamic_cast<gnomonVtkView *>(view)) {
-
-        this->clearConnections();
-
         dd->connect3D = connect(vtk_view, SIGNAL(switchedTo3D(void)), this, SLOT(on3D(void)));
         dd->connect2D = connect(vtk_view, SIGNAL(switchedTo2D(void)), this, SLOT(on2D(void)));
         dd->connectXY = connect(vtk_view, SIGNAL(switchedTo2DXY(void)), this, SLOT(onXY(void)));
@@ -41,7 +39,6 @@ void gnomonAbstractVtkVisualization::setView(gnomonAbstractView* view)
         dd->connectSliceOrientation = connect(vtk_view, SIGNAL(sliceOrientationChanged(int)), this,
                                               SLOT(onSliceOrientationChanged(int)));
         dd->connectSlice = connect(vtk_view, SIGNAL(sliceChanged(double)), this, SLOT(onSliceChanged(double)));
-
     }
 }
 
