@@ -20,8 +20,8 @@ public:
     virtual ~gnomonAbstractLStringMplVisualization(void) = default;
 
 public:
-    virtual void setLString(std::shared_ptr<gnomonLString> lString) = 0;
-    virtual std::shared_ptr<gnomonLString> lString(void) = 0;
+    virtual void setLString(std::shared_ptr<gnomonLStringSeries> lString) = 0;
+    virtual std::shared_ptr<gnomonLStringSeries> lString(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonLString") {
