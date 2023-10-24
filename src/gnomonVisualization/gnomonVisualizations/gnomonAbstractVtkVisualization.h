@@ -41,7 +41,6 @@ public slots:
     virtual void onYZ(void) = 0;
     virtual void onSliceChanged(double) = 0;
     virtual void onSliceOrientationChanged(int) = 0;
-    virtual void onTimeChanged(double) = 0;
 
 public:
     vtkRenderer *offscreenRenderer(void);

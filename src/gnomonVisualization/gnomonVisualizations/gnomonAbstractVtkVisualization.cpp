@@ -42,7 +42,6 @@ void gnomonAbstractVtkVisualization::setView(gnomonAbstractView* view)
                                               SLOT(onSliceOrientationChanged(int)));
         dd->connectSlice = connect(vtk_view, SIGNAL(sliceChanged(double)), this, SLOT(onSliceChanged(double)));
 
-        dd->connectTime = connect(vtk_view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
     }
 }
 
@@ -62,6 +61,7 @@ gnomonInteractorStyle * gnomonAbstractVtkVisualization::interactorStyle(void)
 
 void gnomonAbstractVtkVisualization::clearConnections(void)
 {
+    gnomonAbstractVisualization::clearConnections();
     disconnect(dd->connect3D);
     disconnect(dd->connect2D);
 
@@ -71,7 +71,6 @@ void gnomonAbstractVtkVisualization::clearConnections(void)
 
     disconnect(dd->connectSliceOrientation);
     disconnect(dd->connectSlice);
-    disconnect(dd->connectTime);
 }
 
 vtkRenderer *gnomonAbstractVtkVisualization::offscreenRenderer(void)

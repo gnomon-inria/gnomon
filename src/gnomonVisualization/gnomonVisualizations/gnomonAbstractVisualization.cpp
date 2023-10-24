@@ -22,6 +22,9 @@ void gnomonAbstractVisualization::setView(gnomonAbstractView* view)
 {
     this->clear();
     d->view = view;
+
+    d->connectTime = connect(view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
+
     this->fill();
 }
 
@@ -48,6 +51,11 @@ void gnomonAbstractVisualization::setVisuParameters(QVariantMap parameters)
         QVariant param = parameters[param_name];
         this->setParameter(param_name, param);
     }
+}
+
+void gnomonAbstractVisualization::clearConnections(void)
+{
+    disconnect(d->connectTime);
 }
 
 void gnomonAbstractVisualization::connectParameter(const QString& parameter_name)
