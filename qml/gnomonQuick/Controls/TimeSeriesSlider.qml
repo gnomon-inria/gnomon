@@ -49,6 +49,9 @@ Slider {
         implicitWidth: 14
         implicitHeight: 14
         radius: 7
+
+        border.width: 1
+        border.color: G.Style.colors.fgColor
     }
 
     Label {

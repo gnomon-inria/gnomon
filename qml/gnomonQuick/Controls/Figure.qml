@@ -80,7 +80,7 @@ Rectangle {
     G.TimeSeriesSlider {
         id: _ts_slider;
         times: viewLogic.times
-        visible: viewLogic.times.length > 1 && ts_enabled
+        visible: viewLogic.times.length > 1
         enabled: visible
 
         onValueChanged: {
