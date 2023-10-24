@@ -22,6 +22,7 @@ Rectangle {
     focus: true;
 
     property alias view: _view;
+    property alias ts_slider: _ts_slider
     property var viewLogic;
     property var visualizations;
     property int number: _view.number;
@@ -73,6 +74,17 @@ Rectangle {
             }
 
             drop.accept();
+        }
+    }
+
+    G.TimeSeriesSlider {
+        id: _ts_slider;
+        times: viewLogic.times
+        visible: viewLogic.times.length > 1 && ts_enabled
+        enabled: visible
+
+        onValueChanged: {
+            viewLogic.currentTime = times[value]
         }
     }
 
