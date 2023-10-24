@@ -194,6 +194,7 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
         d->code->setText(s.readAll());
         d->code->parseCode();
         emit d->code->codeUpdated();
+        this->backup();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }
@@ -218,6 +219,7 @@ void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
             settings.setValue("Python/load", file_path);
             f.close();
             emit d->code->codeUpdated();
+            this->backup();
         } else {
             dtkWarn()<<"Could not save to file"<<file_path;
         }
@@ -569,9 +571,14 @@ void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
     }
 }
 
+bool gnomonWorkspacePythonAlgorithm::backup(void) const
+{
+    return GNOMON_PROJECT->backupFile(d->code->fileName(), d->code->text());
+}
+
 void gnomonWorkspacePythonAlgorithm::restore(void)
 {
-   QString project_path = GNOMON_PROJECT->projectDir();
+   QString project_path = GNOMON_PROJECT->projectDir()+ "/.backup_gnomon/";
    QDir project_dir = QDir(project_path);
    QFileInfoList py_list = project_dir.entryInfoList();
    QStringList py_files;

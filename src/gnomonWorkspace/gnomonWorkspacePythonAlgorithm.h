@@ -106,6 +106,7 @@ public:
 public slots:
     void saveState(void);
     void restoreState(void);
+    bool backup(void) const;
     void restore(void);
 
 private:
