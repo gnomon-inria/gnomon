@@ -427,6 +427,26 @@ G.Application {
         window.workspaceThumbnailUpdated(id);
     }
 
+    function history_set_last_used(_folder) {
+        let folder_source = _folder.toString();
+        let projectInfo = GP.ProjectManager.readProjectInfo(folder_source)
+
+        let project_name = projectInfo.name
+
+        if(!project_name){
+            let folder_path = _folder.toString()
+            project_name = folder_path.slice(folder_path.lastIndexOf("/")+1)
+        }
+
+        for(let idx = 0; idx < window.recent_projects.count; idx++) {
+            let project = window.recent_projects.get(idx)
+            if(project.name === project_name && project.source === folder_source) {
+                window.recent_projects.move(idx, 0, 1)
+                return
+            }
+        }
+    }
+
     function add_to_history(_folder){
         let folder_source = _folder.toString();
 
@@ -450,7 +470,7 @@ G.Application {
 
         if(add_project) {
             if (window.recent_projects.count > 15) {
-                window.recent_projects.remove(0)
+                window.recent_projects.remove(14)
             }
             window.recent_projects.append({
                 name: project_name,
@@ -458,8 +478,10 @@ G.Application {
                 description: project_description,
                 lastModified: project_last_modified,
             })
-            recent_projects_array.push(window.recent_projects.get(window.recent_projects.count-1))
+            recent_projects_array.splice(0, 0, window.recent_projects.get(window.recent_projects.count-1))
             window.opened_files = JSON.stringify(recent_projects_array)
+        } else {
+            history_set_last_used(_folder)
         }
     }
 
@@ -508,6 +530,9 @@ G.Application {
 
     function add_workspace(source: string, uuid: string): int
     {
+        if(window.current_workspace()) {
+            window.current_workspace().d.saveState();
+        }
         const workspace_component = Qt.createComponent(source);
         if (workspace_component.status == Component.Ready) {
             console.log("========== Creating workspace ", uuid)
@@ -540,6 +565,7 @@ G.Application {
 
     function switch_workspace(index: int)
     {
+        window.current_workspace().d.saveState();
         window.drawelr_closed = false
         stack_launcher.currentIndex  = 1
         workspaces.currentIndex = index;

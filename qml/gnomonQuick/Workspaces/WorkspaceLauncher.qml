@@ -637,6 +637,7 @@ G.Workspace {
                                 //thumbnail: "image://thumbnails/project_" + index
 
                                 onDoubleClicked: {
+                                    history_set_last_used(source)
                                     load_project(source)
                                 }
 
@@ -653,6 +654,7 @@ G.Workspace {
                                     anchors.rightMargin: G.Style.smallPadding
 
                                     onClicked: {
+                                        history_set_last_used(source)
                                         load_project(source)
                                     }
                                 }
