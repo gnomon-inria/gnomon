@@ -47,7 +47,15 @@ public:
     static QVariantMap readProjectInfoFromPath(const QString &path);
     void addToManifest(const QJsonObject& workspace_info);
     bool backupFile(const QString &fname, const QString &content);
-    QStringList restoreFiles(const QString& workspace);
+
+    // TODO: we actually want the project to restore the file content
+    // const QString& restoreFile(const QString &fname);
+
+    QStringList editorFileInfo(const QStringList& extensions);
+    QList< QPair<QString, QString> > browserFormInfo(void);
+
+
+
 signals:
     void currentDirChanged(void);
     

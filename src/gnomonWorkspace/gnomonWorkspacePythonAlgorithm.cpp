@@ -578,24 +578,11 @@ bool gnomonWorkspacePythonAlgorithm::backup(void) const
 
 void gnomonWorkspacePythonAlgorithm::restore(void)
 {
-   QString project_path = GNOMON_PROJECT->projectDir()+ "/.backup_gnomon/";
-   QDir project_dir = QDir(project_path);
-   QFileInfoList py_list = project_dir.entryInfoList();
-   QStringList py_files;
+    QStringList py_files = GNOMON_PROJECT->editorFileInfo({"py"});
 
-   for(const QFileInfo& file_info: py_list)
-   {
-        if(file_info.isFile() && file_info.suffix()=="py")
-            py_files.append(file_info.filePath());
+   for (auto f: py_files) {
+       emit requestOpenFile(f);
    }
-
-   if(!py_files.isEmpty())
-   {
-        for(auto f: py_files) {
-            emit requestOpenFile(f);
-        }
-   }
-
 }
 
 //

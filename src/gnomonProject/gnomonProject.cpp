@@ -268,14 +268,36 @@ void gnomonProject::save(void)
                 d->projectDir.filePath(PROJECT_MANIFEST_FILE));
 }
 
-QStringList gnomonProject::restoreFiles(const QString& workspace)
+QStringList gnomonProject::editorFileInfo(const QStringList& extensions)
 {
-    QStringList restore_info;
+    QDir backup_dir(d->projectDir.filePath(PROJECT_BACKUP_FOLDER));
+
+    QStringList editor_files;
+    for(const QFileInfo& file_info: backup_dir.entryInfoList())
+    {
+        if (file_info.isFile()) {
+            for (const auto& ext : extensions) {
+                if (file_info.suffix() == ext) {
+                    editor_files.append(file_info.filePath());
+                    break;
+                }
+            }
+        }
+    }
+
+    return editor_files;
+}
+
+QList< QPair<QString, QString> > gnomonProject::browserFormInfo(void)
+{
+    QList< QPair<QString, QString> > restore_info;
     QJsonObject doc_obj = d->readFromJson(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
     QJsonArray data_info = doc_obj.value(doc_obj.keys().last()).toArray();
 
-    restore_info.append(data_info.first().toObject().value("path").toString());
-    restore_info.append(data_info.first().toObject().value("plugin_name").toString());
+    restore_info.append({
+        data_info.first().toObject().value("path").toString(),
+        data_info.first().toObject().value("plugin_name").toString()
+    });
 
     return restore_info;
 }

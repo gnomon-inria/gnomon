@@ -511,12 +511,16 @@ void gnomonWorkspaceBrowser::export_outputs(void) {
     d->browse_view->transmit();
 }
 
+// TODO: to be removed when forms are restored through the session
 void gnomonWorkspaceBrowser::restore(void)
 {
-   QStringList data_info = GNOMON_PROJECT->restoreFiles("Browser");
-   this->setReaderPath(data_info[0]);
-   this->readWith(data_info[1]);
-   d->browse_view->transmit();
+    QList< QPair<QString, QString> > browser_info = GNOMON_PROJECT->browserFormInfo();
+
+    for (auto data_info : browser_info) {
+        this->setReaderPath(data_info.first);
+        this->readWith(data_info.second);
+        d->browse_view->transmit();
+    }
 }
 // /////////////////////////////////////////////////////////////////////////////
 

@@ -529,23 +529,9 @@ bool gnomonWorkspaceLSystemModel::backup(void)
 
 void gnomonWorkspaceLSystemModel::restore()
 {
-    QString backup_path = GNOMON_PROJECT->projectDir()+ "/.backup_gnomon/";
-    QDir backup_dir = QDir(backup_path);
-    QFileInfoList lpy_list = backup_dir.entryInfoList();
-    QStringList lpy_files;
+    QStringList lpy_files = GNOMON_PROJECT->editorFileInfo({"lpy", "py"});
 
-    for(const QFileInfo& file_info: lpy_list) {
-        if(file_info.isFile() && (file_info.suffix()=="lpy" ||
-                                  file_info.suffix()=="py"))
-        {
-            lpy_files.append(file_info.filePath());
-        }
-    }
-
-    if(!lpy_files.isEmpty())
-    {
-        for(auto f : lpy_files) {
-            emit requestOpenFile(f);
-        }
+    for (auto f : lpy_files) {
+        emit requestOpenFile(f);
     }
 }
