@@ -19,7 +19,7 @@ public:
     ~gnomonProjectPrivate();
 
 public:
-    void initManifest(const QString& url);
+    void initFile(const QString& path);
     QJsonObject readFromJson(const QString& url);
 
 public:
@@ -45,11 +45,11 @@ gnomonProjectPrivate::~gnomonProjectPrivate()
 
 }
 
-void gnomonProjectPrivate::initManifest(const QString& url)
+void gnomonProjectPrivate::initFile(const QString& path)
 {
-    QFile file(url);
+    QFile file(path);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning() << Q_FUNC_INFO << "can't open file " << url;
+        qWarning() << Q_FUNC_INFO << "can't open file " << path;
         return;
     }
     file.close();
@@ -149,7 +149,7 @@ void gnomonProject::populateNewProject() {
     d->projectDir.mkdir(PROJECT_BACKUP_FOLDER);
 
     d->manifest_url = d->projectDir.filePath(PROJECT_BACKUP_MANIFEST);
-    d->initManifest(d->manifest_url);
+    d->initFile(d->manifest_url);
 }
 
 bool gnomonProject::isDirAProject(const QDir &dir) {
