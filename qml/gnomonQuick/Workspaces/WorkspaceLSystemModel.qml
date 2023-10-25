@@ -267,7 +267,7 @@ G.Workspace {
                     export_enabled: true;
                 }
 
-                G.DataDict {
+                G.TextView {
                     id: _lstring_view;
                     Layout.fillWidth: true;
                     Layout.fillHeight: true;

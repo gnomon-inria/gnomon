@@ -98,6 +98,16 @@ Rectangle {
         }
     }
 
+    G.TimeSeriesSlider {
+        id: _ts_slider;
+        times: viewLogic.times
+        visible: viewLogic.times.length > 1
+        enabled: visible
+
+        onValueChanged: {
+            viewLogic.currentTime = times[value]
+        }
+    }
 
     G.IconButton {
         id: _export_icon;

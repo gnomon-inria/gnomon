@@ -104,7 +104,7 @@ G.Workspace {
             ColumnLayout {
                 anchors.fill: parent
 
-                G.DataDict {
+                G.TextView {
                     id: _data_target_view;
 
                     Layout.fillWidth: true;
