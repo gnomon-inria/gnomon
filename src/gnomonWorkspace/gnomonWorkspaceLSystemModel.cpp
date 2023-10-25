@@ -112,7 +112,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
-    auto temp_dir = GNOMON_PROJECT->projectDir() + "/.gnomon";
+    auto temp_dir = GNOMON_PROJECT->projectDir() + "/.gnomon/lpy";
     d->tmpDir =  new QDir(temp_dir);
     
     int stat;
