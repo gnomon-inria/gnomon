@@ -15,6 +15,7 @@ public:
 public:
     QString plugin_name;
     QString plugin_documentation;
+    QString file_name;
 
 public:
     QMap<QString, QString> parameter_types;
@@ -73,6 +74,19 @@ void gnomonPythonAlgorithmPluginCode::setText(const QString& text)
     if (text != d->text) {
         d->text = text;
         emit textChanged(d->text);
+    }
+}
+
+QString gnomonPythonAlgorithmPluginCode::fileName(void)
+{
+    return d->file_name;
+}
+
+void gnomonPythonAlgorithmPluginCode::setFileName(const QString& name)
+{
+    if(name != d->file_name) {
+        d->file_name = name;
+        emit fileChanged(d->file_name);
     }
 }
 
@@ -482,6 +496,9 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
             plugin_code += run_code;
         }
     }
+
+    if(d->file_name.isEmpty())
+        d->file_name = "example.py";
 
     this->setText(plugin_code);
     emit codeUpdated();

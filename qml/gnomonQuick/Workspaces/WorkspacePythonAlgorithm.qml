@@ -64,14 +64,20 @@ G.Workspace {
 
                 theme: G.Style.mode == G.Style.Mode.Dark ? 'vs-dark' : 'vs-light';
                 language: 'python';
+                fileName: d.code.fileName
 
                 onModified: (contents) => {
                     d.code.text = eval(contents);
                     d.code.parseCode()
                 }
-
-                Component.onCompleted: {
-                    _editor.contents = d.code.text;
+                onFileSwitched : (name) => {
+                    name = eval(name)
+                    // Don't emit fileNameChanged signal when Tab 0
+                    if(!name.endsWith("0"))
+                        d.code.fileName = name
+                }
+                onIdeIsReady : () => {
+                    d.restore();
                 }
             }
 
@@ -113,8 +119,10 @@ G.Workspace {
 
     Connections {
         target: d.code
-
-        function onCodeUpdated() { _editor.contents = d.code.text; }
+        function onCodeUpdated() {
+            _editor.tabName = d.code.fileName;
+            _editor.contents = d.code.text; 
+        }
     }
 
    // Connections {
@@ -151,6 +159,9 @@ G.Workspace {
     Component.onCompleted: {
         G.Associator.associate(_source_view, d.source);
         G.Associator.associate(_target_view, d.target);
+        if(d.code.fileName)
+            _editor.tabName = d.code.fileName;
+        _editor.contents = d.code.text;
         drawel.close();
     }
 }
