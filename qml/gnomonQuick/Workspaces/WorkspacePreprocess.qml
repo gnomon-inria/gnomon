@@ -35,7 +35,7 @@ G.Workspace {
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    GP.Settings {
+    GP.SessionSettings {
         category: uuid
         property alias state: d.state
 
