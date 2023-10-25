@@ -152,6 +152,13 @@ G.Application {
                         folderDialog.open();
                     }
                 }
+                P.MenuItem {
+                    text: qsTr("Save Project")
+                    shortcut: StandardKey.Save
+                    onTriggered: {
+                        GP.ProjectManager.project.save()
+                    }
+                }
 
             }
 
@@ -535,7 +542,6 @@ G.Application {
         }
         const workspace_component = Qt.createComponent(source);
         if (workspace_component.status == Component.Ready) {
-            console.log("========== Creating workspace ", uuid)
             const workspace = workspace_component.createObject(workspaces, {uuid: uuid});
             if(workspace.workspace_title != "Launcher") {
                 const workspace_index = workspaces.count - 1;
@@ -700,7 +706,8 @@ G.Application {
         console.log("Loading session from ", project_url);
         //window.load_in_progress = true;
         GP.ProjectManager.openProject(project_url)
-        //switch_from_launcher(undefined)
+        //let launcher_workspace =  GP.ProjectManager.readProjectInfo(project_url).launcher_workspace;
+        //switch_from_launcher(launcher_workspace)
         //GP.PrpjectManager.project.loadSession()
 
         stack_launcher.currentIndex = 1;

@@ -1,4 +1,5 @@
 #include "gnomonWorkspaceBrowser.h"
+#include "gnomonProject"
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
@@ -52,10 +53,12 @@ public:
     QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
     QMap<QString, QMap<QString, QVariant> > fileReaderMetadata;
     QString filename;
+    QString object_name;
     QString ext;
     QMap<QString, QMap<QString, QString> > fileReaderImagePath;
     QList<gnomonAbstractReaderCommand *> commands;
     int progress = 0;
+    QJsonObject workspace_info;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -194,6 +197,13 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     readerCommand->setPath(path);
     readerCommand->setSource(source);
     readerCommand->redo();
+    if(!this->object_name.isEmpty()) {
+        QJsonObject data_json;
+        data_json.insert("path", path);
+        data_json.insert("plugin_name", reader_plugin);
+        data_json.insert("workspace_name", "Browser");
+        workspace_info.insert(this->object_name, data_json);
+    }
 
     return true;
 }
@@ -361,12 +371,16 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
     d->browse_view->setAcceptForm("gnomonMesh",true);
     d->browse_view->setAcceptForm("gnomonPointCloud",true);
     // d->browse_view->setAcceptDrops(true);
-
     connect(d->browse_view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         d->pipeline_manager->addForm(f);
         this->m_can_be_destroyed = false;
+        if(!d->workspace_info.isEmpty())
+            GNOMON_PROJECT->addToManifest(d->workspace_info);
         emit canBeDestroyedChanged(false);
     });
+    if(GNOMON_PROJECT->wasSaved)
+        this->restore();
+    d->object_name = QUuid::createUuid().toString(QUuid::WithoutBraces);
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
@@ -505,6 +519,17 @@ void gnomonWorkspaceBrowser::export_outputs(void) {
     d->browse_view->transmit();
 }
 
+// TODO: to be removed when forms are restored through the session
+void gnomonWorkspaceBrowser::restore(void)
+{
+    QList< QPair<QString, QString> > browser_info = GNOMON_PROJECT->browserFormInfo();
+
+    for (auto data_info : browser_info) {
+        this->setReaderPath(data_info.first);
+        this->readWith(data_info.second);
+        d->browse_view->transmit();
+    }
+}
 // /////////////////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspaceBrowser.moc"

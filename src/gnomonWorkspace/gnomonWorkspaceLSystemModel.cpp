@@ -86,7 +86,6 @@ public:
 public:
     gnomonVtkView *view = nullptr;
     gnomonQmlView *text_view = nullptr;
-    gnomonProjectManager *project_manager = nullptr;
     QJsonObject state;
 };
 
@@ -114,8 +113,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
-    d->project_manager = gnomonProjectManager::instance();
-    auto temp_dir = d->project_manager->project()->projectDir() + "/.gnomon";
+    auto temp_dir = GNOMON_PROJECT->projectDir() + "/.gnomon/lpy";
     d->tmpDir =  new QDir(temp_dir);
     
     int stat;
@@ -285,6 +283,7 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url)
         this->setFileName(file_name);
         this->setText(in.readAll());
         this->reset();
+        this->backup();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }
@@ -569,4 +568,18 @@ void gnomonWorkspaceLSystemModel::saveState() {
 
 void gnomonWorkspaceLSystemModel::restoreState() {
     unSerialize(d->state);
+}
+
+bool gnomonWorkspaceLSystemModel::backup(void)
+{
+    return GNOMON_PROJECT->backupFile(d->file, d->text);
+}
+
+void gnomonWorkspaceLSystemModel::restore()
+{
+    QStringList lpy_files = GNOMON_PROJECT->editorFileInfo({"lpy", "py"});
+
+    for (auto f : lpy_files) {
+        emit requestOpenFile(f);
+    }
 }

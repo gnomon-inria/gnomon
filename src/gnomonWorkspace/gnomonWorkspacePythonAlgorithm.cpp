@@ -1,3 +1,4 @@
+#include "gnomonProject"
 #include "gnomonWorkspacePythonAlgorithm.h"
 
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm>
@@ -194,6 +195,7 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
         d->code->setText(s.readAll());
         d->code->parseCode();
         emit d->code->codeUpdated();
+        this->backup();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }
@@ -217,6 +219,8 @@ void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
             out << d->code->text();
             settings.setValue("Python/load", file_path);
             f.close();
+            emit d->code->codeUpdated();
+            this->backup();
         } else {
             dtkWarn()<<"Could not save to file"<<file_path;
         }
@@ -602,7 +606,19 @@ void gnomonWorkspacePythonAlgorithm::unSerialize(const QJsonObject &state) {
     }
 }
 
+bool gnomonWorkspacePythonAlgorithm::backup(void) const
+{
+    return GNOMON_PROJECT->backupFile(d->code->fileName(), d->code->text());
+}
 
+void gnomonWorkspacePythonAlgorithm::restore(void)
+{
+    QStringList py_files = GNOMON_PROJECT->editorFileInfo({"py"});
+
+   for (auto f: py_files) {
+       emit requestOpenFile(f);
+   }
+}
 
 //
 // gnomonWorkspacePythonAlgorithm.cpp ends here

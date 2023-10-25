@@ -10,6 +10,7 @@ struct gnomonProjectInfo {
     QString description;
     QString path;
     QString default_source;
+    QString launcher_workspace;
     QDateTime lastModified;
 };
 
@@ -32,6 +33,7 @@ public:
                                      const QString &source);
     void close();
 
+    Q_INVOKABLE void save(void);
     Q_INVOKABLE bool loadSessionFromPipeline(const QString &path, QObject *window);
     gnomonAbstractSessionManager *currentSession(void);
 public:
@@ -41,9 +43,20 @@ public:
 
 public:
     void setCurrentDir(const QString& url);
+    bool wasSaved = false;
 
 public:
     static QVariantMap readProjectInfoFromPath(const QString &path);
+    void addToManifest(const QJsonObject& workspace_info);
+    bool backupFile(const QString &fname, const QString &content);
+
+    // TODO: we actually want the project to restore the file content
+    // const QString& restoreFile(const QString &fname);
+
+    QStringList editorFileInfo(const QStringList& extensions);
+    QList< QPair<QString, QString> > browserFormInfo(void);
+
+
 
 signals:
     void currentDirChanged(void);
