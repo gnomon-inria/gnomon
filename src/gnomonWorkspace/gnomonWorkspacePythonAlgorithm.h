@@ -63,6 +63,7 @@ signals:
     void editModeChanged(void);
     void algorithmLoaded(void);
     void parametersChanged(void);
+    void requestOpenFile(const QString& path);
 
 public slots:
     void read(const QString& file_url);
@@ -105,6 +106,8 @@ public:
 public slots:
     void saveState(void);
     void restoreState(void);
+    bool backup(void) const;
+    void restore(void);
 
 private:
     class gnomonWorkspacePythonAlgorithmPrivate *d;

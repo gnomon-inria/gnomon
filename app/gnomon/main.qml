@@ -152,6 +152,13 @@ G.Application {
                         folderDialog.open();
                     }
                 }
+                P.MenuItem {
+                    text: qsTr("Save Project")
+                    shortcut: StandardKey.Save
+                    onTriggered: {
+                        GP.ProjectManager.project.save()
+                    }
+                }
 
             }
 
@@ -671,7 +678,8 @@ G.Application {
         console.log("Loading session from ", project_url);
         //window.load_in_progress = true;
         GP.ProjectManager.openProject(project_url)
-        switch_from_launcher(undefined)
+        let launcher_workspace =  GP.ProjectManager.readProjectInfo(project_url).launcher_workspace;
+        switch_from_launcher(launcher_workspace)
         //GP.PrpjectManager.project.loadSession()
 
         stack_launcher.currentIndex = 1;
