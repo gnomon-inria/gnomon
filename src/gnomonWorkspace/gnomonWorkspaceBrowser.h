@@ -53,6 +53,7 @@ public slots:
 public:
     Q_INVOKABLE QUrl defaultReadPath(void);
     QStringList readerExtensions(void);
+    void restore(void);
 
 private:
     class gnomonWorkspaceBrowserPrivate *d;

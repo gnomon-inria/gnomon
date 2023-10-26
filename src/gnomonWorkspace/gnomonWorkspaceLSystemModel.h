@@ -46,6 +46,7 @@ signals:
     void fileChanged(const QString& file_name);
     void parametersChanged(void);
     void currentIndexChanged(void);
+    void requestOpenFile(const QString& path);
 
 public:
     QString message(void) const;
@@ -75,6 +76,7 @@ public slots:
     void reset(void);
     void stop(void);
     void setAnimationTime(const QString& time);
+    void restore(void);
 
     void setInitialState(void);
     void viewState(void);
@@ -89,6 +91,7 @@ public:
     void setFileName(const QString &);
     int currentIndex(void) const;
     void setCurrentIndex(int);
+    bool backup(void);
 
     gnomonVtkView *view(void) const;
     gnomonQmlView *textView(void) const;

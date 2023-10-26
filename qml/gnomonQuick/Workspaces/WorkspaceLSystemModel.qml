@@ -83,15 +83,7 @@ G.Workspace {
         nameFilters: ["L-Py source files (*.lpy *.py)"]
 
         onAccepted: {
-            d.read(decodeURIComponent(_file_dialog.file));
-            _editor.contents = d.text
-            _self._current_file = decodeURIComponent(_file_dialog.file);
-            _editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
-            _self._path = folder;
-
-            if (!_self._current_file.endsWith(".lpy")) {
-                _non_lpy_toast.open()
-            }
+            _self.open_lpy_file(_file_dialog.file)
         }
     }
 
@@ -228,6 +220,10 @@ G.Workspace {
                     if(name.endsWith("py"))
                         d.fileName = name
                 }
+
+                onIdeIsReady : () => {
+                    d.restore();
+                }
             }
         }
 
@@ -282,6 +278,13 @@ G.Workspace {
         }
     }
 
+    Connections {
+        target: d
+        function onRequestOpenFile(path) {
+            _self.open_lpy_file(path);
+        }
+    }
+
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
 
@@ -291,5 +294,17 @@ G.Workspace {
         d.onParametersChanged();
         d.reset();
         drawel.close();
+    }
+
+    function open_lpy_file(path) {
+        d.read(decodeURIComponent(path));
+        _editor.contents = d.text
+        _self._current_file = decodeURIComponent(path);
+        _editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
+        _self._path = folder;
+
+        if (!_self._current_file.endsWith(".lpy")) {
+            _non_lpy_toast.open()
+        }
     }
 }

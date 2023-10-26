@@ -48,9 +48,10 @@ gnomonProject *gnomonProjectManager::openProject(const QString &path) {
 }
 
 gnomonProject *gnomonProjectManager::createProject(const QString &path, const QString &name,
-                                                   const QString &description) {
+                                                   const QString &description, const QString &launcher_workspace) 
+{
     closeProject();
-    d->project = gnomonProject::newProject(path, name, description);
+    d->project = gnomonProject::newProject(path, name, description, launcher_workspace);
     QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
     return d->project;
 }
