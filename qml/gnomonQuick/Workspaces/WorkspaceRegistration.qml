@@ -75,6 +75,7 @@ G.Workspace {
                 if(new_val != _source_view_ref.ts_slider.value) {
                     _source_view_ref.ts_slider.value = new_val
                 }
+                _data_target_view.ts_slider.value = ts_slider.value
             }
 
             Label {

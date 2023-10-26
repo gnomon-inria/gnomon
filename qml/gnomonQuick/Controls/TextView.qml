@@ -17,6 +17,7 @@ Rectangle {
     focus: true;
 
     property alias view: _view;
+    property alias ts_slider: _ts_slider
     property var viewLogic;
     property bool export_enabled: !viewLogic.inputView
 
