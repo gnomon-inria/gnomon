@@ -10,7 +10,6 @@ struct gnomonProjectInfo {
     QString description;
     QString path;
     QString default_source;
-    QString launcher_workspace;
     QDateTime lastModified;
 };
 

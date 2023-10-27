@@ -133,7 +133,6 @@ void gnomonProject::saveProjectInfo() {
         storage["description"] = pInfo.description;
         storage["path"] = pInfo.path;
         storage["default_source"] = pInfo.default_source;
-        storage["launcher_workspace"] = pInfo.default_source;
         pInfo.lastModified.setSecsSinceEpoch(QDateTime::currentSecsSinceEpoch());
         storage["lastModified"] = pInfo.lastModified.toString("yyyy-MM-ddTHH:mm:ss");
         QJsonDocument doc(storage);
@@ -182,7 +181,6 @@ gnomonProject *gnomonProject::newProject(const QString &path, const QString &nam
     project->d->projectInfo.name = name;
     project->d->projectInfo.description = description;
     project->d->projectInfo.default_source = source;
-    project->d->projectInfo.launcher_workspace = source;
     project->saveProjectInfo();
     return project;
 }
