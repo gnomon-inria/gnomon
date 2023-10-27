@@ -12,7 +12,7 @@ dependencies:
     - qt6-webengine
     - git
     - x-vis =1.1.0
-    - vtk =9.2.6
+    - dtk-forge6::vtk =9.2.6
     - dtk-core
     - dtk-log
     - dtk-script >= 2.5.1

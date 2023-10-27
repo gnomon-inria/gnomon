@@ -29,6 +29,7 @@ __PLUGINS__ = []
 DEBUG = True if os.environ.get('DEBUG') else False
 
 if DEBUG:
+    print("Debug Mode Activated")
     logger = logging.getLogger()
     handler = logging.StreamHandler()
     formatter = logging.Formatter(
@@ -773,6 +774,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
                 if DEBUG:
                     logging.debug(f"destroy {s}")
                 #s.__swig_destroy__(s)
+            self._swig_disown_list.clear()
 
             f(self)
 
