@@ -18,8 +18,8 @@ class gnomonAbstractVtkVisualization;
 
 class vtkCamera;
 class vtkRenderer;
+class vtkRenderWindow;
 class vtkRenderWindowInteractor;
-class vtkGenericOpenGLRenderWindow;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVtkView : public gnomonAbstractView
 {
@@ -89,7 +89,7 @@ public:
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
-    void associate(vtkGenericOpenGLRenderWindow *);
+    void associate(vtkRenderWindow *);
 // /////////////////////////////////////////////////////////////////////////////
 
 signals:

@@ -35,7 +35,7 @@
 #include <vtkCamera.h>
 #include <vtkCaptionActor2D.h>
 #include <vtkCubeAxesActor.h>
-#include <vtkGenericOpenGLRenderWindow.h>
+//#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorObserver.h>
 #include <vtkInteractorStyle.h>
 #include <vtkInteractorStyleImage.h>
@@ -45,6 +45,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
+#include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTextProperty.h>
 #include <vtkWindowToImageFilter.h>
@@ -198,7 +199,7 @@ public:
     void addCameraObserver(vtkSmartPointer<vtkCamera> cam);
 
 public:
-    vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
+    vtkSmartPointer<vtkRenderWindow> window;
     vtkSmartPointer<vtkRenderer> renderer2D;
     vtkSmartPointer<vtkRenderer> renderer3D;
 
@@ -575,7 +576,7 @@ gnomonVtkView::~gnomonVtkView(void)
     delete dd;
 }
 
-void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
+void gnomonVtkView::associate(vtkRenderWindow *window)
 {
     dd->window = window;
     dd->window->AddRenderer(dd->renderer2D);
@@ -1563,8 +1564,24 @@ void gnomonVtkView::saveScreenshot(const QString& filename)
         file_path = filename;
     }
 
-    QImage image = this->toImage();
-    image.save(file_path);
+    //QImage image = this->toImage();
+    //image.save(file_path);
+
+    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+    windowToImageFilter->SetInput(dd->window);
+    windowToImageFilter->SetInputBufferTypeToRGBA();
+    windowToImageFilter->ReadFrontBufferOff();
+
+    vtkSmartPointer<vtkImageWriter> writer = nullptr;
+    if (file_path.endsWith(".png")) {
+        writer = vtkSmartPointer<vtkPNGWriter>::New();
+    }
+
+    if (writer) {
+        writer->SetFileName(file_path.toStdString().c_str());
+        writer->SetInputConnection(windowToImageFilter->GetOutputPort());
+        writer->Write();
+    }
 }
 
 QImage gnomonVtkView::toImage(void)

@@ -1,7 +1,7 @@
 import vtk
 import matplotlib.pyplot as plt
 
-from gnomon.visualization import gnomonAbstractView
+from gnomon.visualization import gnomonAbstractView, gnomonVtkView
 from gnomon.visualization import gnomonAbstractVtkVisualization, gnomonAbstractMplVisualization
 from gnomon.utils.matplotlib_tools.backend_qtquickagg import manager_instance
 
@@ -94,6 +94,26 @@ class gnomonLightVtkView(gnomonAbstractView):
             writer.SetFileName(filename)
             writer.SetInputConnection(window_to_image_filter.GetOutputPort())
             writer.Write()
+
+
+class gnomonStandaloneVtkView(gnomonVtkView):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self._render_window = vtk.vtkRenderWindow()
+        self._render_window.SetSize(1000, 1000)
+
+        self._render_window_interactor = vtk.vtkRenderWindowInteractor()
+        self._render_window_interactor.SetRenderWindow(self._render_window)
+
+        self.associate(self._render_window)
+
+        self._render_window_interactor.Initialize()
+        self._render_window_interactor.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
+
+    def show(self):
+        self._render_window_interactor.Start()
 
 
 class gnomonLightMplView(gnomonAbstractView):

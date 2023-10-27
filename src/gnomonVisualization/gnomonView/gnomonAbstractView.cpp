@@ -322,11 +322,9 @@ double gnomonAbstractView::timeMax(void)
 void gnomonAbstractView::setCurrentTime(double time)
 {
     QList<double> sorted_times = this->times();
-    if(sorted_times.contains(time)) {
-        if (d->current_time != time) {
-            d->current_time = time;
-            emit timeChanged(d->current_time);
-        }
+    if (d->current_time != time) {
+        d->current_time = time;
+        emit timeChanged(d->current_time);
     }
 }
 

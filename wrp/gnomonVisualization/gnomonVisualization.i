@@ -109,6 +109,22 @@
     }
 }
 
+%typemap(out) vtkRenderWindow* {
+
+    PyImport_ImportModule("vtk");
+
+    $result = vtkPythonUtil::GetObjectFromPointer((vtkObjectBase*)$1);
+}
+
+%typemap(in) vtkRenderWindow* {
+
+    $1 = (vtkRenderWindow *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderWindow");
+
+    if ($1 == NULL) {
+        SWIG_fail;
+    }
+}
+
 %typemap(out) vtkRenderWindowInteractor* {
 
     PyImport_ImportModule("vtk");
