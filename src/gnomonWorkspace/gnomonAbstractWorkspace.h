@@ -27,7 +27,7 @@ public slots:
 
 public:
     bool canBeDestroyed(void) { return this->m_can_be_destroyed; };
-    QString uuid() { return objectName(); };
+    QString uuid() { return this->m_uuid; };
 
     virtual QJsonObject serialize() = 0;
     virtual void unSerialize(const QJsonObject &state) = 0;
@@ -35,4 +35,5 @@ public:
 
 protected:
     bool m_can_be_destroyed = true;
+    QString m_uuid;
 };

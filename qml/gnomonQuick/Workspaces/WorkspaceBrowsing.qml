@@ -25,8 +25,8 @@ G.Workspace {
         category: "ReaderDialogCache";
     }
 
-    GP.SessionSettings {
-        category: _self.uuid
+    G.SessionSettings {
+        category: d.uuid
         property alias state: d.state
     }
 

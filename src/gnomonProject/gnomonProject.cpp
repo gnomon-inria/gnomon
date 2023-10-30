@@ -30,6 +30,7 @@ public:
     QDir currentDir;
 
     QString manifest_url;
+    QHash<QString, int> workspace_obj_count;
 };
 
 gnomonProjectPrivate::gnomonProjectPrivate(const QString &path): 
@@ -270,6 +271,9 @@ bool gnomonProject::backupFile(const QString &fname, const QString &content)
 
 void gnomonProject::save(void)
 {
+    QFile old_manifest(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
+    if(old_manifest.exists())
+        old_manifest.remove();
     QFile::copy(d->projectDir.filePath(PROJECT_BACKUP_MANIFEST),
                 d->projectDir.filePath(PROJECT_MANIFEST_FILE));
 }
@@ -306,6 +310,28 @@ QList< QPair<QString, QString> > gnomonProject::browserFormInfo(void)
     });
 
     return restore_info;
+}
+
+QJsonObject gnomonProject::workspaceAlgoInfo(const QString& workspace_name)
+{
+    QJsonObject workspace_info;
+    QJsonArray workspace_array;
+    QJsonObject doc_obj = d->readFromJson(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
+    QJsonObject::const_iterator it = doc_obj.constBegin();
+    while(it != doc_obj.constEnd()) {
+        auto it_val = it.value().toArray().first().toObject().value("workspace_name").toString();
+        if(it_val == workspace_name) {
+            QJsonObject temp_obj;
+            temp_obj.insert(it.key(), it.value().toArray());
+            workspace_array.push_back(temp_obj);
+        }
+        ++it;
+    }
+    if(workspace_array.count() > d->workspace_obj_count[workspace_name]) {
+        workspace_info = workspace_array[d->workspace_obj_count[workspace_name]].toObject();
+    }
+    d->workspace_obj_count[workspace_name]++;
+    return workspace_info;
 }
 //
 // gnomonProject.cpp ends here

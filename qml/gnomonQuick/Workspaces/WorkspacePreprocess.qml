@@ -35,10 +35,10 @@ G.Workspace {
 //
 // /////////////////////////////////////////////////////////////////////////////
 
-    GP.SessionSettings {
-        category: uuid
+    G.SessionSettings {
+        id: stt
+        category: d.uuid
         property alias state: d.state
-
     }
 
     d: GW.WorkspacePreprocess {
@@ -48,6 +48,7 @@ G.Workspace {
         onFinished: idleStop();
 
         onParametersChanged: {
+            stt.sync()
             updateParametersModel(); //_workspace.updateParametersModel();
         }
     }
