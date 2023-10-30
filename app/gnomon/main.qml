@@ -706,8 +706,6 @@ G.Application {
         console.log("Loading session from ", project_url);
         //window.load_in_progress = true;
         GP.ProjectManager.openProject(project_url)
-        //let launcher_workspace =  GP.ProjectManager.readProjectInfo(project_url).launcher_workspace;
-        //switch_from_launcher(launcher_workspace)
         //GP.PrpjectManager.project.loadSession()
 
         stack_launcher.currentIndex = 1;
