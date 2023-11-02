@@ -6,6 +6,10 @@ from gnomon.utils.matplotlib_tools.backend_qtquickagg import manager_instance
 
 
 class gnomonStandaloneVtkView(gnomonVtkView):
+    """
+    Standalone VtkView object to be used outside the Gnomon application
+
+    """
 
     def __init__(self, parent=None, size=(1000, 1000), offscreen=False):
         super().__init__(parent)
@@ -28,6 +32,10 @@ class gnomonStandaloneVtkView(gnomonVtkView):
 
 
 class gnomonStandaloneMplView(gnomonMplView):
+    """
+    Standalone MplView object to be used outside the Gnomon application
+
+    """
 
     def __init__(self, parent=None, size=(1000, 1000)):
         super().__init__(parent, True)
