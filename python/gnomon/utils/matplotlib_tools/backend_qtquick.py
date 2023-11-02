@@ -10,6 +10,7 @@ from matplotlib.backends.backend_qt import TimerQT, SPECIAL_KEYS, _MODIFIER_KEYS
 from .qt_compat import QtCore, QtGui, QtQuick, QtWidgets, QT_API, QT_API_PYSIDE6
 from qtpy.QtCore import Slot
 
+
 class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     """ This class creates a QtQuick Item encapsulating a Matplotlib
         Figure and all the functions to interact with the 'standard'
@@ -18,6 +19,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
 
     dpi_ratio_changed = QtCore.Signal()
     numberChanged = QtCore.Signal()
+    background_color_changed = QtCore.Signal()
     hoverChanged = QtCore.Signal()
     mouseReleased = QtCore.Signal()
 
@@ -40,6 +42,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         # The dpi ratio (property without leading _)
         self._dpi_ratio = 1
         self._number = -1
+        self._background_color = 'w'
 
         # Activate hover events and mouse press events
         self.setAcceptHoverEvents(True)
@@ -75,6 +78,20 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     def get_number(self):
         return self._number
 
+    def background_color(self):
+        return self._background_color
+
+    def set_background_color(self, col: str):
+        print(self._background_color, "-->",  col)
+        if col != self._background_color:
+            self._background_color = col
+            self.figure.set_facecolor(self._background_color)
+            for ax in self.figure.get_axes():
+                ax.set_facecolor(self._background_color)
+            matplotlib.rcParams['axes.facecolor']=self._background_color
+            self.figure.canvas.draw()
+            self.background_color_changed.emit()
+
     def boundingRect(self):
         return QtCore.QRectF(0, 0, self.width(), self.height())
 
@@ -107,6 +124,13 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
                                 get_dpi_ratio,
                                 set_dpi_ratio,
                                 notify=dpi_ratio_changed)
+
+    backgroundColor = QtCore.Property(
+        str,
+        fget=background_color,
+        fset=set_background_color,
+        notify=background_color_changed
+    )
 
     def get_width_height(self):
         w, h = FigureCanvasBase.get_width_height(self)
