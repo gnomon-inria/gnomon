@@ -394,7 +394,7 @@ int gnomonSessionManager::loadWorkspace(const QString &source, const QString &uu
 
 int gnomonSessionManager::newWorkspace(const QString &source) {
     int index = 0;
-    auto uuid = QUuid::createUuid().toString();
+    auto uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
     auto success = QMetaObject::invokeMethod(d->window, "add_workspace",
                               Q_RETURN_ARG(int, index),
                               Q_ARG(QString, source),

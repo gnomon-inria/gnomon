@@ -3,5 +3,5 @@ import Qt.labs.settings
 
 Settings {
     id: _self
-    fileName : ".gnomon/session.ini"
+    fileName : ".gnomon/session/session.ini"
 }

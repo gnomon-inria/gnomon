@@ -26,7 +26,7 @@ G.Workspace {
     }
 
     G.SessionSettings {
-        category: d.uuid
+        category: uuid
         property alias state: d.state
     }
 

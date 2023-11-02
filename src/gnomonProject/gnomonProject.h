@@ -54,7 +54,6 @@ public:
 
     QStringList editorFileInfo(const QStringList& extensions);
     QList< QPair<QString, QString> > browserFormInfo(void);
-    QJsonObject workspaceAlgoInfo(const QString& workspace_name);
 
 
 
