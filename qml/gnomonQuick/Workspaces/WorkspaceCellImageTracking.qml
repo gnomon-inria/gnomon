@@ -27,6 +27,11 @@ G.Workspace {
         _source_view.droppedFromManager(world.currentRef);
     }
 
+    G.SessionSettings {
+        category: uuid
+        property alias state: d.state
+    }
+
     d: GW.WorkspaceCellImageTracking {
         id: d;
 

@@ -9,7 +9,7 @@
 #include "gnomonProject"
 
 #define PROJECT_SESSION_DIRECTORY ".gnomon/session"
-#define PROJECT_SESSION_FILE ".gnomon/session/session.json"
+#define PROJECT_SESSION_FILE ".gnomon/session/session.ini"
 #define PROJECT_PIPELINE_FILE ".gnomon/session/pipeline.json"
 
 // /////////////////////////////////////////////////////////////////
@@ -416,10 +416,10 @@ void gnomonSessionManager::sync() {
     if(!d->init) {
         return;
     }
+
     qDebug() << "===========" << "saving session";
+    QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
     QDir dir(GNOMON_PROJECT->projectDir());
-    dir.mkpath(PROJECT_SESSION_DIRECTORY);
-    QFile session_file(dir.absoluteFilePath(PROJECT_SESSION_FILE));
 
     // building json object for properties
     QJsonObject session_json;
@@ -440,11 +440,7 @@ void gnomonSessionManager::sync() {
     session_json.insert("workspace_properties", workspace_properties);
     session_json.insert("workspace_sources", workspace_sources);
 
-    session_file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&session_file);
-    out << QJsonDocument(session_json).toJson();
-    out.flush();
-    session_file.close();
+    settings.setValue("workspaces", session_json);
 
     // pipeline
     auto url = QUrl::fromLocalFile(dir.absoluteFilePath(PROJECT_PIPELINE_FILE));
@@ -460,17 +456,15 @@ void gnomonSessionManager::sync() {
 bool gnomonSessionManager::load() {
     qDebug() << "===========" << "loading session";
     QDir dir(GNOMON_PROJECT->projectDir());
-    if(dir.exists(PROJECT_SESSION_FILE)) {
-        QFile session_file(dir.absoluteFilePath(PROJECT_SESSION_FILE));
-        QJsonDocument session_doc;
-        if(session_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            session_doc = QJsonDocument::fromJson(session_file.readAll());
-        } else {
-            return false;
-        }
-        QJsonObject workspace_properties = session_doc.object()["workspace_properties"].toObject();
-        QJsonArray workspace_order = session_doc.object()["workspace_order"].toArray();
-        QJsonObject workspace_sources = session_doc.object()["workspace_sources"].toObject();
+
+    QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
+    QJsonObject workspaces_info = settings.value("workspaces").toJsonObject();
+
+    if(!workspaces_info.isEmpty()) {
+
+        QJsonObject workspace_properties = workspaces_info["workspace_properties"].toObject();
+        QJsonArray workspace_order = workspaces_info["workspace_order"].toArray();
+        QJsonObject workspace_sources = workspaces_info["workspace_sources"].toObject();
         for(const auto &id_: workspace_order) {
             auto id = id_.toString();
             d->workspace_properties[id] = workspace_properties[id].toObject();;
@@ -491,7 +485,7 @@ bool gnomonSessionManager::load() {
 
 
         QMetaObject::invokeMethod(d->window, "switch_workspace",
-                                  Q_ARG(int, session_doc.object()["current_index"].toInt()));
+                                  Q_ARG(int, workspaces_info["current_index"].toInt()));
         d->init = true;
         return true;
     } else {

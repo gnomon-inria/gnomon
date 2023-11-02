@@ -23,6 +23,11 @@ G.Workspace {
     }
     focus: true;
 
+    G.SessionSettings {
+        category: uuid
+        property alias state: d.state
+    }
+
     d: GW.WorkspaceMorphonet {
         id: d;
 
