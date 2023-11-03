@@ -1,7 +1,6 @@
 #include "gnomon.hpp"
 #include "MaterialPreview.hpp"
 #include "gnomonSessionManager.h"
-#include "gnomonSettings.h"
 
 #include <memory>
 
@@ -306,7 +305,6 @@ void gnomon_rinit()
     // -- Project Management
 
     qmlRegisterType<gnomonProject>("gnomon.Project", 1, 0, "Project");
-    qmlRegisterType<gnomonSettings>("gnomon.Project", 1, 0, "SessionSettings");
     qmlRegisterSingletonInstance("gnomon.Project", 1, 0, "ProjectManager", gnomonProjectManager::instance());
     qmlRegisterSingletonInstance("gnomon.Project", 1, 0, "SessionManager", gnomonAbstractSessionManager::instance());
 

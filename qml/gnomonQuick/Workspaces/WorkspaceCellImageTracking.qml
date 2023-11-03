@@ -95,7 +95,7 @@ G.Workspace {
                         d.sourceDict.drop(index);
                     }
 
-                    G.Label {
+                    Label {
                         anchors.top: parent.top
                         anchors.left: parent.left
 
@@ -103,7 +103,7 @@ G.Workspace {
                         color: G.Style.colors.fgColor
                     }
 
-                    G.Label {
+                    Label {
                         anchors.centerIn: parent
 
                         text: d.sourceDict.dataDict

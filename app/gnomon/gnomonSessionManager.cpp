@@ -401,6 +401,7 @@ int gnomonSessionManager::newWorkspace(const QString &source) {
                               Q_ARG(QString, uuid));
     if(success) {
         d->workspace_sources[uuid] = source;
+        this->sync();
     }
     return index;
 }
