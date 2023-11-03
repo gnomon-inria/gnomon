@@ -14,7 +14,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonQmlView : public gnomonAbstractView
 
 public:
     gnomonQmlView(QObject *parent = nullptr);
-    ~gnomonQmlView(void);
+    virtual ~gnomonQmlView(void);
 
 public:
     Q_PROPERTY(QString displayText READ displayText WRITE setDisplayText NOTIFY displayTextChanged);

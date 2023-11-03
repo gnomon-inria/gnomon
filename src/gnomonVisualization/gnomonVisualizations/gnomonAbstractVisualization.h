@@ -14,7 +14,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualization : public QObject
 
 public:
     gnomonAbstractVisualization();
-    ~gnomonAbstractVisualization(void);
+    virtual ~gnomonAbstractVisualization(void);
 
 public:
     virtual void setView(gnomonAbstractView *view);
@@ -55,7 +55,10 @@ public slots:
     // add the form visualization to its view, if possible without any recomputing
     virtual void fill(void) = 0;
 
-    virtual inline void clearConnections(void) {  };
+    virtual void clearConnections(void);
+
+public slots:
+    virtual void onTimeChanged(double) = 0;
 
 public slots:
     virtual void setVisible(bool visible) = 0;

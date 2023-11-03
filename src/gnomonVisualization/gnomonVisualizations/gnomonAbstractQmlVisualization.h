@@ -16,7 +16,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractQmlVisualization : public gnomonA
 
 public:
     gnomonAbstractQmlVisualization();
-    ~gnomonAbstractQmlVisualization(void);
+    virtual ~gnomonAbstractQmlVisualization(void);
 
 public:
     gnomonQmlView *qmlView(void);

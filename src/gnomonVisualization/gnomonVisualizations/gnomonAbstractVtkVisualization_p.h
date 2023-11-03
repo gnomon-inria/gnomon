@@ -36,9 +36,6 @@ public:
     QMetaObject::Connection connectSlice;
 
 public:
-    QMetaObject::Connection connectTime;
-
-public:
     QMetaObject::Connection connect3D;
     QMetaObject::Connection connect2D;
     QMetaObject::Connection connectXY;

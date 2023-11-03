@@ -48,7 +48,7 @@ void gnomonTreeMplVisualizationCommand::setFormVisualization(const QString& visu
     this->setAlgorithmName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractTreeMplVisualization>(this->visu);
     if (visu) {
-        visu->setTree(d->tree->current());
+        visu->setTree(d->tree);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();
         visu->update();
@@ -57,7 +57,7 @@ void gnomonTreeMplVisualizationCommand::setFormVisualization(const QString& visu
 
 void gnomonTreeMplVisualizationCommand::predo(void)
 {
-    std::dynamic_pointer_cast<gnomonAbstractTreeMplVisualization>(this->visu)->setTree(d->tree->current());
+    std::dynamic_pointer_cast<gnomonAbstractTreeMplVisualization>(this->visu)->setTree(d->tree);
 }
 
 void gnomonTreeMplVisualizationCommand::postdo(void)

@@ -48,7 +48,7 @@ void gnomonLStringMplVisualizationCommand::setFormVisualization(const QString& v
     this->setAlgorithmName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractLStringMplVisualization>(this->visu);
     if (visu) {
-        visu->setLString(d->lString->current());
+        visu->setLString(d->lString);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();
         visu->update();
@@ -57,7 +57,7 @@ void gnomonLStringMplVisualizationCommand::setFormVisualization(const QString& v
 
 void gnomonLStringMplVisualizationCommand::predo(void)
 {
-    std::dynamic_pointer_cast<gnomonAbstractLStringMplVisualization>(this->visu)->setLString(d->lString->current());
+    std::dynamic_pointer_cast<gnomonAbstractLStringMplVisualization>(this->visu)->setLString(d->lString);
 }
 
 void gnomonLStringMplVisualizationCommand::postdo(void)

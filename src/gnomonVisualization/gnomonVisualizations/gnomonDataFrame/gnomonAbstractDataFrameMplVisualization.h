@@ -15,8 +15,8 @@ public:
     virtual ~gnomonAbstractDataFrameMplVisualization(void) = default;
 
 public:
-    virtual void setDataFrame(std::shared_ptr<gnomonDataFrame> dataFrame) = 0;
-    virtual std::shared_ptr<gnomonDataFrame> dataFrame(void) = 0;
+    virtual void setDataFrame(std::shared_ptr<gnomonDataFrameSeries> dataFrame) = 0;
+    virtual std::shared_ptr<gnomonDataFrameSeries> dataFrame(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonDataFrame") {

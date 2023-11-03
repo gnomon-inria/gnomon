@@ -35,7 +35,7 @@
 #include <vtkCamera.h>
 #include <vtkCaptionActor2D.h>
 #include <vtkCubeAxesActor.h>
-#include <vtkGenericOpenGLRenderWindow.h>
+//#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorObserver.h>
 #include <vtkInteractorStyle.h>
 #include <vtkInteractorStyleImage.h>
@@ -45,6 +45,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
+#include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTextProperty.h>
 #include <vtkWindowToImageFilter.h>
@@ -191,7 +192,6 @@ public:
     void updateOrientation(void);
 
 public:
-    void updateFormsTimes(void);
     void updateGrid(void);
     void updateAxes(void);
 
@@ -199,7 +199,7 @@ public:
     void addCameraObserver(vtkSmartPointer<vtkCamera> cam);
 
 public:
-    vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
+    vtkSmartPointer<vtkRenderWindow> window;
     vtkSmartPointer<vtkRenderer> renderer2D;
     vtkSmartPointer<vtkRenderer> renderer3D;
 
@@ -247,15 +247,11 @@ public:
     bool in_pool = false;
 
 public:
-    QSet<double> forms_times;
     QList<long> picked_cells;
 
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
     double c_x = 0., c_y = 0., c_z = 0.;
-
-public:
-    double c_t = 0.;
 
 public:
     QSettings *settings;
@@ -394,19 +390,6 @@ void gnomonVtkViewPrivate::updateOrientation(void)
     this->interactor()->Render();
 }
 
-void gnomonVtkViewPrivate::updateFormsTimes(void)
-{
-    this->forms_times.clear();
-
-    for (const auto& key : q->formNames()) {
-        for(auto time : q->form(key)->times()) {
-            this->forms_times.insert(time);
-        }
-    }
-
-    emit q->timeMaxChanged(q->timeMax());
-    q->timesChanged();
-}
 
 void gnomonVtkViewPrivate::updateGrid(void)
 {
@@ -581,11 +564,6 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     d->acceptForms["gnomonMesh"] = false;
     d->acceptForms["gnomonPointCloud"] = false;
 
-    connect(this, &gnomonVtkView::formAdded, [=] (const QString& key) {
-        dd->updateFormsTimes();
-        emit formsChanged();
-    });
-
     connect(this, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> form) {
         int index = gnomonFormManager::instance()->formIndex(form);
         gnomonFormManager::instance()->setCamera(index, dd->renderer3D->GetActiveCamera());
@@ -598,7 +576,7 @@ gnomonVtkView::~gnomonVtkView(void)
     delete dd;
 }
 
-void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
+void gnomonVtkView::associate(vtkRenderWindow *window)
 {
     dd->window = window;
     dd->window->AddRenderer(dd->renderer2D);
@@ -607,7 +585,7 @@ void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
     this->switchTo3D();
 
     dd->updateOrientation();
-    dd->updateFormsTimes();
+    d->updateFormsTimes();
     dd->updateAxes();
 }
 
@@ -742,40 +720,6 @@ void gnomonVtkView::sliceChange(double value)
         emit sliceChanged(value);
 
     dd->interactor()->Render();
-}
-
-void gnomonVtkView::setCurrentTime(double time)
-{
-    QList<double> sorted_times = this->times();
-    if(sorted_times.contains(time)) {
-        if (dd->c_t != time) {
-            dd->c_t = time;
-            emit timeChanged(dd->c_t);
-        }
-    }
-}
-
-double gnomonVtkView::currentTime(void) const
-{
-    return dd->c_t;
-}
-
-double gnomonVtkView::timeMax(void)
-{
-    QList<double> times = this->times();
-    if (times.isEmpty()) {
-        return -1;
-    }  else {
-        return this->times().last();
-    }
-}
-
-QList<double> gnomonVtkView::times(void)
-{
-    QList<double> sorted_times = QList<double>(dd->forms_times.begin(), dd->forms_times.end());
-    std::sort(sorted_times.begin(), sorted_times.end());
-
-    return sorted_times;
 }
 
 void gnomonVtkView::setPickedCells(QList<long> new_list)
@@ -930,7 +874,7 @@ void gnomonVtkView::link(gnomonVtkView *other)
         this->sliceChange(value);
     });
     dd->connectTime = connect(other, &gnomonVtkView::timeChanged, [=] (double value) {
-        this->onTimeChanged(value);
+        this->setCurrentTime(value);
     });
 
     emit syncedChanged();
@@ -1058,7 +1002,7 @@ std::shared_ptr<gnomonPointCloudSeries> gnomonVtkView::pointCloud(void)
 void gnomonVtkView::removeForm(const QString& form_type)
 {
     gnomonAbstractView::removeForm(form_type);
-    dd->updateFormsTimes();
+    d->updateFormsTimes();
     if (this->empty()) {
         this->setBounds(0, 0, 0, 0, 0, 0);
     }
@@ -1606,7 +1550,7 @@ void gnomonVtkView::clear(void)
 {
     gnomonAbstractView::clear();
     this->setBounds(0, 0, 0, 0, 0, 0);
-    dd->updateFormsTimes();
+    d->updateFormsTimes();
     this->render();
 }
 
@@ -1620,8 +1564,24 @@ void gnomonVtkView::saveScreenshot(const QString& filename)
         file_path = filename;
     }
 
-    QImage image = this->toImage();
-    image.save(file_path);
+    //QImage image = this->toImage();
+    //image.save(file_path);
+
+    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+    windowToImageFilter->SetInput(dd->window);
+    windowToImageFilter->SetInputBufferTypeToRGBA();
+    windowToImageFilter->ReadFrontBufferOff();
+
+    vtkSmartPointer<vtkImageWriter> writer = nullptr;
+    if (file_path.endsWith(".png")) {
+        writer = vtkSmartPointer<vtkPNGWriter>::New();
+    }
+
+    if (writer) {
+        writer->SetFileName(file_path.toStdString().c_str());
+        writer->SetInputConnection(windowToImageFilter->GetOutputPort());
+        writer->Write();
+    }
 }
 
 QImage gnomonVtkView::toImage(void)
@@ -1702,11 +1662,6 @@ void gnomonVtkView::onSliceChanged(double slice)
 {
     // d->slice_slider->setValue(slice);
     Q_UNUSED(slice);
-}
-
-void gnomonVtkView::onTimeChanged(double time)
-{
-    this->setCurrentTime(time);
 }
 
 void gnomonVtkView::setInPool(bool inpool)

@@ -16,13 +16,14 @@ class GNOMONVISUALIZATION_EXPORT gnomonMplView  : public gnomonAbstractView
     Q_OBJECT
 
 public:
-     gnomonMplView(QObject *parent = nullptr);
-    ~gnomonMplView(void);
+     gnomonMplView(QObject *parent = nullptr, bool no_python=false);
+    virtual ~gnomonMplView(void);
 
 public:
     Q_PROPERTY(int figureNumber READ figureNumber WRITE setFigureNumber NOTIFY figureNumberChanged);
 
 public:
+    void setAcceptForm(const QString&, bool) override;
     void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractMplVisualization> visualization = nullptr);
 
 public slots:

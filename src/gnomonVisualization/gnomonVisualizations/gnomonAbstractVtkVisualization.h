@@ -20,8 +20,8 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractVtkVisualization : public gnomonA
     Q_OBJECT
 
 public:
-     gnomonAbstractVtkVisualization();
-    ~gnomonAbstractVtkVisualization(void);
+    gnomonAbstractVtkVisualization();
+    virtual ~gnomonAbstractVtkVisualization(void);
 
 public:
     void setView(gnomonAbstractView* view) override;
@@ -41,7 +41,6 @@ public slots:
     virtual void onYZ(void) = 0;
     virtual void onSliceChanged(double) = 0;
     virtual void onSliceOrientationChanged(int) = 0;
-    virtual void onTimeChanged(double) = 0;
 
 public:
     vtkRenderer *offscreenRenderer(void);

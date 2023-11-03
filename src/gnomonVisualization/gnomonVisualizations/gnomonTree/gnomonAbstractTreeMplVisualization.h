@@ -18,8 +18,8 @@ public:
     virtual ~gnomonAbstractTreeMplVisualization(void) = default;
 
 public:
-    virtual void setTree(std::shared_ptr<gnomonTree> tree) = 0;
-    virtual std::shared_ptr<gnomonTree> tree(void) = 0;
+    virtual void setTree(std::shared_ptr<gnomonTreeSeries> tree) = 0;
+    virtual std::shared_ptr<gnomonTreeSeries> tree(void) = 0;
 
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonTree") {

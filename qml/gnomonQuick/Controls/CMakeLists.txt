@@ -23,7 +23,7 @@ QML_FILES
   ComboBoxWithLabel.qml
   Console.qml
   ConsoleDelegate.qml
-  DataDict.qml
+  TextView.qml
   Dialog.qml
   Dragger.qml
   Figure.qml

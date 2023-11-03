@@ -16,13 +16,17 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractView : public QObject
 
 public:
     gnomonAbstractView(QObject *parent = nullptr);
-    ~gnomonAbstractView(void);
+    virtual ~gnomonAbstractView(void);
 
 public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
     Q_PROPERTY(QStringList formNamesAndId READ formNamesAndId NOTIFY formsChanged);
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
+
+    Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
+    Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
+    Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
 
     Q_PROPERTY(bool empty READ empty NOTIFY formsChanged);
 
@@ -64,6 +68,14 @@ public:
     virtual bool empty(void);
 
 public:
+    QList<double> times(void);
+    double currentTime(void) const;
+    double timeMax(void);
+
+public slots:
+    void setCurrentTime(double);
+
+public:
     Q_INVOKABLE QString formVisuName(const QString& form_type);
     Q_INVOKABLE void setFormVisuName(const QString& form_type, const QString& visu_name);
     Q_INVOKABLE QVariantList formVisualizations(const QString& form_type);
@@ -93,6 +105,10 @@ signals:
     void formVisualizationChanged(const QString&);
 
     void badFormDropped(const QString& form_type, const QString& acceptedForms);
+
+    void timeChanged(double);
+    void timeMaxChanged(double);
+    void timesChanged(void);
 
 public:
     class gnomonAbstractViewPrivate *d;
