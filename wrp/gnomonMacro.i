@@ -37,7 +37,11 @@ class Export type##PluginFactory : public gnomonPluginFactory<type>
     // public:
     //type##PluginFactory& instance();
  private:
-    type##PluginFactory() { };
+    type##PluginFactory() {
+        qDebug() << "create factory from swig" << #type << this;
+        pluginsFactories()[#Namespace] = this;
+        Layer::Namespace::pluginManager();
+    };
     type##PluginFactory(type##PluginFactory const& other) = delete;
     type##PluginFactory(type##PluginFactory&& other) = delete;
     friend type##PluginFactory& Layer::Namespace::pluginFactory();
