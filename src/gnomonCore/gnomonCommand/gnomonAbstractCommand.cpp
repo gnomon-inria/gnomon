@@ -58,8 +58,8 @@ void gnomonAbstractCommand::redo(void)
         watcher->setFuture(future);
     } else {
         this->action->run();
-        this->postdo(); // here, the output of the action is stored by the action. so we can now clear the action outputs.
-        this->action->clearOutputs();
+        this->postdo(); //  DEPRECATED: here, the output of the action is stored by the action. so we can now clear the action outputs.
+        //this->action->clearOutputs(); // postdo copy a pointer but the data stays in the action. So no delete by clearOutputs
         emit finished();
     }
 }
@@ -89,5 +89,5 @@ extern void runner(gnomonAbstractCommand* command) {
                 command->outputs()[k]->metadata()->moveToThread(gnomonCore::gui_thread);
         }
     }
-    command->action->clearOutputs();
+    //command->action->clearOutputs();
 }
