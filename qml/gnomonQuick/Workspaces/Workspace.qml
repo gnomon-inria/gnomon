@@ -25,7 +25,6 @@ G.Page {
         // propagate the workspace uuid
         if(d) {
             d.objectName = uuid
-            console.log(d.uuid)
         }
     }
 
