@@ -81,7 +81,7 @@ G.Workspace {
 
             Item  {
                 id: transfo_view
-                G.DataDict {
+                G.TextView {
                     id: _data_source_view;
 
                     anchors.fill: parent

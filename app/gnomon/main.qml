@@ -18,6 +18,7 @@ import gnomonQuick.Menus       as G
 import gnomonQuick.Style       as G
 
 import gnomon.Pipeline  as GP
+import gnomon.Project   as  GP
 import "." as G
 
 G.Application {
@@ -110,6 +111,14 @@ G.Application {
         }
     }
 
+    P.FolderDialog {
+        id: folderDialog
+        folder: P.StandardPaths.standardLocations(P.StandardPaths.PicturesLocation)[0]
+        onAccepted : {
+            GP.projectManager.newProject(folderDialog.currentFolder, "")
+        }
+    }
+
     Component {
         id: platform_menu
 
@@ -131,6 +140,23 @@ G.Application {
                     shortcut: StandardKey.Save
                     onTriggered: {
                         saveFileDialog.open();
+                    }
+                }
+
+                P.MenuItem {
+                    text: qsTr("New Project")
+                    shortcut: StandardKey.New
+                    onTriggered: {
+                        //TODO: come back on the behavior of new project from anywhere (should it close everything?)
+                        //TODO: should use the new project dialog as well
+                        folderDialog.open();
+                    }
+                }
+                P.MenuItem {
+                    text: qsTr("Save Project")
+                    shortcut: StandardKey.Save
+                    onTriggered: {
+                        GP.ProjectManager.project.save()
                     }
                 }
 
@@ -334,12 +360,13 @@ G.Application {
 
     G.Settgs { id: settgs; }
     G.Journl { id: journl; }
-    GP.SessionLoader {
-        id: sessionLoader;
-        onFinished : {
+    
+    Connections {
+        target: GP.ProjectManager.project.currentSession;
+        function onFinished() {
             window.load_in_progress = false;
         }
-        onFailed: (file) => {
+        function onFailed(file) {
             _failed_pipeline_toast.file_path = file
             _failed_pipeline_toast.open()
             remove_from_history(file)
@@ -407,44 +434,49 @@ G.Application {
         window.workspaceThumbnailUpdated(id);
     }
 
-    function add_to_history(_file){
+    function add_to_history(_folder){
+        let folder_source = _folder.toString();
 
-        let file_source = _file.toString();
+        let projectInfo = GP.ProjectManager.readProjectInfo(folder_source)
 
-        let pipeline = Qt.createQmlObject("import gnomon.Pipeline 1.0 as GP; GP.Pipeline { }", window, "")
-        pipeline.readFromJson(file_source)
+        let project_name = projectInfo.name
+        let project_description = projectInfo.description
+        let project_last_modified = projectInfo.lastModified
 
-        let file_name = pipeline.name
-        let file_description = pipeline.description
-
-        if(!file_name){
-            let file_path = _file.toString()
-            file_name = file_path.slice(file_path.lastIndexOf("/")+1)
+        if(!project_name){
+            let folder_path = _folder.toString()
+            project_name = folder_path.slice(folder_path.lastIndexOf("/")+1)
         }
-
-        if (window.recent_projects.count > 15) {
-            window.recent_projects.remove(0)
+        const recent_projects_array = [];
+        for(let idx = 0; idx < window.recent_projects.count; idx++) {
+            recent_projects_array.push(window.recent_projects.get(idx))
         }
-        window.recent_projects.append({
-            name: file_name,
-            source : file_source,
-            description: file_description,
-        })
-        let _projects = []
-        for(let i=0; i<window.recent_projects.count; i++){
-            _projects.push(window.recent_projects.get(i))
-        }
-        window.opened_files = JSON.stringify(_projects)
+        const add_project = !recent_projects_array.some(project => (
+            project.name === project_name && project.source === folder_source
+        ));
 
+        if(add_project) {
+            if (window.recent_projects.count > 15) {
+                window.recent_projects.remove(0)
+            }
+            window.recent_projects.append({
+                name: project_name,
+                source : folder_source,
+                description: project_description,
+                lastModified: project_last_modified,
+            })
+            recent_projects_array.push(window.recent_projects.get(window.recent_projects.count-1))
+            window.opened_files = JSON.stringify(recent_projects_array)
+        }
     }
 
-    function remove_from_history(file) {
-        let file_source = file.toString();
+    function remove_from_history(folder) {
+        let folder_source = folder.toString();
         //console.log("Ref:: ", file_source)
         for(let i=0; i<window.recent_projects.count; i++) {
             //console.log(window.recent_projects.get(i).source)
-            if(window.recent_projects.get(i).source == file_source) {
-                console.log("Removing from history pipeline ", i)
+            if(window.recent_projects.get(i).source === folder_source) {
+                console.log("Removing from history project ", i)
                 window.recent_projects.remove(i);
                 break;
             }
@@ -633,12 +665,23 @@ G.Application {
     function load_session(json_path) {
         console.log("Loading session from ", json_path);
         window.load_in_progress = true;
-        let res = sessionLoader.load(json_path, window);
+        let res = GP.ProjectManager.project.loadSessionFromPipeline(json_path, window);
         if(res) {
             console.log("Session Loaded ");
         } else {
             console.warn("An error occured while loading the session");
         }
+
+        stack_launcher.currentIndex = 1;
+    }
+
+    function load_project(project_url) {
+        console.log("Loading session from ", project_url);
+        //window.load_in_progress = true;
+        GP.ProjectManager.openProject(project_url)
+        let launcher_workspace =  GP.ProjectManager.readProjectInfo(project_url).launcher_workspace;
+        switch_from_launcher(launcher_workspace)
+        //GP.PrpjectManager.project.loadSession()
 
         stack_launcher.currentIndex = 1;
     }

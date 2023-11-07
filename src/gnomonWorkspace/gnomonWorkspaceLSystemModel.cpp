@@ -5,6 +5,8 @@
 #include <gnomonCore/gnomonPythonPluginLoader>
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
+#include <gnomonProject/gnomonProjectManager.h>
+#include <gnomonProject/gnomonProject.h>
 
 #include <gnomonVisualization/gnomonView/gnomonVtkView>
 #include <gnomonVisualization/gnomonView/gnomonQmlView>
@@ -71,7 +73,7 @@ public:
     QString file;
     int currentIndex = 0;
 
-    QTemporaryDir* tmpDir = nullptr;
+    QDir* tmpDir = nullptr;
     QFile* model_file = nullptr;
     QFuture<int> redo_future;
 
@@ -110,9 +112,9 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
-
-    d->tmpDir = new QTemporaryDir(".GNOMON_LPY_TEMP");
-
+    auto temp_dir = GNOMON_PROJECT->projectDir() + "/.gnomon/lpy";
+    d->tmpDir =  new QDir(temp_dir);
+    
     int stat;
     QString temp_working_directory = "";
     temp_working_directory += "import sys \n";
@@ -187,10 +189,6 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
         d->model_file = nullptr;
     }
 
-    if(d->tmpDir){
-        d->tmpDir->remove();
-        delete d->tmpDir;
-    }
 
     delete d;
 }
@@ -284,6 +282,7 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url)
         this->setFileName(file_name);
         this->setText(in.readAll());
         this->reset();
+        this->backup();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }
@@ -521,4 +520,18 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
         it.value().setProperty("group", group != "" ? group : nullptr);
     }
     return parameters;
+}
+
+bool gnomonWorkspaceLSystemModel::backup(void)
+{
+    return GNOMON_PROJECT->backupFile(d->file, d->text);
+}
+
+void gnomonWorkspaceLSystemModel::restore()
+{
+    QStringList lpy_files = GNOMON_PROJECT->editorFileInfo({"lpy", "py"});
+
+    for (auto f : lpy_files) {
+        emit requestOpenFile(f);
+    }
 }

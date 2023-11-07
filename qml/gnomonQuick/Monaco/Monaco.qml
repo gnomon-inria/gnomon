@@ -23,6 +23,7 @@ Control {
 
     signal modified(var content);
     signal fileSwitched(var name);
+    signal ideIsReady();
 
     onThemeChanged: if(self.connected) bridge.send('theme',    self.theme);
     onLanguageChanged: if(self.connected) bridge.send('language', self.language);
@@ -100,6 +101,8 @@ Control {
             bridge.send('language', self.language);
             bridge.send('value',    self.contents);
             bridge.send('rename',    self.tabName);
+
+            self.ideIsReady();
         }
     }
 

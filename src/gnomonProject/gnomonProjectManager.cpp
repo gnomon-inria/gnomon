@@ -1,11 +1,13 @@
+#include <QQmlEngine>
 #include "gnomonProjectManager.h"
-
+#include "gnomonProject.h"
 // /////////////////////////////////////////////////////////////////
 // gnomonProjectManagerPrivate
 // /////////////////////////////////////////////////////////////////
 class gnomonProjectManagerPrivate
 {
 public:
+    gnomonProject *project = nullptr;
 };
 
 // /////////////////////////////////////////////////////////////////
@@ -26,10 +28,48 @@ gnomonProjectManager::gnomonProjectManager(QObject *parent) : QObject(parent)
 
 gnomonProjectManager::~gnomonProjectManager(void)
 {
+    d->project->close();
+    delete d->project;
     delete d;
 }
 
+gnomonProject *gnomonProjectManager::project(void)
+{
+    if(!d->project)
+        qWarning()<<"no project created yet.";
+    return d->project;
+}
+
+gnomonProject *gnomonProjectManager::openProject(const QString &path) {
+    closeProject();
+    d->project = new gnomonProject(path);
+    QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
+    return d->project;
+}
+
+gnomonProject *gnomonProjectManager::createProject(const QString &path, const QString &name,
+                                                   const QString &description, const QString &launcher_workspace) 
+{
+    closeProject();
+    d->project = gnomonProject::newProject(path, name, description, launcher_workspace);
+    QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
+    return d->project;
+}
+
+void gnomonProjectManager::closeProject() {
+    if(d->project) {
+        d->project->close();
+        delete d->project;
+        d->project = nullptr;
+    }
+}
+
 gnomonProjectManager *gnomonProjectManager::s_instance = nullptr;
+
+QVariantMap gnomonProjectManager::readProjectInfo(const QString &path) {
+    return gnomonProject::readProjectInfoFromPath(path);
+}
+
 std::mutex gnomonProjectManager::s_mutex;
 
 //

@@ -48,7 +48,7 @@ void gnomonDataFrameMplVisualizationCommand::setFormVisualization(const QString&
     this->setAlgorithmName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu);
     if (visu) {
-        visu->setDataFrame(d->dataFrame->current());
+        visu->setDataFrame(d->dataFrame);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();
         visu->update();
@@ -57,7 +57,7 @@ void gnomonDataFrameMplVisualizationCommand::setFormVisualization(const QString&
 
 void gnomonDataFrameMplVisualizationCommand::predo(void)
 {
-    std::dynamic_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu)->setDataFrame(d->dataFrame->current());
+    std::dynamic_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu)->setDataFrame(d->dataFrame);
 }
 
 void gnomonDataFrameMplVisualizationCommand::postdo(void)

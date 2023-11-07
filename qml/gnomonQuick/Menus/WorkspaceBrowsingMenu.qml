@@ -11,6 +11,7 @@ import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
 
 import gnomon.MetaData        1.0 as GM
+import gnomon.Project         1.0 as GP
 
 Item {
 
@@ -77,7 +78,8 @@ Item {
             id: _finder;
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-
+            //TODO:  should probably refer to dataDir rather than currentDir as data is meant to be outside the project
+            folder: "file:///" + GP.ProjectManager.project.currentDir
             extensionFilters: _extensions_model;
 
             onFileDoubleClicked: (fileUrl) => {

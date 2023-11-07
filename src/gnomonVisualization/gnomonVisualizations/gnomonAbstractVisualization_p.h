@@ -14,6 +14,9 @@ public:
 
 public:
     dtkCoreParameters parameters;
+
+public:
+    QMetaObject::Connection connectTime;
 };
 
 //

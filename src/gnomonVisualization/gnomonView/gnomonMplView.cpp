@@ -59,6 +59,7 @@ public:
 
 public:
     int figureNumber;
+    bool no_python;
 
 public:
     QMap<QString, QMap<QString, gnomonAbstractAdapterCommand *> > adapterCommands;
@@ -89,21 +90,24 @@ void gnomonMplViewPrivate::saveFigure(const QString& path)
     export_file_path = QFileDialog::getSaveFileName(this, tr("Save figure"), path, tr("Figures (*.png *.eps *.pdf *.svg)"));*/
 
     QString figure_number = QString::number(this->figureNumber);
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
-    QString figure_statement = "figure = plt.figure("+figure_number+")";
-    dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
-    dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
-    QString save_statement = "figure.savefig('"+path+"')";
-    dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
-    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
+
+    if (!this->no_python) {
+        int stat;
+        dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
+        QString figure_statement = "figure = plt.figure(" + figure_number + ")";
+        dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
+        dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
+        dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
+        QString save_statement = "figure.savefig('" + path + "')";
+        dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
+        dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
+    }
 
 }
 
 void gnomonMplViewPrivate::clearFigure(void)
 {
-    if (this->figureNumber != -1) {
+    if ((this->figureNumber != -1) && (!this->no_python)) {
         int stat;
         QString clearStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.clf()\nfigure.canvas.draw()";
         dtkScriptInterpreterPython::instance()->interpret(clearStatement, &stat);
@@ -112,7 +116,7 @@ void gnomonMplViewPrivate::clearFigure(void)
 
 void gnomonMplViewPrivate::renderFigure(void)
 {
-    if (this->figureNumber != -1) {
+    if ((this->figureNumber != -1) && (!this->no_python)) {
         int stat;
         QString renderStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
         dtkScriptInterpreterPython::instance()->interpret(renderStatement, &stat);
@@ -150,69 +154,21 @@ void gnomonMplViewPrivate::adaptForm(const QString& adapter_plugin)
 // gnomonMplView
 // ///////////////////////////////////////////////////////////////////
 
-gnomonMplView::gnomonMplView(QObject *parent) : gnomonAbstractView(parent)
+gnomonMplView::gnomonMplView(QObject *parent, bool no_python) : gnomonAbstractView(parent)
 {
     dd = new gnomonMplViewPrivate(this);
     dd->q = this;
 
-    d->visualizationCommands["gnomonDataFrame"] = std::make_shared<gnomonDataFrameMplVisualizationCommand>();
-    d->visualizationCommands["gnomonLString"] = std::make_shared<gnomonLStringMplVisualizationCommand>();
-    d->visualizationCommands["gnomonTree"] = std::make_shared<gnomonTreeMplVisualizationCommand>();
+    dd->no_python = no_python;
 
-    for (const auto &form_type: d->visualizationCommands.keys()) {
-        d->visualizationCommands[form_type]->setView(this);
-        connect(d->visualizationCommands[form_type].get(), &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
-            emit formVisuParametersChanged();
-        });
-        d->acceptForms[form_type] = false;
+    d->acceptForms["gnomonDataFrame"] = false;
+    d->acceptForms["gnomonLString"] = false;
+    d->acceptForms["gnomonTree"] = false;
+
+    if (!dd->no_python) {
+        int stat;
+        dtkScriptInterpreterPython::instance()->interpret("import gnomon.utils.matplotlib_tools", &stat);
     }
-
-    for (const auto& form : d->visualizationCommands.keys()) {
-        if (form=="gnomonLString") {
-            loadPluginGroup("lStringAdapter");
-            for (const auto& key : gnomonCore::lStringAdapter::pluginFactory().keys())
-            {
-                gnomonAbstractLStringAdapter *adapter = dynamic_cast<gnomonAbstractLStringAdapter *>(gnomonCore::lStringAdapter::pluginFactory().create(key));
-                if (!dd->adapterCommands.contains(form))
-                {
-                    QMap<QString, QString> empty_target;
-                    dd->adapterTargets[form] = empty_target;
-                    QMap<QString, QString> empty_desc;
-                    dd->adapterDescriptions[form] = empty_desc;
-                    QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
-                    dd->adapterCommands[form] = empty_list;
-                }
-                dd->adapterTargets[form][key] = adapter->target();
-                dd->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                dd->adapterCommands[form][key] = new gnomonLStringAdapterCommand;
-                dd->adapterCommands[form][key]->setAlgorithmName(key);
-                delete adapter;
-            }
-        } else if (form=="gnomonTree") {
-            loadPluginGroup("treeAdapter");
-            for (const auto& key : gnomonCore::treeAdapter::pluginFactory().keys())
-            {
-                gnomonAbstractTreeAdapter *adapter = dynamic_cast<gnomonAbstractTreeAdapter *>(gnomonCore::treeAdapter::pluginFactory().create(key));
-                if (!dd->adapterCommands.contains(form))
-                {
-                    QMap<QString, QString> empty_target;
-                    dd->adapterTargets[form] = empty_target;
-                    QMap<QString, QString> empty_desc;
-                    dd->adapterDescriptions[form] = empty_desc;
-                    QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
-                    dd->adapterCommands[form] = empty_list;
-                }
-                dd->adapterTargets[form][key] = adapter->target();
-                dd->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                dd->adapterCommands[form][key] = new gnomonTreeAdapterCommand;
-                dd->adapterCommands[form][key]->setAlgorithmName(key);
-                delete adapter;
-            }
-        }
-    }
-
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import gnomon.utils.matplotlib_tools", &stat);
 
     connect(this, &gnomonMplView::formAdded, [=] (const QString& key) {
         this->render();
@@ -223,6 +179,73 @@ gnomonMplView::gnomonMplView(QObject *parent) : gnomonAbstractView(parent)
 gnomonMplView::~gnomonMplView(void)
 {
     delete dd;
+}
+
+void gnomonMplView::setAcceptForm(const QString& form_type, bool accept)
+{
+    if(!d->acceptForms.contains(form_type)) { // Form not supported by VtkView
+        return;
+    }
+    d->acceptForms[form_type] = accept;
+
+    if(!accept) {
+        return;
+    }
+
+    if(form_type == "gnomonDataFrame") {
+        d->visualizationCommands["gnomonDataFrame"] = std::make_shared<gnomonDataFrameMplVisualizationCommand>();
+    } else if(form_type == "gnomonLString") {
+        d->visualizationCommands["gnomonLString"] = std::make_shared<gnomonLStringMplVisualizationCommand>();
+    } else if(form_type == "gnomonTree") {
+        d->visualizationCommands["gnomonTree"] = std::make_shared<gnomonTreeMplVisualizationCommand>();
+    }
+
+    d->visualizationCommands[form_type]->setView(this);
+    connect(d->visualizationCommands[form_type].get(), &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
+        emit formVisuParametersChanged();
+    });
+
+    if (form_type=="gnomonLString") {
+        loadPluginGroup("lStringAdapter");
+        for (const auto& key : gnomonCore::lStringAdapter::pluginFactory().keys())
+        {
+            gnomonAbstractLStringAdapter *adapter = dynamic_cast<gnomonAbstractLStringAdapter *>(gnomonCore::lStringAdapter::pluginFactory().create(key));
+            if (!dd->adapterCommands.contains(form_type))
+            {
+                QMap<QString, QString> empty_target;
+                dd->adapterTargets[form_type] = empty_target;
+                QMap<QString, QString> empty_desc;
+                dd->adapterDescriptions[form_type] = empty_desc;
+                QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
+                dd->adapterCommands[form_type] = empty_list;
+            }
+            dd->adapterTargets[form_type][key] = adapter->target();
+            dd->adapterDescriptions[form_type][key] = adapter->documentation().split("\n")[1];
+            dd->adapterCommands[form_type][key] = new gnomonLStringAdapterCommand;
+            dd->adapterCommands[form_type][key]->setAlgorithmName(key);
+            delete adapter;
+        }
+    } else if (form_type=="gnomonTree") {
+        loadPluginGroup("treeAdapter");
+        for (const auto& key : gnomonCore::treeAdapter::pluginFactory().keys())
+        {
+            gnomonAbstractTreeAdapter *adapter = dynamic_cast<gnomonAbstractTreeAdapter *>(gnomonCore::treeAdapter::pluginFactory().create(key));
+            if (!dd->adapterCommands.contains(form_type))
+            {
+                QMap<QString, QString> empty_target;
+                dd->adapterTargets[form_type] = empty_target;
+                QMap<QString, QString> empty_desc;
+                dd->adapterDescriptions[form_type] = empty_desc;
+                QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
+                dd->adapterCommands[form_type] = empty_list;
+            }
+            dd->adapterTargets[form_type][key] = adapter->target();
+            dd->adapterDescriptions[form_type][key] = adapter->documentation().split("\n")[1];
+            dd->adapterCommands[form_type][key] = new gnomonTreeAdapterCommand;
+            dd->adapterCommands[form_type][key]->setAlgorithmName(key);
+            delete adapter;
+        }
+    }
 }
 
 void gnomonMplView::setAdaptedForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractMplVisualization> visualization)
@@ -271,7 +294,7 @@ void gnomonMplView::saveScreenshot(const QString& filename)
         file_path = filename;
     }
 
-    if (dd->figureNumber != -1) {
+    if ((dd->figureNumber != -1) && (!dd->no_python)) {
         int stat;
         QString screenshotStatement = "";
         screenshotStatement += "from gnomon.utils.matplotlib_tools import gnomon_figure\n";

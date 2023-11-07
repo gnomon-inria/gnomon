@@ -13,7 +13,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractMplVisualization : public gnomonA
     Q_OBJECT
 
 public:
-     gnomonAbstractMplVisualization();
+    gnomonAbstractMplVisualization();
     virtual ~gnomonAbstractMplVisualization(void);
 
 public:

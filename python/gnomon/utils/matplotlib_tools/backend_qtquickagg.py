@@ -8,6 +8,7 @@ from .backend_qtquick import QtCore, QtGui, FigureCanvasQtQuick
 from PySide6 import QtQml
 #from .qt_compat import QtQml
 
+
 class GnomonFigureManager:
 
     def __init__(self):

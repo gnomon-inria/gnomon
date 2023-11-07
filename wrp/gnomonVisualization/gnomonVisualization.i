@@ -22,10 +22,10 @@
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+#include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 #include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 #include <gnomonVisualization/gnomonView/gnomonMplView.h>
 #include <gnomonVisualization/gnomonView/gnomonQmlView.h>
-#include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMplVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractQmlVisualization.h>
@@ -75,7 +75,7 @@
 #define GNOMONVISUALIZATION_EXPORT
 #undef  Q_INVOKABLE
 #define Q_INVOKABLE
-#undef Q_ENUM(x)
+#undef  Q_ENUM(x)
 #define Q_ENUM(x)
 
 // /////////////////////////////////////////////////////////////////
@@ -93,6 +93,22 @@
 %typemap(in) vtkRenderer* {
 
     $1 = (vtkRenderer *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderer");
+
+    if ($1 == NULL) {
+        SWIG_fail;
+    }
+}
+
+%typemap(out) vtkRenderWindow* {
+
+    PyImport_ImportModule("vtk");
+
+    $result = vtkPythonUtil::GetObjectFromPointer((vtkObjectBase*)$1);
+}
+
+%typemap(in) vtkRenderWindow* {
+
+    $1 = (vtkRenderWindow *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderWindow");
 
     if ($1 == NULL) {
         SWIG_fail;
@@ -895,10 +911,10 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterNurbs, ParameterNurbs)
 %include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 %include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 // %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
+%include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 %include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 %include <gnomonVisualization/gnomonView/gnomonMplView.h>
 %include <gnomonVisualization/gnomonView/gnomonQmlView.h>
-%include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMplVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractQmlVisualization.h>
