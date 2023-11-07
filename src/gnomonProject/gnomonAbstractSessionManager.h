@@ -5,6 +5,8 @@
 
 #define GNOMON_SESSION gnomonAbstractSessionManager::instance()
 
+class QQmlApplicationEngine;
+
 class GNOMONPROJECT_EXPORT gnomonAbstractSessionManager: public QObject {
     Q_OBJECT
 public:
@@ -17,11 +19,29 @@ public:
     void setProgress(double);
 
 public:
-    virtual bool save(const QString &id, const QString &path) = 0;
+    Q_INVOKABLE virtual bool save(const QString &id, const QString &path) = 0;
 
-    virtual void load(const QString &id, const QString &path) = 0;
+    Q_INVOKABLE virtual void load(const QString &id, const QString &path) = 0;
 
-    virtual bool loadFromPipeline(const QString &path, QObject *window) = 0;
+    Q_INVOKABLE virtual bool load() = 0;
+
+    Q_INVOKABLE virtual bool newSession(const QString &source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml") = 0;
+
+    virtual bool loadFromPipeline(const QString &path) = 0;
+
+public:
+    virtual void setEngine(QQmlApplicationEngine *engine) = 0;
+
+    Q_INVOKABLE virtual void setWindow(QObject *window) = 0;
+
+    Q_INVOKABLE virtual int loadWorkspace(const QString &source, const QString &uuid) = 0;
+
+    Q_INVOKABLE virtual int newWorkspace(const QString &source) = 0;
+
+    virtual QJsonObject* getStorageForWorkspace(const QString &uuid) = 0;
+
+public slots:
+    virtual void sync() = 0;
 
 public:
     static gnomonAbstractSessionManager *instance();

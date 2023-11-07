@@ -1,6 +1,7 @@
 #include <QQmlEngine>
 #include "gnomonProjectManager.h"
 #include "gnomonProject.h"
+#include "gnomonAbstractSessionManager.h"
 // /////////////////////////////////////////////////////////////////
 // gnomonProjectManagerPrivate
 // /////////////////////////////////////////////////////////////////
@@ -43,15 +44,21 @@ gnomonProject *gnomonProjectManager::project(void)
 gnomonProject *gnomonProjectManager::openProject(const QString &path) {
     closeProject();
     d->project = new gnomonProject(path);
+    if(!GNOMON_SESSION->load()) {
+        GNOMON_SESSION->newSession(d->project->projectInfo().default_source);
+    };
     QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
     return d->project;
 }
 
 gnomonProject *gnomonProjectManager::createProject(const QString &path, const QString &name,
-                                                   const QString &description, const QString &launcher_workspace) 
-{
+                                                   const QString &description, const QString &source) {
     closeProject();
-    d->project = gnomonProject::newProject(path, name, description, launcher_workspace);
+    d->project = gnomonProject::newProject(path, name, description, source);
+    // if there is a session definition load otherwise newSession
+    if(!GNOMON_SESSION->load()) {
+        GNOMON_SESSION->newSession(source);
+    };
     QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
     return d->project;
 }

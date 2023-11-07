@@ -86,6 +86,7 @@ public:
 public:
     gnomonVtkView *view = nullptr;
     gnomonQmlView *text_view = nullptr;
+    QJsonObject state;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -520,6 +521,53 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
         it.value().setProperty("group", group != "" ? group : nullptr);
     }
     return parameters;
+}
+
+QJsonObject gnomonWorkspaceLSystemModel::serialize() {
+    QJsonObject state;
+
+    state.insert("text", d->text);
+    state.insert("filename", d->file);
+    state.insert("currentIndex", d->currentIndex);
+    state.insert("model", d->model);
+    state.insert("derivations", d->derivations);
+    state.insert("derivation_length", derivationLength());
+    state.insert("animation_step", d->animation_step);
+
+    QVariantMap parameters_json;
+    dtkCoreParameters dtkParameters = d->command->parameters();
+    for(const auto& param_name : dtkParameters.keys()){
+        auto param_value = dtkParameters[param_name]->toVariantHash();
+        parameters_json.insert(param_name, QJsonObject::fromVariantHash(param_value));
+    }
+    state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
+
+    return state;
+}
+
+void gnomonWorkspaceLSystemModel::unSerialize(const QJsonObject &state) {
+    QJsonObject parameters_json = state["parameters"].toObject();
+
+    setFileName(state["filename"].toString());
+    setText(state["text"].toString());
+    setDerivationLength(state["derivation_length"].toInt());
+    d->derivations = state["derivations"].toInt();
+    setAnimationStep(state["animation_step"].toInt());
+    setModelName(state["model"].toString());
+
+    for(const auto& param_name: parameters_json.keys()) {
+        auto param = parameters_json[param_name].toObject().toVariantHash();
+        d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
+    }
+    d->view->restoreState();
+}
+
+void gnomonWorkspaceLSystemModel::saveState() {
+    d->state = serialize();
+}
+
+void gnomonWorkspaceLSystemModel::restoreState() {
+    unSerialize(d->state);
 }
 
 bool gnomonWorkspaceLSystemModel::backup(void)

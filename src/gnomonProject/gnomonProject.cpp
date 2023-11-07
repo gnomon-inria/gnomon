@@ -84,8 +84,7 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
         readProjectInfo();
         d->manifest_url = d->projectDir.filePath(PROJECT_BACKUP_MANIFEST);
         wasSaved = QFile::exists(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
-    } 
-    else {
+    } else {
         auto pName = d->projectDir.dirName();
         populateNewProject();
         d->projectInfo.name = pName;
@@ -121,6 +120,7 @@ void gnomonProject::readProjectInfo() {
     pInfo.name = storage["name"].toString();
     pInfo.description = storage["description"].toString();
     pInfo.path = storage["path"].toString();
+    pInfo.default_source = storage["default_source"].toString();
     pInfo.lastModified = QDateTime::fromString(storage["lastModified"].toString(), Qt::ISODate);
 }
 
@@ -132,7 +132,7 @@ void gnomonProject::saveProjectInfo() {
         storage["name"] = pInfo.name;
         storage["description"] = pInfo.description;
         storage["path"] = pInfo.path;
-        storage["launcher_workspace"] = pInfo.launcher_workspace;
+        storage["default_source"] = pInfo.default_source;
         pInfo.lastModified.setSecsSinceEpoch(QDateTime::currentSecsSinceEpoch());
         storage["lastModified"] = pInfo.lastModified.toString("yyyy-MM-ddTHH:mm:ss");
         QJsonDocument doc(storage);
@@ -172,15 +172,15 @@ void gnomonProject::setCurrentDir(const QString& url)
 
 bool gnomonProject::loadSessionFromPipeline(const QString &path, QObject *window)
 {
-    GNOMON_SESSION->loadFromPipeline(path, window);
+    GNOMON_SESSION->loadFromPipeline(path);
 }
 
-gnomonProject *gnomonProject::newProject(const QString &path, const QString &name,
-                                        const QString &description, const QString &launcher_workspace) {
+gnomonProject *gnomonProject::newProject(const QString &path, const QString &name, const QString &description,
+                                         const QString &source) {
     auto project = new gnomonProject(path);
     project->d->projectInfo.name = name;
     project->d->projectInfo.description = description;
-    project->d->projectInfo.launcher_workspace = launcher_workspace;
+    project->d->projectInfo.default_source = source;
     project->saveProjectInfo();
     return project;
 }
@@ -201,6 +201,10 @@ gnomonAbstractSessionManager* gnomonProject::currentSession(void)
 QString gnomonProject::sanitizeUrlToPath(const QString &url) {
     QUrl _url(url);
     return QString(_url.isValid() && _url.isLocalFile() ? _url.toLocalFile() : url);
+}
+
+const gnomonProjectInfo &gnomonProject::projectInfo() {
+    return d->projectInfo;
 }
 
 void gnomonProject::addToManifest(const QJsonObject& workspace_info)
@@ -259,11 +263,14 @@ bool gnomonProject::backupFile(const QString &fname, const QString &content)
     } else {
         return false;
     }
-    return true;    
+    return true;
 }
 
 void gnomonProject::save(void)
 {
+    QFile old_manifest(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
+    if(old_manifest.exists())
+        old_manifest.remove();
     QFile::copy(d->projectDir.filePath(PROJECT_BACKUP_MANIFEST),
                 d->projectDir.filePath(PROJECT_MANIFEST_FILE));
 }
@@ -301,5 +308,6 @@ QList< QPair<QString, QString> > gnomonProject::browserFormInfo(void)
 
     return restore_info;
 }
+
 //
 // gnomonProject.cpp ends here

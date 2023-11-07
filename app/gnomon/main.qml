@@ -18,7 +18,7 @@ import gnomonQuick.Menus       as G
 import gnomonQuick.Style       as G
 
 import gnomon.Pipeline  as GP
-import gnomon.Project   as  GP
+import gnomon.Project   as GP
 import "." as G
 
 G.Application {
@@ -362,7 +362,7 @@ G.Application {
     G.Journl { id: journl; }
     
     Connections {
-        target: GP.ProjectManager.project.currentSession;
+        target: GP.SessionManager;
         function onFinished() {
             window.load_in_progress = false;
         }
@@ -434,6 +434,26 @@ G.Application {
         window.workspaceThumbnailUpdated(id);
     }
 
+    function history_set_last_used(_folder) {
+        let folder_source = _folder.toString();
+        let projectInfo = GP.ProjectManager.readProjectInfo(folder_source)
+
+        let project_name = projectInfo.name
+
+        if(!project_name){
+            let folder_path = _folder.toString()
+            project_name = folder_path.slice(folder_path.lastIndexOf("/")+1)
+        }
+
+        for(let idx = 0; idx < window.recent_projects.count; idx++) {
+            let project = window.recent_projects.get(idx)
+            if(project.name === project_name && project.source === folder_source) {
+                window.recent_projects.move(idx, 0, 1)
+                return
+            }
+        }
+    }
+
     function add_to_history(_folder){
         let folder_source = _folder.toString();
 
@@ -457,7 +477,7 @@ G.Application {
 
         if(add_project) {
             if (window.recent_projects.count > 15) {
-                window.recent_projects.remove(0)
+                window.recent_projects.remove(14)
             }
             window.recent_projects.append({
                 name: project_name,
@@ -465,8 +485,10 @@ G.Application {
                 description: project_description,
                 lastModified: project_last_modified,
             })
-            recent_projects_array.push(window.recent_projects.get(window.recent_projects.count-1))
+            recent_projects_array.splice(0, 0, window.recent_projects.get(window.recent_projects.count-1))
             window.opened_files = JSON.stringify(recent_projects_array)
+        } else {
+            history_set_last_used(_folder)
         }
     }
 
@@ -488,14 +510,14 @@ G.Application {
         window.opened_files = JSON.stringify(_projects)
     }
 
-    function switch_from_launcher(source)
+    function switch_from_launcher(source: string)
     {
         if (source === undefined) {
             source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
         }
         stack_launcher.currentIndex  = 1
         window.drawelr_closed = false
-        add_workspace(source)
+        GP.SessionManager.newWorkspace(source)
     }
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -513,11 +535,14 @@ G.Application {
         return true;
     }
 
-    function add_workspace(source)
+    function add_workspace(source: string, uuid: string): int
     {
-        var workspace_component = Qt.createComponent(source)
+        if(window.current_workspace()) {
+            window.current_workspace().d.saveState();
+        }
+        const workspace_component = Qt.createComponent(source);
         if (workspace_component.status == Component.Ready) {
-            var workspace = workspace_component.createObject(workspaces);
+            const workspace = workspace_component.createObject(workspaces, {uuid: uuid});
             if(workspace.workspace_title != "Launcher") {
                 const workspace_index = workspaces.count - 1;
                 footer.workspaceName = workspace.workspace_title;
@@ -544,8 +569,11 @@ G.Application {
         id: _switch_workspace_dialog;
     }
 
-    function switch_workspace(index)
+    function switch_workspace(index: int)
     {
+        window.current_workspace().d.saveState();
+        window.drawelr_closed = false
+        stack_launcher.currentIndex  = 1
         workspaces.currentIndex = index;
 
         footer.workspaceName = window.current_workspace().workspace_title;
@@ -579,13 +607,13 @@ G.Application {
         if(idx_browsing >= 0) {
             window.switch_workspace(idx_browsing)
         } else {
-            idx_browsing = window.add_workspace(workspace_source("gnomonWorkspaceBrowser"))
+            idx_browsing = GP.SessionManager.newWorkspace(workspace_source("gnomonWorkspaceBrowser"))
         }
         return window.current_workspace().d
     }
 
     function workspacePython(parameters: object) : GW.WorkspacePythonAlgorithm {
-        window.add_workspace(workspace_source("gnomonWorkspacePythonAlgorithm"))
+        GP.SessionManager.newWorkspace(workspace_source("gnomonWorkspacePythonAlgorithm"))
         let workspace = window.current_workspace()
         workspace.editor.contents = parameters["python_code"]
         workspace.d.code.text = workspace.editor.contents
@@ -609,7 +637,7 @@ G.Application {
     }
 
     function workspaceLSystem(parameters: object) : GW.WorkspaceLSystemModel {
-        window.add_workspace(workspace_source("gnomonWorkspaceLSystemModel"))
+        GP.SessionManager.newWorkspace(workspace_source("gnomonWorkspaceLSystemModel"))
         let workspace = window.current_workspace()
         workspace.editor.contents = parameters["lsystem_code"]
         workspace.d.text = workspace.editor.contents
@@ -630,7 +658,7 @@ G.Application {
     }
 
     function workspaceMorphonet(data : objet) : GW.WorkspaceMorphonet {
-        window.add_workspace(workspace_source("gnomonWorkspaceMorphonet"))
+        GP.SessionManager.newWorkspace(workspace_source("gnomonWorkspaceMorphonet"))
         let workspace = window.current_workspace()
         workspace.d.importDataset(data["id"], data["voxelsize"], data["start_time"], data["end_time"])
         return workspace.d
@@ -643,7 +671,7 @@ G.Application {
             return null;
         }
         console.log("Loading workspace ", workspace_name , " with plugin ", plugin_name)
-        window.add_workspace(workspace_source(workspace_name))
+        GP.SessionManager.newWorkspace(workspace_source(workspace_name))
         let workspace = window.current_workspace()
         workspace.d.currentIndex = workspace.d.algorithms.indexOf(plugin_name)
         for(let param in parameters) {
@@ -664,7 +692,7 @@ G.Application {
     function load_session(json_path) {
         console.log("Loading session from ", json_path);
         window.load_in_progress = true;
-        let res = GP.ProjectManager.project.loadSessionFromPipeline(json_path, window);
+        let res = GP.ProjectManager.project.loadSessionFromPipeline(json_path);
         if(res) {
             console.log("Session Loaded ");
         } else {
@@ -678,8 +706,6 @@ G.Application {
         console.log("Loading session from ", project_url);
         //window.load_in_progress = true;
         GP.ProjectManager.openProject(project_url)
-        let launcher_workspace =  GP.ProjectManager.readProjectInfo(project_url).launcher_workspace;
-        switch_from_launcher(launcher_workspace)
         //GP.PrpjectManager.project.loadSession()
 
         stack_launcher.currentIndex = 1;
@@ -729,6 +755,7 @@ G.Application {
     Component.onCompleted: {
         //if (Qt.platform.os === "osx")
         //    X.Style.flavors = 'MACOS';
+        GP.SessionManager.setWindow(window)
 
         G.Style.mode = stt.mode
         window.width = Math.max(window.width, G.Style.windowMinWidth)

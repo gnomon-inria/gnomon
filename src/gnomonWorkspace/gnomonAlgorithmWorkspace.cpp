@@ -94,6 +94,9 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
     });
 
     connect(this, &gnomonAlgorithmWorkspace::parametersChanged, this, &gnomonAlgorithmWorkspace::saveState);
+    connect(this, &gnomonAlgorithmWorkspace::parametersChanged, [=] () {
+        emit stateChanged();
+    });
 
     d->timer.setInterval(100);
     connect(&d->timer, &QTimer::timeout, [=]() {
@@ -134,6 +137,11 @@ void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
         emit algorithmChanged(algorithm);
         d->command->undo();
         this->setInputs();
+        for(auto & param:d->command->parameters()) {
+            param->connect([=] {
+               emit parametersChanged();
+            });
+        }
         emit parametersChanged();
     }
 }
@@ -282,21 +290,28 @@ QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
     QVariantMap parameters_json;
     dtkCoreParameters dtkParameters = d->command->parameters();
     for(const auto& param_name : dtkParameters.keys()){
-        QVariant param_value = dtkParameters[param_name]->variant();
-        parameters_json.insert(param_name, param_value);
+        auto param_value = dtkParameters[param_name]->toVariantHash();
+        parameters_json.insert(param_name, QJsonObject::fromVariantHash(param_value));
     }
-    state.insert("parameters_json", QJsonObject::fromVariantMap(parameters_json));
+    state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
     return state;
 }
 
-void gnomonAlgorithmWorkspace::unSerialize(QJsonObject & state) {
+void gnomonAlgorithmWorkspace::unSerialize(const QJsonObject & state) {
     setCurrentIndex(state["currentIndex"].toInt());
     setAlgoName(state["algoName"].toString());
 
     QJsonObject parameters_json = state["parameters"].toObject();
     for(const auto& param_name: parameters_json.keys()) {
-        QVariant param = parameters_json[param_name].toVariant();
-        d->command->setParameter(param_name, param);
+        auto param = parameters_json[param_name].toObject().toVariantHash();
+        d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
+    }
+
+    for (auto view : d->sources->views()) {
+        view->restoreState();
+    }
+    for (auto view : d->targets->views()) {
+        view->restoreState();
     }
     emit parametersChanged();
 }
@@ -308,13 +323,6 @@ void gnomonAlgorithmWorkspace::saveState(void) {
 void gnomonAlgorithmWorkspace::restoreState(void) {
     QString previousAlgo = algoName();
     unSerialize(d->savedState);
-
-    for (auto view : d->sources->views()) {
-        view->restoreState();
-    }
-    for (auto view : d->targets->views()) {
-        view->restoreState();
-    }
 }
 
 void gnomonAlgorithmWorkspace::addInputView(const QVector<QString>& accepted_forms, QStringList nodePortNames) {

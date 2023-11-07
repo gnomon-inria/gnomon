@@ -21,10 +21,30 @@ public:
     bool save(const QString &id, const QString &path) override;
     void load(const QString &id, const QString &path) override;
 
-    bool loadFromPipeline(const QString &path, QObject *window) override;
+    bool load() override;
+
+    bool loadFromPipeline(const QString &path) override;
+
+public:
+    void setEngine(QQmlApplicationEngine *engine) override;
+
+    void setWindow(QObject* window) override;
 
 public:
     static void initialize();
+
+    int loadWorkspace(const QString &source, const QString &uuid) override;
+
+    int newWorkspace(const QString &source) override;
+
+    QJsonObject *getStorageForWorkspace(const QString &uuid) override;
+
+    void sync() override;
+
+    bool newSession(const QString &source) override;
+
+protected:
+    void timerEvent(QTimerEvent *event) override;
 
 private:
     gnomonSessionManagerPrivate *d = nullptr;

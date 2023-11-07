@@ -19,6 +19,8 @@ G.Workspace {
 
     id: _workspace;
 
+    uuid: "launcher"
+
     workspace_title: "Launcher";
     fill: () => {}
 
@@ -637,6 +639,7 @@ G.Workspace {
                                 //thumbnail: "image://thumbnails/project_" + index
 
                                 onDoubleClicked: {
+                                    history_set_last_used(source)
                                     load_project(source)
                                 }
 
@@ -653,6 +656,7 @@ G.Workspace {
                                     anchors.rightMargin: G.Style.smallPadding
 
                                     onClicked: {
+                                        history_set_last_used(source)
                                         load_project(source)
                                     }
                                 }
@@ -689,7 +693,7 @@ G.Workspace {
         type: G.Style.ButtonType.Base
 
         onOpened: {
-            switch_from_launcher(_pipeline_workspace.currentValue);
+            //switch_from_launcher(_pipeline_workspace.currentValue);
         }
     }
 

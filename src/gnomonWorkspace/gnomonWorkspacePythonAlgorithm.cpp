@@ -43,6 +43,7 @@ public:
 
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
     gnomonFormAlgorithmCommand *command = nullptr;
+    QJsonObject state;
 };
 
 void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
@@ -551,12 +552,12 @@ bool gnomonWorkspacePythonAlgorithm::isEmpty(void)
 
 void gnomonWorkspacePythonAlgorithm::saveState(void)
 {
-    //TODO
+    d->state = serialize();
 }
 
 void gnomonWorkspacePythonAlgorithm::restoreState(void)
 {
-    //TODO
+    unSerialize(d->state);
     for (auto view : d->sources->views()) {
         view->restoreState();
     }
@@ -568,6 +569,40 @@ void gnomonWorkspacePythonAlgorithm::restoreState(void)
 void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
     for(const auto &output_view: d->targets->views()) {
         output_view->transmit();
+    }
+}
+
+QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
+    QJsonObject state;
+    state.insert("code", d->code->text());
+    state.insert("algoName", d->algorithm_key);
+    state.insert("edit", d->edit_mode);
+
+    QVariantMap parameters_json;
+    if(d->command) {
+        dtkCoreParameters dtkParameters = d->command->parameters();
+        for(const auto& param_name : dtkParameters.keys()){
+            auto param_value = dtkParameters[param_name]->toVariantHash();
+            parameters_json.insert(param_name, QJsonObject::fromVariantHash(param_value));
+        }
+    }
+    state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
+
+
+    return state;
+}
+
+void gnomonWorkspacePythonAlgorithm::unSerialize(const QJsonObject &state) {
+    d->code->setText(state["code"].toString());
+    d->code->parseCode();
+    setEditMode(state["edit"].toBool());
+
+    QJsonObject parameters_json = state["parameters"].toObject();
+    if(d->command && !parameters_json.empty()) {
+        for(const auto& param_name: parameters_json.keys()) {
+            auto param = parameters_json[param_name].toObject().toVariantHash();
+            d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
+        }
     }
 }
 

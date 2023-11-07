@@ -491,6 +491,14 @@ gnomonVtkView *gnomonWorkspaceBrowser::view(void) const
     return d->browse_view;
 }
 
+QJsonObject gnomonWorkspaceBrowser::serialize() {
+    return QJsonObject();
+}
+
+void gnomonWorkspaceBrowser::unSerialize(const QJsonObject &state) {
+
+}
+
 void gnomonWorkspaceBrowser::restoreState(void)
 {
     d->browse_view->restoreState();
