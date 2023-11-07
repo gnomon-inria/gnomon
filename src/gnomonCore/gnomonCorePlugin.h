@@ -22,7 +22,6 @@
     {                                                                            \
     private:                                                                     \
          type##PluginFactory() {                                                 \
-             qDebug() << "factory from c++ " << #type << this;               \
              pluginsFactories()[#Namespace] = this;                              \
              Layer::Namespace::pluginManager();                                  \
          };                                                                      \

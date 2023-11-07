@@ -38,9 +38,8 @@ class Export type##PluginFactory : public gnomonPluginFactory<type>
     //type##PluginFactory& instance();
  private:
     type##PluginFactory() {
-        qDebug() << "create factory from swig" << #type << this;
-        pluginsFactories()[#Namespace] = this;
-        Layer::Namespace::pluginManager();
+        qDebug() << "WARNING create factory from swig" << #type << this;
+        qDebug() << "This shouldn't happen! the constructor is private call the one from gnomonCorePlugin.h";
     };
     type##PluginFactory(type##PluginFactory const& other) = delete;
     type##PluginFactory(type##PluginFactory&& other) = delete;
