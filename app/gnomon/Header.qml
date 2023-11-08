@@ -8,6 +8,9 @@ import QtCore
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
+import gnomon.Pipeline  as GP
+import gnomon.Project   as  GP
+
 G.ToolBar {
 
     id: _control;
@@ -36,7 +39,7 @@ G.ToolBar {
         spacing: G.Style.mediumPadding;
 
         G.IconButton {
-            iconName: "folder";
+            iconName: "menu";
             size: G.Style.iconLarge;
             color: G.Style.colors.textColorFaded;
             visible: Qt.platform.os != "osx"
@@ -56,12 +59,30 @@ G.ToolBar {
                 }
 
                 Action {
-                    text: qsTr("Save")
+                    text: qsTr("Save Pipeline")
                     shortcut: StandardKey.Save
                     onTriggered: {
                         saveFileDialog.open()
                     }
                 }
+
+                Action {
+                    text: qsTr("New Project")
+                    shortcut: StandardKey.New
+                    onTriggered: {
+                        //TODO: come back on the behavior of new project from anywhere (should it close everything?)
+                        //TODO: should use the new project dialog as well
+                        folderDialog.open();
+                    }
+                }
+                Action {
+                    text: qsTr("Save Project")
+                    shortcut: StandardKey.Save
+                    onTriggered: {
+                        GP.ProjectManager.project.save()
+                    }
+                }
+
                 Action {
                     text: qsTr("Reset")
                     onTriggered: {

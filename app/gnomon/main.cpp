@@ -10,6 +10,7 @@
 
 #include "gnomon.hpp"
 #include "MaterialPreview.hpp"
+#include "gnomonProject"
 
 Q_IMPORT_QML_PLUGIN(gnomonQuick_ControlsPlugin)
 Q_IMPORT_QML_PLUGIN(gnomonQuick_MenusPlugin)
@@ -37,11 +38,11 @@ int main(int argc, char *argv[])
     //TODO for qt >= 6.5 !
     engine.addImportPath("qrc:/qt/qml/");
     engine.load(QUrl("qrc:/qt/qml/gnomon/main.qml"));
+    //engine.load(QUrl("qrc:/gnomon/main_temp.qml"));
     engine.addImportPath("qrc:/");
     //engine.set_property("_title", QVariant::from(QString::from("gnomon")));
+    GNOMON_SESSION->setEngine(&engine);
 
-    //engine.load(QUrl("qrc:/gnomon/main.qml"));
-    //engine.load(QUrl("qrc:/gnomon/main_temp.qml"));
 
     workspaceImageProvider *imageProvider = new workspaceImageProvider;
     engine.addImageProvider("thumbnails", new gnomonImageProvider);

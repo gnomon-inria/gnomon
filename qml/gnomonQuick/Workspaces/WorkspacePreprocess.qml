@@ -12,6 +12,7 @@ import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
 
 import gnomon.Workspaces 1.0 as GW
+import gnomon.Project 1.0 as GP
 
 G.Workspace {
 
@@ -34,6 +35,12 @@ G.Workspace {
 //
 // /////////////////////////////////////////////////////////////////////////////
 
+    G.SessionSettings {
+        id: stt
+        category: uuid
+        property alias state: d.state
+    }
+
     d: GW.WorkspacePreprocess {
         id: d;
 
@@ -41,6 +48,7 @@ G.Workspace {
         onFinished: idleStop();
 
         onParametersChanged: {
+            stt.sync()
             updateParametersModel(); //_workspace.updateParametersModel();
         }
     }

@@ -301,6 +301,7 @@ void gnomon_rinit()
 
     qmlRegisterType<gnomonProject>("gnomon.Project", 1, 0, "Project");
     qmlRegisterSingletonInstance("gnomon.Project", 1, 0, "ProjectManager", gnomonProjectManager::instance());
+    qmlRegisterSingletonInstance("gnomon.Project", 1, 0, "SessionManager", gnomonAbstractSessionManager::instance());
 
     // -- Visualization logic registration
     qmlRegisterType<gnomonVtkView>("gnomon.Visualization", 1, 0, "View");

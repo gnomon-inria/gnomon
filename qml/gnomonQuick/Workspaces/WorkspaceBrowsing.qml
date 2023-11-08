@@ -10,7 +10,8 @@ import gnomonQuick.Workspaces as G
 import gnomonQuick.Controls   as G
 import gnomonQuick.Style      as G
 
-import gnomon.Workspaces      as GW
+import gnomon.Workspaces as GW
+import gnomon.Project    as GP
 
 G.Workspace {
     id: _self;
@@ -22,6 +23,11 @@ G.Workspace {
     Settings {
         id: _cache;
         category: "ReaderDialogCache";
+    }
+
+    G.SessionSettings {
+        category: uuid
+        property alias state: d.state
     }
 
     function requestOpenFiles(urls) {

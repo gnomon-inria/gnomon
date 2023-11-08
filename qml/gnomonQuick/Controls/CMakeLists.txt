@@ -37,6 +37,7 @@ QML_FILES
   FormSelector.qml
   FormSelectorDelegate.qml
   GraphicalParameter.qml
+  SessionSettings.qml
   Gutter.qml
   Icon.qml
   Icons.js

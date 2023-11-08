@@ -27,6 +27,11 @@ G.Workspace {
         _source_view.droppedFromManager(world.currentRef);
     }
 
+    G.SessionSettings {
+        category: uuid
+        property alias state: d.state
+    }
+
     d: GW.WorkspaceCellImageTracking {
         id: d;
 
@@ -90,7 +95,7 @@ G.Workspace {
                         d.sourceDict.drop(index);
                     }
 
-                    G.Label {
+                    Label {
                         anchors.top: parent.top
                         anchors.left: parent.left
 
@@ -98,7 +103,7 @@ G.Workspace {
                         color: G.Style.colors.fgColor
                     }
 
-                    G.Label {
+                    Label {
                         anchors.centerIn: parent
 
                         text: d.sourceDict.dataDict
