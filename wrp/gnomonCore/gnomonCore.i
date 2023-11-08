@@ -17,14 +17,6 @@
 
 %{
 
-// VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
-// with SWIG's preprocessor macro
-#if PY_VERSION_HEX < 0x3020000
-#ifdef Py_hash_t
-#undef Py_hash_t
-#endif
-#endif
-
 #include <dtkCore>
 #include <gnomonCore/gnomonAbstractDataDriver.h>
 #include <gnomonCore/gnomonMorphonetHelper.h>
@@ -96,8 +88,6 @@
 #include <gnomonCore/gnomonPluginFactory.h>
 #include <gnomonCore/gnomonTime.h>
 #include <gnomonCore/gnomonTypeDef.h>
-#include <vtkPythonUtil.h>
-#include <vtkImageData.h>
 
 %}
 
@@ -172,39 +162,6 @@
     } else {
         qWarning() << Q_FUNC_INFO << "no conversion for name " << name << "I will return a void *";
         $result = SWIG_NewPointerObj(SWIG_as_voidptr(&$1), SWIGTYPE_p_QVariant, 0 |  0 );
-    }
-}
-
-// VTK
-%typemap(out) vtkImageData* {
-
-    PyImport_ImportModule("vtk");
-
-    $result = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
- }
-
-%typemap(directorin) vtkImageData* {
-
-    PyImport_ImportModule("vtk");
-
-    $input = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
- }
-
-%typemap(in) vtkImageData* {
-
-    $1 = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkImageData" );
-    //$1->Register(NULL);
-    if ( $1 == NULL ) {
-        qDebug("Fail to convert to vtkImageData*");
-    }
-}
-
-%typemap(directorout) vtkImageData* {
-
-    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
-    //$result->Register(NULL);
-    if ( $result == NULL ) {
-        qDebug("Fail to convert to vtkImageData*");
     }
 }
 

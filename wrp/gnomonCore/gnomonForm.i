@@ -83,10 +83,47 @@ import_array();
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
+
+#include <vtkPythonUtil.h>
+#include <vtkImageData.h>
 %}
 
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
+
+
+// VTK
+%typemap(out) vtkImageData* {
+
+    PyImport_ImportModule("vtk");
+
+    $result = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
+ }
+
+%typemap(directorin) vtkImageData* {
+
+    PyImport_ImportModule("vtk");
+
+    $input = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
+ }
+
+%typemap(in) vtkImageData* {
+
+    $1 = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkImageData" );
+    //$1->Register(NULL);
+    if ( $1 == NULL ) {
+        qDebug("Fail to convert to vtkImageData*");
+    }
+}
+
+%typemap(directorout) vtkImageData* {
+    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
+    //$result->Register(NULL);
+    if ( $result == NULL ) {
+        qDebug("Fail to convert to vtkImageData*");
+    }
+}
+
 
 // /////////////////////////////////////////////////////////////////
 // std::vector<double>

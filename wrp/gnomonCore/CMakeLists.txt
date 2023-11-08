@@ -40,6 +40,7 @@ swig_link_libraries(gnomonform
   ${LAYER_NAME}
   Python3::Python
   Python3::NumPy
+  ${VTK_LIBRARIES}
   dtkCore
   Qt6::Core)
 
