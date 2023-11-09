@@ -113,14 +113,68 @@ import_array();
     //$1->Register(NULL);
     if ( $1 == NULL ) {
         qDebug("Fail to convert to vtkImageData*");
+        PyErr_Print();
     }
 }
 
 %typemap(directorout) vtkImageData* {
-    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
+
+    //PyTypeObject *obj_type = Py_TYPE($1);
+    //qDebug() << $1 << obj_type;
+    //qDebug() << "type "<< obj_type->tp_name;
+
+    PyVTKObject *py_obj = (PyVTKObject *)(&(*$1));
+    //PyObject *py_obj = *(*$1);
+
+    //$result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( py_obj, "vtkImageData" );
+
+    qDebug() << "pyVTK_obj" << py_obj;
+    vtkObjectBase *vtk_obj = py_obj->vtk_ptr;
+    qDebug() << "vtk_obj_ptr "<< vtk_obj;
+
+    $result = (vtkImageData*) vtk_obj;
+    /*
+    PyObject *obj = $1;
+    vtkObjectBase *ptr;
+    obj = PyObject_GetAttrString(obj, "__vtk__");
+    qDebug() << "111"<< obj;
+    if (obj)  {
+        PyObject* arglist = Py_BuildValue("()");
+        PyObject* result = PyObject_Call(obj, arglist, nullptr);
+        qDebug() << "2222";
+        Py_DECREF(arglist);
+        Py_DECREF(obj);
+        if (result == nullptr)
+            {
+                qDebug() << "result is nullptr !!!";
+                return nullptr;
+            }
+        if (!PyVTKObject_Check(result))
+            {
+                qDebug() << "__vtk__() doesn't return a VTK object";
+                Py_DECREF(result);
+                return nullptr;
+            }
+        else
+            {
+                qDebug() << "333";
+                ptr = ((PyVTKObject*)result)->vtk_ptr;
+                Py_DECREF(result);
+            }
+    }
+    else
+        {
+            qDebug() << "3434343";
+            ptr = ((PyVTKObject*)obj)->vtk_ptr;
+        }
+    qDebug() << "55555" << ptr;
+    $result = (vtkImageData*) ptr;
+    //$result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
     //$result->Register(NULL);
+    */
     if ( $result == NULL ) {
         qDebug("Fail to convert to vtkImageData*");
+        //PyErr_Print();
     }
 }
 
