@@ -9,6 +9,7 @@ template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeri
         m_forms[time] = std::make_shared<T>(*(o.m_forms[time].get()));
     }
     m_current_time = o.m_current_time;
+    m_uuid = o.m_uuid;
     *(this->p_metadata) = *(o.p_metadata);
 }
 
@@ -119,6 +120,7 @@ template<typename T>
 QJsonObject gnomonTimeSeries<T>::serialize(void) {
     QJsonObject out(gnomonAbstractDynamicForm::serialize());
     out["current_time"] = m_current_time;
+    out["uuid"] = m_uuid;
     QJsonObject forms;
     for(auto& t: times()) {
         forms[QString::number(t)] = m_forms[t]->serialize();
@@ -132,6 +134,7 @@ void gnomonTimeSeries<T>::deserialize(QJsonObject &serialization) {
     gnomonAbstractDynamicForm::deserialize(serialization);
 
     m_current_time = serialization["current_time"].toDouble();
+    m_uuid = serialization["uuid"].toString();
     // emptying current forms map and deleting forms
     m_forms.clear();
     QJsonObject forms = serialization["forms"].toObject();

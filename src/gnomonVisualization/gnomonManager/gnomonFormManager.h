@@ -32,7 +32,8 @@ signals:
     void alreadyAdded(void);
 
 public slots:
-    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image, std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr);
+    // void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image, std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr);
+    void addForm(const QString&, const QImage& image, std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr);
 
 public slots:
     void saveAs(int id, const QString& filename, bool add_to_pipeline = true) const;
@@ -58,7 +59,7 @@ public:
 
 public:
     int formIndex(std::shared_ptr<gnomonAbstractDynamicForm> form);
-    std::shared_ptr<gnomonAbstractDynamicForm> get(int index);
+    QString get(int index);
     std::shared_ptr<gnomonAbstractVisualization> getVisualization(int index);
 
 public:

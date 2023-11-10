@@ -6,6 +6,7 @@
 
 #include "gnomonAbstractView.h"
 #include "gnomonAbstractView_p.h"
+#include <gnomonProject>
 
 
 // ///////////////////////////////////////////////////////////////////
@@ -33,7 +34,8 @@ void gnomonAbstractViewPrivate::exportToManager(void)
             image = QImage(1500, 1500, QImage::Format_RGB32);
             image.fill(Qt::GlobalColor::black);
         }
-        gnomonFormManager::instance()->addForm(this->forms[key], image, visualization);
+        GNOMON_SESSION->forms[this->forms[key]->uuid()] = this->forms[key];
+        gnomonFormManager::instance()->addForm(this->forms[key]->uuid(), image, visualization);
         emit q->exportedForm(this->forms[key]);
     }
 }
@@ -196,14 +198,14 @@ void gnomonAbstractView::clear(void)
 
 void gnomonAbstractView::drop(int index, bool new_visu)
 {
-    std::shared_ptr<gnomonAbstractDynamicForm> form = gnomonFormManager::instance()->get(index);
+    QString form_uuid = gnomonFormManager::instance()->get(index);
     std::shared_ptr<gnomonAbstractVisualization> visu = gnomonFormManager::instance()->getVisualization(index);
     if (new_visu) {
         visu = nullptr;
     }
-    this->setForm("formManager", form, visu);
+    // this->setForm("formManager", form_uuid, visu);
     this->render();
-    gnomonFormManager::instance()->setFormDropped(form);
+    // gnomonFormManager::instance()->setFormDropped(form_uuid);
 }
 
 void gnomonAbstractView::transmit(void)
@@ -223,7 +225,7 @@ void gnomonAbstractView::transmitForm(const QString& form_type)
             image = QImage(1500, 1500, QImage::Format_RGB32);
             image.fill(Qt::GlobalColor::black);
         }
-        gnomonFormManager::instance()->addForm(d->forms[form_type], image, visualization);
+        gnomonFormManager::instance()->addForm(d->forms[form_type]->uuid(), image, visualization);
         emit exportedForm(d->forms[form_type]);
     }
 }

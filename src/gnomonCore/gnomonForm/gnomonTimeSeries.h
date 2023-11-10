@@ -15,8 +15,8 @@ class GNOMONCORE_EXPORT gnomonTimeSeries : public gnomonAbstractDynamicForm
 {
 
 public:
-     gnomonTimeSeries(void) = default;
-     gnomonTimeSeries(const gnomonTimeSeries& o);
+    explicit gnomonTimeSeries(void) : m_uuid(QUuid::createUuid().toString(QUuid::WithoutBraces)) {};
+    gnomonTimeSeries(const gnomonTimeSeries& o);
     ~gnomonTimeSeries(void) = default;
 
 public:
@@ -41,6 +41,8 @@ public:
 public:
     virtual inline QString formName(void) override { return T::formName(); }
 
+    virtual inline QString uuid(void) override { return this->m_uuid; };
+
     QJsonObject serialize(void) override;
 
     void deserialize(QJsonObject &serialization) override;
@@ -52,6 +54,7 @@ protected:
 protected:
     QMap<double, std::shared_ptr<T>> m_forms;
     double m_current_time = 0.;
+    QString m_uuid;
 };
 
 #include "gnomonTimeSeries.tpp"
