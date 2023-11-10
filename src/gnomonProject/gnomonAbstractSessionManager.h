@@ -48,7 +48,8 @@ public:
     static gnomonAbstractSessionManager *instance();
 
 public:
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> forms;
+    bool addForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    std::shared_ptr<gnomonAbstractDynamicForm> getForm(const QString& uuid);
 
 signals:
     void progressChanged(void);
@@ -62,4 +63,5 @@ protected:
 private:
     static gnomonAbstractSessionManager *s_instance;
     static std::mutex s_mutex;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> s_forms;
 };

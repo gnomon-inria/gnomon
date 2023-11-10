@@ -26,3 +26,14 @@ void gnomonAbstractSessionManager::setProgress(double progress)
     qInfo() << "Session Loading at "<< int(100*this->m_progress) << "%";
     emit progressChanged();
 }
+
+bool gnomonAbstractSessionManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form) 
+{
+    s_forms[form->uuid()] = form;
+    return true;
+}
+
+std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractSessionManager::getForm(const QString& uuid)
+{
+    return s_forms[uuid];
+}

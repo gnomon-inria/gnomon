@@ -34,7 +34,7 @@ void gnomonAbstractViewPrivate::exportToManager(void)
             image = QImage(1500, 1500, QImage::Format_RGB32);
             image.fill(Qt::GlobalColor::black);
         }
-        GNOMON_SESSION->forms[this->forms[key]->uuid()] = this->forms[key];
+        GNOMON_SESSION->addForm(this->forms[key]);
         gnomonFormManager::instance()->addForm(this->forms[key]->uuid(), image, visualization);
         emit q->exportedForm(this->forms[key]);
     }
@@ -203,9 +203,9 @@ void gnomonAbstractView::drop(int index, bool new_visu)
     if (new_visu) {
         visu = nullptr;
     }
-    // this->setForm("formManager", form_uuid, visu);
+    this->setForm("formManager", GNOMON_SESSION->getForm(form_uuid), visu);
     this->render();
-    // gnomonFormManager::instance()->setFormDropped(form_uuid);
+    gnomonFormManager::instance()->setFormDropped(form_uuid);
 }
 
 void gnomonAbstractView::transmit(void)

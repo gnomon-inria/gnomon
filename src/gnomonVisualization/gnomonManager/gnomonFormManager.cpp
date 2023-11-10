@@ -53,7 +53,6 @@ public:
     void addFormWriter(const QString& form_name, int item);
 
 public:
-    // QHash<int, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
     QHash<int, QString> forms;
     QHash<int, std::shared_ptr<gnomonAbstractVisualization> > formVisualizations;
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
@@ -108,16 +107,14 @@ gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
 
 void gnomonFormManagerPrivate::insertForm(int item, const QString& form_uuid, const QImage& image)
 {
-    // form->setThumbnailId(item);
-    GNOMON_SESSION->forms[form_uuid]->setThumbnailId(item);
+    GNOMON_SESSION->getForm(form_uuid)->setThumbnailId(item);
     this->forms.insert(item, form_uuid);
     this->formThumbnail.insert(item, image);
     this->formDropped.insert(item, false);
 
-    // gnomonPipelineManager::instance()->setFormIndex(form, item);
+    gnomonPipelineManager::instance()->setFormIndex(GNOMON_SESSION->getForm(form_uuid), item);
 
-    // QString form_name = form->formName();
-    QString form_name = GNOMON_SESSION->forms[form_uuid]->formName();
+    QString form_name = GNOMON_SESSION->getForm(form_uuid)->formName();
     this->addFormWriter(form_name, item);
     if (!this->formCounter.contains(form_name)) {
         this->formCounter.insert(form_name, 0);
@@ -216,13 +213,10 @@ void gnomonFormManagerPrivate::loadFormToMemory(int id)
 
     connect(readerCommand, &gnomonAbstractCommand::finished, [=]() {
             this->forms[id] = readerCommand->outputs().first()->uuid();
-            // this->forms[id]->setThumbnailId(id);
-            GNOMON_SESSION->forms[this->forms[id]]->setThumbnailId(id);
-            // this->forms[id]->metadata()->deserialize(this->cache_metadatas.take(id));
-            GNOMON_SESSION->forms[this->forms[id]]->metadata()->deserialize(this->cache_metadatas.take(id));
-            // QString form_name = this->forms[id]->formName();
-            QString form_name = GNOMON_SESSION->forms[this->forms[id]]->formName();
-            // gnomonPipelineManager::instance()->decachNode(this->forms[id], this->cache_pipeline_nodes.take(id));
+            GNOMON_SESSION->getForm(this->forms[id])->setThumbnailId(id);
+            GNOMON_SESSION->getForm(this->forms[id])->metadata()->deserialize(this->cache_metadatas.take(id));
+            QString form_name = GNOMON_SESSION->getForm(this->forms[id])->formName();
+            gnomonPipelineManager::instance()->decachNode(GNOMON_SESSION->getForm(this->forms[id]), this->cache_pipeline_nodes.take(id));
     });
     readerCommand->redo();
 }
@@ -301,8 +295,7 @@ bool gnomonFormManager::deleteForm(int id, bool force)
         dtkWarn() << "Unknown forms id or form already dropped in other workspace" << id << "can't delete it ";
         return false;
     }
-    // if(gnomonPipelineManager::instance()->removeForm(d->forms[id])) {
-    if(true) {
+    if(gnomonPipelineManager::instance()->removeForm(GNOMON_SESSION->getForm(d->forms[id]))) {
         d->forms.remove(id);
         if (d->formCameras.contains(id)) {
             d->formCameras.remove(id);
@@ -319,22 +312,21 @@ bool gnomonFormManager::deleteForm(int id, bool force)
 }
 
 void gnomonFormManager::compose(int first, int second) {
-    // auto output = d->forms[first]->clone();
-    // auto output = GNOMON_SESSION->forms[d->forms[first]]->clone();
-    // auto form2 = d->forms[second];
-    // output->compose(form2);
+    auto output = GNOMON_SESSION->getForm(d->forms[first])->clone();
+    auto form2 = GNOMON_SESSION->getForm(d->forms[second]);
+    output->compose(form2);
 
-    // QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs = {
-    //         {"first", d->forms[first]},
-    //         {"second", d->forms[second]},
-    // };
-    // QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs = {
-    //         {"output",output},
-    // };
-    // gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
-    // gnomonPipelineManager::instance()->addForm(output);
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs = {
+            {"first", GNOMON_SESSION->getForm(d->forms[first])},
+            {"second", GNOMON_SESSION->getForm(d->forms[second])},
+    };
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs = {
+            {"output",output},
+    };
+    gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
+    gnomonPipelineManager::instance()->addForm(output);
 
-    // this->addForm(output, d->formThumbnail[first]);
+    this->addForm(output->uuid(), d->formThumbnail[first]);
 }
 
 void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) const
@@ -355,7 +347,7 @@ void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) c
     if(!file_name.isEmpty()) {
         auto command = d->formWriterCommand[id];
         command->setPath(file_name);
-        // command->setForm(d->forms[id]);
+        command->setForm(GNOMON_SESSION->getForm(d->forms[id]));
         command->redo();
         if (add_to_pipeline)
         {
@@ -376,8 +368,8 @@ void gnomonFormManager::addToCache(int id) const
     this->saveAs(id, filepath, false);
 
     d->cache_forms[id] = filepath;
-    // d->cache_pipeline_nodes[id] = gnomonPipelineManager::instance()->cacheNode(d->forms[id]);
-    // d->cache_metadatas[id] = d->forms[id]->metadata()->serialize();
+    d->cache_pipeline_nodes[id] = gnomonPipelineManager::instance()->cacheNode(GNOMON_SESSION->getForm(d->forms[id]));
+    d->cache_metadatas[id] = GNOMON_SESSION->getForm(d->forms[id])->metadata()->serialize();
     d->deleteFormFromMemory(id);
 }
 
@@ -401,8 +393,7 @@ void gnomonFormManager::addForm(const QString& form_uuid, const QImage& image, s
         int item = d->item_counter++;
         d->insertForm(item, form_uuid, image);
         d->formVisualizations.insert(item, visualization);
-        // emit added(item, form->formName());
-        emit added(item, GNOMON_SESSION->forms[form_uuid]->formName());
+        emit added(item, GNOMON_SESSION->getForm(form_uuid)->formName());
     } else {
         emit alreadyAdded();
     }
@@ -410,16 +401,13 @@ void gnomonFormManager::addForm(const QString& form_uuid, const QImage& image, s
 
 QString gnomonFormManager::get(int index)
 {
-    // return d->forms.value(index, nullptr);
-    return d->forms.value(index, "");
+    return d->forms.value(index);
 }
 
-int gnomonFormManager::formIndex(std::shared_ptr<gnomonAbstractDynamicForm> form)
+int gnomonFormManager::formIndex(const QString& form_uuid)
 {
-    // if (d->forms.values().contains(form)) {
-    if (true) {
-        // return d->forms.values().indexOf(form);
-        return 0;
+    if (d->forms.values().contains(form_uuid)) {
+        return d->forms.values().indexOf(form_uuid);
     } else {
         return -1;
     }
@@ -457,7 +445,7 @@ gnomonFormManager::~gnomonFormManager(void)
 
 gnomonDynamicFormMetadata *gnomonFormManager::getDynamicFormMetadata(int id) {
     if(contains(id)) {
-        gnomonDynamicFormMetadata *metadata = GNOMON_SESSION->forms[d->forms[id]]->metadata();
+        gnomonDynamicFormMetadata *metadata = GNOMON_SESSION->getForm(d->forms[id])->metadata();
         QQmlEngine::setObjectOwnership(metadata, QQmlEngine::CppOwnership);
         return metadata;
     } else {
@@ -472,8 +460,7 @@ bool gnomonFormManager::contains(int id) {
 
 QVariantList gnomonFormManager::timeKeys(int id) {
     if(contains(id)) {
-        // const auto& times = d->forms[id]->times();
-        const auto& times = GNOMON_SESSION->forms[d->forms[id]]->times();
+        const auto& times = GNOMON_SESSION->getForm(d->forms[id])->times();
         QVariantList out;
         for(double time : times) {
             out.append(time);
@@ -485,23 +472,19 @@ QVariantList gnomonFormManager::timeKeys(int id) {
 }
 
 QStringList gnomonFormManager::formMetadataKeysAtT(int id, double t) {
-    // if(contains(id) && d->forms[id]->times().contains(t)) {
-    if(true) {
-        // return d->forms[id]->metadataAtT(t).keys();
-        return GNOMON_SESSION->forms[d->forms[id]]->metadataAtT(t).keys();
+    if(contains(id) && GNOMON_SESSION->getForm(d->forms[id])->times().contains(t)) {
+        return GNOMON_SESSION->getForm(d->forms[id])->metadataAtT(t).keys();
     } else {
         qWarning() << Q_FUNC_INFO << "Cannot get metadata for form " << id << " at time " << t;
         if(contains(id))
-            // qWarning() << Q_FUNC_INFO << "available times: " << d->forms[id]->times();
-            qWarning() << Q_FUNC_INFO << "available times: " << GNOMON_SESSION->forms[d->forms[id]]->times();
+            qWarning() << Q_FUNC_INFO << "available times: " << GNOMON_SESSION->getForm(d->forms[id])->times();
         return {};
     }
 }
 
 QString gnomonFormManager::formMetadataValueAtT(int id, double t, const QString& key) {
     if(contains(id)){
-        // auto metadata = d->forms[id]->metadataAtT(t);
-        auto metadata = GNOMON_SESSION->forms[d->forms[id]]->metadataAtT(t);
+        auto metadata = GNOMON_SESSION->getForm(d->forms[id])->metadataAtT(t);
         if(metadata.contains(key)) {
             return metadata[key];
         }
@@ -513,8 +496,7 @@ QString gnomonFormManager::formWriterNameFilter(int id)
 {
     QString filter;
     if (this->contains(id)) {
-        // std::shared_ptr<gnomonAbstractDynamicForm> form = d->forms[id];
-        std::shared_ptr<gnomonAbstractDynamicForm> form = GNOMON_SESSION->forms[d->forms[id]];
+        std::shared_ptr<gnomonAbstractDynamicForm> form = GNOMON_SESSION->getForm(d->forms[id]);
         gnomonAbstractWriterCommand* writer_command = d->formWriterCommand[id];
         QStringList extensions = writer_command->extensions();
         filter += form->formName().remove("gnomon");
@@ -536,11 +518,11 @@ int gnomonFormManager::formCount(const QString& form_name)
     }
 }
 
-void gnomonFormManager::setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form)
+void gnomonFormManager::setFormDropped(const QString& form_uuid)
 {
     //once dropped, a form cannot be deleted anymore. Otherwise, it will cause
     // onconsistency in the pipeline
-    int index = d->forms.key(form->uuid());
+    int index = d->forms.key(form_uuid);
     d->formDropped[index] = true;
 }
 

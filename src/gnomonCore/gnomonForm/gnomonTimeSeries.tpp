@@ -13,6 +13,12 @@ template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeri
     *(this->p_metadata) = *(o.p_metadata);
 }
 
+template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const QString& uuid) : gnomonAbstractDynamicForm()
+{
+    // QJsonObject serialization = GNOMON_SESSION->getForm(uuid);
+    // this->deserialize(serialization);
+    qDebug()<<"Not implemented";
+}
 
 template <typename T> std::shared_ptr<gnomonAbstractDynamicForm> gnomonTimeSeries<T>::clone(void) const
 {

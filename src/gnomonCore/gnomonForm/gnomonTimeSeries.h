@@ -17,6 +17,7 @@ class GNOMONCORE_EXPORT gnomonTimeSeries : public gnomonAbstractDynamicForm
 public:
     explicit gnomonTimeSeries(void) : m_uuid(QUuid::createUuid().toString(QUuid::WithoutBraces)) {};
     gnomonTimeSeries(const gnomonTimeSeries& o);
+    gnomonTimeSeries(const QString& uuid);
     ~gnomonTimeSeries(void) = default;
 
 public:

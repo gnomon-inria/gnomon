@@ -55,10 +55,10 @@ public:
 
 public:
     int formCount(const QString& form_name);
-    void setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    void setFormDropped(const QString& form_uuid);
 
 public:
-    int formIndex(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    int formIndex(const QString& form_uuid);
     QString get(int index);
     std::shared_ptr<gnomonAbstractVisualization> getVisualization(int index);
 
