@@ -111,13 +111,10 @@ set(${PROJECT_NAME}_SOURCES
   # gnomonWorkspaceTreeConstructor.cpp
   # gnomonWorkspaceTreeFromLString.cpp)
 )
-set(${PROJECT_NAME}_SOURCES_QRC gnomonWorkspace.qrc)
 
 ## #################################################################
 ## Build rules
 ## #################################################################
-
-qt6_add_resources(${PROJECT_NAME}_SOURCES_RCC ${${PROJECT_NAME}_SOURCES_QRC})
 
 add_library(${PROJECT_NAME} SHARED
   ${${PROJECT_NAME}_SOURCES}
@@ -129,10 +126,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Gui)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Qml)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE dtkImagingCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
+target_link_libraries(${PROJECT_NAME} PRIVATE libzip::zip)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonVisualization)

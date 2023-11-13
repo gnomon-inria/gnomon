@@ -118,15 +118,7 @@ class GNOMONCORE_EXPORT gnomonAbstractNewFormData
 
 DTK_DECLARE_OBJECT        (gnomonAbstractNewFormData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractNewFormData, GNOMONCORE_EXPORT)
-
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractNewFormData, GNOMONCORE_EXPORT, newFormData);
-}
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractNewFormData, GNOMONCORE_EXPORT, newFormData)
 
 //
 // gnomonAbstractNewFormData.h ends here

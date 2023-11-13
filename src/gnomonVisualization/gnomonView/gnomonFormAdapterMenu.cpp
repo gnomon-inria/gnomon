@@ -19,6 +19,7 @@
 
 gnomonFormAdapterMenu::gnomonFormAdapterMenu(QVariantMap adapter_descs, QWidget *parent) : QQuickWidget(parent)
 {
+    qDebug() << Q_FUNC_INFO << "PATH IS DEPRECATED";
     this->engine()->addImportPath("qrc:/");
 
     QQmlContext *context = this->rootContext();

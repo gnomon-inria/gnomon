@@ -5,7 +5,8 @@ Render to qtquick from agg.
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from .backend_qtquick import QtCore, QtGui, FigureCanvasQtQuick
-from .qt_compat import QtQml
+from PySide6 import QtQml
+#from .qt_compat import QtQml
 
 
 class GnomonFigureManager:

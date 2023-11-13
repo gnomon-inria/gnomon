@@ -193,15 +193,15 @@ void gnomonMplView::setAcceptForm(const QString& form_type, bool accept)
     }
 
     if(form_type == "gnomonDataFrame") {
-        d->visualizationCommands["gnomonDataFrame"] = new gnomonDataFrameMplVisualizationCommand;
+        d->visualizationCommands["gnomonDataFrame"] = std::make_shared<gnomonDataFrameMplVisualizationCommand>();
     } else if(form_type == "gnomonLString") {
-        d->visualizationCommands["gnomonLString"] = new gnomonLStringMplVisualizationCommand;
+        d->visualizationCommands["gnomonLString"] = std::make_shared<gnomonLStringMplVisualizationCommand>();
     } else if(form_type == "gnomonTree") {
-        d->visualizationCommands["gnomonTree"] = new gnomonTreeMplVisualizationCommand;
+        d->visualizationCommands["gnomonTree"] = std::make_shared<gnomonTreeMplVisualizationCommand>();
     }
 
     d->visualizationCommands[form_type]->setView(this);
-    connect(d->visualizationCommands[form_type], &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
+    connect(d->visualizationCommands[form_type].get(), &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
         emit formVisuParametersChanged();
     });
 

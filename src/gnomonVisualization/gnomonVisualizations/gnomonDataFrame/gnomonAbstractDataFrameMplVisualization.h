@@ -38,16 +38,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataFrameMplVisualization *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataFrameMplVisualization, GNOMONVISUALIZATION_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataFrameMplVisualization, GNOMONVISUALIZATION_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataFrameMplVisualization, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataFrameMplVisualization, GNOMONVISUALIZATION_EXPORT, dataFrameMplVisualization, gnomonVisualization)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonVisualization layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonVisualization {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractDataFrameMplVisualization, GNOMONVISUALIZATION_EXPORT, dataFrameMplVisualization);
-}
 
 //
 // gnomonAbstractDataFrameMplVisualization.h ends here

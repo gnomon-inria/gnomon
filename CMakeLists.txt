@@ -71,7 +71,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_SKIP_BUILD_RPATH  FALSE)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
@@ -115,13 +115,16 @@ find_package(Python3 3.9 EXACT COMPONENTS Interpreter Development NumPy)
 set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Concurrent Network Qml Test Xml)
+if(QT_KNOWN_POLICY_QTP0001)
+  qt_policy(SET QTP0001 NEW)
+endif()
+
 
 find_package(dtkLog      REQUIRED)
 find_package(dtkCore     REQUIRED)
-find_package(dtkImaging  REQUIRED)
 find_package(dtkScript   REQUIRED)
-find_package(VTK         REQUIRED) # only for vtkImageData in gnomonImageDtk
-find_package(xtensor     REQUIRED) # because of dtkImaging
+find_package(VTK         REQUIRED)
+find_package(libzip         REQUIRED) # for workspaceBrowsing
 
 if(GNOMON_ENABLE_VISU)
   add_definitions(-DGNOMON_USE_VISU)

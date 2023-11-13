@@ -43,7 +43,7 @@ G.Page {
 
         var view = window.currentView;
 
-        var menu_component = Qt.createComponent("qrc:/gnomonQuick/Menus/ViewMenu.qml")
+        var menu_component = Qt.createComponent("qrc:/qt/qml/gnomonQuick/Menus/ViewMenu.qml")
 
         if (menu_component.status == Component.Ready) {
             menu = menu_component.createObject(_content, { view: view });

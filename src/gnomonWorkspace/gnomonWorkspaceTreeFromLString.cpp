@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonWorkspaceTreeFromLString.h"
 #include "gnomonWorkspaceTemplate_p.h"
 
@@ -20,7 +6,6 @@
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
-#include <dtkImagingCore>
 #include <dtkScript>
 #include <dtkMacs>
 #include <dtkWidgets>
@@ -84,7 +69,7 @@ QStringList gnomonWorkspaceTreeFromLStringPrivate::keys(void) const
 gnomonWorkspaceTreeFromLString::gnomonWorkspaceTreeFromLString(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     loadPluginGroup("treeFromLString");
-    
+
     d = new gnomonWorkspaceTreeFromLStringPrivate;
 
     d->source = new gnomonMplView(this);

@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Window
 
 import Qt.labs.platform as P
-import Qt.labs.settings
+import QtCore
 
 import xLogger  as L
 
@@ -513,7 +513,7 @@ G.Application {
     function switch_from_launcher(source: string)
     {
         if (source === undefined) {
-            source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
+            source = "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
         }
         stack_launcher.currentIndex  = 1
         window.drawelr_closed = false
@@ -551,7 +551,7 @@ G.Application {
                 _internal.menu_sources.push(specific_menu);
                 drawer.update_menu(specific_menu);
                 workspace.fill()
-                /* window.create_workspace_screenshot(); */
+                // window.create_workspace_screenshot();
                 _workspaces_model.append({"title": workspace.workspace_title, "index": workspace_index});
                 return workspace_index;
             }
@@ -581,6 +581,7 @@ G.Application {
         drawer.update_menu(_internal.menu_sources[index]);
         window.current_workspace().d.restoreState();
     }
+
 
 // /////////////////////////////////////////////////////////////////////////////
 // Load session API:
@@ -753,8 +754,6 @@ G.Application {
     }
 
     Component.onCompleted: {
-        //if (Qt.platform.os === "osx")
-        //    X.Style.flavors = 'MACOS';
         GP.SessionManager.setWindow(window)
 
         G.Style.mode = stt.mode
@@ -762,11 +761,12 @@ G.Application {
         window.height = Math.max(window.height, G.Style.windowMinHeight)
 
         window.recent_projects.clear()
+    if(stt.opened_projects) {
         let files = JSON.parse(stt.opened_projects)
-        for(let i=0; i<files.length; i++){
-            window.recent_projects.append(files[i])
-        }
-
+            for(let i=0; i<files.length; i++){
+                window.recent_projects.append(files[i])
+            }
+    }
         footer.workspaceName = ""
     }
 }

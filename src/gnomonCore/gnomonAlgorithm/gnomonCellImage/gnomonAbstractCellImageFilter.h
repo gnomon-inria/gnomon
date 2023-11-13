@@ -10,8 +10,6 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 
-class dtkImage;
-
 class GNOMONCORE_EXPORT gnomonAbstractCellImageFilter : public gnomonAbstractAlgorithm
 {
 
@@ -48,13 +46,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageFilter *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT, cellImageFilter, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageFilter, GNOMONCORE_EXPORT, cellImageFilter);
-}
 
 //
 // gnomonAbstractCellImageFilter.h ends here

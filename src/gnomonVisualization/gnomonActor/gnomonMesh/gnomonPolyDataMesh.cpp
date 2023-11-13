@@ -3,8 +3,6 @@
 
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh.h>
 
-#include <dtkImagingCore>
-
 #include <vtkActor.h>
 #include <vtkAppendPolyData.h>
 #include <vtkAssembly.h>

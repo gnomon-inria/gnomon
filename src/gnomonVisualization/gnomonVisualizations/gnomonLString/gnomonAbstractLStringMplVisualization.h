@@ -43,16 +43,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringMplVisualization *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringMplVisualization, GNOMONVISUALIZATION_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringMplVisualization, GNOMONVISUALIZATION_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringMplVisualization, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringMplVisualization, GNOMONVISUALIZATION_EXPORT, lStringMplVisualization, gnomonVisualization)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonVisualization layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonVisualization {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractLStringMplVisualization, GNOMONVISUALIZATION_EXPORT, lStringMplVisualization);
-}
 
 //
 // gnomonAbstractLStringMplVisualization.h ends here

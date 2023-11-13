@@ -1,24 +1,9 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonTimeSeriesTest.h"
 
 #include <gnomonCore>
 #include <gnomonTest>
 
 #include <dtkCore>
-#include <dtkImagingCore>
 
 class gnomonTimeSeriesTestCasePrivate
 {
@@ -47,7 +32,7 @@ void gnomonTimeSeriesTestCase::init(void)
 
 void gnomonTimeSeriesTestCase::createEmptyFormTest(void)
 {
-	gnomonTimeSeries<gnomonCellComplex> *f;
+    gnomonTimeSeries<gnomonCellComplex> *f;
     QVERIFY(f = new gnomonTimeSeries<gnomonCellComplex>());
 }
 

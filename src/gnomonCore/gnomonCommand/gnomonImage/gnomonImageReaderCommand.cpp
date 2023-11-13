@@ -40,7 +40,6 @@ gnomonImageReaderCommand::gnomonImageReaderCommand() : d(new gnomonImageReaderCo
 
 gnomonImageReaderCommand::~gnomonImageReaderCommand()
 {
-    this->action = nullptr;
     delete d;
 }
 
@@ -60,7 +59,7 @@ void gnomonImageReaderCommand::postdo(void)
         if(!image) str += "  image is empty";
         else if(image->times().empty()) str += "  no times available";
         else str += "  no channels availables";
-        
+
         dtkWarn() << Q_FUNC_INFO << str;
     } else {
         d->image = image;

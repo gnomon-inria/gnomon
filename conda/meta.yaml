@@ -1,17 +1,25 @@
+#{% set build_string = '{}_py{}h{}_{}'.format(build_type, CONDA_PY, PKG_HASH, GIT_DESCRIBE_NUMBER) %}
+
 package:
-  name: gnomon
+  name: gnomon-{{ build_type }}
   version: {{ GIT_DESCRIBE_TAG }}
 
 source:
-  path: ../..
+  path: ../
 
 build:
   number: {{ GIT_DESCRIBE_NUMBER }}
+#  string: {{ build_string }}
+  script_env:
+    - HAS_GUI=False # [build_type == lib]
+    - HAS_GUI=True # [build_type == app]
 
 requirements:
   build:
-    - cmake >=3.17
+    - cmake >=3.20
     - make
+    - python
+    - numpy {{numpy}}
     - {{ compiler('cxx') }}              # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('libglvnd-devel') }}        # [linux]
@@ -41,43 +49,50 @@ requirements:
     - {{ cdt('libxfixes') }}             # [linux]
     - {{ cdt('libxfixes-devel') }}       # [linux]
     - {{ cdt('libxxf86vm') }}            # [linux]
-    - {{ cdt('libxshmfence')}}           # [linux]
-    - {{ cdt('libxshmfence-devel')}}     # [linux]
     - libxkbfile                         # [linux]
     - libwebp=1.2.2
 
   host:
-    - qt=6.2.2
+    - qt6-main >=6.5,<7
+    - dtk-forge6::vtk =9.2.6
+    - pyside6
+    - dtk-core >=2.13
+    - dtk-core-python >=2.8
+    - dtk-imaging >=2.0
+    - dtk-imaging-python >=2.0
+    - dtk-log >=2.5
+    - dtk-script >=2.5
     - python
+    - numpy {{numpy}}
+    - swig >=4.1
 
   run:
-    - qt=6.2.2
-    - python
-    - importlib_metadata
-    - numpy {{numpy}}
-    - matplotlib-base=3.5.1
-    - gnomon_package_data=0.5.0
-    - gnomon_package_tissueimage=0.5.0
-    - gnomon_package_imageenhancement=0.5.0
-    - gnomon_package_tissuemesh=0.3.0
-    - gnomon_package_tissueimagemesh=0.3.0
-    - gnomon_package_treelsystem=0.5.0
+    - qt6-main >=6.5,<7
+    - dtk-forge6::vtk =9.2.6
     - pyside6
-    - qtpy=2.0
-    - qtconsole-base=5.2
-    - jedi=0.18.2
-    - python-lsp-server=1.7.1
-    - pip
-
-app:
-  entry: gnomon # [linux]
-  entry: gnomon # [osx]
-  summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D
-#  icon: ../../assets/gnomon_logo.png
-  type: desk
+    - dtk-core >=2.13
+    - dtk-core-python >=2.8
+    - dtk-imaging >=2.0
+    - dtk-imaging-python >=2.0
+    - dtk-plugins-imaging >=2.0
+    - dtk-log >=2.5
+    - dtk-script >=2.5
+    - python
+    - numpy {{numpy}}
+    - pymongo
+    - jinja2
+    - swig >=4.1
+    - importlib_metadata       # [build_type == app]
+    - matplotlib-base=3.5.1    # [build_type == app]
+    - qtpy=2.0                 # [build_type == app]
+    - qtconsole-base=5.2       # [build_type == app]
+    - jedi=0.18.2              # [build_type == app]
+    - python-lsp-server=1.7.1  # [build_type == app]
+    - pip                      # [build_type == app]
 
 
 about:
   home: https://gnomon.gitlabpages.inria.fr/gnomon
-  license: CECILL-C
-  summary:  Gnomon is a computational platform to analyse and simulate the development of life forms in 3D
+  license: LGPL-3.0
+  license_file: LICENSE
+  summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D

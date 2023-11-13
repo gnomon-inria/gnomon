@@ -1,6 +1,6 @@
 #pragma once
 
-class dtkImage;
+class vtkImageData;
 
 #include <QtCore>
 
@@ -34,8 +34,8 @@ public:
     virtual const QString pluginName(void) = 0;
 
 public:
-    virtual void setImage(dtkImage *image) = 0;
-    virtual dtkImage* image(void) const = 0;
+    virtual void setImage(vtkImageData *image) = 0;
+    virtual vtkImageData* image(void) const = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -44,15 +44,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractIntensityImageData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT, intensityimagedata, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractIntensityImageData, GNOMONCORE_EXPORT, intensityimagedata);
-}
 
 // gnomonAbstractIntensityImageData.h ends here

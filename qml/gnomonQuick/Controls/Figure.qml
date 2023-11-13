@@ -5,7 +5,6 @@ import QtQuick.Window
 import QtQuick.Layouts
 
 import Qt.labs.platform as P
-import Qt5Compat.GraphicalEffects
 
 import gnomon.Visualization 1.0 as GV
 import gnomon.Mpl           1.0 as GV
@@ -139,16 +138,16 @@ Rectangle {
         }
     }
 
-    layer.enabled: true
-    layer.effect: OpacityMask
-    {
-        maskSource: Rectangle
-        {
-             width: self.width
-            height: self.height
-            radius: G.Style.panelRadius;
-        }
-    }
+    //layer.enabled: true
+    //layer.effect: OpacityMask
+    //{
+    //    maskSource: Rectangle
+    //    {
+    //         width: self.width
+    //        height: self.height
+    //        radius: G.Style.panelRadius;
+    //    }
+    //}
 
     Rectangle {
 

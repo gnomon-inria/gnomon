@@ -9,8 +9,6 @@
 
 #include <dtkScript>
 
-#include <dtkImage>
-
 namespace fusion {
 bool t_remove_images_called = false;
 int t_nb_image_added = 0;

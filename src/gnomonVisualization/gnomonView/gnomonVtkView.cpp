@@ -304,6 +304,13 @@ gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 gnomonVtkViewPrivate::~gnomonVtkViewPrivate(void)
 {
     this->clearConnections();
+
+    for(auto map : adapterCommands) {
+        for(auto command: map) {
+            delete command;
+        }
+        map.clear();
+    }
 }
 
 void gnomonVtkViewPrivate::clearConnections(void)
@@ -573,6 +580,7 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 
 gnomonVtkView::~gnomonVtkView(void)
 {
+    d->visualizationCommands.clear();
     delete dd;
 }
 
@@ -745,23 +753,23 @@ void gnomonVtkView::setAcceptForm(const QString& form_type, bool accept)
     }
 
     if(form_type == "gnomonBinaryImage") {
-        d->visualizationCommands["gnomonBinaryImage"] = new gnomonBinaryImageVtkVisualizationCommand;
+        d->visualizationCommands["gnomonBinaryImage"] = std::make_shared<gnomonBinaryImageVtkVisualizationCommand>();
     } else if(form_type == "gnomonCellComplex") {
-        d->visualizationCommands["gnomonCellComplex"] = new gnomonCellComplexVtkVisualizationCommand;
+        d->visualizationCommands["gnomonCellComplex"] = std::make_shared<gnomonCellComplexVtkVisualizationCommand>();
     } else if(form_type == "gnomonCellImage") {
-        d->visualizationCommands["gnomonCellImage"] = new gnomonCellImageVtkVisualizationCommand;
+        d->visualizationCommands["gnomonCellImage"] = std::make_shared<gnomonCellImageVtkVisualizationCommand>();
     } else if(form_type == "gnomonImage") {
-        d->visualizationCommands["gnomonImage"] = new gnomonImageVtkVisualizationCommand;
+        d->visualizationCommands["gnomonImage"] = std::make_shared<gnomonImageVtkVisualizationCommand>();
     } else if(form_type == "gnomonLString") {
-        d->visualizationCommands["gnomonLString"] = new gnomonLStringVtkVisualizationCommand;
+        d->visualizationCommands["gnomonLString"] = std::make_shared<gnomonLStringVtkVisualizationCommand>();
     } else if(form_type == "gnomonMesh") {
-        d->visualizationCommands["gnomonMesh"] = new gnomonMeshVtkVisualizationCommand;
+        d->visualizationCommands["gnomonMesh"] = std::make_shared<gnomonMeshVtkVisualizationCommand>();
     } else if(form_type == "gnomonPointCloud") {
-        d->visualizationCommands["gnomonPointCloud"] = new gnomonPointCloudVtkVisualizationCommand;
+        d->visualizationCommands["gnomonPointCloud"] = std::make_shared<gnomonPointCloudVtkVisualizationCommand>();
     }
 
     d->visualizationCommands[form_type]->setView(this);
-    connect(d->visualizationCommands[form_type], &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
+    connect(d->visualizationCommands[form_type].get(), &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
         emit formVisuParametersChanged();
     });
 

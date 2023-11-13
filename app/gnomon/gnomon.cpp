@@ -11,7 +11,6 @@
 #include <QtQuick>
 #include <QtWebEngineQuick>
 
-#include <dtkImagingCore>
 #include <dtkScript>
 #include <dtkLog>
 
@@ -260,8 +259,8 @@ void gnomon_rinit()
     QtWebEngineQuick::initialize();
 
     //qputenv("QT_PLUGIN_PATH", "1");
-    qputenv("LC_ALL", "C");
-    QLocale::setDefault(QLocale::c());
+    //qputenv("LC_ALL", "C");
+    //QLocale::setDefault(QLocale::c());
 
     dtkLogger::instance().setLevel("info");
     dtkLogger::instance().attachConsole();
@@ -274,10 +273,6 @@ void gnomon_rinit()
 
     // x_vis
     x_vis_initialise();
-
-    // --
-    dtkImaging::setVerboseLoading(false);
-    dtkImaging::initialize();
 
     //--
     dtkScriptInterpreterPython::instance()->init("gnomon-core");

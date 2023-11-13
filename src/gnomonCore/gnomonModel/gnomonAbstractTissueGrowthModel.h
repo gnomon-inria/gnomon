@@ -35,16 +35,8 @@ DTK_DECLARE_OBJECT        (gnomonAbstractTissueGrowthModel *)
 
 
 DTK_DECLARE_PLUGIN        (gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT)        // The following lines
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT)  // are not needed right now
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT)  // for we won't define plugins first
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT, growthmodel, gnomonCore)
 
-//  ///////////////////////////////////////////////////////////////////
-//  Register gnomonAbstractTissueGrowthModel to the layer
-//  ///////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractTissueGrowthModel, GNOMONCORE_EXPORT, growthmodel)
-}
 
 //
 // gnomonAbstractTissueGrowthModel.h ends here

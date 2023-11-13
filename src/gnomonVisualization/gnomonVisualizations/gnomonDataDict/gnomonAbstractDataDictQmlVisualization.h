@@ -38,16 +38,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataDictQmlVisualization *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataDictQmlVisualization, GNOMONVISUALIZATION_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictQmlVisualization, GNOMONVISUALIZATION_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictQmlVisualization, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictQmlVisualization, GNOMONVISUALIZATION_EXPORT, dataDictQmlVisualization, gnomonVisualization)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonVisualization layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonVisualization {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractDataDictQmlVisualization, GNOMONVISUALIZATION_EXPORT, dataDictQmlVisualization);
-}
 
 //
 // gnomonAbstractDataDictQmlVisualization.h ends here

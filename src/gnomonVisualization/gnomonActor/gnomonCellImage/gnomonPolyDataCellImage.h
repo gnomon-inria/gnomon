@@ -1,17 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:Ce
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <vtkObject.h>
@@ -32,7 +18,7 @@ public:
     static gnomonPolyDataCellImage *New(void);
 
 public:
-	void setCellImage(std::shared_ptr<gnomonCellImage> cellimage);
+    void setCellImage(std::shared_ptr<gnomonCellImage> cellimage);
 
 public slots:
     void update(void) override;
@@ -58,7 +44,7 @@ private:
     void operator = (const gnomonPolyDataCellImage&);
 
 private:
-	class gnomonPolyDataCellImagePrivate *d;
+    class gnomonPolyDataCellImagePrivate *d;
 };
 
 

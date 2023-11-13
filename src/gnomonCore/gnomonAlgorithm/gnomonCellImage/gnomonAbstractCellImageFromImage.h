@@ -71,12 +71,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageFromImage *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellImageFromImage, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageFromImage, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageFromImage, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageFromImage, GNOMONCORE_EXPORT, cellImageFromImage, gnomonCore)
 
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageFromImage, GNOMONCORE_EXPORT, cellImageFromImage);
-}
 
 //
 // gnomonAbstractCellImageFromImage.h ends here

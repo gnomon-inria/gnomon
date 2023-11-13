@@ -1,11 +1,11 @@
-import QtQuick          2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts  1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import gnomonQuick.Controls      1.0 as G
-import gnomonQuick.Style         1.0 as G
-import gnomonQuick.Workspaces    1.0 as G
-import "."                       1.0 as G
+import gnomonQuick.Controls    as G
+import gnomonQuick.Style       as G
+import gnomonQuick.Workspaces  as G
+//import "."                     as G
 
 import gnomon.Pipeline  1.0 as GP
 

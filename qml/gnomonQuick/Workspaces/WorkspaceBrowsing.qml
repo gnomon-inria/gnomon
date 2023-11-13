@@ -1,17 +1,17 @@
-import QtQuick           2.15
-import QtQuick.Controls  2.15
-import QtQuick.Layouts   1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import Qt.labs.platform  1.0 as P
-import Qt.labs.settings
+import Qt.labs.platform as P
+import QtCore
 
 import gnomon.Utils as G
-import gnomonQuick.Workspaces 1.0 as G
-import gnomonQuick.Controls   1.0 as G
-import gnomonQuick.Style      1.0 as G
+import gnomonQuick.Workspaces as G
+import gnomonQuick.Controls   as G
+import gnomonQuick.Style      as G
 
-import gnomon.Workspaces      1.0 as GW
-import gnomon.Project      1.0 as GP
+import gnomon.Workspaces as GW
+import gnomon.Project    as GP
 
 G.Workspace {
     id: _self;

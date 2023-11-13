@@ -21,8 +21,4 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataDriver *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataDriver, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDriver, GNOMONCORE_EXPORT)
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractDataDriver, GNOMONCORE_EXPORT, dataDriver);
-}
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDriver, GNOMONCORE_EXPORT, dataDriver, gnomonCore)

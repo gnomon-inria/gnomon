@@ -7,8 +7,6 @@
 
 #include <dtkScript>
 
-#include <dtkImage>
-
 namespace reader {
 bool t_set_path = false;
 bool t_run_called = false;

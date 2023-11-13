@@ -83,10 +83,57 @@ import_array();
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonAbstractTreeData.h>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree.h>
+
+#include <vtkPythonUtil.h>
+#include <vtkImageData.h>
 %}
 
 #undef  GNOMONCORE_EXPORT
 #define GNOMONCORE_EXPORT
+
+
+// VTK
+%typemap(out) vtkImageData* {
+
+    PyImport_ImportModule("vtk");
+
+    $result = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
+ }
+
+%typemap(directorin) vtkImageData* {
+
+    PyImport_ImportModule("vtk");
+
+    $input = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
+ }
+
+%typemap(in) vtkImageData* {
+
+    $1 = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkImageData" );
+    //$1->Register(NULL);
+    if ( $1 == NULL ) {
+        qDebug("Fail to convert to vtkImageData*");
+        PyErr_Print();
+    }
+}
+
+%typemap(directorout) vtkImageData* {
+    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
+    //PyTypeObject *obj_type = Py_TYPE($1);
+    //qDebug() << $1 << obj_type;
+    //qDebug() << "type "<< obj_type->tp_name;
+    //PyVTKObject *py_obj = (PyVTKObject *)(&(*$1));
+    //qDebug() << "pyVTK_obj" << py_obj;
+    //vtkObjectBase *vtk_obj = py_obj->vtk_ptr;
+    //qDebug() << "vtk_obj_ptr "<< vtk_obj;
+    //$result = (vtkImageData*) vtk_obj;
+
+    if ( $result == NULL ) {
+        qDebug("Fail to convert to vtkImageData*");
+        //PyErr_Print();
+    }
+}
+
 
 // /////////////////////////////////////////////////////////////////
 // std::vector<double>

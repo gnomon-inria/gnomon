@@ -49,16 +49,8 @@ public:
 
 DTK_DECLARE_OBJECT(gnomonAbstractDataDictReader *)
 DTK_DECLARE_PLUGIN(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT, dataDictReader, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractDataDictReader, GNOMONCORE_EXPORT, dataDictReader);
-}
 
 //
 // gnomonAbstractDataDictReader.h ends here

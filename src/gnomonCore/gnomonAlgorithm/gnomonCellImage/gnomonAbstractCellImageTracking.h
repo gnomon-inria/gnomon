@@ -63,13 +63,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageTracking *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT, cellImageTracking, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageTracking, GNOMONCORE_EXPORT, cellImageTracking);
-}
 
 //
 // gnomonAbstractCellImageTracking.h ends here

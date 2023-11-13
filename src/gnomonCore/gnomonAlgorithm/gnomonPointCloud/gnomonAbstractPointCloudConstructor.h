@@ -33,13 +33,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractPointCloudConstructor *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractPointCloudConstructor, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudConstructor, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudConstructor, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudConstructor, GNOMONCORE_EXPORT, pointCloudConstructor, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractPointCloudConstructor, GNOMONCORE_EXPORT, pointCloudConstructor);
-}
 
 //
 // gnomonAbstractPointCloudConstructor.h ends here

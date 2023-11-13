@@ -29,13 +29,11 @@ public:
     virtual ~gnomonVtkView(void);
 
 public:
-    Q_ENUMS(Mode);
-    Q_ENUMS(Orientation);
-
     enum Mode {
         VIEW_MODE_3D = 3,
         VIEW_MODE_2D = 2,
     };
+    Q_ENUM(Mode);
 
     enum Orientation {
         SLICE_ORIENTATION_XY = 2,
@@ -43,6 +41,7 @@ public:
         SLICE_ORIENTATION_YZ = 0,
         NONE = -1
     };
+    Q_ENUM(Orientation);
 
     enum Representation {
         VTK_REPRESENTATION_POINTS = 0,

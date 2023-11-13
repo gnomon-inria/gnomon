@@ -198,14 +198,14 @@ class MorphonetHelper(gnomonMorphonetHelper):
                         #channel = ll[2]
 
                     # in case cell_idx cannot be casted to int
-                    try: 
+                    try:
                         cell_idx= int(cell_idx)
 
                         # 1 is the background
                         if cell_idx == 1:
                             print("cell idx changed from 1 to ", idx_availables[-1])
                             cell_idx = idx_availables[-1]
-                    except: 
+                    except:
                         cell_idx = idx_availables[0]
                     idx_availables.remove(cell_idx)
 
@@ -236,7 +236,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         bounds = full_polydata.GetBounds()
 
         print(len(polydatas), " polydatas created. bounds: ", bounds)
-        
+
         final_img = vtk.vtkImageData()
         spacing = [voxelsize]*3
         dim = [int(np.ceil((bounds[ii*2+1] - bounds[ii*2])/voxelsize)) for ii in range(0, 3)]
@@ -246,7 +246,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         origin = [bounds[ii*2] + spacing[ii] / 2 for ii in range(0, 3)]
         final_img.SetOrigin(origin)
         final_img.ComputeBounds()
-        
+
         print("img bounds: ", final_img.GetBounds(), " and dims:", dim)
         print("img  origin:", origin)
 
@@ -322,7 +322,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         Returns:
             bool: True if connected, False otherwise
-        """        
+        """
         self._net = Net(login, password)
         return self.is_connected()
 
@@ -334,7 +334,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
             search (str): Not used for now_
 
         Returns:
-            str: a JSON dumps of available datasets info 
+            str: a JSON dumps of available datasets info
         """
         if self.is_connected():
             data=self._net._request({},'/api/userrelatedset/','GET')
@@ -354,7 +354,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
             id (int): the id of the dataset to select_
 
         Returns:
-            bool: True if the dataset is selected, False otherwise 
+            bool: True if the dataset is selected, False otherwise
         """
         if not self.is_connected():
             print("not connected to morphonet, nothing done")
@@ -370,7 +370,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
     def startTime(self):
         if self._net:
             return self._net.minTime
-        else: 
+        else:
             return 0
 
     def endTime(self):
@@ -396,7 +396,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
 
         cell_img_data = cellImageData_pluginFactory().create("gnomonCellImageDataTissueImage")
 
-        # if self._net.is_image_at(time): 
+        # if self._net.is_image_at(time):
         #     arr = self._net.get_image_at(time)
         #     tissue = TissueImage3D(arr)
         #     tissue.cells.volume()
@@ -599,9 +599,9 @@ class MorphonetHelper(gnomonMorphonetHelper):
             self._net.share_info_by_id(info_id)
 
         return self._net.id_dataset
-    
+
     def startCuration(self, name: str, form_series, id_NCBI: int, id_type: int, description: str, voxelsize=0.5) -> bool:
-        """send a dataset through socket 
+        """send a dataset through socket
 
         Args:
             name (str): _name of the dataset
@@ -619,7 +619,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         infos = self.transform_to_mn_infos(form_series)
         for i_t, time in enumerate(times):
             cell_img_data[time] = form_series[time].data().get_tissue_image()
-        
+
         context = zmq.Context()
         m_socket = context.socket(zmq.REQ)
         m_socket.connect("tcp://127.0.0.1:5555")
@@ -642,7 +642,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
         message = m_socket.recv()
         return True
 
-    
+
     def collectCuration(self):
         forms: dict[float, TissueImage3D] = {}
         context = zmq.Context()
@@ -665,7 +665,7 @@ class MorphonetHelper(gnomonMorphonetHelper):
                 add_cell_feature_from_info(tissue, int(i_t), info_name, info_type, info_dict)
             forms[t] = tissue
         m_socket.send_json({"request": "kill"})
-        form_dict, data_dict = buildFormSeries(form_dict=forms, form_class=gnomonCellImage,
+        form_dict, data_list = buildFormSeries(form_dict=forms, form_class=gnomonCellImage,
                                                data_plugin=gnomonCellImageDataTissueImage)
         return form_dict
 
@@ -677,13 +677,13 @@ class MorphonetHelper(gnomonMorphonetHelper):
         if self.selectDataset(id):
             self._net.delete_dataset()
             self.dataset_info = []
-            return self._net.id_dataset == -1        
+            return self._net.id_dataset == -1
         return False
 
 class morphonetHelperCreator(gnomonMorphonetHelperCreator):
     def __init__(self):
         super().__init__()
-        self.thisown = 0 
+        self.thisown = 0
 
     def create(self):
         try:
@@ -711,7 +711,7 @@ def visu_debug(polydata=None, img=None):
         pd_actor = vtk.vtkActor()
         pd_actor.SetMapper(mapper)
         renderer.AddActor(pd_actor)
-    
+
     if img:
         alphaChannelFunc = vtk.vtkPiecewiseFunction()
         alphaChannelFunc.AddPoint(0, .0)
@@ -753,7 +753,7 @@ def visu_debug(polydata=None, img=None):
     renderWindow.SetWindowName("ImageStencil")
 
     # Setup render window interactor
-    renderWindowInteractor= vtk.vtkRenderWindowInteractor() 
+    renderWindowInteractor= vtk.vtkRenderWindowInteractor()
     style = vtk.vtkInteractorStyleTrackballCamera()
     renderWindowInteractor.SetInteractorStyle(style)
 
@@ -766,7 +766,7 @@ def visu_debug(polydata=None, img=None):
     #mn = MorphonetHelper()
     #mn.connect("trcabel", "....")
     # mn.selectDataset(204)
-    # cell_img = mn.loadMnDataAtTime(1, 100, 100, 100)  
+    # cell_img = mn.loadMnDataAtTime(1, 100, 100, 100)
     # mesh = mn.transform_to_mn_mesh(cell_img, 1)
     # new_id = mn.createDataset("test1", {1: cell_img}, 0, 0, "mydesc")
     # mn.deleteDataset(new_id)
@@ -776,7 +776,7 @@ def test_plot():
     import gnomon.core
     from gnomon.core import gnomonCellImage
     from gnomon.utils import load_plugin_group
-    import time 
+    import time
 
     load_plugin_group("cellImageReader")
     filename = "/home/trcabel/Dev/naviscope/test_data/0hrs_plant1_seg_small.inr"
