@@ -214,6 +214,7 @@ void gnomonAbstractView::transmitForm(const QString& form_type)
             image = QImage(1500, 1500, QImage::Format_RGB32);
             image.fill(Qt::GlobalColor::black);
         }
+        GNOMON_SESSION->addForm(d->forms[form_type]);
         gnomonFormManager::instance()->addForm(d->forms[form_type]->uuid(), image, visualization);
         emit exportedForm(d->forms[form_type]);
     }
