@@ -1,22 +1,6 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonActor2DPolyData.h"
 
 #include "gnomonPolyData.h"
-
-#include <dtkImagingCore>
 
 #include <QtGui>
 

@@ -192,6 +192,9 @@ gnomonPipeline *gnomonPipelineManager::pipeline(void)
 
 void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
 {
+    //TOCHECK TODO ?
+    //qDebug() << "Form added, cannot be destroyed! ";
+    //qDebug() << "todo tell reader command ? ";
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms = command->outputs();
 
     gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(command->factoryName(), command->algorithmName(),
@@ -347,7 +350,7 @@ void gnomonPipelineManager::addMorphoForm(std::shared_ptr<gnomonAbstractDynamicF
     QString form_name = form->formName().remove("gnomon");
     gnomonPipelineNodeMorphonet *node = new gnomonPipelineNodeMorphonet(form_name, morphonet_data);
     d->morphonet_nodes[form] = node;
-    d->morphonet_output[form] = form_name;  
+    d->morphonet_output[form] = form_name;
 }
 
 void gnomonPipelineManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form)
@@ -464,7 +467,7 @@ bool gnomonPipelineManager::removeForm(std::shared_ptr<gnomonAbstractDynamicForm
         }
         return false;
     };
-    
+
     bool res = false;
     if (d->reader_nodes.contains(form)) {
         auto *node = d->reader_nodes[form];

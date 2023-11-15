@@ -43,9 +43,7 @@ target_link_libraries(${PROJECT_NAME}
   Qt6::Widgets
   dtkLog
   dtkCore
-  dtkImagingCore
   dtkScript
-  xtensor
   xVis
   xLogger
   ${VTK_LIBRARIES}

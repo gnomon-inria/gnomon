@@ -4,8 +4,6 @@
 
 #include <gnomonVisualization/gnomonCoreParameterColor.h>
 
-#include <dtkImagingCore>
-
 #include "gnomonView/gnomonVtkView.h"
 #include "gnomonActor/gnomonImageData/gnomonActorImageVolume.h"
 #include "gnomonActor/gnomonImageData/gnomonActor2DImageWidget.h"
@@ -143,10 +141,10 @@ void gnomonImageVtkVisualization::setImage(std::shared_ptr<gnomonImageSeries> im
     valueRangeParam->setMin(0);
 
     QString channel = ddd->image->channels()[0];
-    if (ddd->image->image(channel)->storageType() == QMetaType::UChar) {
+    if (ddd->image->image(channel)->GetScalarType() == VTK_UNSIGNED_CHAR) {
         valueRangeParam->setMax(255);
         valueRangeParam->setValue({0,255});
-    } else if (ddd->image->image(channel)->storageType() == QMetaType::UShort) {
+    } else if (ddd->image->image(channel)->GetScalarType() == VTK_UNSIGNED_SHORT) {
         valueRangeParam->setMax(65535);
         valueRangeParam->setValue({0,65535});
      }
@@ -204,11 +202,7 @@ void gnomonImageVtkVisualization::update(void)
         channel = "";
     }
 
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    converter->setInput(ddd->image->image(channel));
-    converter->convert();
-    ddd->image_data = static_cast<vtkImageData *>(converter->output());
-    delete converter;
+    ddd->image_data = ddd->image->image(channel);
 
     if (!ddd->actor2D) {
         ddd->actor2D = gnomonActor2DImageWidget::New();

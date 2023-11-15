@@ -22,9 +22,6 @@ set(${PROJECT_NAME}_HEADERS
   gnomonCoreSettings.h
   gnomonCorePlugin.h
   gnomonDataDriver.h
-  gnomonDataManager
-  gnomonDataManager.h
-  gnomonFileSystemFormReader.h
   gnomonFormVisitor
   gnomonFormVisitor.h
   gnomonLandmark.h
@@ -53,8 +50,6 @@ set(${PROJECT_NAME}_SOURCES
   gnomonCore.cpp
   gnomonCoreSettings.cpp
   gnomonDataDriver.cpp
-  gnomonDataManager.cpp
-  gnomonFileSystemFormReader.cpp
   gnomonFormVisitor.cpp
   gnomonMorphonetHelper.cpp
   gnomonPythonPluginParser.cpp
@@ -94,10 +89,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC  dtkCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC  dtkLog)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE xtensor)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE Python3::Python)
 
 ## #############################################################################
@@ -117,7 +108,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 ## Target properties
 ## #################################################################
 
-set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_RPATH 0)
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH    "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${gnomon_VERSION} SOVERSION ${gnomon_VERSION_MAJOR})

@@ -42,16 +42,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractPointCloudVtkVisualization *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractPointCloudVtkVisualization, GNOMONVISUALIZATION_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudVtkVisualization, GNOMONVISUALIZATION_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudVtkVisualization, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudVtkVisualization, GNOMONVISUALIZATION_EXPORT, pointCloudVtkVisualization, gnomonVisualization)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonVisualization layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonVisualization {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractPointCloudVtkVisualization, GNOMONVISUALIZATION_EXPORT, pointCloudVtkVisualization);
-}
 
 //
 // gnomonAbstractPointCloudVtkVisualization.h ends here

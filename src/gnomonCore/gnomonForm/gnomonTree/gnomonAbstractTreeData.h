@@ -1,7 +1,5 @@
 #pragma once
 
-class dtkImage;
-
 #include <QtCore>
 
 #include <dtkCore>
@@ -62,15 +60,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractTreeData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractTreeData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeData, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeData, GNOMONCORE_EXPORT, treeData, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractTreeData, GNOMONCORE_EXPORT, treeData);
-}
 
 // gnomonAbstractTreeData.h ends here

@@ -1,22 +1,6 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #include "gnomonImageDataChannelBlending.h"
 
 #include <gnomonVisualization/gnomonLookupTable.h>
-
-#include <dtkImagingCore>
 
 #include <QtGui>
 
@@ -182,7 +166,7 @@ void gnomonImageDataChannelBlending::update(void)
     blend->Update();
     vtkSmartPointer<vtkImageData> blending = blend->GetOutput();
 
-    this->DeepCopy(blending);
+    this->ShallowCopy(blending);
 
     d->modified = false;
 }

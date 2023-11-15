@@ -1,6 +1,5 @@
 #pragma once
 
-#include <dtkCorePluginManager.h>
 #include "gnomonPluginFactory.h"
 #include "gnomonPluginManager.h"
 #include <gnomonCoreExport.h>

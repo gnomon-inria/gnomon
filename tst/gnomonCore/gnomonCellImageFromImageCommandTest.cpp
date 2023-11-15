@@ -8,9 +8,6 @@
 
 #include <dtkScript>
 
-#include <dtkImage>
-
-
 namespace imagefromimage{
 bool t_run_called = false;
 bool t_set_input_called= false;
@@ -92,7 +89,7 @@ void gnomonCellImageFromImageCommandTestCase::undo(void)
 //     loadPluginGroup("cellImageFromImage");
 
 //     QString filename = "tst/resources/qDII-CLV3-PIN1-PI-E35-LD-SAM1-T0-Subset.czi";
-//     //QString filename = "/home/trcabel/Dev/naviscope/test_data/p58-t0_imgFus_down_interp_2x.inr.gz" ;   
+//     //QString filename = "/home/trcabel/Dev/naviscope/test_data/p58-t0_imgFus_down_interp_2x.inr.gz" ;
 
 //     gnomonImageReaderCommand *reader = new gnomonImageReaderCommand();
 //     reader->setAlgorithmName("imageReaderTimagetk");

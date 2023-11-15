@@ -41,16 +41,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractTreeMplVisualization *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractTreeMplVisualization, GNOMONVISUALIZATION_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeMplVisualization, GNOMONVISUALIZATION_EXPORT)
-////DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeMplVisualization, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeMplVisualization, GNOMONVISUALIZATION_EXPORT, treeMplVisualization, gnomonVisualization)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonVisualization layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonVisualization {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractTreeMplVisualization, GNOMONVISUALIZATION_EXPORT, treeMplVisualization);
-}
 
 //
 // gnomonAbstractTreeMplVisualization.h ends here

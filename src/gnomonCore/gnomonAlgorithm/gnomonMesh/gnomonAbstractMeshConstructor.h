@@ -10,8 +10,6 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
-class dtkImage;
-
 class GNOMONCORE_EXPORT gnomonAbstractMeshConstructor : public gnomonAbstractAlgorithm
 {
 public:
@@ -35,13 +33,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractMeshConstructor *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT, meshConstructor, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractMeshConstructor, GNOMONCORE_EXPORT, meshConstructor);
-}
 
 //
 // gnomonAbstractMeshConstructor.h ends here

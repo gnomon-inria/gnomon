@@ -354,7 +354,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceBinarization"
             title: "Binarization"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceBinarization.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceBinarization.qml"
             available: true
             initial: false
             highlightElement: false
@@ -362,7 +362,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceBrowser"
             title: "Browsing"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
             available: true
             initial: true
             highlightElement: false
@@ -370,7 +370,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceCellImageQuantification"
             title: "Cell Image Quantification"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceCellImageQuantification.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceCellImageQuantification.qml"
             available: true
             initial: false
             highlightElement: false
@@ -378,7 +378,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceCellImageTracking"
             title: "Cell Image Tracking"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceCellImageTracking.qml"
             available: true
             initial: false
             highlightElement: false
@@ -386,7 +386,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceImageMeshing"
             title: "Image Meshing"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceImageMeshing.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceImageMeshing.qml"
             available: true
             initial: false
             highlightElement: false
@@ -394,7 +394,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceLSystemModel"
             title: "L-System Model"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
             available: true
             initial: true
             highlightElement: false
@@ -402,7 +402,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceMeshFilter"
             title: "Mesh Processing"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceMeshFilter.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceMeshFilter.qml"
             available: true
             initial: false
             highlightElement: false
@@ -410,7 +410,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceMorphonet"
             title: "MorphoNet"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceMorphonet.qml"
             available: true
             initial: true
             highlightElement: false
@@ -418,7 +418,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspacePointCloudQuantification"
             title: "Point Cloud Quantification"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspacePointCloudQuantification.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspacePointCloudQuantification.qml"
             available: true
             initial: false
             highlightElement: false
@@ -426,7 +426,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspacePointDetection"
             title: "Point Detection"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspacePointDetection.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspacePointDetection.qml"
             available: true
             initial: false
             highlightElement: false
@@ -434,7 +434,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspacePreprocess"
             title: "Preprocessing"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
             available: true
             initial: false
             highlightElement: false
@@ -442,7 +442,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspacePythonAlgorithm"
             title: "Python Algorithm"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspacePythonAlgorithm.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspacePythonAlgorithm.qml"
             available: true
             initial: true
             highlightElement: false
@@ -450,7 +450,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceRegistration"
             title: "Registration"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceRegistration.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceRegistration.qml"
             available: true
             initial: false
             highlightElement: false
@@ -458,7 +458,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceSegmentation"
             title: "Segmentation"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceSegmentation.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceSegmentation.qml"
             available: true
             initial: false
             highlightElement: false
@@ -466,7 +466,7 @@ G.Dialog {
         ListElement {
             type: "gnomonWorkspaceSimulation"
             title: "Simulation"
-            source: "qrc:/gnomonQuick/Workspaces/WorkspaceSimulation.qml"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceSimulation.qml"
             available: true
             highlightElement: false
         }
@@ -542,7 +542,7 @@ G.Dialog {
                 }
             }
             _internal.workspace_plugins[w.type] = plugins
-            _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm" || w.type === "gnomonWorkspaceMorphonet" || w.type === "gnomonWorkspaceLSystemModel"))
+            _available_workspaces.setProperty(i, "available", (plugins.length > 0 || w.type === "gnomonWorkspacePythonAlgorithm" || w.type === "gnomonWorkspaceMorphonet" ))
         }
     }
 }

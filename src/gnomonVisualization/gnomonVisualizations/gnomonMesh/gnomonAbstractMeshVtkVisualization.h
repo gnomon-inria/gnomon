@@ -43,16 +43,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractMeshVtkVisualization *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractMeshVtkVisualization, GNOMONVISUALIZATION_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshVtkVisualization, GNOMONVISUALIZATION_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractMeshVtkVisualization, GNOMONVISUALIZATION_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractMeshVtkVisualization, GNOMONVISUALIZATION_EXPORT, meshVtkVisualization, gnomonVisualization)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonVisualization layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonVisualization {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractMeshVtkVisualization, GNOMONVISUALIZATION_EXPORT, meshVtkVisualization);
-}
 
 //
 // gnomonAbstractMeshVtkVisualization.h ends here

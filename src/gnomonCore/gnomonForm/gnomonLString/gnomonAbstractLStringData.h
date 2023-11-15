@@ -1,7 +1,5 @@
 #pragma once
 
-class dtkImage;
-
 #include <QtCore>
 
 #include <dtkCore>
@@ -73,15 +71,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractLStringData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractLStringData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringData, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractLStringData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractLStringData, GNOMONCORE_EXPORT, lStringData, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractLStringData, GNOMONCORE_EXPORT, lStringData);
-}
 
 // gnomonAbstractLStringData.h ends here

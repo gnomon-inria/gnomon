@@ -2,8 +2,6 @@
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 #include "gnomonVisualizations/gnomonAbstractVtkVisualization_p.h"
 
-#include <dtkImagingCore>
-
 #include <gnomonVisualization/gnomonCoreParameterColor>
 
 #include "gnomonView/gnomonVtkView.h"
@@ -174,15 +172,7 @@ void gnomonCellImageVtkVisualizationVolume::update(void)
         ddd->image = nullptr;
     }
 
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    if(!converter) {
-        dtkWarn() << Q_FUNC_INFO << "cannot instanciate a dtkVtkImageConverter, please check that dtk-plugins-imaging is installed!";
-        return;
-    }
-    converter->setInput(ddd->cellImage->image());
-    converter->convert();
-    ddd->image = static_cast<vtkImageData *>(converter->output());
-    delete converter;
+    ddd->image = ddd->cellImage->image();
 
     if (colormap_name=="glasbey") {
         int shape[3];

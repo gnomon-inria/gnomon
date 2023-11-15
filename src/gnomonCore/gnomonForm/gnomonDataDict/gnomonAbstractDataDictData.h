@@ -50,16 +50,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractDataDictData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractDataDictData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractDataDictData, GNOMONCORE_EXPORT, dataDictData, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractDataDictData, GNOMONCORE_EXPORT, dataDictData);
-}
 
 //
 // gnomonDataDictData.h ends here

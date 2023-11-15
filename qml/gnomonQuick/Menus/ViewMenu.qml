@@ -1,10 +1,8 @@
-import QtQuick              2.15
-import QtQuick.Controls     2.15
-import QtQuick.Layouts      1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import Qt5Compat.GraphicalEffects
-
-import Qt.labs.settings
+import QtCore
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
@@ -324,8 +322,8 @@ Control {
             _auto_render_connect.target = null;
         }
 
-        var source = "qrc:/gnomonQuick/Menus/" + name + ".menu.qml"
-        var defaultSource = "qrc:/gnomonQuick/Menus/gnomonVisualization.defaultMenu.qml"
+        var source = "qrc:/qt/qml/gnomonQuick/Menus/" + name + ".menu.qml"
+        var defaultSource = "qrc:/qt/qml/gnomonQuick/Menus/gnomonVisualization.defaultMenu.qml"
 
         var menu_component = Qt.createComponent(source)
         if(menu_component.status != Component.Ready) {

@@ -28,6 +28,15 @@ from dtkcore import dtkCoreParameter
 __PLUGINS__ = []
 DEBUG = True if os.environ.get('DEBUG') else False
 
+if DEBUG:
+    print("Debug Mode Activated")
+    logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter(
+        '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)
 
 class InterruptProcess(Exception):
     def __init__(self, *args):
@@ -205,6 +214,12 @@ def register_output(cls: type, attribute: str):
         getattr(cls, "_output_storage_list").append(attribute)
     else:
         setattr(cls, "_output_storage_list", [attribute])
+
+def register_swig_disown(cls: type, attribute: list[object]):
+    if hasattr(cls, "_swig_disown_list"):
+        getattr(cls, "_swig_disown_list").extend(attribute)
+    else:
+        setattr(cls, "_swig_disown_list", attribute)
 
 
 def gnomon_declare_plugins(path: str) -> dict[str, list[str]]:
@@ -620,12 +635,12 @@ def algorithmPlugin(version: str, coreversion: str, name: str = "", base_class=N
             setattr(cls, "_output_storage_list", [])
 
         def clearInputs(self):
-            # logging.info(f"Clearing inputs of {cls.__name__}")
+            logging.info(f"Clearing inputs of {cls.__name__}")
             for attr in getattr(cls, "_input_storage_list"):
                 setattr(self, attr, {})
 
         def clearOutputs(self):
-            # logging.info(f"Clearing outputs of {cls.__name__}")
+            logging.info(f"Clearing outputs of {cls.__name__}")
             for attr in getattr(cls, "_output_storage_list"):
                 setattr(self, attr, {})
 
@@ -649,9 +664,9 @@ def algorithmPlugin(version: str, coreversion: str, name: str = "", base_class=N
     return decorator
 
 
-def corePlugin(version: str, coreversion: str, name: str = "", base_class=None):
+def modelPlugin(version: str, coreversion: str, name: str = "", base_class=None):
     """
-    Registers gnomon plugins which implements an interface from gnomon.core to the plugin factory.
+    Registers model plugins to the plugin factory.
 
     Must be the top decorator as it will wrap every method of the class to suppress errors.
     Error suppression can be deactivated by setting gnomon.utils.gnomonPlugin.DEBUG to True.
@@ -682,8 +697,6 @@ def corePlugin(version: str, coreversion: str, name: str = "", base_class=None):
         Version of the plugin.
     coreversion: str
         Exact version of gnomon to check for API compatibility.
-    name: str
-        Name of the plugin. Used for the UI
     base_class
 
     Returns
@@ -692,6 +705,10 @@ def corePlugin(version: str, coreversion: str, name: str = "", base_class=None):
     """
 
     def decorator(cls):
+        if not issubclass(cls, gnomon.core.gnomonAbstractModel):
+            raise TypeError(f"Class {cls.__name__} should be a subclass of a gnomonAbstractModel interface."
+                            f" Otherwise try using algorithmPlugin or visualizationPlugin")
+        # other decorators
         cls = gnomonParametric(cls)  # integrating gnomonParametric in wrapper
         cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, name=name, base_class=base_class)
         return cls
@@ -791,19 +808,33 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
 
     cls.name = _name
 
+    # swig memory clean
+    if not hasattr(cls, "_swig_disown_list"):
+        setattr(cls, "_swig_disown_list", [])
+
     # -----------------------------------------------------
     # Debugging
     # -----------------------------------------------------
-    if DEBUG:
-        def destructor_decorator(f):
-            def destructor_wrapper(self):
+    def destructor_decorator(f):
+        def destructor_wrapper(self):
+            if DEBUG:
                 logging.debug(f"{cls.__name__} is dying")
-                f(self)
+            if hasattr(cls, "clearInputs"):
+                self.clearInputs()
+                self.clearOutputs()
 
-            return destructor_wrapper
+            for s in getattr(cls, "_swig_disown_list"):
+                if DEBUG:
+                    logging.debug(f"destroy {s}")
+                #s.__swig_destroy__(s)
+            self._swig_disown_list.clear()
 
-        original_del = getattr(cls, "__del__") if hasattr(cls, "__del__") else lambda self: None
-        setattr(cls, "__del__", destructor_decorator(original_del))
+            f(self)
+
+        return destructor_wrapper
+
+    original_del = getattr(cls, "__del__") if hasattr(cls, "__del__") else lambda self: None
+    setattr(cls, "__del__", destructor_decorator(original_del))
 
     # -----------------------------------------------------
     # TCP Logging
@@ -862,6 +893,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
         self._max_progress = -1
         self._event = Event()
         self._event.set()  # release the lock
+        self._swigDisownList = []
         return _old_init(self, *args, **kwargs)
     cls.__init__ = init
 

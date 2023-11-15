@@ -6,7 +6,7 @@ import QtQuick.Layouts
 import QtQml.Models
 
 import Qt.labs.platform as P
-import Qt.labs.settings
+import QtCore
 
 import gnomon.Utils as G
 import gnomonQuick.Workspaces as G

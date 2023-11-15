@@ -16,7 +16,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonMplView  : public gnomonAbstractView
     Q_OBJECT
 
 public:
-     gnomonMplView(QObject *parent = nullptr, bool no_python=false);
+    gnomonMplView(QObject *parent = nullptr, bool no_python=false);
     virtual ~gnomonMplView(void);
 
 public:

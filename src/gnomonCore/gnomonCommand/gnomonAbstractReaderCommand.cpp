@@ -7,6 +7,7 @@ gnomonAbstractReaderCommand::~gnomonAbstractReaderCommand()
     }
 
     m_actions.clear();
+    this->action = nullptr;
 }
 
 /*

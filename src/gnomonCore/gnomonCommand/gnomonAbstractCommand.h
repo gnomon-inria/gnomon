@@ -28,6 +28,7 @@ public slots:
     virtual void postdo(void) = 0;
     virtual void   undo(void) = 0;
     virtual void   redo(void) final;
+    virtual void  clear(void);
 
 public:
     virtual void deserializeResults(QJsonObject &serialization) = 0;
@@ -106,4 +107,3 @@ protected:
 };
 
 void runner(gnomonAbstractCommand* command);
-

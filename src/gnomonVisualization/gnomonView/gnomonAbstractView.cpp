@@ -25,18 +25,7 @@ gnomonAbstractViewPrivate::~gnomonAbstractViewPrivate(void)
 void gnomonAbstractViewPrivate::exportToManager(void)
 {
     for(const auto& key: this->forms.keys()) {
-        QImage image;
-        std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr;
-        if (this->visualizationCommands.contains(key)) {
-            image = this->visualizationCommands[key]->visualization()->imageRendering();
-            visualization = this->visualizationCommands[key]->visualization();
-        } else {
-            image = QImage(1500, 1500, QImage::Format_RGB32);
-            image.fill(Qt::GlobalColor::black);
-        }
-        GNOMON_SESSION->addForm(this->forms[key]);
-        gnomonFormManager::instance()->addForm(this->forms[key]->uuid(), image, visualization);
-        emit q->exportedForm(this->forms[key]);
+        q->transmitForm(key);
     }
 }
 

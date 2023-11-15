@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 
-import Qt.labs.settings
+import QtCore
 import Qt.labs.platform as P
 
 import gnomonQuick.Controls as G
@@ -85,7 +85,7 @@ G.Workspace {
                             height: 0.75 * parent.height
                             fillMode: Image.PreserveAspectFit
                             // it's in the app resources. to move in this module?
-                            source: "qrc:/gnomon/assets/gnomon_logo.png"
+                            source: "qrc:/qt/qml/gnomon/assets/gnomon_logo.png"
                         }
 
                         Label {

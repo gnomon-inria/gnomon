@@ -6,7 +6,6 @@
 
 #include <dtkCore/dtkCorePlugin>
 #include <dtkCore/dtkCoreParameters>
-#include <dtkImagingCore>
 
 #include "gnomonCore/gnomonCorePlugin.h"
 
@@ -28,7 +27,7 @@ public:
     virtual void connectParameter(const QString& parameter_name);
     virtual void refreshParameters(void);
     virtual void onParameterChanged(const QString& parameter_name = "");
-    
+
 public:
     virtual int run(void) = 0;
     virtual void run_async(gnomonAbstractCommand *c) {};
@@ -43,7 +42,7 @@ public:
 
     virtual void setLogServerAddress(QString addr) {};
 
-    virtual void clearInputs(void) {};
+    virtual void clearInputs(void) {}; // set in decorators for python (see gnomonPlugin.py)
     virtual void clearOutputs(void) {};
 
     bool is_async = false;
@@ -56,16 +55,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractAlgorithm *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractAlgorithm, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractAlgorithm, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractAlgorithm, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractAlgorithm, GNOMONCORE_EXPORT, algorithm, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractAlgorithm, GNOMONCORE_EXPORT, algorithm);
-}
 
 //
 // gnomonAbstractAlgorithm.h ends here

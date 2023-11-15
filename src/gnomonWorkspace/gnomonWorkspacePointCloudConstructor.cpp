@@ -20,7 +20,6 @@
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
-#include <dtkImagingCore>
 #include <dtkScript>
 #include <dtkWidgets>
 #include <dtkWidgetsMenuBar_p.h>

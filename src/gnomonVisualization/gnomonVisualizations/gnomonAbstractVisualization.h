@@ -4,7 +4,6 @@
 
 #include <dtkCore/dtkCoreParameters>
 #include <gnomonVisualizationExport.h>
-#include <dtkImagingCore>
 
 #include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 

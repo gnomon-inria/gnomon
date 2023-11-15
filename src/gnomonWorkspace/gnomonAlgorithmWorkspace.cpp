@@ -81,6 +81,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
     d->targets = new gnomonVtkViewList(this);
     connect(d->targets, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
         connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+            d->registerPipeline();
             d->pipeline_manager->addForm(f);
             this->m_can_be_destroyed = false;
             emit canBeDestroyedChanged(false);
@@ -275,7 +276,6 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     }
 
     if (!empty_output) {
-        d->registerPipeline();
         if(!this->target()->synced()) {
             this->target()->tryLinking();
         }

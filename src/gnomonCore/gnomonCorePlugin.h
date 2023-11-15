@@ -9,48 +9,54 @@
 // GNOMON_DECLARE_PLUGIN_FACTORY
 // ///////////////////////////////////////////////////////////////////
 
-#define GNOMON_DECLARE_PLUGIN_FACTORY(type, Export)                              \
+#define GNOMON_DECLARE_PLUGIN_FACTORY(type, Export, Namespace, Layer)            \
+    class type##PluginFactory;                                                   \
+    class type##PluginManager;                                                   \
+    namespace Layer { namespace Namespace {                                      \
+        Export type##PluginFactory& pluginFactory();                             \
+        Export type##PluginManager& pluginManager();                             \
+        Export bool type##Registration(); \
+        extern const bool is_registered; \
+    } }                                                                          \
     class Export type##PluginFactory : public gnomonPluginFactory<type>          \
     {                                                                            \
-    public:                                                                      \
-        static type##PluginFactory& instance()                                   \
-        {                                                                        \
-            static type##PluginFactory _instance;                                \
-            return _instance;                                                    \
-        };                                                                       \
+    private:                                                                     \
+         type##PluginFactory() {                                                 \
+             pluginsFactories()[#Namespace] = this;                              \
+             Layer::Namespace::pluginManager();                                  \
+         };                                                                      \
+         type##PluginFactory(type##PluginFactory const& other) = delete;         \
+         type##PluginFactory(type##PluginFactory&& other) = delete;              \
+         friend type##PluginFactory& Layer::Namespace::pluginFactory();          \
     };                                                                           \
-    class Export type##PluginManager : public gnomonPluginManager<type##Plugin> \
+    class Export type##PluginManager : public gnomonPluginManager<type##Plugin>  \
     {                                                                            \
-    public:                                                                      \
-        static type##PluginManager& instance()                                   \
-        {                                                                        \
-            static type##PluginManager _instance;                                \
-            return _instance;                                                    \
-        };                                                                       \
+    private:                                                                     \
+         type##PluginManager() {                                                 \
+             pluginsManagers()[#Namespace] = this;                               \
+         };                                                                      \
+         type##PluginManager(type##PluginManager const& other) = delete;         \
+         type##PluginManager(type##PluginManager&& other) = delete;              \
+         friend type##PluginManager& Layer::Namespace::pluginManager();          \
     };
-
-#define GNOMON_DECLARE_CONCEPT(type, Export, Namespace)            \
-    namespace Namespace                                            \
-    {                                                              \
-        Export type##PluginFactory& pluginFactory();               \
-        Export type##PluginManager& pluginManager();               \
-        struct type##ManagerRegister {                             \
-            type##ManagerRegister() {                              \
-                pluginsManagers()[#Namespace] = &pluginManager();  \
-                pluginsFactories()[#Namespace] = &pluginFactory(); \
-            } };                                                   \
-    }
 
 #define GNOMON_DEFINE_CONCEPT(type, Namespace, LayerName)   \
     namespace Namespace                                     \
     {                                                       \
         type##PluginFactory& pluginFactory()                \
         {                                                   \
-            return type##PluginFactory::instance();         \
+            static type##PluginFactory _instance;           \
+            return _instance;                               \
         }                                                   \
         type##PluginManager& pluginManager()                \
         {                                                   \
-            return type##PluginManager::instance();         \
+            static type##PluginManager _instance;           \
+            return _instance;                               \
         }                                                   \
-        static type##ManagerRegister _type##register;       \
+        bool type##Registration() {                         \
+            pluginManager();                                \
+            pluginFactory();                                \
+            return true;                                    \
+        }                                                   \
+        const bool is_registered = type##Registration();    \
     }

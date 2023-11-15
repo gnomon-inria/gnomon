@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 
-import Qt5Compat.GraphicalEffects
 import Qt.labs.platform as P
 
 import xQuick.Vis as XVis
@@ -774,16 +773,16 @@ Rectangle {
         }
     }
 
-    layer.enabled: true
-    layer.effect: OpacityMask
-    {
-        maskSource: Rectangle
-        {
-             width: self.width
-            height: self.height
-            radius: G.Style.panelRadius;
-        }
-    }
+    //layer.enabled: true
+    //layer.effect: OpacityMask
+    //{
+    //    maskSource: Rectangle
+    //    {
+    //         width: self.width
+    //        height: self.height
+    //        radius: G.Style.panelRadius;
+    //    }
+    //}
 
     Rectangle {
 

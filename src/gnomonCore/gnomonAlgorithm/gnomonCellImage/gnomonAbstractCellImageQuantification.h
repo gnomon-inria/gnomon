@@ -61,13 +61,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageQuantification *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT, cellImageQuantification, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT, cellImageQuantification);
-}
 
 //
 // gnomonAbstractCellImageQuantification.h ends here
