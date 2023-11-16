@@ -25,7 +25,7 @@ ComboBox {
     highlighted: _control.highlightedIndex === index
     checked: ischecked
 
-    onToggled: {
+    onCheckedChanged: {
       if(checked) {
         if(!values.includes(text)) {
           values.push(text);
