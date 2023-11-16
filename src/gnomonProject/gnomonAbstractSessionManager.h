@@ -2,6 +2,7 @@
 
 #include <QtCore>
 #include <gnomonProjectExport.h>
+#include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 
 #define GNOMON_SESSION gnomonAbstractSessionManager::instance()
 
@@ -46,6 +47,10 @@ public slots:
 public:
     static gnomonAbstractSessionManager *instance();
 
+public:
+    bool addForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    std::shared_ptr<gnomonAbstractDynamicForm> getForm(const QString& uuid);
+
 signals:
     void progressChanged(void);
     void finished(void);
@@ -58,4 +63,5 @@ protected:
 private:
     static gnomonAbstractSessionManager *s_instance;
     static std::mutex s_mutex;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> s_forms;
 };

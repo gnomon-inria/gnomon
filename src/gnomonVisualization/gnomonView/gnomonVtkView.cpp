@@ -572,7 +572,7 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     d->acceptForms["gnomonPointCloud"] = false;
 
     connect(this, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> form) {
-        int index = gnomonFormManager::instance()->formIndex(form);
+        int index = gnomonFormManager::instance()->formIndex(form->uuid());
         gnomonFormManager::instance()->setCamera(index, dd->renderer3D->GetActiveCamera());
     });
     connect(this, &gnomonVtkView::formsChanged, this, &gnomonVtkView::updateBounds);

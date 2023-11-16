@@ -38,6 +38,7 @@ public:
     virtual void drop(double t) = 0;
 
     virtual QString formName(void) = 0; //TODO CRTP to be able to put that as virtual static
+    virtual QString uuid(void) = 0;
 
     int thumbnailId(void) {
         return m_thumbnail_id;

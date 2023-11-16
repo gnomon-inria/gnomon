@@ -106,6 +106,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE gnomonPipeline)
+target_link_libraries(${PROJECT_NAME} PRIVATE gnomonProject)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
 
