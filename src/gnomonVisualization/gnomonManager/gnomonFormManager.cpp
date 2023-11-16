@@ -446,6 +446,7 @@ gnomonFormManager::~gnomonFormManager(void)
 gnomonDynamicFormMetadata *gnomonFormManager::getDynamicFormMetadata(int id) {
     if(contains(id)) {
         gnomonDynamicFormMetadata *metadata = GNOMON_SESSION->getForm(d->forms[id])->metadata();
+        metadata->set("uuid", d->forms[id]);
         QQmlEngine::setObjectOwnership(metadata, QQmlEngine::CppOwnership);
         return metadata;
     } else {

@@ -35,5 +35,10 @@ bool gnomonAbstractSessionManager::addForm(std::shared_ptr<gnomonAbstractDynamic
 
 std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractSessionManager::getForm(const QString& uuid)
 {
-    return s_forms[uuid];
+    if (s_forms.contains(uuid)) {
+        return s_forms[uuid];
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"No existing Form with UUID"<<uuid<<"!";
+        return nullptr;
+    }
 }
