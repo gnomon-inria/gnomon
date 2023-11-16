@@ -140,7 +140,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
         v->setAcceptForm("gnomonMesh",true);
         v->setAcceptForm("gnomonPointCloud",true);
         connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
-            gnomonPipelineManager::instance()->addForm(f);
+            gnomonPipelineManager::instance()->addForm(f->uuid());
             this->m_can_be_destroyed = false;
             emit canBeDestroyedChanged(false);
         });

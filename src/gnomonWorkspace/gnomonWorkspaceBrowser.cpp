@@ -225,7 +225,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             image_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonImage",image_series);
             //this->pipeline_manager->addClonedForm(image_series,this->browse_view->image());
-            //gnomonPipelineManager::instance()->addForm(image_series);
+            //gnomonPipelineManager::instance()->addForm(image_series->uuid());
             //this->pipeline_manager->addReader(imageCommand);
         }
     } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(command))
@@ -239,7 +239,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             cellImage_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonCellImage",cellImage_series);
-            //gnomonPipelineManager::instance()->addForm(cellImage_series);
+            //gnomonPipelineManager::instance()->addForm(cellImage_series->uuid());
             //this->pipeline_manager->addClonedForm(cellImage_series,this->browse_view->cellImage());
             //this->pipeline_manager->addReader(cellImageCommand);
         }
@@ -254,7 +254,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             cellComplex_series->metadata()->set("name", cellComplex_series->formName().remove("gnomon") + QString::number(form_count+1));
             cellComplex_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonCellComplex",cellComplex_series);
-            //gnomonPipelineManager::instance()->addForm(cellComplex_series);
+            //gnomonPipelineManager::instance()->addForm(cellComplex_series->uuid());
             //this->pipeline_manager->addClonedForm(cellComplex_series,this->browse_view->cellComplex());
             //this->pipeline_manager->addReader(cellComplexCommand);
         }
@@ -269,7 +269,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             binaryImage_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonBinaryImage",binaryImage_series);
-            //gnomonPipelineManager::instance()->addForm(binaryImage_series);
+            //gnomonPipelineManager::instance()->addForm(binaryImage_series->uuid());
             //this->pipeline_manager->addClonedForm(binaryImage_series, this->browse_view->binaryImage());
             //this->pipeline_manager->addReader(binaryImageCommand);
         }
@@ -285,7 +285,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dataFrame_series->metadata()->set("source", source);
 //            this->browse_figure->setForm("gnomonDataFrame",dataFrame_series);
 //            this->pipeline_manager->addClonedForm(dataFrame_series,this->browse_figure->form("gnomonDataFrame"));
-            //gnomonPipelineManager::instance()->addForm(dataFrame_series);
+            //gnomonPipelineManager::instance()->addForm(dataFrame_series->uuid());
             //this->pipeline_manager->addReader(dataFrameCommand);
         }
     } else if (gnomonLStringReaderCommand *lStringCommand = dynamic_cast<gnomonLStringReaderCommand *>(command))
@@ -299,7 +299,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             lString_series->metadata()->set("name", lString_series->formName().remove("gnomon") + QString::number(form_count+1));
             lString_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonLString",lString_series);
-            //gnomonPipelineManager::instance()->addForm(lString_series);
+            //gnomonPipelineManager::instance()->addForm(lString_series->uuid());
             //this->pipeline_manager->addClonedForm(lString_series,this->browse_view->lString());
             //this->pipeline_manager->addReader(lStringCommand);
         }
@@ -314,7 +314,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             mesh_series->metadata()->set("name", mesh_series->formName().remove("gnomon") + QString::number(form_count+1));
             mesh_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonMesh",mesh_series);
-            //gnomonPipelineManager::instance()->addForm(mesh_series);
+            //gnomonPipelineManager::instance()->addForm(mesh_series->uuid());
             //this->pipeline_manager->addClonedForm(mesh_series,this->browse_view->mesh());
             //this->pipeline_manager->addReader(meshCommand);
         }
@@ -329,7 +329,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             pointCloud_series->metadata()->set("name", pointCloud_series->formName().remove("gnomon") + QString::number(form_count+1));
             pointCloud_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonPointCloud",pointCloud_series);
-            //gnomonPipelineManager::instance()->addForm(pointCloud_series);
+            //gnomonPipelineManager::instance()->addForm(pointCloud_series->uuid());
             //this->pipeline_manager->addClonedForm(pointCloud_series,this->browse_view->pointCloud());
             //this->pipeline_manager->addReader(pointCloudCommand);
         }
@@ -343,7 +343,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             int form_count = gnomonFormManager::instance()->formCount(tree_series->formName());
             tree_series->metadata()->set("name", tree_series->formName().remove("gnomon") + QString::number(form_count+1));
             tree_series->metadata()->set("source", source);
-            //gnomonPipelineManager::instance()->addForm(tree_series);
+            //gnomonPipelineManager::instance()->addForm(tree_series->uuid());
 //            this->browse_figure->setForm("gnomonTree",tree_series);
 //            this->pipeline_manager->addClonedForm(tree_series,this->browse_figure->form("gnomonTree"));
             //this->pipeline_manager->addReader(treeCommand);
@@ -376,7 +376,7 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
     connect(d->browse_view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         auto * command = d->form_type_commands[f->formName()];
         d->pipeline_manager->addReader(command);
-        d->pipeline_manager->addForm(f);
+        d->pipeline_manager->addForm(f->uuid());
         this->m_can_be_destroyed = false;
         if(!d->workspace_info.isEmpty())
             GNOMON_PROJECT->addToManifest(d->workspace_info);

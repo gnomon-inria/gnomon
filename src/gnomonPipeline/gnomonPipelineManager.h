@@ -38,22 +38,22 @@ public slots:
     void addReader(gnomonAbstractReaderCommand *command);
     void addWriter(gnomonAbstractWriterCommand *command);
     void addAdapter(gnomonAbstractAdapterCommand *command); //todo DEPRECATED !!
-    void addAdaptedForm(std::shared_ptr<gnomonAbstractDynamicForm> form); //todo delete ?
-    void addMorphoForm(std::shared_ptr<gnomonAbstractDynamicForm> form, int id, double voxelsize, int time_start, int time_end);
+    void addAdaptedForm(const QString& form_uuid); //todo delete ?
+    void addMorphoForm(const QString& form_uuid, int id, double voxelsize, int time_start, int time_end);
     void addAlgorithm(gnomonAbstractCommand *command);
     void addEvolutionModel(gnomonAbstractEvolutionModelCommand *command);
-    void addTask(const QString &task, QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs,
-                 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs);
+    void addTask(const QString &task, QMap<QString, QString> inputs,
+                 QMap<QString, QString> outputs);
     void addConstructor(gnomonAbstractConstructorCommand *command); //todo delete ?
-    void addForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
-    void addClonedForm(std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractDynamicForm> clone); // TODO check?
-    bool removeForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    void addForm(const QString& form_uuid);
+    void addClonedForm(const QString& form_uuid, QString clone); // TODO check?
+    bool removeForm(const QString& form_uuid);
 public:
-    void setFormIndex(std::shared_ptr<gnomonAbstractDynamicForm> form, int index=-1);
+    void setFormIndex(const QString& form_uuid, int index=-1);
 
 public: 
-    std::pair<QString, gnomonPipelineNodeReader *> cacheNode(std::shared_ptr<gnomonAbstractDynamicForm> form);
-    void decachNode(std::shared_ptr<gnomonAbstractDynamicForm> form, std::pair<QString, gnomonPipelineNodeReader *> name_and_node);
+    std::pair<QString, gnomonPipelineNodeReader *> cacheNode(const QString& form_uuid);
+    void decacheNode(const QString& form_uuid, std::pair<QString, gnomonPipelineNodeReader *> name_and_node);
 private:
     class gnomonPipelineManagerPrivate *d;
 

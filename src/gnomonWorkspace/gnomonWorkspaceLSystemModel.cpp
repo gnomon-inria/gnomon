@@ -158,12 +158,12 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     });
 
     connect(d->view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
-        gnomonPipelineManager::instance()->addForm(f);
+        gnomonPipelineManager::instance()->addForm(f->uuid());
         this->m_can_be_destroyed = false;
         emit canBeDestroyedChanged(false);
     });
     connect(d->text_view, &gnomonQmlView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
-        gnomonPipelineManager::instance()->addForm(f);
+        gnomonPipelineManager::instance()->addForm(f->uuid());
         this->m_can_be_destroyed = false;
         emit canBeDestroyedChanged(false);
     });

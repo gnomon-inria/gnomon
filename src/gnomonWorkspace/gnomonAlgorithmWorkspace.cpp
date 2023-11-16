@@ -82,7 +82,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
     connect(d->targets, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
         connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
             d->registerPipeline();
-            d->pipeline_manager->addForm(f);
+            d->pipeline_manager->addForm(f->uuid());
             this->m_can_be_destroyed = false;
             emit canBeDestroyedChanged(false);
         });
