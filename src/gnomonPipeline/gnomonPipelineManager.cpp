@@ -79,7 +79,7 @@ void gnomonPipelineManagerPrivate::linkNodeInputs(gnomonPipelineNode *node)
     QMap<QString, QString> input_forms = this->node_input_forms[node];
     for (auto it = input_forms.begin(); it != input_forms.end(); ++it) {
         auto&& input = it.key();
-        QString input_form = input_forms[input];
+        QString input_form = it.value();
         if (!input_form.isEmpty()) {
             //while (this->form_clones.contains(input_form) & !this->reader_nodes.contains(input_form)) {
             //    input_form = this->form_clones[input_form];
@@ -232,7 +232,7 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
 
     for (auto it = forms.begin(); it != forms.end(); ++it) {
         auto&& form_name = it.key();
-        const QString& form_uuid = forms[form_name];
+        const QString& form_uuid = it.value();
         d->reader_nodes[form_uuid] = node;
         d->reader_output[form_uuid] = form_name;
     }
@@ -266,8 +266,8 @@ void gnomonPipelineManager::addAdapter(gnomonAbstractAdapterCommand *command)
 
     for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
         auto&& output = it.key();
-        d->adapter_nodes[output_forms[output]] = node;
-        d->adapter_output[output_forms[output]] = output;
+        d->adapter_nodes[it.value()] = node;
+        d->adapter_output[it.value()] = output;
     }
 }
 
@@ -293,8 +293,8 @@ void gnomonPipelineManager::addAlgorithm(gnomonAbstractAlgorithmCommand *command
 
     for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
         auto&& output = it.key();
-        d->algorithm_nodes[output_forms[output]] = node;
-        d->algorithm_output[output_forms[output]] = output;
+        d->algorithm_nodes[it.value()] = node;
+        d->algorithm_output[it.value()] = output;
     }
 
 }
@@ -306,8 +306,8 @@ void gnomonPipelineManager::addTask(const QString &task,
     d->node_input_forms[node] = inputs;
     for (auto it = outputs.begin(); it != outputs.end(); ++it) {
         auto&& output = it.key();
-        d->task_nodes[outputs[output]] = node;
-        d->task_output[outputs[output]] = output;
+        d->task_nodes[it.value()] = node;
+        d->task_output[it.value()] = output;
     }
 
 }
@@ -322,8 +322,8 @@ void gnomonPipelineManager::addConstructor(gnomonAbstractConstructorCommand *com
 
     for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
         auto&& output = it.key();
-        d->constructor_nodes[output_forms[output]] = node;
-        d->constructor_output[output_forms[output]] = output;
+        d->constructor_nodes[it.value()] = node;
+        d->constructor_output[it.value()] = output;
     }
 }
 
@@ -348,8 +348,8 @@ void gnomonPipelineManager::addEvolutionModel(gnomonAbstractEvolutionModelComman
 
     for (auto it = output_forms.begin(); it != output_forms.end(); ++it) {
         auto&& output = it.key();
-        d->evolution_model_nodes[output_forms[output]] = node;
-        d->evolution_model_output[output_forms[output]] = output;
+        d->evolution_model_nodes[it.value()] = node;
+        d->evolution_model_output[it.value()] = output;
     }
 }
 
@@ -359,7 +359,6 @@ void gnomonPipelineManager::addAdaptedForm(const QString& form_uuid)
     {
         gnomonPipelineNodeAdapter *node = d->adapter_nodes[form_uuid];
         if (!d->pipeline_nodes.values().contains(node)) {
-
             d->linkNodeInputs(node);
             d->pipeline->addNode(node);
             d->pipeline_nodes[node->name()] = node;
@@ -384,6 +383,7 @@ void gnomonPipelineManager::addMorphoForm(const QString& form_uuid, int id, doub
 
 void gnomonPipelineManager::addForm(const QString& form_uuid)
 {
+    this->setFormIndex(form_uuid, GNOMON_SESSION->getForm(form_uuid)->thumbnailId());
     if (d->reader_nodes.contains(form_uuid)) {
         gnomonPipelineNodeReader *node = d->reader_nodes[form_uuid];
 
@@ -418,7 +418,6 @@ void gnomonPipelineManager::addForm(const QString& form_uuid)
             d->linkNodeInputs(node);
             d->pipeline->addNode(node);
             d->pipeline_nodes[node->name()] = node;
-
         }
     } else if (d->evolution_model_nodes.contains(form_uuid)) {
         gnomonPipelineNodeEvolutionModel *node = d->evolution_model_nodes[form_uuid];
@@ -470,7 +469,7 @@ void gnomonPipelineManager::setFormIndex(const QString& form_uuid, int index)
             output_port = d->adapter_nodes[form_uuid]->outputPorts()[d->adapter_output[form_uuid]];
         } else if (d->algorithm_nodes.contains(form_uuid)) {
             output_port = d->algorithm_nodes[form_uuid]->outputPorts()[d->algorithm_output[form_uuid]];
-        }else if (d->task_nodes.contains(form_uuid)) {
+        } else if (d->task_nodes.contains(form_uuid)) {
             output_port = d->task_nodes[form_uuid]->outputPorts()[d->task_output[form_uuid]];
         } else if(d->morphonet_nodes.contains(form_uuid)) {
             output_port = d->morphonet_nodes[form_uuid]->outputPorts()[d->morphonet_output[form_uuid]];
