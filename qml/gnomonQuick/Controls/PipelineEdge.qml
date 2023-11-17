@@ -13,13 +13,21 @@ Shape {
 
     property Item src;
     property Item tgt;
+    property Item src_component;
+    property Item tgt_component;
 
     property int inputWorkspaceIndex;
     property int outputWorkspaceIndex;
     property int formIndex: edge ? edge.formIndex : -1;
 
-    property point stt: Qt.point((src.x + src.width), (src.y + src.height/2));
-    property point end: Qt.point( tgt.x,              (tgt.y + tgt.height/2));
+    property point stt: Qt.point(
+        (src_component.x + src.parent.x + src.x + src.width),
+        (src_component.y + src.parent.y + src.y + src.height / 2)
+    );
+    property point end: Qt.point(
+        (tgt_component.x + tgt.parent.x + tgt.x),
+        (tgt_component.y + tgt.parent.y + tgt.y + tgt.height/2)
+    );
     property point mid: Qt.point((stt.x + end.x)/2,   (stt.y + end.y)/2);
 
     property real delt: (mid.x - stt.x)/2;
