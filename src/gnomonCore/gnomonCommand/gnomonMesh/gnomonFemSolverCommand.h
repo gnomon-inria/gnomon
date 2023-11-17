@@ -1,10 +1,10 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
-class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonFemSolverCommand(void);

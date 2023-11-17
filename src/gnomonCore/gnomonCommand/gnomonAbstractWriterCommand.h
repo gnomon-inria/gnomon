@@ -2,12 +2,11 @@
 
 #include <gnomonCoreExport>
 
-#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
-#include "gnomonAbstractCommand.h"
+#include "gnomonAbstractAlgorithmCommand.h"
 
 class gnomonAbstractDynamicForm;
 
-class GNOMONCORE_EXPORT  gnomonAbstractWriterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT  gnomonAbstractWriterCommand : public gnomonAbstractAlgorithmCommand
 {
 
 public:

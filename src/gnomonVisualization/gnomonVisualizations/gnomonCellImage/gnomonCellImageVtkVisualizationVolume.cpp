@@ -332,5 +332,9 @@ const QString gnomonCellImageVtkVisualizationVolume::name(void) {
     return "Cell Image Volume";
 }
 
+QString gnomonCellImageVtkVisualizationVolume::documentation(void) {
+    return "Visualize a CellImage using volume rendering.";
+}
+
 //
 // gnomonCellImageVtkVisualizationVolume.cpp ends here

@@ -1,7 +1,7 @@
 #include "gnomonAlgorithmWorkspace.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand.h>
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 

@@ -6,7 +6,7 @@
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 #include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand>
 #include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageReader.h>

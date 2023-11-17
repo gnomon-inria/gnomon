@@ -25,6 +25,10 @@ signals:
     void modelMessage(QString);
 
 public:
+    virtual QString documentation(void) = 0;
+    virtual QString version(void) { return "X.X.X"; }
+
+public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };

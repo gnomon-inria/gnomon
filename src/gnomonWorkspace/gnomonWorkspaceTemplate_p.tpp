@@ -14,7 +14,7 @@
 
 #include <dtkCore/dtkCoreParameter.h>
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand.h>
 #include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand.h>
 
 //#include <gnomonWidgets/gnomonWidgetsParameter.h>

@@ -16,6 +16,7 @@
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractConstructorCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractEvolutionModelCommand>
 #include <gnomonCore/gnomonCommand/gnomonAbstractReaderCommand>
@@ -28,65 +29,7 @@
 #include <dtkCore>
 
 
-QMap<QString, QString> algorithmCommandFormUuids(gnomonAbstractCommand *command, const QString& type) 
-{
-    QMap<QString, QString> form_uuids;
-    if (command) {
-        QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
-        if (type == "input") {
-            forms = command->inputs();
-        } else if (type == "output") {
-            forms = command->outputs(); 
-        } 
-        // TODO : Have a common abstract command class 
-        /*else if (type == "initialState") {
-            auto model_command = static_cast<gnomonAbstractEvolutionModelCommand *>(command);
-            if (model_command) {
-                forms = model_command->initialState();
-            }
-        } else if (type == "state") {
-            auto model_command = static_cast<gnomonAbstractEvolutionModelCommand *>(command);
-            if (model_command) {
-                forms = model_command->state();
-            }
-        }*/
-        
-        for (const auto &form_name: forms.keys()) {
-            auto form = forms[form_name];
-            if (form) {
-                form_uuids[form_name] = form->uuid();
-            } else {
-                form_uuids[form_name] = "";
-            }
-        }
-    }
-    
-    return form_uuids;
-}
 
-QMap<QString, QString> modelCommandFormUuids(gnomonAbstractEvolutionModelCommand *command, const QString& type)
-{
-    QMap<QString, QString> form_uuids;
-    if (command) {
-        QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
-        if (type == "initialState") {
-            forms = command->initialState();
-        } else if (type == "state") {
-            forms = command->state();
-        }
-
-        for (const auto &form_name: forms.keys()) {
-            auto form = forms[form_name];
-            if (form) {
-                form_uuids[form_name] = form->uuid();
-            } else {
-                form_uuids[form_name] = "";
-            }
-        }
-    }
-
-    return form_uuids;
-}
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelineManagerPrivate
@@ -124,6 +67,7 @@ public:
     void linkNodeInputs(gnomonPipelineNode *node);
     QVariantMap parameterVariantValues(const dtkCoreParameters&parameters);
     QJsonObject parameterJson(const dtkCoreParameters& parameters);
+    QMap<QString, QString> commandFormUuids(gnomonAbstractCommand *command, const QString& type);
 
 public:
     bool hasNode(gnomonPipelineNode *);
@@ -208,6 +152,30 @@ QJsonObject gnomonPipelineManagerPrivate::parameterJson(const dtkCoreParameters&
     return parameter_json;
 }
 
+QMap<QString, QString> gnomonPipelineManagerPrivate::commandFormUuids(gnomonAbstractCommand *command, const QString& type)
+{
+    QMap<QString, QString> form_uuids;
+    if (command) {
+        QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > forms;
+        if (type == "input") {
+            forms = command->inputs();
+        } else if (type == "output") {
+            forms = command->outputs();
+        }
+
+        for (const auto &form_name: forms.keys()) {
+            auto form = forms[form_name];
+            if (form) {
+                form_uuids[form_name] = form->uuid();
+            } else {
+                form_uuids[form_name] = "";
+            }
+        }
+    }
+
+    return form_uuids;
+}
+
 
 bool gnomonPipelineManagerPrivate::hasNode(gnomonPipelineNode *node)
 {
@@ -257,7 +225,7 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
     //TOCHECK TODO ?
     //qDebug() << "Form added, cannot be destroyed! ";
     //qDebug() << "todo tell reader command ? ";
-    QMap<QString, QString > forms = algorithmCommandFormUuids(command, "output");
+    QMap<QString, QString > forms = d->commandFormUuids(command, "output");
     gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(command->factoryName(), command->algorithmName(),
                                                                   command->path(), forms.keys());
     node->setVersion(command->version());
@@ -272,7 +240,7 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
 
 void gnomonPipelineManager::addWriter(gnomonAbstractWriterCommand *command)
 {
-    QMap<QString, QString > input_forms = algorithmCommandFormUuids(command, "input");
+    QMap<QString, QString > input_forms = d->commandFormUuids(command, "input");
 
     gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(command->factoryName(), command->algorithmName(), command->path(), input_forms.keys());
     node->setVersion(command->version());
@@ -288,8 +256,8 @@ void gnomonPipelineManager::addWriter(gnomonAbstractWriterCommand *command)
 
 void gnomonPipelineManager::addAdapter(gnomonAbstractAdapterCommand *command)
 {
-    QMap<QString, QString > input_forms = algorithmCommandFormUuids(command, "input");
-    QMap<QString, QString > output_forms = algorithmCommandFormUuids(command, "output");
+    QMap<QString, QString > input_forms = d->commandFormUuids(command, "input");
+    QMap<QString, QString > output_forms = d->commandFormUuids(command, "output");
 
     gnomonPipelineNodeAdapter *node = new gnomonPipelineNodeAdapter(command->factoryName(), command->algorithmName(), input_forms.keys(), output_forms.keys());
     node->setVersion(command->version());
@@ -304,10 +272,10 @@ void gnomonPipelineManager::addAdapter(gnomonAbstractAdapterCommand *command)
 }
 
 
-void gnomonPipelineManager::addAlgorithm(gnomonAbstractCommand *command)
+void gnomonPipelineManager::addAlgorithm(gnomonAbstractAlgorithmCommand *command)
 {
-    QMap<QString, QString > input_forms = algorithmCommandFormUuids(command, "input");
-    QMap<QString, QString > output_forms = algorithmCommandFormUuids(command, "output");
+    QMap<QString, QString > input_forms = d->commandFormUuids(command, "input");
+    QMap<QString, QString > output_forms = d->commandFormUuids(command, "output");
 
     QJsonObject parameter_json = d->parameterJson(command->parameters());
     if (auto python_command = dynamic_cast<gnomonFormAlgorithmCommand *>(command)) {
@@ -346,7 +314,7 @@ void gnomonPipelineManager::addTask(const QString &task,
 
 void gnomonPipelineManager::addConstructor(gnomonAbstractConstructorCommand *command)
 {
-    QMap<QString, QString > output_forms = algorithmCommandFormUuids(command, "output");
+    QMap<QString, QString > output_forms = d->commandFormUuids(command, "output");
 
     QJsonObject parameter_json = d->parameterJson(command->parameters());
     gnomonPipelineNodeConstructor *node = new gnomonPipelineNodeConstructor(command->factoryName(), command->algorithmName(), parameter_json, output_forms.keys());
@@ -361,8 +329,8 @@ void gnomonPipelineManager::addConstructor(gnomonAbstractConstructorCommand *com
 
 void gnomonPipelineManager::addEvolutionModel(gnomonAbstractEvolutionModelCommand *command)
 {
-    QMap<QString, QString > input_forms = modelCommandFormUuids(command, "initialState");
-    QMap<QString, QString > output_forms = modelCommandFormUuids(command, "state");
+    QMap<QString, QString > input_forms = d->commandFormUuids(command, "input");
+    QMap<QString, QString > output_forms = d->commandFormUuids(command, "output");
 
     QJsonObject parameter_json = d->parameterJson(command->parameters());
     if (auto lsystem_command = dynamic_cast<gnomonLStringEvolutionModelCommand *>(command)) {

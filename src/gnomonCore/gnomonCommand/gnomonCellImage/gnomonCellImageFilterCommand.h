@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 
-class GNOMONCORE_EXPORT gnomonCellImageFilterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellImageFilterCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonCellImageFilterCommand();

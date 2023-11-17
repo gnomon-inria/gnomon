@@ -1,10 +1,10 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
-class GNOMONCORE_EXPORT gnomonLStringTranslationCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonLStringTranslationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonLStringTranslationCommand(void);

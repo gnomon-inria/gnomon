@@ -1,13 +1,13 @@
 #pragma once
 
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
 class gnomonTree;
 
-class GNOMONCORE_EXPORT gnomonTreeTransformCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonTreeTransformCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonTreeTransformCommand(void);

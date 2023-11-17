@@ -22,6 +22,8 @@ public:
 public:
     virtual const QString pluginName(void) = 0;
     virtual const QString name(void) = 0;
+    virtual QString documentation(void) = 0;
+    virtual QString version(void) { return "X.X.X"; }
 
 public:
     virtual void setParameter(const QString&, const QVariant&) = 0;

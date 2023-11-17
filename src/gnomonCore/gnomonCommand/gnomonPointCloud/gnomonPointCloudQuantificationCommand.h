@@ -7,7 +7,7 @@
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
-class GNOMONCORE_EXPORT gnomonPointCloudQuantificationCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonPointCloudQuantificationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonPointCloudQuantificationCommand(void);

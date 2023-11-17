@@ -470,5 +470,9 @@ const QString gnomonMeshVtkVisualization::name(void) {
     return "Mesh Visualization";
 }
 
+QString gnomonMeshVtkVisualization::documentation(void) {
+    return "Visualize a Mesh using various decorators.";
+}
+
 //
 // gnomonMeshVtkVisualization.cpp ends here

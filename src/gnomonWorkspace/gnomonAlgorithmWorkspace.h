@@ -11,7 +11,7 @@
 #include <gnomonVisualization/gnomonView/gnomonQmlView.h>
 #include <qtmetamacros.h>
 
-class gnomonAbstractCommand;
+class gnomonAbstractAlgorithmCommand;
 
 class GNOMONWORKSPACE_EXPORT gnomonAlgorithmWorkspace : public gnomonAbstractWorkspace
 {

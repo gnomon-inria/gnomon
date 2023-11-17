@@ -1,9 +1,8 @@
 #pragma once
 
-#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
-#include "gnomonAbstractCommand.h"
+#include "gnomonAbstractAlgorithmCommand.h"
 
-class gnomonAbstractConstructorCommand : public gnomonAbstractCommand
+class gnomonAbstractConstructorCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override {

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 
-class GNOMONCORE_EXPORT gnomonCellComplexFromCellImageCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellComplexFromCellImageCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonCellComplexFromCellImageCommand();

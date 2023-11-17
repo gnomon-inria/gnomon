@@ -11,6 +11,7 @@ class gnomonPipelineNode;
 class gnomonPipelineNodeReader;
 
 class gnomonAbstractAdapterCommand;
+class gnomonAbstractAlgorithmCommand;
 class gnomonAbstractCommand;
 class gnomonAbstractConstructorCommand;
 class gnomonAbstractEvolutionModelCommand;
@@ -40,7 +41,7 @@ public slots:
     void addAdapter(gnomonAbstractAdapterCommand *command); //todo DEPRECATED !!
     void addAdaptedForm(const QString& form_uuid); //todo delete ?
     void addMorphoForm(const QString& form_uuid, int id, double voxelsize, int time_start, int time_end);
-    void addAlgorithm(gnomonAbstractCommand *command);
+    void addAlgorithm(gnomonAbstractAlgorithmCommand *command);
     void addEvolutionModel(gnomonAbstractEvolutionModelCommand *command);
     void addTask(const QString &task, QMap<QString, QString> inputs,
                  QMap<QString, QString> outputs);

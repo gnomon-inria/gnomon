@@ -1,13 +1,13 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
-class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonMeshFromImageCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonMeshFromImageCommand(void);
