@@ -41,10 +41,10 @@ gnomonProject *gnomonProjectManager::project(void)
     return d->project;
 }
 
-gnomonProject *gnomonProjectManager::openProject(const QString &path) {
+gnomonProject *gnomonProjectManager::openProject(const QString &path, bool restore_session) {
     closeProject();
     d->project = new gnomonProject(path);
-    if(!GNOMON_SESSION->load()) {
+    if(!restore_session || !GNOMON_SESSION->load()) {
         GNOMON_SESSION->newSession(d->project->projectInfo().default_source);
     };
     QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);

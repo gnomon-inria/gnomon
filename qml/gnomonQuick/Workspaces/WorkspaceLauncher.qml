@@ -644,28 +644,51 @@ G.Workspace {
                                 }
 
                                 G.IconButton {
-                                    id: _load_icon;
-                                    iconName: "arrow-down";
+                                    id: _restart_icon;
+                                    iconName: "plus-box";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
-                                    tooltip: "Open"
+                                    hoverColor: G.Style.colors.hoveredOkColor;
+                                    tooltip: "Start a new blank session"
+
+                                    anchors.top: parent.top
+                                    anchors.topMargin: G.Style.smallPadding
+                                    anchors.leftMargin: 0
+                                    anchors.right: _load_icon.left
+                                    anchors.rightMargin: G.Style.smallPadding/2
+
+                                    onClicked: {
+                                        history_set_last_used(source)
+                                        open_blank_project(source)
+                                    }
+                                }
+
+                                G.IconButton {
+                                    id: _load_icon;
+                                    iconName:"play-box";
+                                    size: G.Style.iconLarge;
+                                    color: G.Style.colors.fgColor;
+                                    hoverColor: G.Style.colors.hoveredBaseColor;
+                                    tooltip: "Load and restore last session"
 
                                     anchors.top: parent.top
                                     anchors.topMargin: G.Style.smallPadding
                                     anchors.right: _trash_icon.left
-                                    anchors.rightMargin: G.Style.smallPadding
+                                    anchors.rightMargin: G.Style.smallPadding/2
 
                                     onClicked: {
                                         history_set_last_used(source)
                                         load_project(source)
                                     }
                                 }
+
                                 G.IconButton {
                                     id: _trash_icon;
-                                    iconName: "trash-can";
+                                    iconName: "close-box";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
-                                    tooltip: "Delete"
+                                    hoverColor: G.Style.colors.hoveredDangerColor;
+                                    tooltip: "Remove from the recent projects"
 
                                     anchors.top: parent.top
                                     anchors.topMargin: G.Style.smallPadding
