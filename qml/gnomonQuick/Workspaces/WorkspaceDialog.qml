@@ -361,7 +361,7 @@ G.Dialog {
         }
         ListElement {
             type: "gnomonWorkspaceBrowser"
-            title: "Browsing"
+            title: "Data Browsing"
             source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceBrowsing.qml"
             available: true
             initial: true
@@ -433,7 +433,7 @@ G.Dialog {
         }
         ListElement {
             type: "gnomonWorkspacePreprocess"
-            title: "Preprocessing"
+            title: "Image Preprocessing"
             source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspacePreprocess.qml"
             available: true
             initial: false
@@ -449,7 +449,7 @@ G.Dialog {
         }
         ListElement {
             type: "gnomonWorkspaceRegistration"
-            title: "Registration"
+            title: "Image Registration"
             source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceRegistration.qml"
             available: true
             initial: false

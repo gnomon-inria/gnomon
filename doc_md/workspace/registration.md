@@ -1,6 +1,6 @@
-# Registration Workspace
+# Image Registration Workspace
 
-The Registration Workspace allows to perform the geometrical registration of an Image form (called "floating") onto another Image form (called "reference").
+The Image Registration Workspace allows to perform the geometrical registration of an Image form (called "floating") onto another Image form (called "reference").
 
 :::::{hint}
 ::::{grid}

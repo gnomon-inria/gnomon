@@ -16,7 +16,7 @@ import gnomon.Project    as GP
 G.Workspace {
     id: _self;
 
-    workspace_title: "Browsing";
+    workspace_title: "Data Browsing";
 
     property string current_file: "";
 
