@@ -5,21 +5,21 @@
 #include <dtkScript>
 
 #include "gnomonCore.h"
-#include "gnomonAbstractCommand.h"
+#include "gnomonAbstractAlgorithmCommand.h"
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonAlgorithmsLogs/gnomonLogCaptureServer"
 
-gnomonAbstractCommand::gnomonAbstractCommand(void)
+gnomonAbstractAlgorithmCommand::gnomonAbstractAlgorithmCommand(void)
 {
 
 }
 
-gnomonAbstractCommand::~gnomonAbstractCommand(void)
+gnomonAbstractAlgorithmCommand::~gnomonAbstractAlgorithmCommand(void)
 {
     delete action;
 }
 
-void  gnomonAbstractCommand::clear(void)
+void  gnomonAbstractAlgorithmCommand::clear(void)
 {
     if(this->action) {
         this->action->clearInputs();
@@ -27,7 +27,7 @@ void  gnomonAbstractCommand::clear(void)
     }
 }
 
-void gnomonAbstractCommand::redo(void)
+void gnomonAbstractAlgorithmCommand::redo(void)
 {
     // TODO: adapters command will probably need to run in main thread due to difficulties in deserialization
     Q_ASSERT(this->action);
@@ -53,7 +53,7 @@ void gnomonAbstractCommand::redo(void)
         delete watcher;
         // preparing watcher
         watcher = new QFutureWatcher<void>();
-        connect(watcher, &QFutureWatcher<void>::finished, this, &gnomonAbstractCommand::finished);
+        connect(watcher, &QFutureWatcher<void>::finished, this, &gnomonAbstractAlgorithmCommand::finished);
         auto future = QtConcurrent::run(runner, this);
         watcher->setFuture(future);
     } else {
@@ -65,7 +65,7 @@ void gnomonAbstractCommand::redo(void)
 }
 
 //QPromise<void> &promise,
-extern void runner(gnomonAbstractCommand* command) {
+extern void runner(gnomonAbstractAlgorithmCommand* command) {
     auto lambda_callback = [](gnomonAbstractCommand *command) {
         qDebug() << "in the lambda " << command;
         if(command) {

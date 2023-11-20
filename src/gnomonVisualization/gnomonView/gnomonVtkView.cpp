@@ -1630,9 +1630,9 @@ QImage gnomonVtkView::toImage(void)
 
 void gnomonVtkView::startPicking() {
     if(!d->forms.contains("gnomonCellImage") ||
-        d->visualizationCommands["gnomonCellImage"]->algorithmName() != "cellImageVtkVisualizationMarchingCubes") {
+        d->visualizationCommands["gnomonCellImage"]->visualizationName() != "cellImageVtkVisualizationMarchingCubes") {
         qWarning() << "Picking not implemented for : "
-                   <<  d->visualizationCommands["gnomonCellImage"]->algorithmName()
+                   <<  d->visualizationCommands["gnomonCellImage"]->visualizationName()
                    << " only cellImageVtkVisualizationMarchingCubes has picking";
         return;
     }

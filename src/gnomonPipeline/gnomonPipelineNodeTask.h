@@ -15,8 +15,8 @@ class GNOMONPIPELINE_EXPORT gnomonPipelineNodeTask : public gnomonPipelineNode {
 public:
     gnomonPipelineNodeTask(const QString& task, QList<QString> inputs, QList<QString> outputs);
 
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>>
-    runTask(QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs);
+    QMap<QString, QString>
+    runTask(QMap<QString, QString> inputs);
 
     static gnomonPipelineNodeTask *_dynamic_cast(gnomonPipelineNode *o);
 };

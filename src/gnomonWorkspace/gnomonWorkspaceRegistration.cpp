@@ -123,7 +123,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     }
 
     connect(d->text_view, &gnomonAbstractView::exportedForm, [=](auto form) {
-        gnomonPipelineManager::instance()->addForm(form);
+        gnomonPipelineManager::instance()->addForm(form->uuid());
     });
 
     connect(d->text_view, &gnomonQmlView::formsChanged, [=]() {
@@ -215,8 +215,8 @@ void gnomonWorkspaceRegistration::iterate(void)
 
         this->setStackLevel(dd->stack_level+1);
 
-        gnomonPipelineManager::instance()->addForm(output_image);
-        gnomonPipelineManager::instance()->addForm(transformation);
+        gnomonPipelineManager::instance()->addForm(output_image->uuid());
+        gnomonPipelineManager::instance()->addForm(transformation->uuid());
     }
 }
 

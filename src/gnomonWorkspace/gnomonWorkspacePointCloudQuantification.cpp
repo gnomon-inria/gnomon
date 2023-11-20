@@ -27,7 +27,7 @@ gnomonWorkspacePointCloudQuantification::gnomonWorkspacePointCloudQuantification
     d->figure = new gnomonMplView(this);
     d->figure->setAcceptForm("gnomonDataFrame",true);
     connect(d->figure, &gnomonMplView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
-        d->pipeline_manager->addForm(f);
+        d->pipeline_manager->addForm(f->uuid());
     });
     emit parametersChanged();
     d->updatePool(); //unused here
@@ -75,7 +75,7 @@ void gnomonWorkspacePointCloudQuantification::viewOutputs()
         out_pointCloud->metadata()->set("name", out_pointCloud->formName().remove("gnomon") + QString::number(form_count+1));
         out_pointCloud->metadata()->set("source", d->algorithm);
         //gnomonPipelineManager::instance()->addClonedForm(command->pointCloud(), out_pointCloud);
-        gnomonPipelineManager::instance()->addForm(command->pointCloud());
+        gnomonPipelineManager::instance()->addForm(command->pointCloud()->uuid());
         d->sources->views()[0]->setInputView(false);
     }
     if(command->dataFrame()) {

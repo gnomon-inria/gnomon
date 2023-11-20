@@ -3,17 +3,21 @@
 #include <gnomonVisualizationExport>
 
 #include "gnomonCore/gnomonCommand/gnomonAbstractCommand.h"
+#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization>
 
 class gnomonAbstractDynamicForm;
 class gnomonAbstractView;
-class gnomonAbstractVisualization;
 
 class GNOMONCORE_EXPORT gnomonAbstractVisualizationCommand : public gnomonAbstractCommand
 {
     Q_OBJECT
 
 public:
-    void setAlgorithmName(const QString &) override;
+    const QString& visualizationName(void)
+    {
+        return this->visu_name;
+    }
+    virtual void setVisualizationName(const QString &);
 
 public:
     virtual void setForm(std::shared_ptr<gnomonAbstractDynamicForm> form) = 0;
@@ -52,12 +56,22 @@ public:
 
 public:
     inline void  predo(void) override { }
+    inline void   redo(void) override { }
     inline void postdo(void) override { }
     inline void   undo(void) override { }
 
+    inline void pause(void) override { }
+    inline void resume(void) override { }
+    inline void stop(void) override { }
+    inline int progress(void) override { return 0; }
+
+public:
+    inline virtual QString documentation(void) override { return visu->documentation(); }
+    inline virtual QString version(void) override { return visu->version(); };
+
 public slots:
     virtual void update(void);
-    virtual void clear(void);
+    virtual void clear(void) override;
 
     virtual void setVisualization(std::shared_ptr<gnomonAbstractVisualization>);
     virtual inline void newVisualization(void) { };
@@ -72,6 +86,7 @@ signals:
     void visuParametersChanged(void);
 
 protected:
+    QString visu_name = "";
     gnomonAbstractView *_view = nullptr;
     std::shared_ptr<gnomonAbstractVisualization> visu = nullptr;
     bool visible = true;

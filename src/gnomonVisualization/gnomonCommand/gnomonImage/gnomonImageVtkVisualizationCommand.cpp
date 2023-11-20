@@ -26,7 +26,7 @@ gnomonImageVtkVisualizationCommand::gnomonImageVtkVisualizationCommand() : d(new
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
-        this->algorithm_name = keys[0];
+        this->visu_name = keys[0];
     }
 }
 
@@ -38,14 +38,14 @@ gnomonImageVtkVisualizationCommand::~gnomonImageVtkVisualizationCommand()
 void gnomonImageVtkVisualizationCommand::newVisualization(void)
 {
     this->clear();
-    auto visu = gnomonVisualization::imageVtkVisualization::pluginFactory().create(this->algorithm_name);
+    auto visu = gnomonVisualization::imageVtkVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractImageVtkVisualization>(visu);
     this->connectVisualization();
 }
 
 void gnomonImageVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
-    this->setAlgorithmName(visu_name);
+    this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractImageVtkVisualization>(this->visu);
     if (visu) {
         visu->setImage(d->image);

@@ -357,5 +357,9 @@ const QString gnomonCellComplexVtkVisualization::name(void) {
     return "Cell Complex Visualization";
 }
 
+QString gnomonCellComplexVtkVisualization::documentation(void) {
+    return "Visualize a CellComplex as a surface mesh.";
+}
+
 //
 // gnomonCellComplexVtkVisualization.cpp ends here

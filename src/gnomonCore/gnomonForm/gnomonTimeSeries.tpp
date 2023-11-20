@@ -9,7 +9,7 @@ template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeri
         m_forms[time] = std::make_shared<T>(*(o.m_forms[time].get()));
     }
     m_current_time = o.m_current_time;
-    m_uuid = o.m_uuid;
+    m_uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
     *(this->p_metadata) = *(o.p_metadata);
 }
 

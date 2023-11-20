@@ -2,14 +2,14 @@
 
 #include <gnomonCoreExport>
 
-#include "gnomonAbstractCommand.h"
+#include "gnomonAbstractAlgorithmCommand.h"
 
 class gnomonAbstractDynamicForm;
 class gnomonAbstractFormAlgorithm;
 
 // TODO reemove ? is it used somewhere?
 // NOTE: Good question !
-class GNOMONCORE_EXPORT gnomonFormAlgorithmCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonFormAlgorithmCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonFormAlgorithmCommand(void) = delete;

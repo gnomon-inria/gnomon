@@ -26,7 +26,7 @@ gnomonDataFrameMplVisualizationCommand::gnomonDataFrameMplVisualizationCommand()
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
-        this->algorithm_name = keys[0];
+        this->visu_name = keys[0];
     }
 }
 
@@ -38,14 +38,14 @@ gnomonDataFrameMplVisualizationCommand::~gnomonDataFrameMplVisualizationCommand(
 void gnomonDataFrameMplVisualizationCommand::newVisualization(void)
 {
     this->clear();
-    auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(this->algorithm_name);
+    auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractDataFrameMplVisualization>(visu);
     this->connectVisualization();
 }
 
 void gnomonDataFrameMplVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
-    this->setAlgorithmName(visu_name);
+    this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu);
     if (visu) {
         visu->setDataFrame(d->dataFrame);

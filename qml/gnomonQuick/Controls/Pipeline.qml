@@ -101,7 +101,7 @@ Control {
         anchors.fill: _self;
         propagateComposedEvents: true
 
-        onWheel: {
+        onWheel: (wheel) => {
             //We use only significant mouse wheel events to avoid sensitivity issues
             if(wheel.angleDelta.y < 30 && wheel.angleDelta.y > -30) return
             //We only enable 5 zoom levels by default
@@ -247,7 +247,6 @@ Control {
                 _internal.layout.graph.nodeSet[edge.source.node.name].isSource = true;
             }
 
-
             const src_node = _internal.layout.graph.nodeSet[edge.source.node.name];
             const src_component = _internal.nodeComponents[src_node.id];
             const src = src_component.outputPorts[edge.source];
@@ -258,18 +257,10 @@ Control {
 
             var e = edge_component.createObject(_canvas, {
                 "edge" : edge,
-                "stt": Qt.binding(
-                    function() {
-                        return Qt.point((src_component.x + src.parent.x + src.x + src.width),
-                                        (src_component.y + src.parent.y + src.y + src.height / 2))
-                    }
-                ),
-                "end": Qt.binding(
-                    function() {
-                        return Qt.point((tgt_component.x + tgt.parent.x + tgt.x),
-                                        (tgt_component.y + tgt.parent.y + tgt.y + tgt.height/2))
-                    }
-                ),
+                "src": src,
+                "tgt": tgt,
+                "src_component": src_component,
+                "tgt_component": tgt_component,
                 "inputWorkspaceIndex": src_component.workspaceIndex,
                 "outputWorkspaceIndex": tgt_component.workspaceIndex,
             });

@@ -3,7 +3,7 @@
 #include <QtCore>
 
 class gnomonPipelineManager;
-class gnomonAbstractCommand;
+class gnomonAbstractAlgorithmCommand;
 
 class gnomonVtkView;
 class gnomonVtkViewList;
@@ -53,7 +53,7 @@ public:
     gnomonPipelineManager *pipeline_manager;
 
 public:
-    gnomonAbstractCommand *command = nullptr;
+    gnomonAbstractAlgorithmCommand *command = nullptr;
     QMetaObject::Connection connect_finished;
     QTimer timer = QTimer(this);
 

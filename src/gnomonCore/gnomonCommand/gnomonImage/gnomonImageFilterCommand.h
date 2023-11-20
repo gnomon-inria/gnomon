@@ -1,13 +1,13 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 
 class gnomonImage;
 
-class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonImageFilterCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonImageFilterCommand(void);

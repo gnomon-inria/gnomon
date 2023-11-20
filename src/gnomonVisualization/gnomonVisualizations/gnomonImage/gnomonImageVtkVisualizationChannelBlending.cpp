@@ -380,5 +380,9 @@ const QString gnomonImageVtkVisualizationChannelBlending::name(void) {
     return "Channel Blending";
 }
 
+QString gnomonImageVtkVisualizationChannelBlending::documentation(void) {
+    return "Visualize an Image by blending its channels.";
+}
+
 //
 // gnomonImageVtkVisualizationChannelBlending.cpp ends here

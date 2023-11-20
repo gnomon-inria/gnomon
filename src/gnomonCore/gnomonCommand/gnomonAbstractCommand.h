@@ -14,21 +14,25 @@
 class GNOMONCORE_EXPORT gnomonAbstractCommand : public QObject
 {
     Q_OBJECT
-    friend void runner(gnomonAbstractCommand* command);
 
 public:
     using orderedMap = std::vector<std::pair <QString, QString>>; // to respect the order of inserting
 
 public:
-             gnomonAbstractCommand(void);
-    virtual ~gnomonAbstractCommand(void);
+             gnomonAbstractCommand(void) = default;
+    virtual ~gnomonAbstractCommand(void) = default;
 
 public slots:
     virtual void  predo(void) = 0;
     virtual void postdo(void) = 0;
     virtual void   undo(void) = 0;
-    virtual void   redo(void) final;
-    virtual void  clear(void);
+    virtual void   redo(void) = 0;
+    virtual void  clear(void) = 0;
+
+    virtual void pause(void) = 0;
+    virtual void resume(void) = 0;
+    virtual void stop(void) = 0;
+    virtual int progress(void) = 0;
 
 public:
     virtual void deserializeResults(QJsonObject &serialization) = 0;
@@ -39,15 +43,8 @@ signals:
     void logged(const QString&);
 
 public:
-    inline QString documentation(void) { return action->documentation(); }
-    inline QString version(void) { return action->version(); }
-
-    const QString& algorithmName(void)
-    {
-        return this->algorithm_name;
-    }
-
-    virtual void setAlgorithmName(const QString &name) = 0;
+    virtual QString documentation(void) = 0;
+    virtual QString version(void) = 0;
 
     const QString& factoryName(void)
     {
@@ -58,37 +55,13 @@ public:
         return this->factory;
     }
 
-    inline void pause(void) {
-        if(this->action)
-            this->action->pause();
-    };
-
-    inline void resume(void) {
-        if(this->action)
-            this->action->resume();
-    };
-
-    inline void stop(void) {
-        if(this->action)
-            this->action->stop();
-    };
-
-    inline int progress(void) {
-        if(this->action) {
-            return this->action->progress();
-        } else {
-            return -1;
-        }
-    };
-
     void setNoAsync() {this->override_async = true;}
 
 public:
-    inline virtual dtkCoreParameters parameters() const {return this->action->parameters();};
-    inline virtual void setParameter(const QString& parameter, const QVariant& value) {
-        this->action->setParameter(parameter, value);
-    }
-    inline virtual QMap<QString, QString> parameterGroups() const {return this->action->parameterGroups();};
+    virtual dtkCoreParameters parameters() const = 0;
+    virtual void setParameter(const QString& parameter, const QVariant& value) = 0;
+    virtual QMap<QString, QString> parameterGroups() const = 0;
+
     virtual QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() = 0;
     virtual orderedMap inputTypes() = 0;
     virtual void setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) = 0;
@@ -98,12 +71,8 @@ public:
     virtual orderedMap outputTypes() = 0;
 
 protected:
-    class gnomonAbstractAlgorithm *action = nullptr;
-    QString algorithm_name = "";
     QString factory_name = "";
     gnomonPluginFactoryBase *factory = nullptr;
     QFutureWatcher<void> *watcher = nullptr;
     bool override_async = false;
 };
-
-void runner(gnomonAbstractCommand* command);

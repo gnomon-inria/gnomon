@@ -323,5 +323,9 @@ const QString gnomonImageVtkVisualization::name(void) {
     return "Image Visualization";
 }
 
+QString gnomonImageVtkVisualization::documentation(void) {
+    return "Visualize an Image.";
+}
+
 //
 // gnomonImageVtkVisualization.cpp ends here

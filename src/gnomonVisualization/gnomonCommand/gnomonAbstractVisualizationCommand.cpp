@@ -1,12 +1,10 @@
 #include "gnomonAbstractVisualizationCommand.h"
 
-#include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization>
 
-
-void gnomonAbstractVisualizationCommand::setAlgorithmName(const QString& visu_name)
+void gnomonAbstractVisualizationCommand::setVisualizationName(const QString& visu_name)
 {
-    if ((this->algorithm_name != visu_name) || (this->visu == nullptr)) {
-        this->algorithm_name = visu_name;
+    if ((this->visu_name != visu_name) || (this->visu == nullptr)) {
+        this->visu_name = visu_name;
         this->newVisualization();
     }
 }
@@ -31,7 +29,7 @@ std::shared_ptr<gnomonAbstractVisualization> gnomonAbstractVisualizationCommand:
 
 void gnomonAbstractVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
-    this->setAlgorithmName(visu_name);
+    this->setVisualizationName(visu_name);
     if (this->visu) {
         this->visu->setView(this->_view);
     }
@@ -112,7 +110,7 @@ void gnomonAbstractVisualizationCommand::setVisualization(std::shared_ptr<gnomon
         // Remove current visualization from the view
         this->clear();
         this->visu = visu;
-        this->algorithm_name = this->visu->pluginName();
+        this->visu_name = this->visu->pluginName();
         // Update the view of the visualization to make sure it is displayed
         this->connectVisualization();
     }

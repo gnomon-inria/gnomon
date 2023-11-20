@@ -2,11 +2,11 @@
 
 #include <gnomonCoreExport>
 
-#include "gnomonCommand/gnomonAbstractCommand.h"
+#include "gnomonCommand/gnomonAbstractAlgorithmCommand.h"
 #include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
 
-class GNOMONCORE_EXPORT gnomonBinaryImageFromImageCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonBinaryImageFromImageCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonBinaryImageFromImageCommand();

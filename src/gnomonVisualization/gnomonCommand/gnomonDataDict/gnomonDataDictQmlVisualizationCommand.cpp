@@ -26,7 +26,7 @@ gnomonDataDictQmlVisualizationCommand::gnomonDataDictQmlVisualizationCommand() :
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
-        this->algorithm_name = keys[0];
+        this->visu_name = keys[0];
     }
 }
 
@@ -38,14 +38,14 @@ gnomonDataDictQmlVisualizationCommand::~gnomonDataDictQmlVisualizationCommand()
 void gnomonDataDictQmlVisualizationCommand::newVisualization(void)
 {
     this->clear();
-    auto visu = gnomonVisualization::dataDictQmlVisualization::pluginFactory().create(this->algorithm_name);
+    auto visu = gnomonVisualization::dataDictQmlVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractDataDictQmlVisualization>(visu);
     this->connectVisualization();
 }
 
 void gnomonDataDictQmlVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
-    this->setAlgorithmName(visu_name);
+    this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractDataDictQmlVisualization>(this->visu);
     if (visu) {
         visu->setDataDict(d->dataDict);

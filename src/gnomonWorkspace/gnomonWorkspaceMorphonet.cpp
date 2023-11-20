@@ -172,7 +172,7 @@ gnomonWorkspaceMorphonet::gnomonWorkspaceMorphonet(QObject *parent) : gnomonAbst
 
     connect(d->view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
         //TODO what to do in pipeline manager if data coming from morphonet?
-        d->pipeline_manager->addForm(f);
+        d->pipeline_manager->addForm(f->uuid());
     });
 
     int stat;
@@ -380,7 +380,7 @@ void gnomonWorkspaceMorphonet::onDataLoaded(int startTime, int endTime)
         int form_count = gnomonFormManager::instance()->formCount(d->img_series->formName());
         d->img_series->metadata()->set("name", d->img_series->formName().remove("gnomon") + QString::number(form_count+1));
         d->view->setForm("gnomonCellImage", d->img_series, {});
-        d->pipeline_manager->addMorphoForm(d->img_series, d->current_id, d->voxelsize, startTime, endTime);
+        d->pipeline_manager->addMorphoForm(d->img_series->uuid(), d->current_id, d->voxelsize, startTime, endTime);
 
         emit timeEndChanged();
     }
@@ -466,11 +466,11 @@ void gnomonWorkspaceMorphonet::morphoPlotCollect(void)
         qDebug() << "collect done";
 
         auto input_image = this->view()->cellImage();
-        QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
-        inputs["cellImage"] = input_image;
+        QMap<QString, QString> inputs;
+        inputs["cellImage"] = input_image->uuid();
 
-        QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
-        outputs["curatedCellImage"] = image;
+        QMap<QString, QString> outputs;
+        outputs["curatedCellImage"] = image->uuid();
 
         this->view()->setForm("gnomonCellImage", image);
         d->pipeline_manager->addTask("morphoPlotCuration", inputs, outputs);

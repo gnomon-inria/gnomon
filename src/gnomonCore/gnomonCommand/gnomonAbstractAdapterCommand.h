@@ -2,10 +2,9 @@
 
 #include <gnomonCoreExport>
 
-#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
-#include "gnomonAbstractCommand.h"
+#include "gnomonAbstractAlgorithmCommand.h"
 
-class GNOMONCORE_EXPORT gnomonAbstractAdapterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonAbstractAdapterCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
     orderedMap outputTypes() override {

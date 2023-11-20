@@ -33,7 +33,7 @@ void gnomonAbstractViewPrivate::setFormVisualization(const QString& form_type, c
 {
     // Saving current parameters before change
     for (const auto& _type : this->forms.keys()) {
-        const auto& _visu_name = this->visualizationCommands[_type]->algorithmName();
+        const auto& _visu_name = this->visualizationCommands[_type]->visualizationName();
         this->viewParameters.parameters[_visu_name] = this->visualizationCommands[_type]->visualizationParameters();
     }
 
@@ -85,7 +85,7 @@ gnomonAbstractView::gnomonAbstractView(QObject *parent): QObject(parent)
     // just need to find a signal that's actually emitted when a parameter changes :|
     connect(this, &gnomonAbstractView::formVisuParametersChanged, [=] () {
         for (const auto& form_type : d->forms.keys()) {
-            const auto& visu_name = d->visualizationCommands[form_type]->algorithmName();
+            const auto& visu_name = d->visualizationCommands[form_type]->visualizationName();
             d->viewParameters.parameters[visu_name] = d->visualizationCommands[form_type]->visualizationParameters();
         }
     });
@@ -113,7 +113,7 @@ void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbst
             d->visualizationCommands[form_type]->setForm(d->forms[form_type]);
             emit formVisuParametersChanged();
         } else {
-            QString visu_name = d->visualizationCommands[form_type]->algorithmName();
+            QString visu_name = d->visualizationCommands[form_type]->visualizationName();
             QVariantMap parameters;
             if (existing_visu) {
                 parameters = d->visualizationCommands[form_type]->visualizationParameters();
@@ -143,7 +143,7 @@ std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractView::form(const QStrin
 void gnomonAbstractView::removeForm(const QString& form_type)
 {
     if (d->forms.contains(form_type)) {
-        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
+        QString visu_name = d->visualizationCommands[form_type]->visualizationName();
         d->viewParameters.parameters.remove(visu_name);
         d->visualizationCommands[form_type]->clear();
         d->forms.remove(form_type);
@@ -174,7 +174,7 @@ void gnomonAbstractView::update(void)
 void gnomonAbstractView::clear(void)
 {
     for (const auto & form_type : d->forms.keys()) {
-        QString visu_name = d->visualizationCommands[form_type]->algorithmName();
+        QString visu_name = d->visualizationCommands[form_type]->visualizationName();
         d->viewParameters.parameters.remove(visu_name);
         d->visualizationCommands[form_type]->clear();
         d->visualizationCommands[form_type]->setForm(nullptr);
@@ -324,7 +324,7 @@ QString gnomonAbstractView::formVisuName(const QString& form_type)
 {
     QString visu_name;
     if (d->forms.contains(form_type)) {
-        visu_name =  d->visualizationCommands[form_type]->algorithmName();
+        visu_name =  d->visualizationCommands[form_type]->visualizationName();
     }
     return visu_name;
 }
@@ -332,7 +332,7 @@ QString gnomonAbstractView::formVisuName(const QString& form_type)
 void gnomonAbstractView::setFormVisuName(const QString& form_type, const QString& visu_name)
 {
     if (d->forms.contains(form_type)) {
-        auto current_visu_name = d->visualizationCommands[form_type]->algorithmName();
+        auto current_visu_name = d->visualizationCommands[form_type]->visualizationName();
         if (visu_name != current_visu_name && !visu_name.isEmpty()) {
             if (d->viewParameters.parameters.contains(visu_name)) {
                 // TODO: setting the parameters does not work so ignoring it for now

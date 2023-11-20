@@ -26,7 +26,7 @@ gnomonBinaryImageVtkVisualizationCommand::gnomonBinaryImageVtkVisualizationComma
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
-        this->algorithm_name = keys[0];
+        this->visu_name = keys[0];
     }
 }
 
@@ -38,14 +38,14 @@ gnomonBinaryImageVtkVisualizationCommand::~gnomonBinaryImageVtkVisualizationComm
 void gnomonBinaryImageVtkVisualizationCommand::newVisualization(void)
 {
     this->clear();
-    auto visu = gnomonVisualization::binaryImageVtkVisualization::pluginFactory().create(this->algorithm_name);
+    auto visu = gnomonVisualization::binaryImageVtkVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractBinaryImageVtkVisualization>(visu);
     this->connectVisualization();
 }
 
 void gnomonBinaryImageVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
-    this->setAlgorithmName(visu_name);
+    this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractBinaryImageVtkVisualization>(this->visu);
     if (visu) {
         visu->setBinaryImage(d->binaryImage);

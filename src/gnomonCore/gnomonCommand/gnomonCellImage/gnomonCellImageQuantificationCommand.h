@@ -1,12 +1,12 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
 
-class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonCellImageQuantificationCommand();

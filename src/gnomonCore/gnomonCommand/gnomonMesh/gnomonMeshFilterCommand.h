@@ -1,10 +1,10 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
-class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonMeshFilterCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonMeshFilterCommand(void);
