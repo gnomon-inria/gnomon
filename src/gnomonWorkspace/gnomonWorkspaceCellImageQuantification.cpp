@@ -5,6 +5,7 @@
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageQuantificationCommand>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
+#include <gnomonProject>
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
@@ -75,6 +76,7 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
         out_cellimage->metadata()->set("name", out_cellimage->formName().remove("gnomon") + QString::number(form_count+1));
         out_cellimage->metadata()->set("source", d->algorithm);
         //gnomonPipelineManager::instance()->addClonedForm(command->cellImage(), out_cellimage);
+        GNOMON_SESSION->addForm(command->cellImage());
         gnomonPipelineManager::instance()->addForm(command->cellImage()->uuid());
         d->sources->views()[0]->setInputView(false);
     }

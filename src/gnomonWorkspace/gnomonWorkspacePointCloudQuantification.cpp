@@ -5,6 +5,7 @@
 #include <gnomonCore/gnomonCommand/gnomonPointCloud/gnomonPointCloudQuantificationCommand>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
+#include <gnomonProject>
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
@@ -75,6 +76,7 @@ void gnomonWorkspacePointCloudQuantification::viewOutputs()
         out_pointCloud->metadata()->set("name", out_pointCloud->formName().remove("gnomon") + QString::number(form_count+1));
         out_pointCloud->metadata()->set("source", d->algorithm);
         //gnomonPipelineManager::instance()->addClonedForm(command->pointCloud(), out_pointCloud);
+        GNOMON_SESSION->addForm(command->pointCloud());
         gnomonPipelineManager::instance()->addForm(command->pointCloud()->uuid());
         d->sources->views()[0]->setInputView(false);
     }
