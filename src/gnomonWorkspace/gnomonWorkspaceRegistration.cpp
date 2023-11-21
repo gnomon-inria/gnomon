@@ -6,6 +6,7 @@
 #include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
+#include <gnomonProject>
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonView/gnomonVtkViewPool>
@@ -215,7 +216,9 @@ void gnomonWorkspaceRegistration::iterate(void)
 
         this->setStackLevel(dd->stack_level+1);
 
+        GNOMON_SESSION->addForm(output_image);
         gnomonPipelineManager::instance()->addForm(output_image->uuid());
+        GNOMON_SESSION->addForm(transformation);
         gnomonPipelineManager::instance()->addForm(transformation->uuid());
     }
 }
