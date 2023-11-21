@@ -5,6 +5,7 @@ Render to qtquick from agg.
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from .backend_qtquick import QtCore, QtGui, FigureCanvasQtQuick
+from .mpl_canvas_zoom_drag import MplCanvasZoomDrag
 from PySide6 import QtQml
 #from .qt_compat import QtQml
 
@@ -14,6 +15,7 @@ class GnomonFigureManager:
     def __init__(self):
         self._figures = {}
         self._canvas = {}
+        self._connects = {}
         self.num = 0
 
     def register_canvas(self, canvas):
@@ -21,6 +23,8 @@ class GnomonFigureManager:
 
         self._canvas[self.num] = canvas
         self._figures[self.num] = canvas.figure
+        self._connects[self.num] = MplCanvasZoomDrag(canvas.figure)
+        self._connects[self.num].connect()
         canvas.set_number(self.num)
 
         self.num += 1
