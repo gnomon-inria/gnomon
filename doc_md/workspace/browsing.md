@@ -1,6 +1,6 @@
-# Browsing Workspace
+# Data Browsing Workspace
 
-In the Browsing Workspace, you can navigate and import data in order to process them through the Gnomon platform. Here you can import local files as **Forms**, and then export them to the **Form Manager** to be used within other workspaces.
+In the Data Browsing Workspace, you can navigate and import data in order to process them through the Gnomon platform. Here you can import local files as **Forms**, and then export them to the **Form Manager** to be used within other workspaces.
 
 :::::{hint}
 ::::{grid}

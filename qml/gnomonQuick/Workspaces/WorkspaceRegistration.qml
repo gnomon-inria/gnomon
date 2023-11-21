@@ -18,7 +18,7 @@ G.Workspace {
 
     id: _self;
 
-    workspace_title: "Registration"
+    workspace_title: "Image Registration"
 
     fill: () => {
         if(world.currentRef < 0)

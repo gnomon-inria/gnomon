@@ -18,7 +18,7 @@ G.Workspace {
 
     id: _workspace;
 
-    workspace_title: "Preprocess";
+    workspace_title: "Image Preprocessing";
 
     property string current_file: "";
 
