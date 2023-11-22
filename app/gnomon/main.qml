@@ -712,6 +712,15 @@ G.Application {
         stack_launcher.currentIndex = 1;
     }
 
+    function open_blank_project(project_url) {
+        console.log("New session from ", project_url);
+        //window.load_in_progress = true;
+        GP.ProjectManager.openProject(project_url, false)
+        //GP.PrpjectManager.project.loadSession()
+
+        stack_launcher.currentIndex = 1;
+    }
+
     function closeWorkspace(index) {
         if (window.workspace_list.count == 1) {
             _switch_workspace_dialog.reject();
