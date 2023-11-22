@@ -19,6 +19,7 @@ public:
     ~gnomonProjectPrivate();
 
 public:
+    void addDirPath(const QString& path);
     void initFile(const QString& path);
     QJsonObject readFromJson(const QString& url);
 
@@ -75,6 +76,7 @@ QJsonObject gnomonProjectPrivate::readFromJson(const QString& url)
     }
     return QJsonDocument::fromJson(storage).object();;
 }
+
 // /////////////////////////////////////////////////////////////////
 // gnomonProject
 // /////////////////////////////////////////////////////////////////
@@ -215,6 +217,15 @@ QString gnomonProject::sanitizeUrlToPath(const QString &url) {
 
 const gnomonProjectInfo &gnomonProject::projectInfo() {
     return d->projectInfo;
+}
+
+QString gnomonProject::findFile(const QString& filename) const {
+    QDir::setSearchPaths("paths", d->dataPath);
+    QFile file(QString("paths:%1").arg(filename));
+    QString target_file;
+    if (file.exists())
+        target_file = file.fileName();
+    return target_file;
 }
 
 void gnomonProject::addToManifest(const QJsonObject& workspace_info)
