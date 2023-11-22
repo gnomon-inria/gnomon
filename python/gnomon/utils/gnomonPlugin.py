@@ -215,12 +215,11 @@ def register_output(cls: type, attribute: str):
     else:
         setattr(cls, "_output_storage_list", [attribute])
 
-def register_swig_disown(cls: type, attribute: list[object]):
-    if hasattr(cls, "_swig_disown_list"):
-        getattr(cls, "_swig_disown_list").extend(attribute)
+def register_formDataPlugin(cls: type, attribute: list[object]):
+    if hasattr(cls, "formData_list"):
+        getattr(cls, "formData_list").extend(attribute)
     else:
-        setattr(cls, "_swig_disown_list", attribute)
-
+        setattr(cls, "formData_list", attribute)
 
 def gnomon_declare_plugins(path: str) -> dict[str, list[str]]:
     """
@@ -578,7 +577,7 @@ def formDataPlugin(version: str, coreversion: str, data_setter: str, data_getter
         cls.__data_getter = getattr(cls, data_getter)
         cls = _gnomonPlugin(version, coreversion, cls, namespace=gnomon.core, name=name, base_class=base_class)
         return cls
-
+ 
     return decorator
 
 
@@ -643,6 +642,11 @@ def algorithmPlugin(version: str, coreversion: str, name: str = "", base_class=N
             logging.info(f"Clearing outputs of {cls.__name__}")
             for attr in getattr(cls, "_output_storage_list"):
                 setattr(self, attr, {})
+
+            logging.info(f"Clearing formData of {cls.__name__}")
+            for formData in getattr(cls, "formData_list"):
+                formData.__data_setter(None)
+
 
         def run_decorator(run):
             def run_wrapper(self):
@@ -808,9 +812,9 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
 
     cls.name = _name
 
-    # swig memory clean
-    if not hasattr(cls, "_swig_disown_list"):
-        setattr(cls, "_swig_disown_list", [])
+    # form memory clean
+    if not hasattr(cls, "formData_list"):
+        setattr(cls, "formData_list", [])
 
     # -----------------------------------------------------
     # Debugging
@@ -823,11 +827,11 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
                 self.clearInputs()
                 self.clearOutputs()
 
-            for s in getattr(cls, "_swig_disown_list"):
+            for s in getattr(cls, "formData_list"):
                 if DEBUG:
                     logging.debug(f"destroy {s}")
                 #s.__swig_destroy__(s)
-            self._swig_disown_list.clear()
+            self.formData_list.clear()
 
             f(self)
 

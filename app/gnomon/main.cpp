@@ -28,14 +28,12 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("inria.fr");
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
-
     QQuickStyle::setStyle("Basic");
     QGuiApplication::styleHints()->setUseHoverEffects(true);
     QLoggingCategory::setFilterRules(QStringLiteral("qt.qml.binding.removal.info=true"));
 
     QQmlApplicationEngine engine;
 
-    //TODO for qt >= 6.5 !
     engine.addImportPath("qrc:/qt/qml/");
     engine.load(QUrl("qrc:/qt/qml/gnomon/main.qml"));
     //engine.load(QUrl("qrc:/gnomon/main_temp.qml"));
@@ -53,11 +51,6 @@ int main(int argc, char *argv[])
 
     gnomonInitLogServer();
     app.setWindowIcon(QIcon(":/qt/qml/gnomon/assets/gnomon_logo.png"));
-
-    // from x_quick
-#if __APPLE__
-    //xQuickWindowWrap(&engine);
-#endif
 
     return app.exec();
 }
