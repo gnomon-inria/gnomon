@@ -4,12 +4,16 @@ import QtQuick.Layouts
 
 import gnomon.Project as GP
 
+import gnomonQuick.Style as G
+
 ListView {
-
-
     id: _list_view
 
     property var data_paths : []
+
+    // implicitHeight: contentHeight
+    implicitHeight: G.Style.smallPanelHeight
+    implicitWidth: G.Style.smallPanelWidth
 
     model: data_paths
 
@@ -20,7 +24,7 @@ ListView {
         property int rootRow: 0
 
         width: _list_view.width
-        height: (_tree_view.rows - _tree_view.rootRow) * 20
+        height: (_tree_view.rows - _tree_view.rootRow) * G.Style.smallLabelHeight
 
         interactive: false
         clip: true

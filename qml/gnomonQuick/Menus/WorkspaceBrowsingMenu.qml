@@ -109,8 +109,9 @@ Item {
             Layout.fillHeight: true;
 
             rootDir: GP.ProjectManager.project.currentDir
-            //dataPath: []
+            // dataPath: []
             dataPath: [GP.ProjectManager.project.currentDir]
+            // dataPath: GP.ProjectManager.project.dataPath
         }
 
         Item {

@@ -60,7 +60,6 @@ Control
         id: _project_tree_view
 
         data_paths : [_self.rootDir]
-        implicitHeight: _project_tree_view.contentHeight
 
         anchors.top : _project_label.bottom;
         anchors.left: _self.left
@@ -88,8 +87,7 @@ Control
     G.TreeView {
         id: _data_tree_view
 
-        data_paths : [_self.dataPath]
-        implicitHeight: _data_tree_view.contentHeight
+        data_paths : _self.dataPath
 
         anchors.top : _data_label.bottom;
         anchors.left: _self.left
