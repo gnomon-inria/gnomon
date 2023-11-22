@@ -8,12 +8,14 @@ set(${PROJECT_NAME}_HEADERS
     gnomonProject
     gnomonProject.h
     gnomonProjectManager.h
-    gnomonAbstractSessionManager.h)
+    gnomonAbstractSessionManager.h
+    gnomonFileSystemModel.h)
     
 set(${PROJECT_NAME}_SOURCES
     gnomonProject.cpp
     gnomonProjectManager.cpp
-    gnomonAbstractSessionManager.cpp)
+    gnomonAbstractSessionManager.cpp
+    gnomonFileSystemModel.cpp)
 
 
 ## #################################################################
@@ -28,6 +30,7 @@ ${${PROJECT_NAME}_SOURCES})
 ## Link rules
 ## ###################################################################
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Gui)
 if(GNOMON_ENABLE_VISU)
   target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Qml)
 endif(GNOMON_ENABLE_VISU)

@@ -24,9 +24,6 @@ public:
     QJsonObject readFromJson(const QString& url);
 
 public:
-    void addDirPath(const QString& path);
-
-public:
 
     gnomonProjectInfo projectInfo;
 
@@ -219,14 +216,6 @@ const gnomonProjectInfo &gnomonProject::projectInfo() {
     return d->projectInfo;
 }
 
-QString gnomonProject::findFile(const QString& filename) const {
-    QDir::setSearchPaths("paths", d->dataPath);
-    QFile file(QString("paths:%1").arg(filename));
-    QString target_file;
-    if (file.exists())
-        target_file = file.fileName();
-    return target_file;
-}
 
 void gnomonProject::addToManifest(const QJsonObject& workspace_info)
 {

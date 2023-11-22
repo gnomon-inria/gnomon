@@ -264,6 +264,10 @@ Control
             Layout.preferredHeight: 200;
         }
 
+        G.TreeView {
+            anchors.fill : parent
+        }
+
         Label {
             text: "Imported data"
             font: G.Style.fonts.header

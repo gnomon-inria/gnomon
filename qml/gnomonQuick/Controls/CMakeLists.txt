@@ -87,6 +87,7 @@ QML_FILES
   Toast.qml
   ToolBar.qml
   ToolTip.qml
+  TreeView.qml
   View.qml
   ViewParameters.qml
   World.qml
