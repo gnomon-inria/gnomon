@@ -265,6 +265,7 @@ Control
         }
 
         G.TreeView {
+            data_paths : []
             anchors.fill : parent
         }
 

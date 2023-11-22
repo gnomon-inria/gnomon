@@ -9,28 +9,41 @@ ListView {
 
     id: _list_view
 
-    model: ["/Users/ksamassa/Desktop/buffer/yy", "/Users/ksamassa/Desktop/buffer/y"]
+    property var data_paths : []
+
+    model: data_paths
 
     delegate: TreeView {
         id: _tree_view
+        
+        required property string modelData
+        property int rootRow: 0
+
         width: _list_view.width
-        height: _tree_view.rows * 20
+        height: (_tree_view.rows - _tree_view.rootRow) * 20
 
         interactive: false
         clip: true
         
-        required property string modelData
-
         model : GP.FileSystemModel {
-            id : _m
+            id : _model
             rootDir: modelData
         }
+
         delegate: TreeViewDelegate {
             indentation: 1.5
-            implicitHeight: 20
+            implicitHeight: model.filePath.includes(_model.rootDir) ? 20 : 0.01
+            enabled: model.filePath.includes(_model.rootDir)
+            opacity: model.filePath.includes(_model.rootDir) ? 1 : 0
             contentItem : Label {
                 text: model.display
             }
+        }
+
+        Component.onCompleted : {
+            _tree_view.rootRow = _model.rootDir.split('/').length - 1
+            _tree_view.expandRecursively()
+            _tree_view.collapseRecursively(_tree_view.rootRow)
         }
     }
 
