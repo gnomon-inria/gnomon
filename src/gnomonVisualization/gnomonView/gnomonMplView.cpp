@@ -3,6 +3,11 @@
 
 #include <dtkScript>
 
+#pragma push_macro("slots")
+#undef slots
+#include <Python.h>
+#pragma pop_macro("slots")
+
 #include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringAdapter>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeAdapter>
 #include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringAdapterCommand>
@@ -50,6 +55,7 @@ public slots:
     void saveFigure(const QString& path);
     void clearFigure(void);
     void renderFigure(void);
+    void updateFigureLimits(void);
 
 public slots:
     void adaptForm(const QString& adapter_plugin);
@@ -61,6 +67,11 @@ public:
     int figureNumber;
     bool no_python;
 
+    double x_min = 0;
+    double x_max = 1;
+    double y_min = 0;
+    double y_max = 1;
+    
 public:
     QMap<QString, QMap<QString, gnomonAbstractAdapterCommand *> > adapterCommands;
     QMap<QString, QMap<QString, QString> > adapterTargets;
@@ -120,6 +131,18 @@ void gnomonMplViewPrivate::renderFigure(void)
         int stat;
         QString renderStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
         dtkScriptInterpreterPython::instance()->interpret(renderStatement, &stat);
+    }
+}
+
+void gnomonMplViewPrivate::updateFigureLimits(void)
+{
+    if ((this->figureNumber != -1) && (!this->no_python)) {
+        int stat;
+        QString limitsStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\n";
+        limitsStatement += "figure = gnomon_figure(" + QString::number(this->figureNumber) + ")\n";
+        limitsStatement += "figure.gca().set_xlim(" + QString::number(this->x_min) + ", " + QString::number(this->x_max) + ")\n";
+        limitsStatement += "figure.gca().set_ylim(" + QString::number(this->y_min) + ", " + QString::number(this->y_max) + ")\n";
+        dtkScriptInterpreterPython::instance()->interpret(limitsStatement, &stat);
     }
 }
 
@@ -315,6 +338,109 @@ void gnomonMplView::setFigureNumber(int num)
 {
     dd->figureNumber = num;
     emit figureNumberChanged(num);
+}
+
+void gnomonMplView::setXMin(double x_min)
+{
+    if (x_min != dd->x_min) {
+        dd->x_min = x_min;
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    }
+}
+
+void gnomonMplView::setXMax(double x_max)
+{
+    if (x_max != dd->x_max) {
+        dd->x_max = x_max;
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    }
+}
+
+void gnomonMplView::setYMin(double y_min)
+{
+    if (y_min != dd->y_min) {
+        dd->y_min = y_min;
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    }
+}
+
+void gnomonMplView::setYMax(double y_max)
+{
+    if (y_max != dd->y_max) {
+        dd->y_max = y_max;
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    }
+}
+
+void gnomonMplView::updateLimits(void)
+{
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
+
+    PyObject* pModule_mpl_tools = PyImport_Import(PyUnicode_FromString("gnomon.utils.matplotlib_tools"));
+    if(!pModule_mpl_tools) {
+        dtkWarn() << Q_FUNC_INFO << "Error importing module gnomon.utils.matplotlib_tools";
+        PyGILState_Release(gstate);
+        return;
+    }
+
+    PyObject* pFigure = PyObject_CallMethodOneArg(pModule_mpl_tools, PyUnicode_FromString("gnomon_figure"), PyLong_FromLong(dd->figureNumber));
+    if(!pFigure) {
+        dtkWarn() << Q_FUNC_INFO << "Error calling function gnomon_figure("+QString::number(dd->figureNumber)+")";
+        PyGILState_Release(gstate);
+        return;
+    }
+
+    PyObject* pAxes = PyObject_CallMethodNoArgs(pFigure, PyUnicode_FromString("gca"));
+    PyObject* pXlim = PyObject_CallMethodNoArgs(pAxes, PyUnicode_FromString("get_xlim"));
+    PyObject* pYlim = PyObject_CallMethodNoArgs(pAxes, PyUnicode_FromString("get_ylim"));
+
+    double x_min = PyFloat_AsDouble(PyTuple_GetItem(pXlim, 0));
+    double x_max = PyFloat_AsDouble(PyTuple_GetItem(pXlim, 1));
+    double y_min = PyFloat_AsDouble(PyTuple_GetItem(pYlim, 0));
+    double y_max = PyFloat_AsDouble(PyTuple_GetItem(pYlim, 1));
+    
+    bool limits_changed = (x_min != dd->x_min) || (x_max != dd->x_max) || (y_min != dd->y_min) || (y_max != dd->y_max);
+
+    dd->x_min = x_min;
+    dd->x_max = x_max;
+    dd->y_min = y_min;
+    dd->y_max = y_max;
+
+    if (limits_changed) {
+        emit this->limitsChanged();
+    }
+
+    Py_DECREF(pXlim);
+    Py_DECREF(pYlim);
+    Py_DECREF(pAxes);
+    Py_DECREF(pFigure);
+
+    PyGILState_Release(gstate);
+}
+
+double gnomonMplView::xMin(void)
+{
+    return dd->x_min;    
+}
+
+double gnomonMplView::xMax(void)
+{
+    return dd->x_max;
+}
+
+double gnomonMplView::yMin(void)
+{
+    return dd->y_min;
+}
+
+double gnomonMplView::yMax(void)
+{
+    return dd->y_max;
 }
 
 // ///////////////////////////////////////////////////////////////////

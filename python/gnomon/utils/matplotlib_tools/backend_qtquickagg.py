@@ -20,12 +20,14 @@ class GnomonFigureManager:
 
     def register_canvas(self, canvas):
         assert isinstance(canvas, FigureCanvasQtQuickAgg)
+        canvas.set_number(self.num)
+
+        zoom_drag = MplCanvasZoomDrag(canvas.figure)
+        zoom_drag.connect()
 
         self._canvas[self.num] = canvas
         self._figures[self.num] = canvas.figure
-        self._connects[self.num] = MplCanvasZoomDrag(canvas.figure)
-        self._connects[self.num].connect()
-        canvas.set_number(self.num)
+        self._connects[self.num] = zoom_drag
 
         self.num += 1
 

@@ -28,6 +28,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     background_color_changed = QtCore.Signal()
     hoverChanged = QtCore.Signal()
     mouseReleased = QtCore.Signal()
+    wheelScrolled = QtCore.Signal()
 
     # map Qt button codes to MouseEvent's ones:
     buttond = {QtCore.Qt.LeftButton: MouseButton.LEFT,
@@ -314,6 +315,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
             steps = event.pixelDelta().y()
         if steps:
             FigureCanvasBase.scroll_event(self, x, y, steps, guiEvent=event)
+            self.wheelScrolled.emit()
 
     def keyPressEvent(self, event):
         key = self._get_key(event)
