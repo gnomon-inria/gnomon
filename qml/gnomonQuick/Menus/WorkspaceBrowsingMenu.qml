@@ -74,7 +74,7 @@ Item {
         anchors.fill: parent;
         anchors.margins: G.Style.smallPadding;
 
-        G.Finder {
+        /* G.Finder {
             id: _finder;
             Layout.fillWidth: true;
             Layout.fillHeight: true;
@@ -100,6 +100,17 @@ Item {
                 visible: _finder.hovered
                 text: "Double click on a file/folder to open it. \n Right click on a file to open with a specific plugin reader for a file."
             }
+        } */
+
+        G.ProjectBrowser {
+            id: _project_browser
+
+            Layout.fillWidth: true;
+            Layout.fillHeight: true;
+
+            rootDir: GP.ProjectManager.project.currentDir
+            //dataPath: []
+            dataPath: [GP.ProjectManager.project.currentDir]
         }
 
         Item {
@@ -142,7 +153,7 @@ Item {
         }
     }
 
-    Component.onCompleted: {
+    /*Component.onCompleted: {
         const extensions = d.extensions;
 
         const regexps = extensions.reduce((prev, curr) => {
@@ -153,5 +164,5 @@ Item {
             "text": "Readable files (" + extensions.join() + ")",
             "regexp": regexps.join()
         })
-    }
+    }*/
 }

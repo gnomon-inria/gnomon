@@ -14,7 +14,6 @@ Control
     id: _self;
 
     property alias folder: _folder_model.folder;
-    property alias ext_folder: _folder_model_ext.folder;
     property alias extensionFilters: _filter_combobox.model;
     property string selectedFolder: "";
     property var selectedFiles: [];
@@ -74,10 +73,6 @@ Control
 
     FolderListModel {
         id: _folder_model
-        nameFilters: _internal.extensions;
-    }
-    FolderListModel {
-        id: _folder_model_ext
         nameFilters: _internal.extensions;
     }
 
@@ -254,44 +249,14 @@ Control
     }
 
 
-    ColumnLayout {
+    Loader {
+        id: _loader
+
         anchors.top: _tool_bar.bottom;
+        anchors.bottom: _filter_combobox.top;
+        anchors.right: _self.right;
         anchors.left: _self.left;
-
-        Loader {
-            id: _loader
-            Layout.fillWidth: true
-            Layout.preferredHeight: 200;
-        }
-
-        G.TreeView {
-            data_paths : []
-            anchors.fill : parent
-        }
-
-        Label {
-            text: "Imported data"
-            font: G.Style.fonts.header
-            color: G.Style.colors.textColorBase
-        }
-
-        Loader {
-            id: _loader_ext
-            Layout.preferredWidth: 300;
-            Layout.preferredHeight: 200;
-        }
     }
-
-
-    // Loader {
-    //     id: _loader
-
-    //     anchors.top: _visu_label.bottom;
-    //     anchors.bottom: _filter_combobox.top;
-    //     anchors.right: _self.right;
-    //     anchors.left: _self.left;
-    // }
-
 
     G.ComboBox {
         id: _filter_combobox;
@@ -400,13 +365,11 @@ Control
         if(buttonName === "grid") {
             _settings.finderMode = buttonName
             _loader.setSource("FinderGridView.qml", {"foldermodel": _folder_model})
-            _loader_ext.setSource("FinderGridView.qml", {"foldermodel": _folder_model_ext})
         }
 
         if(buttonName === "list") {
             _settings.finderMode = buttonName
             _loader.setSource("FinderListView.qml", {"foldermodel": _folder_model})
-            _loader_ext.setSource("FinderListView.qml", {"foldermodel": _folder_model_ext})
         }
 
     }
@@ -414,11 +377,9 @@ Control
     Component.onCompleted: {
         // if(_settings.last_path) _self.folder = _settings.last_path;
         // else _self.folder = StandardPaths.standardLocations(StandardPaths.HomeLocation)[0];
-        _folder_model.rootFolder = _self.folder
+
         if(_settings.finderMode === "grid") _loader.setSource("FinderGridView.qml", {"foldermodel": _folder_model})
         if(_settings.finderMode === "list") _loader.setSource("FinderListView.qml", {"foldermodel": _folder_model})
-        if(_settings.finderMode === "list") _loader_ext.setSource("FinderGridView.qml", {"foldermodel": _folder_model_ext})
-        if(_settings.finderMode === "grid") _loader_ext.setSource("FinderListView.qml", {"foldermodel": _folder_model_ext})
     }
 
 

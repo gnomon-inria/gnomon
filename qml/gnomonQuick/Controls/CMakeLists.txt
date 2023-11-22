@@ -68,6 +68,7 @@ QML_FILES
   PipelinePort.qml
   PipelinePortEdit.qml
   Project.qml
+  ProjectBrowser.qml
   ProgressBar.qml
   RangeParameter.qml
   RangeSlider.qml
