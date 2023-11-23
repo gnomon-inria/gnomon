@@ -62,9 +62,8 @@ Control
         data_paths : [_self.rootDir]
 
         anchors.top : _project_label.bottom;
-        anchors.left: _self.left
-        anchors.right: _self.right
-        anchors.margins: G.Style.smallPadding
+        width: _self.width
+        anchors.bottomMargin: G.Style.smallPadding
     }
 
     Label {
@@ -90,9 +89,8 @@ Control
         data_paths : _self.dataPath
 
         anchors.top : _data_label.bottom;
-        anchors.left: _self.left
-        anchors.right: _self.right
-        anchors.margins: G.Style.smallPadding
+        width: _self.width
+        anchors.bottomMargin: G.Style.smallPadding
 
         visible: _self.dataPath.length > 0
     }
