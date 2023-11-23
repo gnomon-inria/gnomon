@@ -99,7 +99,20 @@ G.Workspace {
 
         onDroppedFromFile: (path) => {
             let urls = path.split(',')
-            requestOpenFiles(urls)
+            let external_paths = []
+            for(let i_n in urls) {
+                let path = decodeURIComponent(urls[i_n])
+                if (!GP.ProjectManager.project.isAccessible(path)) {
+                    external_paths.push(path)
+                }
+            }
+            if (external_paths.length > 0) {
+                _external_data_dialog.urls = urls
+                _external_data_dialog.paths = external_paths
+                _external_data_dialog.open()
+            } else {
+                requestOpenFiles(urls)
+            }
         }
         viewLogic: d.view;
 
@@ -119,6 +132,80 @@ G.Workspace {
             _reader_toast.reader_name = reader;
             _reader_toast.open();
             d.readWith(reader);
+        }
+    }
+
+     G.Dialog {
+        id: _external_data_dialog;
+
+        property var urls: []
+        property var paths: []
+
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.mediumDialogWidth;
+        height: G.Style.smallDialogHeight;
+
+        padding: G.Style.smallPadding;
+
+        parent: Overlay.overlay
+        modal: true
+        title: "External data"
+        standardButtons:  Dialog.Cancel | Dialog.Ok
+
+        Label {
+            id: _external_label
+            anchors.left: parent.left;
+            anchors.top: parent.top;
+            anchors.right: parent.right;
+            text: "Some of the data files you would like to open are not part of the project directory, or of one of its data directories. Please specify which directories to add to the project's data path to be able to load them."
+            wrapMode: Text.WordWrap
+
+            font: G.Style.fonts.value
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignLeft
+            topPadding: G.Style.smallPadding;
+            bottomPadding: G.Style.smallPadding;
+            leftPadding: G.Style.mediumPadding
+            rightPadding: G.Style.mediumPadding
+        }
+
+        ListView {
+            id: _external_list_view
+
+            anchors.top: _external_label.bottom;
+            anchors.bottom: parent.bottom;
+            anchors.right: parent.right;
+            anchors.left: parent.left;
+            anchors.margins: G.Style.smallPadding;
+
+            clip: true;
+            spacing: G.Style.smallPadding;
+
+            model: _external_data_dialog.paths
+
+            delegate: TextArea {
+                width: _external_list_view.width
+
+                text: modelData
+                font: G.Style.fonts.label
+
+                background: Rectangle {
+                    color: G.Style.colors.gutterColor
+                }
+            }
+        }
+
+        onAccepted: {
+            for (let i_f in _external_data_dialog.paths) {
+                let data_path = _external_list_view.itemAtIndex(i_f).text
+                GP.ProjectManager.project.addDirPath(data_path)
+            }
+            requestOpenFiles(_external_data_dialog.urls)
+        }
+
+        onRejected: {
+            _external_data_dialog.close();
         }
     }
 

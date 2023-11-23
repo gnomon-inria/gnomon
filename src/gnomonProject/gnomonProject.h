@@ -45,7 +45,9 @@ public:
 public:
     void setCurrentDir(const QString& url);
     bool wasSaved = false;
-    void addDirPath(const QString& path);
+    Q_INVOKABLE void addDirPath(const QString& path);
+    Q_INVOKABLE bool isAccessible(const QString& path) const;
+    Q_INVOKABLE QString relativePath(const QString& path) const;
 
 public:
     static QVariantMap readProjectInfoFromPath(const QString &path);
