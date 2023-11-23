@@ -49,6 +49,7 @@ public:
     Q_INVOKABLE QVariantList timeKeys(int id);
     Q_INVOKABLE QStringList formMetadataKeysAtT(int id, double t);
     Q_INVOKABLE QString formMetadataValueAtT(int id, double t, const QString& key);
+    Q_INVOKABLE QList<int> systemStat(void) const; //total_mem, used_mem, this_mem
 
 public:
     Q_INVOKABLE QString formWriterNameFilter(int id);

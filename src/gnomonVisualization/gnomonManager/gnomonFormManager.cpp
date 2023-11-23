@@ -1,5 +1,27 @@
 #include "gnomonFormManager.h"
 
+#include <QtGlobal>
+
+#if (defined (Q_OS_WIN))
+#include <windows.h>
+#include <psapi.h>
+#elif (defined (Q_OS_LINUX))
+#include "sys/types.h"
+#include "sys/sysinfo.h"
+#include "stdlib.h"
+#include "stdio.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#elif (defined (Q_OS_MAC))
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <mach/vm_statistics.h>
+#include <mach/mach_types.h>
+#include <mach/mach_init.h>
+#include <mach/mach_host.h>
+#endif
+
 #include <memory>
 #include <utility>
 
@@ -525,6 +547,81 @@ void gnomonFormManager::setFormDropped(const QString& form_uuid)
     // onconsistency in the pipeline
     int index = d->forms.key(form_uuid);
     d->formDropped[index] = true;
+}
+
+QList<int> gnomonFormManager::systemStat(void) const
+{
+    QList<int> stat(3);
+#if (defined (Q_OS_WIN))
+    MEMORYSTATUSEX statex;
+    statex.dwLength = sizeof (statex);
+    GlobalMemoryStatusEx (&statex);
+
+    stat[0] = statex.ullTotalPhys / 1024);
+    stat[1] = (statex.ullTotalPhys - statex.ullAvailPhy) / (1024 );
+    
+    PROCESS_MEMORY_COUNTERS_EX pmc;
+    GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+    stat[2] = pmc.WorkingSetSize/ (1024 );
+    // virtualMemUsedByMe = pmc.PrivateUsage;
+#elif (defined (Q_OS_LINUX))
+    struct sysinfo memInfo;
+    sysinfo (&memInfo);
+    stat[0] = memInfo.totalram * memInfo.mem_unit / (1024*1024);
+    stat[1] = (memInfo.totalram - memInfo.freeram) * memInfo.mem_unit / (1024*1024);
+    std::ifstream procfile("/proc/self/smaps_rollup");
+    if(procfile.is_open()) {
+        std::string line;
+        while(std::getline(procfile, line)) {
+            if(line.find("Rss:") != std::string::npos) {
+                stat[2] = std::stol(line.substr(5, line.size()-3)) / 1024;
+                break;
+            }
+        }
+    }
+#elif (defined (Q_OS_MAC))
+    int mib[2]; 
+    int64_t total_memory;
+    mib[0] = CTL_HW;  mib[1] = HW_MEMSIZE;
+    length = sizeof(int64_t);
+    sysctl(mib, 2, &total_memory, &length, NULL, 0);
+    stat[0] = total_memory / (1024*1024);
+
+    //free mem and used mem
+    vm_size_t page_size;
+    mach_port_t mach_port;
+    mach_msg_type_number_t count;
+    vm_statistics64_data_t vm_stats;
+
+    mach_port = mach_host_self();
+    count = sizeof(vm_stats) / sizeof(natural_t);
+    if (KERN_SUCCESS == host_page_size(mach_port, &page_size) &&
+        KERN_SUCCESS == host_statistics64(mach_port, HOST_VM_INFO,
+                                        (host_info64_t)&vm_stats, &count))
+    {
+        //long long free_memory = (int64_t)vm_stats.free_count * (int64_t)page_size;
+
+        stat[1] = (((int64_t)vm_stats.active_count +
+                    (int64_t)vm_stats.inactive_count +
+                    (int64_t)vm_stats.wire_count) *  (int64_t)page_size ) / (1024*1024);
+    }
+
+    struct task_basic_info t_info;
+    mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
+
+    if (KERN_SUCCESS != task_info(mach_task_self(),
+                                  TASK_BASIC_INFO, (task_info_t)&t_info,
+                                  &t_info_count))
+    {
+        qDebug() << "macos cannot get this_used_mem";
+        stat[2] = 0; 
+    } else {
+        stat[2] = t_info.resident_size / (1024*1024);
+    }
+    
+#endif
+
+    return stat;
 }
 
 #include "gnomonFormManager.moc"
