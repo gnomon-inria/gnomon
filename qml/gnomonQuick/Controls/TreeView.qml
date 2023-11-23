@@ -4,6 +4,7 @@ import QtQuick.Layouts
 
 import gnomon.Project as GP
 
+import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
 ListView {
@@ -13,6 +14,7 @@ ListView {
     property var _delegate_heights: []
 
     implicitHeight: G.Style.smallPanelHeight
+    interactive: false
 
     model: data_paths
 
@@ -24,7 +26,7 @@ ListView {
         property int _index: -1
 
         width: _list_view.width
-        implicitHeight: (_tree_view.rows - _tree_view.rootRow) * G.Style.smallLabelHeight
+        implicitHeight: (_tree_view.rows - _tree_view.rootRow) * G.Style.smallButtonHeight
 
         interactive: false
         clip: true
@@ -35,13 +37,49 @@ ListView {
         }
 
         delegate: TreeViewDelegate {
-            indentation: G.Style.tinyPadding
+            indentation: G.Style.smallPadding
+            hoverEnabled: true;
+
             implicitWidth: _list_view.width
-            implicitHeight: model.filePath.includes(_model.rootDir) ? G.Style.smallLabelHeight : 0.01
+            implicitHeight: model.filePath.includes(_model.rootDir) ? G.Style.smallButtonHeight : 0.01
+
             enabled: model.filePath.includes(_model.rootDir)
             visible: model.filePath.includes(_model.rootDir)
+
             contentItem : Label {
+                anchors.left:  _indicator.right;
                 text: model.display
+                font: hasChildren? G.Style.fonts.subHeader : G.Style.fonts.value
+            }
+
+            G.ToolTip {
+                text: model.fileName;
+                visible: _mouse_area.containsMouse
+                delay: 500
+            }
+
+            MouseArea {
+                id: _mouse_area
+
+                anchors.fill: parent
+                hoverEnabled: true
+                acceptedButtons: Qt.NoButton
+            }
+
+            indicator: G.IconButton {
+               id: _indicator;
+
+               x: ((depth - _tree_view.rootRow) * indentation)
+
+               anchors.verticalCenter: parent.verticalCenter;
+               anchors.rightMargin: G.Style.smallPadding;
+
+               size: G.Style.iconSmall;
+               iconName: expanded? "chevron-down" : "chevron-right"
+
+               onClicked: {
+                   _tree_view.toggleExpanded(row)
+               }
             }
         }
 

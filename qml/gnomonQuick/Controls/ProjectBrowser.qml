@@ -17,81 +17,98 @@ Control
     property string rootDir: "/";
     property var dataPath: ["/"];
 
-    hoverEnabled: true;
-
     background: Rectangle {
         color: G.Style.colors.gutterColor;
     }
 
-    Label {
-        id: _project_label
-
-        anchors.top: _self.top
-        anchors.left: _self.left
+    ScrollView {
+        anchors.fill: parent
         anchors.margins: G.Style.smallPadding
 
-        height: G.Style.mediumButtonHeight
+        clip: true
+        contentWidth: availableWidth
+        contentHeight: 2*G.Style.mediumButtonHeight + 4*G.Style.smallPadding + _project_tree_view.height + _data_tree_view.height
 
-        text: "Project : ";
+        Label {
+            id: _project_label
 
-        font: G.Style.fonts.value
-        horizontalAlignment: Text.AlignLeft
-        color: G.Style.colors.textColorNeutral
-    }
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.margins: G.Style.smallPadding
 
-    Label {
-        id: _directory_label;
+            height: G.Style.mediumButtonHeight
 
-        anchors.top: _self.top
-        anchors.left: _project_label.right
-        anchors.right: _self.right
-        anchors.margins: G.Style.smallPadding
+            text: "Project : ";
 
-        height: G.Style.mediumButtonHeight
+            font: G.Style.fonts.value
+            horizontalAlignment: Text.AlignLeft
+            color: G.Style.colors.textColorNeutral
+        }
 
-        text: _self.rootDir;
+        Label {
+            id: _directory_label;
 
-        font: G.Style.fonts.subHeader
-        horizontalAlignment: Text.AlignLeft
-        color: G.Style.colors.textColorNeutral
-    }
+            anchors.top: parent.top
+            anchors.left: _project_label.right
+            anchors.right: parent.right
+            anchors.margins: G.Style.smallPadding
 
-    G.TreeView {
-        id: _project_tree_view
+            height: G.Style.mediumButtonHeight
 
-        data_paths : [_self.rootDir]
+            text: _self.rootDir;
 
-        anchors.top : _project_label.bottom;
-        width: _self.width
-        anchors.bottomMargin: G.Style.smallPadding
-    }
+            font: G.Style.fonts.subHeader
+            horizontalAlignment: Text.AlignLeft
+            color: G.Style.colors.textColorNeutral
+        }
 
-    Label {
-        id: _data_label
+        G.TreeView {
+            id: _project_tree_view
 
-        anchors.top: _project_tree_view.bottom
-        anchors.left: _self.left
-        anchors.margins: G.Style.smallPadding
+            data_paths : [_self.rootDir]
 
-        height: G.Style.mediumButtonHeight
-        visible: _self.dataPath.length > 0
+            anchors.top : _project_label.bottom;
+            width: parent.width
+            anchors.bottomMargin: G.Style.smallPadding
+        }
 
-        text: "External Data : ";
+        Label {
+            id: _data_label
 
-        font: G.Style.fonts.value
-        horizontalAlignment: Text.AlignLeft
-        color: G.Style.colors.textColorNeutral
-    }
+            anchors.top: _project_tree_view.bottom
+            anchors.left: parent.left
+            anchors.margins: G.Style.smallPadding
 
-    G.TreeView {
-        id: _data_tree_view
+            height: G.Style.mediumButtonHeight
+            visible: _self.dataPath.length > 0
 
-        data_paths : _self.dataPath
+            text: "External Data : ";
 
-        anchors.top : _data_label.bottom;
-        width: _self.width
-        anchors.bottomMargin: G.Style.smallPadding
+            font: G.Style.fonts.value
+            horizontalAlignment: Text.AlignLeft
+            color: G.Style.colors.textColorNeutral
+        }
 
-        visible: _self.dataPath.length > 0
+        G.TreeView {
+            id: _data_tree_view
+
+            data_paths : _self.dataPath
+
+            anchors.top : _data_label.bottom;
+            width: parent.width
+            anchors.bottomMargin: G.Style.smallPadding
+
+            visible: _self.dataPath.length > 0
+        }
+
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        ScrollBar.vertical: ScrollBar {
+            id: _scrollbar
+
+            policy: ScrollBar.AsNeeded
+            anchors.right: parent.right;
+            anchors.top: parent.top;
+            anchors.bottom: parent.bottom;
+        }
     }
 }

@@ -108,8 +108,8 @@ Item {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            rootDir: GP.ProjectManager.project.dataPath[0]
-            dataPath: GP.ProjectManager.project.dataPath.slice(1)
+            rootDir: GP.ProjectManager.project.currentDir
+            dataPath: GP.ProjectManager.project.dataPath
         }
 
         Item {
