@@ -19,7 +19,6 @@ public:
     ~gnomonProjectPrivate();
 
 public:
-    void addDirPath(const QString& path);
     void initFile(const QString& path);
     QJsonObject readFromJson(const QString& url);
 
@@ -40,17 +39,12 @@ gnomonProjectPrivate::gnomonProjectPrivate(const QString &path):
 {
     QDir::setCurrent(path);
     projectInfo.path = path;
+    dataPath.append(path);
 }
 
 gnomonProjectPrivate::~gnomonProjectPrivate()
 {
 
-}
-
-void gnomonProjectPrivate::addDirPath(const QString& path)
-{
-    if(!this->dataPath.contains(path))
-        this->dataPath.append(path);
 }
 
 void gnomonProjectPrivate::initFile(const QString& path)
@@ -200,6 +194,18 @@ void gnomonProject::close() {
 
 QString gnomonProject::currentDir(void) {
     return d->currentDir.path();
+}
+
+void gnomonProject::addDirPath(const QString& path)
+{
+    if(!d->dataPath.contains(path)) {
+        d->dataPath.append(path);
+        emit dataPathAdded();
+    }
+}
+
+QStringList gnomonProject::dataPath(void) {
+    return d->dataPath;
 }
 
 gnomonAbstractSessionManager* gnomonProject::currentSession(void)
