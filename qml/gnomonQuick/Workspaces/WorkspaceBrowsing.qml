@@ -45,6 +45,26 @@ G.Workspace {
         d.requestReaders(default_plugin);
     }
 
+    function checkFileAccessibility(urls) {
+        let external_paths = []
+        let relative_paths = []
+        for(let i_n in urls) {
+            let path = decodeURIComponent(urls[i_n])
+            if (!GP.ProjectManager.project.isAccessible(path)) {
+                external_paths.push(path)
+            } else {
+                relative_paths.push(GP.ProjectManager.project.relativePath(path));
+            }
+        }
+        if (external_paths.length > 0) {
+            _external_data_dialog.urls = urls
+            _external_data_dialog.paths = external_paths
+            _external_data_dialog.open()
+        } else {
+            requestOpenFiles(relative_paths)
+        }
+    }
+
     fill: () => {}
 
     focus: true;
@@ -100,23 +120,7 @@ G.Workspace {
 
         onDroppedFromFile: (path) => {
             let urls = path.split(',')
-            let external_paths = []
-            let relative_paths = []
-            for(let i_n in urls) {
-                let path = decodeURIComponent(urls[i_n])
-                if (!GP.ProjectManager.project.isAccessible(path)) {
-                    external_paths.push(path)
-                } else {
-                    relative_paths.push(GP.ProjectManager.project.relativePath(path));
-                }
-            }
-            if (external_paths.length > 0) {
-                _external_data_dialog.urls = urls
-                _external_data_dialog.paths = external_paths
-                _external_data_dialog.open()
-            } else {
-                requestOpenFiles(relative_paths)
-            }
+
         }
         viewLogic: d.view;
 

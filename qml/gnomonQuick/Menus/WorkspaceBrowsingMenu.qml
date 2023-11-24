@@ -39,7 +39,7 @@ Item {
         fileMode: P.FileDialog.OpenFiles;
 
         onAccepted: {
-            window.current_workspace().requestOpenFiles(_file_dialog.files)
+            window.current_workspace().checkFileAccessibility(_file_dialog.files)
         }
     }
 
