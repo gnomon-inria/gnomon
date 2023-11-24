@@ -103,13 +103,48 @@ G.ToolBar {
         Item { id: _placeholder_unanchored; Layout.fillWidth: true; Layout.fillHeight: true; }
 
         G.IconButton {
-            iconName: "trash-can";
+            iconName: "close-box-multiple";
             size: G.Style.iconMedium;
             color: G.Style.colors.textColorFaded;
+            hoverColor: G.Style.colors.hoveredDangerColor;
             tooltip: "Reset: clear all the forms and workspaces"
+            visible: stack_launcher.currentIndex != 0
 
             onClicked: {
-                reset();
+                _reset_dialog.open();
+            }
+        }
+
+        G.Dialog {
+            id: _reset_dialog
+
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
+            width: G.Style.mediumDialogWidth;
+            height: G.Style.smallDialogHeight;
+
+            padding: G.Style.smallPadding;
+
+            parent: Overlay.overlay
+            modal: true
+            title: "Exit project"
+            standardButtons: Dialog.Ok | Dialog.Cancel
+
+            Label {
+                anchors.fill: parent
+                anchors.margins: G.Style.smallPadding
+
+                text: "Do you really want to close the project and clear all the forms and workspaces?"
+                wrapMode: Text.WordWrap
+
+                font: G.Style.fonts.cardLabel
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
+            }
+
+            onAccepted: {
+                console.log("reset!")
+                window.reset();
             }
         }
 

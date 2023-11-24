@@ -148,7 +148,7 @@ G.Workspace {
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
         width: G.Style.mediumDialogWidth;
-        height: G.Style.smallDialogHeight;
+        height: G.Style.mediumDialogHeight;
 
         padding: G.Style.smallPadding;
 
@@ -162,10 +162,10 @@ G.Workspace {
             anchors.left: parent.left;
             anchors.top: parent.top;
             anchors.right: parent.right;
-            text: "Some of the data files you would like to open are not part of the project directory, or of one of its data directories. Please specify which directories to add to the project's data path to be able to load them."
+            text: "Some of the data files you would like to open are not part of the project directory, or of one of its data directories.\nPlease specify which directories to add to the project's data path to be able to load them."
             wrapMode: Text.WordWrap
 
-            font: G.Style.fonts.value
+            font: G.Style.fonts.cardLabel
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignLeft
             topPadding: G.Style.smallPadding;
