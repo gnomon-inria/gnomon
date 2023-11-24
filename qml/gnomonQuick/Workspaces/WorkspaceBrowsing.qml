@@ -107,7 +107,7 @@ G.Workspace {
                 if (!GP.ProjectManager.project.isAccessible(path)) {
                     external_paths.push(path)
                 } else {
-                    relative_paths.push(GP.ProjectManage.project.relativePath(path));
+                    relative_paths.push(GP.ProjectManager.project.relativePath(path));
                 }
             }
             if (external_paths.length > 0) {

@@ -112,12 +112,14 @@ Item {
             dataPath: GP.ProjectManager.project.dataPath
 
             onFileDoubleClicked: (fileUrl) => {
-                window.current_workspace().requestOpenFiles([fileUrl])
+                let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
+                window.current_workspace().requestOpenFiles([relative_path])
             }
 
             onFileRightClicked: (fileUrl) => {
-                    d.readerPath = decodeURIComponent(fileUrl);
-                    d.requestReaders("");
+                let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
+                d.readerPath = decodeURIComponent(relative_path);
+                d.requestReaders("");
             }
         }
 
