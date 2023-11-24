@@ -51,7 +51,7 @@ public:
 
 public:
     static QVariantMap readProjectInfoFromPath(const QString &path);
-    QString findFile(const QString& filename) const;
+    Q_INVOKABLE QString findFile(const QString& filename) const;
 
     void addToManifest(const QJsonObject& workspace_info);
     bool backupFile(const QString &fname, const QString &content);

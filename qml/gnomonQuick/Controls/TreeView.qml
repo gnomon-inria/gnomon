@@ -48,6 +48,7 @@ ListView {
 
             enabled: model.filePath.includes(_model.rootDir)
             visible: model.filePath.includes(_model.rootDir)
+            background.opacity: 0.3
 
             contentItem : Label {
                 anchors.left:  _indicator.right;

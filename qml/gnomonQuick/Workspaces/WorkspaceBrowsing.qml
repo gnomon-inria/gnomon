@@ -38,6 +38,7 @@ G.Workspace {
             if (default_plugin == "") {
                 default_plugin = _cache.value(path, "")
             }
+            console.log(GP.ProjectManager.project.findFile(path))
             paths.push(path)
         }
         d.readerPath = paths.join(",");
@@ -100,10 +101,13 @@ G.Workspace {
         onDroppedFromFile: (path) => {
             let urls = path.split(',')
             let external_paths = []
+            let relative_paths = []
             for(let i_n in urls) {
                 let path = decodeURIComponent(urls[i_n])
                 if (!GP.ProjectManager.project.isAccessible(path)) {
                     external_paths.push(path)
+                } else {
+                    relative_paths.push(GP.ProjectManage.project.relativePath(path));
                 }
             }
             if (external_paths.length > 0) {
@@ -111,7 +115,7 @@ G.Workspace {
                 _external_data_dialog.paths = external_paths
                 _external_data_dialog.open()
             } else {
-                requestOpenFiles(urls)
+                requestOpenFiles(relative_paths)
             }
         }
         viewLogic: d.view;
@@ -187,7 +191,7 @@ G.Workspace {
             delegate: TextArea {
                 width: _external_list_view.width
 
-                text: modelData
+                text: modelData.startsWith("file://") ? modelData.slice(7) : modelData
                 font: G.Style.fonts.label
 
                 background: Rectangle {
@@ -199,9 +203,14 @@ G.Workspace {
         onAccepted: {
             for (let i_f in _external_data_dialog.paths) {
                 let data_path = _external_list_view.itemAtIndex(i_f).text
-                GP.ProjectManager.project.addDirPath(data_path)
+                GP.ProjectManager.project.addDirectoryToDataPath(data_path)
             }
-            requestOpenFiles(_external_data_dialog.urls)
+            let relative_paths = [];
+            for (let i_f in _external_data_dialog.urls) {
+                let url = _external_data_dialog.urls[i_f];
+                relative_paths.push(GP.ProjectManager.project.relativePath(url));
+            }
+            requestOpenFiles(relative_paths)
         }
 
         onRejected: {

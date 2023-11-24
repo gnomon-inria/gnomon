@@ -197,10 +197,10 @@ QString gnomonProject::currentDir(void) {
 
 void gnomonProject::addDirectoryToDataPath(const QString& path)
 {
-    QString path_copy = sanitizeUrlToPath(path);
-    qDebug()<<Q_FUNC_INFO<<path_copy;
-    if(!d->dataPath.contains(path_copy)) {
-        d->dataPath.append(path_copy);
+    QString path_dir = QDir(sanitizeUrlToPath(path)).path();
+    qDebug()<<Q_FUNC_INFO<<path<<"->"<<path_dir;
+    if(!d->dataPath.contains(path_dir)) {
+        d->dataPath.append(path_dir);
         emit dataPathChanged();
     }
 }
@@ -349,7 +349,12 @@ QList< QPair<QString, QString> > gnomonProject::browserFormInfo(void)
 }
 
 QString gnomonProject::findFile(const QString& filename) const {
-    QDir::setSearchPaths("paths", d->dataPath);
+    QStringList search_paths;
+    search_paths.append(d->projectDir.path());
+    for (const auto &d_path : d->dataPath) {
+        search_paths.append(d_path);
+    }
+    QDir::setSearchPaths("paths", search_paths);
     QFile file(QString("paths:%1").arg(filename));
     QString target_file;
     if(file.exists())
