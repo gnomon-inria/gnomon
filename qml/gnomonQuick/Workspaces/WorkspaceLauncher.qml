@@ -463,6 +463,9 @@ G.Workspace {
                                         }
                                         model = workspaces
                                         currentIndex = titles.indexOf(_settings.default_workspace)
+                                        if (currentIndex == -1) {
+                                            currentIndex = 0;
+                                        }
                                     }
                                 }
 
