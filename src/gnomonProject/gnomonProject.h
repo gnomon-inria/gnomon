@@ -11,6 +11,7 @@ struct gnomonProjectInfo {
     QString path;
     QString default_source;
     QDateTime lastModified;
+    QStringList data_path;
 };
 
 class GNOMONPROJECT_EXPORT gnomonProject : public QObject

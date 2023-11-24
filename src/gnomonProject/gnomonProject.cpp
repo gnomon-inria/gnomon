@@ -85,6 +85,7 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
     if(isProject) {
         readProjectInfo();
         d->manifest_url = d->projectDir.filePath(PROJECT_BACKUP_MANIFEST);
+        d->dataPath = d->projectInfo.data_path;
         wasSaved = QFile::exists(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
     } else {
         auto pName = d->projectDir.dirName();
@@ -92,6 +93,11 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
         d->projectInfo.name = pName;
         d->projectInfo.lastModified = QDateTime::currentDateTime();
     };
+
+    connect(this, &gnomonProject::dataPathChanged, [=](){
+        d->projectInfo.data_path = d->dataPath;
+        this->saveProjectInfo();
+    });
 }
 
 gnomonProject::~gnomonProject(void)
@@ -124,6 +130,7 @@ void gnomonProject::readProjectInfo() {
     pInfo.path = storage["path"].toString();
     pInfo.default_source = storage["default_source"].toString();
     pInfo.lastModified = QDateTime::fromString(storage["lastModified"].toString(), Qt::ISODate);
+    pInfo.data_path = storage["data_path"].toStringList();
 }
 
 void gnomonProject::saveProjectInfo() {
@@ -137,6 +144,7 @@ void gnomonProject::saveProjectInfo() {
         storage["default_source"] = pInfo.default_source;
         pInfo.lastModified.setSecsSinceEpoch(QDateTime::currentSecsSinceEpoch());
         storage["lastModified"] = pInfo.lastModified.toString("yyyy-MM-ddTHH:mm:ss");
+        storage["data_path"] = QJsonArray::fromStringList(pInfo.data_path);
         QJsonDocument doc(storage);
         QTextStream out(&projectInfoFile);
         out << doc.toJson();
@@ -183,6 +191,7 @@ gnomonProject *gnomonProject::newProject(const QString &path, const QString &nam
     project->d->projectInfo.name = name;
     project->d->projectInfo.description = description;
     project->d->projectInfo.default_source = source;
+    project->d->projectInfo.data_path = QStringList();
     project->saveProjectInfo();
     return project;
 }
