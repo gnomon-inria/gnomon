@@ -45,6 +45,7 @@ QML_FILES
   InList.qml
   InListStringList.qml
   ListItemDelegate.qml
+  Logs.qml
   LookupTable.qml
   Menu.qml
   MenuItemDelegate.qml
