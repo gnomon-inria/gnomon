@@ -39,7 +39,6 @@ gnomonProjectPrivate::gnomonProjectPrivate(const QString &path):
 {
     QDir::setCurrent(path);
     projectInfo.path = path;
-    //dataPath.append(path);
 }
 
 gnomonProjectPrivate::~gnomonProjectPrivate()
@@ -196,13 +195,13 @@ QString gnomonProject::currentDir(void) {
     return d->currentDir.path();
 }
 
-void gnomonProject::addDirPath(const QString& path)
+void gnomonProject::addDirectoryToDataPath(const QString& path)
 {
     QString path_copy = sanitizeUrlToPath(path);
     qDebug()<<Q_FUNC_INFO<<path_copy;
     if(!d->dataPath.contains(path_copy)) {
         d->dataPath.append(path_copy);
-        emit dataPathAdded();
+        emit dataPathChanged();
     }
 }
 

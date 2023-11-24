@@ -110,6 +110,15 @@ Item {
 
             rootDir: GP.ProjectManager.project.currentDir
             dataPath: GP.ProjectManager.project.dataPath
+
+            onFileDoubleClicked: (fileUrl) => {
+                window.current_workspace().requestOpenFiles([fileUrl])
+            }
+
+            onFileRightClicked: (fileUrl) => {
+                    d.readerPath = decodeURIComponent(fileUrl);
+                    d.requestReaders("");
+            }
         }
 
         Item {

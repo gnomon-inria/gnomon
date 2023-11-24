@@ -17,6 +17,9 @@ Control
     property string rootDir: "/";
     property var dataPath: ["/"];
 
+    signal fileDoubleClicked(string fileUrl)
+    signal fileRightClicked(string fileUrl)
+
     background: Rectangle {
         color: G.Style.colors.gutterColor;
     }
@@ -70,6 +73,13 @@ Control
             anchors.top : _project_label.bottom;
             width: parent.width
             anchors.bottomMargin: G.Style.smallPadding
+
+            onFileDoubleClicked : (fileUrl) => {
+                _self.fileDoubleClicked(fileUrl)
+            }
+            onFileRightClicked : (fileUrl) => {
+                _self.fileRightClicked(fileUrl)
+            }
         }
 
         Label {
@@ -99,6 +109,13 @@ Control
             anchors.bottomMargin: G.Style.smallPadding
 
             visible: _self.dataPath.length > 0
+
+            onFileDoubleClicked : (fileUrl) => {
+                _self.fileDoubleClicked(fileUrl)
+            }
+            onFileRightClicked : (fileUrl) => {
+                _self.fileRightClicked(fileUrl)
+            }
         }
 
         ScrollBar.horizontal.policy: ScrollBar.AlwaysOff

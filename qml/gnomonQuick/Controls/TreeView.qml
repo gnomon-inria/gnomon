@@ -13,6 +13,9 @@ ListView {
     property var data_paths : []
     property var _delegate_heights: []
 
+    signal fileDoubleClicked(string fileUrl)
+    signal fileRightClicked(string fileUrl)
+
     implicitHeight: G.Style.smallPanelHeight
     interactive: false
 
@@ -80,6 +83,15 @@ ListView {
                onClicked: {
                    _tree_view.toggleExpanded(row)
                }
+            }
+
+            TapHandler {
+                acceptedButtons: Qt.RightButton
+                onTapped : _list_view.fileRightClicked(model.filePath)
+            }
+
+            onDoubleClicked : {
+                _list_view.fileDoubleClicked(model.filePath)
             }
         }
 

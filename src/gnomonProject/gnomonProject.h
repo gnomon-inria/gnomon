@@ -26,7 +26,7 @@ public:
     Q_PROPERTY(QString projectDir READ projectDir);
     Q_PROPERTY(QString currentDir READ currentDir WRITE setCurrentDir NOTIFY currentDirChanged);
     Q_PROPERTY(gnomonAbstractSessionManager *currentSession READ currentSession CONSTANT);
-    Q_PROPERTY(QStringList dataPath READ dataPath NOTIFY dataPathAdded);
+    Q_PROPERTY(QStringList dataPath READ dataPath NOTIFY dataPathChanged);
 
 public:
     static gnomonProject *newProject(const QString &path, const QString &name, const QString &description,
@@ -45,7 +45,7 @@ public:
 public:
     void setCurrentDir(const QString& url);
     bool wasSaved = false;
-    Q_INVOKABLE void addDirPath(const QString& path);
+    Q_INVOKABLE void addDirectoryToDataPath(const QString& path);
     Q_INVOKABLE bool isAccessible(const QString& path) const;
     Q_INVOKABLE QString relativePath(const QString& path) const;
 
@@ -65,7 +65,7 @@ public:
 
 signals:
     void currentDirChanged(void);
-    void dataPathAdded(void);
+    void dataPathChanged(void);
     
 private:
     bool isDirAProject(const QDir &dir);
