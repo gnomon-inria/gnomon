@@ -51,6 +51,10 @@ G.Workspace {
         for(let i_n in urls) {
             let path = decodeURIComponent(urls[i_n])
             if (!GP.ProjectManager.project.isAccessible(path)) {
+                if(path.startsWith("file://")) {
+                    path = path.slice(7)
+                }
+                path =  path.split("/").slice(0, -1).join("/")
                 external_paths.push(path)
             } else {
                 relative_paths.push(GP.ProjectManager.project.relativePath(path));
@@ -120,6 +124,7 @@ G.Workspace {
 
         onDroppedFromFile: (path) => {
             let urls = path.split(',')
+            checkFileAccessibility(urls)
 
         }
         viewLogic: d.view;
@@ -151,8 +156,8 @@ G.Workspace {
 
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
-        width: G.Style.mediumDialogWidth;
-        height: G.Style.mediumDialogHeight;
+        width: G.Style.smallDialogWidth;
+        height: G.Style.smallDialogHeight;
 
         padding: G.Style.smallPadding;
 
@@ -166,7 +171,7 @@ G.Workspace {
             anchors.left: parent.left;
             anchors.top: parent.top;
             anchors.right: parent.right;
-            text: "Some of the data files you would like to open are not part of the project directory, or of one of its data directories.\nPlease specify which directories to add to the project's data path to be able to load them."
+            text: "Your current folder is not part of the project data directories.\n Please specify the parent directory to add to the project"
             wrapMode: Text.WordWrap
 
             font: G.Style.fonts.cardLabel
@@ -195,7 +200,7 @@ G.Workspace {
             delegate: TextArea {
                 width: _external_list_view.width
 
-                text: modelData.startsWith("file://") ? modelData.slice(7) : modelData
+                text: modelData
                 font: G.Style.fonts.label
 
                 background: Rectangle {
