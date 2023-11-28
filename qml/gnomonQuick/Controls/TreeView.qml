@@ -51,11 +51,25 @@ ListView {
             background.opacity: 0.3
 
             contentItem : Label {
+                id: _label
                 anchors.left:  _indicator.right;
                 text: model.display
                 font: hasChildren? G.Style.fonts.subHeader : G.Style.fonts.value
+                Drag.active: _drag_handler.active
+                Drag.dragType: Drag.Automatic
+                Drag.mimeData: {"text/uri-list" : model.filePath}
             }
 
+            DragHandler {
+                id: _drag_handler
+                onActiveChanged : {
+                    if(active) {
+                        parent.grabToImage(function(result) {
+                            _label.Drag.imageSource = result.url;
+                        })
+                    }
+                }
+            }
             G.ToolTip {
                 text: model.fileName;
                 visible: _mouse_area.containsMouse
