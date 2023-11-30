@@ -323,10 +323,13 @@ void gnomonFormManager::compose(int first, int second) {
     QMap<QString, QString> outputs = {
             {"output", output->uuid()},
     };
-    gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
-    gnomonPipelineManager::instance()->addForm(output->uuid());
+
+    GNOMON_SESSION->addForm(output);
 
     this->addForm(output->uuid(), d->formThumbnail[first]);
+
+    gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
+    gnomonPipelineManager::instance()->addForm(output->uuid());
 }
 
 void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) const
