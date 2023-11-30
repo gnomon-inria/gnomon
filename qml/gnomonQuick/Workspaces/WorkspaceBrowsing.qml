@@ -197,14 +197,62 @@ G.Workspace {
 
             model: _external_data_dialog.paths
 
-            delegate: TextArea {
+            delegate: G.TextField {
+                id: _delegate
+
                 width: _external_list_view.width
+                implicitHeight: G.Style.sizes.s6
 
                 text: modelData
-                font: G.Style.fonts.label
+
+                selectByMouse: true
+                mouseSelectionMode: TextInput.SelectCharacters
+                readOnly: false
+
+                font: G.Style.fonts.value
+                color: _delegate.activeFocus? G.Style.colors.hoveredBaseColor : G.Style.colors.textColorBase
+                selectionColor: G.Style.colors.fgColor
+                selectedTextColor: G.Style.colors.hoveredBaseColor
 
                 background: Rectangle {
                     color: G.Style.colors.gutterColor
+                }
+
+                Rectangle {
+                    anchors.left: _delegate.left
+                    anchors.right: _delegate.right
+                    anchors.top: _delegate.bottom
+
+                    height: 2
+
+                    color: _delegate.acceptableInput? G.Style.colors.okColor : G.Style.colors.dangerColor
+                }
+
+                validator: RegularExpressionValidator {
+                    id: _validator
+                }
+
+                onAcceptableInputChanged: {
+                    let valid = true;
+                    for (let i_f in _external_data_dialog.paths) {
+                        valid = valid & _external_list_view.itemAtIndex(i_f).acceptableInput
+                    }
+                    _external_data_dialog.footer.standardButton(Dialog.Ok).type =  valid ? G.Style.ButtonType.Base : G.Style.ButtonType.Neutral
+                    _external_data_dialog.footer.standardButton(Dialog.Ok).flat = !valid
+                    _external_data_dialog.footer.standardButton(Dialog.Ok).enabled = valid
+                }
+
+                Component.onCompleted: {
+                    let reg_exp  = "("
+                    let paths = modelData.split("/")
+                    for (var i=0; i<paths.length; i++) {
+                        if (i>0) {
+                            reg_exp += "|"
+                        }
+                        reg_exp += paths.slice(0, i+1).join("\/")
+                    }
+                    reg_exp  += ")\/?"
+                    _validator.regularExpression = new RegExp(reg_exp)
                 }
             }
         }
