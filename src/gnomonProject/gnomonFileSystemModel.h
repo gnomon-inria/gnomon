@@ -22,6 +22,9 @@ public:
 signals:
     void rootDirChanged(void);
 
+public:
+    Q_INVOKABLE QString filePath(const QModelIndex &index) const;
+
 private:
     QString path;
 };

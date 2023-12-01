@@ -20,3 +20,8 @@ void gnomonFileSystemModel::setRootDir(const QString& dir)
     this->setRootPath(this->path);
     emit rootDirChanged();
 }
+
+QString gnomonFileSystemModel::filePath(const QModelIndex &index) const
+{
+    return QFileSystemModel::filePath(index);
+}

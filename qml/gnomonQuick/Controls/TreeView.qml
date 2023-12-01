@@ -40,8 +40,11 @@ ListView {
         }
 
         delegate: TreeViewDelegate {
+            id: _delegate
+
             indentation: G.Style.smallPadding
             hoverEnabled: true;
+            highlighted: _item_selection_model.selectedIndexes.includes(_tree_view.index(index, 0))
 
             implicitWidth: _list_view.width
             implicitHeight: model.filePath.includes(_model.rootDir) ? G.Style.smallButtonHeight : 0.01
@@ -55,6 +58,7 @@ ListView {
                 anchors.left:  _indicator.right;
                 text: model.display
                 font: hasChildren? G.Style.fonts.subHeader : G.Style.fonts.value
+
                 Drag.active: _drag_handler.active
                 Drag.dragType: Drag.Automatic
                 Drag.mimeData: {"text/uri-list" : model.filePath}
@@ -62,14 +66,30 @@ ListView {
 
             DragHandler {
                 id: _drag_handler
+
+                xAxis.minimum: _delegate.x
+                xAxis.maximum: _delegate.x
+                yAxis.minimum: _delegate.y
+                yAxis.maximum: _delegate.y
+
                 onActiveChanged : {
                     if(active) {
+                        let paths = "";
+                        for (let i=0; i<_item_selection_model.selectedIndexes.length; i++) {
+                            let _model_index = _item_selection_model.selectedIndexes[i];
+                            if (i>0) paths += ","
+                            paths += _model.filePath(_model_index)
+                        }
+                        // TODO: apparently not enough
+                        _label.Drag.mimeData["text/uri-list"] = paths;
                         parent.grabToImage(function(result) {
                             _label.Drag.imageSource = result.url;
+                            console.log(_label.Drag.mimeData["text/uri-list"])
                         })
                     }
                 }
             }
+
             G.ToolTip {
                 text: model.fileName;
                 visible: _mouse_area.containsMouse
@@ -105,10 +125,29 @@ ListView {
                 onTapped : _list_view.fileRightClicked(model.filePath)
             }
 
-            onDoubleClicked : {
-                _list_view.fileDoubleClicked(model.filePath)
+            TapHandler {
+                acceptedButtons: Qt.LeftButton
+                acceptedModifiers: Qt.ControlModifier
+                onTapped: _item_selection_model.select(_tree_view.index(index, 0), ItemSelectionModel.Select)
+            }
+
+            TapHandler {
+                acceptedButtons: Qt.LeftButton
+                acceptedModifiers: Qt.NoModifier
+                onTapped: _item_selection_model.select(_tree_view.index(index, 0), ItemSelectionModel.ClearAndSelect)
+                onDoubleTapped: _list_view.fileDoubleClicked(model.filePath)
             }
         }
+
+        ItemSelectionModel {
+             id: _item_selection_model
+
+             model: _model
+
+             onSelectionChanged : {
+                 console.log("selected items:", _item_selection_model.selectedIndexes)
+             }
+         }
 
         onHeightChanged : {
             if (_index >= 0) {
