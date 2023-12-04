@@ -28,10 +28,14 @@ public:
 
 public:
     std::shared_ptr<T> at(double t);
-    std::shared_ptr<T> current(void) const;
+    std::shared_ptr<T> current(void);
     double time(void) const override;
     QList<double> times(void) const override;
     QMap<QString,QString> metadataAtT(double t) const override;
+
+    bool containsId(uint id) const override;
+    bool containsTime(double t, double precision = 1e-9) const override;
+    bool containsForm(std::shared_ptr<gnomonAbstractForm> form) const override;
 
     void insert(double t, std::shared_ptr<T> form);
 //    void insert(const T& form) override;
@@ -46,15 +50,44 @@ public:
 
     QJsonObject serialize(void) override;
 
-    void deserialize(QJsonObject &serialization) override;
+    void deserialize(const QJsonObject &serialization) override;
+
+public:
+    void load() override;
+
+    void unload() override;
+
+    bool loaded() override;
 
 protected:
     T *at_impl(double t) override;
-    T *current_impl(void) const override;
+    T *current_impl(void) override;
+
+    uint idAtT(double t) const;
+    double closestT(double t) const;
+
+private:
+    struct formStorageInfo {
+        double time = 0;
+        uint id = 0;
+        QString fileName = "";
+        bool loaded = true;
+    };
+
+    void save(uint id);
+    void load(uint id);
+    void unload(uint id);
+    void updateManifest();
+    void readManifest();
+
+    QMap<uint, formStorageInfo> m_storage_info;
+    uint form_id_counter = 0; // counter for incrementing unique form indices
 
 protected:
-    QMap<double, std::shared_ptr<T>> m_forms;
+    QMap<uint, std::shared_ptr<T>> m_forms;
+    QMap<uint, double> m_times;
     double m_current_time = 0.;
+    uint m_current_time_id = 0;
     QString m_uuid;
 };
 
