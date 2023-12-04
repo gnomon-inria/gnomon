@@ -24,6 +24,7 @@ signals:
 
 public:
     Q_INVOKABLE QString filePath(const QModelIndex &index) const;
+    Q_INVOKABLE bool isDir(const QModelIndex &index) const;
 
 private:
     QString path;

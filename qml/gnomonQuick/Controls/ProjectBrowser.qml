@@ -69,6 +69,7 @@ Control
             id: _project_tree_view
 
             data_paths : [_self.rootDir]
+            is_project_dir : true
 
             anchors.top : _project_label.bottom;
             width: parent.width

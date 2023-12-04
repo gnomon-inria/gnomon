@@ -25,3 +25,8 @@ QString gnomonFileSystemModel::filePath(const QModelIndex &index) const
 {
     return QFileSystemModel::filePath(index);
 }
+
+bool gnomonFileSystemModel::isDir(const QModelIndex &index) const
+{
+    return QFileSystemModel::isDir(index);
+}

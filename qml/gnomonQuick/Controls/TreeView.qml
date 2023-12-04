@@ -12,6 +12,7 @@ ListView {
 
     property var data_paths : []
     property var _delegate_heights: []
+    property bool is_project_dir : false
 
     signal fileDoubleClicked(string fileUrl)
     signal fileRightClicked(string fileUrl)
@@ -44,7 +45,8 @@ ListView {
 
             indentation: G.Style.smallPadding
             hoverEnabled: true;
-            highlighted: _item_selection_model.selectedIndexes.includes(_tree_view.index(index, 0))
+            highlighted: (_item_selection_model.selectedIndexes.includes(_tree_view.index(index, 0)) &&
+                          !_model.isDir(_tree_view.index(index, 0)))
 
             implicitWidth: _list_view.width
             implicitHeight: model.filePath.includes(_model.rootDir) ? G.Style.smallButtonHeight : 0.01
@@ -157,7 +159,8 @@ ListView {
         Component.onCompleted : {
             _tree_view.rootRow = _model.rootDir.split('/').length - 1
             _tree_view.expandRecursively()
-            _tree_view.collapseRecursively(_tree_view.rootRow)
+            if(!_list_view.is_project_dir)
+                _tree_view.collapseRecursively(_tree_view.rootRow)
             _tree_view._index = _delegate_heights.length
 
             _delegate_heights.push(_tree_view.height)
