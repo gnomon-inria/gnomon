@@ -61,7 +61,6 @@ ListView {
 
                 Drag.active: _drag_handler.active
                 Drag.dragType: Drag.Automatic
-                Drag.mimeData: {"text/uri-list" : model.filePath}
             }
 
             DragHandler {
@@ -80,8 +79,7 @@ ListView {
                             if (i>0) paths += ","
                             paths += _model.filePath(_model_index)
                         }
-                        // TODO: apparently not enough
-                        _label.Drag.mimeData["text/uri-list"] = paths;
+                        _label.Drag.mimeData = {"text/uri-list" : paths};
                         parent.grabToImage(function(result) {
                             _label.Drag.imageSource = result.url;
                             console.log(_label.Drag.mimeData["text/uri-list"])
