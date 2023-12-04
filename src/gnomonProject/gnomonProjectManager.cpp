@@ -63,12 +63,22 @@ gnomonProject *gnomonProjectManager::createProject(const QString &path, const QS
     return d->project;
 }
 
+bool gnomonProjectManager::ExistingProject(const QString &path) const {
+    return gnomonProject::isDirAProject(QDir(QUrl(path).toLocalFile()));
+}
+
 void gnomonProjectManager::closeProject() {
     if(d->project) {
         d->project->close();
         delete d->project;
         d->project = nullptr;
     }
+}
+
+bool gnomonProjectManager::cleanProject(const QString &path) const {
+    auto info_dir_path = QUrl(path).toLocalFile() + "/.gnomon";
+    QDir info_dir(info_dir_path);
+    return info_dir.removeRecursively();
 }
 
 gnomonProjectManager *gnomonProjectManager::s_instance = nullptr;
