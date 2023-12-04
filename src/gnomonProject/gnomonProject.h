@@ -4,6 +4,13 @@
 
 #include <QtCore>
 
+
+#define PROJECT_INFO_FOLDER ".gnomon"
+#define PROJECT_INFO_FILE ".gnomon/project.json"
+#define PROJECT_BACKUP_FOLDER ".gnomon/backup"
+#define PROJECT_BACKUP_MANIFEST ".gnomon/backup/manifest.json"
+#define PROJECT_MANIFEST_FILE ".gnomon/manifest.json"
+
 class gnomonAbstractSessionManager;
 struct gnomonProjectInfo {
     QString name;
@@ -55,7 +62,8 @@ public:
     QStringList editorFileInfo(const QStringList& extensions);
     QList< QPair<QString, QString> > browserFormInfo(void);
 
-
+    static inline QString sanitizeUrlToPath(const QString &url);
+    static void recursiveRemoveDir(const QString &path);
 
 signals:
     void currentDirChanged(void);
@@ -64,7 +72,6 @@ private:
     bool isDirAProject(const QDir &dir);
     void populateNewProject();
     void readProjectInfo();
-    static inline QString sanitizeUrlToPath(const QString &url);
 
 private slots:
     void saveProjectInfo();
