@@ -7,10 +7,8 @@
 
 #include "gnomonSessionManager.h"
 #include "gnomonProject"
+#include "gnomonForm/gnomonDynamicFormFactory.h"
 
-#define PROJECT_SESSION_DIRECTORY ".gnomon/session"
-#define PROJECT_SESSION_FILE ".gnomon/session/session.ini"
-#define PROJECT_PIPELINE_FILE ".gnomon/session/pipeline.json"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonSessionManagerPrivate
@@ -421,6 +419,7 @@ void gnomonSessionManager::sync() {
     qDebug() << "===========" << "saving session";
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
     QDir dir(GNOMON_PROJECT->projectDir());
+    settings.clear();
 
     // building json object for properties
     QJsonObject session_json;
@@ -449,6 +448,13 @@ void gnomonSessionManager::sync() {
     
 
     //TODO: forms
+    settings.beginGroup("forms");
+    settings.setValue("form_ids", s_forms.keys());
+    for(auto it = s_forms.keyValueBegin(); it!=s_forms.keyValueEnd(); it++) {
+        settings.setValue(it->first, it->second->serialize());
+    }
+    settings.endGroup();
+
     //TODO: world
 
 
@@ -460,6 +466,17 @@ bool gnomonSessionManager::load() {
 
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
     QJsonObject workspaces_info = settings.value("workspaces").toJsonObject();
+
+    // forms
+    settings.beginGroup("forms");
+    QStringList form_ids = settings.value("form_ids").toStringList();
+    for(const auto &uuid: form_ids) {
+        auto form = createDynamicForm(settings.value(uuid).toJsonObject());
+        s_forms.insert(uuid, form);
+    }
+    settings.endGroup();
+
+    //workspaces
 
     if(!workspaces_info.isEmpty()) {
 
@@ -495,6 +512,9 @@ bool gnomonSessionManager::load() {
 }
 
 bool gnomonSessionManager::newSession(const QString &source) {
+    QDir project_dir(GNOMON_PROJECT->projectDir());
+    gnomonProject::recursiveRemoveDir(project_dir.filePath(PROJECT_SESSION_DIRECTORY));
+    project_dir.mkpath(PROJECT_SESSION_DIRECTORY);
     auto res = QMetaObject::invokeMethod(d->window, "switch_from_launcher",
                                      Q_ARG(QString, source));
     if(res)

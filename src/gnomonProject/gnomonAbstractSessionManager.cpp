@@ -1,4 +1,5 @@
 #include "gnomonAbstractSessionManager.h"
+#include "gnomonProject"
 
 gnomonAbstractSessionManager *gnomonAbstractSessionManager::s_instance = nullptr;
 
@@ -29,8 +30,18 @@ void gnomonAbstractSessionManager::setProgress(double progress)
 
 bool gnomonAbstractSessionManager::addForm(std::shared_ptr<gnomonAbstractDynamicForm> form) 
 {
-    s_forms[form->uuid()] = form;
-    return true;
+    if(!s_forms.contains(form->uuid())) {
+        auto project_dir = QDir(GNOMON_PROJECT->projectDir());
+        QString path = QString(PROJECT_FORMS_DIRECTORY) + "/" + form->uuid();
+        project_dir.mkpath(path);
+        form->setFormStorageDir(project_dir.filePath(path));
+        s_forms[form->uuid()] = form;
+        sync();
+        return true;
+    } else {
+        return false;
+    }
+
 }
 
 std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractSessionManager::getForm(const QString& uuid)
