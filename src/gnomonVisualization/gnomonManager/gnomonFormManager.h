@@ -70,6 +70,10 @@ public:
 public:
     Q_INVOKABLE QImage thumbnail(int index);
 
+public:
+    QJsonObject dumpState(void);
+    void loadState(const QJsonObject& state);
+
 protected:
      gnomonFormManager(QObject *parent = nullptr);
     ~gnomonFormManager(void);

@@ -626,6 +626,29 @@ QList<int> gnomonFormManager::systemStat(void) const
     return stat;
 }
 
+QJsonObject gnomonFormManager::dumpState(void)
+{
+    QJsonObject state;
+    QJsonObject forms;
+    for( auto [key, value]: d->forms.asKeyValueRange()) {
+        forms.insert(QString::number(key), value);
+    }
+
+    state["forms"] = forms;
+
+    return state;
+}
+
+void gnomonFormManager::loadState(const QJsonObject& state)
+{
+    d->forms.clear();
+    auto forms = state["forms"].toObject().toVariantHash();
+
+    for( auto [key, value]: forms.asKeyValueRange()) {
+        d->forms.insert(key.toInt(), value.toString());
+    }
+}
+
 #include "gnomonFormManager.moc"
 //
 // gnomonFormManager.cpp ends here
