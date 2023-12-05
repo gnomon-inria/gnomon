@@ -443,6 +443,8 @@ void gnomonSessionManager::sync() {
 
     settings.setValue("workspaces", session_json);
 
+    settings.setValue("form_manager_state", gnomonFormManager::instance()->dumpState());
+
     // pipeline
     auto url = QUrl::fromLocalFile(dir.absoluteFilePath(PROJECT_PIPELINE_FILE));
     gnomonPipelineManager::instance()->pipeline()->exportToJson(url.toString());
@@ -460,6 +462,9 @@ bool gnomonSessionManager::load() {
 
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
     QJsonObject workspaces_info = settings.value("workspaces").toJsonObject();
+
+    QJsonObject form_manager_state = settings.value("form_manager_state").toJsonObject();
+    gnomonFormManager::instance()->loadState(form_manager_state);
 
     if(!workspaces_info.isEmpty()) {
 
