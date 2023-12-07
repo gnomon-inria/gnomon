@@ -20,6 +20,7 @@
 #include <mach/mach_types.h>
 #include <mach/mach_init.h>
 #include <mach/mach_host.h>
+#include <mach/task.h>
 #endif
 
 #include <memory>
@@ -583,7 +584,7 @@ QList<int> gnomonFormManager::systemStat(void) const
     int mib[2]; 
     int64_t total_memory;
     mib[0] = CTL_HW;  mib[1] = HW_MEMSIZE;
-    length = sizeof(int64_t);
+    size_t length = sizeof(int64_t);
     sysctl(mib, 2, &total_memory, &length, NULL, 0);
     stat[0] = total_memory / (1024*1024);
 
@@ -618,9 +619,7 @@ QList<int> gnomonFormManager::systemStat(void) const
     } else {
         stat[2] = t_info.resident_size / (1024*1024);
     }
-    
 #endif
-
     return stat;
 }
 
