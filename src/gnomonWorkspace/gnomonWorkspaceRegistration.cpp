@@ -229,7 +229,7 @@ void gnomonWorkspaceRegistration::viewOutputs()
     auto * command = dynamic_cast<gnomonImageRegistrationCommand *>(d->command);
     if(command->outputs()["outputTransformation"]) {
         std::shared_ptr<gnomonAbstractDynamicForm> data_dict = command->outputs()["outputTransformation"];
-        GNOMON_SESSION->registerForm(data_dict);
+        GNOMON_SESSION->trackForm(data_dict);
         int form_count = gnomonFormManager::instance()->formCount(data_dict->formName());
         data_dict->metadata()->set("name", data_dict->formName().remove("gnomon") + QString::number(form_count+1));
         data_dict->metadata()->set("source", d->algorithm);

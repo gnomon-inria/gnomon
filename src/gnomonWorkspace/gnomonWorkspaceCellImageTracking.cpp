@@ -186,7 +186,7 @@ void gnomonWorkspaceCellImageTracking::viewOutputs()
 
     if(command->cellImage()) {
         auto cellImage = command->cellImage();
-        GNOMON_SESSION->registerForm(cellImage);
+        GNOMON_SESSION->trackForm(cellImage);
         int count = gnomonFormManager::instance()->formCount(cellImage->formName());
         cellImage->metadata()->set("name", cellImage->formName() + QString::number(count+1));
         cellImage->metadata()->set("source", d->algorithm);

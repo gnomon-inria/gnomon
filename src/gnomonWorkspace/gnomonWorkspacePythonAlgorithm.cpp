@@ -384,7 +384,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputBinaryImage(False).items()}",
                     &stat);
             output_form_added = true;
-            GNOMON_SESSION->registerForm(binaryImage);
+            GNOMON_SESSION->trackForm(binaryImage);
             int form_count = gnomonFormManager::instance()->formCount(binaryImage->formName());
             binaryImage->metadata()->set("name",
                                          binaryImage->formName().remove("gnomon") + QString::number(form_count + 1));
@@ -403,7 +403,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellComplex(False).items()}",
                     &stat);
             output_form_added = true;
-            GNOMON_SESSION->registerForm(cellComplex);
+            GNOMON_SESSION->trackForm(cellComplex);
             int form_count = gnomonFormManager::instance()->formCount(cellComplex->formName());
             cellComplex->metadata()->set("name",
                                          cellComplex->formName().remove("gnomon") + QString::number(form_count + 1));
@@ -422,7 +422,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellImage(False).items()}",
                     &stat);
             output_form_added = true;
-            GNOMON_SESSION->registerForm(cellImage);
+            GNOMON_SESSION->trackForm(cellImage);
             int form_count = gnomonFormManager::instance()->formCount(cellImage->formName());
             cellImage->metadata()->set("name",
                                        cellImage->formName().remove("gnomon") + QString::number(form_count + 1));
@@ -441,7 +441,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputImage(False).items()}",
                     &stat);
             output_form_added = true;
-            GNOMON_SESSION->registerForm(image);
+            GNOMON_SESSION->trackForm(image);
             int form_count = gnomonFormManager::instance()->formCount(image->formName());
             image->metadata()->set("name", image->formName().remove("gnomon") + QString::number(form_count + 1));
             image->metadata()->set("source", d->algorithm_key);
@@ -459,7 +459,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputLString(False).items()}",
                     &stat);
             output_form_added = true;
-            GNOMON_SESSION->registerForm(lString);
+            GNOMON_SESSION->trackForm(lString);
             int form_count = gnomonFormManager::instance()->formCount(lString->formName());
             lString->metadata()->set("name", lString->formName().remove("gnomon") + QString::number(form_count + 1));
             lString->metadata()->set("source", d->algorithm_key);
@@ -477,7 +477,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputMesh(False).items()}",
                     &stat);
             output_form_added = true;
-            GNOMON_SESSION->registerForm(mesh);
+            GNOMON_SESSION->trackForm(mesh);
             int form_count = gnomonFormManager::instance()->formCount(mesh->formName());
             mesh->metadata()->set("name", mesh->formName().remove("gnomon") + QString::number(form_count + 1));
             mesh->metadata()->set("source", d->algorithm_key);
@@ -495,7 +495,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputPointCloud(False).items()}",
                     &stat);
             output_form_added = true;
-            GNOMON_SESSION->registerForm(pointCloud);
+            GNOMON_SESSION->trackForm(pointCloud);
             int form_count = gnomonFormManager::instance()->formCount(pointCloud->formName());
             pointCloud->metadata()->set("name",
                                         pointCloud->formName().remove("gnomon") + QString::number(form_count + 1));

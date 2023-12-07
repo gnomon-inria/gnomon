@@ -224,7 +224,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting image series is void.";
             return false;
         } else {
-            GNOMON_SESSION->registerForm(image_series);
+            GNOMON_SESSION->trackForm(image_series);
             int form_count = gnomonFormManager::instance()->formCount(image_series->formName());
             image_series->metadata()->set("name", image_series->formName().remove("gnomon") + QString::number(form_count+1));
             image_series->metadata()->set("source", source);
@@ -240,7 +240,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting cellImage series is void.";
             return false;
         } else {
-            GNOMON_SESSION->registerForm(cellImage_series);
+            GNOMON_SESSION->trackForm(cellImage_series);
             int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
             cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             cellImage_series->metadata()->set("source", source);
@@ -256,7 +256,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
             return false;
         } else {
-            GNOMON_SESSION->registerForm(cellComplex_series);
+            GNOMON_SESSION->trackForm(cellComplex_series);
             int form_count = gnomonFormManager::instance()->formCount(cellComplex_series->formName());
             cellComplex_series->metadata()->set("name", cellComplex_series->formName().remove("gnomon") + QString::number(form_count+1));
             cellComplex_series->metadata()->set("source", source);
@@ -272,7 +272,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
             return false;
         } else {
-            GNOMON_SESSION->registerForm(binaryImage_series);
+            GNOMON_SESSION->trackForm(binaryImage_series);
             int form_count = gnomonFormManager::instance()->formCount(binaryImage_series->formName());
             binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             binaryImage_series->metadata()->set("source", source);
@@ -288,7 +288,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
             return false;
         } else {
-            GNOMON_SESSION->registerForm(dataFrame_series);
+            GNOMON_SESSION->trackForm(dataFrame_series);
             int form_count = gnomonFormManager::instance()->formCount(dataFrame_series->formName());
             dataFrame_series->metadata()->set("name", dataFrame_series->formName().remove("gnomon") + QString::number(form_count+1));
             dataFrame_series->metadata()->set("source", source);
@@ -304,7 +304,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting lString series is void.";
             return false;
         } else {
-            GNOMON_SESSION->registerForm(lString_series);
+            GNOMON_SESSION->trackForm(lString_series);
             int form_count = gnomonFormManager::instance()->formCount(lString_series->formName());
             lString_series->metadata()->set("name", lString_series->formName().remove("gnomon") + QString::number(form_count+1));
             lString_series->metadata()->set("source", source);
@@ -320,7 +320,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting mesh series is void.";
             return false;
         } else {
-            GNOMON_SESSION->registerForm(mesh_series);
+            GNOMON_SESSION->trackForm(mesh_series);
             int form_count = gnomonFormManager::instance()->formCount(mesh_series->formName());
             mesh_series->metadata()->set("name", mesh_series->formName().remove("gnomon") + QString::number(form_count+1));
             mesh_series->metadata()->set("source", source);
@@ -336,7 +336,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
             return false;
         } else {
-            GNOMON_SESSION->registerForm(pointCloud_series);
+            GNOMON_SESSION->trackForm(pointCloud_series);
             int form_count = gnomonFormManager::instance()->formCount(pointCloud_series->formName());
             pointCloud_series->metadata()->set("name", pointCloud_series->formName().remove("gnomon") + QString::number(form_count+1));
             pointCloud_series->metadata()->set("source", source);
@@ -352,7 +352,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting tree series is void.";
             return false;
         } else {
-            GNOMON_SESSION->registerForm(tree_series);
+            GNOMON_SESSION->trackForm(tree_series);
             int form_count = gnomonFormManager::instance()->formCount(tree_series->formName());
             tree_series->metadata()->set("name", tree_series->formName().remove("gnomon") + QString::number(form_count+1));
             tree_series->metadata()->set("source", source);

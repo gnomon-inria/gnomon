@@ -30,9 +30,9 @@ void gnomonAbstractSessionManager::setProgress(double progress)
 
 bool gnomonAbstractSessionManager::addForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form)
 {
-    registerForm(form);
-    if(!s_owned_forms.contains(form->uuid())) {
-        s_owned_forms[form->uuid()] = form;
+    this->trackForm(form);
+    if(!this->m_owned_forms.contains(form->uuid())) {
+        this->m_owned_forms[form->uuid()] = form;
         return true;
     } else {
         return false;
@@ -42,27 +42,27 @@ bool gnomonAbstractSessionManager::addForm(const std::shared_ptr<gnomonAbstractD
 
 std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractSessionManager::getForm(const QString& uuid)
 {
-    if (s_owned_forms.contains(uuid)) {
-        return s_owned_forms[uuid];
-    } else if(s_followed_forms.contains(uuid)) {
-        return s_followed_forms[uuid].lock();
+    if (this->m_owned_forms.contains(uuid)) {
+        return this->m_owned_forms[uuid];
+    } else if(this->m_tracked_forms.contains(uuid)) {
+        return this->m_tracked_forms[uuid].lock();
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"No existing Form with UUID"<<uuid<<"!";
         return nullptr;
     }
 }
 
-bool gnomonAbstractSessionManager::registerForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form) {
+bool gnomonAbstractSessionManager::trackForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form) {
     // first, cleaning up expired pointers
-    cleanExpiredForms();
+    this->cleanExpiredForms();
 
-    if(!s_followed_forms.contains(form->uuid())) {
+    if(!this->m_tracked_forms.contains(form->uuid())) {
         auto project_dir = QDir(GNOMON_PROJECT->projectDir());
         QString path = QString(PROJECT_FORMS_DIRECTORY) + "/" + form->uuid();
         project_dir.mkpath(path);
         form->setFormStorageDir(project_dir.filePath(path));
-        s_followed_forms[form->uuid()] = form;
-        sync();
+        this->m_tracked_forms[form->uuid()] = form;
+        this->sync();
         return true;
     } else {
         return false;
@@ -70,19 +70,19 @@ bool gnomonAbstractSessionManager::registerForm(const std::shared_ptr<gnomonAbst
 }
 
 void gnomonAbstractSessionManager::cleanExpiredForms() {
-    auto keys = s_followed_forms.keys();
+    auto keys = this->m_tracked_forms.keys();
     for(const auto &uuid: keys) {
-        qDebug() << "$$ form: " << uuid << " >> n ref: " << s_followed_forms[uuid].use_count();
+        qDebug() << "$$ form: " << uuid << " >> n ref: " << m_tracked_forms[uuid].use_count();
         //TODO: some references left because commands are not cleaned (especially outputs)
-        if(s_followed_forms[uuid].expired()) {
-            s_followed_forms.remove(uuid);
+        if(this->m_tracked_forms[uuid].expired()) {
+            this->m_tracked_forms.remove(uuid);
         }
     }
     QDir dir(GNOMON_PROJECT->projectDir());
     QDir form_dir(dir.filePath(PROJECT_FORMS_DIRECTORY));
     for(const auto &file_info : form_dir.entryInfoList()) {
         if(file_info.isDir() && !QUuid::fromString(file_info.fileName()).isNull()
-           && !s_followed_forms.contains(file_info.fileName())) {
+           && !this->m_tracked_forms.contains(file_info.fileName())) {
             gnomonProject::recursiveRemoveDir(file_info.filePath());
         }
     }

@@ -450,9 +450,9 @@ void gnomonSessionManager::sync() {
     //TODO: forms
     cleanExpiredForms();
     settings.beginGroup("forms");
-    settings.setValue("owned_form_ids", s_owned_forms.keys());
+    settings.setValue("owned_form_ids", m_owned_forms.keys());
     QStringList form_ids;
-    for(auto it = s_followed_forms.keyValueBegin(); it != s_followed_forms.keyValueEnd(); it++) {
+    for(auto it = m_tracked_forms.keyValueBegin(); it != m_tracked_forms.keyValueEnd(); it++) {
         if(!it->second.expired()) {
             auto form = it->second.lock();
             settings.setValue(it->first, form->serialize());
@@ -484,10 +484,10 @@ bool gnomonSessionManager::load() {
     QList<std::shared_ptr<gnomonAbstractDynamicForm>> form_holder;
     for(const auto &uuid: form_ids) {
         auto form = createDynamicForm(settings.value(uuid).toJsonObject());
-        s_followed_forms.insert(uuid, form);
+        m_tracked_forms.insert(uuid, form);
         form_holder.append(form);
         if(owned_form_ids.contains(uuid)) {
-            s_owned_forms.insert(uuid, form);
+            m_owned_forms.insert(uuid, form);
         }
     }
     settings.endGroup();
@@ -530,7 +530,7 @@ bool gnomonSessionManager::load() {
 bool gnomonSessionManager::newSession(const QString &source) {
     QDir project_dir(GNOMON_PROJECT->projectDir());
     gnomonProject::recursiveRemoveDir(project_dir.filePath(PROJECT_SESSION_DIRECTORY));
-    s_owned_forms.clear();
+    m_owned_forms.clear();
     project_dir.mkpath(PROJECT_SESSION_DIRECTORY);
     auto res = QMetaObject::invokeMethod(d->window, "switch_from_launcher",
                                      Q_ARG(QString, source));
