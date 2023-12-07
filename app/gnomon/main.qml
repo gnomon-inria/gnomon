@@ -384,6 +384,23 @@ G.Application {
         type: G.Style.ButtonType.Warning
     }
 
+        Timer {
+            interval: 10000  //in msec
+            running: true
+            repeat: true
+            onTriggered: {
+                let system_stats = GV.World.systemStat() //memory total, used, this
+                
+                if( (system_stats[0] - system_stats[1]) < 1000*1000   ) // if less than 1Gb of mem left
+                {
+                    console.log("implement cache strategy, mem left: ", (system_stats[0] - system_stats[1]));
+                    
+
+                }
+            }
+    }
+
+
 
 // /////////////////////////////////////////////////////////////////////////////
 // Focused views API
