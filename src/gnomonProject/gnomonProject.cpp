@@ -303,16 +303,7 @@ QList< QPair<QString, QString> > gnomonProject::browserFormInfo(void)
 }
 
 void gnomonProject::recursiveRemoveDir(const QString &path) {
-    QDir dir(path);
-    for(auto &file_info: dir.entryInfoList()) {
-        if(file_info.isDir() && (file_info.fileName() != "." && file_info.fileName() != "..")) {
-            qDebug() << "$$ DIR == " << file_info.filePath();
-            recursiveRemoveDir(file_info.filePath());
-        } else if(file_info.isFile()) {
-            qDebug() << "$$ REMOVE == " << file_info.filePath();
-            //QFile::remove(file_info.filePath());
-        }
-    }
+    QDir(path).removeRecursively();
 }
 
 //
