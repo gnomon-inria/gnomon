@@ -448,12 +448,20 @@ void gnomonSessionManager::sync() {
     
 
     //TODO: forms
+    cleanExpiredForms();
     settings.beginGroup("forms");
-    settings.setValue("form_ids", s_forms.keys());
-    for(auto it = s_forms.keyValueBegin(); it!=s_forms.keyValueEnd(); it++) {
-        settings.setValue(it->first, it->second->serialize());
+    settings.setValue("owned_form_ids", s_owned_forms.keys());
+    QStringList form_ids;
+    for(auto it = s_followed_forms.keyValueBegin(); it != s_followed_forms.keyValueEnd(); it++) {
+        if(!it->second.expired()) {
+            auto form = it->second.lock();
+            settings.setValue(it->first, form->serialize());
+            form_ids.append(it->first);
+        }
     }
+    settings.setValue("form_ids", form_ids);
     settings.endGroup();
+
 
     //TODO: world
 
@@ -470,9 +478,17 @@ bool gnomonSessionManager::load() {
     // forms
     settings.beginGroup("forms");
     QStringList form_ids = settings.value("form_ids").toStringList();
+    QStringList owned_form_ids = settings.value("owned_form_ids").toStringList();
+
+    // hold a reference to every form until load is finished, every unused form should be cleaned up
+    QList<std::shared_ptr<gnomonAbstractDynamicForm>> form_holder;
     for(const auto &uuid: form_ids) {
         auto form = createDynamicForm(settings.value(uuid).toJsonObject());
-        s_forms.insert(uuid, form);
+        s_followed_forms.insert(uuid, form);
+        form_holder.append(form);
+        if(owned_form_ids.contains(uuid)) {
+            s_owned_forms.insert(uuid, form);
+        }
     }
     settings.endGroup();
 
@@ -514,6 +530,7 @@ bool gnomonSessionManager::load() {
 bool gnomonSessionManager::newSession(const QString &source) {
     QDir project_dir(GNOMON_PROJECT->projectDir());
     gnomonProject::recursiveRemoveDir(project_dir.filePath(PROJECT_SESSION_DIRECTORY));
+    s_owned_forms.clear();
     project_dir.mkpath(PROJECT_SESSION_DIRECTORY);
     auto res = QMetaObject::invokeMethod(d->window, "switch_from_launcher",
                                      Q_ARG(QString, source));

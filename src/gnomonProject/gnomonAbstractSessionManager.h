@@ -53,7 +53,8 @@ public:
     static gnomonAbstractSessionManager *instance();
 
 public:
-    bool addForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    bool addForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form);
+    bool registerForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form);
     std::shared_ptr<gnomonAbstractDynamicForm> getForm(const QString& uuid);
 
 signals:
@@ -62,10 +63,13 @@ signals:
     void failed(QString);
 
 protected:
+    void cleanExpiredForms();
+
     double m_progress = 0.; // from 0 to 1
     static void registerInstance(gnomonAbstractSessionManager *o);
 
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> s_forms;
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> s_owned_forms;
+    QMap<QString, std::weak_ptr<gnomonAbstractDynamicForm>> s_followed_forms;
 
 private:
     static gnomonAbstractSessionManager *s_instance;
