@@ -63,7 +63,7 @@ gnomonProject *gnomonProjectManager::createProject(const QString &path, const QS
     return d->project;
 }
 
-bool gnomonProjectManager::ExistingProject(const QString &path) const {
+bool gnomonProjectManager::isExistingProject(const QString &path) const {
     return gnomonProject::isDirAProject(QDir(QUrl(path).toLocalFile()));
 }
 

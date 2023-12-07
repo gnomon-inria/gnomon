@@ -27,7 +27,7 @@ public:
                                              const QString &source);
     Q_INVOKABLE void closeProject();
     Q_INVOKABLE QVariantMap readProjectInfo(const QString &path);
-    Q_INVOKABLE bool ExistingProject(const QString &path) const;
+    Q_INVOKABLE bool isExistingProject(const QString &path) const;
     Q_INVOKABLE bool cleanProject(const QString &path) const;
 
     gnomonProject *project(void);

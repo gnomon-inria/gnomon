@@ -33,12 +33,13 @@ G.Workspace {
         modality: Qt.NonModal;
 
         onAccepted: {
-            if(GP.ProjectManager.ExistingProject(_open_project_folder_dialog.folder)) {
+            if(GP.ProjectManager.isExistingProject(_open_project_folder_dialog.folder)) {
                 console.log('Loading an existing project');
                 load_project(_open_project_folder_dialog.folder);
                 add_to_history(_open_project_folder_dialog.folder)
             } else {
-                not_project_toast.open()
+                _folder_path.text = _open_project_folder_dialog.folder
+                not_project_dialog.open()
             }
         }
     }
@@ -271,22 +272,9 @@ G.Workspace {
                             text: "New"
                             iconName: "plus"
 
-                            Timer {
-                                id: _timer
-                                interval: 200
-                                onTriggered: {
-                                    new_project_dialog.open()
-                                }
-                            }
-
                             onClicked: {
-                                if(_timer.running)
-                                {
-                                    _timer.stop()
-                                    new_project_dialog.accept()
-                                } else {
-                                    _timer.restart()
-                                }
+                                _folder_path.text = ""
+                                new_project_dialog.open()
                             }
                         }
                     }
@@ -478,7 +466,7 @@ G.Workspace {
                                     width: G.Style.buttonWidth
                                     text: "Make default"
                                     checked: false
-                                    tooltip: "Check to make the chosen workspace the default option next time you create a new project."
+                                    tooltip: "Check to make the chosen workspace the default option when you create a new session for the project."
                                 }
                             }
 
@@ -490,8 +478,7 @@ G.Workspace {
                         }
 
                         onAccepted: {
-                            let an_existing_project = GP.ProjectManager.ExistingProject(_folder_path.text);
-                            if(an_existing_project) {
+                            if(GP.ProjectManager.isExistingProject(_folder_path.text)) {
                                 existing_project_dialog.open()
                             } else {
                                 create_project()
@@ -719,13 +706,31 @@ G.Workspace {
         }
     }
 
-    G.Toast {
-        id: not_project_toast
-        parent: Overlay.overlay
-        header: "Not a gnomon project "
-        message: "Please create a new project using selected file!"
+    G.Dialog {
+        id: not_project_dialog
 
-        type: G.Style.ButtonType.Warning
+        simple_dialog : true
+
+        parent: Overlay.overlay
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.smallDialogWidth
+        height: G.Style.largeDelegateHeight
+        header.height: 0
+
+        modal: true
+
+
+        Label {
+            text: "Not an existing project, create a new one ?"
+            font: G.Style.fonts.cardText
+        }
+
+        standardButtons:  Dialog.Yes | Dialog.No
+
+        onAccepted : {
+            new_project_dialog.open()
+        }
     }
 
     G.Dialog {
