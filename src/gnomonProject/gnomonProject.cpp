@@ -1,13 +1,6 @@
 #include "gnomonProject.h"
 #include "gnomonProject"
 
-
-#define PROJECT_INFO_FOLDER ".gnomon"
-#define PROJECT_INFO_FILE ".gnomon/project.json"
-#define PROJECT_BACKUP_FOLDER ".gnomon/backup"
-#define PROJECT_BACKUP_MANIFEST ".gnomon/backup/manifest.json"
-#define PROJECT_MANIFEST_FILE ".gnomon/manifest.json"
-
 // /////////////////////////////////////////////////////////////////
 // gnomonProjectPrivate
 // /////////////////////////////////////////////////////////////////
@@ -357,6 +350,10 @@ QList< QPair<QString, QString> > gnomonProject::browserFormInfo(void)
     return restore_info;
 }
 
+void gnomonProject::recursiveRemoveDir(const QString &path) {
+    QDir(path).removeRecursively();
+}
+
 QString gnomonProject::findFile(const QString& filename) const {
     QStringList search_paths;
     search_paths.append(d->projectDir.path());
@@ -370,5 +367,6 @@ QString gnomonProject::findFile(const QString& filename) const {
         target_file = file.fileName();
     return target_file;
 }
+
 //
 // gnomonProject.cpp ends here

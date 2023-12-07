@@ -1,5 +1,6 @@
 #include "gnomonAlgorithmWorkspace.h"
 #include "gnomonAlgorithmWorkspace_p.h"
+#include "gnomonProject"
 
 #include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand.h>
 
@@ -264,6 +265,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     for(auto [name, output_type] : d->command->outputTypes()) {
         if(d->command->outputs()[name] && (*d->targets)[i]->acceptedForms().contains(output_type)) {
             auto form =  d->command->outputs()[name];
+            GNOMON_SESSION->trackForm(form);
             int form_count = gnomonFormManager::instance()->formCount(output_type);
             form->metadata()->set("name", output_type.remove("gnomon") + QString::number(form_count+1));
             form->metadata()->set("source", d->algorithm);

@@ -7,10 +7,8 @@
 
 #include "gnomonSessionManager.h"
 #include "gnomonProject"
+#include "gnomonForm/gnomonDynamicFormFactory.h"
 
-#define PROJECT_SESSION_DIRECTORY ".gnomon/session"
-#define PROJECT_SESSION_FILE ".gnomon/session/session.ini"
-#define PROJECT_PIPELINE_FILE ".gnomon/session/pipeline.json"
 
 // /////////////////////////////////////////////////////////////////
 // gnomonSessionManagerPrivate
@@ -421,6 +419,7 @@ void gnomonSessionManager::sync() {
     qDebug() << "===========" << "saving session";
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
     QDir dir(GNOMON_PROJECT->projectDir());
+    settings.clear();
 
     // building json object for properties
     QJsonObject session_json;
@@ -449,6 +448,21 @@ void gnomonSessionManager::sync() {
     
 
     //TODO: forms
+    cleanExpiredForms();
+    settings.beginGroup("forms");
+    settings.setValue("owned_form_ids", m_owned_forms.keys());
+    QStringList form_ids;
+    for(auto it = m_tracked_forms.keyValueBegin(); it != m_tracked_forms.keyValueEnd(); it++) {
+        if(!it->second.expired()) {
+            auto form = it->second.lock();
+            settings.setValue(it->first, form->serialize());
+            form_ids.append(it->first);
+        }
+    }
+    settings.setValue("form_ids", form_ids);
+    settings.endGroup();
+
+
     //TODO: world
 
 
@@ -460,6 +474,25 @@ bool gnomonSessionManager::load() {
 
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
     QJsonObject workspaces_info = settings.value("workspaces").toJsonObject();
+
+    // forms
+    settings.beginGroup("forms");
+    QStringList form_ids = settings.value("form_ids").toStringList();
+    QStringList owned_form_ids = settings.value("owned_form_ids").toStringList();
+
+    // hold a reference to every form until load is finished, every unused form should be cleaned up
+    QList<std::shared_ptr<gnomonAbstractDynamicForm>> form_holder;
+    for(const auto &uuid: form_ids) {
+        auto form = createDynamicForm(settings.value(uuid).toJsonObject());
+        m_tracked_forms.insert(uuid, form);
+        form_holder.append(form);
+        if(owned_form_ids.contains(uuid)) {
+            m_owned_forms.insert(uuid, form);
+        }
+    }
+    settings.endGroup();
+
+    //workspaces
 
     if(!workspaces_info.isEmpty()) {
 
@@ -495,6 +528,10 @@ bool gnomonSessionManager::load() {
 }
 
 bool gnomonSessionManager::newSession(const QString &source) {
+    QDir project_dir(GNOMON_PROJECT->projectDir());
+    gnomonProject::recursiveRemoveDir(project_dir.filePath(PROJECT_SESSION_DIRECTORY));
+    m_owned_forms.clear();
+    project_dir.mkpath(PROJECT_SESSION_DIRECTORY);
     auto res = QMetaObject::invokeMethod(d->window, "switch_from_launcher",
                                      Q_ARG(QString, source));
     if(res)

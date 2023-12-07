@@ -24,6 +24,8 @@ ADD_GNOMON_HEADERS(
   gnomonAbstractFormData.h
   gnomonDynamicFormMetadata
   gnomonDynamicFormMetadata.h
+  gnomonDynamicFormFactory
+  gnomonDynamicFormFactory.h
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTimeSeries
@@ -49,6 +51,7 @@ ADD_GNOMON_HEADERS(
 ADD_GNOMON_SOURCES(
   gnomonAbstractForm.cpp
   gnomonDynamicFormMetadata.cpp
+  gnomonDynamicFormFactory.cpp
   gnomonSphereForm.cpp
   gnomonWallForm.cpp
   ${${PROJECT_NAME}_FORM_BINARYIMAGE_SOURCES}

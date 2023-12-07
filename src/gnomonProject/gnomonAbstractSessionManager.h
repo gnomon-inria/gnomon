@@ -6,6 +6,11 @@
 
 #define GNOMON_SESSION gnomonAbstractSessionManager::instance()
 
+#define PROJECT_SESSION_DIRECTORY ".gnomon/session"
+#define PROJECT_FORMS_DIRECTORY ".gnomon/session/forms"
+#define PROJECT_SESSION_FILE ".gnomon/session/session.ini"
+#define PROJECT_PIPELINE_FILE ".gnomon/session/pipeline.json"
+
 class QQmlApplicationEngine;
 
 class GNOMONPROJECT_EXPORT gnomonAbstractSessionManager: public QObject {
@@ -48,7 +53,8 @@ public:
     static gnomonAbstractSessionManager *instance();
 
 public:
-    bool addForm(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    bool addForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form);
+    bool trackForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form);
     std::shared_ptr<gnomonAbstractDynamicForm> getForm(const QString& uuid);
 
 signals:
@@ -57,11 +63,15 @@ signals:
     void failed(QString);
 
 protected:
+    void cleanExpiredForms();
+
     double m_progress = 0.; // from 0 to 1
     static void registerInstance(gnomonAbstractSessionManager *o);
+
+    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> m_owned_forms;
+    QMap<QString, std::weak_ptr<gnomonAbstractDynamicForm>> m_tracked_forms;
 
 private:
     static gnomonAbstractSessionManager *s_instance;
     static std::mutex s_mutex;
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> s_forms;
 };
