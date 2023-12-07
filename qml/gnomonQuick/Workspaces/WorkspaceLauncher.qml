@@ -33,9 +33,14 @@ G.Workspace {
         modality: Qt.NonModal;
 
         onAccepted: {
-            console.log('Loading an existing project');
-            load_project(_open_project_folder_dialog.folder);
-            add_to_history(_open_project_folder_dialog.folder)
+            if(GP.ProjectManager.isExistingProject(_open_project_folder_dialog.folder)) {
+                console.log('Loading an existing project');
+                load_project(_open_project_folder_dialog.folder);
+                add_to_history(_open_project_folder_dialog.folder)
+            } else {
+                _folder_path.text = _open_project_folder_dialog.folder
+                not_project_dialog.open()
+            }
         }
     }
 
@@ -267,22 +272,9 @@ G.Workspace {
                             text: "New"
                             iconName: "plus"
 
-                            Timer {
-                                id: _timer
-                                interval: 200
-                                onTriggered: {
-                                    new_project_dialog.open()
-                                }
-                            }
-
                             onClicked: {
-                                if(_timer.running)
-                                {
-                                    _timer.stop()
-                                    new_project_dialog.accept()
-                                } else {
-                                    _timer.restart()
-                                }
+                                _folder_path.text = ""
+                                new_project_dialog.open()
                             }
                         }
                     }
@@ -477,7 +469,7 @@ G.Workspace {
                                     width: G.Style.buttonWidth
                                     text: "Make default"
                                     checked: false
-                                    tooltip: "Check to make the chosen workspace the default option next time you create a new project."
+                                    tooltip: "Check to make the chosen workspace the default option when you create a new session for the project."
                                 }
                             }
 
@@ -489,17 +481,11 @@ G.Workspace {
                         }
 
                         onAccepted: {
-                            GP.ProjectManager.createProject(_folder_path.text,
-                                                            _project_title.text,
-                                                            _project_description.text,
-                                                            _pipeline_workspace.currentValue)
-                            GP.PipelineManager.pipeline.name = _project_title.text
-                            GP.PipelineManager.pipeline.description = _project_description.text
-                            if (_remember_workspace.checked) {
-                                _settings.default_workspace = _pipeline_workspace.currentText
+                            if(GP.ProjectManager.isExistingProject(_folder_path.text)) {
+                                existing_project_dialog.open()
+                            } else {
+                                create_project()
                             }
-                            add_to_history(_folder_path.text)
-                            launching_toast.open()
                         }
                     }
 
@@ -721,6 +707,79 @@ G.Workspace {
         onOpened: {
             //switch_from_launcher(_pipeline_workspace.currentValue);
         }
+    }
+
+    G.Dialog {
+        id: not_project_dialog
+
+        simple_dialog : true
+
+        parent: Overlay.overlay
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.smallDialogWidth
+        height: G.Style.largeDelegateHeight
+        header.height: 0
+
+        modal: true
+
+
+        Label {
+            text: "Not an existing project, create a new one ?"
+            font: G.Style.fonts.cardText
+        }
+
+        standardButtons:  Dialog.Yes | Dialog.No
+
+        onAccepted : {
+            new_project_dialog.open()
+        }
+    }
+
+    G.Dialog {
+        id: existing_project_dialog
+
+        simple_dialog : true
+
+        parent: Overlay.overlay
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.smallDialogWidth
+        height: G.Style.largeDelegateHeight
+        header.height: 0
+
+        modal: true
+
+        Label {
+            text: "Overwrite the existing project ?"
+            font: G.Style.fonts.cardText
+        }
+
+        standardButtons:  Dialog.Yes | Dialog.No
+
+        onAccepted : {
+            if(GP.ProjectManager.cleanProject(_folder_path.text))
+                create_project()
+        }
+
+        onRejected : {
+            GP.ProjectManager.openProject(_folder_path.text)
+            add_to_history(_folder_path.text)
+        }
+    }
+
+    function create_project() {
+        GP.ProjectManager.createProject(_folder_path.text,
+                                        _project_title.text,
+                                        _project_description.text,
+                                        _pipeline_workspace.currentValue)
+        GP.PipelineManager.pipeline.name = _project_title.text
+        GP.PipelineManager.pipeline.description = _project_description.text
+        if (_remember_workspace.checked) {
+            _settings.default_workspace = _pipeline_workspace.currentText
+        }
+        add_to_history(_folder_path.text)
+        launching_toast.open()
     }
 
     Component.onCompleted:  window.drawelr_closed = true;

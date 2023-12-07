@@ -63,13 +63,13 @@ public:
     QStringList editorFileInfo(const QStringList& extensions);
     QList< QPair<QString, QString> > browserFormInfo(void);
 
+    static bool isDirAProject(const QDir &dir);
 
 signals:
     void currentDirChanged(void);
     void dataPathChanged(void);
     
 private:
-    bool isDirAProject(const QDir &dir);
     void populateNewProject();
     void readProjectInfo();
     static inline QString sanitizeUrlToPath(const QString &url);
