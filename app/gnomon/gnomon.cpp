@@ -300,6 +300,7 @@ void gnomon_rinit()
     // -- Project Management
 
     qmlRegisterType<gnomonProject>("gnomon.Project", 1, 0, "Project");
+    qmlRegisterType<gnomonFileSystemModel>("gnomon.Project", 1, 0, "FileSystemModel");
     qmlRegisterSingletonInstance("gnomon.Project", 1, 0, "ProjectManager", gnomonProjectManager::instance());
     qmlRegisterSingletonInstance("gnomon.Project", 1, 0, "SessionManager", gnomonAbstractSessionManager::instance());
 

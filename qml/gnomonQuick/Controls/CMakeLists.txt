@@ -28,11 +28,6 @@ QML_FILES
   Dragger.qml
   Figure.qml
   FilterProxyModel.qml
-  Finder.qml
-  FinderGridDelegate.qml
-  FinderGridView.qml
-  FinderListDelegate.qml
-  FinderListView.qml
   FormIdentifier.qml
   FormSelector.qml
   FormSelectorDelegate.qml
@@ -69,6 +64,7 @@ QML_FILES
   PipelinePort.qml
   PipelinePortEdit.qml
   Project.qml
+  ProjectBrowser.qml
   ProgressBar.qml
   RangeParameter.qml
   RangeSlider.qml
@@ -88,6 +84,7 @@ QML_FILES
   Toast.qml
   ToolBar.qml
   ToolTip.qml
+  TreeView.qml
   View.qml
   ViewParameters.qml
   World.qml
