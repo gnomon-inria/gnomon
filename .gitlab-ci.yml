@@ -131,7 +131,6 @@ conda_build_macos:
 
 conda_build_linux_develop:
   stage: condabuild
-  needs: [build_mr_linux]
   tags: 
     - linux
     - large
@@ -187,6 +186,7 @@ anaconda_macos_master:
 
 anaconda_linux_develop :
   stage: deploy
+  needs: [conda_build_linux_develop]
   tags: 
     - linux
     - large
