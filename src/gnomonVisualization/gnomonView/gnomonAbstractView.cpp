@@ -146,6 +146,7 @@ void gnomonAbstractView::removeForm(const QString& form_type)
         QString visu_name = d->visualizationCommands[form_type]->visualizationName();
         d->viewParameters.parameters.remove(visu_name);
         d->visualizationCommands[form_type]->clear();
+        d->visualizationCommands[form_type]->setForm(nullptr);
         d->forms.remove(form_type);
         d->viewParameters.visuSelected.remove(form_type);
         emit formRemoved(form_type);
@@ -173,7 +174,8 @@ void gnomonAbstractView::update(void)
 
 void gnomonAbstractView::clear(void)
 {
-    for (const auto & form_type : d->forms.keys()) {
+    auto form_types = d->forms.keys();
+    for (const auto & form_type : form_types) {
         QString visu_name = d->visualizationCommands[form_type]->visualizationName();
         d->viewParameters.parameters.remove(visu_name);
         d->visualizationCommands[form_type]->clear();
@@ -182,6 +184,10 @@ void gnomonAbstractView::clear(void)
     d->viewParameters.visuSelected.clear();
 
     d->forms.clear();
+
+    for (const auto & form_type : form_types) {
+        emit formRemoved(form_type);
+    }
     emit formsChanged();
 }
 
