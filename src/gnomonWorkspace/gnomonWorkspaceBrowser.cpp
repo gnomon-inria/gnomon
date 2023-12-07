@@ -172,6 +172,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     }
     readerCommand->setAlgorithmName(reader_plugin);
 
+    QStringList relative_paths;
     QStringList paths;
     QStringList sources;
     for (auto file : this->filename.split(",")) {
@@ -180,19 +181,22 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
             if(!QFile::exists(file_path)) {
                 dtkWarn() << Q_FUNC_INFO << "file " << file_path << "doesn't exist";
             } else {
-                paths.append(file_path);
+                relative_paths.append(file_path);
+                paths.append(GNOMON_PROJECT->findFile(file_path));
                 sources.append(QFileInfo(file_path).fileName());
             }
         } else {
             //it's not a file, most likely a url
             //
-            paths.append(file);
+            relative_paths.append(file);
+            paths.append(GNOMON_PROJECT->findFile(file));
             sources.append(QUrl(file).fileName());
         }
     }
     if (paths.size() == 0) {
         return false;
     }
+    QString relative_path = relative_paths.join(",");
     QString path = paths.join(",");
     QString source = sources.join(",");
 
@@ -201,7 +205,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     readerCommand->redo();
     if(!this->object_name.isEmpty()) {
         QJsonObject data_json;
-        data_json.insert("path", path);
+        data_json.insert("path", relative_path);
         data_json.insert("plugin_name", reader_plugin);
         data_json.insert("workspace_name", "Browser");
         workspace_info.insert(this->object_name, data_json);

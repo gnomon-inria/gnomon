@@ -9,6 +9,8 @@ Dialog {
 
     id: _self
 
+    property bool simple_dialog : false
+
     padding: G.Style.dialogPadding
     topPadding: G.Style.dialogPadding
     enter: Transition
@@ -95,8 +97,14 @@ Dialog {
             for (const [buttonCode, style, flat] of standardButtonsStyle) {
                 var button = _dbox.standardButton(buttonCode)
                 if(button) {
-                    button.type = Qt.binding(function() {return style})
-                    button.flat = Qt.binding(function() {return flat})
+                    if(simple_dialog) {
+                        button.type = G.Style.ButtonType.Base
+                        button.flat = true
+
+                    } else {
+                        button.type = Qt.binding(function() {return style})
+                        button.flat = Qt.binding(function() {return flat})
+                    }
                 }
             }
         }

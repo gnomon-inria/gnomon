@@ -39,7 +39,7 @@ Item {
         fileMode: P.FileDialog.OpenFiles;
 
         onAccepted: {
-            window.current_workspace().requestOpenFiles(_file_dialog.files)
+            window.current_workspace().checkFileAccessibility(_file_dialog.files)
         }
     }
 
@@ -74,30 +74,24 @@ Item {
         anchors.fill: parent;
         anchors.margins: G.Style.smallPadding;
 
-        G.Finder {
-            id: _finder;
+        G.ProjectBrowser {
+            id: _project_browser
+
             Layout.fillWidth: true;
             Layout.fillHeight: true;
-            //TODO:  should probably refer to dataDir rather than currentDir as data is meant to be outside the project
-            folder: "file://" + GP.ProjectManager.project.currentDir
-            extensionFilters: _extensions_model;
+
+            rootDir: GP.ProjectManager.project.currentDir
+            dataPath: GP.ProjectManager.project.dataPath
 
             onFileDoubleClicked: (fileUrl) => {
-                window.current_workspace().requestOpenFiles([fileUrl])
+                let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
+                window.current_workspace().requestOpenFiles([relative_path])
             }
 
             onFileRightClicked: (fileUrl) => {
-                if(_finder.selectedFile) {
-                    d.readerPath = decodeURIComponent(_finder.selectedFile);
-                    d.requestReaders("");
-                } else {
-                    console.log("no file selected, Right click not available")
-                }
-            }
-
-            G.ToolTip {
-                visible: _finder.hovered
-                text: "Double click on a file/folder to open it. \n Right click on a file to open with a specific plugin reader for a file."
+                let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
+                d.readerPath = decodeURIComponent(relative_path);
+                d.requestReaders("");
             }
         }
 
@@ -141,7 +135,7 @@ Item {
         }
     }
 
-    Component.onCompleted: {
+    /*Component.onCompleted: {
         const extensions = d.extensions;
 
         const regexps = extensions.reduce((prev, curr) => {
@@ -152,5 +146,5 @@ Item {
             "text": "Readable files (" + extensions.join() + ")",
             "regexp": regexps.join()
         })
-    }
+    }*/
 }
