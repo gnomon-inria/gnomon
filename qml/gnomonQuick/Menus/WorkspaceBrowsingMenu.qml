@@ -74,34 +74,6 @@ Item {
         anchors.fill: parent;
         anchors.margins: G.Style.smallPadding;
 
-        /* G.Finder {
-            id: _finder;
-            Layout.fillWidth: true;
-            Layout.fillHeight: true;
-            //TODO:  should probably refer to dataDir rather than currentDir as data is meant to be outside the project
-            folder: "file://" + GP.ProjectManager.project.currentDir
-            ext_folder: "file://" + GP.ProjectManager.project.currentDir;
-            extensionFilters: _extensions_model;
-
-            onFileDoubleClicked: (fileUrl) => {
-                window.current_workspace().requestOpenFiles([fileUrl])
-            }
-
-            onFileRightClicked: (fileUrl) => {
-                if(_finder.selectedFile) {
-                    d.readerPath = decodeURIComponent(_finder.selectedFile);
-                    d.requestReaders("");
-                } else {
-                    console.log("no file selected, Right click not available")
-                }
-            }
-
-            G.ToolTip {
-                visible: _finder.hovered
-                text: "Double click on a file/folder to open it. \n Right click on a file to open with a specific plugin reader for a file."
-            }
-        } */
-
         G.ProjectBrowser {
             id: _project_browser
 

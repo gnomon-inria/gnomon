@@ -28,11 +28,6 @@ QML_FILES
   Dragger.qml
   Figure.qml
   FilterProxyModel.qml
-  Finder.qml
-  FinderGridDelegate.qml
-  FinderGridView.qml
-  FinderListDelegate.qml
-  FinderListView.qml
   FormIdentifier.qml
   FormSelector.qml
   FormSelectorDelegate.qml
