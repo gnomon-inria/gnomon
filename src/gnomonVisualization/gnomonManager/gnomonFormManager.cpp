@@ -28,9 +28,12 @@
 
 #include "gnomonVisualizations/gnomonAbstractVtkVisualization.h"
 #include "gnomonVisualizations/gnomonAbstractMplVisualization.h"
+#include "gnomonVisualizations/gnomonAbstractQmlVisualization.h"
 
 
 #include "gnomonView/gnomonVtkView.h"
+#include "gnomonView/gnomonQmlView.h"
+#include "gnomonView/gnomonMplView.h"
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonPipeline/gnomonPipelineNodeReader.h>
@@ -61,7 +64,7 @@
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
-
+#include <vtkRenderWindowInteractor.h>
 
 class gnomonFormManagerPrivate : public QObject
 {
@@ -87,7 +90,7 @@ public:
     QHash<int, bool> formDropped;
 
 public:
-    gnomonVtkView *view = nullptr;
+    gnomonAbstractView *view = nullptr;
     QTemporaryDir *tmpDir = nullptr;
 
 public:
@@ -630,11 +633,54 @@ QJsonObject gnomonFormManager::dumpState(void)
 {
     QJsonObject state;
     QJsonObject forms;
-    for( auto [key, value]: d->forms.asKeyValueRange()) {
-        forms.insert(QString::number(key), value);
+    for( auto [id, form]: d->forms.asKeyValueRange()) {
+        forms[QString::number(id)] = form;
     }
-
     state["forms"] = forms;
+
+    QJsonObject form_visualizations;
+    for( auto [id, visualization]: d->formVisualizations.asKeyValueRange()) {
+        QVariantMap visu_info;
+        visu_info["form_type"] = GNOMON_SESSION->getForm(d->forms[id])->formName();
+        QString visu_type;
+        if(auto vtk_visu = std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visualization)) {
+            visu_type = vtk_visu->vtkView()->objectName();
+        } else if (auto qml_visu = std::dynamic_pointer_cast<gnomonAbstractQmlVisualization>(visualization)) {
+            visu_type = qml_visu->qmlView()->objectName();
+        } else if (auto mpl_visu = std::dynamic_pointer_cast<gnomonAbstractMplVisualization>(visualization)) {
+            visu_type = dynamic_cast<gnomonMplView *>(mpl_visu->view())->objectName();
+        }
+        visu_info["visu_type"] = visu_type;
+        visu_info["visu_name"] = visualization->pluginName();
+        QVariantMap parameters;
+        for(auto [k, v]: visualization->parameters().asKeyValueRange()) {
+            parameters.insert(k, v->toVariantHash());
+        }
+        visu_info["parameters"] = parameters;
+
+        form_visualizations.insert(QString::number(id), QJsonObject::fromVariantMap(visu_info));
+    }
+    state["form_visualizations"] = form_visualizations;
+
+    QJsonObject form_cameras;
+    for( auto [id, camera]: d->formCameras.asKeyValueRange()) {
+        QVariantMap camera_info;
+        QStringList position;
+        QStringList focal_point;
+        QStringList view_up;
+        for(int i = 0; i < 3; i++) {
+            position << QString::number(camera->GetPosition()[i]);
+            focal_point << QString::number(camera->GetFocalPoint()[i]);
+            view_up << QString::number(camera->GetViewUp()[i]);
+        }
+
+        camera_info["position"] = QVariant::fromValue(position);
+        camera_info["focal_point"] = QVariant::fromValue(focal_point);
+        camera_info["view_up"] = QVariant::fromValue(view_up);
+
+        form_cameras[QString::number(id)] = QJsonObject::fromVariantMap(camera_info);
+    }
+    state["form_cameras"] = form_cameras;
 
     return state;
 }
@@ -644,8 +690,63 @@ void gnomonFormManager::loadState(const QJsonObject& state)
     d->forms.clear();
     auto forms = state["forms"].toObject().toVariantHash();
 
-    for( auto [key, value]: forms.asKeyValueRange()) {
-        d->forms.insert(key.toInt(), value.toString());
+    for( auto [id, visualization]: forms.asKeyValueRange()) {
+        d->forms[id.toInt()] = visualization.toString();
+    }
+
+    auto createView = [=](const QString& className, const QString& form_type) {
+        if(className == "gnomonVtkView") {
+            d->view = new gnomonVtkView(this);
+            d->view->setAcceptForm(form_type, true);
+            vtkNew<vtkRenderWindow> temp_render_window;
+            temp_render_window->SetOffScreenRendering(true);
+            vtkNew<vtkRenderWindowInteractor> temp_render_window_interactor;
+            temp_render_window_interactor->SetRenderWindow(temp_render_window);
+            dynamic_cast<gnomonVtkView*>(d->view)->associate(temp_render_window);
+        } else if (className == "gnomonQmlView")
+        {
+            qWarning()<<"Not implemented.";
+        } else if (className == "gnomonMplView")
+        {
+            qWarning()<<"Not implemented.";
+        }
+    };
+
+    d->formVisualizations.clear();
+    d->formThumbnail.clear();
+    auto form_visualizations = state["form_visualizations"].toObject().toVariantMap();
+    for( auto [id, visualization]: form_visualizations.asKeyValueRange()) {
+        auto form_type = visualization.toMap()["form_type"].toString();
+        auto visu_type = visualization.toMap()["visu_type"].toString();
+        auto visu_name = visualization.toMap()["visu_name"].toString();
+        createView(visu_type, form_type);
+        auto parameters = visualization.toMap()["parameters"].toMap();
+        d->view->setForm(d->forms[id.toInt()], form_type, visu_name, parameters);
+        d->formVisualizations[id.toInt()] = d->view->getVisualization(form_type);
+        d->formThumbnail[id.toInt()] = d->view->getVisualization(form_type)->imageRendering();
+    }
+
+    d->formCameras.clear();
+    auto form_cameras = state["form_cameras"].toObject().toVariantMap();
+    for(auto [id, camera]: form_cameras.asKeyValueRange()) {
+        auto position = camera.toMap()["position"].toStringList();
+        auto focal_point = camera.toMap()["focal_point"].toStringList();
+        auto view_up = camera.toMap()["view_up"].toStringList();
+        if(position.size()==3 && focal_point.size()==3 && view_up.size()==3) {
+            double position_val[3], focal_point_val[3], view_up_val[3];
+
+            for(int i = 0; i < 3; i++) {
+                position_val[i] = position[i].toDouble();
+                focal_point_val[i] = focal_point[i].toDouble();
+                view_up_val[i] = view_up[i].toDouble();
+            }
+
+            vtkSmartPointer<vtkCamera> cam = vtkCamera::New();
+            cam->SetPosition(position_val);
+            cam->SetFocalPoint(focal_point_val);
+            cam->SetViewUp(view_up_val);
+            d->formCameras[id.toInt()] = cam;
+        }
     }
 }
 

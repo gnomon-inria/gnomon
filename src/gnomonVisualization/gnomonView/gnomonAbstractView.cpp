@@ -131,6 +131,18 @@ void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbst
     }
 }
 
+void gnomonAbstractView::setForm(const QString& form_uuid, const QString& form_type, const QString& visu_name, const QVariantMap& parameters)
+{
+    d->forms[form_type] = GNOMON_SESSION->getForm(form_uuid);
+    d->setFormVisualization(form_type, visu_name, parameters);
+}
+
+std::shared_ptr<gnomonAbstractVisualization> gnomonAbstractView::getVisualization(const QString& form_type)
+{
+    auto visualization = d->visualizationCommands[form_type]->visualization();
+    return visualization;
+}
+
 std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractView::form(const QString& form_type)
 {
     if (d->forms.contains(form_type)) {
@@ -222,6 +234,7 @@ void gnomonAbstractView::transmitForm(const QString& form_type)
         }
         GNOMON_SESSION->addForm(d->forms[form_type]);
         gnomonFormManager::instance()->addForm(d->forms[form_type]->uuid(), image, visualization);
+        gnomonFormManager::instance()->dumpState();
         emit exportedForm(d->forms[form_type]);
     }
 }
