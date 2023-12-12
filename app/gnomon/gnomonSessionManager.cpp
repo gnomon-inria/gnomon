@@ -444,6 +444,8 @@ void gnomonSessionManager::sync() {
 
     settings.setValue("form_manager_state", gnomonFormManager::instance()->dumpState());
 
+    settings.setValue("form_manager_state", gnomonFormManager::instance()->dumpState());
+
     // pipeline
     auto url = QUrl::fromLocalFile(dir.absoluteFilePath(PROJECT_PIPELINE_FILE));
     gnomonPipelineManager::instance()->pipeline()->exportToJson(url.toString());
