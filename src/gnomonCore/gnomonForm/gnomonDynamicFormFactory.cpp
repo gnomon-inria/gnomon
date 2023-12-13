@@ -14,60 +14,52 @@
 
 #include <exception>
 
-std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QString &type) {
-    if(type == gnomonBinaryImage::formName()) {
+namespace gnomonForm {
 
-        return std::make_shared<gnomonBinaryImageSeries>();
-
-    } else if(type == gnomonCellComplex::formName()) {
-
-        return std::make_shared<gnomonCellComplexSeries>();
-
-    } else if(type == gnomonCellImage::formName()) {
-
-        return std::make_shared<gnomonCellImageSeries>();
-
-    } else if(type == gnomonCellGraph::formName()) {
-
-        return std::make_shared<gnomonCellGraphSeries>();
-
-    } else if(type == gnomonDataDict::formName()) {
-
-        return std::make_shared<gnomonDataDictSeries>();
-
-    } else if(type == gnomonDataFrame::formName()) {
-
-        return std::make_shared<gnomonDataFrameSeries>();
-
-    } else if(type == gnomonImage::formName()) {
-
-        return std::make_shared<gnomonImageSeries>();
-
-    } else if(type == gnomonLString::formName()) {
-
-        return std::make_shared<gnomonLStringSeries>();
-
-    } else if(type == gnomonMesh::formName()) {
-
-        return std::make_shared<gnomonMeshSeries>();
-
-    } else if(type == gnomonPointCloud::formName()) {
-
-        return std::make_shared<gnomonPointCloudSeries>();
-
-    } else if(type == gnomonTree::formName()) {
-
-        return std::make_shared<gnomonTreeSeries>();
-
+    void registerForms(void)
+    {
+        qRegisterMetaType<gnomonBinaryImageSeries>();
+        qRegisterMetaType<gnomonCellComplexSeries>();
+        qRegisterMetaType<gnomonCellGraphSeries>();
+        qRegisterMetaType<gnomonCellImageSeries>();
+        qRegisterMetaType<gnomonDataDictSeries>();
+        qRegisterMetaType<gnomonDataFrameSeries>();
+        qRegisterMetaType<gnomonImageSeries>();
+        //qRegisterMetaType<gnomonIntensityImageSeries>();
+        qRegisterMetaType<gnomonLStringSeries>();
+        qRegisterMetaType<gnomonMeshSeries>();
+        qRegisterMetaType<gnomonPointCloudSeries>();
+        qRegisterMetaType<gnomonTreeSeries>();
     }
 
-    qCritical() << Q_FUNC_INFO << "Could not create dynamic form of type " << type;
-    throw std::invalid_argument(type.toStdString());
-}
+    std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QString &type) {
+        void *myClassPtr = nullptr;
+        QMetaType metatype = QMetaType::fromName(type.toUtf8());
 
-std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QJsonObject &serialization) {
-    QString type = serialization["form_type"].toString();
-    auto formSeries = createDynamicForm(type);
-    formSeries->deserialize(serialization);
-    return formSeries;
-}
+        if (metatype.isValid()) {
+            myClassPtr = metatype.create();
+        } else {
+            // try as a time series
+            QString type_series = "gnomonTimeSeries<" + type + ">";
+            metatype = QMetaType::fromName(type_series.toUtf8());
+            if (metatype.isValid()) {
+                myClassPtr = metatype.create();
+            }
+        }
+         
+        if (myClassPtr) {
+            return std::shared_ptr<gnomonAbstractDynamicForm>(static_cast<gnomonAbstractDynamicForm*>(myClassPtr));
+        }
+
+        qCritical() << Q_FUNC_INFO << "Could not create dynamic form of type " << type;
+        throw std::invalid_argument(type.toStdString());
+    }
+
+    std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QJsonObject &serialization) {
+        QString type = serialization["form_type"].toString();
+        auto formSeries = createDynamicForm(type);
+        formSeries->deserialize(serialization);
+        return formSeries;
+    }
+
+} // namespace gnomonForm

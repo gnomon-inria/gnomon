@@ -1,18 +1,3 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
-
 #pragma once
 
 #include <QtCore>
@@ -31,6 +16,7 @@ private slots:
 
 private slots:
     void createEmptyFormTest(void);
+    void createFormSerieFromStringTest(void);
 
 private slots:
     void cleanupTestCase(void);
