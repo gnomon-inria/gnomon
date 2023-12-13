@@ -362,6 +362,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             //this->pipeline_manager->addReader(treeCommand);
         }
     }
+    emit q->stateChanged();
     return true;
 }
 
@@ -515,11 +516,13 @@ gnomonVtkView *gnomonWorkspaceBrowser::view(void) const
 }
 
 QJsonObject gnomonWorkspaceBrowser::serialize() {
-    return QJsonObject();
+    QJsonObject serialization;
+    serialization.insert("view", d->browse_view->serialize());
+    return serialization;
 }
 
 void gnomonWorkspaceBrowser::unSerialize(const QJsonObject &state) {
-
+    d->browse_view->unSerialize(state.value("view").toObject());
 }
 
 void gnomonWorkspaceBrowser::restoreState(void)
@@ -546,6 +549,7 @@ void gnomonWorkspaceBrowser::export_outputs(void) {
 void gnomonWorkspaceBrowser::restore(void)
 {
     QList< QPair<QString, QString> > browser_info = GNOMON_PROJECT->browserFormInfo();
+    return;
 
     for (auto data_info : browser_info) {
         this->setReaderPath(data_info.first);
