@@ -240,7 +240,7 @@ QImage gnomonImageVtkVisualizationChannelBlending::imageRendering(void)
 
 void gnomonImageVtkVisualizationChannelBlending::update(void)
 {
-    if(!ddd->image)
+    if(!ddd->image || !((gnomonVtkView *) d->view)->renderer2D()->GetRenderWindow())
         return;
 
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();

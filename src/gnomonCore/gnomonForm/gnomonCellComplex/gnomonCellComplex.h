@@ -63,6 +63,7 @@ public:
     }
     void deserialize(QJsonObject &serialization) override {
         delete m_data;
+        loadPluginGroup("cellComplexData");
         m_data = gnomonCore::cellComplexData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

@@ -65,6 +65,7 @@ public:
     }
     void deserialize(QJsonObject &serialization) override {
         delete m_data;
+        loadPluginGroup("dataDictData");
         m_data = gnomonCore::dataDictData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

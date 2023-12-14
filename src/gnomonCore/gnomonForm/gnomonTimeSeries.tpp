@@ -241,12 +241,17 @@ template <typename T> void gnomonTimeSeries<T>::save(uint id)
 template <typename T> void gnomonTimeSeries<T>::load(uint id)
 {
     if(m_storage_info.contains(id) && !m_storage_info.value(id).loaded) {
-        QFile file(storage_dir.filePath(m_storage_info.value(id).fileName));
+        QString filePath = storage_dir.filePath(m_storage_info.value(id).fileName);
+        QFile file(filePath);
         QJsonObject formSerialization;
         if(file.open(QIODevice::ReadOnly)) {
             auto content = qUncompress(file.readAll());
             file.close();
             formSerialization = QJsonDocument::fromJson(content).object();
+            file.close();
+        } else {
+            qCritical() << Q_FUNC_INFO << "Could not open file " << filePath;
+            throw std::runtime_error("Could not open file " + filePath.toStdString());
         }
         m_forms[id] = std::make_shared<T>(formSerialization);
         m_storage_info[id].loaded = true;
@@ -321,14 +326,14 @@ template <typename T> void gnomonTimeSeries<T>::readManifest()
         file.close();
         manifest = QJsonDocument::fromJson(content).object();
 
-        QJsonObject files_info = manifest.value("forms").toObject();
-        for(auto it = files_info.constBegin(); it!=files_info.constEnd(); it++) {
+        QJsonObject file_info_map = manifest.value("forms").toObject();
+        for(auto it = file_info_map.constBegin(); it != file_info_map.constEnd(); it++) {
             uint id = (uint) it.key().toInt();
             if(!containsId(id)) {
                 QJsonObject file_info = it.value().toObject();
                 formStorageInfo info;
-                info.fileName = files_info["fileName"].toString();
-                info.time = files_info["time"].toDouble();
+                info.fileName = file_info["fileName"].toString();
+                info.time = file_info["time"].toDouble();
                 info.id = id;
                 if(m_forms.contains(id)) {
                     info.loaded = true;
@@ -400,6 +405,7 @@ void gnomonTimeSeries<T>::deserialize(const QJsonObject &serialization) {
         }
     } else {
         readManifest();
+        load();
     }
 
 }
