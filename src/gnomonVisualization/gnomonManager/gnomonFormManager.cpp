@@ -643,14 +643,17 @@ QJsonObject gnomonFormManager::dumpState(void)
         QVariantMap visu_info;
         visu_info["form_type"] = GNOMON_SESSION->getForm(d->forms[id])->formName();
         QString visu_type;
+        QString figure_number;
         if(auto vtk_visu = std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visualization)) {
             visu_type = vtk_visu->vtkView()->objectName();
         } else if (auto qml_visu = std::dynamic_pointer_cast<gnomonAbstractQmlVisualization>(visualization)) {
             visu_type = qml_visu->qmlView()->objectName();
         } else if (auto mpl_visu = std::dynamic_pointer_cast<gnomonAbstractMplVisualization>(visualization)) {
             visu_type = dynamic_cast<gnomonMplView *>(mpl_visu->view())->objectName();
+            figure_number = QString::number(dynamic_cast<gnomonMplView *>(mpl_visu->view())->figureNumber());
         }
         visu_info["visu_type"] = visu_type;
+        visu_info["figure_number"] = figure_number;
         visu_info["visu_name"] = visualization->pluginName();
         QVariantMap parameters;
         for(auto [k, v]: visualization->parameters().asKeyValueRange()) {
@@ -694,22 +697,25 @@ void gnomonFormManager::loadState(const QJsonObject& state)
         d->forms[id.toInt()] = visualization.toString();
     }
 
-    auto createView = [=](const QString& className, const QString& form_type) {
+    auto createView = [=](const QString& className, const QString& form_type, int figure_number=-1) {
+        gnomonAbstractView* view = nullptr;
         if(className == "gnomonVtkView") {
-            d->view = new gnomonVtkView(this);
-            d->view->setAcceptForm(form_type, true);
+            view = new gnomonVtkView(this);
+            view->setAcceptForm(form_type, true);
             vtkNew<vtkRenderWindow> temp_render_window;
             temp_render_window->SetOffScreenRendering(true);
             vtkNew<vtkRenderWindowInteractor> temp_render_window_interactor;
             temp_render_window_interactor->SetRenderWindow(temp_render_window);
-            dynamic_cast<gnomonVtkView*>(d->view)->associate(temp_render_window);
-        } else if (className == "gnomonQmlView")
-        {
-            qWarning()<<"Not implemented.";
-        } else if (className == "gnomonMplView")
-        {
-            qWarning()<<"Not implemented.";
+            dynamic_cast<gnomonVtkView*>(view)->associate(temp_render_window);
+        } else if (className == "gnomonQmlView") {
+            view = new gnomonQmlView(this);
+            view->setAcceptForm(form_type, true);
+        } else if (className == "gnomonMplView") {
+            view = new gnomonMplView(this);
+            view->setAcceptForm(form_type, true);
+            dynamic_cast<gnomonMplView*>(view)->setFigureNumber(figure_number);
         }
+        return view;
     };
 
     d->formVisualizations.clear();
@@ -718,12 +724,13 @@ void gnomonFormManager::loadState(const QJsonObject& state)
     for( auto [id, visualization]: form_visualizations.asKeyValueRange()) {
         auto form_type = visualization.toMap()["form_type"].toString();
         auto visu_type = visualization.toMap()["visu_type"].toString();
+        auto figure_number = visualization.toMap()["figure_number"].toString().toInt();
         auto visu_name = visualization.toMap()["visu_name"].toString();
-        createView(visu_type, form_type);
+        std::unique_ptr<gnomonAbstractView> view(createView(visu_type, form_type, figure_number));
         auto parameters = visualization.toMap()["parameters"].toMap();
-        d->view->setForm(d->forms[id.toInt()], form_type, visu_name, parameters);
-        d->formVisualizations[id.toInt()] = d->view->getVisualization(form_type);
-        d->formThumbnail[id.toInt()] = d->view->getVisualization(form_type)->imageRendering();
+        view->setForm(d->forms[id.toInt()], form_type, visu_name, parameters);
+        d->formVisualizations[id.toInt()] = view->getVisualization(form_type);
+        d->formThumbnail[id.toInt()] = view->getVisualization(form_type)->imageRendering();
     }
 
     d->formCameras.clear();

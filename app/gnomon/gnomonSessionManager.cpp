@@ -442,10 +442,6 @@ void gnomonSessionManager::sync() {
 
     settings.setValue("workspaces", session_json);
 
-    settings.setValue("form_manager_state", gnomonFormManager::instance()->dumpState());
-
-    settings.setValue("form_manager_state", gnomonFormManager::instance()->dumpState());
-
     // pipeline
     auto url = QUrl::fromLocalFile(dir.absoluteFilePath(PROJECT_PIPELINE_FILE));
     gnomonPipelineManager::instance()->pipeline()->exportToJson(url.toString());
@@ -454,6 +450,8 @@ void gnomonSessionManager::sync() {
     //TODO: forms
     cleanExpiredForms();
     settings.beginGroup("forms");
+    settings.setValue("form_manager_state", gnomonFormManager::instance()->dumpState());
+
     settings.setValue("owned_form_ids", m_owned_forms.keys());
     QStringList form_ids;
     for(auto it = m_tracked_forms.keyValueBegin(); it != m_tracked_forms.keyValueEnd(); it++) {
@@ -494,13 +492,13 @@ bool gnomonSessionManager::load() {
             m_owned_forms.insert(uuid, form);
         }
     }
-    settings.endGroup();
-
-    //workspaces
 
     QJsonObject form_manager_state = settings.value("form_manager_state").toJsonObject();
     gnomonFormManager::instance()->loadState(form_manager_state);
 
+    settings.endGroup();
+
+    //workspaces
     if(!workspaces_info.isEmpty()) {
 
         QJsonObject workspace_properties = workspaces_info["workspace_properties"].toObject();
