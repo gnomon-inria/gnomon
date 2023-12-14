@@ -62,6 +62,7 @@ public:
     }
     void deserialize(QJsonObject &serialization) override {
         delete m_data;
+        loadPluginGroup("treeData");
         m_data = gnomonCore::treeData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }

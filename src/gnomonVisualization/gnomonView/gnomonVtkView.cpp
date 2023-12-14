@@ -596,6 +596,7 @@ void gnomonVtkView::associate(vtkRenderWindow *window)
     dd->updateOrientation();
     d->updateFormsTimes();
     dd->updateAxes();
+    update();
 }
 
 void gnomonVtkView::switchTo3D(void)

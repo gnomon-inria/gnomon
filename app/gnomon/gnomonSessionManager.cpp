@@ -419,7 +419,6 @@ void gnomonSessionManager::sync() {
     qDebug() << "===========" << "saving session";
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
     QDir dir(GNOMON_PROJECT->projectDir());
-    settings.clear();
 
     // building json object for properties
     QJsonObject session_json;
