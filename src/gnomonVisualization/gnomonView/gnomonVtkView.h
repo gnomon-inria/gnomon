@@ -92,6 +92,7 @@ public:
 // /////////////////////////////////////////////////////////////////////////////
 
 signals:
+    void renderWindowAssociated(void);
     void updated(void);
 
 signals:
@@ -262,6 +263,11 @@ public slots:
 
 public slots:
     void updateShortcutKeys(void);
+
+public:
+    QJsonObject serialize(void) override;
+
+    void unSerialize(const QJsonObject &serialization) override;
 
 private:
     class gnomonVtkViewPrivate *dd;
