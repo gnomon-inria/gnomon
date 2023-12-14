@@ -452,7 +452,12 @@ QJsonObject gnomonAbstractView::serialize(void) {
 
     QJsonObject visu;
     for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {
-        visu.insert(it->first, QJsonObject::fromVariantMap(it->second->visualizationParameters()));
+        auto parameters = it->second->parameters();
+        QVariantHash out;
+        for(auto param_it = parameters.keyValueBegin(); param_it!=parameters.keyValueEnd(); param_it++) {
+            out.insert(param_it->first, param_it->second->toVariantHash());
+        }
+        visu.insert(it->first, QJsonObject::fromVariantHash(out));
     }
     serialization.insert("visualizations", visu);
 
@@ -464,12 +469,7 @@ QJsonObject gnomonAbstractView::serialize(void) {
     for(auto it = d->viewParameters.visuSelected.keyValueBegin(); it!=d->viewParameters.visuSelected.keyValueEnd(); it++) {
         visuSelected.insert(it->first, it->second);
     }
-    for(auto it = d->viewParameters.parameters.keyValueBegin(); it!=d->viewParameters.parameters.keyValueEnd(); it++) {
-        auto param = QJsonObject::fromVariantMap(it->second);
-        parameters.insert(it->first, param);
-    }
    viewParameters.insert("visuSelected", visuSelected);
-   viewParameters.insert("parameters", parameters);
    serialization.insert("viewParameters", viewParameters);
    return serialization;
 }
@@ -480,7 +480,20 @@ void gnomonAbstractView::unSerialize(const QJsonObject &serialization) {
         auto form = GNOMON_SESSION->getForm(forms.value(key).toString());
         setForm(key, form);
     }
-    return;
+
+    auto visualization = serialization.value("visualizations").toObject();
+    for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {
+        if(visualization.contains(it->first)) {
+            QVariantHash parameters_hash = visualization.value(it->first).toObject().toVariantHash();
+            for(auto param_it = parameters_hash.keyValueBegin(); param_it!=parameters_hash.keyValueEnd(); param_it++) {
+                auto param = dtkCoreParameter::create(param_it->second.toHash());
+                it->second->setParameter(param_it->first, param->variant());
+            }
+
+            d->viewParameters.parameters[it->first] = it->second->visualizationParameters();
+        }
+    }
+
     QJsonObject viewParameters = serialization.value("viewParameters").toObject();
     d->viewParameters.currentFormType = viewParameters.value("currentFormType").toString();
     d->viewParameters.currentFormIndex = viewParameters.value("currentFormIndex").toInt();
@@ -491,9 +504,7 @@ void gnomonAbstractView::unSerialize(const QJsonObject &serialization) {
     for(auto it = visuSelected.keyValueBegin(); it!=visuSelected.keyValueEnd(); it++) {
         d->viewParameters.visuSelected.insert(it->first, it->second.toString());
     }
-    for(auto it = parameters.keyValueBegin(); it!=parameters.keyValueEnd(); it++) {
-        d->viewParameters.parameters.insert(it->first, it->second.toMap());
-    }
+
 
     restoreState();
 }
