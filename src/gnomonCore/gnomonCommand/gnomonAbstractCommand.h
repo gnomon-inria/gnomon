@@ -11,6 +11,15 @@
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 #include "gnomonCore/gnomonPluginFactory.h"
 
+#define GNOMON_REGISTER_TYPE(ClassName) \
+    namespace ClassName##Registering { \
+        static bool ClassName##Register() { \
+            int id = qRegisterMetaType<ClassName>(); \
+            return true; \
+        } \
+    const bool is_registered = ClassName##Register(); \
+}
+
 class GNOMONCORE_EXPORT gnomonAbstractCommand : public QObject
 {
     Q_OBJECT

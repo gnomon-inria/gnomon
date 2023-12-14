@@ -100,5 +100,7 @@ void gnomonDataFrameWriterCommand::setInputForm(const QString &name, std::shared
     }
 }
 
+GNOMON_REGISTER_TYPE(gnomonDataFrameWriterCommand)
+
 //
 // gnomonDataFrameWriterCommand.cpp ends here

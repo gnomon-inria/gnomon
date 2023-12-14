@@ -96,5 +96,7 @@ QJsonObject gnomonMeshReaderCommand::serializeResults(void) {
     return out;
 }
 
+GNOMON_REGISTER_TYPE(gnomonMeshReaderCommand)
+
 //
 // gnomonMeshReaderCommand.cpp ends here

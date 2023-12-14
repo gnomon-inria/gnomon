@@ -15,21 +15,34 @@
 #include <exception>
 
 namespace gnomonForm {
+    QStringList forms_names;
 
     void registerForms(void)
     {
         qRegisterMetaType<gnomonBinaryImageSeries>();
+        forms_names << "gnomonBinaryImage";
         qRegisterMetaType<gnomonCellComplexSeries>();
+        forms_names << "gnomonCellComplex";
         qRegisterMetaType<gnomonCellGraphSeries>();
+        forms_names << "gnomonCellGraph";
         qRegisterMetaType<gnomonCellImageSeries>();
+        forms_names << "gnomonCellImage";
         qRegisterMetaType<gnomonDataDictSeries>();
+        forms_names << "gnomonDataDict";
         qRegisterMetaType<gnomonDataFrameSeries>();
+        forms_names << "gnomonDataFrame";
         qRegisterMetaType<gnomonImageSeries>();
+        forms_names << "gnomonImage";
         //qRegisterMetaType<gnomonIntensityImageSeries>();
+        //forms_names << "gnomonIntensityImage";
         qRegisterMetaType<gnomonLStringSeries>();
+        forms_names << "gnomonLString";
         qRegisterMetaType<gnomonMeshSeries>();
+        forms_names << "gnomonMesh";
         qRegisterMetaType<gnomonPointCloudSeries>();
+        forms_names << "gnomonPointCloud";
         qRegisterMetaType<gnomonTreeSeries>();
+        forms_names << "gnomonTree";
     }
 
     std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QString &type) {

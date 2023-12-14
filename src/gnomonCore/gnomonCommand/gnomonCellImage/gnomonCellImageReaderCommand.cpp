@@ -106,5 +106,6 @@ QJsonObject gnomonCellImageReaderCommand::serializeResults(void) {
     return out;
 }
 
+GNOMON_REGISTER_TYPE(gnomonCellImageReaderCommand)
 //
 // gnomonCellImageReaderCommand.cpp ends here

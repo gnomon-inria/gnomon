@@ -128,5 +128,7 @@ void gnomonMeshWriterCommand::setInputForm(const QString &name, std::shared_ptr<
     }
 }
 
+GNOMON_REGISTER_TYPE(gnomonMeshWriterCommand)
+
 //
 // gnomonMeshWriterCommand.cpp ends here

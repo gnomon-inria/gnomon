@@ -99,5 +99,7 @@ void gnomonImageWriterCommand::setInputForm(const QString &name, std::shared_ptr
     }
 }
 
+GNOMON_REGISTER_TYPE(gnomonImageWriterCommand)
+
 //
 // gnomonImageWriterCommand.cpp ends here

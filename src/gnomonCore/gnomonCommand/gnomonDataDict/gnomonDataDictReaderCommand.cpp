@@ -95,3 +95,5 @@ QJsonObject gnomonDataDictReaderCommand::serializeResults(void) {
     out["dataDict"] = d->dataDict->serialize();
     return out;
 }
+
+GNOMON_REGISTER_TYPE(gnomonDataDictReaderCommand)

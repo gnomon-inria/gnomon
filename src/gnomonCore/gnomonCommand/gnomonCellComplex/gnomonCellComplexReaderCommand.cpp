@@ -96,5 +96,6 @@ QJsonObject gnomonCellComplexReaderCommand::serializeResults(void) {
     return out;
 }
 
+GNOMON_REGISTER_TYPE(gnomonCellComplexReaderCommand)
 //
 // gnomonCellComplexReaderCommand.cpp ends here

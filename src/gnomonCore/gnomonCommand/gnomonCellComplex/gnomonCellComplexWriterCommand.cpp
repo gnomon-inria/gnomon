@@ -91,5 +91,6 @@ void gnomonCellComplexWriterCommand::postdo(void) {
 
 }
 
+GNOMON_REGISTER_TYPE(gnomonCellComplexWriterCommand)
 //
 // gnomonCellComplexWriterCommand.cpp ends here

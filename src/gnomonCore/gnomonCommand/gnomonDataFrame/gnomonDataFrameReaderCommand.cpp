@@ -104,5 +104,7 @@ QJsonObject gnomonDataFrameReaderCommand::serializeResults(void) {
     return out;
 }
 
+GNOMON_REGISTER_TYPE(gnomonDataFrameReaderCommand)
+
 //
 // gnomonDataFrameReaderCommand.cpp ends here

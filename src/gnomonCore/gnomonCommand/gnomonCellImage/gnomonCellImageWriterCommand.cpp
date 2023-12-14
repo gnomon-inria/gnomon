@@ -100,5 +100,6 @@ void gnomonCellImageWriterCommand::setInputForm(const QString &name, std::shared
     }
 }
 
+GNOMON_REGISTER_TYPE(gnomonCellImageWriterCommand)
 //
 // gnomonCellImageWriterCommand.cpp ends here

@@ -112,5 +112,7 @@ QJsonObject gnomonImageReaderCommand::serializeResults(void) {
     return out;
 }
 
+GNOMON_REGISTER_TYPE(gnomonImageReaderCommand)
+
 //
 // gnomonImageReaderCommand.cpp ends here

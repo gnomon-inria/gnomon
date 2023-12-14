@@ -103,5 +103,7 @@ QJsonObject gnomonLStringReaderCommand::serializeResults(void) {
     return out;
 }
 
+GNOMON_REGISTER_TYPE(gnomonLStringReaderCommand)
+
 //
 // gnomonLStringReaderCommand.cpp ends here

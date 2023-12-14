@@ -104,5 +104,7 @@ QJsonObject gnomonTreeReaderCommand::serializeResults(void) {
     return out;
 }
 
+GNOMON_REGISTER_TYPE(gnomonTreeReaderCommand)
+
 //
 // gnomonTreeReaderCommand.cpp ends here

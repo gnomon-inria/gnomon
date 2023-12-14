@@ -99,5 +99,8 @@ void gnomonPointCloudWriterCommand::setInputForm(const QString &name, std::share
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
 }
+
+GNOMON_REGISTER_TYPE(gnomonPointCloudWriterCommand)
+
 //
 // gnomonPointCloudWriterCommand.cpp ends here

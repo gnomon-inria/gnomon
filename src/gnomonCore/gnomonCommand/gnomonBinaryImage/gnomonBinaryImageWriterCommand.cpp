@@ -91,3 +91,5 @@ void gnomonBinaryImageWriterCommand::setInputForm(const QString &name, std::shar
 QStringList gnomonBinaryImageWriterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
+
+GNOMON_REGISTER_TYPE(gnomonBinaryImageWriterCommand)

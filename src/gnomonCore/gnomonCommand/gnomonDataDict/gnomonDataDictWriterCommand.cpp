@@ -93,3 +93,5 @@ void gnomonDataDictWriterCommand::setInputForm(const QString &name, std::shared_
 QStringList gnomonDataDictWriterCommand::availablePlugins() {
     return availablePluginsFromGroup(groupName);
 }
+
+GNOMON_REGISTER_TYPE(gnomonDataDictWriterCommand)

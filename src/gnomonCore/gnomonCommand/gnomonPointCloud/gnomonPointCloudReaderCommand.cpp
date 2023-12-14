@@ -95,5 +95,8 @@ QJsonObject gnomonPointCloudReaderCommand::serializeResults(void) {
     out["pointCloud"] = d->pointCloud->serialize();
     return out;
 }
+
+GNOMON_REGISTER_TYPE(gnomonPointCloudReaderCommand)
+
 //
 // gnomonPointCloudReaderCommand.cpp ends here

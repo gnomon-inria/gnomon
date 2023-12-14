@@ -100,5 +100,7 @@ void gnomonTreeWriterCommand::setInputForm(const QString &name, std::shared_ptr<
     }
 }
 
+GNOMON_REGISTER_TYPE(gnomonTreeWriterCommand)
+
 //
 // gnomonTreeWriterCommand.cpp ends here

@@ -99,5 +99,7 @@ void gnomonLStringWriterCommand::setInputForm(const QString &name, std::shared_p
     }
 }
 
+GNOMON_REGISTER_TYPE(gnomonLStringWriterCommand)
+
 //
 // gnomonLStringWriterCommand.cpp ends here

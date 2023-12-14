@@ -95,3 +95,5 @@ QJsonObject gnomonBinaryImageReaderCommand::serializeResults(void) {
     out["binaryImage"] = d->binaryImage->serialize();
     return out;
 }
+
+GNOMON_REGISTER_TYPE(gnomonBinaryImageReaderCommand)
