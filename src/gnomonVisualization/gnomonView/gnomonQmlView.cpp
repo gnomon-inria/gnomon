@@ -61,6 +61,7 @@ gnomonQmlViewPrivate::~gnomonQmlViewPrivate(void)
 
 gnomonQmlView::gnomonQmlView(QObject *parent): gnomonAbstractView(parent)
 {
+    setObjectName("gnomonQmlView");
     dd = new gnomonQmlViewPrivate(this);
     d->q  = this;
 
