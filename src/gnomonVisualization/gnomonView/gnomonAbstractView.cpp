@@ -234,7 +234,6 @@ void gnomonAbstractView::transmitForm(const QString& form_type)
         }
         GNOMON_SESSION->addForm(d->forms[form_type]);
         gnomonFormManager::instance()->addForm(d->forms[form_type]->uuid(), image, visualization);
-        gnomonFormManager::instance()->dumpState();
         emit exportedForm(d->forms[form_type]);
     }
 }
