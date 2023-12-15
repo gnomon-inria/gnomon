@@ -785,6 +785,18 @@ Rectangle {
     //}
 
     Rectangle {
+        anchors.right: _view.right
+        anchors.left: _view.left
+        anchors.top: _view.top
+
+        height: G.Style.largeButtonHeight
+        radius: G.Style.panelRadius;
+
+        color: G.Style.colors.hoveredNeutralColor
+        opacity: 0.2
+    }
+
+    Rectangle {
 
         id: _focus_indicator;
 
