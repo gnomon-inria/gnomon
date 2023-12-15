@@ -11,8 +11,7 @@ public:
 
 gnomonPointCloudReaderCommand::gnomonPointCloudReaderCommand() : d(new gnomonPointCloudReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonPointCloudReaderCommand)
 
     for (const auto& key: gnomonCore::pointCloudReader::pluginFactory().keys()) {
         auto algo = gnomonCore::pointCloudReader::pluginFactory().create(key);
@@ -65,15 +64,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudReade
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["pointCloud"] = this->pointCloud();
     return outputs;
-}
-
-bool gnomonPointCloudReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonPointCloudReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudReaderCommand::outputTypes() {

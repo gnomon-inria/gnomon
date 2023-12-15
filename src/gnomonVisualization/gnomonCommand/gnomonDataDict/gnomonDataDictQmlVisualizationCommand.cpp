@@ -20,9 +20,8 @@ public:
 
 gnomonDataDictQmlVisualizationCommand::gnomonDataDictQmlVisualizationCommand() : d(new gnomonDataDictQmlVisualizationCommandPrivate)
 {
-    this->factory_name = groupName;
     this->factory = &gnomonVisualization::dataDictQmlVisualization::pluginFactory();
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonDataDictQmlVisualizationCommand)
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
@@ -79,15 +78,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataDictQmlVisu
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["dataDict"] = d->dataDict;
     return inputs;
-}
-
-bool gnomonDataDictQmlVisualizationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonDataDictQmlVisualizationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonDataDictQmlVisualizationCommand::inputTypes() {

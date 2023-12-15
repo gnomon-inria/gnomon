@@ -15,8 +15,7 @@ public:
 
 gnomonCellComplexConstructorCommand::gnomonCellComplexConstructorCommand() : d(new gnomonCellComplexConstructorCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellComplexConstructorCommand)
 
     QStringList keys = gnomonCore::cellComplexConstructor::pluginFactory().keys();
     if (!keys.empty()) {
@@ -67,19 +66,10 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellComplexCons
     return outputs;
 }
 
-bool gnomonCellComplexConstructorCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellComplexConstructorCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("output", "gnomonCellComplex"));
     return types;
-}
-
-QStringList gnomonCellComplexConstructorCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonCellComplexConstructorCommand::deserializeResults(QJsonObject &serialization) {

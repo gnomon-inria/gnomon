@@ -11,8 +11,7 @@ public:
 
 gnomonCellComplexWriterCommand::gnomonCellComplexWriterCommand() : d(new gnomonCellComplexWriterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellComplexWriterCommand)
 
         //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::cellComplexWriter::pluginFactory().keys();
@@ -64,11 +63,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellComplexWrit
     return inputs;
 }
 
-bool gnomonCellComplexWriterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellComplexWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("input", "gnomonCellComplex"));
@@ -81,10 +75,6 @@ void gnomonCellComplexWriterCommand::setInputForm(const QString &name, std::shar
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
-}
-
-QStringList gnomonCellComplexWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonCellComplexWriterCommand::postdo(void) {

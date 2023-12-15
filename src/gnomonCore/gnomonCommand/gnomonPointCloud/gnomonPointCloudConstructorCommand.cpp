@@ -15,8 +15,7 @@ public:
 
 gnomonPointCloudConstructorCommand::gnomonPointCloudConstructorCommand() : d(new gnomonPointCloudConstructorCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonPointCloudConstructorCommand)
 
     QStringList keys = gnomonCore::pointCloudConstructor::pluginFactory().keys();
     if (!keys.empty()) {
@@ -68,14 +67,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudConst
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
-}
-
-bool gnomonPointCloudConstructorCommand::isEmpty(){
-    return availablePlugins().empty();
-}
-
-QStringList gnomonPointCloudConstructorCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudConstructorCommand::outputTypes() {

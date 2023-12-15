@@ -19,8 +19,7 @@ public:
 
 gnomonCellImageWriterCommand::gnomonCellImageWriterCommand() : d(new gnomonCellImageWriterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellImageWriterCommand)
 
     //see MeshWriterCommand for what to do when there is multiple writers
 
@@ -75,15 +74,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageWriter
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["cellImage"] = d->cellImage;
     return inputs;
-}
-
-bool gnomonCellImageWriterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonCellImageWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonCellImageWriterCommand::inputTypes() {

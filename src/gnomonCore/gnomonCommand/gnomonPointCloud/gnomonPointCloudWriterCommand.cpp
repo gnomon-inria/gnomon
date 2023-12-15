@@ -19,8 +19,7 @@ public:
 
 gnomonPointCloudWriterCommand::gnomonPointCloudWriterCommand() : d(new gnomonPointCloudWriterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonPointCloudWriterCommand)
 
         //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::pointCloudWriter::pluginFactory().keys();
@@ -75,15 +74,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudWrite
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["pointCloud"] = d->pointCloud;
     return inputs;
-}
-
-bool gnomonPointCloudWriterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonPointCloudWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudWriterCommand::inputTypes() {

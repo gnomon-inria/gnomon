@@ -38,10 +38,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "treeFromLString";
-    static QStringList availablePlugins();
 
 private:
     class gnomonTreeFromLStringCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonTreeFromLStringCommand)

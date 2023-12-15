@@ -20,8 +20,7 @@ public:
 
 gnomonDataFrameWriterCommand::gnomonDataFrameWriterCommand() : d(new gnomonDataFrameWriterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonDataFrameWriterCommand)
 
         //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::dataFrameWriter::pluginFactory().keys();
@@ -75,15 +74,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataFrameWriter
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["dataFrame"] = d->dataFrame;
     return inputs;
-}
-
-bool gnomonDataFrameWriterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonDataFrameWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonDataFrameWriterCommand::inputTypes() {

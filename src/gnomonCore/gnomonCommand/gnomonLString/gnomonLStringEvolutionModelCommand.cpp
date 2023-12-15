@@ -36,8 +36,7 @@ public:
 
 gnomonLStringEvolutionModelCommand::gnomonLStringEvolutionModelCommand() : d(new gnomonLStringEvolutionModelCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonLStringEvolutionModelCommand)
 
     QStringList keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     if (!keys.empty()) {
@@ -260,15 +259,6 @@ gnomonAbstractCommand::orderedMap gnomonLStringEvolutionModelCommand::stateTypes
     gnomonAbstractCommand::orderedMap types;
     types.emplace_back(std::make_pair("lString", "gnomonLString"));
     return types;
-}
-
-bool gnomonLStringEvolutionModelCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonLStringEvolutionModelCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 //

@@ -12,8 +12,7 @@ public:
 
 gnomonBinaryImageWriterCommand::gnomonBinaryImageWriterCommand() : d(new gnomonBinaryImageWriterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonBinaryImageWriterCommand)
 
     //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::binaryImageWriter::pluginFactory().keys();
@@ -69,11 +68,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> gnomonBinaryImageWrite
     return inputs;
 }
 
-bool gnomonBinaryImageWriterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonBinaryImageWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("binaryImage", "gnomonBinaryImage"));
@@ -86,10 +80,6 @@ void gnomonBinaryImageWriterCommand::setInputForm(const QString &name, std::shar
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
-}
-
-QStringList gnomonBinaryImageWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 GNOMON_REGISTER_TYPE(gnomonBinaryImageWriterCommand)

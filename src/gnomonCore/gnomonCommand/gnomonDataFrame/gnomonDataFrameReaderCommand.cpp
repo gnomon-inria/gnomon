@@ -19,8 +19,7 @@ public:
 
 gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand() : d(new gnomonDataFrameReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonDataFrameReaderCommand)
 
     for (const auto& key: gnomonCore::dataFrameReader::pluginFactory().keys()) {
         auto algo = gnomonCore::dataFrameReader::pluginFactory().create(key);
@@ -73,15 +72,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataFrameReader
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["dataFrame"] = this->dataFrame();
     return outputs;
-}
-
-bool gnomonDataFrameReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonDataFrameReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonDataFrameReaderCommand::outputTypes() {

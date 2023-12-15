@@ -41,10 +41,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "pointCloudQuantification";
-    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudQuantificationCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonPointCloudQuantificationCommand)

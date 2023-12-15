@@ -19,8 +19,7 @@ public:
 
 gnomonLStringWriterCommand::gnomonLStringWriterCommand() : d(new gnomonLStringWriterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonLStringWriterCommand)
 
     QStringList keys = gnomonCore::lStringWriter::pluginFactory().keys();
     if (!keys.empty()) {
@@ -74,15 +73,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringWriterCo
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["lString"] = d->lString;
     return inputs;
-}
-
-bool gnomonLStringWriterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonLStringWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonLStringWriterCommand::inputTypes() {

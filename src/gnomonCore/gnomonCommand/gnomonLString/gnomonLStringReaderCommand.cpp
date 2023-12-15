@@ -19,8 +19,7 @@ public:
 
 gnomonLStringReaderCommand::gnomonLStringReaderCommand() : d(new gnomonLStringReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonLStringReaderCommand)
 
     for (const auto& key: gnomonCore::lStringReader::pluginFactory().keys()) {
         auto algo = gnomonCore::lStringReader::pluginFactory().create(key);
@@ -72,15 +71,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringReaderCo
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["lString"] = this->lString();
     return outputs;
-}
-
-bool gnomonLStringReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonLStringReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonLStringReaderCommand::outputTypes() {

@@ -20,6 +20,31 @@
     const bool is_registered = ClassName##Register(); \
 }
 
+struct gnomonAbstractCommandTraits {
+    bool isEmpty() {
+        return availablePlugins().empty();
+    };
+    virtual QStringList availablePlugins() = 0;
+};
+
+template <typename T>
+struct GNOMONCORE_EXPORT gnomonAbstractCommandTraitsBase : public gnomonAbstractCommandTraits
+{    
+    QStringList availablePlugins() override {
+        return availablePluginsFromGroup(T::groupName);
+    }
+};
+
+#define GNOMON_COMMAND_TRAITS(BaseClass) \
+    struct BaseClass##Traits : public gnomonAbstractCommandTraitsBase<BaseClass> { \
+}; 
+
+#define GNOMON_COMMANDS_INIT(BaseClass) \
+    this->factory_name = groupName; \
+    this->m_traits = new BaseClass##Traits(); \
+    loadPluginGroup(this->factoryName()); 
+
+
 class GNOMONCORE_EXPORT gnomonAbstractCommand : public QObject
 {
     Q_OBJECT
@@ -29,7 +54,11 @@ public:
 
 public:
              gnomonAbstractCommand(void) = default;
-    virtual ~gnomonAbstractCommand(void) = default;
+    virtual ~gnomonAbstractCommand(void) {
+        if(m_traits) 
+            delete m_traits;
+        m_traits = nullptr;
+        };
 
 public slots:
     virtual void  predo(void) = 0;
@@ -67,6 +96,25 @@ public:
     void setNoAsync() {this->override_async = true;}
 
 public:
+    inline bool isEmpty() {
+        if(!m_traits) {
+            qWarning() << Q_FUNC_INFO << "gnomonAbstractAlgorithmCommandTraits is not set";
+            return true;
+        }
+        return m_traits->isEmpty();
+    }
+    
+    inline QStringList availablePlugins() {
+        if(!m_traits) {
+            qWarning() << Q_FUNC_INFO << "gnomonAbstractAlgorithmCommandTraits is not set";
+            return QStringList();
+        }
+
+        return m_traits->availablePlugins();
+    }
+
+
+public:
     virtual dtkCoreParameters parameters() const = 0;
     virtual void setParameter(const QString& parameter, const QVariant& value) = 0;
     virtual QMap<QString, QString> parameterGroups() const = 0;
@@ -82,6 +130,8 @@ public:
 protected:
     QString factory_name = "";
     gnomonPluginFactoryBase *factory = nullptr;
+    gnomonAbstractCommandTraits *m_traits = nullptr;
+
     QFutureWatcher<void> *watcher = nullptr;
     bool override_async = false;
 };

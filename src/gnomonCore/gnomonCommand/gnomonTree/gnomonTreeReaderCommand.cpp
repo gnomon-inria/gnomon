@@ -19,8 +19,7 @@ public:
 
 gnomonTreeReaderCommand::gnomonTreeReaderCommand() : d(new gnomonTreeReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonTreeReaderCommand)
 
     for (const auto& key: gnomonCore::treeReader::pluginFactory().keys()) {
         auto algo = gnomonCore::treeReader::pluginFactory().create(key);
@@ -73,15 +72,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeReaderComma
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["tree"] = this->tree();
     return outputs;
-}
-
-bool gnomonTreeReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonTreeReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeReaderCommand::outputTypes() {

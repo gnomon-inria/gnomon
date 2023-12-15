@@ -17,8 +17,7 @@ public:
 
 gnomonCellImageFromImageCommand::gnomonCellImageFromImageCommand() : d(new gnomonCellImageFromImageCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellImageFromImageCommand)
 
     QStringList keys = gnomonCore::cellImageFromImage::pluginFactory().keys();
     if (!keys.empty()) {
@@ -148,11 +147,6 @@ gnomonAbstractCommand::orderedMap gnomonCellImageFromImageCommand::outputTypes()
     return output_types;
 }
 
-bool gnomonCellImageFromImageCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 void gnomonCellImageFromImageCommand::setBinaryImage(std::shared_ptr<gnomonBinaryImageSeries> binary_image_series) {
     if ((!binary_image_series)||(binary_image_series->times().empty())) {
         d->binary_image_series = nullptr;
@@ -166,10 +160,6 @@ void gnomonCellImageFromImageCommand::setBinaryImage(std::shared_ptr<gnomonBinar
 
 std::shared_ptr<gnomonBinaryImageSeries> gnomonCellImageFromImageCommand::binaryImage() {
     return d->binary_image_series;
-}
-
-QStringList gnomonCellImageFromImageCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonCellImageFromImageCommand::deserializeResults(QJsonObject &serialization) {

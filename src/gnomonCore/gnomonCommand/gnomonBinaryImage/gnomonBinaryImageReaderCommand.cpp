@@ -11,8 +11,7 @@ public:
 
 gnomonBinaryImageReaderCommand::gnomonBinaryImageReaderCommand() : d(new gnomonBinaryImageReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonBinaryImageReaderCommand)
 
     for (const auto& key: gnomonCore::binaryImageReader::pluginFactory().keys()) {
         auto algo = gnomonCore::binaryImageReader::pluginFactory().create(key);
@@ -67,19 +66,10 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonBinaryImageRead
     return outputs;
 }
 
-bool gnomonBinaryImageReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonBinaryImageReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("binaryImage", "gnomonBinaryImage"));
     return types;
-}
-
-QStringList gnomonBinaryImageReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonBinaryImageReaderCommand::deserializeResults(QJsonObject &serialization) {

@@ -11,8 +11,7 @@ public:
 
 gnomonDataDictReaderCommand::gnomonDataDictReaderCommand() : d(new gnomonDataDictReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonDataDictReaderCommand)
 
     for (const auto& key: gnomonCore::dataDictReader::pluginFactory().keys()) {
         auto algo = gnomonCore::dataDictReader::pluginFactory().create(key);
@@ -66,20 +65,10 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataDictReaderC
     return outputs;
 }
 
-bool gnomonDataDictReaderCommand::isEmpty()
-{
-    loadPluginGroup("dataDictReader");
-    return gnomonCore::dataDictReader::pluginFactory().keys().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonDataDictReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("dataDict", "gnomonDataDict"));
     return types;
-}
-
-QStringList gnomonDataDictReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonDataDictReaderCommand::deserializeResults(QJsonObject &serialization) {

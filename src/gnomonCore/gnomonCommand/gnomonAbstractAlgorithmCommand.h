@@ -13,7 +13,6 @@
 
 #include "gnomonAbstractCommand.h"
 
-
 class GNOMONCORE_EXPORT gnomonAbstractAlgorithmCommand : public gnomonAbstractCommand
 {
     Q_OBJECT
