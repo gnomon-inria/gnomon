@@ -477,8 +477,14 @@ QJsonObject gnomonAbstractView::serialize(void) {
 void gnomonAbstractView::unSerialize(const QJsonObject &serialization) {
     auto forms = serialization.value("forms").toObject();
     for(const auto &key: forms.keys()) {
-        auto form = GNOMON_SESSION->getForm(forms.value(key).toString());
-        setForm(key, form);
+        QString form_uuid = forms.value(key).toString();
+        auto form = GNOMON_SESSION->getForm(form_uuid);
+        if(gnomonFormManager::instance()->formIndex(form_uuid)>0) {
+            auto index = gnomonFormManager::instance()->formIndex(form_uuid);
+            setForm(key, form, gnomonFormManager::instance()->getVisualization(index));
+        } else {
+            setForm(key, form);
+        }
     }
 
     auto visualization = serialization.value("visualizations").toObject();
