@@ -17,6 +17,7 @@ public:
 
 public:
     QMetaObject::Connection connectTime;
+    QMetaObject::Connection connectViewDestroyed;
 };
 
 //

@@ -223,6 +223,8 @@ public:
     QMetaObject::Connection connectSlice;
     QMetaObject::Connection connectTime;
 
+    QMetaObject::Connection connectRenderWindowAdded;
+
 public:
     void clearConnections(void);
 
@@ -1761,8 +1763,7 @@ QJsonObject gnomonVtkView::serialize(void) {
 void gnomonVtkView::unSerialize(const QJsonObject &serialization) {
     gnomonAbstractView::unSerialize(serialization);
 
-    static QMetaObject::Connection connection;
-    disconnect(connection);
+    disconnect(dd->connectRenderWindowAdded);
 
     auto lambda = [=] () {
         QJsonObject other_cameras = serialization.value("other_cameras").toObject();
@@ -1824,7 +1825,7 @@ void gnomonVtkView::unSerialize(const QJsonObject &serialization) {
     if(dd->window) {
         lambda();
     } else {
-        connection = connect(this, &gnomonVtkView::renderWindowAssociated, lambda);
+        dd->connectRenderWindowAdded = connect(this, &gnomonVtkView::renderWindowAssociated, lambda);
     }
 
 }
