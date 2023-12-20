@@ -419,7 +419,6 @@ void gnomonSessionManager::sync() {
     qDebug() << "===========" << "saving session";
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
     QDir dir(GNOMON_PROJECT->projectDir());
-    settings.clear();
 
     // building json object for properties
     QJsonObject session_json;
@@ -450,6 +449,8 @@ void gnomonSessionManager::sync() {
     //TODO: forms
     cleanExpiredForms();
     settings.beginGroup("forms");
+    settings.setValue("form_manager_state", gnomonFormManager::instance()->dumpState());
+
     settings.setValue("owned_form_ids", m_owned_forms.keys());
     QStringList form_ids;
     for(auto it = m_tracked_forms.keyValueBegin(); it != m_tracked_forms.keyValueEnd(); it++) {
@@ -490,10 +491,13 @@ bool gnomonSessionManager::load() {
             m_owned_forms.insert(uuid, form);
         }
     }
+
+    QJsonObject form_manager_state = settings.value("form_manager_state").toJsonObject();
+    gnomonFormManager::instance()->loadState(form_manager_state);
+
     settings.endGroup();
 
     //workspaces
-
     if(!workspaces_info.isEmpty()) {
 
         QJsonObject workspace_properties = workspaces_info["workspace_properties"].toObject();

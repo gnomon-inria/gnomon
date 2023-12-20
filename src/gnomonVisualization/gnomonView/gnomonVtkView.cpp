@@ -545,6 +545,7 @@ void gnomonVtkViewPrivate::adaptForm(const QString& adapter_plugin)
 
 gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 {
+    setObjectName("gnomonVtkView");
     dd = new gnomonVtkViewPrivate;
     dd->q = this;
 
@@ -595,6 +596,7 @@ void gnomonVtkView::associate(vtkRenderWindow *window)
     dd->updateOrientation();
     d->updateFormsTimes();
     dd->updateAxes();
+    update();
 }
 
 void gnomonVtkView::switchTo3D(void)
