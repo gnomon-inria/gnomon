@@ -47,24 +47,29 @@ namespace gnomonForm {
 
     std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QString &type) {
         void *myClassPtr = nullptr;
-        QMetaType metatype = QMetaType::fromName(type.toUtf8());
+        QString corrected_type = type;
+
+
+        if(!corrected_type.startsWith("gnomon")) {
+            corrected_type = "gnomon" + corrected_type;
+        }
+
+        if(!corrected_type.startsWith("gnomonTimeSeries")) {
+            corrected_type = "gnomonTimeSeries<" + corrected_type + ">";
+        }
+
+        QMetaType metatype = QMetaType::fromName(corrected_type.toUtf8());
 
         if (metatype.isValid()) {
             myClassPtr = metatype.create();
-        } else {
-            // try as a time series
-            QString type_series = "gnomonTimeSeries<" + type + ">";
-            metatype = QMetaType::fromName(type_series.toUtf8());
-            if (metatype.isValid()) {
-                myClassPtr = metatype.create();
+            if (myClassPtr) {
+                return std::shared_ptr<gnomonAbstractDynamicForm>(static_cast<gnomonAbstractDynamicForm*>(myClassPtr));
             }
-        }
-         
-        if (myClassPtr) {
-            return std::shared_ptr<gnomonAbstractDynamicForm>(static_cast<gnomonAbstractDynamicForm*>(myClassPtr));
-        }
-
-        qCritical() << Q_FUNC_INFO << "Could not create dynamic form of type " << type;
+        } 
+        
+        qCritical() << Q_FUNC_INFO 
+                    << "Could not create dynamic form of type " << type
+                    << " (corrected type: " << corrected_type << ")";
         throw std::invalid_argument(type.toStdString());
     }
 

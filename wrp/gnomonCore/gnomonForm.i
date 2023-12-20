@@ -60,6 +60,7 @@ import_array();
 #include <gnomonCore/gnomonForm/gnomonTimeSeries.h>
 #include <gnomonCore/gnomonForm/gnomonWallForm.h>
 
+#include "gnomonCore/gnomonForm/gnomonDynamicFormFactory.h"
 #include "gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonCore/gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData.h"
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h>
@@ -119,21 +120,10 @@ import_array();
 
 %typemap(directorout) vtkImageData* {
     $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
-    //PyTypeObject *obj_type = Py_TYPE($1);
-    //qDebug() << $1 << obj_type;
-    //qDebug() << "type "<< obj_type->tp_name;
-    //PyVTKObject *py_obj = (PyVTKObject *)(&(*$1));
-    //qDebug() << "pyVTK_obj" << py_obj;
-    //vtkObjectBase *vtk_obj = py_obj->vtk_ptr;
-    //qDebug() << "vtk_obj_ptr "<< vtk_obj;
-    //$result = (vtkImageData*) vtk_obj;
-
     if ( $result == NULL ) {
         qDebug("Fail to convert to vtkImageData*");
-        //PyErr_Print();
     }
 }
-
 
 // /////////////////////////////////////////////////////////////////
 // std::vector<double>
@@ -497,6 +487,7 @@ import_array();
     if (SWIG_IsOK(r)) {
         v = reinterpret_cast<gnomonAbstractForm *>(s_v);
         $result = v->clone();
+        qDebug() << Q_FUNC_INFO << "cloning form of type " << v->name();
     } else {
         qWarning() << "dir out gnomonAbstractForm *  error at converting ptr : " << SWIG_ErrorType(SWIG_ArgError(r));
     }
@@ -582,7 +573,73 @@ $input = dict;
 // Form series
 // /////////////////////////////////////////////////////////////////
 
+%insert("header") %{
+std::shared_ptr<gnomonAbstractDynamicForm> ToFormSeries(PyObject *obj, const QString &form_name) {
+    PyObject *key, *value;
+    Py_ssize_t pos = 0;
+    int r;
+    std::shared_ptr<gnomonAbstractDynamicForm> series = gnomonForm::createDynamicForm(form_name);
+    std::string type_name = "std::shared_ptr<" + form_name.toStdString() + ">";
+    swig_type_info *swig_type = SWIG_TypeQuery(type_name.c_str());
+
+    while (PyDict_Next(obj, &pos, &key, &value)) {
+        double t = PyFloat_AsDouble(key);
+        std::shared_ptr<gnomonAbstractForm> v;
+        //std::shared_ptr<gnomon## form_name##> v;
+        void *s_v = 0;
+        int newmem = 0;
+        r = SWIG_ConvertPtrAndOwn(value, &s_v, swig_type,  0 , &newmem);
+        if (!SWIG_IsOK(r)) {
+            QString msg = "in ToFormSeries " + form_name;
+            Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(r)), msg.toStdString().c_str());
+        }
+        if (s_v) {
+            v = *(reinterpret_cast< std::shared_ptr< gnomonAbstractForm > * >(s_v));
+            series->insert(t, v);
+            if (newmem & SWIG_CAST_NEW_MEMORY) delete reinterpret_cast< std::shared_ptr< gnomonAbstractForm > * >(s_v);
+        }
+    }
+    return series;
+}
+
+
+PyObject *FromFormSeries(std::shared_ptr<gnomonAbstractDynamicForm> series) {
+    if (series) {
+        PyObject *dict = PyDict_New();
+        QList<double> times = series->times();
+        std::shared_ptr<gnomonAbstractForm> *c;
+        double t;
+        PyObject *v;
+
+        //void *myClassPtr = nullptr;
+        //QString form_series_name = "gnomonTimeSeries<" + series->formName() + ">";
+        //QMetaType metatype = QMetaType::fromName(form_series_name.toUtf8());
+        //if (!metatype.isValid()) {
+        //    qDebug() << "FromFormSeries: invalid metatype" << form_series_name << series->formName();
+        //    return Py_RETURN_NONE;
+        //}
+
+
+        QString type_name = "std::shared_ptr<" + series->formName() + ">";
+        swig_type_info *swig_type = SWIG_TypeQuery(type_name.toStdString().c_str());
+
+        for (auto it = times.begin(); it != times.end(); ++it) {
+            t = *it;
+            c = new std::shared_ptr<gnomonAbstractForm>(series->atAsAbstract(t));
+            //c = new std::shared_ptr<  gnomon## form_name##>(series->at(t)) ;
+            v = SWIG_NewPointerObj(SWIG_as_voidptr(c), swig_type, SWIG_POINTER_OWN |  0 );
+            PyDict_SetItem(dict, PyFloat_FromDouble(t), v);
+        }
+        return dict;
+    } else {
+        Py_RETURN_NONE;
+    }
+}
+
+%}
+
 %define WRAP_GNOMONCORE_FORM_SERIES(form_name)
+/*
     %insert("header") %{
   //  %fragment("To## form_name## Series", "header") {
         std::shared_ptr<gnomon## form_name## Series> To## form_name## Series(PyObject *obj) {
@@ -630,11 +687,10 @@ $input = dict;
         }
     //}
     %}
-
-    // ,fragment="To## form_name## Series"
+*/
     %typemap(in) std::shared_ptr<gnomon## form_name## Series> {
         if (PyDict_Check($input)) {
-            $1 = To## form_name## Series($input);
+            $1 = std::dynamic_pointer_cast<gnomon## form_name## Series>(ToFormSeries($input, #form_name));
         } else {
             qDebug("typemap in PyDict is expected as input. Empty gnomon## form_name## Series is returned.");
             $1 = std::make_shared<gnomon## form_name## Series>();
@@ -644,20 +700,30 @@ $input = dict;
     %typemap(directorout) std::shared_ptr<gnomon## form_name## Series> {
         PyObject *dict = static_cast<PyObject *>($1);
         if (PyDict_Check(dict)) {
-            $result = To## form_name## Series(dict);
+            $result = std::dynamic_pointer_cast<gnomon## form_name## Series>(ToFormSeries(dict, #form_name));
         } else {
             qDebug("typemap dirout PyDict is expected as input. Empty gnomon## form_name## Series is returned.");
             $result = std::make_shared<gnomon## form_name## Series>();
         }
     }
 
-    //, fragment="From## form_name## Series"
     %typemap(out) std::shared_ptr<gnomon## form_name## Series> {
-        $result = From## form_name## Series($1);
+        $result = FromFormSeries(std::dynamic_pointer_cast<gnomonAbstractDynamicForm>(*&$1));
     }
 
     %typemap(directorin) std::shared_ptr<gnomon## form_name## Series> {
-        $input = From## form_name## Series($1);
+        $input = FromFormSeries(std::dynamic_pointer_cast<gnomonAbstractDynamicForm>(*&$1));
+    }
+
+    %extend QVariant {
+
+    void setValue(gnomon## form_name *value) {
+        $self->setValue(dtk::variantFromValue(value));
+    }
+    gnomon## form_name* tognomon## form_name () const {
+        return $self->value<gnomon## form_name *>();
+    }
+
     }
 %enddef
 
@@ -684,8 +750,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         $self->setValue(QVariant::fromValue(value));
     }
 
-
-    void setValue(gnomonCellComplex *value) {
+/*    void setValue(gnomonCellComplex *value) {
         $self->setValue(dtk::variantFromValue(value));
     }
     gnomonCellComplex* tognomonCellComplex() const {
@@ -706,12 +771,13 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
         return $self->value<gnomonCellGraph *>();
     }
 
-    /* void setValue(gnomonDiscreteDynamicForm *value) {
-        $self->setValue(dtkCoreMetaType::variantFromValue(value));
-    }
-    gnomonDiscreteDynamicForm* tognomonDiscreteDynamicForm() const {
-        return $self->value<gnomonDiscreteDynamicForm *>();
-    } */
+    // void setValue(gnomonDiscreteDynamicForm *value) {
+    //    $self->setValue(dtkCoreMetaType::variantFromValue(value));
+    //}
+    //gnomonDiscreteDynamicForm* tognomonDiscreteDynamicForm() const {
+    //    return $self->value<gnomonDiscreteDynamicForm *>();
+    //} 
+    */
 
     void setValue(gnomonSphereForm *value) {
         $self->setValue(dtk::variantFromValue(value));
@@ -745,7 +811,6 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
             std::shared_ptr<gnomonAbstractDynamicForm> series;
             PyObject *k2, *v2;
             Py_ssize_t pos2 = 0;
-
             //use the first element to infer the type
             if(PyDict_Next(value, &pos2, &k2, &v2)) {
                 std::shared_ptr<gnomonAbstractForm> v;
@@ -756,6 +821,8 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
                     Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(r)), "in cast to gnomonAbstractForm");
                 }
                 v = *(reinterpret_cast< std::shared_ptr< gnomonAbstractForm> * >(s_v));
+                series = ToFormSeries(value, v->name());
+                /*
                 if(v->asBinaryImage()) {
                     series = ToBinaryImageSeries(value);
                 } else if(v->asCellComplex()) {
@@ -781,9 +848,9 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
                 } else if(v->asTree()) {
                     series = ToTreeSeries(value);
                     */
-                } else {
-                    qWarning() << Q_FUNC_INFO << "Cannot cast to derived type: " << v.get();
-                }
+                //} else {
+                //    qWarning() << Q_FUNC_INFO << "Cannot cast to derived type: " << v.get();
+                //}
                 qDebug() << "inserting "<< k << series->times() << series->formName();
                 $result.insert(k, series);
             } else {
@@ -818,6 +885,9 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
                     Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(r)), "in cast to gnomonAbstractForm");
                 }
                 v = *(reinterpret_cast< std::shared_ptr< gnomonAbstractForm> * >(s_v));
+                const QString form_name = v->formName();
+                series = ToFormSeries(value, form_name);
+                /*
                 if(v->asBinaryImage()) {
                     series = ToBinaryImageSeries(value);
                 } else if(v->asCellComplex()) {
@@ -843,9 +913,9 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
                 } else if(v->asTree()) {
                     series = ToTreeSeries(value);
                     */
-                } else {
-                    qWarning() << Q_FUNC_INFO << "Cannot cast to derived type: " << v.get();
-                }
+                //} else {
+                //    qWarning() << Q_FUNC_INFO << "Cannot cast to derived type: " << v.get();
+                //}
                 qDebug() << "inserting "<< k << series->times() << series->formName();
                 $1.insert(k, series);
             } else {
@@ -866,7 +936,8 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
     for(; it != end; ++it) {
         k =  PyUnicode_FromString(it.key().toUtf8().constData());
         std::shared_ptr<gnomonAbstractDynamicForm> series = it.value();
-
+        v = FromFormSeries(series);
+        /*
         if(series->formName() == "gnomonBinaryImage") {
             v = FromBinaryImageSeries(std::dynamic_pointer_cast<gnomonBinaryImageSeries>(series));
         } else if(series->formName() == "gnomonCellComplex") {
@@ -891,7 +962,7 @@ WRAP_GNOMONCORE_FORM_SERIES(Tree)
             qWarning() << Q_FUNC_INFO << "Not implemented for form: " << series->formName();
             v = PyDict_New();
         }
-
+        */
         PyDict_SetItem($result, k, v);
     }
 }

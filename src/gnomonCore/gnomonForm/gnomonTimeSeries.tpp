@@ -76,10 +76,9 @@ template <typename T> std::shared_ptr<T> gnomonTimeSeries<T>::at(double t)
     }
 }
 
-template <typename T> T *gnomonTimeSeries<T>::at_impl(double t)
+template <typename T> std::shared_ptr<gnomonAbstractForm> gnomonTimeSeries<T>::atAsAbstract(double t)
 {
-    qDebug() << Q_FUNC_INFO << "at_impl for t " << t << "TOCHECKKKKK";
-    return this->at(t).get();
+    return this->at(t);
 }
 
 template <typename T> std::shared_ptr<T> gnomonTimeSeries<T>::current(void) {
@@ -89,9 +88,8 @@ template <typename T> std::shared_ptr<T> gnomonTimeSeries<T>::current(void) {
     return m_forms[m_current_time_id];
 }
 
-template <typename T> T *gnomonTimeSeries<T>::current_impl(void) {
-    qDebug() << Q_FUNC_INFO << "current_impl TOCHECKKKKK";
-    return this->current().get();
+template <typename T> std::shared_ptr<gnomonAbstractForm> gnomonTimeSeries<T>::currentAsAbstract(void) {
+    return this->current();
 }
 
 template <typename T> double gnomonTimeSeries<T>::time(void) const
@@ -140,6 +138,16 @@ bool gnomonTimeSeries<T>::containsForm(std::shared_ptr<gnomonAbstractForm> form)
         }
     }
     return false;
+}
+
+template <typename T> 
+void gnomonTimeSeries<T>::insert(double t, std::shared_ptr<gnomonAbstractForm> form)
+{
+    std::shared_ptr<T> form_casted = std::dynamic_pointer_cast<T>(form);
+    if(!form_casted) {
+        qWarning() << Q_FUNC_INFO << "Invalid form type : the form is not of the right type " << form->name() << " vs " << T::formName();
+    }
+    insert(t, std::dynamic_pointer_cast<T>(form));
 }
 
 template <typename T> void gnomonTimeSeries<T>::insert(double t, std::shared_ptr<T> form)

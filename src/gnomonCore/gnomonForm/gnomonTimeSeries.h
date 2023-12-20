@@ -37,8 +37,8 @@ public:
     bool containsTime(double t, double precision = 1e-9) const override;
     bool containsForm(std::shared_ptr<gnomonAbstractForm> form) const override;
 
+    void insert(double t, std::shared_ptr<gnomonAbstractForm> form) override;
     void insert(double t, std::shared_ptr<T> form);
-//    void insert(const T& form) override;
     void drop(double t) override;
 
     void compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) override;
@@ -60,8 +60,8 @@ public:
     bool loaded() override;
 
 protected:
-    T *at_impl(double t) override;
-    T *current_impl(void) override;
+    std::shared_ptr<gnomonAbstractForm> atAsAbstract(double t) override;
+    std::shared_ptr<gnomonAbstractForm> currentAsAbstract(void) override;
 
     uint idAtT(double t) const;
     double closestT(double t) const;
