@@ -463,8 +463,9 @@ void gnomonSessionManager::sync() {
     settings.setValue("form_ids", form_ids);
     settings.endGroup();
 
-
-    //TODO: world
+    settings.beginGroup("pipeline");
+    settings.setValue("pipeline_manager_state", gnomonPipelineManager::instance()->dumpState());
+    settings.endGroup();
 
 
 }
@@ -519,8 +520,10 @@ bool gnomonSessionManager::load() {
             gnomonPipelineManager::instance()->pipeline()->readFromJson(pipeline_path);
         }
 
-        //TODO: world
-
+        settings.beginGroup("pipeline");
+        QJsonObject pipeline_manager_state = settings.value("pipeline_manager_state").toJsonObject();
+        gnomonPipelineManager::instance()->loadState(pipeline_manager_state);
+        settings.endGroup();
 
         QMetaObject::invokeMethod(d->window, "switch_workspace",
                                   Q_ARG(int, workspaces_info["current_index"].toInt()));
