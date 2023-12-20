@@ -1761,11 +1761,12 @@ QJsonObject gnomonVtkView::serialize(void) {
 }
 
 void gnomonVtkView::unSerialize(const QJsonObject &serialization) {
-    gnomonAbstractView::unSerialize(serialization);
 
     disconnect(dd->connectRenderWindowAdded);
 
     auto lambda = [=] () {
+        gnomonAbstractView::unSerialize(serialization);
+
         QJsonObject other_cameras = serialization.value("other_cameras").toObject();
         for(auto key: other_cameras.keys()) {
             if(dd->cameras.contains((gnomonVtkView::Orientation)key.toInt())) {

@@ -462,16 +462,19 @@ QJsonObject gnomonAbstractView::serialize(void) {
     }
     serialization.insert("forms", forms);
 
-    QJsonObject visu;
+    QJsonObject visu_params;
+    QJsonObject visu_names;
     for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {
         auto parameters = it->second->parameters();
         QVariantHash out;
         for(auto param_it = parameters.keyValueBegin(); param_it!=parameters.keyValueEnd(); param_it++) {
             out.insert(param_it->first, param_it->second->toVariantHash());
         }
-        visu.insert(it->first, QJsonObject::fromVariantHash(out));
+        visu_params.insert(it->first, QJsonObject::fromVariantHash(out));
+        visu_names.insert(it->first, it->second->visualizationName());
     }
-    serialization.insert("visualizations", visu);
+    serialization.insert("visu_params", visu_params);
+    serialization.insert("visu_names", visu_names);
 
     QJsonObject viewParameters;
     viewParameters.insert("currentFormType", d->viewParameters.currentFormType);
@@ -487,6 +490,15 @@ QJsonObject gnomonAbstractView::serialize(void) {
 }
 
 void gnomonAbstractView::unSerialize(const QJsonObject &serialization) {
+    // set visu names
+    auto visu_names = serialization.value("visu_names").toObject();
+    for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {
+        if(visu_names.contains(it->first)) {
+            it->second->setVisualizationName(visu_names.value(it->first).toString());
+        }
+    }
+
+    // set forms
     auto forms = serialization.value("forms").toObject();
     for(const auto &key: forms.keys()) {
         QString form_uuid = forms.value(key).toString();
@@ -499,10 +511,12 @@ void gnomonAbstractView::unSerialize(const QJsonObject &serialization) {
         }
     }
 
-    auto visualization = serialization.value("visualizations").toObject();
+    // set visu params
+    auto visu_params = serialization.value("visu_params").toObject();
     for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {
-        if(visualization.contains(it->first)) {
-            QVariantHash parameters_hash = visualization.value(it->first).toObject().toVariantHash();
+        if(visu_params.contains(it->first)) {
+            it->second->setVisualizationName(visu_names.value(it->first).toString());
+            QVariantHash parameters_hash = visu_params.value(it->first).toObject().toVariantHash();
             for(auto param_it = parameters_hash.keyValueBegin(); param_it!=parameters_hash.keyValueEnd(); param_it++) {
                 auto param = dtkCoreParameter::create(param_it->second.toHash());
                 it->second->setParameter(param_it->first, param->variant());
