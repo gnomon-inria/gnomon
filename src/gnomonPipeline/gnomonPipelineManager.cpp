@@ -645,9 +645,10 @@ void gnomonPipelineManager::loadState(const QJsonObject& state)
     };
 
     for(auto node_id: state.keys()) {
-        gnomonPipelineNode* node;
         auto component = state[node_id].toObject().toVariantMap();
         auto node_name = component["node_name"].toString();
+        if(GNOMON_SESSION->getForm(node_id))
+            this->setFormIndex(node_id, GNOMON_SESSION->getForm(node_id)->thumbnailId());
         switch (component["node_type"].toInt()) {
             case gnomonPipelineNode::Type::NODE_ALGORITHM:
             case gnomonPipelineNode::Type::NODE_FILTER:
@@ -657,6 +658,7 @@ void gnomonPipelineManager::loadState(const QJsonObject& state)
                 d->algorithm_nodes[node_id] = node;
                 d->algorithm_output[node_id] = component["output"].toString();
                 addNodeInpuForms(node, component["input_forms"].toMap());
+                d->linkNodeInputs(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
@@ -672,6 +674,7 @@ void gnomonPipelineManager::loadState(const QJsonObject& state)
             {
                 gnomonPipelineNodeWriter* node = dynamic_cast<gnomonPipelineNodeWriter*>(d->pipeline->node(node_name));
                 addNodeInpuForms(node, component["input_forms"].toMap());
+                d->linkNodeInputs(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
@@ -689,6 +692,7 @@ void gnomonPipelineManager::loadState(const QJsonObject& state)
                 d->adapter_nodes[node_id] = node;
                 d->adapter_output[node_id] = component["output"].toString();
                 addNodeInpuForms(node, component["input_forms"].toMap());
+                d->linkNodeInputs(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
@@ -698,6 +702,7 @@ void gnomonPipelineManager::loadState(const QJsonObject& state)
                 d->task_nodes[node_id] = node;
                 d->task_output[node_id] = component["output"].toString();
                 addNodeInpuForms(node, component["input_forms"].toMap());
+                d->linkNodeInputs(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
