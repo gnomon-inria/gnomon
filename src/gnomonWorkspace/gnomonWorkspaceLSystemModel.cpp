@@ -73,7 +73,7 @@ public:
     QString file;
     int currentIndex = 0;
 
-    QDir* tmpDir = nullptr;
+    QDir* lpy_dir = nullptr;
     QFile* model_file = nullptr;
     QFuture<int> redo_future;
 
@@ -113,14 +113,14 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
-    auto temp_dir = GNOMON_PROJECT->projectDir() + "/.gnomon/lpy";
-    d->tmpDir =  new QDir(temp_dir);
-    
+    auto lpy_dir_path = GNOMON_PROJECT->projectDir() + "/.gnomon/lpy";
+    d->lpy_dir =  new QDir(lpy_dir_path);
+    d->lpy_dir->mkpath(lpy_dir_path);
     int stat;
     QString temp_working_directory = "";
     temp_working_directory += "import sys \n";
     temp_working_directory += "cwdir = ";
-    temp_working_directory += "'" + d->tmpDir->path() + "'" + "\n";
+    temp_working_directory += "'" + GNOMON_PROJECT->projectDir() + "'" + "\n";
     temp_working_directory += "if not sys.path.__contains__(f'{cwdir}'): \n";
     temp_working_directory += " sys.path.append(f'{cwdir}')\n";
 
@@ -184,6 +184,8 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
         command = nullptr;
     }
 
+    // TODO : destroy all temporary files
+    // this behavior removes only current file
     if(d->model_file) {
         d->model_file->remove();
         delete d->model_file;
@@ -209,8 +211,8 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
     if (text != d->text) {
         d->text = text;
 
-        if(!d->model_file || d->model_file->fileName() != d->tmpDir->filePath(d->file)) {
-            d->model_file = new QFile(d->tmpDir->filePath(d->file));
+        if(!d->model_file) {
+            d->model_file = new QFile(d->lpy_dir->filePath(d->file));
         }
 
         if (d->model_file->open(QIODevice::WriteOnly)) {
@@ -265,7 +267,7 @@ void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
     }
 }
 
-void gnomonWorkspaceLSystemModel::read(const QString& file_url)
+void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only)
 {
     QString file_name = file_url.split(QRegularExpression("/")).last();
     QString file_path = filePathFromUrl(file_url);
@@ -278,12 +280,18 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url)
         if(d->model_file) {
             delete d->model_file;
         }
+        if(read_only) {
+            d->model_file = new QFile(d->lpy_dir->filePath(file_name));
+        } else {
+            auto project_file = GNOMON_PROJECT->projectDir() + "/" + file_name;
+            d->model_file = new QFile(project_file);
+        }
 
-        d->model_file = new QFile(d->tmpDir->filePath(file_name));
         this->setFileName(file_name);
         this->setText(in.readAll());
         this->reset();
-        this->backup();
+        if(!read_only)
+            this->backup();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }

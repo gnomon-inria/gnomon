@@ -220981,6 +220981,9 @@ function receive(name, value) {
     case "rename":
         renameCurrentTab(data);
         break;
+    case "readonly":
+        editor.updateOptions({ readOnly: data})
+        break;
     default:
         break;
     }
@@ -221125,6 +221128,7 @@ function switchTab(index, name="") {
         //console.log("create  " , activeTab);
         var newEditor = {};
         newEditor.model = monaco_editor_esm_vs_editor_editor_api_js__WEBPACK_IMPORTED_MODULE_11__.editor.createModel("", "python", "inmemory://model/" + activeTab);
+        newEditor.isReadOnly = true;
         editors[activeTab] = newEditor;
         editor.setModel(newEditor.model);
     }

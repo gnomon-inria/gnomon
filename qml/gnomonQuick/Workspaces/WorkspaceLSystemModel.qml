@@ -13,6 +13,7 @@ import gnomonQuick.Workspaces as G
 import gnomonQuick.Controls   as G
 import gnomonQuick.Style      as G
 import gnomonQuick.Monaco     as G
+import gnomon.Project    as GP
 
 import gnomon.Workspaces 1.0 as GW
 
@@ -24,6 +25,7 @@ G.Workspace {
 
     property string _current_file: "";
     property alias editor: _editor;
+    property bool _read_only_lpy_file : false
 
     fill: () => {
         if(world.currentRef < 0)
@@ -88,7 +90,7 @@ G.Workspace {
         nameFilters: ["L-Py source files (*.lpy *.py)"]
 
         onAccepted: {
-            _self.open_lpy_file(_file_dialog.file)
+            copy_lpy_file_to_project.open()
         }
     }
 
@@ -224,6 +226,9 @@ G.Workspace {
                     name = eval(name)
                     if(name.endsWith("py"))
                         d.fileName = name
+                    let file_path = GP.ProjectManager.project.findFile(d.fileName)
+                    _editor.readOnly = (file_path.length === 0) & (!d.fileName.includes("vonKoch.lpy"))
+
                 }
 
                 onIdeIsReady : () => {
@@ -301,8 +306,42 @@ G.Workspace {
         drawel.close();
     }
 
+    G.Dialog {
+        id: copy_lpy_file_to_project
+
+        simple_dialog : true
+
+        parent: Overlay.overlay
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.smallDialogWidth
+        height: G.Style.largeDelegateHeight
+        header.height: 0
+
+        modal: true
+
+
+        Label {
+            text: "Copy this file to your project for editing. Otherwise, it remains read-only. \nProceed with copying?"
+            font: G.Style.fonts.nodeHeaderSelected
+        }
+
+        standardButtons:  Dialog.Yes | Dialog.No
+
+        onAccepted : {
+            _self._read_only_lpy_file = false
+            open_lpy_file(_file_dialog.file)
+        }
+
+        onRejected : {
+            _self._read_only_lpy_file = true
+            open_lpy_file(_file_dialog.file)
+        }
+
+    }
+
     function open_lpy_file(path) {
-        d.read(decodeURIComponent(path));
+        d.read(decodeURIComponent(path), _self._read_only_lpy_file);
         _editor.contents = d.text
         _self._current_file = decodeURIComponent(path);
         _editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"

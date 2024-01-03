@@ -14,6 +14,7 @@ Control {
     property var markers
     property var fileName;
     property var tabName;
+    property var readOnly;
 
     QtObject {
         id: _internal;
@@ -50,6 +51,10 @@ Control {
             _internal.tab_filenames.push(self.tabName)
             self.fileName = self.tabName
         }
+    }
+
+    onReadOnlyChanged : {
+        bridge.send('readonly', self.readOnly);
     }
 
     //to create a new tab with a name:
