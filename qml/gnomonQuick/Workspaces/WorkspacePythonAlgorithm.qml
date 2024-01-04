@@ -42,6 +42,7 @@ G.Workspace {
                 if(world.currentRef >= 0)
                     _source_view.droppedFromManager(world.currentRef)
             }
+            drawel.update_menu()
         }
 
         onParametersChanged: {

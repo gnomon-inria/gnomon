@@ -41,12 +41,24 @@ G.Page {
         if (menu)
             menu.destroy();
 
-        var view = window.currentView;
+        var workspace = window.current_workspace();
+        var source;
+        var prop;
 
-        var menu_component = Qt.createComponent("qrc:/qt/qml/gnomonQuick/Menus/ViewMenu.qml")
+        if(workspace.workspace_title === "Python Algorithm" & workspace.d.editMode)
+        {
+            source = "qrc:/qt/qml/gnomonQuick/Menus/WorkspaceBrowsingMenu.qml"
+            prop = { parameters: workspace.parameters, d: workspace.d }
+        } else {
+            source = "qrc:/qt/qml/gnomonQuick/Menus/ViewMenu.qml";
+            var view = window.currentView;
+            prop = { view: view }
+        }
+
+        var menu_component = Qt.createComponent(source)
 
         if (menu_component.status == Component.Ready) {
-            menu = menu_component.createObject(_content, { view: view });
+            menu = menu_component.createObject(_content, prop);
             menu.anchors.fill = _content;
         } else {
             console.error(menu_component.errorString());
