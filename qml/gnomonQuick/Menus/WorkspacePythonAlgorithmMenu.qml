@@ -16,6 +16,7 @@ Item {
     property alias parameters : _parameters_menu.parameters
     property var d;
     property string _current_file: "";
+    property bool _read_only_py_file : false
 
     P.FileDialog {
         id: _file_dialog;
@@ -28,7 +29,7 @@ Item {
         nameFilters: ["Python source files (*.py)"]
 
         onAccepted: {
-            _self.open_py_file(_file_dialog.file)
+            copy_py_file_to_project.open()
         }
     }
 
@@ -328,11 +329,45 @@ Item {
         }
     }
 
+    G.Dialog {
+        id: copy_py_file_to_project
+
+        simple_dialog : true
+
+        parent: Overlay.overlay
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.smallDialogWidth
+        height: G.Style.largeDelegateHeight
+        header.height: 0
+
+        modal: true
+
+
+        Label {
+            text: "Copy this file to your project for editing. Otherwise, it remains read-only. \nProceed with copying?"
+            font: G.Style.fonts.nodeHeaderSelected
+        }
+
+        standardButtons:  Dialog.Yes | Dialog.No
+
+        onAccepted : {
+            _self._read_only_py_file = false
+            open_py_file(_file_dialog.file)
+        }
+
+        onRejected : {
+            _self._read_only_py_file = true
+            open_py_file(_file_dialog.file)
+        }
+
+    }
+
     function open_py_file(path) {
         let file_path = decodeURIComponent(path);
         let file_name = file_path.split('/').pop()
         d.code.fileName = file_name;
-        d.read(file_path);
+        d.read(file_path, _self._read_only_py_file);
         _self._current_file = path;
     }
 }

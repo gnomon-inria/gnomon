@@ -177,7 +177,7 @@ QString gnomonWorkspacePythonAlgorithm::algorithm(void) const
     return d->algorithm_key;
 }
 
-void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
+void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_only)
 {
     QString file_path;
     const QUrl url(file_url);
@@ -188,6 +188,15 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
         file_path = file_url;
     }
 
+    if(!read_only) {
+        QString file_name = file_path.split(QRegularExpression("/")).last();
+        QString project_file_path = GNOMON_PROJECT->projectDir() + "/" + file_name;
+        if(!QFile::copy(file_path, project_file_path)) {
+            dtkWarn()<<"Failed to copy file "<< file_path << "to Project";
+            return;
+        }
+    }
+
     QFile f(file_path);
     if (f.open(QIODevice::ReadOnly)) {
         settings.setValue("Python/load", file_path);
@@ -195,7 +204,8 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
         d->code->setText(s.readAll());
         d->code->parseCode();
         emit d->code->codeUpdated();
-        this->backup();
+        if(!read_only)
+            this->backup();
     } else {
         dtkWarn()<<"Could not open file"<<file_path;
     }

@@ -10,6 +10,7 @@ import gnomonQuick.Monaco     as G
 
 import gnomon.Workspaces as GW
 import gnomon.Jupyter    as G
+import gnomon.Project    as GP
 
 
 G.Workspace {
@@ -81,6 +82,9 @@ G.Workspace {
                     // Don't emit fileNameChanged signal when Tab 0
                     if(!name.endsWith("0"))
                         d.code.fileName = name
+                    let file_path = GP.ProjectManager.project.findFile(d.code.fileName)
+                    _editor.readOnly = (file_path.length === 0) & (!d.code.fileName.includes("example.py"))
+
                 }
                 onIdeIsReady : () => {
                     d.restore();

@@ -66,7 +66,7 @@ signals:
     void requestOpenFile(const QString& path);
 
 public slots:
-    void read(const QString& file_url);
+    void read(const QString& file_url, bool read_only=false);
     void save(const QString& file_url) const;
 
 public:
