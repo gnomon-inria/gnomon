@@ -34,6 +34,7 @@ public:
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileChanged);
+    Q_PROPERTY(QStringList missingTextures READ missingTextures NOTIFY missingTexturesChanged);
 
 signals:
     void textChanged(const QString&);
@@ -47,12 +48,14 @@ signals:
     void parametersChanged(void);
     void currentIndexChanged(void);
     void requestOpenFile(const QString& path);
+    void missingTexturesChanged(void);
 
 public:
     QString message(void) const;
 
     QString text(void);
     Q_INVOKABLE void setText(const QString& text);
+    Q_INVOKABLE void copyTexturesFiles(const QStringList& files);
 
     int derivationLength(void);
     void setDerivationLength(int l);
@@ -92,6 +95,7 @@ public:
     int currentIndex(void) const;
     void setCurrentIndex(int);
     bool backup(void);
+    QStringList missingTextures(void) const;
 
     gnomonVtkView *view(void) const;
     gnomonQmlView *textView(void) const;
