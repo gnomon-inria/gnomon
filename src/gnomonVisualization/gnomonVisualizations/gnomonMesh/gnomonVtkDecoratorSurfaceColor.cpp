@@ -97,7 +97,7 @@ void gnomonVtkDecoratorSurfaceColorPrivate::updateColorFunction(void)
     if(q->m_mapper2d)
         q->m_mapper2d->Update();
 
-    if(q->m_view)
+    if(q->m_view && q->m_view->interactor())
         q->m_view->interactor()->Render();
 }
 
@@ -211,10 +211,16 @@ void gnomonVtkDecoratorSurfaceColor::setGrid(vtkSmartPointer<vtkUnstructuredGrid
     m_actor2d->Modified();
 
     if(m_view && m_is_decorating) {
-        m_view->renderer3D()->AddActor(m_actor3d);
-        m_view->renderer3D()->ResetCamera();
-        m_view->renderer2D()->AddActor(m_actor2d);
-        m_view->renderer2D()->ResetCamera();
-        m_view->interactor()->Render();
+        if (m_view->renderer3D()) {
+            m_view->renderer3D()->AddActor(m_actor3d);
+            m_view->renderer3D()->ResetCamera();
+        }
+        if (m_view->renderer2D()) {
+            m_view->renderer2D()->AddActor(m_actor2d);
+            m_view->renderer2D()->ResetCamera();
+        }
+        if (m_view->interactor()) {
+            m_view->interactor()->Render();
+        }
     }
 }
