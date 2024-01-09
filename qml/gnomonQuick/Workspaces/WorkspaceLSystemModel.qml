@@ -17,6 +17,8 @@ import gnomon.Project    as GP
 
 import gnomon.Workspaces 1.0 as GW
 
+import "../Controls/utils.js" as Utils
+
 G.Workspace {
 
     id: _self;
@@ -340,15 +342,143 @@ G.Workspace {
 
     }
 
+    G.Dialog {
+        id : _missing_textures_dialog
+
+        property var missingTextureFiles: []
+
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.mediumDialogWidth
+        height: G.Style.mediumDialogHeight
+
+        padding: 0;
+
+        parent: Overlay.overlay
+
+        focus: true
+        modal: true
+        title : "It seems you have some missing textures, please add them"
+        Column {
+            spacing: G.Style.smallPadding;
+            anchors.fill: parent
+            anchors.topMargin: G.Style.smallButtonHeight
+            Repeater {
+                model: d.missingTextures
+                RowLayout {
+                    Layout.fillWidth: true
+                    height: G.Style.mediumLabelHeight
+                    spacing: 2
+                    Label {
+                        id: _texture_label
+
+                        Layout.preferredWidth: _texture_label.contentWidth;
+                        Layout.rightMargin: G.Style.largePadding
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignTop
+
+                        text: modelData
+                        font: G.Style.fonts.formLabel
+                        color: G.Style.colors.textColorBase
+                    }
+
+                    Rectangle {
+                        height: G.Style.mediumLabelHeight
+                        implicitWidth: Math.round(2/3 * parent.width)
+                        color: G.Style.colors.gutterColor;
+                        radius: G.Style.panelRadius
+
+                        G.TextField {
+                            id: _texture_file_path
+
+                            anchors.right: _check_texture_icon.left
+                            anchors.left: parent.left
+                            anchors.bottom: parent.bottom;
+                            anchors.top: parent.top
+                            anchors.bottomMargin: G.Style.tinyPadding
+                            placeholderText: qsTr("Enter texture file path like: /Users/...")
+                        }
+
+                        G.Icon {
+                            id: _check_texture_icon
+
+                            anchors.right: _edit_texture_button.left
+                            anchors.bottom: parent.bottom;
+                            anchors.rightMargin: G.Style.smallPadding
+                            visible : false
+                            color : "green"
+                            size: G.Style.iconSmall;
+                            icon: "file-check"
+
+                        }
+
+                        G.IconButton {
+                            id: _edit_texture_button
+
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom;
+                            anchors.rightMargin: G.Style.smallPadding
+                            size: G.Style.iconSmall;
+                            iconName: "folder-open"
+
+                            onClicked: {
+                                _texture_dialog.open();
+                            }
+                        }
+
+                    }
+
+                    P.FileDialog {
+                        id: _texture_dialog
+
+                        nameFilters: [ "Image files (*.jpg)" ]
+                        title: "Open texture file"
+                        modality: Qt.WindowModal;
+                        fileMode: P.FileDialog.OpenFile
+
+                        onAccepted: {
+                            let file_path = Utils.urlToPath(_texture_dialog.file.toString())
+                            if(file_path.split("/").slice(-1)[0] === _texture_label.text) {
+                                _texture_file_path.text = file_path
+                                _check_texture_icon.visible = true
+                                _missing_textures_dialog.missingTextureFiles.push(file_path)
+                            }
+                        }
+                    }  
+                }
+            }
+        }
+        standardButtons:  Dialog.Ok | Dialog.Cancel
+
+        onAccepted : {
+            d.copyTexturesFiles(_missing_textures_dialog.missingTextureFiles);
+        }
+
+    }
+
+
     function open_lpy_file(path) {
         d.read(decodeURIComponent(path), _self._read_only_lpy_file);
         _editor.contents = d.text
         _self._current_file = decodeURIComponent(path);
         _editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
-        _self._path = folder;
+
 
         if (!_self._current_file.endsWith(".lpy")) {
             _non_lpy_toast.open()
         }
+        if(d.missingTextures.length > 0)
+            _missing_textures_dialog.open()
+    }
+
+    function urlToPath(urlString) {
+        var s
+        if (urlString.startsWith("file:///")) {
+            var k = urlString.charAt(9) === ':' ? 8 : 7
+            s = urlString.substring(k)
+        } else {
+            s = urlString
+        }
+        return decodeURIComponent(s);
     }
 }

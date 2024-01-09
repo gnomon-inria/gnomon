@@ -14,6 +14,7 @@
 #include "gnomonForm/gnomonLString/gnomonLString.h"
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization"
 #include <dtkScript>
+#include "gnomonVisualization/gnomonCoreParameterColorTableObject.h"
 
 QString vonKochLSystem(void)
 {
@@ -87,6 +88,7 @@ public:
     gnomonVtkView *view = nullptr;
     gnomonQmlView *text_view = nullptr;
     QJsonObject state;
+    QStringList missing_textures;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -141,6 +143,18 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
                 d->view->setFormVisuParameter(name, "interpretation_lsystem", d->model_file->fileName());
             }
             auto visu_params = d->view->formVisuParameters(name);
+
+            d->missing_textures.clear();
+            QObject* parameters_object = qvariant_cast<QObject*>(visu_params.toVariant().toMap()["color_table"]);
+            gnomonCoreParameterColorTableObject* params = dynamic_cast<gnomonCoreParameterColorTableObject*>(parameters_object);
+            if(params) {
+                for(const auto i: params->parameter()->colorIndices()) {
+                    if(params->colorTable().isTexture(i))
+                        if(GNOMON_PROJECT->findFile(params->colorTable().textureFile(i).split("/").last()).isEmpty())
+                            d->missing_textures << params->colorTable().textureFile(i).split("/").last();
+                }
+                emit missingTexturesChanged();
+            }
             QJSValueIterator it(visu_params);
             while (it.hasNext()) {
                 it.next();
@@ -184,10 +198,8 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
         command = nullptr;
     }
 
-    // TODO : destroy all temporary files
-    // this behavior removes only current file
     if(d->model_file) {
-        d->model_file->remove();
+        // d->model_file->remove();
         delete d->model_file;
         d->model_file = nullptr;
     }
@@ -529,6 +541,19 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
         it.value().setProperty("group", group != "" ? group : nullptr);
     }
     return parameters;
+}
+
+QStringList gnomonWorkspaceLSystemModel::missingTextures(void) const
+{
+    return d->missing_textures;
+}
+
+void gnomonWorkspaceLSystemModel::copyTexturesFiles(const QStringList& files)
+{
+    for(const auto& file : files) {
+        auto new_file = GNOMON_PROJECT->projectDir() + "/" + file.split("/").last();
+        QFile::copy(file, new_file);
+    }
 }
 
 QJsonObject gnomonWorkspaceLSystemModel::serialize() {

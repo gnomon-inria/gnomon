@@ -85,6 +85,7 @@ QML_FILES
   ToolBar.qml
   ToolTip.qml
   TreeView.qml
+  utils.js
   View.qml
   ViewParameters.qml
   World.qml
