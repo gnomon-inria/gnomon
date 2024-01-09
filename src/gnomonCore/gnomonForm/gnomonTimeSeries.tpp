@@ -162,6 +162,11 @@ template <typename T> void gnomonTimeSeries<T>::insert(double t, std::shared_ptr
     m_storage_info.insert(id,  {
             t, id, QString::number(id), true
     });
+    if(!form->data()) {
+        // check needed for tests such as gnomonCellImageTrackingCommandTest
+        qWarning() << Q_FUNC_INFO << "Invalid form : the form has no data, it will not be saved";
+        return;
+    }
     save(t);
 }
 
