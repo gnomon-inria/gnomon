@@ -470,15 +470,4 @@ G.Workspace {
         if(d.missingTextures.length > 0)
             _missing_textures_dialog.open()
     }
-
-    function urlToPath(urlString) {
-        var s
-        if (urlString.startsWith("file:///")) {
-            var k = urlString.charAt(9) === ':' ? 8 : 7
-            s = urlString.substring(k)
-        } else {
-            s = urlString
-        }
-        return decodeURIComponent(s);
-    }
 }
