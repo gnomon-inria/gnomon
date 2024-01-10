@@ -516,13 +516,14 @@ bool gnomonSessionManager::load() {
         // pipeline reloading is broken because pipelines are build upon the memory addresses of various component
         // and memory addresses are not transferred when reloading
         auto pipeline_path = dir.absoluteFilePath(PROJECT_PIPELINE_FILE);
+        auto pipeline = std::make_shared<gnomonPipeline>();
         if(dir.exists(pipeline_path)) {
-            gnomonPipelineManager::instance()->pipeline()->readFromJson(pipeline_path);
+            pipeline->readFromJson(pipeline_path);
         }
 
         settings.beginGroup("pipeline");
         QJsonObject pipeline_manager_state = settings.value("pipeline_manager_state").toJsonObject();
-        gnomonPipelineManager::instance()->loadState(pipeline_manager_state);
+        gnomonPipelineManager::instance()->loadState(pipeline_manager_state, pipeline);
         settings.endGroup();
 
         QMetaObject::invokeMethod(d->window, "switch_workspace",

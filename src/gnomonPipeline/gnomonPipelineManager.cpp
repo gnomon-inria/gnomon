@@ -637,9 +637,9 @@ QJsonObject gnomonPipelineManager::dumpState(void)
     return state;
 }
 
-void gnomonPipelineManager::loadState(const QJsonObject& state)
+void gnomonPipelineManager::loadState(const QJsonObject& state, std::shared_ptr<gnomonPipeline> pipeline)
 {
-    auto addNodeInpuForms = [=](gnomonPipelineNode* node, const QVariantMap& input_forms){
+    auto addNodeInputForms = [=](gnomonPipelineNode* node, const QVariantMap& input_forms){
         for(const auto& [key, value]: input_forms.asKeyValueRange())
             d->node_input_forms[node][key] = value.toString();
     };
@@ -654,71 +654,79 @@ void gnomonPipelineManager::loadState(const QJsonObject& state)
             case gnomonPipelineNode::Type::NODE_FILTER:
             case gnomonPipelineNode::Type::NODE_CONVERTER:
             {
-                gnomonPipelineNodeAlgorithm* node = dynamic_cast<gnomonPipelineNodeAlgorithm*>(d->pipeline->node(node_name));
+                gnomonPipelineNodeAlgorithm* node = dynamic_cast<gnomonPipelineNodeAlgorithm*>(pipeline->node(node_name));
                 d->algorithm_nodes[node_id] = node;
                 d->algorithm_output[node_id] = component["output"].toString();
-                addNodeInpuForms(node, component["input_forms"].toMap());
+                addNodeInputForms(node, component["input_forms"].toMap());
                 d->linkNodeInputs(node);
+                d->pipeline->addNode(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
             case gnomonPipelineNode::Type::NODE_READER:
             {
-                gnomonPipelineNodeReader* node = dynamic_cast<gnomonPipelineNodeReader*>(d->pipeline->node(node_name));
+                gnomonPipelineNodeReader* node = dynamic_cast<gnomonPipelineNodeReader*>(pipeline->node(node_name));
                 d->reader_nodes[node_id] = node;
                 d->reader_output[node_id] = component["output"].toString();
+                d->pipeline->addNode(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
             case gnomonPipelineNode::Type::NODE_WRITER:
             {
-                gnomonPipelineNodeWriter* node = dynamic_cast<gnomonPipelineNodeWriter*>(d->pipeline->node(node_name));
-                addNodeInpuForms(node, component["input_forms"].toMap());
+                gnomonPipelineNodeWriter* node = dynamic_cast<gnomonPipelineNodeWriter*>(pipeline->node(node_name));
+                addNodeInputForms(node, component["input_forms"].toMap());
                 d->linkNodeInputs(node);
+                d->pipeline->addNode(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
             case gnomonPipelineNode::Type::NODE_CONSTRUCTOR:
             {
-                gnomonPipelineNodeConstructor* node = dynamic_cast<gnomonPipelineNodeConstructor*>(d->pipeline->node(node_name));
+                gnomonPipelineNodeConstructor* node = dynamic_cast<gnomonPipelineNodeConstructor*>(pipeline->node(node_name));
                 d->constructor_nodes[node_id] = node;
                 d->constructor_output[node_id] = component["output"].toString();
+                d->pipeline->addNode(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
             case gnomonPipelineNode::Type::NODE_ADAPTER:
             {
-                gnomonPipelineNodeAdapter* node = dynamic_cast<gnomonPipelineNodeAdapter*>(d->pipeline->node(node_name));
+                gnomonPipelineNodeAdapter* node = dynamic_cast<gnomonPipelineNodeAdapter*>(pipeline->node(node_name));
                 d->adapter_nodes[node_id] = node;
                 d->adapter_output[node_id] = component["output"].toString();
-                addNodeInpuForms(node, component["input_forms"].toMap());
+                addNodeInputForms(node, component["input_forms"].toMap());
                 d->linkNodeInputs(node);
+                d->pipeline->addNode(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
             case gnomonPipelineNode::Type::NODE_TASK:
             {
-                gnomonPipelineNodeTask* node = dynamic_cast<gnomonPipelineNodeTask*>(d->pipeline->node(node_name));
+                gnomonPipelineNodeTask* node = dynamic_cast<gnomonPipelineNodeTask*>(pipeline->node(node_name));
                 d->task_nodes[node_id] = node;
                 d->task_output[node_id] = component["output"].toString();
-                addNodeInpuForms(node, component["input_forms"].toMap());
+                addNodeInputForms(node, component["input_forms"].toMap());
                 d->linkNodeInputs(node);
+                d->pipeline->addNode(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
             case gnomonPipelineNode::Type::NODE_MORPHONET:
             {
-                gnomonPipelineNodeMorphonet* node = dynamic_cast<gnomonPipelineNodeMorphonet*>(d->pipeline->node(node_name));
+                gnomonPipelineNodeMorphonet* node = dynamic_cast<gnomonPipelineNodeMorphonet*>(pipeline->node(node_name));
                 d->morphonet_nodes[node_id] = node;
                 d->morphonet_output[node_id] = component["output"].toString();
+                d->pipeline->addNode(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }
             case gnomonPipelineNode::Type::NODE_EVOLUTION_MODEL:
             {
-                gnomonPipelineNodeEvolutionModel* node = dynamic_cast<gnomonPipelineNodeEvolutionModel*>(d->pipeline->node(node_name));
+                gnomonPipelineNodeEvolutionModel* node = dynamic_cast<gnomonPipelineNodeEvolutionModel*>(pipeline->node(node_name));
                 d->evolution_model_nodes[node_id] = node;
                 d->evolution_model_output[node_id] = component["output"].toString();
+                d->pipeline->addNode(node);
                 d->pipeline_nodes[node_name] = node;
                 break;
             }

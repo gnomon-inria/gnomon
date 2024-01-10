@@ -745,6 +745,7 @@ void gnomonFormManager::loadState(const QJsonObject& state)
         d->insertForm(index, uuid, image);
         d->formVisualizations.insert(index, visu);
         emit added(index, form_type);
+        d->item_counter++;
     }
 
     d->formCameras.clear();

@@ -54,7 +54,7 @@ public:
 
 public:
     QJsonObject dumpState(void);
-    void loadState(const QJsonObject& state);
+    void loadState(const QJsonObject& state, std::shared_ptr<gnomonPipeline> pipeline);
 
 public: 
     std::pair<QString, gnomonPipelineNodeReader *> cacheNode(const QString& form_uuid);
