@@ -40,13 +40,12 @@ public:
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "lStringTranslation";
-    static QStringList availablePlugins();
 
 private:
     class gnomonLStringTranslationCommandPrivate *d;
 };
 
+GNOMON_COMMAND_TRAITS(gnomonLStringTranslationCommand)
 //
 // gnomonLStringTranslationCommand.h ends here

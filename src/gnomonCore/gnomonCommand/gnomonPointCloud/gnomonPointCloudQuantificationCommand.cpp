@@ -16,8 +16,7 @@ public:
 
 gnomonPointCloudQuantificationCommand::gnomonPointCloudQuantificationCommand() : d(new gnomonPointCloudQuantificationCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonPointCloudQuantificationCommand)
 
     QStringList keys = gnomonCore::pointCloudQuantification::pluginFactory().keys();
     if (!keys.empty()) {
@@ -133,15 +132,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudQuant
     outputs["pointCloud"] = this->pointCloud();
     outputs["dataFrame"] = this->dataFrame();
     return outputs;
-}
-
-bool gnomonPointCloudQuantificationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonPointCloudQuantificationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::inputTypes() {

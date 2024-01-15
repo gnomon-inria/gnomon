@@ -20,9 +20,8 @@ public:
 
 gnomonLStringQmlVisualizationCommand::gnomonLStringQmlVisualizationCommand() : d(new gnomonLStringQmlVisualizationCommandPrivate)
 {
-    this->factory_name = groupName;
     this->factory = &gnomonVisualization::lStringQmlVisualization::pluginFactory();
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonLStringQmlVisualizationCommand)
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
@@ -79,15 +78,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringQmlVisua
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["lString"] = d->lString;
     return inputs;
-}
-
-bool gnomonLStringQmlVisualizationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonLStringQmlVisualizationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonLStringQmlVisualizationCommand::inputTypes() {

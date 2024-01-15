@@ -484,7 +484,7 @@ bool gnomonSessionManager::load() {
     // hold a reference to every form until load is finished, every unused form should be cleaned up
     QList<std::shared_ptr<gnomonAbstractDynamicForm>> form_holder;
     for(const auto &uuid: form_ids) {
-        auto form = createDynamicForm(settings.value(uuid).toJsonObject());
+        auto form = gnomonForm::createDynamicForm(settings.value(uuid).toJsonObject());
         m_tracked_forms.insert(uuid, form);
         form_holder.append(form);
         if(owned_form_ids.contains(uuid)) {

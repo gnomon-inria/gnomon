@@ -28,10 +28,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "meshReader";
-    static QStringList availablePlugins();
 
 private:
     class gnomonMeshReaderCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonMeshReaderCommand)

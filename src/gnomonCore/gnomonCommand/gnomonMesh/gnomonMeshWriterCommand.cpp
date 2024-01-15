@@ -22,8 +22,7 @@ public:
 
 gnomonMeshWriterCommand::gnomonMeshWriterCommand() : d(new gnomonMeshWriterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonMeshWriterCommand)
 
     for (const auto& key: gnomonCore::meshWriter::pluginFactory().keys()) {
         auto algo = gnomonCore::meshWriter::pluginFactory().create(key);
@@ -97,15 +96,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshWriterComma
     return inputs;
 }
 
-bool gnomonMeshWriterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonMeshWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
-}
-
 QStringList gnomonMeshWriterCommand::extensions(void)
 {
     QStringList res;
@@ -127,6 +117,8 @@ void gnomonMeshWriterCommand::setInputForm(const QString &name, std::shared_ptr<
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
 }
+
+GNOMON_REGISTER_TYPE(gnomonMeshWriterCommand)
 
 //
 // gnomonMeshWriterCommand.cpp ends here

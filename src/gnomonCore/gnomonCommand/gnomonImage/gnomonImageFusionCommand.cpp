@@ -23,8 +23,7 @@ public:
 
 gnomonImageFusionCommand::gnomonImageFusionCommand() : d(new gnomonImageFusionCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonImageFusionCommand)
 
     QStringList keys = gnomonCore::imageFusion::pluginFactory().keys();
     if (!keys.empty()) {
@@ -131,15 +130,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageFusionComm
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
-}
-
-bool gnomonImageFusionCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonImageFusionCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonImageFusionCommand::inputTypes() {

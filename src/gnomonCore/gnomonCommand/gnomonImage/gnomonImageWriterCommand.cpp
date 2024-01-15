@@ -19,8 +19,7 @@ public:
 
 gnomonImageWriterCommand::gnomonImageWriterCommand() : d(new gnomonImageWriterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonImageWriterCommand)
 
         //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::imageWriter::pluginFactory().keys();
@@ -76,15 +75,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageWriterComm
     return inputs;
 }
 
-bool gnomonImageWriterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonImageWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
-}
-
 gnomonAbstractCommand::orderedMap gnomonImageWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("image", "gnomonImage"));
@@ -98,6 +88,8 @@ void gnomonImageWriterCommand::setInputForm(const QString &name, std::shared_ptr
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
 }
+
+GNOMON_REGISTER_TYPE(gnomonImageWriterCommand)
 
 //
 // gnomonImageWriterCommand.cpp ends here

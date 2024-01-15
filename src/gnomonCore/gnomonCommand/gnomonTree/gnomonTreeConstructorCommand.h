@@ -29,10 +29,10 @@ public:
     void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "treeConstructor";
-    static QStringList availablePlugins();
 
 private:
     class gnomonTreeConstructorCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonTreeConstructorCommand)
