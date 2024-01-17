@@ -724,9 +724,14 @@ void gnomonFormManager::loadState(const QJsonObject& state)
     d->forms.clear();
     d->formVisualizations.clear();
     d->formThumbnail.clear();
-    for( auto [id, visualization]: form_visualizations.asKeyValueRange()) {
+
+    QList<QString> ids = forms.keys();
+    ids.sort();
+
+    for(auto id : ids) {
         int index = id.toInt();
         QString uuid = forms[id].toString();
+        auto visualization = form_visualizations[id];
         QString form_type = visualization.toMap()["form_type"].toString();
         QString visu_type = visualization.toMap()["visu_type"].toString();
         int figure_number = visualization.toMap()["figure_number"].toString().toInt();
