@@ -322,6 +322,8 @@ gnomonSessionManager::gnomonSessionManager(QObject *parent) : gnomonAbstractSess
     d = new gnomonSessionManagerPrivate;
     d->q = this;
 
+    connect(gnomonFormManager::instance(), &gnomonFormManager::added,
+            this, &gnomonAbstractSessionManager::sync);
     connect(gnomonPipelineManager::instance()->pipeline(), &gnomonPipeline::nodeAdded,
             this, &gnomonAbstractSessionManager::sync);
     connect(gnomonPipelineManager::instance()->pipeline(), &gnomonPipeline::nodeRemoved,
