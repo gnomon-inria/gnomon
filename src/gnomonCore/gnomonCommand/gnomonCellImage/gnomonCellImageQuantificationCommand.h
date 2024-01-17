@@ -41,10 +41,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageQuantification";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageQuantificationCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellImageQuantificationCommand)

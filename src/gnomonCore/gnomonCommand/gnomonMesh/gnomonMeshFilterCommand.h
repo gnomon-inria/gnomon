@@ -36,10 +36,10 @@ public:
     void setAlgorithmName(const QString& algo_name) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "meshFilter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonMeshFilterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonMeshFilterCommand)

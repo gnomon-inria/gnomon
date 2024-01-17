@@ -36,6 +36,13 @@ void gnomonTimeSeriesTestCase::createEmptyFormTest(void)
     QVERIFY(f = new gnomonTimeSeries<gnomonCellComplex>());
 }
 
+void gnomonTimeSeriesTestCase::createFormSerieFromStringTest(void)
+{
+    gnomonForm::registerForms();
+    std::shared_ptr<gnomonCellComplexSeries> f = std::dynamic_pointer_cast<gnomonCellComplexSeries>(gnomonForm::createDynamicForm("gnomonCellComplex"));
+    QVERIFY(f);
+    QVERIFY(f->formName() == "gnomonCellComplex");
+}
 
 void gnomonTimeSeriesTestCase::cleanup(void)
 {

@@ -17,6 +17,7 @@ set(${PROJECT_NAME}_HEADERS
   gnomonImageReaderCommandTest.h
   gnomonCellImageFromImageCommandTest.h
   gnomonCellImageTrackingCommandTest.h
+  gnomonFormWrappingTest.h
   gnomonPythonPluginParserTest.h
 #  gnomonSystemScenarioTest.h
   gnomonTimeSeriesTest.h)
@@ -28,6 +29,7 @@ set(${PROJECT_NAME}_SOURCES
   gnomonImageReaderCommandTest.cpp
   gnomonCellImageFromImageCommandTest.cpp
   gnomonCellImageTrackingCommandTest.cpp
+  gnomonFormWrappingTest.cpp
   gnomonPythonPluginParserTest.cpp
 #  gnomonSystemScenarioTest.cpp
   gnomonTimeSeriesTest.cpp)
@@ -72,6 +74,7 @@ add_test(gnomonImageFilterCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PR
 add_test(gnomonImageReaderCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonImageReaderCommandTest)
 add_test(gnomonCellImageFromImageCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonCellImageFromImageCommandTest)
 add_test(gnomonCellImageTrackingCommandTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonCellImageTrackingCommandTest)
+add_test(gnomonFormWrappingTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonFormWrappingTest)
 add_test(gnomonPythonPluginParserTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonPythonPluginParserTest)
 #add_test(gnomonSystemScenarioTest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonSystemScenarioTest)
 add_test(gnomonTimeSeriesTest     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} gnomonTimeSeriesTest)

@@ -4,8 +4,7 @@
 
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
-class GNOMONCORE_EXPORT gnomonTreeWriterCommand : public gnomonAbstractWriterCommand
-{
+class GNOMONCORE_EXPORT gnomonTreeWriterCommand : public gnomonAbstractWriterCommand {
 public:
      gnomonTreeWriterCommand(void);
     ~gnomonTreeWriterCommand(void) override;
@@ -28,10 +27,10 @@ public:
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "treeWriter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonTreeWriterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonTreeWriterCommand)

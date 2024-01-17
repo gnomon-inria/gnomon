@@ -15,8 +15,7 @@ public:
 
 gnomonImageConstructorCommand::gnomonImageConstructorCommand() : d(new gnomonImageConstructorCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonImageConstructorCommand)
 
     QStringList keys = gnomonCore::imageConstructor::pluginFactory().keys();
     if (!keys.empty()) {
@@ -69,15 +68,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageConstructo
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
-}
-
-bool gnomonImageConstructorCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonImageConstructorCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonImageConstructorCommand::outputTypes() {

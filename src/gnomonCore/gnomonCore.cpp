@@ -2,6 +2,7 @@
 
 #include "gnomonCore.h"
 #include "gnomonCoreSettings.h"
+#include "gnomonForm/gnomonDynamicFormFactory.h"
 #include "gnomonForm/gnomonMesh/gnomonAbstractMeshData.h"
 #include "gnomonForm/gnomonMesh/gnomonMeshDataStdVector.h"
 
@@ -24,6 +25,10 @@ void initialize(const QString& path, bool from_python)
         dtkScriptInterpreterPython::instance()->allowThreads();
     }
 
+    //register forms for creation through metatype
+    gnomonForm::registerForms();
+
+    //factory and manager initialization
     QString realpath = path;
     QStringList pathslist;
 

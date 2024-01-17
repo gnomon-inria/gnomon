@@ -19,9 +19,7 @@ public:
 
 gnomonImageReaderCommand::gnomonImageReaderCommand() : d(new gnomonImageReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonImageReaderCommand)
 
     for (const auto& key: gnomonCore::imageReader::pluginFactory().keys()) {
 
@@ -83,15 +81,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonImageReaderComm
     return outputs;
 }
 
-bool gnomonImageReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonImageReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
-}
-
 gnomonAbstractCommand::orderedMap gnomonImageReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("image", "gnomonImage"));
@@ -111,6 +100,8 @@ QJsonObject gnomonImageReaderCommand::serializeResults(void) {
     out["image"] = d->image->serialize();
     return out;
 }
+
+GNOMON_REGISTER_TYPE(gnomonImageReaderCommand)
 
 //
 // gnomonImageReaderCommand.cpp ends here

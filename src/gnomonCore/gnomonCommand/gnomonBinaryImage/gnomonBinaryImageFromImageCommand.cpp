@@ -20,8 +20,7 @@ public:
 
 gnomonBinaryImageFromImageCommand::gnomonBinaryImageFromImageCommand() : d(new gnomonBinaryImageFromImageCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonBinaryImageFromImageCommand)
 
     QStringList keys = gnomonCore::binaryImageFromImage::pluginFactory().keys();
     if (!keys.empty()) {
@@ -140,15 +139,6 @@ gnomonAbstractCommand::orderedMap gnomonBinaryImageFromImageCommand::outputTypes
     orderedMap output_types;
     output_types.emplace_back(std::make_pair("output", "gnomonBinaryImage"));
     return output_types;
-}
-
-bool gnomonBinaryImageFromImageCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonBinaryImageFromImageCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonBinaryImageFromImageCommand::deserializeResults(QJsonObject &serialization) {
