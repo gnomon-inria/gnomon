@@ -1821,6 +1821,7 @@ void gnomonVtkView::unSerialize(const QJsonObject &serialization) {
             dd->picked_cells.append(val.toInt());
         }
 
+        this->update();
     };
 
     if(dd->window) {

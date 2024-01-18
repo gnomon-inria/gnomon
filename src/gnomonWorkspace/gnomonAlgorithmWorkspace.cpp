@@ -307,6 +307,12 @@ QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
     }
     state.insert("sources", sources);
     state.insert("targets", targets);
+    if (d->figure) {
+        state.insert("figure", d->figure->serialize());
+    }
+    if (d->text_view) {
+        state.insert("text_view", d->text_view->serialize());
+    }
 
     return state;
 }
@@ -333,6 +339,13 @@ void gnomonAlgorithmWorkspace::unSerialize(const QJsonObject & state) {
         view->unSerialize(targets[i].toObject());
         i++;
     }
+    if (state.contains("figure")) {
+        d->figure->unSerialize(state.value("figure").toObject());
+    }
+    if (state.contains("text_view")) {
+        d->text_view->unSerialize(state.value("text_view").toObject());
+    }
+
     emit parametersChanged();
 }
 
