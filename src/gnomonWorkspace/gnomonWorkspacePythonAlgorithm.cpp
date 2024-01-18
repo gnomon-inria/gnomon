@@ -594,7 +594,16 @@ QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
         }
     }
     state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
-
+    QJsonArray sources;
+    for (auto view : d->sources->views()) {
+        sources.append(view->serialize());
+    }
+    QJsonArray targets;
+    for (auto view : d->targets->views()) {
+        targets.append(view->serialize());
+    }
+    state.insert("sources", sources);
+    state.insert("targets", targets);
 
     return state;
 }
@@ -610,6 +619,18 @@ void gnomonWorkspacePythonAlgorithm::unSerialize(const QJsonObject &state) {
             auto param = parameters_json[param_name].toObject().toVariantHash();
             d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
         }
+    }
+    QJsonArray sources = state.value("sources").toArray();
+    int i = 0;
+    for (auto view : d->sources->views()) {
+        view->unSerialize(sources[i].toObject());
+        i++;
+    }
+    QJsonArray targets = state.value("targets").toArray();
+    i = 0;
+    for (auto view : d->targets->views()) {
+        view->unSerialize(targets[i].toObject());
+        i++;
     }
 }
 

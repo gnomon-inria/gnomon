@@ -542,6 +542,13 @@ QJsonObject gnomonWorkspaceLSystemModel::serialize() {
     }
     state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
 
+    if (d->view) {
+        state.insert("view", d->view->serialize());
+    }
+    if (d->text_view) {
+        state.insert("text_view", d->text_view->serialize());
+    }
+
     return state;
 }
 
@@ -559,7 +566,13 @@ void gnomonWorkspaceLSystemModel::unSerialize(const QJsonObject &state) {
         auto param = parameters_json[param_name].toObject().toVariantHash();
         d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
     }
-    d->view->restoreState();
+
+    if (state.contains("view")) {
+        d->view->unSerialize(state.value("view").toObject());
+    }
+    if (state.contains("text_view")) {
+        d->text_view->unSerialize(state.value("text_view").toObject());
+    }
 }
 
 void gnomonWorkspaceLSystemModel::saveState() {
