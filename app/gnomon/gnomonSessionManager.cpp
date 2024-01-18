@@ -451,7 +451,7 @@ void gnomonSessionManager::sync() {
     //TODO: forms
     cleanExpiredForms();
     settings.beginGroup("forms");
-    settings.setValue("form_manager_state", gnomonFormManager::instance()->dumpState());
+    settings.setValue("form_manager_state", gnomonFormManager::instance()->serialize());
 
     settings.setValue("owned_form_ids", m_owned_forms.keys());
     QStringList form_ids;
@@ -466,7 +466,7 @@ void gnomonSessionManager::sync() {
     settings.endGroup();
 
     settings.beginGroup("pipeline");
-    settings.setValue("pipeline_manager_state", gnomonPipelineManager::instance()->dumpState());
+    settings.setValue("pipeline_manager_state", gnomonPipelineManager::instance()->serialize());
     settings.endGroup();
 
 
@@ -496,7 +496,7 @@ bool gnomonSessionManager::load() {
     }
 
     QJsonObject form_manager_state = settings.value("form_manager_state").toJsonObject();
-    gnomonFormManager::instance()->loadState(form_manager_state);
+    gnomonFormManager::instance()->deserialize(form_manager_state);
 
     settings.endGroup();
 
@@ -525,7 +525,7 @@ bool gnomonSessionManager::load() {
 
         settings.beginGroup("pipeline");
         QJsonObject pipeline_manager_state = settings.value("pipeline_manager_state").toJsonObject();
-        gnomonPipelineManager::instance()->loadState(pipeline_manager_state, pipeline);
+        gnomonPipelineManager::instance()->deserialize(pipeline_manager_state, pipeline);
         settings.endGroup();
 
         QMetaObject::invokeMethod(d->window, "switch_workspace",

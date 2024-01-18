@@ -267,7 +267,7 @@ public slots:
 public:
     QJsonObject serialize(void) override;
 
-    void unSerialize(const QJsonObject &serialization) override;
+    void deserialize(const QJsonObject &serialization) override;
 
 private:
     class gnomonVtkViewPrivate *dd;

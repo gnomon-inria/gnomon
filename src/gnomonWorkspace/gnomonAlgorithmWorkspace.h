@@ -77,7 +77,7 @@ public:
 
     QJSValue parameters(void);
     QJsonObject serialize(void) override;
-    void unSerialize(const QJsonObject&) override;
+    void deserialize(const QJsonObject&) override;
 
 protected:
     void addInputView(const QVector<QString>& accepted_forms = {}, QStringList nodePortNames = {});

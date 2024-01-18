@@ -1760,12 +1760,12 @@ QJsonObject gnomonVtkView::serialize(void) {
     return serialization;
 }
 
-void gnomonVtkView::unSerialize(const QJsonObject &serialization) {
+void gnomonVtkView::deserialize(const QJsonObject &serialization) {
 
     disconnect(dd->connectRenderWindowAdded);
 
     auto lambda = [=] () {
-        gnomonAbstractView::unSerialize(serialization);
+        gnomonAbstractView::deserialize(serialization);
 
         QJsonObject other_cameras = serialization.value("other_cameras").toObject();
         for(auto key: other_cameras.keys()) {

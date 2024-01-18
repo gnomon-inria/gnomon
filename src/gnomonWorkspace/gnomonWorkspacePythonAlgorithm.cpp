@@ -564,7 +564,7 @@ void gnomonWorkspacePythonAlgorithm::saveState(void)
 
 void gnomonWorkspacePythonAlgorithm::restoreState(void)
 {
-    unSerialize(d->state);
+    deserialize(d->state);
     for (auto view : d->sources->views()) {
         view->restoreState();
     }
@@ -608,7 +608,7 @@ QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
     return state;
 }
 
-void gnomonWorkspacePythonAlgorithm::unSerialize(const QJsonObject &state) {
+void gnomonWorkspacePythonAlgorithm::deserialize(const QJsonObject &state) {
     d->code->setText(state["code"].toString());
     d->code->parseCode();
     setEditMode(state["edit"].toBool());
@@ -623,13 +623,13 @@ void gnomonWorkspacePythonAlgorithm::unSerialize(const QJsonObject &state) {
     QJsonArray sources = state.value("sources").toArray();
     int i = 0;
     for (auto view : d->sources->views()) {
-        view->unSerialize(sources[i].toObject());
+        view->deserialize(sources[i].toObject());
         i++;
     }
     QJsonArray targets = state.value("targets").toArray();
     i = 0;
     for (auto view : d->targets->views()) {
-        view->unSerialize(targets[i].toObject());
+        view->deserialize(targets[i].toObject());
         i++;
     }
 }

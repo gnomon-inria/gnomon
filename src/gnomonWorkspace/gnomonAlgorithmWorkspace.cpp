@@ -317,7 +317,7 @@ QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
     return state;
 }
 
-void gnomonAlgorithmWorkspace::unSerialize(const QJsonObject & state) {
+void gnomonAlgorithmWorkspace::deserialize(const QJsonObject & state) {
     setCurrentIndex(state["currentIndex"].toInt());
     setAlgoName(state["algoName"].toString());
 
@@ -330,20 +330,20 @@ void gnomonAlgorithmWorkspace::unSerialize(const QJsonObject & state) {
     QJsonArray sources = state.value("sources").toArray();
     int i = 0;
     for (auto view : d->sources->views()) {
-        view->unSerialize(sources[i].toObject());
+        view->deserialize(sources[i].toObject());
         i++;
     }
     QJsonArray targets = state.value("targets").toArray();
     i = 0;
     for (auto view : d->targets->views()) {
-        view->unSerialize(targets[i].toObject());
+        view->deserialize(targets[i].toObject());
         i++;
     }
     if (state.contains("figure")) {
-        d->figure->unSerialize(state.value("figure").toObject());
+        d->figure->deserialize(state.value("figure").toObject());
     }
     if (state.contains("text_view")) {
-        d->text_view->unSerialize(state.value("text_view").toObject());
+        d->text_view->deserialize(state.value("text_view").toObject());
     }
 
     emit parametersChanged();
@@ -355,7 +355,7 @@ void gnomonAlgorithmWorkspace::saveState(void) {
 
 void gnomonAlgorithmWorkspace::restoreState(void) {
     QString previousAlgo = algoName();
-    unSerialize(d->savedState);
+    deserialize(d->savedState);
 }
 
 void gnomonAlgorithmWorkspace::addInputView(const QVector<QString>& accepted_forms, QStringList nodePortNames) {

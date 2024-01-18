@@ -489,7 +489,7 @@ QJsonObject gnomonAbstractView::serialize(void) {
    return serialization;
 }
 
-void gnomonAbstractView::unSerialize(const QJsonObject &serialization) {
+void gnomonAbstractView::deserialize(const QJsonObject &serialization) {
     // set visu names
     auto visu_names = serialization.value("visu_names").toObject();
     for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {

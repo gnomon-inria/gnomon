@@ -582,7 +582,7 @@ QList<int> gnomonFormManager::systemStat(void) const
     return stat;
 }
 
-QJsonObject gnomonFormManager::dumpState(void)
+QJsonObject gnomonFormManager::serialize(void)
 {
     QJsonObject state;
     QJsonObject forms;
@@ -641,7 +641,7 @@ QJsonObject gnomonFormManager::dumpState(void)
     return state;
 }
 
-void gnomonFormManager::loadState(const QJsonObject& state)
+void gnomonFormManager::deserialize(const QJsonObject& state)
 {
     auto forms = state["forms"].toObject().toVariantHash();
     auto form_visualizations = state["form_visualizations"].toObject().toVariantHash();

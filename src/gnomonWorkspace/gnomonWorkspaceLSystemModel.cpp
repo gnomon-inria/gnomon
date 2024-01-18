@@ -552,7 +552,7 @@ QJsonObject gnomonWorkspaceLSystemModel::serialize() {
     return state;
 }
 
-void gnomonWorkspaceLSystemModel::unSerialize(const QJsonObject &state) {
+void gnomonWorkspaceLSystemModel::deserialize(const QJsonObject &state) {
     QJsonObject parameters_json = state["parameters"].toObject();
 
     setFileName(state["filename"].toString());
@@ -568,10 +568,10 @@ void gnomonWorkspaceLSystemModel::unSerialize(const QJsonObject &state) {
     }
 
     if (state.contains("view")) {
-        d->view->unSerialize(state.value("view").toObject());
+        d->view->deserialize(state.value("view").toObject());
     }
     if (state.contains("text_view")) {
-        d->text_view->unSerialize(state.value("text_view").toObject());
+        d->text_view->deserialize(state.value("text_view").toObject());
     }
 }
 
@@ -580,7 +580,7 @@ void gnomonWorkspaceLSystemModel::saveState() {
 }
 
 void gnomonWorkspaceLSystemModel::restoreState() {
-    unSerialize(d->state);
+    deserialize(d->state);
 }
 
 bool gnomonWorkspaceLSystemModel::backup(void)

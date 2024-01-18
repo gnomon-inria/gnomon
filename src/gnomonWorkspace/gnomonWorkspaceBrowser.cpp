@@ -521,8 +521,8 @@ QJsonObject gnomonWorkspaceBrowser::serialize() {
     return serialization;
 }
 
-void gnomonWorkspaceBrowser::unSerialize(const QJsonObject &state) {
-    d->browse_view->unSerialize(state.value("view").toObject());
+void gnomonWorkspaceBrowser::deserialize(const QJsonObject &state) {
+    d->browse_view->deserialize(state.value("view").toObject());
 }
 
 void gnomonWorkspaceBrowser::restoreState(void)
