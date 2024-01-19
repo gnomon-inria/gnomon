@@ -259,7 +259,7 @@ gnomonAbstractView *gnomonFormManagerPrivate::createView(const QString& classNam
         dynamic_cast<gnomonMplView*>(view)->setFigureNumber(figure_number);
     }
     return view;
-};
+}
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonFormManager
@@ -511,7 +511,7 @@ void gnomonFormManager::setFormDropped(const QString& form_uuid)
 
 QList<int> gnomonFormManager::systemStat(void) const
 {
-    QList<int> stat(3);
+    QList<int> stat(3); //total_mem, used_mem, this_mem
 #if (defined (Q_OS_WIN))
     MEMORYSTATUSEX statex;
     statex.dwLength = sizeof (statex);
@@ -527,14 +527,28 @@ QList<int> gnomonFormManager::systemStat(void) const
 #elif (defined (Q_OS_LINUX))
     struct sysinfo memInfo;
     sysinfo (&memInfo);
-    stat[0] = memInfo.totalram * memInfo.mem_unit / (1024*1024);
-    stat[1] = (memInfo.totalram - memInfo.freeram) * memInfo.mem_unit / (1024*1024);
+    stat[0] = memInfo.totalram * memInfo.mem_unit / (1000*1000);
+    std::ifstream memfile("/proc/meminfo");
+    if(memfile.is_open()) {
+        std::string line;
+        while(std::getline(memfile, line)) {
+            if(line.find("MemAvailable:") != std::string::npos) {
+                auto start = line.find_first_of("123456789");
+                auto stop = line.find_last_of("1234567890");
+                auto available_mem = std::stol(line.substr(start, stop-start+1));
+                stat[1] = (memInfo.totalram/1000 - available_mem)/1000;
+                break;
+            }
+        }
+    }
     std::ifstream procfile("/proc/self/smaps_rollup");
     if(procfile.is_open()) {
         std::string line;
         while(std::getline(procfile, line)) {
             if(line.find("Rss:") != std::string::npos) {
-                stat[2] = std::stol(line.substr(5, line.size()-3)) / 1024;
+                auto start = line.find_first_of("123456789");
+                auto stop = line.find_last_of("1234567890");
+                stat[2] = std::stol(line.substr(start, stop-start+1)) / 1000;
                 break;
             }
         }
