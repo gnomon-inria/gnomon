@@ -435,7 +435,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     &stat);
             output_form_added = true;
             GNOMON_SESSION->trackForm(binaryImage);
-            int form_count = gnomonFormManager::instance()->formCount(binaryImage->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(binaryImage->formName());
             binaryImage->metadata()->set("name",
                                          binaryImage->formName().remove("gnomon") + QString::number(form_count + 1));
             binaryImage->metadata()->set("source", d->algorithm_key);
@@ -454,7 +454,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     &stat);
             output_form_added = true;
             GNOMON_SESSION->trackForm(cellComplex);
-            int form_count = gnomonFormManager::instance()->formCount(cellComplex->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(cellComplex->formName());
             cellComplex->metadata()->set("name",
                                          cellComplex->formName().remove("gnomon") + QString::number(form_count + 1));
             cellComplex->metadata()->set("source", d->algorithm_key);
@@ -473,7 +473,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     &stat);
             output_form_added = true;
             GNOMON_SESSION->trackForm(cellImage);
-            int form_count = gnomonFormManager::instance()->formCount(cellImage->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(cellImage->formName());
             cellImage->metadata()->set("name",
                                        cellImage->formName().remove("gnomon") + QString::number(form_count + 1));
             cellImage->metadata()->set("source", d->algorithm_key);
@@ -492,7 +492,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     &stat);
             output_form_added = true;
             GNOMON_SESSION->trackForm(image);
-            int form_count = gnomonFormManager::instance()->formCount(image->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(image->formName());
             image->metadata()->set("name", image->formName().remove("gnomon") + QString::number(form_count + 1));
             image->metadata()->set("source", d->algorithm_key);
         }
@@ -510,7 +510,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     &stat);
             output_form_added = true;
             GNOMON_SESSION->trackForm(lString);
-            int form_count = gnomonFormManager::instance()->formCount(lString->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(lString->formName());
             lString->metadata()->set("name", lString->formName().remove("gnomon") + QString::number(form_count + 1));
             lString->metadata()->set("source", d->algorithm_key);
         }
@@ -528,7 +528,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     &stat);
             output_form_added = true;
             GNOMON_SESSION->trackForm(mesh);
-            int form_count = gnomonFormManager::instance()->formCount(mesh->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(mesh->formName());
             mesh->metadata()->set("name", mesh->formName().remove("gnomon") + QString::number(form_count + 1));
             mesh->metadata()->set("source", d->algorithm_key);
         }
@@ -546,7 +546,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     &stat);
             output_form_added = true;
             GNOMON_SESSION->trackForm(pointCloud);
-            int form_count = gnomonFormManager::instance()->formCount(pointCloud->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(pointCloud->formName());
             pointCloud->metadata()->set("name",
                                         pointCloud->formName().remove("gnomon") + QString::number(form_count + 1));
             pointCloud->metadata()->set("source", d->algorithm_key);

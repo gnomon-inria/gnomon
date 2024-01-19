@@ -377,7 +377,7 @@ void gnomonWorkspaceMorphonet::onDataLoaded(int startTime, int endTime)
 {
     if(!d->img_series->times().isEmpty()) {
         d->view->clear();
-        int form_count = gnomonFormManager::instance()->formCount(d->img_series->formName());
+        int form_count = GNOMON_FORM_MANAGER->formCount(d->img_series->formName());
         d->img_series->metadata()->set("name", d->img_series->formName().remove("gnomon") + QString::number(form_count+1));
         d->view->setForm("gnomonCellImage", d->img_series, {});
         d->pipeline_manager->addMorphoForm(d->img_series->uuid(), d->current_id, d->voxelsize, startTime, endTime);

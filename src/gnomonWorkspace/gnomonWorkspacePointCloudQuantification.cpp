@@ -73,7 +73,7 @@ void gnomonWorkspacePointCloudQuantification::viewOutputs()
         d->sources->views()[0]->setForm("gnomonPointCloud", command->pointCloud());
         std::shared_ptr<gnomonPointCloudSeries> out_pointCloud = d->sources->views()[0]->pointCloud();
         GNOMON_SESSION->trackForm(out_pointCloud);
-        int form_count = gnomonFormManager::instance()->formCount(out_pointCloud->formName());
+        int form_count = GNOMON_FORM_MANAGER->formCount(out_pointCloud->formName());
         out_pointCloud->metadata()->set("name", out_pointCloud->formName().remove("gnomon") + QString::number(form_count+1));
         out_pointCloud->metadata()->set("source", d->algorithm);
         //gnomonPipelineManager::instance()->addClonedForm(command->pointCloud(), out_pointCloud);
@@ -84,7 +84,7 @@ void gnomonWorkspacePointCloudQuantification::viewOutputs()
     if(command->dataFrame()) {
         d->figure->setForm("gnomonDataFrame", command->dataFrame());
         GNOMON_SESSION->trackForm(command->dataFrame());
-        int form_count = gnomonFormManager::instance()->formCount(command->dataFrame()->formName());
+        int form_count = GNOMON_FORM_MANAGER->formCount(command->dataFrame()->formName());
         command->dataFrame()->metadata()->set("name", command->dataFrame()->formName().remove("gnomon") + QString::number(form_count+1));
         command->dataFrame()->metadata()->set("source", d->algorithm);
     }

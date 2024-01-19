@@ -38,7 +38,7 @@ gnomonImageProvider::gnomonImageProvider() : QQuickImageProvider(QQuickImageProv
 }
 
 QImage gnomonImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize) {
-    QImage image = gnomonFormManager::instance()->thumbnail(id.toInt());
+    QImage image = GNOMON_FORM_MANAGER->thumbnail(id.toInt());
     return image;
 }
 

@@ -9,6 +9,9 @@
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 #include "gnomonForm/gnomonDynamicFormMetadata.h"
 
+
+#define GNOMON_FORM_MANAGER gnomonFormManager::instance()
+
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractCommand;

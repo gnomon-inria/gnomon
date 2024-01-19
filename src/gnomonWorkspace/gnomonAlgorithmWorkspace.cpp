@@ -265,7 +265,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
         if(d->command->outputs()[name] && (*d->targets)[i]->acceptedForms().contains(output_type)) {
             auto form =  d->command->outputs()[name];
             GNOMON_SESSION->trackForm(form);
-            int form_count = gnomonFormManager::instance()->formCount(output_type);
+            int form_count = GNOMON_FORM_MANAGER->formCount(output_type);
             form->metadata()->set("name", output_type.remove("gnomon") + QString::number(form_count+1));
             form->metadata()->set("source", d->algorithm);
             (*d->targets)[i]->setForm(output_type, form);
