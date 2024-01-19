@@ -68,6 +68,7 @@ public:
     QVariantMap parameterVariantValues(const dtkCoreParameters&parameters);
     QJsonObject parameterJson(const dtkCoreParameters& parameters);
     QMap<QString, QString> commandFormUuids(gnomonAbstractCommand *command, const QString& type);
+    QVariantMap nodeData(const QString& name);
 
 public:
     bool hasNode(gnomonPipelineNode *);
@@ -176,6 +177,87 @@ QMap<QString, QString> gnomonPipelineManagerPrivate::commandFormUuids(gnomonAbst
     return form_uuids;
 }
 
+QVariantMap gnomonPipelineManagerPrivate::nodeData(const QString& name)
+{
+    auto convertToQVariantMap = [](const QMap<QString, QString>& input_map)->QVariantMap {
+        QVariantMap convertedMap;
+        for(const auto& [key, value]: input_map.asKeyValueRange())
+            convertedMap[key] = QVariant(value);
+        return convertedMap;
+    };
+    gnomonPipelineNode* node = this->pipeline->node(name);
+    QVariantMap component;
+    QString form_uuid;
+    QString output;
+    QVariantMap input_forms;
+    component["node_name"] = name;
+    component["node_type"] = node->type();
+    switch (node->type()) {
+        case gnomonPipelineNode::Type::NODE_ALGORITHM:
+        case gnomonPipelineNode::Type::NODE_FILTER:
+        case gnomonPipelineNode::Type::NODE_CONVERTER:
+        {
+            form_uuid = this->algorithm_nodes.key(dynamic_cast<gnomonPipelineNodeAlgorithm*>(node));
+            output = this->algorithm_output[form_uuid];
+            input_forms = convertToQVariantMap(this->node_input_forms[dynamic_cast<gnomonPipelineNodeAlgorithm*>(node)]);
+            break;
+        }
+        case gnomonPipelineNode::Type::NODE_READER:
+        {
+            form_uuid = this->reader_nodes.key(dynamic_cast<gnomonPipelineNodeReader*>(node));
+            output = this->reader_output[form_uuid];
+            break;
+        }
+        case gnomonPipelineNode::Type::NODE_WRITER:
+        {
+            form_uuid = this->writer_nodes.key(dynamic_cast<gnomonPipelineNodeWriter*>(node));
+            input_forms = convertToQVariantMap(this->node_input_forms[dynamic_cast<gnomonPipelineNodeWriter*>(node)]);
+            break;
+        }
+        case gnomonPipelineNode::Type::NODE_CONSTRUCTOR:
+        {
+            form_uuid = this->constructor_nodes.key(dynamic_cast<gnomonPipelineNodeConstructor*>(node));
+            output = this->constructor_output[form_uuid];
+            break;
+        }
+        case gnomonPipelineNode::Type::NODE_ADAPTER:
+        {
+            form_uuid = this->adapter_nodes.key(dynamic_cast<gnomonPipelineNodeAdapter*>(node));
+            output = this->adapter_output[form_uuid];
+            input_forms = convertToQVariantMap(this->node_input_forms[dynamic_cast<gnomonPipelineNodeAdapter*>(node)]);
+            break;
+        }
+        case gnomonPipelineNode::Type::NODE_TASK:
+        {
+            form_uuid = this->task_nodes.key(dynamic_cast<gnomonPipelineNodeTask*>(node));
+            output = this->task_output[form_uuid];
+            input_forms = convertToQVariantMap(this->node_input_forms[dynamic_cast<gnomonPipelineNodeTask*>(node)]);
+            break;
+        }
+        case gnomonPipelineNode::Type::NODE_MORPHONET:
+        {
+            form_uuid = this->morphonet_nodes.key(dynamic_cast<gnomonPipelineNodeMorphonet*>(node));
+            output = this->morphonet_output[form_uuid];
+            break;
+        }
+        case gnomonPipelineNode::Type::NODE_EVOLUTION_MODEL:
+        {
+            form_uuid = this->evolution_model_nodes.key(dynamic_cast<gnomonPipelineNodeEvolutionModel*>(node));
+            output = this->evolution_model_output[form_uuid];
+            break;
+        }
+        default:
+        {
+            qWarning()<<Q_FUNC_INFO<<"Not able to serialize node type: "<<node->type();
+            break;
+        }
+    }
+    component["form_uuid"] = form_uuid;
+    component["output"] = output;
+    component["input_forms"] = input_forms;
+
+    return component;
+}
 
 bool gnomonPipelineManagerPrivate::hasNode(gnomonPipelineNode *node)
 {
@@ -542,6 +624,110 @@ void gnomonPipelineManager::decacheNode(const QString& form_uuid, std::pair<QStr
 {
         d->reader_output[form_uuid] = name_and_node.first;
         d->reader_nodes[form_uuid] = name_and_node.second;
+}
+
+QJsonObject gnomonPipelineManager::dumpState(void)
+{
+    QJsonObject state;
+    for(const auto &name: d->pipeline->nodeNames()){
+        auto component = d->nodeData(name);
+        QString node_name = component["node_name"].toString();
+        state[node_name] = QJsonObject::fromVariantMap(component);
+    }
+    return state;
+}
+
+void gnomonPipelineManager::loadState(const QJsonObject& state, std::shared_ptr<gnomonPipeline> pipeline)
+{
+    auto addNodeInputForms = [=](gnomonPipelineNode* node, const QVariantMap& input_forms){
+        for(const auto& [key, value]: input_forms.asKeyValueRange())
+            d->node_input_forms[node][key] = value.toString();
+    };
+
+    for(auto node_name: pipeline->scheduledNodeNames()) {
+        auto component = state[node_name].toObject().toVariantMap();
+        auto form_uuid = component["form_uuid"].toString();
+
+        gnomonPipelineNode *pipeline_node = pipeline->node(node_name);
+
+        switch (component["node_type"].toInt()) {
+            case gnomonPipelineNode::Type::NODE_ALGORITHM:
+            case gnomonPipelineNode::Type::NODE_FILTER:
+            case gnomonPipelineNode::Type::NODE_CONVERTER: {
+                gnomonPipelineNodeAlgorithm *node = dynamic_cast<gnomonPipelineNodeAlgorithm *>(pipeline_node);
+                d->algorithm_nodes[form_uuid] = node;
+                d->algorithm_output[form_uuid] = component["output"].toString();
+                addNodeInputForms(node, component["input_forms"].toMap());
+                d->pipeline_nodes[node_name] = node;
+                break;
+            }
+            case gnomonPipelineNode::Type::NODE_READER: {
+                gnomonPipelineNodeReader *node = dynamic_cast<gnomonPipelineNodeReader *>(pipeline_node);
+                d->reader_nodes[form_uuid] = node;
+                d->reader_output[form_uuid] = component["output"].toString();
+                d->pipeline_nodes[node_name] = node;
+                break;
+            }
+            case gnomonPipelineNode::Type::NODE_WRITER: {
+                gnomonPipelineNodeWriter *node = dynamic_cast<gnomonPipelineNodeWriter *>(pipeline_node);
+                d->writer_nodes[form_uuid] = node;
+                addNodeInputForms(node, component["input_forms"].toMap());
+                d->pipeline_nodes[node_name] = node;
+                break;
+            }
+            case gnomonPipelineNode::Type::NODE_CONSTRUCTOR: {
+                gnomonPipelineNodeConstructor *node = dynamic_cast<gnomonPipelineNodeConstructor *>(pipeline_node);
+                d->constructor_nodes[form_uuid] = node;
+                d->constructor_output[form_uuid] = component["output"].toString();
+                d->pipeline_nodes[node_name] = node;
+                break;
+            }
+            case gnomonPipelineNode::Type::NODE_ADAPTER: {
+                gnomonPipelineNodeAdapter *node = dynamic_cast<gnomonPipelineNodeAdapter *>(pipeline_node);
+                d->adapter_nodes[form_uuid] = node;
+                d->adapter_output[form_uuid] = component["output"].toString();
+                addNodeInputForms(node, component["input_forms"].toMap());
+                d->pipeline_nodes[node_name] = node;
+                break;
+            }
+            case gnomonPipelineNode::Type::NODE_TASK: {
+                gnomonPipelineNodeTask *node = dynamic_cast<gnomonPipelineNodeTask *>(pipeline_node);
+                d->task_nodes[form_uuid] = node;
+                d->task_output[form_uuid] = component["output"].toString();
+                addNodeInputForms(node, component["input_forms"].toMap());
+                d->pipeline_nodes[node_name] = node;
+                break;
+            }
+            case gnomonPipelineNode::Type::NODE_MORPHONET: {
+                gnomonPipelineNodeMorphonet *node = dynamic_cast<gnomonPipelineNodeMorphonet *>(pipeline_node);
+                d->morphonet_nodes[form_uuid] = node;
+                d->morphonet_output[form_uuid] = component["output"].toString();
+                d->pipeline_nodes[node_name] = node;
+                break;
+            }
+            case gnomonPipelineNode::Type::NODE_EVOLUTION_MODEL: {
+                gnomonPipelineNodeEvolutionModel *node = dynamic_cast<gnomonPipelineNodeEvolutionModel *>(pipeline_node);
+                d->evolution_model_nodes[form_uuid] = node;
+                d->evolution_model_output[form_uuid] = component["output"].toString();
+                d->pipeline_nodes[node_name] = node;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        d->pipeline->addNode(pipeline_node);
+
+        auto input_forms = component["input_forms"].toMap();
+        for (auto e: pipeline_node->inputEdges()) {
+            if (input_forms.contains(e->target()->name())) {
+                QString form_id = input_forms[e->target()->name()].toString();
+                if(GNOMON_SESSION->getForm(form_id)) {
+                    e->setFormIndex(GNOMON_SESSION->getForm(form_id)->thumbnailId());
+                }
+            }
+        }
+    }
 }
 
 gnomonPipelineManager *gnomonPipelineManager::s_instance = nullptr;

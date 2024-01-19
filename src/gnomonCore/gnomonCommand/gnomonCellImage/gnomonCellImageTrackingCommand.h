@@ -41,10 +41,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageTracking";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageTrackingCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellImageTrackingCommand)

@@ -20,9 +20,8 @@ public:
 
 gnomonTreeMplVisualizationCommand::gnomonTreeMplVisualizationCommand() : d(new gnomonTreeMplVisualizationCommandPrivate)
 {
-    this->factory_name = groupName;
     this->factory = &gnomonVisualization::treeMplVisualization::pluginFactory();
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonTreeMplVisualizationCommand)
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
@@ -79,15 +78,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeMplVisualiz
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["tree"] = d->tree;
     return inputs;
-}
-
-bool gnomonTreeMplVisualizationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonTreeMplVisualizationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeMplVisualizationCommand::inputTypes() {

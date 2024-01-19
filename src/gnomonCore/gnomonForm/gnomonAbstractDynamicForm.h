@@ -31,6 +31,7 @@ public:
     virtual std::shared_ptr<gnomonAbstractDynamicForm> clone(void) const = 0;
 
 public:
+/*
     std::shared_ptr<gnomonAbstractForm> at(double t) {
         qWarning() << Q_FUNC_INFO << "MAKING A CLONE";
         return std::shared_ptr<gnomonAbstractForm>(this->at_impl(t)->clone());
@@ -39,7 +40,8 @@ public:
         qWarning() << Q_FUNC_INFO << "MAKING A CLONE";
         return std::shared_ptr<gnomonAbstractForm>(this->current_impl()->clone());
     };
-
+*/    
+    virtual void insert(double t, std::shared_ptr<gnomonAbstractForm> form) = 0;
     virtual QMap<QString,QString> metadataAtT(double t) const = 0;
 
     virtual bool containsId(uint id) const = 0;
@@ -106,10 +108,9 @@ public:
     virtual void unload() = 0;
     virtual bool loaded() = 0;
 
-protected:
-    virtual gnomonAbstractForm *at_impl(double t) = 0;
-    virtual gnomonAbstractForm *current_impl(void) = 0;
-
+    virtual std::shared_ptr<gnomonAbstractForm> atAsAbstract(double t) = 0;
+    virtual std::shared_ptr<gnomonAbstractForm> currentAsAbstract(void) = 0;
+    
 protected:
     gnomonDynamicFormMetadata *p_metadata = nullptr;
     QDir storage_dir;

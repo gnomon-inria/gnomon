@@ -38,10 +38,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "binaryImageFromImage";
-    static QStringList availablePlugins();
 
 private:
     class gnomonBinaryImageFromImageCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonBinaryImageFromImageCommand)

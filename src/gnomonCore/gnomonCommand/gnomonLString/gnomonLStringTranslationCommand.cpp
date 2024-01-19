@@ -15,8 +15,7 @@ public:
 
 gnomonLStringTranslationCommand::gnomonLStringTranslationCommand() : d(new gnomonLStringTranslationCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonLStringTranslationCommand)
 
     QStringList keys = gnomonCore::lStringTranslation::pluginFactory().keys();
     if (!keys.empty()) {
@@ -130,16 +129,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringTranslat
     outputs["outputTree"] = this->outputTree();
     outputs["outputLString"] = this->outputLString();
     return outputs;
-}
-
-
-bool gnomonLStringTranslationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonLStringTranslationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonLStringTranslationCommand::inputTypes() {

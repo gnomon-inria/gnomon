@@ -11,8 +11,7 @@ public:
 
 gnomonDataDictWriterCommand::gnomonDataDictWriterCommand() : d(new gnomonDataDictWriterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonDataDictWriterCommand)
 
         //see MeshWriterCommand for what to do when there is multiple writers
     QStringList keys = gnomonCore::dataDictWriter::pluginFactory().keys();
@@ -70,12 +69,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataDictWriterC
     return inputs;
 }
 
-bool gnomonDataDictWriterCommand::isEmpty()
-{
-    loadPluginGroup("dataDictWriter");
-    return gnomonCore::dataDictWriter::pluginFactory().keys().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonDataDictWriterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("dataDict", "gnomonDataDict"));
@@ -90,6 +83,4 @@ void gnomonDataDictWriterCommand::setInputForm(const QString &name, std::shared_
     }
 }
 
-QStringList gnomonDataDictWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
-}
+GNOMON_REGISTER_TYPE(gnomonDataDictWriterCommand)

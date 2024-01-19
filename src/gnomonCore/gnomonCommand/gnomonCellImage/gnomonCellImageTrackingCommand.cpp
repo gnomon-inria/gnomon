@@ -16,8 +16,7 @@ public:
 
 gnomonCellImageTrackingCommand::gnomonCellImageTrackingCommand() : d(new gnomonCellImageTrackingCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellImageTrackingCommand)
 
     QStringList keys = gnomonCore::cellImageTracking::pluginFactory().keys();
     if (!keys.empty()) {
@@ -133,11 +132,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageTracki
     return outputs;
 }
 
-bool gnomonCellImageTrackingCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellImageTrackingCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("image", "gnomonImage"));
@@ -163,10 +157,6 @@ void gnomonCellImageTrackingCommand::setInputForm(const QString &name, std::shar
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
-}
-
-QStringList gnomonCellImageTrackingCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonCellImageTrackingCommand::deserializeResults(QJsonObject &serialization) {

@@ -28,10 +28,10 @@ public:
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "pointCloudWriter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudWriterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonPointCloudWriterCommand)

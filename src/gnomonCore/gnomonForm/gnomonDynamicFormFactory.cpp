@@ -14,60 +14,70 @@
 
 #include <exception>
 
-std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QString &type) {
-    if(type == gnomonBinaryImage::formName()) {
+namespace gnomonForm {
+    QStringList forms_names;
 
-        return std::make_shared<gnomonBinaryImageSeries>();
-
-    } else if(type == gnomonCellComplex::formName()) {
-
-        return std::make_shared<gnomonCellComplexSeries>();
-
-    } else if(type == gnomonCellImage::formName()) {
-
-        return std::make_shared<gnomonCellImageSeries>();
-
-    } else if(type == gnomonCellGraph::formName()) {
-
-        return std::make_shared<gnomonCellGraphSeries>();
-
-    } else if(type == gnomonDataDict::formName()) {
-
-        return std::make_shared<gnomonDataDictSeries>();
-
-    } else if(type == gnomonDataFrame::formName()) {
-
-        return std::make_shared<gnomonDataFrameSeries>();
-
-    } else if(type == gnomonImage::formName()) {
-
-        return std::make_shared<gnomonImageSeries>();
-
-    } else if(type == gnomonLString::formName()) {
-
-        return std::make_shared<gnomonLStringSeries>();
-
-    } else if(type == gnomonMesh::formName()) {
-
-        return std::make_shared<gnomonMeshSeries>();
-
-    } else if(type == gnomonPointCloud::formName()) {
-
-        return std::make_shared<gnomonPointCloudSeries>();
-
-    } else if(type == gnomonTree::formName()) {
-
-        return std::make_shared<gnomonTreeSeries>();
-
+    void registerForms(void)
+    {
+        qRegisterMetaType<gnomonBinaryImageSeries>();
+        forms_names << "gnomonBinaryImage";
+        qRegisterMetaType<gnomonCellComplexSeries>();
+        forms_names << "gnomonCellComplex";
+        qRegisterMetaType<gnomonCellGraphSeries>();
+        forms_names << "gnomonCellGraph";
+        qRegisterMetaType<gnomonCellImageSeries>();
+        forms_names << "gnomonCellImage";
+        qRegisterMetaType<gnomonDataDictSeries>();
+        forms_names << "gnomonDataDict";
+        qRegisterMetaType<gnomonDataFrameSeries>();
+        forms_names << "gnomonDataFrame";
+        qRegisterMetaType<gnomonImageSeries>();
+        forms_names << "gnomonImage";
+        //qRegisterMetaType<gnomonIntensityImageSeries>();
+        //forms_names << "gnomonIntensityImage";
+        qRegisterMetaType<gnomonLStringSeries>();
+        forms_names << "gnomonLString";
+        qRegisterMetaType<gnomonMeshSeries>();
+        forms_names << "gnomonMesh";
+        qRegisterMetaType<gnomonPointCloudSeries>();
+        forms_names << "gnomonPointCloud";
+        qRegisterMetaType<gnomonTreeSeries>();
+        forms_names << "gnomonTree";
     }
 
-    qCritical() << Q_FUNC_INFO << "Could not create dynamic form of type " << type;
-    throw std::invalid_argument(type.toStdString());
-}
+    std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QString &type) {
+        void *myClassPtr = nullptr;
+        QString corrected_type = type;
 
-std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QJsonObject &serialization) {
-    QString type = serialization["form_type"].toString();
-    auto formSeries = createDynamicForm(type);
-    formSeries->deserialize(serialization);
-    return formSeries;
-}
+
+        if(!corrected_type.startsWith("gnomon")) {
+            corrected_type = "gnomon" + corrected_type;
+        }
+
+        if(!corrected_type.startsWith("gnomonTimeSeries")) {
+            corrected_type = "gnomonTimeSeries<" + corrected_type + ">";
+        }
+
+        QMetaType metatype = QMetaType::fromName(corrected_type.toUtf8());
+
+        if (metatype.isValid()) {
+            myClassPtr = metatype.create();
+            if (myClassPtr) {
+                return std::shared_ptr<gnomonAbstractDynamicForm>(static_cast<gnomonAbstractDynamicForm*>(myClassPtr));
+            }
+        } 
+        
+        qCritical() << Q_FUNC_INFO 
+                    << "Could not create dynamic form of type " << type
+                    << " (corrected type: " << corrected_type << ")";
+        throw std::invalid_argument(type.toStdString());
+    }
+
+    std::shared_ptr<gnomonAbstractDynamicForm> createDynamicForm(const QJsonObject &serialization) {
+        QString type = serialization["form_type"].toString();
+        auto formSeries = createDynamicForm(type);
+        formSeries->deserialize(serialization);
+        return formSeries;
+    }
+
+} // namespace gnomonForm

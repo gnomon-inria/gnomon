@@ -52,6 +52,7 @@
 #include "gnomonAlgorithmsLogs/gnomonLogConnection.h"
 
 #include "gnomonForm/gnomonDynamicFormMetadata.h"
+#include "gnomonForm/gnomonDynamicFormFactory.h"
 #include "gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData.h"
 #include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h"

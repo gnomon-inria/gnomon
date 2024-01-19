@@ -25,10 +25,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "dataFrameReader";
-    static QStringList availablePlugins();
 
 private:
     class gnomonDataFrameReaderCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonDataFrameReaderCommand)

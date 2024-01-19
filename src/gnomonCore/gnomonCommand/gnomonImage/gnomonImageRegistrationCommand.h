@@ -39,10 +39,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "imageRegistration";
-    static QStringList availablePlugins();
 
 private:
     class gnomonImageRegistrationCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonImageRegistrationCommand)

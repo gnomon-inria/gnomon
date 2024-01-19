@@ -26,10 +26,10 @@ public:
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "treeMplVisualization";
-    static QStringList availablePlugins();
 
 private:
     class gnomonTreeMplVisualizationCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonTreeMplVisualizationCommand)

@@ -36,10 +36,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "lStringAdapter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonLStringAdapterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonLStringAdapterCommand)
