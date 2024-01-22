@@ -49,6 +49,8 @@ Control {
 
         backgroundColor: G.Style.colors.fgColor
 
+        lineColor: G.Style.colors.baseColor
+
         onHoverChanged : {
             window.insideParamFigure()
         }

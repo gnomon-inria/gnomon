@@ -25,6 +25,7 @@ Control {
     signal modified(var content);
     signal fileSwitched(var name);
     signal ideIsReady();
+    signal makeFileEditable();
 
     onThemeChanged: if(self.connected) bridge.send('theme',    self.theme);
     onLanguageChanged: if(self.connected) bridge.send('language', self.language);
@@ -93,6 +94,9 @@ Control {
                     let i = _internal.tab_filenames.indexOf(closed_file)
                     _internal.tab_filenames.splice(i, 1)
                 }
+                break;
+            case "attemptReadOnly":
+                self.makeFileEditable();
                 break;
             default:
                 break;

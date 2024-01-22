@@ -119,14 +119,14 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     d->lpy_dir =  new QDir(lpy_dir_path);
     d->lpy_dir->mkpath(lpy_dir_path);
     int stat;
-    QString temp_working_directory = "";
-    temp_working_directory += "import sys \n";
-    temp_working_directory += "cwdir = ";
-    temp_working_directory += "'" + GNOMON_PROJECT->projectDir() + "'" + "\n";
-    temp_working_directory += "if not sys.path.__contains__(f'{cwdir}'): \n";
-    temp_working_directory += " sys.path.append(f'{cwdir}')\n";
+    QString working_directory = "";
+    working_directory += "import sys \n";
+    working_directory += "cwdir = ";
+    working_directory += "'" + GNOMON_PROJECT->projectDir() + "'" + "\n";
+    working_directory += "if not sys.path.__contains__(f'{cwdir}'): \n";
+    working_directory += " sys.path.append(f'{cwdir}')\n";
 
-    dtkScriptInterpreterPython::instance()->interpret(temp_working_directory, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(working_directory, &stat);
 
     d->view = new gnomonVtkView(this);
     d->view->setNodePortNames({});
@@ -553,6 +553,17 @@ void gnomonWorkspaceLSystemModel::copyTexturesFiles(const QStringList& files)
     for(const auto& file : files) {
         auto new_file = GNOMON_PROJECT->projectDir() + "/" + file.split("/").last();
         QFile::copy(file, new_file);
+    }
+}
+
+void gnomonWorkspaceLSystemModel::importFile(const QString& file_name)
+{
+    auto project_file = GNOMON_PROJECT->projectDir() + "/" + file_name;
+    if(QFile::copy(d->lpy_dir->filePath(file_name), project_file)) {
+        QFile::remove(d->lpy_dir->filePath(file_name));
+        this->backup();
+        delete(d->model_file);
+        d->model_file = new QFile(project_file);
     }
 }
 

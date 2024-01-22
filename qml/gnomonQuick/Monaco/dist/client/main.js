@@ -221035,6 +221035,10 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
         }
     })
 
+    editor.onDidAttemptReadOnlyEdit((event) => {
+        send("attemptReadOnly")
+    })
+
     bridge.init();
 });
 

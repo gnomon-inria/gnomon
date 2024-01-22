@@ -92,7 +92,8 @@ G.Workspace {
         nameFilters: ["L-Py source files (*.lpy *.py)"]
 
         onAccepted: {
-            copy_lpy_file_to_project.open()
+            _self._read_only_lpy_file = true
+            open_lpy_file(_file_dialog.file)
         }
     }
 
@@ -236,6 +237,10 @@ G.Workspace {
                 onIdeIsReady : () => {
                     d.restore();
                 }
+
+                onMakeFileEditable: () => {
+                    import_lpy_file_to_project.open()
+                }
             }
         }
 
@@ -309,35 +314,27 @@ G.Workspace {
     }
 
     G.Dialog {
-        id: copy_lpy_file_to_project
+        id: import_lpy_file_to_project
 
         simple_dialog : true
 
         parent: Overlay.overlay
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
+        x: (parent.width - width) / 4
+        y: (parent.height - height) / 4
         width: G.Style.smallDialogWidth
         height: G.Style.largeDelegateHeight
         header.height: 0
 
-        modal: true
-
-
         Label {
-            text: "Copy this file to your project for editing. Otherwise, it remains read-only. \nProceed with copying?"
+            text: "Import this file to your project for editing. Otherwise, it remains read-only. \nProceed with importing?"
             font: G.Style.fonts.nodeHeaderSelected
         }
 
         standardButtons:  Dialog.Yes | Dialog.No
 
         onAccepted : {
-            _self._read_only_lpy_file = false
-            open_lpy_file(_file_dialog.file)
-        }
-
-        onRejected : {
-            _self._read_only_lpy_file = true
-            open_lpy_file(_file_dialog.file)
+            _editor.readOnly = false
+            d.importFile(d.fileName)
         }
 
     }
@@ -372,8 +369,9 @@ G.Workspace {
                     Label {
                         id: _texture_label
 
-                        Layout.preferredWidth: _texture_label.contentWidth;
+                        Layout.preferredWidth: G.Style.largeDelegateHeight;
                         Layout.rightMargin: G.Style.largePadding
+                        Layout.leftMargin: G.Style.smallPadding
                         horizontalAlignment: Text.AlignLeft
                         verticalAlignment: Text.AlignTop
 
@@ -383,6 +381,8 @@ G.Workspace {
                     }
 
                     Rectangle {
+                        Layout.alignment: Qt.AlignRight
+                        Layout.leftMargin: G.Style.largePadding
                         height: G.Style.mediumLabelHeight
                         implicitWidth: Math.round(2/3 * parent.width)
                         color: G.Style.colors.gutterColor;
