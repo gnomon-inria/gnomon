@@ -47,8 +47,8 @@ G.Page {
 
         if(workspace.workspace_title === "Python Algorithm" & workspace.d.editMode)
         {
-            source = "qrc:/qt/qml/gnomonQuick/Menus/WorkspaceBrowsingMenu.qml"
-            prop = { parameters: workspace.parameters, d: workspace.d }
+            source = "qrc:/qt/qml/gnomonQuick/Menus/MonacoMenu.qml"
+            prop = { d: workspace.d }
         } else {
             source = "qrc:/qt/qml/gnomonQuick/Menus/ViewMenu.qml";
             var view = window.currentView;
