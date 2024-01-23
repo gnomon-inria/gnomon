@@ -26,6 +26,8 @@ public:
 
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
+    void clear(void) override;
+
 public:
     inline static const QString groupName = "cellImageWriter";
 

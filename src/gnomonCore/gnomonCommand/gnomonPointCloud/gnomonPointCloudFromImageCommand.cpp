@@ -156,5 +156,12 @@ QJsonObject gnomonPointCloudFromImageCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonPointCloudFromImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+    d->cellImage = nullptr;
+}
+
 //
 // gnomonPointCloudFromImageCommand.cpp ends here

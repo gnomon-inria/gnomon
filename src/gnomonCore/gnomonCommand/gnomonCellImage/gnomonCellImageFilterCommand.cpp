@@ -136,5 +136,11 @@ QJsonObject gnomonCellImageFilterCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonCellImageFilterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+}
+
 //
 // gnomonCellImageFilterCommand.cpp ends here

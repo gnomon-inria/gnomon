@@ -181,5 +181,14 @@ QJsonObject gnomonPointCloudQuantificationCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonPointCloudQuantificationCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->mesh = nullptr;
+    d->dataFrame = nullptr;
+    d->pointCloud = nullptr;
+    d->image = nullptr;
+    d->input_pointCloud = nullptr;
+}
+
 //
 // gnomonPointCloudQuantificationCommand.cpp ends here

@@ -86,6 +86,11 @@ QJsonObject gnomonMeshReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonMeshReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->mesh = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonMeshReaderCommand)
 
 //

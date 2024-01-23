@@ -126,5 +126,11 @@ QJsonObject gnomonCellComplexFromCellImageCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonCellComplexFromCellImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+}
+
 //
 // gnomonCellComplexFromCellImageCommand.cpp ends here

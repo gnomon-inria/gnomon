@@ -123,5 +123,11 @@ QJsonObject gnomonTreeAdapterCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonTreeAdapterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->input = nullptr;
+    d->output = nullptr;
+}
+
 //
 // gnomonTreeAdapterCommand.cpp ends here

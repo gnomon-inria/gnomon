@@ -172,5 +172,13 @@ QJsonObject gnomonMeshFromImageCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonMeshFromImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->image = nullptr;
+    d->cellImage = nullptr;
+    d->binaryImage = nullptr;
+    d->output = nullptr;
+}
+
 //
 // gnomonMeshFromImageCommand.cpp ends here

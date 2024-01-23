@@ -161,4 +161,11 @@ QJsonObject gnomonImageFilterCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonImageFilterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+    d->mask = nullptr;
+}
+
 // gnomonImageFilterCommand.cpp ends here

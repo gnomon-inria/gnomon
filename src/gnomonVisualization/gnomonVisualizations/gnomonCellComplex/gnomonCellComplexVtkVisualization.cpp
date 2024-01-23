@@ -310,6 +310,7 @@ QMap<QString, QString> gnomonCellComplexVtkVisualization::parameterGroups(void)
 
 void gnomonCellComplexVtkVisualization::onSliceOrientationChanged(int value)
 {
+
     ddd->actor2D->setSliceOrientation(value);
 }
 

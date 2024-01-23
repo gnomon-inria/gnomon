@@ -179,5 +179,14 @@ QJsonObject gnomonCellImageTrackingCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonCellImageTrackingCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->cellImage = nullptr;
+    d->input_cellImage = nullptr;
+    d->tree = nullptr;
+    d->image = nullptr;
+    d->transformation = nullptr;
+}
+
 //
 // gnomonCellImageTrackingCommand.cpp ends here

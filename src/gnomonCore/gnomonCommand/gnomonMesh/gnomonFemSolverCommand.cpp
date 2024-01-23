@@ -119,5 +119,10 @@ QJsonObject gnomonFemSolverCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonFemSolverCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->mesh = nullptr;
+}
+
 //
 // gnomonFemSolverCommand.cpp ends here

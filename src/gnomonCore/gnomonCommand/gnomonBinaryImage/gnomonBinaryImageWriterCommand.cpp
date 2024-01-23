@@ -82,4 +82,9 @@ void gnomonBinaryImageWriterCommand::setInputForm(const QString &name, std::shar
     }
 }
 
+void gnomonBinaryImageWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->binaryImage = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonBinaryImageWriterCommand)

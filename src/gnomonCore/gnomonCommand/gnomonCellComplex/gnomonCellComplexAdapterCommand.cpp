@@ -112,5 +112,11 @@ QJsonObject gnomonCellComplexAdapterCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonCellComplexAdapterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+}
+
 //
 // gnomonCellComplexAdapterCommand.cpp ends here

@@ -90,6 +90,11 @@ void gnomonPointCloudWriterCommand::setInputForm(const QString &name, std::share
     }
 }
 
+void gnomonPointCloudWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->pointCloud = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonPointCloudWriterCommand)
 
 //

@@ -95,6 +95,11 @@ void gnomonTreeWriterCommand::setInputForm(const QString &name, std::shared_ptr<
     }
 }
 
+void gnomonTreeWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->tree = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonTreeWriterCommand)
 
 //

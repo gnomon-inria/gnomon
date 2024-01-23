@@ -90,6 +90,11 @@ void gnomonDataFrameWriterCommand::setInputForm(const QString &name, std::shared
     }
 }
 
+void gnomonDataFrameWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->dataFrame = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonDataFrameWriterCommand)
 
 //

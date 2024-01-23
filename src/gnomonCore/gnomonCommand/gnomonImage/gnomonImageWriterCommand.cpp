@@ -89,6 +89,11 @@ void gnomonImageWriterCommand::setInputForm(const QString &name, std::shared_ptr
     }
 }
 
+void gnomonImageWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->image = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonImageWriterCommand)
 
 //

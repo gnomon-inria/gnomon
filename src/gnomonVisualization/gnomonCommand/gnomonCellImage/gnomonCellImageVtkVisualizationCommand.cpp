@@ -37,7 +37,7 @@ gnomonCellImageVtkVisualizationCommand::~gnomonCellImageVtkVisualizationCommand(
 
 void gnomonCellImageVtkVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::cellImageVtkVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractCellImageVtkVisualization>(visu);
     this->connectVisualization();
@@ -80,6 +80,11 @@ void gnomonCellImageVtkVisualizationCommand::setInputForm(const QString &name, s
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonCellImageVtkVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->cellImage = nullptr;
 }
 
 //

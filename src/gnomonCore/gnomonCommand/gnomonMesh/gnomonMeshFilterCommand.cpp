@@ -157,5 +157,11 @@ QJsonObject gnomonMeshFilterCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonMeshFilterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->input = nullptr;
+    d->output = nullptr;
+}
+
 //
 // gnomonMeshFilterCommand.cpp ends here

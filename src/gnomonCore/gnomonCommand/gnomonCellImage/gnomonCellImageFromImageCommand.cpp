@@ -176,5 +176,13 @@ QJsonObject gnomonCellImageFromImageCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonCellImageFromImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->image_series = nullptr;
+    d->pointCloud_series = nullptr;
+    d->binary_image_series = nullptr;
+    d->output = nullptr;
+}
+
 //
 // gnomonCellImageFromImageCommand.cpp ends here

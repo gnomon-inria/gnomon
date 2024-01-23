@@ -71,7 +71,7 @@ class gnomonFormManagerPrivate : public QObject
     Q_OBJECT
 
 public:
-     gnomonFormManagerPrivate(QObject *parent = nullptr);
+     gnomonFormManagerPrivate(gnomonFormManager *q_ptr, QObject *parent = nullptr);
     ~gnomonFormManagerPrivate(void);
 
 public:
@@ -99,13 +99,23 @@ public:
     QMap<int, std::pair<QString, gnomonPipelineNodeReader *> > cache_pipeline_nodes;
     QMap<int, QJsonObject > cache_metadatas;
 
+    int activationNumber = 0;
+    int deactivationNumber = 0;
+    QTimer *memoryManagementTimer = nullptr;
+
 
 public:
     QMetaObject::Connection connection;
 
 public:
+    gnomonFormManager* q = nullptr;
+
+public:
     bool deleteFormFromMemory(int id);
     void loadFormToMemory(int id);
+
+private slots:
+    void startMemoryTimer();
 
 public:
     gnomonAbstractView *createView(const QString& className, const QString& form_type, int figure_number=-1);
@@ -117,12 +127,16 @@ public:
 
 int gnomonFormManagerPrivate::item_counter = 0;
 
-gnomonFormManagerPrivate::gnomonFormManagerPrivate(QObject *parent) : QObject(parent)
+gnomonFormManagerPrivate::gnomonFormManagerPrivate(gnomonFormManager *q_ptr, QObject *parent) : QObject(parent), q(q_ptr)
 {
+    memoryManagementTimer = new QTimer(this);
+    QMetaObject::invokeMethod(this, &gnomonFormManagerPrivate::startMemoryTimer, Qt::QueuedConnection);
 }
 
 gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
 {
+    delete memoryManagementTimer;
+    memoryManagementTimer = nullptr;
     for (auto command: this->commands)
         delete command;
     this->commands.clear();
@@ -132,6 +146,13 @@ gnomonFormManagerPrivate::~gnomonFormManagerPrivate(void)
     delete tmpDir;
 
     this->cache_pipeline_nodes.clear();
+    q = nullptr;
+}
+
+void gnomonFormManagerPrivate::startMemoryTimer() {
+    memoryManagementTimer->setInterval(1000);
+    connect(memoryManagementTimer, &QTimer::timeout, q, &gnomonFormManager::memoryManagement);
+    memoryManagementTimer->start();
 }
 
 void gnomonFormManagerPrivate::insertForm(int item, const QString& form_uuid, const QImage& image)
@@ -264,6 +285,17 @@ gnomonAbstractView *gnomonFormManagerPrivate::createView(const QString& classNam
 // ///////////////////////////////////////////////////////////////////
 // gnomonFormManager
 // ///////////////////////////////////////////////////////////////////
+
+gnomonFormManager::gnomonFormManager(QObject *parent) : QObject(parent)
+{
+    d = new gnomonFormManagerPrivate(this, this);
+
+}
+
+gnomonFormManager::~gnomonFormManager(void)
+{
+    delete d;
+}
 
 bool gnomonFormManager::deleteForm(int id, bool force)
 {
@@ -413,16 +445,6 @@ vtkCamera *gnomonFormManager::getCamera(int index)
 QImage gnomonFormManager::thumbnail(int index)
 {
     return d->formThumbnail.value(index, QImage());
-}
-
-gnomonFormManager::gnomonFormManager(QObject *parent) : QObject(parent)
-{
-    d = new gnomonFormManagerPrivate;
-}
-
-gnomonFormManager::~gnomonFormManager(void)
-{
-    delete d;
 }
 
 gnomonDynamicFormMetadata *gnomonFormManager::getDynamicFormMetadata(int id) {
@@ -720,6 +742,38 @@ void gnomonFormManager::deserialize(const QJsonObject& state)
             cam->SetViewUp(view_up_val);
             d->formCameras.insert(index, cam);
         }
+    }
+}
+
+int gnomonFormManager::getActivationNumber() {
+    return ++d->activationNumber;
+}
+
+void gnomonFormManager::memoryManagement() {
+    auto stats = systemStat();
+    int total_mem = stats[0];
+    int used_mem = stats[1];
+    qDebug() << "$$ Memory usage: " << used_mem << " | " << total_mem << " | " << stats[2];
+    while((used_mem > 3000 || (float)used_mem/(float)total_mem>0.8) && d->deactivationNumber < d->activationNumber) {
+        break;
+        qInfo() << "Memory used threshold reached: hibernating workspaces (" << d->deactivationNumber << ")";
+        emit requestDeactivate(d->deactivationNumber);
+        d->deactivationNumber++;
+        for(auto [index, uuid]: d->forms.asKeyValueRange()) {
+            auto form = GNOMON_SESSION->getForm(uuid);
+            qDebug() << "Form " << uuid << " :: use count: " << form.use_count();
+            if(form.use_count() <= 2) {
+                //form->unload();
+            }
+        }
+    }
+}
+
+void gnomonFormManager::testDeactivate(void) {
+    if(d->deactivationNumber < d->activationNumber) {
+        emit requestDeactivate(++d->deactivationNumber);
+    } else {
+        qDebug() << "$$ cannot deactivate more workspaces";
     }
 }
 

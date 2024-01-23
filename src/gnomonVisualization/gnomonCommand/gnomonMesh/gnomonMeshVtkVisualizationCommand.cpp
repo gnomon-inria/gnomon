@@ -37,7 +37,7 @@ gnomonMeshVtkVisualizationCommand::~gnomonMeshVtkVisualizationCommand()
 
 void gnomonMeshVtkVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::meshVtkVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractMeshVtkVisualization>(visu);
     this->connectVisualization();
@@ -80,6 +80,11 @@ void gnomonMeshVtkVisualizationCommand::setInputForm(const QString &name, std::s
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonMeshVtkVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->mesh = nullptr;
 }
 
 //

@@ -37,7 +37,7 @@ gnomonPointCloudVtkVisualizationCommand::~gnomonPointCloudVtkVisualizationComman
 
 void gnomonPointCloudVtkVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::pointCloudVtkVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractPointCloudVtkVisualization>(visu);
     this->connectVisualization();
@@ -80,6 +80,11 @@ void gnomonPointCloudVtkVisualizationCommand::setInputForm(const QString &name, 
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonPointCloudVtkVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->pointCloud = nullptr;
 }
 
 //

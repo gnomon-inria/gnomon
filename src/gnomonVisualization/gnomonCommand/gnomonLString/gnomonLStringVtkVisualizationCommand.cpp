@@ -37,7 +37,7 @@ gnomonLStringVtkVisualizationCommand::~gnomonLStringVtkVisualizationCommand()
 
 void gnomonLStringVtkVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::lStringVtkVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractLStringVtkVisualization>(visu);
     this->connectVisualization();
@@ -80,6 +80,11 @@ void gnomonLStringVtkVisualizationCommand::setInputForm(const QString &name, std
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonLStringVtkVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->lString = nullptr;
 }
 
 //

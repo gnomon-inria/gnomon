@@ -118,6 +118,11 @@ void gnomonMeshWriterCommand::setInputForm(const QString &name, std::shared_ptr<
     }
 }
 
+void gnomonMeshWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->mesh = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonMeshWriterCommand)
 
 //

@@ -83,4 +83,9 @@ void gnomonDataDictWriterCommand::setInputForm(const QString &name, std::shared_
     }
 }
 
+void gnomonDataDictWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->dataDict = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonDataDictWriterCommand)

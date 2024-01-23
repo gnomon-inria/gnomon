@@ -36,7 +36,7 @@ gnomonDataFrameMplVisualizationCommand::~gnomonDataFrameMplVisualizationCommand(
 
 void gnomonDataFrameMplVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractDataFrameMplVisualization>(visu);
     this->connectVisualization();
@@ -93,6 +93,11 @@ void gnomonDataFrameMplVisualizationCommand::setInputForm(const QString &name, s
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonDataFrameMplVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->dataFrame = nullptr;
 }
 
 //

@@ -175,5 +175,13 @@ QJsonObject gnomonLStringTranslationCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonLStringTranslationCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->lString_series = nullptr;
+    d->tree_series = nullptr;
+    d->output_lString_series = nullptr;
+    d->output_tree_series = nullptr;
+}
+
 //
 // gnomonLStringTranslationCommand.cpp ends here

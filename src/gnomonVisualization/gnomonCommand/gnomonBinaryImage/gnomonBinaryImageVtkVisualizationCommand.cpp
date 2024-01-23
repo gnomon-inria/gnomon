@@ -37,7 +37,7 @@ gnomonBinaryImageVtkVisualizationCommand::~gnomonBinaryImageVtkVisualizationComm
 
 void gnomonBinaryImageVtkVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::binaryImageVtkVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractBinaryImageVtkVisualization>(visu);
     this->connectVisualization();
@@ -80,6 +80,11 @@ void gnomonBinaryImageVtkVisualizationCommand::setInputForm(const QString &name,
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonBinaryImageVtkVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->binaryImage = nullptr;
 }
 
 //

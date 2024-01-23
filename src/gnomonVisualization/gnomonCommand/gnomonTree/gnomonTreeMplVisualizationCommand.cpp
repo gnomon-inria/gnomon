@@ -36,7 +36,7 @@ gnomonTreeMplVisualizationCommand::~gnomonTreeMplVisualizationCommand()
 
 void gnomonTreeMplVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::treeMplVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractTreeMplVisualization>(visu);
     this->connectVisualization();
@@ -93,6 +93,11 @@ void gnomonTreeMplVisualizationCommand::setInputForm(const QString &name, std::s
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonTreeMplVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->tree = nullptr;
 }
 
 //

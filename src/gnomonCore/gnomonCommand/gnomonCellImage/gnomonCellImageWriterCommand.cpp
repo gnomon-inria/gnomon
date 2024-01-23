@@ -90,6 +90,11 @@ void gnomonCellImageWriterCommand::setInputForm(const QString &name, std::shared
     }
 }
 
+void gnomonCellImageWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->cellImage = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonCellImageWriterCommand)
 //
 // gnomonCellImageWriterCommand.cpp ends here

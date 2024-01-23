@@ -95,6 +95,11 @@ QJsonObject gnomonCellImageReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonCellImageReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->cellImage = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonCellImageReaderCommand)
 //
 // gnomonCellImageReaderCommand.cpp ends here

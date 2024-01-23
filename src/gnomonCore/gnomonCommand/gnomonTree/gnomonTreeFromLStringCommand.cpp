@@ -132,5 +132,11 @@ QJsonObject gnomonTreeFromLStringCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonTreeFromLStringCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->input = nullptr;
+    d->output = nullptr;
+}
+
 //
 // gnomonTreeFromLStringCommand.cpp ends here

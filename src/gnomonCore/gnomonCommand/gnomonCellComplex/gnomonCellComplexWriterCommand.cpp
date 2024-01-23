@@ -81,6 +81,11 @@ void gnomonCellComplexWriterCommand::postdo(void) {
 
 }
 
+void gnomonCellComplexWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->cellComplex = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonCellComplexWriterCommand)
 //
 // gnomonCellComplexWriterCommand.cpp ends here

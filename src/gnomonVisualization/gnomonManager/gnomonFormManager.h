@@ -52,7 +52,6 @@ public:
     Q_INVOKABLE QVariantList timeKeys(int id);
     Q_INVOKABLE QStringList formMetadataKeysAtT(int id, double t);
     Q_INVOKABLE QString formMetadataValueAtT(int id, double t, const QString& key);
-    Q_INVOKABLE QList<int> systemStat(void) const; //total_mem, used_mem, this_mem
 
 public:
     Q_INVOKABLE QString formWriterNameFilter(int id);
@@ -76,6 +75,17 @@ public:
 public:
     QJsonObject serialize(void);
     void deserialize(const QJsonObject& state);
+
+public:
+    Q_INVOKABLE QList<int> systemStat(void) const; //total_mem, used_mem, this_mem
+    Q_INVOKABLE void testDeactivate(void);
+    int getActivationNumber();
+
+    signals:
+    void requestDeactivate(int activationNumber);
+
+public slots:
+    void memoryManagement();
 
 protected:
      gnomonFormManager(QObject *parent = nullptr);

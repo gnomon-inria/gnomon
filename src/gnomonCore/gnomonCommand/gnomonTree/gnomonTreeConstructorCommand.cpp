@@ -89,5 +89,10 @@ QJsonObject gnomonTreeConstructorCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonTreeConstructorCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+}
+
 //
 // gnomonTreeConstructorCommand.cpp ends here

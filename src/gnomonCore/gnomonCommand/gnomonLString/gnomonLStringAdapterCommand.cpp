@@ -116,5 +116,11 @@ QJsonObject gnomonLStringAdapterCommand::serializeResults(void) {
     out["output"] = d->output->serialize();
     return out;
 }
+
+void gnomonLStringAdapterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+}
 //
 // gnomonLStringAdapterCommand.cpp ends here

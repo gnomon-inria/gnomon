@@ -133,5 +133,11 @@ QJsonObject gnomonTreeTransformCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonTreeTransformCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+}
+
 //
 // gnomonTreeTransformCommand.cpp ends here

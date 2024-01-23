@@ -86,6 +86,11 @@ QJsonObject gnomonPointCloudReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonPointCloudReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->pointCloud = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonPointCloudReaderCommand)
 
 //

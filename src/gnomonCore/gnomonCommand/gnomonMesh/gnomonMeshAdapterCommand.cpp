@@ -123,5 +123,11 @@ QJsonObject gnomonMeshAdapterCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonMeshAdapterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->input = nullptr;
+    d->output = nullptr;
+}
+
 //
 // gnomonMeshAdapterCommand.cpp ends here

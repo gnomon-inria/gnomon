@@ -181,5 +181,14 @@ QJsonObject gnomonCellImageQuantificationCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonCellImageQuantificationCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->input_cellImage = nullptr;
+    d->cellImage = nullptr;
+    d->dataFrame = nullptr;
+    d->image = nullptr;
+    d->mesh = nullptr;
+}
+
 //
 // gnomonCellImageQuantificationCommand.cpp ends here

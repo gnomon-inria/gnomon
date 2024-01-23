@@ -89,6 +89,11 @@ void gnomonLStringWriterCommand::setInputForm(const QString &name, std::shared_p
     }
 }
 
+void gnomonLStringWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->lString = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonLStringWriterCommand)
 
 //

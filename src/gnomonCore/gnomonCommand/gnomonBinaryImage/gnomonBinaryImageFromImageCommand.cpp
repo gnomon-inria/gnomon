@@ -155,5 +155,12 @@ QJsonObject gnomonBinaryImageFromImageCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonBinaryImageFromImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+    d->initialization = nullptr;
+}
+
 //
 // gnomonBinaryImageFromImageCommand.cpp ends here
