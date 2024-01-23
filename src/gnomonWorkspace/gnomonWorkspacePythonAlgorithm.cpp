@@ -41,6 +41,8 @@ public:
     QString algorithm_key;
     QString object_key;
 
+    QMap<QString, QString> open_files;
+
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
     gnomonFormAlgorithmCommand *command = nullptr;
     QJsonObject state;
@@ -179,35 +181,49 @@ QString gnomonWorkspacePythonAlgorithm::algorithm(void) const
 
 void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_only)
 {
-    QString file_path;
+    QString relative_path;
     const QUrl url(file_url);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     if (url.isLocalFile()) {
-        file_path = QDir::toNativeSeparators(url.toLocalFile());
+        relative_path = QDir::toNativeSeparators(url.toLocalFile());
     } else {
-        file_path = file_url;
+        relative_path = file_url;
     }
 
-    if(!read_only) {
-        QString file_name = file_path.split(QRegularExpression("/")).last();
+    QString absolute_path;
+    QString source;
+    if (!QFile::exists(relative_path)) {
+            dtkWarn() << Q_FUNC_INFO << "file " << relative_path << "doesn't exist";
+    } else {
+        absolute_path = GNOMON_PROJECT->findFile(relative_path);
+        source = QFileInfo(relative_path).fileName();
+    }
+
+    bool to_copy = (!read_only) & (absolute_path=="");
+    qDebug()<<Q_FUNC_INFO<<relative_path<<"["<<absolute_path<<"]"<<to_copy;
+
+    if(to_copy) {
+        QString file_name = relative_path.split(QRegularExpression("/")).last();
         QString project_file_path = GNOMON_PROJECT->projectDir() + "/" + file_name;
-        if(!QFile::copy(file_path, project_file_path)) {
-            dtkWarn()<<"Failed to copy file "<< file_path << "to Project";
+        if(!QFile::copy(relative_path, project_file_path)) {
+            dtkWarn()<<"Failed to copy file "<< relative_path << "to Project";
             return;
         }
+        relative_path = GNOMON_PROJECT->relativePath(project_file_path);
     }
 
-    QFile f(file_path);
+    QFile f(relative_path);
     if (f.open(QIODevice::ReadOnly)) {
-        settings.setValue("Python/load", file_path);
+        settings.setValue("Python/load", relative_path);
         QTextStream s(&f);
         d->code->setText(s.readAll());
         d->code->parseCode();
+        d->open_files[d->code->fileName()] = relative_path;
         emit d->code->codeUpdated();
         if(!read_only)
             this->backup();
     } else {
-        dtkWarn()<<"Could not open file"<<file_path;
+        dtkWarn()<<"Could not open file"<<relative_path;
     }
 }
 
@@ -605,7 +621,6 @@ QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
     }
     state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
 
-
     return state;
 }
 
@@ -625,7 +640,13 @@ void gnomonWorkspacePythonAlgorithm::unSerialize(const QJsonObject &state) {
 
 bool gnomonWorkspacePythonAlgorithm::backup(void) const
 {
-    return GNOMON_PROJECT->backupFile(d->code->fileName(), d->code->text());
+    QString file_name = d->code->fileName();
+    bool ok = false;
+    if (d->open_files.contains(file_name)) {
+        QString file_path = d->open_files[file_name];
+        ok = GNOMON_PROJECT->backupFile(file_path, d->code->text());
+    }
+    return ok;
 }
 
 void gnomonWorkspacePythonAlgorithm::restore(void)

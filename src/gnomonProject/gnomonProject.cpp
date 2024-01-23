@@ -295,8 +295,27 @@ void gnomonProject::addToManifest(const QJsonObject& workspace_info)
 
 bool gnomonProject::backupFile(const QString &fname, const QString &content)
 {
-    auto file_path = d->projectDir.filePath(PROJECT_BACKUP_FOLDER + QString("/") + fname);
-    QFile f(file_path);
+    QString filename = fname.split('/').last();
+
+    QFile manifest_file(d->manifest_url);
+
+    QJsonObject manifest_data;
+    if(manifest_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        manifest_data = QJsonDocument::fromJson(manifest_file.readAll()).object();
+        manifest_file.close();
+    }
+
+    QJsonObject file_info;
+    file_info.insert("path", fname);
+    manifest_data[filename] = file_info;
+
+    if(manifest_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        manifest_file.write(QJsonDocument(manifest_data).toJson());
+        manifest_file.close();
+    }
+
+    auto backup_path = d->projectDir.filePath(PROJECT_BACKUP_FOLDER + QString("/") + filename);
+    QFile f(backup_path);
     if(f.open(QIODevice::WriteOnly| QIODevice::Text)) {
         QTextStream out(&f);
         out<<content;
@@ -321,14 +340,20 @@ QStringList gnomonProject::editorFileInfo(const QStringList& extensions)
     QDir backup_dir(d->projectDir.filePath(PROJECT_BACKUP_FOLDER));
 
     QStringList editor_files;
-    for(const QFileInfo& file_info: backup_dir.entryInfoList())
-    {
-        if (file_info.isFile()) {
-            for (const auto& ext : extensions) {
-                if (file_info.suffix() == ext) {
-                    editor_files.append(file_info.filePath());
-                    break;
-                }
+
+    QFile manifest_file(d->manifest_url);
+    QJsonObject manifest_data;
+    if(manifest_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        manifest_data = QJsonDocument::fromJson(manifest_file.readAll()).object();
+        manifest_file.close();
+    }
+
+    for (const auto& key: manifest_data.keys()) {
+        QFileInfo file_info(key);
+        for (const auto &ext: extensions) {
+            if (file_info.suffix() == ext) {
+                editor_files.append(manifest_data[key].toObject()["path"].toString());
+                break;
             }
         }
     }

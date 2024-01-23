@@ -86,9 +86,10 @@ G.Workspace {
                     _editor.readOnly = (file_path.length === 0) & (!d.code.fileName.includes("example.py"))
 
                 }
-                onIdeIsReady : () => {
+
+                /*onIdeIsReady : () => {
                     d.restore();
-                }
+                }*/
             }
 
             G.View {
