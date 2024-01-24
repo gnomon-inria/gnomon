@@ -80,7 +80,7 @@ Control {
     delegate: G.FormSelectorDelegate {
 
       //make space for the scroll indicator as well as spacing
-      width: parent.width;
+      implicitWidth: parent.width;
       highlighted: _control.currentIndex == index
       text: modelData ? modelData.split(',')[0] : ""
       thumbnailIndex: modelData ? modelData.split(',')[1] : "-1"
