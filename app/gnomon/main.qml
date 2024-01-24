@@ -552,7 +552,7 @@ G.Application {
         return true;
     }
 
-    function add_workspace(source: string, uuid: string): int
+    function add_workspace(source: string, uuid: string, fill: bool): int
     {
         if(window.current_workspace()) {
             window.current_workspace().d.saveState();
@@ -567,7 +567,9 @@ G.Application {
                 const specific_menu = source.replace(".qml", "Menu.qml").replace("Workspaces", "Menus");
                 _internal.menu_sources.push(specific_menu);
                 drawer.update_menu(specific_menu);
-                workspace.fill()
+                if(fill) {
+                    workspace.fill()
+                }
                 // window.create_workspace_screenshot();
                 _workspaces_model.append({"title": workspace.workspace_title, "index": workspace_index});
                 return workspace_index;
