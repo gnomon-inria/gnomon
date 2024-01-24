@@ -385,7 +385,8 @@ int gnomonSessionManager::loadWorkspace(const QString &source, const QString &uu
     auto success = QMetaObject::invokeMethod(d->window, "add_workspace",
                                         Q_RETURN_ARG(int, index),
                                         Q_ARG(QString, source),
-                                        Q_ARG(QString, uuid));
+                                        Q_ARG(QString, uuid),
+                                        Q_ARG(bool, false));
     if(success) {
         d->workspace_sources[uuid] = source;
     }
@@ -398,7 +399,8 @@ int gnomonSessionManager::newWorkspace(const QString &source) {
     auto success = QMetaObject::invokeMethod(d->window, "add_workspace",
                               Q_RETURN_ARG(int, index),
                               Q_ARG(QString, source),
-                              Q_ARG(QString, uuid));
+                              Q_ARG(QString, uuid),
+                              Q_ARG(bool, true));
     if(success) {
         d->workspace_sources[uuid] = source;
         this->sync();
