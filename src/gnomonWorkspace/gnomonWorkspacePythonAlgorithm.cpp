@@ -46,6 +46,8 @@ public:
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
     gnomonFormAlgorithmCommand *command = nullptr;
     QJsonObject state;
+
+    QMetaObject::Connection editor_connect;
 };
 
 void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
@@ -220,6 +222,7 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_onl
         d->code->parseCode();
         d->open_files[d->code->fileName()] = relative_path;
         emit d->code->codeUpdated();
+        emit stateChanged();
         if(!read_only)
             this->backup();
     } else {
@@ -607,6 +610,13 @@ void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
 
 QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
     QJsonObject state;
+
+    QJsonObject open_file_json;
+    for (const auto& file_name : d->open_files.keys()) {
+        open_file_json.insert(file_name, d->open_files[file_name]);
+    }
+    state.insert("open_files", open_file_json);
+
     state.insert("code", d->code->text());
     state.insert("algoName", d->algorithm_key);
     state.insert("edit", d->edit_mode);
@@ -625,8 +635,23 @@ QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
 }
 
 void gnomonWorkspacePythonAlgorithm::unSerialize(const QJsonObject &state) {
-    d->code->setText(state["code"].toString());
-    d->code->parseCode();
+    disconnect(d->editor_connect);
+
+    QJsonObject open_file_json = state["open_files"].toObject();
+    for (auto file_name: open_file_json.keys()) {
+        QString file_path = open_file_json[file_name].toString();
+        d->open_files[file_name] = file_path;
+    }
+
+    d->editor_connect = connect(this, &gnomonWorkspacePythonAlgorithm::codeEditorReady, [=] () {
+        for (auto file_name: d->open_files.keys()) {
+            emit requestOpenFile(d->open_files[file_name]);
+        }
+        d->code->parseCode();
+    });
+
+    // TODO: to remove if code is restored from file / backup ?
+    // d->code->setText(state["code"].toString());
     setEditMode(state["edit"].toBool());
 
     QJsonObject parameters_json = state["parameters"].toObject();
@@ -653,9 +678,9 @@ void gnomonWorkspacePythonAlgorithm::restore(void)
 {
     QStringList py_files = GNOMON_PROJECT->editorFileInfo({"py"});
 
-   for (auto f: py_files) {
-       emit requestOpenFile(f);
-   }
+    for (auto f: py_files) {
+        emit requestOpenFile(f);
+    }
 }
 
 //

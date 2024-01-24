@@ -87,9 +87,10 @@ G.Workspace {
 
                 }
 
-                /*onIdeIsReady : () => {
-                    d.restore();
-                }*/
+                onIdeIsReady : () => {
+                    //d.restore();
+                    d.codeEditorReady()
+                }
             }
 
             G.View {

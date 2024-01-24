@@ -64,6 +64,7 @@ signals:
     void algorithmLoaded(void);
     void parametersChanged(void);
     void requestOpenFile(const QString& path);
+    void codeEditorReady(void);
 
 public slots:
     void read(const QString& file_url, bool read_only=false);
