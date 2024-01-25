@@ -133,16 +133,6 @@ Item {
         }
     }
 
-    G.Toast {
-        id: _non_py_toast
-
-        parent: Overlay.overlay
-        header: "Not a saved file"
-        message: "The file you opened is not saved, \nplease save it as python file before running."
-
-        type: G.Style.ButtonType.Warning
-    }
-
     G.Dialog {
         id: _message_dialog;
 
