@@ -77,6 +77,7 @@ G.Workspace {
                     d.code.text = eval(contents);
                     d.code.parseCode()
                 }
+
                 onFileSwitched : (name) => {
                     name = eval(name)
                     // Don't emit fileNameChanged signal when Tab 0
@@ -85,6 +86,10 @@ G.Workspace {
                     let file_path = GP.ProjectManager.project.findFile(d.code.fileName)
                     _editor.readOnly = (file_path.length === 0) & (!d.code.fileName.includes("example.py"))
 
+                }
+
+                onFileClosed : (name) => {
+                    d.close(name)
                 }
 
                 onIdeIsReady : () => {

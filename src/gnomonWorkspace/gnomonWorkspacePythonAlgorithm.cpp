@@ -254,7 +254,16 @@ void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
             dtkWarn()<<"Could not save to file"<<file_path;
         }
     }
+}
 
+void gnomonWorkspacePythonAlgorithm::close(const QString& file_name)
+{
+    if (d->open_files.contains(file_name)) {
+        d->open_files.remove(file_name);
+        emit stateChanged();
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"The file"<<file_name<<"was not open";
+    }
 }
 
 QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)

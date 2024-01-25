@@ -69,6 +69,7 @@ signals:
 public slots:
     void read(const QString& file_url, bool read_only=false);
     void save(const QString& file_url) const;
+    void close(const QString& file_name);
 
 public:
     Q_INVOKABLE QUrl defaultReadPath();
