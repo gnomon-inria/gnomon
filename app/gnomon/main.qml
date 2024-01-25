@@ -566,6 +566,7 @@ G.Application {
                 workspaces.currentIndex = workspace_index;
                 const specific_menu = source.replace(".qml", "Menu.qml").replace("Workspaces", "Menus");
                 _internal.menu_sources.push(specific_menu);
+                drawel.update_menu()
                 drawer.update_menu(specific_menu);
                 if(fill) {
                     workspace.fill()
@@ -597,6 +598,7 @@ G.Application {
 
         footer.workspaceName = window.current_workspace().workspace_title;
 
+        drawel.update_menu();
         drawer.update_menu(_internal.menu_sources[index]);
         window.current_workspace().d.restoreState();
     }
