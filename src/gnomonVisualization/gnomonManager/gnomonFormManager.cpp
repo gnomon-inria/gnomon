@@ -582,7 +582,7 @@ QList<int> gnomonFormManager::systemStat(void) const
     return stat;
 }
 
-QJsonObject gnomonFormManager::dumpState(void)
+QJsonObject gnomonFormManager::serialize(void)
 {
     QJsonObject state;
     QJsonObject forms;
@@ -598,12 +598,15 @@ QJsonObject gnomonFormManager::dumpState(void)
         QString visu_type;
         QString figure_number;
         if(auto vtk_visu = std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visualization)) {
-            visu_type = vtk_visu->vtkView()->objectName();
+            visu_type = "gnomonVtkView";
         } else if (auto qml_visu = std::dynamic_pointer_cast<gnomonAbstractQmlVisualization>(visualization)) {
-            visu_type = qml_visu->qmlView()->objectName();
+            visu_type = "gnomonQmlView";
         } else if (auto mpl_visu = std::dynamic_pointer_cast<gnomonAbstractMplVisualization>(visualization)) {
-            visu_type = dynamic_cast<gnomonMplView *>(mpl_visu->view())->objectName();
-            figure_number = QString::number(dynamic_cast<gnomonMplView *>(mpl_visu->view())->figureNumber());
+            visu_type = "gnomonMplView";
+            auto mpl_view = dynamic_cast<gnomonMplView *>(mpl_visu->view());
+            if (mpl_view) {
+                figure_number = QString::number(mpl_view->figureNumber());
+            }
         }
         visu_info["visu_type"] = visu_type;
         visu_info["figure_number"] = figure_number;
@@ -641,7 +644,7 @@ QJsonObject gnomonFormManager::dumpState(void)
     return state;
 }
 
-void gnomonFormManager::loadState(const QJsonObject& state)
+void gnomonFormManager::deserialize(const QJsonObject& state)
 {
     auto forms = state["forms"].toObject().toVariantHash();
     auto form_visualizations = state["form_visualizations"].toObject().toVariantHash();
@@ -670,6 +673,9 @@ void gnomonFormManager::loadState(const QJsonObject& state)
             view->setForm(uuid, form_type, visu_name, parameters);
             visu = view->getVisualization(form_type);
             image = view->getVisualization(form_type)->imageRendering();
+
+            view->clear();
+            delete view;
         }
 
         d->insertForm(index, uuid, image);

@@ -53,8 +53,8 @@ public:
     void setFormIndex(const QString& form_uuid, int index=-1);
 
 public:
-    QJsonObject dumpState(void);
-    void loadState(const QJsonObject& state, std::shared_ptr<gnomonPipeline> pipeline);
+    QJsonObject serialize(void);
+    void deserialize(const QJsonObject& state, std::shared_ptr<gnomonPipeline> pipeline);
 
 public: 
     std::pair<QString, gnomonPipelineNodeReader *> cacheNode(const QString& form_uuid);

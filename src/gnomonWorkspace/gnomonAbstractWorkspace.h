@@ -9,12 +9,19 @@ class GNOMONWORKSPACE_EXPORT gnomonAbstractWorkspace : public QObject
     Q_OBJECT
 
 public:
-    gnomonAbstractWorkspace(QObject *parent = 0) : QObject(parent) { }
-    virtual ~gnomonAbstractWorkspace(void) { }
+    gnomonAbstractWorkspace(QObject *parent = 0) : QObject(parent) {
+        timer = new QTimer(this);
+        timer->setInterval(1000);
+        connect(timer, &QTimer::timeout, this, &gnomonAbstractWorkspace::stateChanged);
+        timer->start();
+    }
+    virtual ~gnomonAbstractWorkspace(void) {
+        delete timer;
+    }
 
     Q_PROPERTY(bool canBeDestroyed READ canBeDestroyed NOTIFY canBeDestroyedChanged);
     Q_PROPERTY(QString uuid READ uuid CONSTANT) // a read-only alias for objectName
-    Q_PROPERTY(QJsonObject state READ serialize WRITE unSerialize NOTIFY stateChanged)
+    Q_PROPERTY(QJsonObject state READ serialize WRITE deserialize NOTIFY stateChanged)
 
 signals:
     void started(void);
@@ -30,9 +37,12 @@ public:
     QString uuid() { return objectName(); };
 
     virtual QJsonObject serialize() = 0;
-    virtual void unSerialize(const QJsonObject &state) = 0;
+    virtual void deserialize(const QJsonObject &state) = 0;
 
 
 protected:
     bool m_can_be_destroyed = true;
+
+private:
+    QTimer *timer;
 };

@@ -51,7 +51,7 @@ public:
     void setUploadMode(bool);
 
     QJsonObject serialize() override;
-    void unSerialize(const QJsonObject &state) override;
+    void deserialize(const QJsonObject &state) override;
 
     Q_INVOKABLE bool deleteDataset(int id=-1);
     Q_INVOKABLE QString importDatasetInfos(const QString& search = "");

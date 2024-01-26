@@ -52,7 +52,7 @@ public slots:
     virtual void transmitForm(const QString&);
     virtual void restoreState(void);
     virtual QJsonObject serialize(void);
-    virtual void unSerialize(const QJsonObject &serialization);
+    virtual void deserialize(const QJsonObject &serialization);
 
 public slots:
     virtual inline void saveScreenshot(const QString& filename) {};

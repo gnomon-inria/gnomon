@@ -393,12 +393,23 @@ QVariantHash gnomonCoreParameterColorTable::toVariantHash(void) const
     QList<QVariant> colors; colors.reserve(m_c.size());
     for (auto i : m_c.indices())
     {
-        keys << QVariant::fromValue(i);
         if (m_c.isColor(i)) {
             colors << QVariant::fromValue(m_c.color(i));
+            keys << QVariant::fromValue(i);
         } else if (m_c.isTexture(i)) {
             colors << QVariant::fromValue(m_c.textureFile(i));
-        }
+            keys << QVariant::fromValue(i);
+        } else if(m_c.isMaterial(i)){
+            QVariantMap mat;
+            mat["ambient"] = m_c.ambient(i);
+            mat["specular"] = m_c.specular(i);
+            mat["emission"] = m_c.emission(i);
+            mat["diffuse"] = m_c.diffuse(i);
+            mat["shininess"] = m_c.shininess(i);
+            mat["transparency"] = m_c.transparency(i);
+            colors << mat;
+            keys << QVariant::fromValue(i);
+        };
         ++i;
     }
     hash.insert("keys", keys);

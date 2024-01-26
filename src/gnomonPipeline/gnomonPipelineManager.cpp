@@ -626,7 +626,7 @@ void gnomonPipelineManager::decacheNode(const QString& form_uuid, std::pair<QStr
         d->reader_nodes[form_uuid] = name_and_node.second;
 }
 
-QJsonObject gnomonPipelineManager::dumpState(void)
+QJsonObject gnomonPipelineManager::serialize(void)
 {
     QJsonObject state;
     for(const auto &name: d->pipeline->nodeNames()){
@@ -637,7 +637,7 @@ QJsonObject gnomonPipelineManager::dumpState(void)
     return state;
 }
 
-void gnomonPipelineManager::loadState(const QJsonObject& state, std::shared_ptr<gnomonPipeline> pipeline)
+void gnomonPipelineManager::deserialize(const QJsonObject& state, std::shared_ptr<gnomonPipeline> pipeline)
 {
     auto addNodeInputForms = [=](gnomonPipelineNode* node, const QVariantMap& input_forms){
         for(const auto& [key, value]: input_forms.asKeyValueRange())

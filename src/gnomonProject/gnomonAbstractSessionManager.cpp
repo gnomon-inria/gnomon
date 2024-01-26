@@ -33,11 +33,11 @@ bool gnomonAbstractSessionManager::addForm(const std::shared_ptr<gnomonAbstractD
     this->trackForm(form);
     if(!this->m_owned_forms.contains(form->uuid())) {
         this->m_owned_forms[form->uuid()] = form;
+        sync();
         return true;
     } else {
         return false;
     }
-
 }
 
 std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractSessionManager::getForm(const QString& uuid)
