@@ -23,6 +23,7 @@ Control {
 
     signal modified(var content);
     signal fileSwitched(var name);
+    signal fileClosed(var name);
     signal ideIsReady();
 
     onThemeChanged: if(self.connected) bridge.send('theme',    self.theme);
@@ -88,6 +89,7 @@ Control {
                     let i = _internal.tab_filenames.indexOf(closed_file)
                     _internal.tab_filenames.splice(i, 1)
                 }
+                self.fileClosed(closed_file)
                 break;
             default:
                 break;

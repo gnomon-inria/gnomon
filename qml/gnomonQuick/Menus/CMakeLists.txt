@@ -6,7 +6,8 @@ VERSION
 PLUGIN_TARGET
   gnomonQuickMenus
 QML_FILES
-PythonPluginMenu.qml
+  MonacoMenu.qml
+  PythonPluginMenu.qml
   ViewMenu.qml
   WorkspaceBrowsingMenu.qml
   WorkspaceLSystemModelMenu.qml
