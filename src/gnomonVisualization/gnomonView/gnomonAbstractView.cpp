@@ -497,6 +497,7 @@ void gnomonAbstractView::deserialize(const QJsonObject &serialization) {
             it->second->setVisualizationName(visu_names.value(it->first).toString());
         }
     }
+    this->update();
 
     // set forms
     auto forms = serialization.value("forms").toObject();
@@ -504,8 +505,10 @@ void gnomonAbstractView::deserialize(const QJsonObject &serialization) {
         QString form_uuid = forms.value(key).toString();
         auto form = GNOMON_SESSION->getForm(form_uuid);
         if(gnomonFormManager::instance()->formIndex(form_uuid)>0) {
-            auto index = gnomonFormManager::instance()->formIndex(form_uuid);
-            setForm(key, form, gnomonFormManager::instance()->getVisualization(index));
+            //TODO: try to get visu from formManager later
+            //auto index = gnomonFormManager::instance()->formIndex(form_uuid);
+            //setForm(key, form, gnomonFormManager::instance()->getVisualization(index));
+            setForm(key, form);
         } else {
             setForm(key, form);
         }

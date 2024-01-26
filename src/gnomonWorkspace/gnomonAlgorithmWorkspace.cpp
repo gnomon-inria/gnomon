@@ -95,7 +95,6 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
         emit parametersChanged();
     });
 
-    connect(this, &gnomonAlgorithmWorkspace::parametersChanged, this, &gnomonAlgorithmWorkspace::saveState);
     connect(this, &gnomonAlgorithmWorkspace::parametersChanged, [=] () {
         emit stateChanged();
     });
@@ -354,8 +353,10 @@ void gnomonAlgorithmWorkspace::saveState(void) {
 }
 
 void gnomonAlgorithmWorkspace::restoreState(void) {
-    QString previousAlgo = algoName();
-    deserialize(d->savedState);
+    if(!d->savedState.isEmpty()) {
+        QString previousAlgo = algoName();
+        deserialize(d->savedState);
+    }
 }
 
 void gnomonAlgorithmWorkspace::addInputView(const QVector<QString>& accepted_forms, QStringList nodePortNames) {

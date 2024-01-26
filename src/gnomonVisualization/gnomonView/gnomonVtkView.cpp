@@ -599,8 +599,8 @@ void gnomonVtkView::associate(vtkRenderWindow *window)
     d->updateFormsTimes();
     dd->updateAxes();
 
-    emit renderWindowAssociated();
     update();
+    emit renderWindowAssociated();
 }
 
 void gnomonVtkView::switchTo3D(void)
@@ -1767,16 +1767,6 @@ void gnomonVtkView::deserialize(const QJsonObject &serialization) {
     auto lambda = [=] () {
         gnomonAbstractView::deserialize(serialization);
 
-        QJsonObject other_cameras = serialization.value("other_cameras").toObject();
-        for(auto key: other_cameras.keys()) {
-            if(dd->cameras.contains((gnomonVtkView::Orientation)key.toInt())) {
-                vtkSmartPointer<vtkCamera> cam = dd->cameras[(gnomonVtkView::Orientation)key.toInt()];
-                gnomonCameraParameters p;
-                p.fromJson(other_cameras[key].toObject());
-                p.toVtkCamera(cam);
-            }
-        }
-
         auto mode = (gnomonVtkView::Mode)serialization.value("mode").toInt();
         auto ori = (gnomonVtkView::Orientation)serialization.value("ori").toInt();
         auto representation = (gnomonVtkView::Representation)serialization.value("representation").toInt();
@@ -1809,11 +1799,6 @@ void gnomonVtkView::deserialize(const QJsonObject &serialization) {
         setAxesVisible(serialization.value("axes_visible").toBool());
         setCameraFixed(serialization.value("camera_fixed").toBool());
 
-        auto camera_json = serialization["active_camera"].toObject();
-        vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
-        gnomonCameraParameters p;
-        p.fromJson(camera_json);
-        p.toVtkCamera(cam);
 
         dd->picked_cells.clear();
         QJsonArray picked_cells = serialization.value("picked_cells").toArray();
@@ -1821,7 +1806,26 @@ void gnomonVtkView::deserialize(const QJsonObject &serialization) {
             dd->picked_cells.append(val.toInt());
         }
 
-        this->update();
+       this->update();
+
+        QJsonObject other_cameras = serialization.value("other_cameras").toObject();
+        for(auto key: other_cameras.keys()) {
+            if(dd->cameras.contains((gnomonVtkView::Orientation)key.toInt())) {
+                vtkSmartPointer<vtkCamera> cam = dd->cameras[(gnomonVtkView::Orientation)key.toInt()];
+                gnomonCameraParameters p;
+                p.fromJson(other_cameras[key].toObject());
+                p.toVtkCamera(cam);
+            }
+        }
+
+        auto camera_json = serialization["active_camera"].toObject();
+        vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+        gnomonCameraParameters p;
+        p.fromJson(camera_json);
+        p.toVtkCamera(cam);
+        dd->renderer3D->ResetCameraClippingRange();
+
+        this->render();
     };
 
     if(dd->window) {

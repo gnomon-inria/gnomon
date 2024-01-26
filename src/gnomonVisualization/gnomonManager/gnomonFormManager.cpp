@@ -670,6 +670,9 @@ void gnomonFormManager::deserialize(const QJsonObject& state)
             view->setForm(uuid, form_type, visu_name, parameters);
             visu = view->getVisualization(form_type);
             image = view->getVisualization(form_type)->imageRendering();
+
+            view->clear();
+            delete view;
         }
 
         d->insertForm(index, uuid, image);
