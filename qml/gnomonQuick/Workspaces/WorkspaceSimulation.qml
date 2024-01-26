@@ -32,6 +32,10 @@ G.Workspace {
 //
 // /////////////////////////////////////////////////////////////////////////////
 
+    G.SessionSettings {
+        category: uuid
+        property alias state: d.state
+    }
 
     d: GW.WorkspaceSimulation {
         id: d;

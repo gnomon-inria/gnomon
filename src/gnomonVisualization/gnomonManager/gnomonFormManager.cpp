@@ -598,12 +598,15 @@ QJsonObject gnomonFormManager::serialize(void)
         QString visu_type;
         QString figure_number;
         if(auto vtk_visu = std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visualization)) {
-            visu_type = vtk_visu->vtkView()->objectName();
+            visu_type = "gnomonVtkView";
         } else if (auto qml_visu = std::dynamic_pointer_cast<gnomonAbstractQmlVisualization>(visualization)) {
-            visu_type = qml_visu->qmlView()->objectName();
+            visu_type = "gnomonQmlView";
         } else if (auto mpl_visu = std::dynamic_pointer_cast<gnomonAbstractMplVisualization>(visualization)) {
-            visu_type = dynamic_cast<gnomonMplView *>(mpl_visu->view())->objectName();
-            figure_number = QString::number(dynamic_cast<gnomonMplView *>(mpl_visu->view())->figureNumber());
+            visu_type = "gnomonMplView";
+            auto mpl_view = dynamic_cast<gnomonMplView *>(mpl_visu->view());
+            if (mpl_view) {
+                figure_number = QString::number(mpl_view->figureNumber());
+            }
         }
         visu_info["visu_type"] = visu_type;
         visu_info["figure_number"] = figure_number;
