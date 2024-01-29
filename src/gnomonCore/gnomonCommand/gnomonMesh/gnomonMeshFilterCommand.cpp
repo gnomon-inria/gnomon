@@ -11,6 +11,7 @@ class gnomonMeshFilterCommandPrivate
 {
 public:
     std::shared_ptr<gnomonMeshSeries> input = nullptr;
+    std::shared_ptr<gnomonCellImageSeries> cellImage = nullptr;
     std::shared_ptr<gnomonMeshSeries> output = nullptr;
 };
 
@@ -61,6 +62,7 @@ void gnomonMeshFilterCommand::postdo(void)
 void gnomonMeshFilterCommand::undo()
 {
     ((gnomonAbstractMeshFilter *) this->action)->setInput(nullptr);
+    ((gnomonAbstractMeshFilter *) this->action)->setCellImage(nullptr);
     this->action->refreshParameters();
 }
 
@@ -81,6 +83,23 @@ std::shared_ptr<gnomonMeshSeries> gnomonMeshFilterCommand::input()
     return d->input;
 }
 
+void gnomonMeshFilterCommand::setCellImage(std::shared_ptr<gnomonCellImageSeries> cellImage)
+{
+    if ((!cellImage)||(cellImage->times().empty())) {
+        d->cellImage = nullptr;
+    } else {
+        d->cellImage = cellImage;
+    }
+    Q_ASSERT(this->action);
+    ((gnomonAbstractMeshFilter *) this->action)->setCellImage(d->cellImage);
+    this->action->refreshParameters();
+}
+
+std::shared_ptr<gnomonCellImageSeries> gnomonMeshFilterCommand::cellImage()
+{
+    return d->cellImage;
+}
+
 std::shared_ptr<gnomonMeshSeries> gnomonMeshFilterCommand::output()
 {
     return d->output;
@@ -90,6 +109,7 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshFilterComma
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["input"] = this->input();
+    inputs["cellImage"] = this->cellImage();
     return inputs;
 }
 
@@ -103,6 +123,7 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshFilterComma
 gnomonAbstractCommand::orderedMap gnomonMeshFilterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("input", "gnomonMesh"));
+    input_types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
     return input_types;
 }
 
@@ -115,6 +136,8 @@ gnomonAbstractCommand::orderedMap gnomonMeshFilterCommand::outputTypes() {
 void gnomonMeshFilterCommand::setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
     if (name == "input") {
         this->setInput(std::dynamic_pointer_cast<gnomonMeshSeries>(form));
+    } else if (name == "cellImage") {
+        this->setCellImage(std::dynamic_pointer_cast<gnomonCellImageSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }

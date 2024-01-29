@@ -519,7 +519,7 @@ G.Dialog {
         _internal.workspace_forms["gnomonWorkspaceImageMeshing"] = ["gnomonImage", "gnomonCellImage", "gnomonBinaryImage"]
         _internal.workspace_forms["gnomonWorkspaceLSystemModel"] = ["gnomonLString", "gnomonTree"]
         _internal.workspace_forms["gnomonWorkspaceMorphonet"] = ["gnomonCellImage"]
-        _internal.workspace_forms["gnomonWorkspaceMeshFilter"] = ["gnomonMesh"]
+        _internal.workspace_forms["gnomonWorkspaceMeshFilter"] = ["gnomonMesh", "gnomonCellImage"]
         _internal.workspace_forms["gnomonWorkspaceCellImageTracking"] = ["gnomonCellImage", "gnomonDataDict", "gnomonImage"]
         _internal.workspace_forms["gnomonWorkspacePointCloudQuantification"] = ["gnomonPointCloud", "gnomonImage"]
         _internal.workspace_forms["gnomonWorkspacePointDetection"] = ["gnomonImage"]
