@@ -127,7 +127,8 @@ G.Workspace {
                 }
 
                 onIdeIsReady : () => {
-                    d.restore();
+                    //d.restore();
+                    d.codeEditorReady()
                 }
 
                 onMakeFileEditable: () => {

@@ -74,6 +74,8 @@ public:
     QString file;
     int currentIndex = 0;
 
+    QMap<QString, QString> open_files;
+
     QDir* lpy_dir = nullptr;
     QFile* model_file = nullptr;
     QFuture<int> redo_future;
@@ -89,6 +91,8 @@ public:
     gnomonQmlView *text_view = nullptr;
     QJsonObject state;
     QStringList missing_textures;
+
+    QMetaObject::Connection editor_connect;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -318,12 +322,14 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only)
 
         this->setFileName(file_name);
         this->setText(in.readAll());
+        d->open_files[file_name] = relative_path;
         this->reset();
         if(!read_only)
             this->backup();
     } else {
         dtkWarn()<<"Could not open file"<<relative_path;
     }
+    emit stateChanged();
 }
 
 void gnomonWorkspaceLSystemModel::save(const QString& file_url) const
@@ -337,6 +343,16 @@ void gnomonWorkspaceLSystemModel::save(const QString& file_url) const
         f.close();
     } else {
         dtkWarn()<<"Could not save to file"<<file_path;
+    }
+}
+
+void gnomonWorkspaceLSystemModel::close(const QString& file_name)
+{
+    if (d->open_files.contains(file_name)) {
+        d->open_files.remove(file_name);
+        emit stateChanged();
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"The file"<<file_name<<"was not open";
     }
 }
 
@@ -588,6 +604,12 @@ void gnomonWorkspaceLSystemModel::importFile(const QString& file_name)
 QJsonObject gnomonWorkspaceLSystemModel::serialize() {
     QJsonObject state;
 
+    QJsonObject open_file_json;
+    for (const auto& file_name : d->open_files.keys()) {
+        open_file_json.insert(file_name, d->open_files[file_name]);
+    }
+    state.insert("open_files", open_file_json);
+
     state.insert("text", d->text);
     state.insert("filename", d->file);
     state.insert("currentIndex", d->currentIndex);
@@ -615,6 +637,20 @@ QJsonObject gnomonWorkspaceLSystemModel::serialize() {
 }
 
 void gnomonWorkspaceLSystemModel::deserialize(const QJsonObject &state) {
+    disconnect(d->editor_connect);
+
+    QJsonObject open_file_json = state["open_files"].toObject();
+    for (auto file_name: open_file_json.keys()) {
+        QString file_path = open_file_json[file_name].toString();
+        d->open_files[file_name] = file_path;
+    }
+
+    d->editor_connect = connect(this, &gnomonWorkspaceLSystemModel::codeEditorReady, [=] () {
+        for (auto file_name: d->open_files.keys()) {
+            emit requestOpenFile(d->open_files[file_name]);
+        }
+    });
+
     QJsonObject parameters_json = state["parameters"].toObject();
 
     setFileName(state["filename"].toString());
@@ -647,7 +683,13 @@ void gnomonWorkspaceLSystemModel::restoreState() {
 
 bool gnomonWorkspaceLSystemModel::backup(void)
 {
-    return GNOMON_PROJECT->backupFile(d->file, d->text);
+    QString file_name = d->file;
+    bool ok = false;
+    if (d->open_files.contains(file_name)) {
+        QString file_path = d->open_files[file_name];
+        ok = GNOMON_PROJECT->backupFile(file_path, d->text);
+    }
+    return ok;
 }
 
 void gnomonWorkspaceLSystemModel::restore()
