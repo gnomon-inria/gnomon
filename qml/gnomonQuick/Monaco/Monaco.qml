@@ -24,6 +24,7 @@ Control {
 
     signal modified(var content);
     signal fileSwitched(var name);
+    signal fileClosed(var name);
     signal ideIsReady();
     signal makeFileEditable();
 
@@ -94,6 +95,7 @@ Control {
                     let i = _internal.tab_filenames.indexOf(closed_file)
                     _internal.tab_filenames.splice(i, 1)
                 }
+                self.fileClosed(closed_file)
                 break;
             case "attemptReadOnly":
                 self.makeFileEditable();

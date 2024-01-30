@@ -12,8 +12,7 @@ public:
 
 gnomonTreeAdapterCommand::gnomonTreeAdapterCommand() : d(new gnomonTreeAdapterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonTreeAdapterCommand)
 
     QStringList keys = gnomonCore::treeAdapter::pluginFactory().keys();
     if (!keys.empty()) {
@@ -91,15 +90,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeAdapterComm
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
-}
-
-bool gnomonTreeAdapterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonTreeAdapterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeAdapterCommand::inputTypes() {

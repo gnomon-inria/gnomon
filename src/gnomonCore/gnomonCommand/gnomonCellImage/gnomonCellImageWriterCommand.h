@@ -27,10 +27,10 @@ public:
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageWriter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageWriterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellImageWriterCommand)

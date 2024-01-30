@@ -37,10 +37,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "treeAdapter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonTreeAdapterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonTreeAdapterCommand)

@@ -287,7 +287,7 @@ QtObject {
 
         //basic color theme
         property color baseColor: S.colors.blue["500"]
-        property color neutralColor: S.colors.gray["700"]
+        property color neutralColor: S.colors.gray["500"]
         property color dangerColor: S.colors.red["500"]
         property color warningColor: S.colors.orange["500"]
         property color okColor: S.colors.green["500"]

@@ -35,10 +35,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageFilter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageFilterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellImageFilterCommand)

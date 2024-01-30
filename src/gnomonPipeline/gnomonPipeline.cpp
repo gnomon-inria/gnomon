@@ -402,7 +402,7 @@ void gnomonPipeline::addNode(gnomonPipelineNode *node)
     d->pipeline_node_names.append(node_name);
     d->pipeline_nodes[node_name] = node;
 
-    this->updateLayout();
+    // this->updateLayout();
 
     emit nodeAdded(node);
 }

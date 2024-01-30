@@ -52,6 +52,10 @@ public slots:
 public:
     void setFormIndex(const QString& form_uuid, int index=-1);
 
+public:
+    QJsonObject serialize(void);
+    void deserialize(const QJsonObject& state, std::shared_ptr<gnomonPipeline> pipeline);
+
 public: 
     std::pair<QString, gnomonPipelineNodeReader *> cacheNode(const QString& form_uuid);
     void decacheNode(const QString& form_uuid, std::pair<QString, gnomonPipelineNodeReader *> name_and_node);

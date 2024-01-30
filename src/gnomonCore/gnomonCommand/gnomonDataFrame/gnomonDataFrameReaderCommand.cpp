@@ -19,8 +19,7 @@ public:
 
 gnomonDataFrameReaderCommand::gnomonDataFrameReaderCommand() : d(new gnomonDataFrameReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonDataFrameReaderCommand)
 
     for (const auto& key: gnomonCore::dataFrameReader::pluginFactory().keys()) {
         auto algo = gnomonCore::dataFrameReader::pluginFactory().create(key);
@@ -75,15 +74,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataFrameReader
     return outputs;
 }
 
-bool gnomonDataFrameReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonDataFrameReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
-}
-
 gnomonAbstractCommand::orderedMap gnomonDataFrameReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));
@@ -103,6 +93,8 @@ QJsonObject gnomonDataFrameReaderCommand::serializeResults(void) {
     out["dataFrame"] = d->dataFrame->serialize();
     return out;
 }
+
+GNOMON_REGISTER_TYPE(gnomonDataFrameReaderCommand)
 
 //
 // gnomonDataFrameReaderCommand.cpp ends here

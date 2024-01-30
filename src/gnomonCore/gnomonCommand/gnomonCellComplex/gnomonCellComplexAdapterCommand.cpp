@@ -11,8 +11,7 @@ public:
 
 gnomonCellComplexAdapterCommand::gnomonCellComplexAdapterCommand() : d(new gnomonCellComplexAdapterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellComplexAdapterCommand)
 
     QStringList keys = gnomonCore::cellComplexAdapter::pluginFactory().keys();
     if (!keys.empty()) {
@@ -88,11 +87,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellComplexAdap
     return outputs;
 }
 
-bool gnomonCellComplexAdapterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellComplexAdapterCommand::inputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("input", "gnomonCellComplex"));
@@ -105,10 +99,6 @@ void gnomonCellComplexAdapterCommand::setInputForm(const QString &name, std::sha
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
-}
-
-QStringList gnomonCellComplexAdapterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonCellComplexAdapterCommand::deserializeResults(QJsonObject &serialization) {

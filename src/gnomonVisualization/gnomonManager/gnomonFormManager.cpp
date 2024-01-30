@@ -182,58 +182,25 @@ bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 
 void gnomonFormManagerPrivate::loadFormToMemory(int id)
 {
-    qDebug() << Q_FUNC_INFO << id;
-
     QString reader_plugin;
 
-    if(dynamic_cast<gnomonBinaryImageWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonBinaryImageReaderCommand();
-        reader_plugin = dynamic_cast<gnomonBinaryImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonCellComplexReaderCommand();
-        reader_plugin = dynamic_cast<gnomonCellComplexReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonCellImageReaderCommand();
-        reader_plugin = dynamic_cast<gnomonCellImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonDataDictWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonDataDictReaderCommand();
-        reader_plugin = dynamic_cast<gnomonDataDictReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonDataFrameReaderCommand();
-        reader_plugin = dynamic_cast<gnomonDataFrameReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonImageWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonImageReaderCommand();
-        reader_plugin = dynamic_cast<gnomonImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonLStringWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonLStringReaderCommand();
-        reader_plugin = dynamic_cast<gnomonLStringReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonMeshReaderCommand();
-        reader_plugin = dynamic_cast<gnomonMeshReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonPointCloudWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonPointCloudReaderCommand();
-        reader_plugin = dynamic_cast<gnomonPointCloudReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonTreeReaderCommand();
-        reader_plugin = dynamic_cast<gnomonTreeReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    }
+    //get reader command name
+    QString writer_command_name = this->formWriterCommand[id]->metaObject()->className();
+    QString reader_command_name = writer_command_name.replace("WriterCommand", "ReaderCommand");
 
-    gnomonAbstractReaderCommand *readerCommand = this->formReaderCommand[id];
-    if(!readerCommand) {
+    //create reader command from name using metatype
+    auto reader_metatype = QMetaType::fromName(reader_command_name.toUtf8());
+    if(reader_metatype.isValid()) {
+        this->formReaderCommand[id] = static_cast<gnomonAbstractReaderCommand *>(reader_metatype.create());
+        reader_plugin = this->formReaderCommand[id]->availablePlugins()[0];
+    } else {
+        qWarning() << "No reader Command found for form " << reader_command_name;
         qWarning() << "cannot create reader to read file from cache!";
         qWarning() << "file " << this->cache_forms[id];
         return;
     }
+
+    gnomonAbstractReaderCommand *readerCommand = this->formReaderCommand[id];
     QString path = this->cache_forms.take(id);
     readerCommand->setAlgorithmName(reader_plugin);
     readerCommand->setPath(path);
@@ -255,59 +222,17 @@ void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
     gnomonAbstractWriterCommand *command = nullptr;
     QString writer_plugin;
 
-    if(form_name == "gnomonBinaryImage") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonBinaryImageWriterCommand);
+    QString writer_command_name = form_name + "WriterCommand";
+    if(!this->commands.contains(form_name)) {
+        auto writer_metatype = QMetaType::fromName(writer_command_name.toUtf8());
+        if(writer_metatype.isValid()) {
+            command = static_cast<gnomonAbstractWriterCommand *>(writer_metatype.create());
+            this->commands.insert(form_name, command);
+            writer_plugin = command->availablePlugins()[0];
+        } else {
+            qWarning() << Q_FUNC_INFO << "No writer Command found for form " << form_name;
+            return;
         }
-        writer_plugin = dynamic_cast<gnomonBinaryImageWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if(form_name == "gnomonCellComplex"){
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonCellComplexWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonCellComplexWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonCellImage") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonCellImageWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonCellImageWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonImage") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonImageWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonImageWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonLString") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonLStringWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonLStringWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonMesh") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonMeshWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonMeshWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonPointCloud") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonPointCloudWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonPointCloudWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonDataFrame") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonDataFrameWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonDataFrameWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonTree") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonTreeWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonTreeWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonDataDict") {
-        if(!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonDataDictWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonDataDictWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else {
-        qWarning() << Q_FUNC_INFO << "No writer found for form " << form_name;
-        return;
     }
 
     this->formWriterCommand[item] = this->commands[form_name];
@@ -657,7 +582,7 @@ QList<int> gnomonFormManager::systemStat(void) const
     return stat;
 }
 
-QJsonObject gnomonFormManager::dumpState(void)
+QJsonObject gnomonFormManager::serialize(void)
 {
     QJsonObject state;
     QJsonObject forms;
@@ -673,12 +598,15 @@ QJsonObject gnomonFormManager::dumpState(void)
         QString visu_type;
         QString figure_number;
         if(auto vtk_visu = std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visualization)) {
-            visu_type = vtk_visu->vtkView()->objectName();
+            visu_type = "gnomonVtkView";
         } else if (auto qml_visu = std::dynamic_pointer_cast<gnomonAbstractQmlVisualization>(visualization)) {
-            visu_type = qml_visu->qmlView()->objectName();
+            visu_type = "gnomonQmlView";
         } else if (auto mpl_visu = std::dynamic_pointer_cast<gnomonAbstractMplVisualization>(visualization)) {
-            visu_type = dynamic_cast<gnomonMplView *>(mpl_visu->view())->objectName();
-            figure_number = QString::number(dynamic_cast<gnomonMplView *>(mpl_visu->view())->figureNumber());
+            visu_type = "gnomonMplView";
+            auto mpl_view = dynamic_cast<gnomonMplView *>(mpl_visu->view());
+            if (mpl_view) {
+                figure_number = QString::number(mpl_view->figureNumber());
+            }
         }
         visu_info["visu_type"] = visu_type;
         visu_info["figure_number"] = figure_number;
@@ -716,7 +644,7 @@ QJsonObject gnomonFormManager::dumpState(void)
     return state;
 }
 
-void gnomonFormManager::loadState(const QJsonObject& state)
+void gnomonFormManager::deserialize(const QJsonObject& state)
 {
     auto forms = state["forms"].toObject().toVariantHash();
     auto form_visualizations = state["form_visualizations"].toObject().toVariantHash();
@@ -724,9 +652,14 @@ void gnomonFormManager::loadState(const QJsonObject& state)
     d->forms.clear();
     d->formVisualizations.clear();
     d->formThumbnail.clear();
-    for( auto [id, visualization]: form_visualizations.asKeyValueRange()) {
+
+    QList<QString> ids = forms.keys();
+    ids.sort();
+
+    for(auto id : ids) {
         int index = id.toInt();
         QString uuid = forms[id].toString();
+        auto visualization = form_visualizations[id];
         QString form_type = visualization.toMap()["form_type"].toString();
         QString visu_type = visualization.toMap()["visu_type"].toString();
         int figure_number = visualization.toMap()["figure_number"].toString().toInt();
@@ -740,11 +673,15 @@ void gnomonFormManager::loadState(const QJsonObject& state)
             view->setForm(uuid, form_type, visu_name, parameters);
             visu = view->getVisualization(form_type);
             image = view->getVisualization(form_type)->imageRendering();
+
+            view->clear();
+            delete view;
         }
 
         d->insertForm(index, uuid, image);
         d->formVisualizations.insert(index, visu);
         emit added(index, form_type);
+        d->item_counter++;
     }
 
     d->formCameras.clear();

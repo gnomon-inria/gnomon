@@ -322,6 +322,8 @@ gnomonSessionManager::gnomonSessionManager(QObject *parent) : gnomonAbstractSess
     d = new gnomonSessionManagerPrivate;
     d->q = this;
 
+    connect(gnomonFormManager::instance(), &gnomonFormManager::added,
+            this, &gnomonAbstractSessionManager::sync);
     connect(gnomonPipelineManager::instance()->pipeline(), &gnomonPipeline::nodeAdded,
             this, &gnomonAbstractSessionManager::sync);
     connect(gnomonPipelineManager::instance()->pipeline(), &gnomonPipeline::nodeRemoved,
@@ -383,7 +385,8 @@ int gnomonSessionManager::loadWorkspace(const QString &source, const QString &uu
     auto success = QMetaObject::invokeMethod(d->window, "add_workspace",
                                         Q_RETURN_ARG(int, index),
                                         Q_ARG(QString, source),
-                                        Q_ARG(QString, uuid));
+                                        Q_ARG(QString, uuid),
+                                        Q_ARG(bool, false));
     if(success) {
         d->workspace_sources[uuid] = source;
     }
@@ -396,7 +399,8 @@ int gnomonSessionManager::newWorkspace(const QString &source) {
     auto success = QMetaObject::invokeMethod(d->window, "add_workspace",
                               Q_RETURN_ARG(int, index),
                               Q_ARG(QString, source),
-                              Q_ARG(QString, uuid));
+                              Q_ARG(QString, uuid),
+                              Q_ARG(bool, true));
     if(success) {
         d->workspace_sources[uuid] = source;
         this->sync();
@@ -449,7 +453,7 @@ void gnomonSessionManager::sync() {
     //TODO: forms
     cleanExpiredForms();
     settings.beginGroup("forms");
-    settings.setValue("form_manager_state", gnomonFormManager::instance()->dumpState());
+    settings.setValue("form_manager_state", gnomonFormManager::instance()->serialize());
 
     settings.setValue("owned_form_ids", m_owned_forms.keys());
     QStringList form_ids;
@@ -463,8 +467,9 @@ void gnomonSessionManager::sync() {
     settings.setValue("form_ids", form_ids);
     settings.endGroup();
 
-
-    //TODO: world
+    settings.beginGroup("pipeline");
+    settings.setValue("pipeline_manager_state", gnomonPipelineManager::instance()->serialize());
+    settings.endGroup();
 
 
 }
@@ -484,7 +489,7 @@ bool gnomonSessionManager::load() {
     // hold a reference to every form until load is finished, every unused form should be cleaned up
     QList<std::shared_ptr<gnomonAbstractDynamicForm>> form_holder;
     for(const auto &uuid: form_ids) {
-        auto form = createDynamicForm(settings.value(uuid).toJsonObject());
+        auto form = gnomonForm::createDynamicForm(settings.value(uuid).toJsonObject());
         m_tracked_forms.insert(uuid, form);
         form_holder.append(form);
         if(owned_form_ids.contains(uuid)) {
@@ -493,7 +498,7 @@ bool gnomonSessionManager::load() {
     }
 
     QJsonObject form_manager_state = settings.value("form_manager_state").toJsonObject();
-    gnomonFormManager::instance()->loadState(form_manager_state);
+    gnomonFormManager::instance()->deserialize(form_manager_state);
 
     settings.endGroup();
 
@@ -515,12 +520,15 @@ bool gnomonSessionManager::load() {
         // pipeline reloading is broken because pipelines are build upon the memory addresses of various component
         // and memory addresses are not transferred when reloading
         auto pipeline_path = dir.absoluteFilePath(PROJECT_PIPELINE_FILE);
+        auto pipeline = std::make_shared<gnomonPipeline>();
         if(dir.exists(pipeline_path)) {
-            gnomonPipelineManager::instance()->pipeline()->readFromJson(pipeline_path);
+            pipeline->readFromJson(pipeline_path);
         }
 
-        //TODO: world
-
+        settings.beginGroup("pipeline");
+        QJsonObject pipeline_manager_state = settings.value("pipeline_manager_state").toJsonObject();
+        gnomonPipelineManager::instance()->deserialize(pipeline_manager_state, pipeline);
+        settings.endGroup();
 
         QMetaObject::invokeMethod(d->window, "switch_workspace",
                                   Q_ARG(int, workspaces_info["current_index"].toInt()));

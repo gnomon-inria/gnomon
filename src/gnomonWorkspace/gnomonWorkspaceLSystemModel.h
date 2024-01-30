@@ -104,7 +104,7 @@ public:
     QJSValue parameters(void);
 
     QJsonObject serialize() override;
-    void unSerialize(const QJsonObject &state) override;
+    void deserialize(const QJsonObject &state) override;
 public slots:
     void saveState();
     void restoreState();

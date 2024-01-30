@@ -42,7 +42,7 @@ G.Dialog {
         if (_internal.selected_workspace) {
             _internal.algoName = ""
             let show_dialog = !window.check_if_forms_in_world();
-            if (window.current_workspace().workspace_title == "Browsing") {
+            if (window.current_workspace().workspace_title == "Data Browsing") {
                 show_dialog = show_dialog & !window.current_workspace().d.view.empty
             }
             if(show_dialog) {
@@ -308,6 +308,7 @@ G.Dialog {
                 id: _cancel_button
                 anchors.right: _ignore_button.left
                 anchors.margins: G.Style.smallRowSpacing
+                width: G.Style.smallButtonWidth
                 text: 'Cancel';
                 flat: true
                 type: G.Style.ButtonType.Neutral
@@ -317,6 +318,7 @@ G.Dialog {
             G.Button {
                 anchors.right: _export_button.left
                 anchors.margins: G.Style.smallRowSpacing
+                width: G.Style.smallButtonWidth
                 id: _ignore_button
                 text: 'Ignore';
                 flat: true
@@ -517,7 +519,7 @@ G.Dialog {
         _internal.workspace_forms["gnomonWorkspaceImageMeshing"] = ["gnomonImage", "gnomonCellImage", "gnomonBinaryImage"]
         _internal.workspace_forms["gnomonWorkspaceLSystemModel"] = ["gnomonLString", "gnomonTree"]
         _internal.workspace_forms["gnomonWorkspaceMorphonet"] = ["gnomonCellImage"]
-        _internal.workspace_forms["gnomonWorkspaceMeshFilter"] = ["gnomonMesh"]
+        _internal.workspace_forms["gnomonWorkspaceMeshFilter"] = ["gnomonMesh", "gnomonCellImage"]
         _internal.workspace_forms["gnomonWorkspaceCellImageTracking"] = ["gnomonCellImage", "gnomonDataDict", "gnomonImage"]
         _internal.workspace_forms["gnomonWorkspacePointCloudQuantification"] = ["gnomonPointCloud", "gnomonImage"]
         _internal.workspace_forms["gnomonWorkspacePointDetection"] = ["gnomonImage"]

@@ -16,8 +16,7 @@ public:
 
 gnomonCellImageQuantificationCommand::gnomonCellImageQuantificationCommand() : d(new gnomonCellImageQuantificationCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellImageQuantificationCommand)
 
     QStringList keys = gnomonCore::cellImageQuantification::pluginFactory().keys();
     if (!keys.empty()) {
@@ -135,11 +134,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageQuanti
     return outputs;
 }
 
-bool gnomonCellImageQuantificationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellImageQuantificationCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("image", "gnomonImage"));
@@ -165,10 +159,6 @@ void gnomonCellImageQuantificationCommand::setInputForm(const QString &name, std
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
-}
-
-QStringList gnomonCellImageQuantificationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonCellImageQuantificationCommand::deserializeResults(QJsonObject &serialization) {

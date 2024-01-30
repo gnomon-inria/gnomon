@@ -586,10 +586,17 @@ QJsonObject gnomonWorkspaceLSystemModel::serialize() {
     }
     state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
 
+    if (d->view) {
+        state.insert("view", d->view->serialize());
+    }
+    if (d->text_view) {
+        state.insert("text_view", d->text_view->serialize());
+    }
+
     return state;
 }
 
-void gnomonWorkspaceLSystemModel::unSerialize(const QJsonObject &state) {
+void gnomonWorkspaceLSystemModel::deserialize(const QJsonObject &state) {
     QJsonObject parameters_json = state["parameters"].toObject();
 
     setFileName(state["filename"].toString());
@@ -603,7 +610,13 @@ void gnomonWorkspaceLSystemModel::unSerialize(const QJsonObject &state) {
         auto param = parameters_json[param_name].toObject().toVariantHash();
         d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
     }
-    d->view->restoreState();
+
+    if (state.contains("view")) {
+        d->view->deserialize(state.value("view").toObject());
+    }
+    if (state.contains("text_view")) {
+        d->text_view->deserialize(state.value("text_view").toObject());
+    }
 }
 
 void gnomonWorkspaceLSystemModel::saveState() {
@@ -611,7 +624,7 @@ void gnomonWorkspaceLSystemModel::saveState() {
 }
 
 void gnomonWorkspaceLSystemModel::restoreState() {
-    unSerialize(d->state);
+    deserialize(d->state);
 }
 
 bool gnomonWorkspaceLSystemModel::backup(void)

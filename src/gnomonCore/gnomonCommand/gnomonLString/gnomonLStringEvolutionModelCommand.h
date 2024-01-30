@@ -59,10 +59,10 @@ public:
     virtual gnomonAbstractCommand::orderedMap stateTypes() override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "lStringEvolutionModel";
-    static QStringList availablePlugins();
 
 private:
     class gnomonLStringEvolutionModelCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonLStringEvolutionModelCommand)

@@ -19,9 +19,7 @@ public:
 
 gnomonCellImageReaderCommand::gnomonCellImageReaderCommand() : d(new gnomonCellImageReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    //availablePlugins();
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellImageReaderCommand)
 
     for (const auto& key: gnomonCore::cellImageReader::pluginFactory().keys()) {
         auto algo = gnomonCore::cellImageReader::pluginFactory().create(key);
@@ -77,19 +75,10 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageReader
     return outputs;
 }
 
-bool gnomonCellImageReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellImageReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
     return types;
-}
-
-QStringList gnomonCellImageReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonCellImageReaderCommand::deserializeResults(QJsonObject &serialization) {
@@ -106,5 +95,6 @@ QJsonObject gnomonCellImageReaderCommand::serializeResults(void) {
     return out;
 }
 
+GNOMON_REGISTER_TYPE(gnomonCellImageReaderCommand)
 //
 // gnomonCellImageReaderCommand.cpp ends here

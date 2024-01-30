@@ -11,8 +11,7 @@ public:
 
 gnomonMeshReaderCommand::gnomonMeshReaderCommand() : d(new gnomonMeshReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonMeshReaderCommand)
 
     for (const auto& key: gnomonCore::meshReader::pluginFactory().keys()) {
         auto algo = gnomonCore::meshReader::pluginFactory().create(key);
@@ -67,15 +66,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshReaderComma
     return outputs;
 }
 
-bool gnomonMeshReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonMeshReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
-}
-
 gnomonAbstractCommand::orderedMap gnomonMeshReaderCommand::outputTypes() {
     orderedMap output_types;
     output_types.emplace_back(std::make_pair("mesh", "gnomonMesh"));
@@ -95,6 +85,8 @@ QJsonObject gnomonMeshReaderCommand::serializeResults(void) {
     out["mesh"] = d->mesh->serialize();
     return out;
 }
+
+GNOMON_REGISTER_TYPE(gnomonMeshReaderCommand)
 
 //
 // gnomonMeshReaderCommand.cpp ends here
