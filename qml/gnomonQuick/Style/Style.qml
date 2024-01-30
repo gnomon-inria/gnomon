@@ -49,6 +49,7 @@ QtObject {
 
     property int mode: Style.Mode.Dark
     property QtObject colors:  _self.mode == Style.Mode.Dark ? _colorDark : _colorLight
+    property QtObject figureColors:  _self.mode == Style.Mode.Dark ? _figureColorDark : _figureColorLight
     // property alias fonts: _fonts
     property int panelRadius: S.spacing["1"]
 
@@ -187,6 +188,18 @@ QtObject {
     // /////////////////////////////////////////////////////////////////////////////
     // Color definitions
     // /////////////////////////////////////////////////////////////////////////////
+
+    property QtObject figureDarkcolors: QtObject {
+        id: _figureColorDark;
+        property color bgColor: S.colors.gray["600"]
+        property color lineColor: S.colors.blue["300"]
+    }
+
+    property QtObject figureLightcolors: QtObject {
+        id: _figureColorLight;
+        property color bgColor: S.colors.gray["100"]
+        property color lineColor: S.colors.blue["700"]
+    }
 
     property QtObject darkcolors: QtObject {
         id: _colorDark;

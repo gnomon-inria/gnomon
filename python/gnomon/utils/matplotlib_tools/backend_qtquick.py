@@ -106,6 +106,8 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     def set_line_color(self, col: str):
         if col != self._line_color:
             self._line_color = col
+            self.draw()
+            self.figure.canvas.draw()
             self.line_color_changed.emit()
 
     def boundingRect(self):
