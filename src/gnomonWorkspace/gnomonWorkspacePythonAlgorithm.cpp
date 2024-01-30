@@ -195,7 +195,7 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_onl
     QString absolute_path;
     QString source;
     if (!QFile::exists(relative_path)) {
-            dtkWarn() << Q_FUNC_INFO << "file " << relative_path << "doesn't exist";
+            qDebug() << Q_FUNC_INFO << "file " << relative_path << "doesn't exist";
     } else {
         absolute_path = GNOMON_PROJECT->findFile(relative_path);
         source = QFileInfo(relative_path).fileName();

@@ -4,6 +4,8 @@ import QtQuick.Layouts
 import QtWebChannel
 import QtWebEngine
 
+import gnomonQuick.Style    as G
+
 Control {
     id: self;
 
@@ -123,6 +125,11 @@ Control {
 
         anchors.fill: parent;
 
+        onActiveFocusChanged: {
+            if (view.activeFocus)
+                window.currentView = self;
+        }
+
         settings.javascriptEnabled: true
         settings.pluginsEnabled: true
         settings.autoLoadImages: true
@@ -147,5 +154,20 @@ Control {
 
     Component.onCompleted: {
         _internal.tab_filenames.push("Tab 0")
+    }
+
+    Rectangle {
+        id: _focus_indicator;
+
+        width: self.width - 1
+        height: self.height - 1
+        radius: G.Style.panelRadius;
+
+        color: G.Style.colors.transparent;
+
+        border.width: G.Style.borderWidth;
+        border.color: G.Style.colors.baseColor;
+
+        visible: window.currentView == self;
     }
 }

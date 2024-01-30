@@ -279,13 +279,31 @@ void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
     }
 }
 
+// TODO: to factorize in a code editor workspace class
 void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only)
 {
     QString file_name = file_url.split(QRegularExpression("/")).last();
-    QString file_path = filePathFromUrl(file_url);
+    QString relative_path = filePathFromUrl(file_url);
 
-    QFile f(file_path);
-    QFileInfo finfo(file_path);
+    QString absolute_path;
+    if (!QFile::exists(relative_path)) {
+        qDebug() << Q_FUNC_INFO << "file " << relative_path << "doesn't exist";
+    } else {
+        absolute_path = GNOMON_PROJECT->findFile(relative_path);
+    }
+
+    bool to_copy = (!read_only) & (absolute_path=="");
+    if(to_copy) {
+        QString file_name = relative_path.split(QRegularExpression("/")).last();
+        QString project_file_path = GNOMON_PROJECT->projectDir() + "/" + file_name;
+        if(!QFile::copy(relative_path, project_file_path)) {
+            dtkWarn()<<"Failed to copy file "<< relative_path << "to Project";
+            return;
+        }
+        relative_path = GNOMON_PROJECT->relativePath(project_file_path);
+    }
+
+    QFile f(relative_path);
     if (f.open(QIODevice::ReadOnly)) {
         QTextStream in(&f);
 
@@ -295,8 +313,7 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only)
         if(read_only) {
             d->model_file = new QFile(d->lpy_dir->filePath(file_name));
         } else {
-            auto project_file = GNOMON_PROJECT->projectDir() + "/" + file_name;
-            d->model_file = new QFile(project_file);
+            d->model_file = new QFile(relative_path);
         }
 
         this->setFileName(file_name);
@@ -305,7 +322,7 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only)
         if(!read_only)
             this->backup();
     } else {
-        dtkWarn()<<"Could not open file"<<file_path;
+        dtkWarn()<<"Could not open file"<<relative_path;
     }
 }
 
@@ -559,6 +576,7 @@ void gnomonWorkspaceLSystemModel::copyTexturesFiles(const QStringList& files)
 void gnomonWorkspaceLSystemModel::importFile(const QString& file_name)
 {
     auto project_file = GNOMON_PROJECT->projectDir() + "/" + file_name;
+    qDebug()<<Q_FUNC_INFO<<file_name<<project_file;
     if(QFile::copy(d->lpy_dir->filePath(file_name), project_file)) {
         QFile::remove(d->lpy_dir->filePath(file_name));
         this->backup();

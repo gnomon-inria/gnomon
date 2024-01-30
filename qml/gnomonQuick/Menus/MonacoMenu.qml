@@ -15,9 +15,14 @@ Item {
 
     id: _self;
 
+    required property Item editor;
     property var d;
+    
     property string _current_file: "";
-    property bool _read_only_py_file : false
+    property bool _read_only : false
+
+    property string mode : "Python" // "L-Py"
+
 
     ColumnLayout {
         anchors.fill: parent;
@@ -34,10 +39,8 @@ Item {
 
             onFileDoubleClicked: (fileUrl) => {
                 let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
-                let file_name = relative_path.split('/').pop()
-
-                d.code.fileName = file_name;
-                d.read(relative_path, false);
+                _self._read_only = false
+                open_source_file(relative_path)
             }
         }
         
@@ -91,7 +94,7 @@ Item {
     Connections {
         target: d
         function onRequestOpenFile(path) {
-            _self.open_py_file(path)
+            _self.open_source_file(path)
         }
     }
 
@@ -99,34 +102,54 @@ Item {
         id: _file_dialog;
 
         currentFile: _self._current_file;
-        folder: d.defaultReadPath();
+        folder: _self._current_file;
         fileMode: P.FileDialog.OpenFile;
 
         modality: Qt.NonModal;
-        nameFilters: ["Python source files (*.py)"]
+        nameFilters: _self.mode == "L-Py" ? ["L-Py source files (*.lpy *.py)"] : ["Python source files (*.py)"]
 
         onAccepted: {
-            copy_py_file_to_project.open()
+            if (_self.mode == "Python") {
+                copy_py_file_to_project.open()
+            } else {
+                _self._read_only = true
+                open_source_file(_file_dialog.file)
+            }
         }
     }
 
     P.FileDialog {
         id: _file_dialog_save
 
-        title: "Save Python algorithm"
+        title: "Save source file"
 
-        folder: d.defaultReadPath();
+        folder: _self._current_file;
         fileMode: P.FileDialog.SaveFile
 
         modality: Qt.WindowModal;
-        nameFilters: ["Python source files (*.py)"]
+        nameFilters: _self.mode == "L-Py" ? ["L-Py source files (*.lpy *.py)"] : ["Python source files (*.py)"]
 
         onAccepted: {
             let file_path = decodeURIComponent(_file_dialog_save.file);
             let file_name = file_path.split('/').pop()
-            d.code.fileName = file_name;
-            d.save(file_path);
-            _self._current_file = _file_dialog_save.file;
+
+            let old_file_name = _self.mode == "Python" ? d.code.fileName : d.fileName;
+
+            if ((old_file_name.split('.').length == 1) || (old_file_name.split('.').pop() == file_name.split('.').pop())) { //same extension
+                if (_self.mode == "Python") {
+                    d.code.fileName = file_name;
+                } else {
+                    _editor.tabName = file_name
+                }
+                d.save(file_path);
+                if (_self.mode == "L-Py") {
+                    d.fileName = file_name
+                }
+                _self._current_file = _file_dialog_save.file;
+            } else {
+                _extension_change_toast.open()
+            }
+
             if (_message_dialog.visible) {
                 _message_dialog.close()
             }
@@ -215,22 +238,176 @@ Item {
         standardButtons:  Dialog.Yes | Dialog.No
 
         onAccepted : {
-            _self._read_only_py_file = false
-            open_py_file(_file_dialog.file)
+            _self._read_only = false
+            open_source_file(_file_dialog.file)
         }
 
         onRejected : {
-            _self._read_only_py_file = true
-            open_py_file(_file_dialog.file)
+            _self._read_only = true
+            open_source_file(_file_dialog.file)
         }
 
     }
 
-    function open_py_file(path) {
+    G.Toast {
+        id: _extension_change_toast
+
+        parent: Overlay.overlay
+        header: "Impossible to change extension"
+        message: "You can not save this file using a different extension, please save it as a ." + d.fileName.split('.').pop() + " file."
+
+        type: G.Style.ButtonType.Danger
+    }
+
+    G.Toast {
+        id: _non_lpy_toast
+
+        parent: Overlay.overlay
+        header: "Not a .lpy file"
+        message: "The file you opened is not a .lpy file, and can therefore not be run as a LSystem model."
+
+        type: G.Style.ButtonType.Warning
+    }
+
+    function open_source_file(path) {
         let file_path = decodeURIComponent(path);
         let file_name = file_path.split('/').pop()
-        d.code.fileName = file_name;
-        d.read(file_path, _self._read_only_py_file);
+        
+        if (_self.mode == "Python") {
+            d.code.fileName = file_name;
+        }
+        
+        d.read(file_path, _self._read_only);
+        
+        if (_self.mode == "L-Py") {
+            _self.editor.contents = d.text
+        }
+
         _self._current_file = path;
+        _self.editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
+
+        if (_self.mode == "L-Py") {
+            if (!_self._current_file.endsWith(".lpy")) {
+                _non_lpy_toast.open()
+            }
+            if (d.missingTextures.length > 0) {
+                _missing_textures_dialog.open()
+            }
+        }
+    }
+
+    G.Dialog {
+        id : _missing_textures_dialog
+
+        property var missingTextureFiles: []
+
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.mediumDialogWidth
+        height: G.Style.mediumDialogHeight
+
+        padding: 0;
+
+        parent: Overlay.overlay
+
+        focus: true
+        modal: true
+        title : "It seems you have some missing textures, please add them"
+        Column {
+            spacing: G.Style.smallPadding;
+            anchors.fill: parent
+            anchors.topMargin: G.Style.smallButtonHeight
+            Repeater {
+                model: d.missingTextures
+                RowLayout {
+                    Layout.fillWidth: true
+                    height: G.Style.mediumLabelHeight
+                    spacing: 2
+                    Label {
+                        id: _texture_label
+
+                        Layout.preferredWidth: G.Style.largeDelegateHeight;
+                        Layout.rightMargin: G.Style.largePadding
+                        Layout.leftMargin: G.Style.smallPadding
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignTop
+
+                        text: modelData
+                        font: G.Style.fonts.formLabel
+                        color: G.Style.colors.textColorBase
+                    }
+
+                    Rectangle {
+                        Layout.alignment: Qt.AlignRight
+                        Layout.leftMargin: G.Style.largePadding
+                        height: G.Style.mediumLabelHeight
+                        implicitWidth: Math.round(2/3 * parent.width)
+                        color: G.Style.colors.gutterColor;
+                        radius: G.Style.panelRadius
+
+                        G.TextField {
+                            id: _texture_file_path
+
+                            anchors.right: _check_texture_icon.left
+                            anchors.left: parent.left
+                            anchors.bottom: parent.bottom;
+                            anchors.top: parent.top
+                            anchors.bottomMargin: G.Style.tinyPadding
+                            placeholderText: qsTr("Enter texture file path like: /Users/...")
+                        }
+
+                        G.Icon {
+                            id: _check_texture_icon
+
+                            anchors.right: _edit_texture_button.left
+                            anchors.bottom: parent.bottom;
+                            anchors.rightMargin: G.Style.smallPadding
+                            visible : false
+                            color : "green"
+                            size: G.Style.iconSmall;
+                            icon: "file-check"
+
+                        }
+
+                        G.IconButton {
+                            id: _edit_texture_button
+
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom;
+                            anchors.rightMargin: G.Style.smallPadding
+                            size: G.Style.iconSmall;
+                            iconName: "folder-open"
+
+                            onClicked: {
+                                _texture_dialog.open();
+                            }
+                        }
+                    }
+
+                    P.FileDialog {
+                        id: _texture_dialog
+
+                        nameFilters: [ "Image files (*.jpg)" ]
+                        title: "Open texture file"
+                        modality: Qt.WindowModal;
+                        fileMode: P.FileDialog.OpenFile
+
+                        onAccepted: {
+                            let file_path = Utils.urlToPath(_texture_dialog.file.toString())
+                            if(file_path.split("/").slice(-1)[0] === _texture_label.text) {
+                                _texture_file_path.text = file_path
+                                _check_texture_icon.visible = true
+                                _missing_textures_dialog.missingTextureFiles.push(file_path)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        standardButtons:  Dialog.Ok | Dialog.Cancel
+
+        onAccepted : {
+            d.copyTexturesFiles(_missing_textures_dialog.missingTextureFiles);
+        }
     }
 }
