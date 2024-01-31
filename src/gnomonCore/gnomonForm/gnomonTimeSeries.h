@@ -38,7 +38,8 @@ public:
     bool containsForm(std::shared_ptr<gnomonAbstractForm> form) const override;
 
     void insert(double t, std::shared_ptr<gnomonAbstractForm> form) override;
-    void insert(double t, std::shared_ptr<T> form);
+    void insert(double t, std::shared_ptr<T> form, bool right_on_disk=true);
+    void saveForms(void);
     void drop(double t) override;
 
     void compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) override;

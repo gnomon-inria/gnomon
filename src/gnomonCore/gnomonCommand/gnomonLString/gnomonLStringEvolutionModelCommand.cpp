@@ -122,7 +122,7 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
                 }
             } else {
                 if ((i+1) % d->animation_step == 0) {
-                    d->lString->insert(i+1, lstring_model->stepAndReturn(i, 1));
+                    d->lString->insert(i+1, lstring_model->stepAndReturn(i, 1), false);
                     if (gnomonCore::gui_thread) {
                         d->lString->metadata()->moveToThread(gnomonCore::gui_thread);
                     }
@@ -148,6 +148,10 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
             if (promise.isCanceled())
                 return;
         }
+
+        if(this->simulationType == SimulationType::animate)
+            d->lString->saveForms();
+
         promise.finish();
     }); //.onFailed([] {
     // qWarning() << "Error running " << Q_FUNC_INFO;
