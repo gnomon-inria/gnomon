@@ -11,7 +11,9 @@ class GNOMONWORKSPACE_EXPORT gnomonAbstractWorkspace : public QObject
 
 public:
     gnomonAbstractWorkspace(QObject *parent = 0) : QObject(parent) {
-        GNOMON_FORM_MANAGER->registerNewWorkspace(uuid());
+        connect(this, &QObject::objectNameChanged, [=] () {
+            GNOMON_FORM_MANAGER->registerNewWorkspace(uuid());
+        });
         connect(GNOMON_FORM_MANAGER, &gnomonFormManager::requestHibernation,
                 this, &gnomonAbstractWorkspace::hibernate);
         timer = new QTimer(this);
