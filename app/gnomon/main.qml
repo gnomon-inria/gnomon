@@ -154,6 +154,13 @@ G.Application {
                     }
                 }
 
+                P.MenuItem {
+                    text: qsTr("Test emit requestHibernation")
+                    onTriggered: {
+                        GV.World.testDeactivate()
+                    }
+                }
+
             }
 
         }
@@ -587,6 +594,7 @@ G.Application {
     function switch_workspace(index: int)
     {
         window.current_workspace().d.saveState();
+        window.workspace_at(index).d.wakeUp();
         window.drawelr_closed = false
         stack_launcher.currentIndex  = 1
         workspaces.currentIndex = index;

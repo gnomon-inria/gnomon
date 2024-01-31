@@ -10,6 +10,7 @@ import gnomonQuick.Style as G
 
 import gnomon.Pipeline  as GP
 import gnomon.Project   as  GP
+import gnomon.Visualization   as  GV
 
 G.ToolBar {
 
@@ -97,6 +98,12 @@ G.ToolBar {
                     shortcut: StandardKey.Quit
                     onTriggered: {
                         Qt.quit();
+                    }
+                }
+                Action {
+                    text: qsTr("Test emit requestHibernation")
+                    onTriggered: {
+                        GV.World.testDeactivate()
                     }
                 }
             }

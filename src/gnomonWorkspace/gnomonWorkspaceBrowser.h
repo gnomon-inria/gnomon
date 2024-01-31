@@ -44,19 +44,23 @@ public slots:
     void setReaderPath(const QString&);
     void requestReaders(QString default_reader);
     bool readWith(const QString&);
-    QJsonObject serialize() override;
-    void deserialize(const QJsonObject &state) override;
-    inline void saveState(void) {};  // nothing to be saved
-    void restoreState(void);
     int progress(void);
 
     void export_outputs(void) override;
+
+public:
+    QJsonObject serialize() override;
+    void deserialize(const QJsonObject &state) override;
+    void saveState(void) override;
+    void restoreState(void) override;
 
 public:
     Q_INVOKABLE QUrl defaultReadPath(void);
     Q_INVOKABLE void importFile(const QString& file_name, const QString& path);
     QStringList readerExtensions(void);
     void restore(void);
+
+    void hibernate(QString uuid) override;
 
 private:
     class gnomonWorkspaceBrowserPrivate *d;

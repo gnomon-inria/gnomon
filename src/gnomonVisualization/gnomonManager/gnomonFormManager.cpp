@@ -99,8 +99,8 @@ public:
     QMap<int, std::pair<QString, gnomonPipelineNodeReader *> > cache_pipeline_nodes;
     QMap<int, QJsonObject > cache_metadatas;
 
-    int activationNumber = 0;
-    int deactivationNumber = 0;
+    QSet<QString> hibernating_workspaces;
+    QList<QString> active_workspaces;
     QTimer *memoryManagementTimer = nullptr;
 
 
@@ -745,20 +745,18 @@ void gnomonFormManager::deserialize(const QJsonObject& state)
     }
 }
 
-int gnomonFormManager::getActivationNumber() {
-    return ++d->activationNumber;
-}
-
 void gnomonFormManager::memoryManagement() {
     auto stats = systemStat();
     int total_mem = stats[0];
     int used_mem = stats[1];
     qDebug() << "$$ Memory usage: " << used_mem << " | " << total_mem << " | " << stats[2];
-    while((used_mem > 3000 || (float)used_mem/(float)total_mem>0.8) && d->deactivationNumber < d->activationNumber) {
+    while((used_mem > 3000 || (float)used_mem/(float)total_mem>0.8) && d->active_workspaces.size()>1) {
         break;
-        qInfo() << "Memory used threshold reached: hibernating workspaces (" << d->deactivationNumber << ")";
-        emit requestDeactivate(d->deactivationNumber);
-        d->deactivationNumber++;
+        auto uuid =  d->active_workspaces.first();
+        d->active_workspaces.pop_front();
+        qInfo() << "Memory used threshold reached: hibernating workspaces (" << uuid << ")";
+        emit requestHibernation(uuid);
+        d->hibernating_workspaces.insert(uuid);
         for(auto [index, uuid]: d->forms.asKeyValueRange()) {
             auto form = GNOMON_SESSION->getForm(uuid);
             qDebug() << "Form " << uuid << " :: use count: " << form.use_count();
@@ -770,12 +768,29 @@ void gnomonFormManager::memoryManagement() {
 }
 
 void gnomonFormManager::testDeactivate(void) {
-    if(d->deactivationNumber < d->activationNumber) {
-        emit requestDeactivate(++d->deactivationNumber);
+    if(d->active_workspaces.size()>1) {
+        auto uuid =  d->active_workspaces.first();
+        d->active_workspaces.pop_front();
+        emit requestHibernation(uuid);
+        d->hibernating_workspaces.insert(uuid);
     } else {
         qDebug() << "$$ cannot deactivate more workspaces";
     }
 }
+
+void gnomonFormManager::registerNewWorkspace(const QString &uuid) {
+    d->active_workspaces.append(uuid);
+}
+
+void gnomonFormManager::registerWorkspaceWakeup(const QString &uuid) {
+    if(d->hibernating_workspaces.contains(uuid)) {
+        d->hibernating_workspaces.remove(uuid);
+    }
+    if(!d->active_workspaces.contains(uuid)) {
+        d->active_workspaces.append(uuid);
+    }
+}
+
 
 #include "gnomonFormManager.moc"
 //

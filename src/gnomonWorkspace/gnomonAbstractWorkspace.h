@@ -3,6 +3,7 @@
 #include <gnomonWorkspaceExport>
 
 #include <QtCore>
+#include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
 class GNOMONWORKSPACE_EXPORT gnomonAbstractWorkspace : public QObject
 {
@@ -10,6 +11,9 @@ class GNOMONWORKSPACE_EXPORT gnomonAbstractWorkspace : public QObject
 
 public:
     gnomonAbstractWorkspace(QObject *parent = 0) : QObject(parent) {
+        GNOMON_FORM_MANAGER->registerNewWorkspace(uuid());
+        connect(GNOMON_FORM_MANAGER, &gnomonFormManager::requestHibernation,
+                this, &gnomonAbstractWorkspace::hibernate);
         timer = new QTimer(this);
         timer->setInterval(1000);
         connect(timer, &QTimer::timeout, this, &gnomonAbstractWorkspace::stateChanged);
@@ -39,9 +43,31 @@ public:
     virtual QJsonObject serialize() = 0;
     virtual void deserialize(const QJsonObject &state) = 0;
 
+public slots:
+    virtual void wakeUp() {
+        GNOMON_FORM_MANAGER->registerWorkspaceWakeup(this->uuid());
+        if(!awake) {
+            restoreState();
+            timer->start();
+            deactivated_forms.clear();
+        }
+        awake = true;
+    }
+
+    virtual void hibernate(QString uuid) {
+        if(uuid == this->uuid()) {
+            timer->stop();
+            awake = false;
+        }
+    };
+
+    virtual void saveState(void) = 0;
+    virtual void restoreState(void) = 0;
 
 protected:
     bool m_can_be_destroyed = true;
+    bool awake = true;
+    QList<std::shared_ptr<gnomonAbstractDynamicForm>> deactivated_forms; // prevent the forms from being outright deleted
 
 private:
     QTimer *timer;

@@ -79,10 +79,11 @@ public:
 public:
     Q_INVOKABLE QList<int> systemStat(void) const; //total_mem, used_mem, this_mem
     Q_INVOKABLE void testDeactivate(void);
-    int getActivationNumber();
+    void registerNewWorkspace(const QString& uuid);
+    void registerWorkspaceWakeup(const QString& uuid);
 
     signals:
-    void requestDeactivate(int activationNumber);
+    void requestHibernation(QString uuid);
 
 public slots:
     void memoryManagement();

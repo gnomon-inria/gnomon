@@ -46,8 +46,6 @@ public slots:
     virtual void run(bool no_async=false);
     virtual void setInputs(void);
     virtual void viewOutputs(void);
-    virtual void saveState(void);
-    virtual void restoreState(void);
     virtual void export_outputs(void) override;
 
 public slots:
@@ -78,6 +76,10 @@ public:
     QJSValue parameters(void);
     QJsonObject serialize(void) override;
     void deserialize(const QJsonObject&) override;
+
+    virtual void saveState(void) override;
+    virtual void restoreState(void) override;
+    void hibernate(QString uuid) override;
 
 protected:
     void addInputView(const QVector<QString>& accepted_forms = {}, QStringList nodePortNames = {});

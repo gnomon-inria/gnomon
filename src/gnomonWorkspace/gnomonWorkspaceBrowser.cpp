@@ -59,6 +59,7 @@ public:
     QMap<QString, gnomonAbstractReaderCommand*> form_type_commands;
     int progress = 0;
     QJsonObject workspace_info;
+    QJsonObject state;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -525,9 +526,38 @@ void gnomonWorkspaceBrowser::deserialize(const QJsonObject &state) {
     d->browse_view->deserialize(state.value("view").toObject());
 }
 
+void gnomonWorkspaceBrowser::saveState(void) {
+    if(awake) {
+        d->state = serialize();
+    }
+}
+
 void gnomonWorkspaceBrowser::restoreState(void)
 {
-    d->browse_view->restoreState();
+    if(!d->state.empty()) {
+        deserialize(d->state);
+        d->browse_view->restoreState();
+    }
+}
+
+void gnomonWorkspaceBrowser::hibernate(QString uuid) {
+    gnomonAbstractWorkspace::hibernate(uuid);
+    if(this->uuid() == uuid) {
+        QList<std::shared_ptr<gnomonAbstractDynamicForm>> temp_holder; // prevent the forms from being outright deleted
+        for(auto form_name: d->browse_view->formNames()) {
+            temp_holder.append(d->browse_view->form(form_name));
+        }
+        d->browse_view->clear();
+        for(auto [form_type, command]: d->form_type_commands.asKeyValueRange()) {
+            command->clear();
+        }
+        for(const auto& form: temp_holder) {
+            if(form.use_count() == 1) {
+                // only the temp holder holds a reference
+                deactivated_forms.append(form);
+            }
+        }
+    }
 }
 
 QUrl gnomonWorkspaceBrowser::defaultReadPath()
