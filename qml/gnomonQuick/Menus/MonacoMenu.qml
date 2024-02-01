@@ -94,12 +94,6 @@ Item {
         }
     }
 
-    Connections {
-        target: d
-        function onRequestOpenFile(path) {
-            _self.open_source_file(path)
-        }
-    }
 
     P.FileDialog {
         id: _file_dialog;
@@ -401,7 +395,6 @@ Item {
 
                         onAccepted: {
                             let file_path = Utils.urlToPath(_texture_dialog.file.toString())
-                            console.log(file_path, file_path.split("/").slice(-1)[0], _texture_label.text)
                             if(file_path.split("/").slice(-1)[0] === _texture_label.text) {
                                 _texture_file_path.text = file_path
                                 _missing_textures_dialog.missingTextureFiles.push(file_path)
@@ -420,15 +413,11 @@ Item {
     }
 
     function guessFile(filename) {
-        console.log(filename,)
-        console.log(Utils.urlToPath(_self._current_file))
         let current_directory = Utils.urlToPath(_self._current_file).split("/").slice(0, -1).reduce((path, dir) => path + "/" + dir, "")
         if (current_directory.startsWith("//")) {
             current_directory = current_directory.substring(1)
         }
         let candidate_file = current_directory + "/" + filename
-        console.log(candidate_file)
-        console.log(GUtils.fileExists(candidate_file))
         return GUtils.fileExists(candidate_file)? candidate_file : ""
     }
 }

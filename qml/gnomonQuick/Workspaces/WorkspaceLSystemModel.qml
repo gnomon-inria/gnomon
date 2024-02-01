@@ -26,7 +26,6 @@ G.Workspace {
 
     property string _current_file: "";
     property alias editor: _editor;
-    property bool _read_only_lpy_file : false
 
     fill: () => {
         if(world.currentRef < 0)
@@ -70,6 +69,15 @@ G.Workspace {
 
         onFileChanged: {
             _editor.fileName = d.fileName
+        }
+
+        // Called only whe restoring workspace
+        onRequestOpenFile: (path) => {
+            let file_path = decodeURIComponent(path);
+            let file_name = file_path.split('/').pop()
+            d.read(file_path, false, true);
+            _self.editor.contents = d.text
+            _self.editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
         }
     }
 
@@ -194,7 +202,6 @@ G.Workspace {
             _editor.tabName = d.fileName;
         _editor.contents = d.text;
         d.onParametersChanged();
-        d.reset();
         drawel.close();
     }
 

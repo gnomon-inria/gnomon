@@ -71,7 +71,7 @@ public:
     Q_INVOKABLE QUrl defaultReadPath();
 
 public slots:
-    void read(const QString& file_url, bool read_only=false);
+    void read(const QString& file_url, bool read_only=false, bool restoring=false);
     void save(const QString& file_url) const;
     void close(const QString& file_name);
 

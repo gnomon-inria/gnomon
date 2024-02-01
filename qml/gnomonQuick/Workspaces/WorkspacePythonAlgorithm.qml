@@ -49,6 +49,13 @@ G.Workspace {
         onParametersChanged: {
             _self.updateParametersModel();
         }
+
+        onRequestOpenFile: (path) => {
+            let file_path = decodeURIComponent(path);
+            let file_name = file_path.split('/').pop()
+            d.code.fileName = file_name;
+            d.read(file_path, false);
+        }
     }
 
     ColumnLayout {

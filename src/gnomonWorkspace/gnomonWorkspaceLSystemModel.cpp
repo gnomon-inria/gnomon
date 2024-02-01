@@ -5,8 +5,7 @@
 #include <gnomonCore/gnomonPythonPluginLoader>
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
-#include <gnomonProject/gnomonProjectManager.h>
-#include <gnomonProject/gnomonProject.h>
+#include "gnomonProject"
 
 #include <gnomonVisualization/gnomonView/gnomonVtkView>
 #include <gnomonVisualization/gnomonView/gnomonQmlView>
@@ -238,7 +237,8 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
 
             d->model_file->close();
             d->command->setLSystem(d->model_file->fileName());
-            this->reset();
+            // TODO: doesn't that force recomputing / rendering at every character change?
+            // this->reset();
         } else {
             qWarning() << "cannot open temp file for writing" << d->model_file;
         }
@@ -284,7 +284,7 @@ void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
 }
 
 // TODO: to factorize in a code editor workspace class
-void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only)
+void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only, bool restoring)
 {
     QString file_name = file_url.split(QRegularExpression("/")).last();
     QString relative_path = filePathFromUrl(file_url);
@@ -323,7 +323,9 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only)
         this->setFileName(file_name);
         this->setText(in.readAll());
         d->open_files[file_name] = relative_path;
-        this->reset();
+        if (!restoring) {
+            this->reset();
+        }
         if(!read_only)
             this->backup();
     } else {
@@ -464,6 +466,7 @@ void gnomonWorkspaceLSystemModel::viewState()
     // TODO: pass lsystem to visu plugin
     auto lString = d->command->lString();
     if (lString) {
+        GNOMON_SESSION->trackForm(lString);
         d->view->setForm("gnomonLString", lString); //TODO only update, only do it if it's different ..
         if (lString->times().size() != 0) {
             d->view->setCurrentTime(lString->times().last());
@@ -592,7 +595,6 @@ void gnomonWorkspaceLSystemModel::copyTextureFiles(const QStringList& files)
 void gnomonWorkspaceLSystemModel::importFile(const QString& file_name)
 {
     auto project_file = GNOMON_PROJECT->projectDir() + "/" + file_name;
-    qDebug()<<Q_FUNC_INFO<<file_name<<project_file;
     if(QFile::copy(d->lpy_dir->filePath(file_name), project_file)) {
         QFile::remove(d->lpy_dir->filePath(file_name));
         this->backup();
@@ -653,8 +655,9 @@ void gnomonWorkspaceLSystemModel::deserialize(const QJsonObject &state) {
 
     QJsonObject parameters_json = state["parameters"].toObject();
 
-    setFileName(state["filename"].toString());
-    setText(state["text"].toString());
+    // TODO: to remove if code is restored from file / backup ?
+    // setFileName(state["filename"].toString());
+    // setText(state["text"].toString());
     setDerivationLength(state["derivation_length"].toInt());
     d->derivations = state["derivations"].toInt();
     setAnimationStep(state["animation_step"].toInt());
