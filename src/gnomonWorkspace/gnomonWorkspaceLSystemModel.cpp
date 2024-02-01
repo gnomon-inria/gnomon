@@ -581,7 +581,7 @@ QStringList gnomonWorkspaceLSystemModel::missingTextures(void) const
     return d->missing_textures;
 }
 
-void gnomonWorkspaceLSystemModel::copyTexturesFiles(const QStringList& files)
+void gnomonWorkspaceLSystemModel::copyTextureFiles(const QStringList& files)
 {
     for(const auto& file : files) {
         auto new_file = GNOMON_PROJECT->projectDir() + "/" + file.split("/").last();

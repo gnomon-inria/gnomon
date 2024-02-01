@@ -17,7 +17,6 @@ import gnomon.Project    as GP
 
 import gnomon.Workspaces 1.0 as GW
 
-import "../Controls/utils.js" as Utils
 
 G.Workspace {
 

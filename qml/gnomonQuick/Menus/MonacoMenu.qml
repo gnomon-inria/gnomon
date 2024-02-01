@@ -4,12 +4,15 @@ import QtQuick.Layouts
 
 import Qt.labs.platform  1.0 as P
 
+import gnomon.Utils
 import gnomonQuick.Menus      1.0 as G
 import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls   1.0 as G
 import gnomonQuick.Style      1.0 as G
 
 import gnomon.Project         1.0 as GP
+
+import "../Controls/utils.js" as Utils
 
 Item {
 
@@ -319,10 +322,12 @@ Item {
             anchors.topMargin: G.Style.smallButtonHeight
             Repeater {
                 model: d.missingTextures
+
                 RowLayout {
                     Layout.fillWidth: true
                     height: G.Style.mediumLabelHeight
                     spacing: 2
+
                     Label {
                         id: _texture_label
 
@@ -348,6 +353,8 @@ Item {
                         G.TextField {
                             id: _texture_file_path
 
+                            text: guessFile(modelData)
+
                             anchors.right: _check_texture_icon.left
                             anchors.left: parent.left
                             anchors.bottom: parent.bottom;
@@ -360,9 +367,9 @@ Item {
                             id: _check_texture_icon
 
                             anchors.right: _edit_texture_button.left
-                            anchors.bottom: parent.bottom;
+                            anchors.verticalCenter: parent.verticalCenter;
                             anchors.rightMargin: G.Style.smallPadding
-                            visible : false
+                            visible : _texture_file_path.text.endsWith(".jpg") & GUtils.fileExists(_texture_file_path.text)
                             color : "green"
                             size: G.Style.iconSmall;
                             icon: "file-check"
@@ -373,7 +380,7 @@ Item {
                             id: _edit_texture_button
 
                             anchors.right: parent.right
-                            anchors.bottom: parent.bottom;
+                            anchors.verticalCenter: parent.verticalCenter;
                             anchors.rightMargin: G.Style.smallPadding
                             size: G.Style.iconSmall;
                             iconName: "folder-open"
@@ -394,9 +401,9 @@ Item {
 
                         onAccepted: {
                             let file_path = Utils.urlToPath(_texture_dialog.file.toString())
+                            console.log(file_path, file_path.split("/").slice(-1)[0], _texture_label.text)
                             if(file_path.split("/").slice(-1)[0] === _texture_label.text) {
                                 _texture_file_path.text = file_path
-                                _check_texture_icon.visible = true
                                 _missing_textures_dialog.missingTextureFiles.push(file_path)
                             }
                         }
@@ -404,10 +411,24 @@ Item {
                 }
             }
         }
+
         standardButtons:  Dialog.Ok | Dialog.Cancel
 
         onAccepted : {
-            d.copyTexturesFiles(_missing_textures_dialog.missingTextureFiles);
+            d.copyTextureFiles(_missing_textures_dialog.missingTextureFiles);
         }
+    }
+
+    function guessFile(filename) {
+        console.log(filename,)
+        console.log(Utils.urlToPath(_self._current_file))
+        let current_directory = Utils.urlToPath(_self._current_file).split("/").slice(0, -1).reduce((path, dir) => path + "/" + dir, "")
+        if (current_directory.startsWith("//")) {
+            current_directory = current_directory.substring(1)
+        }
+        let candidate_file = current_directory + "/" + filename
+        console.log(candidate_file)
+        console.log(GUtils.fileExists(candidate_file))
+        return GUtils.fileExists(candidate_file)? candidate_file : ""
     }
 }
