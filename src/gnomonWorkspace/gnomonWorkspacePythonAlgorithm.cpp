@@ -266,6 +266,17 @@ void gnomonWorkspacePythonAlgorithm::close(const QString& file_name)
     }
 }
 
+void gnomonWorkspacePythonAlgorithm::importFile(const QString& file_name)
+{
+    qDebug()<<Q_FUNC_INFO<<file_name;
+    qDebug()<<Q_FUNC_INFO<<d->open_files;
+    if (d->open_files.contains(file_name)) {
+        auto project_file = GNOMON_PROJECT->projectDir() + "/" + file_name;
+        QFile::copy(d->open_files[file_name], project_file);
+        d->open_files[file_name] = project_file;
+    }
+}
+
 QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");

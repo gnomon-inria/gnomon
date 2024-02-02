@@ -103,6 +103,10 @@ G.Workspace {
                     //d.restore();
                     d.codeEditorReady()
                 }
+
+                onMakeFileEditable: () => {
+                    import_file_to_project.open()
+                }
             }
 
             G.View {
@@ -146,6 +150,45 @@ G.Workspace {
         function onCodeUpdated() {
             _editor.tabName = d.code.fileName;
             _editor.contents = d.code.text; 
+        }
+    }
+
+    G.Dialog {
+        id: import_file_to_project
+
+        simple_dialog : true
+        modal: true
+
+        parent: Overlay.overlay
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.smallDialogWidth
+        height: G.Style.largeDelegateHeight + G.Style.mediumLabelHeight
+        header.height: 0
+
+        Label {
+            id: _message
+            text: "Import file to the project?"
+            font: G.Style.fonts.cardLabel
+        }
+
+        Text {
+            anchors.top: _message.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.topMargin: G.Style.smallPadding
+
+            text: "You have to import this file to your project to edit it, otherwise, it will remain read-only. The file will be copied at the root of the project."
+            font: G.Style.fonts.value
+            color: G.Style.colors.textColorBase
+            wrapMode: Text.Wrap
+        }
+
+        standardButtons:  Dialog.Yes | Dialog.No
+
+        onAccepted : {
+            _editor.readOnly = false
+            d.importFile(d.code.fileName)
         }
     }
 

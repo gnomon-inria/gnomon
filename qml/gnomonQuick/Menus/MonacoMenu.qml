@@ -73,9 +73,10 @@ Item {
                 empty: true
 
                 onClicked: {
-                    if(_self._current_file == "") {
+                    let file_name = _self.mode == "Python" ? d.code.fileName : d.fileName;
+                    let default_file_name = _self.mode == "Python" ? "example.py" : "vonKoch.lpy";
+                    if(file_name == default_file_name) {
                         _file_dialog_save.open()
-
                     } else {
                         _message_dialog.open();
                     }
@@ -89,7 +90,7 @@ Item {
                 anchors.verticalCenter: _button_container.verticalCenter
                 anchors.leftMargin: G.Style.smallPadding;
 
-                text: "Import";
+                text: "Open";
 
                 type: G.Style.ButtonType.Base
                 iconName: "folder-open"
@@ -114,12 +115,8 @@ Item {
         nameFilters: _self.mode == "L-Py" ? ["L-Py source files (*.lpy *.py)"] : ["Python source files (*.py)"]
 
         onAccepted: {
-            if (_self.mode == "Python") {
-                copy_py_file_to_project.open()
-            } else {
-                _self._read_only = true
-                open_source_file(_file_dialog.file)
-            }
+            _self._read_only = true
+            open_source_file(_file_dialog.file)
         }
     }
 
@@ -128,7 +125,7 @@ Item {
 
         title: "Save source file"
 
-        folder: _self._current_file;
+        folder: "file://"+GP.ProjectManager.project.currentDir
         fileMode: P.FileDialog.SaveFile
 
         modality: Qt.WindowModal;
@@ -167,8 +164,8 @@ Item {
         x: Math.round((window.width - width) / 2)
         y: Math.round((window.height - height) / 2)
 
-        width: Math.round(window.width / 3 * 2)
-        height: 200
+        width: G.Style.smallDialogWidth;
+        height: G.Style.smallDialogHeight;
 
         parent: Overlay.overlay
         focus: true
@@ -185,10 +182,13 @@ Item {
 
         footer: DialogButtonBox {
             visible: true
+            alignment: Qt.AlignRight
+            spacing: G.Style.smallPadding
 
             G.Button {
                 text: "Cancel"
                 type: G.Style.ButtonType.Neutral
+                width: G.Style.buttonWidth
                 flat: true;
 
                 onClicked: {
@@ -199,6 +199,7 @@ Item {
             G.Button {
                 text: "Replace"
                 type: G.Style.ButtonType.Warning
+                width: G.Style.buttonWidth
                 flat: true;
 
                 onClicked: {
@@ -210,48 +211,14 @@ Item {
             G.Button {
                 text: "Save as"
                 type: G.Style.ButtonType.Base
+                width: G.Style.buttonWidth
                 flat: false;
 
                 onClicked: {
-                    _self._current_file = "";
                     _file_dialog_save.open();
                 }
             }
         }
-    }
-
-    G.Dialog {
-        id: copy_py_file_to_project
-
-        simple_dialog : true
-
-        parent: Overlay.overlay
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        width: G.Style.smallDialogWidth
-        height: G.Style.largeDelegateHeight
-        header.height: 0
-
-        modal: true
-
-
-        Label {
-            text: "Copy this file to your project for editing. Otherwise, it remains read-only. \nProceed with copying?"
-            font: G.Style.fonts.nodeHeaderSelected
-        }
-
-        standardButtons:  Dialog.Yes | Dialog.No
-
-        onAccepted : {
-            _self._read_only = false
-            open_source_file(_file_dialog.file)
-        }
-
-        onRejected : {
-            _self._read_only = true
-            open_source_file(_file_dialog.file)
-        }
-
     }
 
     G.Toast {
