@@ -23,6 +23,8 @@ G.Workspace {
     }
     focus: true;
 
+    viewSelected: _view
+
     G.SessionSettings {
         category: uuid
         property alias state: d.state

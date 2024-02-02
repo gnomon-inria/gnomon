@@ -26,6 +26,10 @@ Rectangle {
 
     signal transmit();
 
+    function forceFocus() {
+        _text.forceActiveFocus()
+    }
+
     ScrollView {
         id: _view;
         anchors.fill: parent
