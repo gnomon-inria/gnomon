@@ -42,8 +42,16 @@ Item {
 
             onFileDoubleClicked: (fileUrl) => {
                 let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
-                _self._read_only = false
-                open_source_file(relative_path)
+                let extension_ok = relative_path.endsWith(".py");
+                if (_self.mode == "L-Py") {
+                    extension_ok = extension_ok | relative_path.endsWith(".lpy")
+                }
+                if (extension_ok) {
+                    _self._read_only = false
+                    open_source_file(relative_path)
+                } else {
+                    _wrong_extension_toast.open()
+                }
             }
         }
         
@@ -79,7 +87,7 @@ Item {
 
                 anchors.right: _button_container.right;
                 anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding;
+                anchors.leftMargin: G.Style.smallPadding;
 
                 text: "Import";
 
@@ -262,6 +270,16 @@ Item {
         parent: Overlay.overlay
         header: "Not a .lpy file"
         message: "The file you opened is not a .lpy file, and can therefore not be run as a LSystem model."
+
+        type: G.Style.ButtonType.Warning
+    }
+
+    G.Toast {
+        id: _wrong_extension_toast
+
+        parent: Overlay.overlay
+        header: "Not a valid source file"
+        message: "The file you are trying to open is not a code source file and can not be loaded"
 
         type: G.Style.ButtonType.Warning
     }
