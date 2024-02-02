@@ -31,6 +31,10 @@ Rectangle {
 
     signal transmit();
 
+    function forceFocus() {
+        _view.forceActiveFocus()
+    }
+
     GV.FigureCanvas {
         id: _view;
 

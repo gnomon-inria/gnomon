@@ -24,6 +24,8 @@ G.Workspace {
 
     fill: () => {}
 
+    viewSelected: _source_view
+
     focus: true;
 
     G.SessionSettings {
