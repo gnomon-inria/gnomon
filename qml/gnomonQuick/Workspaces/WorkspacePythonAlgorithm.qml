@@ -42,6 +42,8 @@ G.Workspace {
             if(!d.editMode) {
                 if(world.currentRef >= 0)
                     _source_view.droppedFromManager(world.currentRef)
+            } else {
+                _editor.forceFocus()
             }
             drawel.update_menu()
         }

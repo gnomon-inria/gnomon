@@ -170,4 +170,8 @@ Control {
 
         visible: window.currentView == self;
     }
+
+    function forceFocus() {
+        view.forceActiveFocus()
+    }
 }
