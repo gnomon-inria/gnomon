@@ -38,9 +38,10 @@ public:
     bool containsForm(std::shared_ptr<gnomonAbstractForm> form) const override;
 
     void insert(double t, std::shared_ptr<gnomonAbstractForm> form) override;
-    void insert(double t, std::shared_ptr<T> form, bool right_on_disk=true);
-    void saveForms(void);
+    void insert(double t, std::shared_ptr<T> form);
     void drop(double t) override;
+
+    void setAutoSave(bool auto_save);
 
     void compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) override;
 
@@ -90,6 +91,9 @@ protected:
     double m_current_time = 0.;
     uint m_current_time_id = 0;
     QString m_uuid;
+
+    bool m_auto_save = true;
+    bool m_has_unsaved_times = false;
 };
 
 #include "gnomonTimeSeries.tpp"

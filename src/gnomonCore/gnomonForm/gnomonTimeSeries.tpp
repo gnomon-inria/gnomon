@@ -150,7 +150,7 @@ void gnomonTimeSeries<T>::insert(double t, std::shared_ptr<gnomonAbstractForm> f
     insert(t, std::dynamic_pointer_cast<T>(form));
 }
 
-template <typename T> void gnomonTimeSeries<T>::insert(double t, std::shared_ptr<T> form, bool right_on_disk)
+template <typename T> void gnomonTimeSeries<T>::insert(double t, std::shared_ptr<T> form)
 {
     auto id = form_id_counter++;
     if (m_forms.size() == 0) {
@@ -168,16 +168,22 @@ template <typename T> void gnomonTimeSeries<T>::insert(double t, std::shared_ptr
         return;
     }
 
-    if(right_on_disk)
+    if(m_auto_save)
         save(t);
+    else
+        m_has_unsaved_times = true;
 }
 
-template <typename T> void gnomonTimeSeries<T>::saveForms(void)
-{
-    for(auto& time : m_times.values()) {
-        save(time);
+template <typename T> void gnomonTimeSeries<T>::setAutoSave(bool auto_save) {
+    m_auto_save = auto_save;
+    if (m_auto_save && m_has_unsaved_times) {
+        for (auto &time: m_times.values()) {
+            save(time);
+        }
+        m_has_unsaved_times = false;
     }
 }
+
 //void gnomonTimeSeries::insert(const gnomonTimeSeries& dynamic_form)
 //{
 //    for(auto it = dynamic_form.m_forms.begin(); it != dynamic_form.m_forms.end(); ++it) { // Iterates on the times
