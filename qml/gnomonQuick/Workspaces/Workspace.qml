@@ -27,10 +27,8 @@ G.Page {
         target: window
         function onCurrentViewChanged() {
             let parent_object = window.currentView.parent
-            console.log(parent_object)
             while(parent_object != _self && parent_object != window && parent_object) {
                 parent_object = parent_object.parent
-                console.log(parent_object)
             }
             if(parent_object === _self) {
                 _self.viewSelected = window.currentView
