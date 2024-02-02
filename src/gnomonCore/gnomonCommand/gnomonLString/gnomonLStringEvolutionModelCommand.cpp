@@ -106,6 +106,9 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
             maxDerivationLength = i+1;
         }
 
+        if(this->simulationType == SimulationType::animate)
+            d->lString->setAutoSave(false);
+
         //let's slow down the computation!
         // time during each iteration
         int sleeptime = int(d->animation_time*1000*d->animation_step / maxDerivationLength);
@@ -148,6 +151,10 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
             if (promise.isCanceled())
                 return;
         }
+
+        if(this->simulationType == SimulationType::animate)
+            d->lString->setAutoSave(true);
+
         promise.finish();
     }); //.onFailed([] {
     // qWarning() << "Error running " << Q_FUNC_INFO;
