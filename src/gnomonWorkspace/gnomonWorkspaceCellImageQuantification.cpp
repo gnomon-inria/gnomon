@@ -28,6 +28,7 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     d->figure = new gnomonMplView(this);
     d->figure->setAcceptForm("gnomonDataFrame",true);
     connect(d->figure, &gnomonMplView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+        GNOMON_SESSION->addForm(f);
         d->pipeline_manager->addForm(f->uuid());
     });
     emit parametersChanged();
@@ -83,7 +84,7 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
     }
     if(command->dataFrame()) {
         d->figure->setForm("gnomonDataFrame", command->dataFrame());
-        GNOMON_SESSION->trackForm(command->cellImage());
+        GNOMON_SESSION->trackForm(command->dataFrame());
         int form_count = gnomonFormManager::instance()->formCount(command->dataFrame()->formName());
         command->dataFrame()->metadata()->set("name", command->dataFrame()->formName().remove("gnomon") + QString::number(form_count+1));
         command->dataFrame()->metadata()->set("source", d->algorithm);

@@ -167,7 +167,21 @@ template <typename T> void gnomonTimeSeries<T>::insert(double t, std::shared_ptr
         qWarning() << Q_FUNC_INFO << "Invalid form : the form has no data, it will not be saved";
         return;
     }
-    save(t);
+
+    if(m_auto_save)
+        save(t);
+    else
+        m_has_unsaved_times = true;
+}
+
+template <typename T> void gnomonTimeSeries<T>::setAutoSave(bool auto_save) {
+    m_auto_save = auto_save;
+    if (m_auto_save && m_has_unsaved_times) {
+        for (auto &time: m_times.values()) {
+            save(time);
+        }
+        m_has_unsaved_times = false;
+    }
 }
 
 //void gnomonTimeSeries::insert(const gnomonTimeSeries& dynamic_form)
