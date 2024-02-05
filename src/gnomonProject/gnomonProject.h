@@ -42,7 +42,7 @@ public:
     void close();
 
     Q_INVOKABLE void save(void);
-    Q_INVOKABLE bool loadSessionFromPipeline(const QString &path, QObject *window);
+    Q_INVOKABLE bool loadSessionFromPipeline(const QString &path);
     gnomonAbstractSessionManager *currentSession(void);
 public:
     QString projectDir(void);

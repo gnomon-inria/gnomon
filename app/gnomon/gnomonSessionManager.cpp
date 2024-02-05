@@ -84,12 +84,6 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
         // QDir::setCurrent(gnomonQMLUtils::instance()->dataPath());
         QString read_path = node->path();
         QStringList paths = read_path.split(",");
-        for (size_t i = 0; i < paths.size(); i++) {
-            QDir path(paths[i]);
-            if(path.isRelative()) {
-                paths[i] = path.absolutePath();
-            }
-        }
         QDir::setCurrent(tmp);
 
         callbackConnection = QObject::connect(browser, &gnomonAbstractWorkspace::finished, [=]() {

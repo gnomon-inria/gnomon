@@ -58,6 +58,17 @@ G.Workspace {
         }
     }
 
+    P.FileDialog {
+        id: loadFileDialog
+
+        nameFilters: ["Json files (*.json)"]
+
+        onAccepted: {
+            open_blank_project(loadFileDialog.folder, true)
+            load_session(loadFileDialog.file)
+        }
+    }
+
     G.Panel {
         anchors.fill: parent
 
@@ -619,6 +630,8 @@ G.Workspace {
                                 title: name
                                 body: "last modified: " + lastModified + "\n" +description
                                 tooltip: source
+                                titleTopMargin: G.Style.iconLarge
+
                                 background: Rectangle {
                                     color: _getBgColor()
                                     radius: G.Style.cardRadius
@@ -635,21 +648,21 @@ G.Workspace {
                                 }
 
                                 G.IconButton {
-                                    id: _restart_icon;
-                                    iconName: "plus-box";
+                                    id: _trash_icon;
+                                    iconName: "close-box";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
-                                    hoverColor: G.Style.colors.hoveredOkColor;
-                                    tooltip: "Start a new blank session"
+                                    hoverColor: G.Style.colors.hoveredDangerColor;
+                                    tooltip: "Remove from the recent projects"
 
                                     anchors.top: parent.top
-                                    anchors.topMargin: G.Style.smallPadding
-                                    anchors.leftMargin: 0
-                                    anchors.right: _load_icon.left
-                                    anchors.rightMargin: G.Style.smallPadding/2
+                                    anchors.topMargin: G.Style.smallPadding / 2
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: G.Style.smallPadding
+                                    anchors.bottomMargin: G.Style.smallPadding / 2
 
                                     onClicked: {
-                                        open_project_dialog(source, true)
+                                        remove_from_history(source)
                                     }
                                 }
 
@@ -663,7 +676,7 @@ G.Workspace {
 
                                     anchors.top: parent.top
                                     anchors.topMargin: G.Style.smallPadding
-                                    anchors.right: _trash_icon.left
+                                    anchors.right: _more_icon.left
                                     anchors.rightMargin: G.Style.smallPadding/2
 
                                     onClicked: {
@@ -673,11 +686,12 @@ G.Workspace {
                                 }
 
                                 G.IconButton {
-                                    id: _trash_icon;
-                                    iconName: "close-box";
+                                    id: _more_icon;
+                                    property bool active: false;
+                                    iconName: "dots-horizontal";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
-                                    hoverColor: G.Style.colors.hoveredDangerColor;
+                                    hoverColor: G.Style.colors.hoveredBaseColor;
                                     tooltip: "Remove from the recent projects"
 
                                     anchors.top: parent.top
@@ -686,7 +700,46 @@ G.Workspace {
                                     anchors.rightMargin: G.Style.smallPadding
 
                                     onClicked: {
-                                        remove_from_history(source)
+                                        active = !active
+                                    }
+                                }
+
+                                G.IconButton {
+                                    id: _restart_icon;
+                                    iconName: "plus-box";
+                                    size: G.Style.iconMedium;
+                                    color: G.Style.colors.fgColor;
+                                    hoverColor: G.Style.colors.hoveredOkColor;
+                                    tooltip: "Start a new blank session"
+                                    visible: _more_icon.active
+
+                                    anchors.top: _more_icon.bottom
+                                    anchors.topMargin: G.Style.smallPadding / 2
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: G.Style.smallPadding
+
+                                    onClicked: {
+                                        open_project_dialog(source, true)
+                                    }
+                                }
+                               
+                                G.IconButton {
+                                    id: _pipeline_icon;
+                                    iconName: "pipe";
+                                    size: G.Style.iconMedium;
+                                    color: G.Style.colors.fgColor;
+                                    hoverColor: G.Style.colors.hoveredOkColor;
+                                    tooltip: "Create session from pipeline"
+                                    visible: _more_icon.active
+
+                                    anchors.top: _restart_icon.bottom
+                                    anchors.topMargin: G.Style.smallPadding / 2
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: G.Style.smallPadding
+
+                                    onClicked: {
+                                        loadFileDialog.folder =  source
+                                        loadFileDialog.open()
                                     }
                                 }
                             }

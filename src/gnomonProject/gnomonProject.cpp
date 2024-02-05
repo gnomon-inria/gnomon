@@ -173,7 +173,7 @@ void gnomonProject::setCurrentDir(const QString& url)
     }
 }
 
-bool gnomonProject::loadSessionFromPipeline(const QString &path, QObject *window)
+bool gnomonProject::loadSessionFromPipeline(const QString &path)
 {
     return GNOMON_SESSION->loadFromPipeline(path);
 }
@@ -381,12 +381,16 @@ void gnomonProject::recursiveRemoveDir(const QString &path) {
 
 QString gnomonProject::findFile(const QString& filename) const {
     QStringList search_paths;
-    search_paths.append(d->projectDir.path());
-    for (const auto &d_path : d->dataPath) {
-        search_paths.append(d_path);
-    }
+    search_paths << d->projectDir.path() << d->dataPath;
     QDir::setSearchPaths("paths", search_paths);
-    QFile file(QString("paths:%1").arg(filename));
+    QString search_filename = filename;
+    for(const auto& path: search_paths) {
+        if(!QDir(path).relativeFilePath(filename).contains("..")) {
+            search_filename = QDir(path).relativeFilePath(filename);
+            break;
+        }
+    }
+    QFile file(QString("paths:%1").arg(search_filename));
     QString target_file;
     if(file.exists())
         target_file = file.fileName();

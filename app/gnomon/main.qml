@@ -733,10 +733,10 @@ G.Application {
         stack_launcher.currentIndex = 1;
     }
 
-    function open_blank_project(project_url) {
+    function open_blank_project(project_url, load_pipeline=false) {
         console.log("New session from ", project_url);
         //window.load_in_progress = true;
-        GP.ProjectManager.openProject(project_url, false)
+        GP.ProjectManager.openProject(project_url, false, load_pipeline)
         //GP.PrpjectManager.project.loadSession()
 
         stack_launcher.currentIndex = 1;
