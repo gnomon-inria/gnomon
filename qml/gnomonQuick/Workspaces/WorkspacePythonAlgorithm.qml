@@ -24,7 +24,7 @@ G.Workspace {
 
     fill: () => {}
 
-    viewSelected: _source_view
+    viewSelected: d.editMode? _editor : _source_view
 
     focus: true;
 

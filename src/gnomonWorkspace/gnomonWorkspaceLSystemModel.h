@@ -59,7 +59,7 @@ public:
     QString text(void);
     Q_INVOKABLE void setText(const QString& text);
     Q_INVOKABLE void copyTextureFiles(const QStringList& files);
-    Q_INVOKABLE void importFile(const QString& file_name);
+    Q_INVOKABLE void importFile(const QString& file_name, const QString& path);
 
     int derivationLength(void);
     void setDerivationLength(int l);
