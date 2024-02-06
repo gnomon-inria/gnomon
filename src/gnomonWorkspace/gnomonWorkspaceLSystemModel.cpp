@@ -595,14 +595,11 @@ void gnomonWorkspaceLSystemModel::copyTextureFiles(const QStringList& files)
 void gnomonWorkspaceLSystemModel::importFile(const QString& file_name, const QString& path)
 {
     auto project_file = path + "/" + file_name;
-    qDebug()<<Q_FUNC_INFO<<project_file;
     if (QFile::copy(d->lpy_dir->filePath(file_name), project_file)) {
         QFile::remove(d->lpy_dir->filePath(file_name));
         this->backup();
         delete(d->model_file);
         d->model_file = new QFile(project_file);
-    } else {
-        qDebug()<<Q_FUNC_INFO<<"Failed to import"<<file_name;
     }
 }
 

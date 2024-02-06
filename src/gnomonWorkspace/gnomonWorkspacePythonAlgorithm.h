@@ -72,7 +72,7 @@ public slots:
     void close(const QString& file_name);
 
 public:
-    Q_INVOKABLE void importFile(const QString& file_name);
+    Q_INVOKABLE void importFile(const QString& file_name, const QString& path);
     Q_INVOKABLE QUrl defaultReadPath();
 
 public slots:

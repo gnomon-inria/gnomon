@@ -109,6 +109,7 @@ G.Workspace {
                 }
 
                 onMakeFileEditable: () => {
+                    import_file_to_project.importPath = GP.ProjectManager.project.currentDir;
                     import_file_to_project.open()
                 }
             }
@@ -157,75 +158,14 @@ G.Workspace {
         }
     }
 
-    G.Dialog {
+    G.ProjectImportDialog {
         id: import_file_to_project
-
-        simple_dialog : true
-        modal: true
-
-        parent: Overlay.overlay
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        width: G.Style.smallDialogWidth
-        height: G.Style.largeDelegateHeight + G.Style.mediumLabelHeight
-        header.height: 0
-
-        Label {
-            id: _message
-            text: "Import file to the project?"
-            font: G.Style.fonts.cardLabel
-        }
-
-        Text {
-            anchors.top: _message.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.topMargin: G.Style.smallPadding
-
-            text: "You have to import this file to your project to edit it, otherwise, it will remain read-only. The file will be copied at the root of the project."
-            font: G.Style.fonts.value
-            color: G.Style.colors.textColorBase
-            wrapMode: Text.Wrap
-        }
-
-        standardButtons:  Dialog.Yes | Dialog.No
 
         onAccepted : {
             _editor.readOnly = false
-            d.importFile(d.code.fileName)
+            d.importFile(d.code.fileName, import_file_to_project.importPath)
         }
     }
-
-   // Connections {
-   //     target: X.Style
-   //
-   //     function onVariantChanged() {
-   //         console.log('Setting color for', X.Style.flavors, 'and', X.Style.variant);
-   //
-   //         var color;
-   //
-   //         if (X.Style.flavors == 'MACOS' && X.Style.variant == 'LIGHT')
-   //             color = X.Style.flavor_macos.base07;
-   //         if (X.Style.flavors == 'MACOS' && X.Style.variant == 'DARK')
-   //             color = X.Style.flavor_macos.base00;
-   //         if (X.Style.flavors == 'UBUNTU' && X.Style.variant == 'LIGHT')
-   //             color = X.Style.flavor_ubuntu.base07;
-   //         if (X.Style.flavors == 'UBUNTU' && X.Style.variant == 'DARK')
-   //             color = X.Style.flavor_ubuntu.base00;
-   //         if (X.Style.flavors == 'FEDORA' && X.Style.variant == 'LIGHT')
-   //             color = X.Style.flavor_fedora.base07;
-   //         if (X.Style.flavors == 'FEDORA' && X.Style.variant == 'DARK')
-   //             color = X.Style.flavor_fedora.base00;
-   //
-   //         if(X.Style.variant == 'LIGHT')
-   //             _editor.theme = "vs-light";
-   //         else
-   //             _editor.theme = "vs-dark";
-   //
-   //         _console.set_style_sheet(color);
-   //         _console.update();
-   //     }
-   // }
 
     Component.onCompleted: {
         G.Associator.associate(_source_view, d.source);
