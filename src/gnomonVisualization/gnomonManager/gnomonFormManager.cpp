@@ -749,7 +749,7 @@ void gnomonFormManager::memoryManagement() {
     auto stats = systemStat();
     int total_mem = stats[0];
     int used_mem = stats[1];
-    qDebug() << "$$ Memory usage: " << used_mem << " | " << total_mem << " | " << stats[2];
+    //qDebug() << "$$ Memory usage: " << used_mem << " | " << total_mem << " | " << stats[2];
     while((used_mem > 3000 || (float)used_mem/(float)total_mem>0.8) && d->active_workspaces.size()>1) {
         break;
         auto uuid =  d->active_workspaces.first();
@@ -786,9 +786,10 @@ void gnomonFormManager::registerWorkspaceWakeup(const QString &uuid) {
     if(d->hibernating_workspaces.contains(uuid)) {
         d->hibernating_workspaces.remove(uuid);
     }
-    if(!d->active_workspaces.contains(uuid)) {
-        d->active_workspaces.append(uuid);
+    if(d->active_workspaces.contains(uuid)) {
+        d->active_workspaces.removeAll(uuid);
     }
+    d->active_workspaces.append(uuid);
 }
 
 
