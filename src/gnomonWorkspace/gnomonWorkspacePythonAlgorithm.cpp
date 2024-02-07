@@ -195,7 +195,7 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_onl
     QString absolute_path;
     QString source;
     if (!QFile::exists(relative_path)) {
-            dtkWarn() << Q_FUNC_INFO << "file " << relative_path << "doesn't exist";
+            qDebug() << Q_FUNC_INFO << "file " << relative_path << "doesn't exist";
     } else {
         absolute_path = GNOMON_PROJECT->findFile(relative_path);
         source = QFileInfo(relative_path).fileName();
@@ -263,6 +263,18 @@ void gnomonWorkspacePythonAlgorithm::close(const QString& file_name)
         emit stateChanged();
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"The file"<<file_name<<"was not open";
+    }
+}
+
+void gnomonWorkspacePythonAlgorithm::importFile(const QString& file_name, const QString& path)
+{
+    if (d->open_files.contains(file_name)) {
+        auto project_file = path + "/" + file_name;
+        QFile::copy(d->open_files[file_name], project_file);
+        QString relative_path = GNOMON_PROJECT->relativePath(project_file);
+        d->open_files[file_name] = relative_path;
+        this->backup();
+        emit GNOMON_PROJECT->fileImported(relative_path);
     }
 }
 

@@ -65,6 +65,7 @@ QML_FILES
   PipelinePortEdit.qml
   Project.qml
   ProjectBrowser.qml
+  ProjectImportDialog.qml
   ProgressBar.qml
   RangeParameter.qml
   RangeSlider.qml
@@ -85,6 +86,7 @@ QML_FILES
   ToolBar.qml
   ToolTip.qml
   TreeView.qml
+  utils.js
   View.qml
   ViewParameters.qml
   World.qml

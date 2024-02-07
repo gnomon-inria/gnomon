@@ -47,7 +47,9 @@ Control {
         onWidthChanged: _view.setGeom(_view.width, _view.height);
         onHeightChanged: _view.setGeom(_view.width, _view.height);
 
-        backgroundColor: G.Style.colors.fgColor
+        backgroundColor: G.Style.figureColors.bgColor
+
+        lineColor: G.Style.figureColors.lineColor
 
         onHoverChanged : {
             window.insideParamFigure()

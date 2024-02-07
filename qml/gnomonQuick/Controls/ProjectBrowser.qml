@@ -17,10 +17,13 @@ Control
     property string rootDir: "/";
     property var dataPath: ["/"];
 
+    property alias projectTree: _project_tree_view
+
     signal fileDoubleClicked(string fileUrl)
     signal fileRightClicked(string fileUrl)
 
     background: Rectangle {
+        radius: G.Style.panelRadius;
         color: G.Style.colors.gutterColor;
     }
 

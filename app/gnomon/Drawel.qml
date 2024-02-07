@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import gnomonQuick.Controls as G
+import gnomonQuick.Monaco as G
 
 G.Page {
 
@@ -45,10 +46,16 @@ G.Page {
         var source;
         var prop;
 
-        if(workspace.workspace_title === "Python Algorithm" & workspace.d.editMode)
+        if (window.currentView instanceof G.Monaco)
         {
             source = "qrc:/qt/qml/gnomonQuick/Menus/MonacoMenu.qml"
-            prop = { d: workspace.d }
+            var editor = window.currentView;
+            prop = {
+                editor: editor,
+                d: workspace.d,
+                mode: workspace.workspace_title === "L-System Model (Beta)"? "L-Py" : "Python"
+            }
+
         } else {
             source = "qrc:/qt/qml/gnomonQuick/Menus/ViewMenu.qml";
             var view = window.currentView;

@@ -13,14 +13,16 @@ import gnomonQuick.Workspaces as G
 import gnomonQuick.Controls   as G
 import gnomonQuick.Style      as G
 import gnomonQuick.Monaco     as G
+import gnomon.Project    as GP
 
 import gnomon.Workspaces 1.0 as GW
+
 
 G.Workspace {
 
     id: _self;
 
-    workspace_title: "L-System Model";
+    workspace_title: "L-System Model (Beta)";
 
     property string _current_file: "";
     property alias editor: _editor;
@@ -32,7 +34,7 @@ G.Workspace {
         //_source_view.droppedFromManager(world.currentRef);
     }
 
-    viewSelected: _view
+    viewSelected: _editor
 
 // /////////////////////////////////////////////////////////////////////////////
 //
@@ -70,6 +72,15 @@ G.Workspace {
         onFileChanged: {
             _editor.fileName = d.fileName
         }
+
+        // Called only whe restoring workspace
+        onRequestOpenFile: (path) => {
+            let file_path = decodeURIComponent(path);
+            let file_name = file_path.split('/').pop()
+            d.read(file_path, false, true);
+            _self.editor.contents = d.text
+            _self.editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
+        }
     }
 
     property string _path: d.defaultReadPath()
@@ -77,67 +88,6 @@ G.Workspace {
     Settings {
         category: "lpy"
         property alias path: _self._path
-    }
-
-    P.FileDialog {
-        id: _file_dialog;
-
-        currentFile: _self._current_file;
-        folder: _self._path;
-        fileMode: P.FileDialog.OpenFile;
-
-        modality: Qt.NonModal;
-        nameFilters: ["L-Py source files (*.lpy *.py)"]
-
-        onAccepted: {
-            _self.open_lpy_file(_file_dialog.file)
-        }
-    }
-
-    G.Toast {
-        id: _non_lpy_toast
-
-        parent: Overlay.overlay
-        header: "Not a .lpy file"
-        message: "The file you opened is not a .lpy file, and can therefore not be run as a LSystem model."
-
-        type: G.Style.ButtonType.Warning
-    }
-
-    P.FileDialog {
-        id: _file_dialog_save
-
-        title: "Save L-System model"
-
-        currentFile: _self._path;
-        fileMode: FileDialog.SaveFile
-
-        modality: Qt.WindowModal;
-        nameFilters: ["L-Py source files (*.lpy *.py)"]
-
-        onAccepted: {
-            let save_path = decodeURIComponent(_file_dialog_save.file)
-            let save_filename = save_path.split('/').pop()
-            if ((d.fileName.split('.').length == 1) || (d.fileName.split('.').pop() == save_filename.split('.').pop())) { //same extension
-                _editor.tabName = save_filename
-                d.save(save_path);
-                d.fileName = save_filename
-                _self._current_file = save_path;
-                _self._path = folder;
-            } else {
-                _extension_change_toast.open()
-            }
-        }
-    }
-
-    G.Toast {
-        id: _extension_change_toast
-
-        parent: Overlay.overlay
-        header: "Impossible to change extension"
-        message: "You can not save this file using a different extension, please save it as a ." + d.fileName.split('.').pop() + " file."
-
-        type: G.Style.ButtonType.Danger
     }
 
     RowLayout {
@@ -157,56 +107,10 @@ G.Workspace {
             Layout.fillWidth: true;
             Layout.fillHeight: true;
 
-            Item {
-                id: _button_container
-
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: G.Style.largeButtonHeight
-
-                G.Button {
-                    anchors.right: _load_button.left;
-                    anchors.verticalCenter: _button_container.verticalCenter
-                    anchors.margins: G.Style.smallPadding;
-
-                    text: "Save";
-
-                    type: G.Style.ButtonType.Base
-                    iconName: "content-save"
-                    empty: true
-
-                    onClicked: {
-                        _file_dialog_save.open()
-                    }
-                }
-
-                G.Button {
-                    id: _load_button
-
-                    anchors.right: _button_container.right;
-                    anchors.verticalCenter: _button_container.verticalCenter
-                    anchors.margins: G.Style.smallPadding;
-
-                    text: "Load";
-
-                    type: G.Style.ButtonType.Base
-                    iconName: "folder-open"
-                    empty: true
-
-                    onClicked: {
-                        _file_dialog.open();
-                    }
-                }
-            }
-
             G.Monaco {
                 id: _editor
 
-                anchors.top: parent.top
-                anchors.bottom: _button_container.top
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors.fill: parent
 
                 theme: G.Style.mode == G.Style.Mode.Dark ? 'vs-dark' : 'vs-light';
                 language: "lpy";
@@ -226,10 +130,19 @@ G.Workspace {
                     name = eval(name)
                     if(name.endsWith("py"))
                         d.fileName = name
+                    let file_path = GP.ProjectManager.project.findFile(d.fileName)
+                    _editor.readOnly = (file_path.length === 0) & (!d.fileName.includes("vonKoch.lpy"))
+
                 }
 
                 onIdeIsReady : () => {
-                    d.restore();
+                    //d.restore();
+                    d.codeEditorReady()
+                }
+
+                onMakeFileEditable: () => {
+                    import_lpy_file_to_project.importPath = GP.ProjectManager.project.currentDir;
+                    import_lpy_file_to_project.open()
                 }
             }
         }
@@ -285,13 +198,6 @@ G.Workspace {
         }
     }
 
-    Connections {
-        target: d
-        function onRequestOpenFile(path) {
-            _self.open_lpy_file(path);
-        }
-    }
-
     Component.onCompleted: {
         G.Associator.associate(_view, d.view);
 
@@ -299,19 +205,15 @@ G.Workspace {
             _editor.tabName = d.fileName;
         _editor.contents = d.text;
         d.onParametersChanged();
-        d.reset();
         drawel.close();
     }
 
-    function open_lpy_file(path) {
-        d.read(decodeURIComponent(path));
-        _editor.contents = d.text
-        _self._current_file = decodeURIComponent(path);
-        _editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
-        _self._path = folder;
+    G.ProjectImportDialog {
+        id: import_lpy_file_to_project
 
-        if (!_self._current_file.endsWith(".lpy")) {
-            _non_lpy_toast.open()
+        onAccepted : {
+            _editor.readOnly = false
+            d.importFile(d.fileName, import_lpy_file_to_project.importPath)
         }
     }
 }

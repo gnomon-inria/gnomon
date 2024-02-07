@@ -24,7 +24,7 @@ G.Workspace {
 
     fill: () => {}
 
-    viewSelected: _source_view
+    viewSelected: _editor
 
     focus: true;
 
@@ -42,14 +42,26 @@ G.Workspace {
         onEditModeChanged: {
             d.code.text = _editor.contents
             if(!d.editMode) {
+                _self.viewSelected = _source_view
+                _source_view.forceFocus()
                 if(world.currentRef >= 0)
                     _source_view.droppedFromManager(world.currentRef)
+            } else {
+                _self.viewSelected = _editor
+                _editor.forceFocus()
             }
             drawel.update_menu()
         }
 
         onParametersChanged: {
             _self.updateParametersModel();
+        }
+
+        onRequestOpenFile: (path) => {
+            let file_path = decodeURIComponent(path);
+            let file_name = file_path.split('/').pop()
+            d.code.fileName = file_name;
+            d.read(file_path, false);
         }
     }
 
@@ -98,6 +110,11 @@ G.Workspace {
                     //d.restore();
                     d.codeEditorReady()
                 }
+
+                onMakeFileEditable: () => {
+                    import_file_to_project.importPath = GP.ProjectManager.project.currentDir;
+                    import_file_to_project.open()
+                }
             }
 
             G.View {
@@ -144,36 +161,14 @@ G.Workspace {
         }
     }
 
-   // Connections {
-   //     target: X.Style
-   //
-   //     function onVariantChanged() {
-   //         console.log('Setting color for', X.Style.flavors, 'and', X.Style.variant);
-   //
-   //         var color;
-   //
-   //         if (X.Style.flavors == 'MACOS' && X.Style.variant == 'LIGHT')
-   //             color = X.Style.flavor_macos.base07;
-   //         if (X.Style.flavors == 'MACOS' && X.Style.variant == 'DARK')
-   //             color = X.Style.flavor_macos.base00;
-   //         if (X.Style.flavors == 'UBUNTU' && X.Style.variant == 'LIGHT')
-   //             color = X.Style.flavor_ubuntu.base07;
-   //         if (X.Style.flavors == 'UBUNTU' && X.Style.variant == 'DARK')
-   //             color = X.Style.flavor_ubuntu.base00;
-   //         if (X.Style.flavors == 'FEDORA' && X.Style.variant == 'LIGHT')
-   //             color = X.Style.flavor_fedora.base07;
-   //         if (X.Style.flavors == 'FEDORA' && X.Style.variant == 'DARK')
-   //             color = X.Style.flavor_fedora.base00;
-   //
-   //         if(X.Style.variant == 'LIGHT')
-   //             _editor.theme = "vs-light";
-   //         else
-   //             _editor.theme = "vs-dark";
-   //
-   //         _console.set_style_sheet(color);
-   //         _console.update();
-   //     }
-   // }
+    G.ProjectImportDialog {
+        id: import_file_to_project
+
+        onAccepted : {
+            _editor.readOnly = false
+            d.importFile(d.code.fileName, import_file_to_project.importPath)
+        }
+    }
 
     Component.onCompleted: {
         G.Associator.associate(_source_view, d.source);

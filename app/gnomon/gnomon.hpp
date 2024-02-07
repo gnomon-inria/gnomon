@@ -54,6 +54,8 @@ public:
   Q_INVOKABLE bool isValidPath(QString path);
   Q_INVOKABLE QString initDataPath(QString defaultPath);
 
+  Q_INVOKABLE bool fileExists(QString file_path);
+
 signals:
   void dataPathChanged();
 

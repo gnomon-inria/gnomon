@@ -29,7 +29,8 @@ dependencies:
     - swig >=4.1
     - pymongo
     - jinja2
-    - matplotlib-base
+    - matplotlib-base=3.7.1
+    - geomdl
     - timagetk =3
     - python-lsp-server
     - pyside6

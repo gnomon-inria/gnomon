@@ -41,6 +41,9 @@ G.Page {
         if(d) {
             d.objectName = uuid
         }
+        if (_self.viewSelected) {
+            window.currentView = _self.viewSelected
+        }
     }
 
     G.Parameters {
@@ -139,7 +142,6 @@ G.Page {
         _banner.visible = true;
         _banner_indicator.running = true;
         _logs_control.show = true;
-        _logs_control.open();
         _banner_progress_bar.visible = true
         GV.LogServer.newPendingLogConnection.connect(_logs_control.new_connection)
     }

@@ -10,6 +10,8 @@ import gnomon.Utils as G
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
+import "utils.js" as Utils
+
 Control {
     id: _control
 
@@ -648,19 +650,8 @@ Control {
         fileMode: P.FileDialog.OpenFile
 
         onAccepted: {
-            _edit_dialog.texture = urlToPath(_texture_dialog.file.toString())
+            _edit_dialog.texture = Utils.urlToPath(_texture_dialog.file.toString())
         }
-    }
-
-    function urlToPath(urlString) {
-        var s
-        if (urlString.startsWith("file:///")) {
-            var k = urlString.charAt(9) === ':' ? 8 : 7
-            s = urlString.substring(k)
-        } else {
-            s = urlString
-        }
-        return decodeURIComponent(s);
     }
 
     Component.onCompleted: {

@@ -168,6 +168,4 @@ Rectangle {
 
         visible: window.currentView == self;
     }
-
-    Component.onCompleted: window.currentView = self;
 }
