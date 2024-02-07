@@ -44,6 +44,8 @@ G.Dialog {
             let show_dialog = !window.check_if_forms_in_world();
             if (window.current_workspace().workspace_title == "Data Browsing") {
                 show_dialog = show_dialog & !window.current_workspace().d.view.empty
+            } else if (window.current_workspace().workspace_title == "Python Algorithm") {
+                show_dialog = show_dialog & !window.current_workspace().d.target.empty
             }
             if(show_dialog) {
                 no_form_exported_dialog.workspace_source = _internal.selected_workspace.source
@@ -260,7 +262,7 @@ G.Dialog {
     G.Dialog {
         id: no_form_exported_dialog
         width: G.Style.mediumDialogWidth
-        height: G.Style.mediumDialogHeight
+        height: G.Style.smallDialogHeight
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
 
@@ -301,14 +303,14 @@ G.Dialog {
         footer: DialogButtonBox
         {
             visible: true
-            // anchors.left: parent.left
-            // anchors.right: parent.right
-            // anchors.bottom: parent.bottom
+            alignment: Qt.AlignRight
+            spacing: G.Style.smallPadding
+
             G.Button {
                 id: _cancel_button
-                anchors.right: _ignore_button.left
-                anchors.margins: G.Style.smallRowSpacing
-                width: G.Style.smallButtonWidth
+
+
+                width: G.Style.shortButtonWidth
                 text: 'Cancel';
                 flat: true
                 type: G.Style.ButtonType.Neutral
@@ -316,10 +318,9 @@ G.Dialog {
             }
 
             G.Button {
-                anchors.right: _export_button.left
-                anchors.margins: G.Style.smallRowSpacing
-                width: G.Style.smallButtonWidth
                 id: _ignore_button
+
+                width: G.Style.shortButtonWidth
                 text: 'Ignore';
                 flat: true
                 type: G.Style.ButtonType.Base
@@ -331,13 +332,12 @@ G.Dialog {
 
             G.Button {
                 id: _export_button
-                anchors.right: parent.right
-                anchors.margins: G.Style.smallRowSpacing
+
+                width: G.Style.longButtonWidth
                 text: 'Export and Continue';
                 iconName: "arrow-up-drop-circle"
                 flat: false
                 type: G.Style.ButtonType.OK
-                width: G.Style.buttonWidth * 2
 
                 onClicked: {
                     // export
