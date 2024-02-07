@@ -53,6 +53,14 @@ Item {
                     _wrong_extension_toast.open()
                 }
             }
+
+            Connections {
+                target: GP.ProjectManager.project
+                function onFileImported(file_path) {
+                    console.log(file_path)
+                    _project_browser.projectTree.requestFileSelection(file_path)
+                }
+            }
         }
         
         Item {

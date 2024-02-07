@@ -77,6 +77,8 @@ public:
 signals:
     void currentDirChanged(void);
     void dataPathChanged(void);
+
+    void fileImported(const QString& path);
     
 private:
     void populateNewProject();
