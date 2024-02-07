@@ -24,7 +24,7 @@ G.Workspace {
 
     fill: () => {}
 
-    viewSelected: d.editMode? _editor : _source_view
+    viewSelected: _editor
 
     focus: true;
 
@@ -42,9 +42,12 @@ G.Workspace {
         onEditModeChanged: {
             d.code.text = _editor.contents
             if(!d.editMode) {
+                _self.viewSelected = _source_view
+                _source_view.forceFocus()
                 if(world.currentRef >= 0)
                     _source_view.droppedFromManager(world.currentRef)
             } else {
+                _self.viewSelected = _editor
                 _editor.forceFocus()
             }
             drawel.update_menu()

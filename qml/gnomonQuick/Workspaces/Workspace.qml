@@ -41,6 +41,9 @@ G.Page {
         if(d) {
             d.objectName = uuid
         }
+        if (_self.viewSelected) {
+            window.currentView = _self.viewSelected
+        }
     }
 
     G.Parameters {
