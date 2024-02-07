@@ -58,17 +58,6 @@ G.Workspace {
         }
     }
 
-    P.FileDialog {
-        id: loadFileDialog
-
-        nameFilters: ["Json files (*.json)"]
-
-        onAccepted: {
-            open_blank_project(loadFileDialog.folder, true)
-            load_session(loadFileDialog.file)
-        }
-    }
-
     G.Panel {
         anchors.fill: parent
 
@@ -749,12 +738,23 @@ G.Workspace {
                                     anchors.horizontalCenter:  _more_icon.horizontalCenter
 
                                     onClicked: {
-                                        loadFileDialog.folder = source
-                                        loadFileDialog.open()
+                                        _pipeline_file_dialog.folder = source
+                                        _pipeline_file_dialog.open()
                                     }
 
                                     onContainsMouseChanged: {
                                         _more_timer.restart()
+                                    }
+                                }
+                                
+                                P.FileDialog {
+                                    id: _pipeline_file_dialog
+                            
+                                    nameFilters: ["Json files (*.json)"]
+                            
+                                    onAccepted: {
+                                        open_blank_project(source, true)
+                                        load_session(_pipeline_file_dialog.file)
                                     }
                                 }
                             }
