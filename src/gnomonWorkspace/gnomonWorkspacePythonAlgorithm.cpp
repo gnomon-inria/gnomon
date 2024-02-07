@@ -271,9 +271,9 @@ void gnomonWorkspacePythonAlgorithm::importFile(const QString& file_name, const 
     if (d->open_files.contains(file_name)) {
         auto project_file = path + "/" + file_name;
         QFile::copy(d->open_files[file_name], project_file);
-        d->open_files[file_name] = project_file;
-        this->backup();
         QString relative_path = GNOMON_PROJECT->relativePath(project_file);
+        d->open_files[file_name] = relative_path;
+        this->backup();
         emit GNOMON_PROJECT->fileImported(relative_path);
     }
 }

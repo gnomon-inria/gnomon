@@ -22,7 +22,7 @@ G.Workspace {
 
     id: _self;
 
-    workspace_title: "L-System Model";
+    workspace_title: "L-System Model (Beta)";
 
     property string _current_file: "";
     property alias editor: _editor;

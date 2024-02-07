@@ -395,7 +395,7 @@ G.Dialog {
         }
         ListElement {
             type: "gnomonWorkspaceLSystemModel"
-            title: "L-System Model"
+            title: "L-System Model (Beta)"
             source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceLSystemModel.qml"
             available: true
             initial: true

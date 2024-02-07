@@ -23,6 +23,7 @@ Control
     signal fileRightClicked(string fileUrl)
 
     background: Rectangle {
+        radius: G.Style.panelRadius;
         color: G.Style.colors.gutterColor;
     }
 

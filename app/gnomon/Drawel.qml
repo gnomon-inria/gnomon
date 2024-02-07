@@ -53,7 +53,7 @@ G.Page {
             prop = {
                 editor: editor,
                 d: workspace.d,
-                mode: workspace.workspace_title === "L-System Model"? "L-Py" : "Python"
+                mode: workspace.workspace_title === "L-System Model (Beta)"? "L-Py" : "Python"
             }
 
         } else {

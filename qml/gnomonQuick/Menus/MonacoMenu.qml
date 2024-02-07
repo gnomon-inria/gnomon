@@ -27,86 +27,96 @@ Item {
     property string mode : "Python" // "L-Py"
 
 
-    ColumnLayout {
-        anchors.fill: parent;
-        anchors.margins: G.Style.smallPadding;
+    Label {
+        id: _label
 
-        G.ProjectBrowser {
-            id: _project_browser
+        anchors.top: parent.top
+        anchors.left: parent.left
 
-            Layout.fillWidth: true;
-            Layout.fillHeight: true;
+        text: "Project Files"
+        font: G.Style.fonts.header
+        color: G.Style.colors.textColorBase
+    }
 
-            rootDir: GP.ProjectManager.project.currentDir
-            dataPath: GP.ProjectManager.project.dataPath
+    G.ProjectBrowser {
+        id: _project_browser
 
-            onFileDoubleClicked: (fileUrl) => {
-                let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
-                let extension_ok = relative_path.endsWith(".py");
-                if (_self.mode == "L-Py") {
-                    extension_ok = extension_ok | relative_path.endsWith(".lpy")
-                }
-                if (extension_ok) {
-                    _self._read_only = false
-                    open_source_file(relative_path)
-                } else {
-                    _wrong_extension_toast.open()
-                }
+        anchors.topMargin: G.Style.smallPadding
+        anchors.bottomMargin: G.Style.smallPadding
+        anchors.top: _label.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: _button_container.top;
+
+        rootDir: GP.ProjectManager.project.currentDir
+        dataPath: GP.ProjectManager.project.dataPath
+
+        onFileDoubleClicked: (fileUrl) => {
+            let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
+            let extension_ok = relative_path.endsWith(".py");
+            if (_self.mode == "L-Py") {
+                extension_ok = extension_ok | relative_path.endsWith(".lpy")
             }
+            if (extension_ok) {
+                _self._read_only = false
+                open_source_file(relative_path)
+            } else {
+                _wrong_extension_toast.open()
+            }
+        }
 
-            Connections {
-                target: GP.ProjectManager.project
-                function onFileImported(file_path) {
-                    console.log(file_path)
-                    _project_browser.projectTree.requestFileSelection(file_path)
+        Connections {
+            target: GP.ProjectManager.project
+            function onFileImported(file_path) {
+                console.log(file_path)
+                _project_browser.projectTree.requestFileSelection(file_path)
+            }
+        }
+    }
+
+    Item {
+        id: _button_container
+
+        anchors.right: parent.right;
+        anchors.left: parent.left;
+        anchors.bottom: parent.bottom;
+        anchors.bottomMargin: G.Style.smallPadding
+        height: G.Style.largeButtonHeight
+
+        G.Button {
+            anchors.right: _import_button.left;
+            anchors.verticalCenter: _button_container.verticalCenter
+            anchors.margins: G.Style.smallPadding;
+
+            text: "Save";
+
+            type: G.Style.ButtonType.Base
+            flat: true
+
+            onClicked: {
+                let file_name = _self.mode == "Python" ? d.code.fileName : d.fileName;
+                let default_file_name = _self.mode == "Python" ? "example.py" : "vonKoch.lpy";
+                if(file_name == default_file_name) {
+                    _file_dialog_save.open()
+                } else {
+                    _message_dialog.open();
                 }
             }
         }
-        
-        Item {
-            id: _button_container
 
-            height: G.Style.largeButtonHeight
-            Layout.fillWidth: true
+        G.Button {
+            id: _import_button
 
-            G.Button {
-                anchors.right: _import_button.left;
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.margins: G.Style.smallPadding;
+            anchors.right: _button_container.right;
+            anchors.verticalCenter: _button_container.verticalCenter
+            anchors.margins: G.Style.smallPadding
 
-                text: "Save";
+            text: "Open";
 
-                type: G.Style.ButtonType.Base
-                iconName: "content-save"
-                empty: true
+            type: G.Style.ButtonType.Base
 
-                onClicked: {
-                    let file_name = _self.mode == "Python" ? d.code.fileName : d.fileName;
-                    let default_file_name = _self.mode == "Python" ? "example.py" : "vonKoch.lpy";
-                    if(file_name == default_file_name) {
-                        _file_dialog_save.open()
-                    } else {
-                        _message_dialog.open();
-                    }
-                }
-            }
-
-            G.Button {
-                id: _import_button
-
-                anchors.right: _button_container.right;
-                anchors.verticalCenter: _button_container.verticalCenter
-                anchors.leftMargin: G.Style.smallPadding;
-
-                text: "Open";
-
-                type: G.Style.ButtonType.Base
-                iconName: "folder-open"
-                empty: true
-
-                onClicked: {
-                    _file_dialog.open();
-                }
+            onClicked: {
+                _file_dialog.open();
             }
         }
     }
