@@ -41,6 +41,8 @@ public:
     void insert(double t, std::shared_ptr<T> form);
     void drop(double t) override;
 
+    void setAutoSave(bool auto_save);
+
     void compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) override;
 
 public:
@@ -89,6 +91,9 @@ protected:
     double m_current_time = 0.;
     uint m_current_time_id = 0;
     QString m_uuid;
+
+    bool m_auto_save = true;
+    bool m_has_unsaved_times = false;
 };
 
 #include "gnomonTimeSeries.tpp"

@@ -504,13 +504,15 @@ void gnomonAbstractView::deserialize(const QJsonObject &serialization) {
     for(const auto &key: forms.keys()) {
         QString form_uuid = forms.value(key).toString();
         auto form = GNOMON_SESSION->getForm(form_uuid);
-        if(gnomonFormManager::instance()->formIndex(form_uuid)>0) {
-            //TODO: try to get visu from formManager later
-            //auto index = gnomonFormManager::instance()->formIndex(form_uuid);
-            //setForm(key, form, gnomonFormManager::instance()->getVisualization(index));
-            setForm(key, form);
-        } else {
-            setForm(key, form);
+        if (form) {
+            if (gnomonFormManager::instance()->formIndex(form_uuid) > 0) {
+                //TODO: try to get visu from formManager later
+                //auto index = gnomonFormManager::instance()->formIndex(form_uuid);
+                //this->setForm(key, form, gnomonFormManager::instance()->getVisualization(index));
+                this->setForm(key, form);
+            } else {
+                this->setForm(key, form);
+            }
         }
     }
 

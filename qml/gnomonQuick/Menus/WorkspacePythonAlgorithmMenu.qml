@@ -61,6 +61,9 @@ Item {
         currentIndex: _bar.currentIndex;
 
         Control {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
             ColumnLayout {
                 anchors.fill: parent;
                 anchors.margins: 10;
@@ -136,7 +139,8 @@ Item {
         }
 
         Control {
-            anchors.fill: parent;
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             anchors.margins: G.Style.smallPadding;
 
             G.ComboBoxWithLabel {

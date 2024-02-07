@@ -46,6 +46,10 @@ Rectangle {
     signal sliceChange(double value);
     signal clear();
 
+    function forceFocus() {
+        _view.forceActiveFocus()
+    }
+
     XVis.Viewer {
 
         id: _view;
@@ -59,8 +63,9 @@ Rectangle {
         // }
 
         onActiveFocusChanged: {
-            if (_view.activeFocus)
+            if (_view.activeFocus) {
                 window.currentView = self;
+            }
         }
     }
 
@@ -847,6 +852,4 @@ Rectangle {
 
         visible: window.currentView == self;
     }
-
-    Component.onCompleted: window.currentView = self;
 }

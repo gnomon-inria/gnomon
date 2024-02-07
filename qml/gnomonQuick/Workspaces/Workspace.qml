@@ -20,11 +20,29 @@ G.Page {
     property alias parameters: _params.params_model;
     property var d: undefined;
     property bool canBeDestroyed: d? d.canBeDestroyed : true;
+    property var viewSelected: undefined;
+
+
+    Connections {
+        target: window
+        function onCurrentViewChanged() {
+            let parent_object = window.currentView.parent
+            while(parent_object != _self && parent_object != window && parent_object) {
+                parent_object = parent_object.parent
+            }
+            if(parent_object === _self) {
+                _self.viewSelected = window.currentView
+            }
+        }
+    }
 
     Component.onCompleted: {
         // propagate the workspace uuid
         if(d) {
             d.objectName = uuid
+        }
+        if (_self.viewSelected) {
+            window.currentView = _self.viewSelected
         }
     }
 
@@ -124,7 +142,6 @@ G.Page {
         _banner.visible = true;
         _banner_indicator.running = true;
         _logs_control.show = true;
-        _logs_control.open();
         _banner_progress_bar.visible = true
         GV.LogServer.newPendingLogConnection.connect(_logs_control.new_connection)
     }

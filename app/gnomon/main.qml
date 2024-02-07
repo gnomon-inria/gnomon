@@ -601,6 +601,10 @@ G.Application {
         drawel.update_menu();
         drawer.update_menu(_internal.menu_sources[index]);
         window.current_workspace().d.restoreState();
+        if(window.current_workspace().viewSelected) {
+            window.currentView = window.current_workspace().viewSelected
+            window.currentView.forceFocus()
+        }
     }
 
 

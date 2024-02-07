@@ -4,6 +4,8 @@ import QtQuick.Layouts
 import QtWebChannel
 import QtWebEngine
 
+import gnomonQuick.Style    as G
+
 Control {
     id: self;
 
@@ -14,6 +16,7 @@ Control {
     property var markers
     property var fileName;
     property var tabName;
+    property var readOnly;
 
     QtObject {
         id: _internal;
@@ -25,6 +28,7 @@ Control {
     signal fileSwitched(var name);
     signal fileClosed(var name);
     signal ideIsReady();
+    signal makeFileEditable();
 
     onThemeChanged: if(self.connected) bridge.send('theme',    self.theme);
     onLanguageChanged: if(self.connected) bridge.send('language', self.language);
@@ -51,6 +55,10 @@ Control {
             _internal.tab_filenames.push(self.tabName)
             self.fileName = self.tabName
         }
+    }
+
+    onReadOnlyChanged : {
+        bridge.send('readonly', self.readOnly);
     }
 
     //to create a new tab with a name:
@@ -91,6 +99,9 @@ Control {
                 }
                 self.fileClosed(closed_file)
                 break;
+            case "attemptReadOnly":
+                self.makeFileEditable();
+                break;
             default:
                 break;
             }
@@ -113,6 +124,11 @@ Control {
         id: view;
 
         anchors.fill: parent;
+
+        onActiveFocusChanged: {
+            if (view.activeFocus)
+                window.currentView = self;
+        }
 
         settings.javascriptEnabled: true
         settings.pluginsEnabled: true
@@ -138,5 +154,24 @@ Control {
 
     Component.onCompleted: {
         _internal.tab_filenames.push("Tab 0")
+    }
+
+    Rectangle {
+        id: _focus_indicator;
+
+        width: self.width - 1
+        height: self.height - 1
+        radius: G.Style.panelRadius;
+
+        color: G.Style.colors.transparent;
+
+        border.width: G.Style.borderWidth;
+        border.color: G.Style.colors.baseColor;
+
+        visible: window.currentView == self;
+    }
+
+    function forceFocus() {
+        view.forceActiveFocus()
     }
 }

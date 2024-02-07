@@ -8,7 +8,7 @@ import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
 
 ListView {
-    id: _list_view
+    id: _self
 
     property var data_paths : []
     property var _delegate_heights: []
@@ -16,6 +16,8 @@ ListView {
 
     signal fileDoubleClicked(string fileUrl)
     signal fileRightClicked(string fileUrl)
+    
+    signal requestFileSelection(string fileRelativePath)
 
     implicitHeight: G.Style.smallPanelHeight
     interactive: false
@@ -29,7 +31,7 @@ ListView {
         property int rootRow: 0
         property int _index: -1
 
-        width: _list_view.width
+        width: _self.width
         implicitHeight: (_tree_view.rows - _tree_view.rootRow) * G.Style.smallButtonHeight
 
         interactive: false
@@ -48,7 +50,7 @@ ListView {
             highlighted: (_item_selection_model.selectedIndexes.includes(_tree_view.index(index, 0)) &&
                           !_model.isDir(_tree_view.index(index, 0)))
 
-            implicitWidth: _list_view.width
+            implicitWidth: _self.width
             implicitHeight: model.filePath.includes(_model.rootDir) ? G.Style.smallButtonHeight : 0.01
 
             enabled: model.filePath.includes(_model.rootDir)
@@ -122,7 +124,7 @@ ListView {
 
             TapHandler {
                 acceptedButtons: Qt.RightButton
-                onTapped : _list_view.fileRightClicked(model.filePath)
+                onTapped : _self.fileRightClicked(model.filePath)
             }
 
             TapHandler {
@@ -135,7 +137,7 @@ ListView {
                 acceptedButtons: Qt.LeftButton
                 acceptedModifiers: Qt.NoModifier
                 onTapped: _item_selection_model.select(_tree_view.index(index, 0), ItemSelectionModel.ClearAndSelect)
-                onDoubleTapped: _list_view.fileDoubleClicked(model.filePath)
+                onDoubleTapped: _self.fileDoubleClicked(model.filePath)
             }
         }
 
@@ -147,23 +149,36 @@ ListView {
              onSelectionChanged : {
                  console.log("selected items:", _item_selection_model.selectedIndexes)
              }
-         }
+        }
 
         onHeightChanged : {
             if (_index >= 0) {
                 _delegate_heights[_index] = height
-                _list_view.implicitHeight = _delegate_heights.reduce((s_v, v) => s_v + v, 0);
+                _self.implicitHeight = _delegate_heights.reduce((s_v, v) => s_v + v, 0);
             }
         }
 
         Component.onCompleted : {
             _tree_view.rootRow = _model.rootDir.split('/').length - 1
             _tree_view.expandRecursively()
-            if(!_list_view.is_project_dir)
+            if(!_self.is_project_dir)
                 _tree_view.collapseRecursively(_tree_view.rootRow)
             _tree_view._index = _delegate_heights.length
 
             _delegate_heights.push(_tree_view.height)
+
+             _self.onRequestFileSelection.connect(selectFile)
+        }
+
+        // FIXME: this doesn't work (tree_view not updated soon enough with newly created files?)
+        function selectFile(file_path) {
+            let dir_file_path = _model.rootDir + "/" + file_path
+            let file_index = _model.index(dir_file_path, 0)
+            if (file_index) {
+                console.log("Selecting", file_index)
+                _tree_view.expandToIndex(file_index);
+                _item_selection_model.select(file_index, ItemSelectionModel.ClearAndSelect);
+            }
         }
     }
 }

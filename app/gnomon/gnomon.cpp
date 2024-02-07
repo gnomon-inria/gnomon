@@ -226,6 +226,12 @@ QString gnomonQMLUtils::initDataPath(QString defaultPath) {
 
 }
 
+bool gnomonQMLUtils::fileExists(QString file_path)
+{
+    QFile file(file_path);
+    return file.exists();
+}
+
 gnomonQMLUtils* gnomonQMLUtils::instance(void)
 {
     if(!s_instance)

@@ -70,6 +70,7 @@ G.Workspace {
     }
 
     fill: () => {}
+    viewSelected: _view
 
     focus: true;
 
@@ -287,5 +288,7 @@ G.Workspace {
         type: G.Style.ButtonType.Base
     }
 
-    Component.onCompleted :  window.drawelr_closed = false;
+    Component.onCompleted : {
+        window.drawelr_closed = false;
+    }
 }

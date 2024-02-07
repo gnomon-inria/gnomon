@@ -179,7 +179,7 @@ class VisCurve2D(vis.VisAbstract):
             pts = np.array(plot['ptsarr'])
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=self.ctrl_color,
+                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=self.ctrl_color, alpha=0.66,
                                             linestyle='-.', marker='o', picker=True, pickradius=5)
                 legend_proxy.append(self.cpplot)
                 legend_names.append(plot['name'])

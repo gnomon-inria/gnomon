@@ -31,6 +31,10 @@ Rectangle {
 
     signal transmit();
 
+    function forceFocus() {
+        _view.forceActiveFocus()
+    }
+
     GV.FigureCanvas {
         id: _view;
 
@@ -164,6 +168,4 @@ Rectangle {
 
         visible: window.currentView == self;
     }
-
-    Component.onCompleted: window.currentView = self;
 }
