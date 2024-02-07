@@ -77,16 +77,12 @@ G.Application {
 
     P.FileDialog {
         id: loadFileDialog
-        folder: P.StandardPaths.writableLocation(P.StandardPaths.DocumentsLocation)
+        folder: "file://"+GP.ProjectManager.project.currentDir
 
-        Settings {
-            property alias last_open_folder: loadFileDialog.folder
-        }
         nameFilters: ["Json files (*.json)"]
 
         onAccepted: {
             load_session(loadFileDialog.file);
-            add_to_history(loadFileDialog.file)
         }
     }
 
@@ -96,18 +92,14 @@ G.Application {
         title: "save Gnomon Pipeline"
 
         fileMode: P.FileDialog.SaveFile
-        currentFile: "file:///" + GP.PipelineManager.pipeline.name + ".json"
-
-        Settings {
-            property alias last_save_folder: saveFileDialog.folder
-        }
+        folder: "file://"+GP.ProjectManager.project.currentDir
+        currentFile: folder + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
 
         modality: Qt.WindowModal;
         nameFilters: [ "Json files (*.json)" ]
 
          onAccepted: {
             GP.PipelineManager.pipeline.exportToJson(saveFileDialog.file);
-            add_to_history(saveFileDialog.file)
         }
     }
 
@@ -132,6 +124,7 @@ G.Application {
                     text: qsTr("Open")
                     shortcut: StandardKey.Open
                     onTriggered: {
+                        loadFileDialog.folder = "file://"+GP.ProjectManager.project.currentDir
                         loadFileDialog.open();
                     }
                 }
@@ -139,6 +132,7 @@ G.Application {
                     text: qsTr("Save Pipeline")
                     shortcut: StandardKey.Save
                     onTriggered: {
+                        saveFileDialog.currentFile = "file://"+GP.ProjectManager.project.currentDir + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
                         saveFileDialog.open();
                     }
                 }

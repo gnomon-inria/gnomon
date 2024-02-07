@@ -51,9 +51,10 @@ G.ToolBar {
                 y: parent.height + G.Style.smallPadding
 
                 Action {
-                    text: qsTr("Open")
+                    text: qsTr("Load Pipeline")
                     shortcut: StandardKey.Open
                     onTriggered: {
+                        loadFileDialog.folder = "file://"+GP.ProjectManager.project.currentDir
                         loadFileDialog.open();
                     }
                 }
@@ -62,6 +63,7 @@ G.ToolBar {
                     text: qsTr("Save Pipeline")
                     shortcut: StandardKey.Save
                     onTriggered: {
+                        saveFileDialog.currentFile = "file://"+GP.ProjectManager.project.currentDir + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
                         saveFileDialog.open()
                     }
                 }
