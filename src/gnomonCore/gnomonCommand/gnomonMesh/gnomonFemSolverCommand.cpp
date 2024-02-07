@@ -46,6 +46,9 @@ void gnomonFemSolverCommand::setAlgorithmName(const QString& algo_name)
 
 void gnomonFemSolverCommand::predo(void)
 {
+    if (d->mesh) {
+        d->mesh->load();
+    }
     ((gnomonAbstractFemSolver *) this->action)->setMesh(d->mesh);
 }
 

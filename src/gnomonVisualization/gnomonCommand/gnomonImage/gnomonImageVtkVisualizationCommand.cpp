@@ -48,6 +48,9 @@ void gnomonImageVtkVisualizationCommand::setFormVisualization(const QString& vis
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractImageVtkVisualization>(this->visu);
     if (visu) {
+        if (d->image) {
+            d->image->load();
+        }
         visu->setImage(d->image);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();

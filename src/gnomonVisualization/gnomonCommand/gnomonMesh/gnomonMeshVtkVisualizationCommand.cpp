@@ -48,6 +48,9 @@ void gnomonMeshVtkVisualizationCommand::setFormVisualization(const QString& visu
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractMeshVtkVisualization>(this->visu);
     if (visu) {
+        if (d->mesh) {
+            d->mesh->load();
+        }
         visu->setMesh(d->mesh);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();

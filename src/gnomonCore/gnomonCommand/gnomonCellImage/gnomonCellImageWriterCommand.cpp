@@ -46,6 +46,9 @@ void gnomonCellImageWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonCellImageWriterCommand::predo(void)
 {
     ((gnomonAbstractCellImageWriter *) this->action)->setPath(this->m_path);
+    if (d->cellImage) {
+        d->cellImage->load();
+    }
     ((gnomonAbstractCellImageWriter *) this->action)->setCellImage(d->cellImage);
 }
 

@@ -38,6 +38,9 @@ void gnomonCellComplexWriterCommand::predo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractCellComplexWriter *) this->action)->setPath(this->m_path);
+    if (d->cellComplex) {
+        d->cellComplex->load();
+    }
     ((gnomonAbstractCellComplexWriter *) this->action)->setCellComplex(d->cellComplex);
 }
 

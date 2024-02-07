@@ -50,6 +50,9 @@ void gnomonTreeWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonTreeWriterCommand::predo(void)
 {
     ((gnomonAbstractTreeWriter *) this->action)->setPath(this->m_path);
+    if (d->tree) {
+        d->tree->load();
+    }
     ((gnomonAbstractTreeWriter *) this->action)->setTree(d->tree);
 }
 

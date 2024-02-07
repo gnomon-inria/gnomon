@@ -70,6 +70,9 @@ void gnomonTreeFromLStringCommand::setInput(std::shared_ptr<gnomonLStringSeries>
         d->input = input;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractTreeFromLString *) this->action)->setInput(d->input);
     this->action->refreshParameters();
 }

@@ -46,6 +46,9 @@ void gnomonPointCloudWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonPointCloudWriterCommand::predo(void)
 {
     ((gnomonAbstractPointCloudWriter *) this->action)->setPath(this->m_path);
+    if (d->pointCloud) {
+        d->pointCloud->load();
+    }
     ((gnomonAbstractPointCloudWriter *) this->action)->setPointCloud(d->pointCloud);
 }
 

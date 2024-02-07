@@ -45,6 +45,9 @@ void gnomonImageWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonImageWriterCommand::predo(void)
 {
     ((gnomonAbstractImageWriter *) this->action)->setPath(this->m_path);
+    if (d->image) {
+        d->image->load();
+    }
     ((gnomonAbstractImageWriter *) this->action)->setImage(d->image);
 }
 

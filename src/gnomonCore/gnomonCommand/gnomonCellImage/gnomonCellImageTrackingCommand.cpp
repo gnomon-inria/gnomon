@@ -77,6 +77,9 @@ void gnomonCellImageTrackingCommand::setImage(std::shared_ptr<gnomonImageSeries>
         d->image = image;
     }
     Q_ASSERT(this->action);
+    if (d->image) {
+        d->image->load();
+    }
     ((gnomonAbstractCellImageTracking *) this->action)->setImage(d->image);
     this->action->refreshParameters();
 }
@@ -89,6 +92,9 @@ void gnomonCellImageTrackingCommand::setCellImage(std::shared_ptr<gnomonCellImag
         d->input_cellImage = cellImage;
     }
     Q_ASSERT(this->action);
+    if (d->input_cellImage) {
+        d->input_cellImage->load();
+    }
     ((gnomonAbstractCellImageTracking *) this->action)->setCellImage(d->input_cellImage);
     this->action->refreshParameters();
 }
@@ -100,6 +106,9 @@ void gnomonCellImageTrackingCommand::setTransformation(std::shared_ptr<gnomonDat
     } else {
         d->transformation = datadict;
         Q_ASSERT(this->action);
+        if (d->transformation) {
+                d->transformation->load();
+        }
         ((gnomonAbstractCellImageTracking *) this->action)->setTransformation(d->transformation);
         this->action->refreshParameters();
     }

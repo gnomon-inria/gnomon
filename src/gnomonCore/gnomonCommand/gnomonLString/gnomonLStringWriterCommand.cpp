@@ -44,6 +44,9 @@ void gnomonLStringWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonLStringWriterCommand::predo(void)
 {
     ((gnomonAbstractLStringWriter *) this->action)->setPath(this->m_path);
+    if (d->lString) {
+        d->lString->load();
+    }
     ((gnomonAbstractLStringWriter *) this->action)->setLString(d->lString);
 }
 

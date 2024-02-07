@@ -47,6 +47,9 @@ void gnomonDataFrameMplVisualizationCommand::setFormVisualization(const QString&
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu);
     if (visu) {
+        if (d->dataFrame) {
+            d->dataFrame->load();
+        }
         visu->setDataFrame(d->dataFrame);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();

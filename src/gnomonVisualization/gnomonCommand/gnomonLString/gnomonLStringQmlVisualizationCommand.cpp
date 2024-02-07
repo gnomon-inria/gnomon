@@ -47,6 +47,9 @@ void gnomonLStringQmlVisualizationCommand::setFormVisualization(const QString& v
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractLStringQmlVisualization>(this->visu);
     if (visu) {
+        if (d->lString) {
+            d->lString->load();
+        }
         visu->setLString(d->lString);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();

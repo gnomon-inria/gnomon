@@ -48,6 +48,9 @@ void gnomonCellComplexVtkVisualizationCommand::setFormVisualization(const QStrin
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractCellComplexVtkVisualization>(this->visu);
     if (visu) {
+        if (d->cellComplex) {
+            d->cellComplex->load();
+        }
         visu->setCellComplex(d->cellComplex);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();

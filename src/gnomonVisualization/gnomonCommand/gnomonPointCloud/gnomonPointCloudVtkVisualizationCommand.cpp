@@ -48,6 +48,9 @@ void gnomonPointCloudVtkVisualizationCommand::setFormVisualization(const QString
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractPointCloudVtkVisualization>(this->visu);
     if (visu) {
+        if (d->pointCloud) {
+            d->pointCloud->load();
+        }
         visu->setPointCloud(d->pointCloud);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();

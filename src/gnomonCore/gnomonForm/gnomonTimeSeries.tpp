@@ -432,7 +432,6 @@ void gnomonTimeSeries<T>::deserialize(const QJsonObject &serialization) {
         }
     } else {
         readManifest();
-        load();
     }
 
 }

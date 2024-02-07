@@ -48,6 +48,9 @@ void gnomonCellImageVtkVisualizationCommand::setFormVisualization(const QString&
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractCellImageVtkVisualization>(this->visu);
     if (visu) {
+        if (d->cellImage) {
+            d->cellImage->load();
+        }
         visu->setCellImage(d->cellImage);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();

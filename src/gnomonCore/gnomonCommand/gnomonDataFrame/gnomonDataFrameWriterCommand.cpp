@@ -46,6 +46,9 @@ void gnomonDataFrameWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonDataFrameWriterCommand::predo(void)
 {
     ((gnomonAbstractDataFrameWriter *) this->action)->setPath(this->m_path);
+    if (d->dataFrame) {
+        d->dataFrame->load();
+    }
     ((gnomonAbstractDataFrameWriter *) this->action)->setDataFrame(d->dataFrame);
 }
 

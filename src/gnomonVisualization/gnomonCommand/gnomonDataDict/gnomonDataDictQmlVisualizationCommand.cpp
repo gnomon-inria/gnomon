@@ -47,6 +47,9 @@ void gnomonDataDictQmlVisualizationCommand::setFormVisualization(const QString& 
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractDataDictQmlVisualization>(this->visu);
     if (visu) {
+        if (d->dataDict) {
+            d->dataDict->load();
+        }
         visu->setDataDict(d->dataDict);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();

@@ -74,6 +74,9 @@ void gnomonMeshFilterCommand::setInput(std::shared_ptr<gnomonMeshSeries> input)
         d->input = input;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractMeshFilter *) this->action)->setInput(d->input);
     this->action->refreshParameters();
 }
@@ -91,6 +94,9 @@ void gnomonMeshFilterCommand::setCellImage(std::shared_ptr<gnomonCellImageSeries
         d->cellImage = cellImage;
     }
     Q_ASSERT(this->action);
+    if (d->cellImage) {
+        d->cellImage->load();
+    }
     ((gnomonAbstractMeshFilter *) this->action)->setCellImage(d->cellImage);
     this->action->refreshParameters();
 }
