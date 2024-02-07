@@ -212,6 +212,7 @@ G.Workspace {
                             type: G.Style.CardType.Foreground
                             title: header
                             body: paragraph
+                            titleTopMargin: G.Style.smallPadding
 
                             onClicked: {
                                 Qt.openUrlExternally(link);
@@ -629,8 +630,8 @@ G.Workspace {
                                 outline: true
                                 title: name
                                 body: "last modified: " + lastModified + "\n" +description
-                                tooltip: source
-                                titleTopMargin: G.Style.iconLarge
+                                tooltip: decodeURIComponent(source).slice(7)
+                                titleTopMargin: G.Style.iconMedium
 
                                 background: Rectangle {
                                     color: _getBgColor()
@@ -648,18 +649,15 @@ G.Workspace {
                                 }
 
                                 G.IconButton {
-                                    id: _trash_icon;
-                                    iconName: "close-box";
-                                    size: G.Style.iconLarge;
+                                    iconName: "close-thick";
+                                    size: (G.Style.iconSmall + G.Style.iconMedium)/2;
                                     color: G.Style.colors.fgColor;
                                     hoverColor: G.Style.colors.hoveredDangerColor;
                                     tooltip: "Remove from the recent projects"
 
                                     anchors.top: parent.top
-                                    anchors.topMargin: G.Style.smallPadding / 2
                                     anchors.left: parent.left
-                                    anchors.leftMargin: G.Style.smallPadding
-                                    anchors.bottomMargin: G.Style.smallPadding / 2
+                                    anchors.margins: G.Style.buttonRadius
 
                                     onClicked: {
                                         remove_from_history(source)
@@ -677,7 +675,7 @@ G.Workspace {
                                     anchors.top: parent.top
                                     anchors.topMargin: G.Style.smallPadding
                                     anchors.right: _more_icon.left
-                                    anchors.rightMargin: G.Style.smallPadding/2
+                                    anchors.rightMargin: -G.Style.smallPadding
 
                                     onClicked: {
                                         history_set_last_used(source)
@@ -688,7 +686,7 @@ G.Workspace {
                                 G.IconButton {
                                     id: _more_icon;
                                     property bool active: false;
-                                    iconName: "dots-horizontal";
+                                    iconName: "dots-vertical";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
                                     hoverColor: G.Style.colors.hoveredBaseColor;
@@ -696,50 +694,67 @@ G.Workspace {
 
                                     anchors.top: parent.top
                                     anchors.topMargin: G.Style.smallPadding
+                                    anchors.leftMargin: -G.Style.smallPadding
                                     anchors.right: parent.right
-                                    anchors.rightMargin: G.Style.smallPadding
 
                                     onClicked: {
                                         active = !active
+                                        _more_timer.start()
+                                    }
+                                }
+
+                                Timer {
+                                    id: _more_timer;
+                                    interval: 2000;
+                                    onTriggered: {
+                                        if (!(_restart_icon.containsMouse | _pipeline_icon.containsMouse)) {
+                                            _more_icon.active = false;
+                                        }
                                     }
                                 }
 
                                 G.IconButton {
                                     id: _restart_icon;
-                                    iconName: "plus-box";
+                                    iconName: "file-plus";
                                     size: G.Style.iconMedium;
                                     color: G.Style.colors.fgColor;
                                     hoverColor: G.Style.colors.hoveredOkColor;
-                                    tooltip: "Start a new blank session"
+                                    tooltip: "Start new blank session"
                                     visible: _more_icon.active
 
+                                    anchors.horizontalCenter: _more_icon.horizontalCenter
                                     anchors.top: _more_icon.bottom
                                     anchors.topMargin: G.Style.smallPadding / 2
-                                    anchors.right: parent.right
-                                    anchors.rightMargin: G.Style.smallPadding
 
                                     onClicked: {
                                         open_project_dialog(source, true)
+                                    }
+
+                                    onContainsMouseChanged: {
+                                        _more_timer.restart()
                                     }
                                 }
                                
                                 G.IconButton {
                                     id: _pipeline_icon;
-                                    iconName: "pipe";
+                                    iconName: "play-network";
                                     size: G.Style.iconMedium;
                                     color: G.Style.colors.fgColor;
                                     hoverColor: G.Style.colors.hoveredOkColor;
-                                    tooltip: "Create session from pipeline"
+                                    tooltip: "Replay session from pipeline"
                                     visible: _more_icon.active
 
                                     anchors.top: _restart_icon.bottom
-                                    anchors.topMargin: G.Style.smallPadding / 2
-                                    anchors.right: parent.right
-                                    anchors.rightMargin: G.Style.smallPadding
+                                    anchors.topMargin: G.Style.smallPadding
+                                    anchors.horizontalCenter:  _more_icon.horizontalCenter
 
                                     onClicked: {
-                                        loadFileDialog.folder =  source
+                                        loadFileDialog.folder = source
                                         loadFileDialog.open()
+                                    }
+
+                                    onContainsMouseChanged: {
+                                        _more_timer.restart()
                                     }
                                 }
                             }
