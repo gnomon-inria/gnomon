@@ -573,6 +573,7 @@ G.Application {
                 }
                 // window.create_workspace_screenshot();
                 _workspaces_model.append({"title": workspace.workspace_title, "index": workspace_index});
+                GP.SessionManager.activeWorkspace(workspace_index)
                 return workspace_index;
             }
         } else {
@@ -605,6 +606,7 @@ G.Application {
             window.currentView = window.current_workspace().viewSelected
             window.currentView.forceFocus()
         }
+        GP.SessionManager.activeWorkspace(index)
     }
 
 

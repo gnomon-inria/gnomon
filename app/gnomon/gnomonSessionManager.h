@@ -37,6 +37,8 @@ public:
 
     int newWorkspace(const QString &source) override;
 
+    void activeWorkspace(int id) override;
+
     QJsonObject *getStorageForWorkspace(const QString &uuid) override;
 
     void sync() override;

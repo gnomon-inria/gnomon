@@ -37,6 +37,8 @@ public:
 
     bool alive = true;
     bool init = false;
+    bool loading_session = false;
+    int active_workspace_id = -1;
 
 private:
     QMetaObject::Connection callbackConnection;   
@@ -408,6 +410,13 @@ int gnomonSessionManager::newWorkspace(const QString &source) {
     return index;
 }
 
+void gnomonSessionManager::activeWorkspace(int id) {
+    if(!d->loading_session) {
+        d->active_workspace_id = id;
+        this->sync();
+    }
+}
+
 QJsonObject *gnomonSessionManager::getStorageForWorkspace(const QString &uuid) {
     if(!d->workspace_properties.contains(uuid)) {
         d->workspace_properties[uuid] = QJsonObject();
@@ -442,6 +451,7 @@ void gnomonSessionManager::sync() {
     session_json.insert("workspace_order", workspace_order);
     session_json.insert("workspace_properties", workspace_properties);
     session_json.insert("workspace_sources", workspace_sources);
+    session_json.insert("active_workspace_id", d->active_workspace_id);
 
     settings.setValue("workspaces", session_json);
 
@@ -476,6 +486,7 @@ void gnomonSessionManager::sync() {
 
 bool gnomonSessionManager::load() {
     qDebug() << "===========" << "loading session";
+    d->loading_session = true;
     QDir dir(GNOMON_PROJECT->projectDir());
 
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
@@ -530,11 +541,17 @@ bool gnomonSessionManager::load() {
         gnomonPipelineManager::instance()->deserialize(pipeline_manager_state, pipeline);
         settings.endGroup();
 
+        d->active_workspace_id = workspaces_info["active_workspace_id"].toInt();
         QMetaObject::invokeMethod(d->window, "switch_workspace",
-                                  Q_ARG(int, workspaces_info["current_index"].toInt()));
+                                  Q_ARG(int, d->active_workspace_id));
+
         d->init = true;
+        d->loading_session = false;
+
         return true;
     } else {
+
+        d->loading_session = false;
         return false;
     }
 }
