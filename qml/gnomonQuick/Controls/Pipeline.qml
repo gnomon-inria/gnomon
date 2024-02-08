@@ -6,6 +6,7 @@ import gnomonQuick.Controls 1.0 as G
 import gnomonQuick.Style    1.0 as G
 
 import gnomon.Pipeline 1.0 as GP
+import gnomon.Project 1.0 as GP
 import gnomon.Visualization 1.0 as GV
 
 import "./pipeline.js" as PJS
@@ -44,6 +45,7 @@ Control {
             console.log("saving pipeline");
             //This is actually defined in main.qml
             //at some point we need some serious cleanup
+            saveFileDialog.currentFile = "file://"+GP.ProjectManager.project.currentDir + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
             saveFileDialog.open()
         }
     }
@@ -58,7 +60,7 @@ Control {
         height: G.Style.smallLabelHeight
 
         text: GP.PipelineManager.pipeline.name != "" ? GP.PipelineManager.pipeline.name : "Enter pipeline name..."
-        color: GP.PipelineManager.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDeEmphasize
+        color: GP.PipelineManager.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.neutralColor
         font: G.Style.fonts.value
 
         G.Icon {

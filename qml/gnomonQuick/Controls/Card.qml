@@ -20,6 +20,7 @@ Control {
     property bool rounded: true
     property string tooltip: ""
     property string thumbnail: ""
+    property int titleTopMargin: 0
 
     property alias title: _title.text
     property alias body: _body.text
@@ -79,6 +80,7 @@ Control {
         anchors.top: _control.thumbnail? _thumbnail.top : _control.top
 
         anchors.margins: _control.thumbnail? G.Style.smallPadding : G.Style.mediumPadding
+        anchors.topMargin: titleTopMargin;
 
         text: _control.title
         font: G.Style.fonts.cardTitle
