@@ -90,7 +90,8 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
             disconnect(callbackConnection);
             if(browser->view()->empty()) {
                 emit q->failed(file_path);
-                return false;
+                res = false;
+                return;
             } else {
                 browser->view()->transmit();
             }
@@ -363,7 +364,7 @@ bool gnomonSessionManager::loadFromPipeline(const QString &path) {
     gnomonPipelineManager::instance()->pipeline()->setName(pipeline->name());
     gnomonPipelineManager::instance()->pipeline()->setDescription(pipeline->description());
     auto scheduled_nodes = pipeline->scheduledNodeNames(true);
-    return d->runNodes(scheduled_nodes, pipeline, 0);
+    return d->runNodes(scheduled_nodes, pipeline, -1);
 }
 
 void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {

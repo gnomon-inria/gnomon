@@ -679,7 +679,7 @@ G.Workspace {
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
                                     hoverColor: G.Style.colors.hoveredBaseColor;
-                                    tooltip: "Remove from the recent projects"
+                                    tooltip: "More reloading options..."
 
                                     anchors.top: parent.top
                                     anchors.topMargin: G.Style.smallPadding
