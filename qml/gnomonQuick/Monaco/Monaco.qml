@@ -59,6 +59,7 @@ Control {
 
     onReadOnlyChanged : {
         bridge.send('readonly', self.readOnly);
+        bridge.send('externalFile', self.readOnly);
     }
 
     //to create a new tab with a name:
