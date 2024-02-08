@@ -71,6 +71,7 @@ QML_FILES
   RangeSlider.qml
   ScrollIndicator.qml
   Separator.qml
+  SimpleDialog.qml
   SimpleView.qml
   Slider.qml
   SquareButton.qml

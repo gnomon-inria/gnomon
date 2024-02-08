@@ -117,39 +117,17 @@ G.ToolBar {
             }
         }
 
-        G.Dialog {
+        G.SimpleDialog {
             id: _reset_dialog
 
-            x: (parent.width - width) / 2
-            y: (parent.height - height) / 2
-            width: G.Style.mediumDialogWidth;
-            height: G.Style.smallDialogHeight;
-
-            padding: G.Style.smallPadding;
-
-            parent: Overlay.overlay
-            modal: true
-            title: "Exit project"
-            standardButtons: Dialog.Ok | Dialog.Cancel
-
-            Label {
-                anchors.fill: parent
-                anchors.margins: G.Style.smallPadding
-
-                text: "Do you really want to close the project and clear all the forms and workspaces?"
-                wrapMode: Text.WordWrap
-
-                font: G.Style.fonts.cardLabel
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignLeft
-            }
+            message: "Exit project?"
+            caption: "Do you really want to close the project and clear all the forms and workspaces?"
 
             onAccepted: {
                 console.log("reset!")
                 window.reset();
             }
         }
-
 
         G.IconButton {
             iconName: "help-circle";

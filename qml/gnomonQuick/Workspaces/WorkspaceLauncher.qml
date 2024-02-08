@@ -26,7 +26,6 @@ G.Workspace {
 
     property string current_file: "";
     property string _dialog_source : "";
-    property bool _blank_session : false
 
     P.FolderDialog {
         id: _open_project_folder_dialog;
@@ -485,7 +484,8 @@ G.Workspace {
 
                         onAccepted: {
                             if(GP.ProjectManager.isExistingProject(_folder_path.text)) {
-                                open_project_dialog(_folder_path.text)
+                                _workspace._dialog_source = _folder_path.text
+                                existing_project_dialog.open()
                             } else {
                                 create_project()
                             }
@@ -716,11 +716,22 @@ G.Workspace {
                                     anchors.topMargin: G.Style.smallPadding / 2
 
                                     onClicked: {
-                                        open_project_dialog(source, true)
+                                        _blank_session_dialog.open()
                                     }
 
                                     onContainsMouseChanged: {
                                         _more_timer.restart()
+                                    }
+                                }
+
+                                G.SimpleDialog {
+                                    id: _blank_session_dialog
+
+                                    message: "Do you really want to start a new session ?"
+                                    caption: "Any previously existing session will be deleted, and the generated data will be lost"
+
+                                    onAccepted : {
+                                        open_blank_project(source)
                                     }
                                 }
                                
@@ -778,73 +789,24 @@ G.Workspace {
         }
     }
 
-    G.Dialog {
+    G.SimpleDialog {
         id: not_project_dialog
 
-        simple_dialog : true
-
-        parent: Overlay.overlay
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        width: G.Style.smallDialogWidth
-        height: G.Style.largeDelegateHeight
-        header.height: 0
-
-        modal: true
-
-
-        Label {
-            text: "Not an existing project, create a new one ?"
-            font: G.Style.fonts.cardText
-        }
-
-        standardButtons:  Dialog.Yes | Dialog.No
+        message: "Not an existing project, create a new one ?"
 
         onAccepted : {
             new_project_dialog.open()
         }
     }
 
-    G.Dialog {
+    G.SimpleDialog {
         id: existing_project_dialog
 
-        simple_dialog : true
-
-        parent: Overlay.overlay
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        width: G.Style.smallDialogWidth
-        height: G.Style.largeDelegateHeight + G.Style.mediumLabelHeight
-        header.height: 0
-
-        modal: true
-
-        Label {
-            id: _message
-            text: _workspace._blank_session ? "Do you really want to start a new session ?" : "Do you really want to reset project settings ?"
-            font: G.Style.fonts.cardLabel
-        }
-
-        Text {
-            anchors.top: _message.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.topMargin: G.Style.smallPadding
-
-            text: _workspace._blank_session ? "Any previously existing session will be deleted, and the generated data will be lost" :
-                                              "Any previously existing session will be deleted, and all parameters will be set to their default values"
-            font: G.Style.fonts.value
-            color: G.Style.colors.textColorBase
-            wrapMode: Text.Wrap
-        }
-
-        standardButtons:  Dialog.Yes | Dialog.No
+        message: "Do you really want to reset project settings ?"
+        caption: "Any previously existing session will be deleted, and all parameters will be set to their default values"
 
         onAccepted : {
-            if(_workspace._blank_session) {
-                history_set_last_used(_workspace._dialog_source)
-                open_blank_project(_workspace._dialog_source)
-            } else if(GP.ProjectManager.cleanProject(_workspace._dialog_source)) {
+             if(GP.ProjectManager.cleanProject(_workspace._dialog_source)) {
                 create_project()
             }
         }
@@ -867,12 +829,6 @@ G.Workspace {
         }
         add_to_history(_folder_path.text)
         launching_toast.open()
-    }
-
-    function open_project_dialog(source, blank_project = false) {
-        _workspace._dialog_source = source
-        _workspace._blank_session = blank_project
-        existing_project_dialog.open()
     }
 
     Component.onCompleted:  window.drawelr_closed = true;
