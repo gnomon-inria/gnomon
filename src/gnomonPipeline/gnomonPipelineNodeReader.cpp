@@ -1,5 +1,7 @@
 #include "gnomonPipelineNodeReader.h"
 
+#include <gnomonProject>
+
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
 #include "gnomonPythonPluginLoader"
@@ -69,8 +71,7 @@ QString gnomonPipelineNodeReader::toToml(void)
 const QJsonObject gnomonPipelineNodeReader::toJson(void)
 {
     QJsonObject json = gnomonPipelineNode::toJson();
-    // json.insert("path", GNOMON_PROJECT->relativePath(dd->path));
-    json.insert("path", dd->path);
+    json.insert("path", GNOMON_PROJECT->relativePath(dd->path));
 
     return json;
 }
