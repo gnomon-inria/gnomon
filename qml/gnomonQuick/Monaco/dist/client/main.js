@@ -220984,6 +220984,9 @@ function receive(name, value) {
     case "readonly":
         editor.updateOptions({ readOnly: data})
         break;
+    case "externalFile":
+        tabBackGroundColor(data);
+        break;
     default:
         break;
     }
@@ -221138,6 +221141,18 @@ function switchTab(index, name="") {
     }
     send("filename", tabs[activeTab].textContent.slice(0, -1));
     send("value", editor.getModel().getValue());
+}
+
+function tabBackGroundColor(read_only) {
+    tabs[activeTab].classList.toggle('not_saved', read_only)
+    const children = tabs[activeTab].children;
+    for(let i = 0; i < children.length; i++) {
+        const child = children[i];
+        if(child.classList.contains("closeTab")) {
+            child.classList.toggle('not_saved', read_only);
+        }
+    }
+
 }
 
 function renameCurrentTab(name) {
