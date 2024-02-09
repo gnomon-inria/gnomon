@@ -84,19 +84,14 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
         // QDir::setCurrent(gnomonQMLUtils::instance()->dataPath());
         QString read_path = node->path();
         QStringList paths = read_path.split(",");
-        for (size_t i = 0; i < paths.size(); i++) {
-            QDir path(paths[i]);
-            if(path.isRelative()) {
-                paths[i] = path.absolutePath();
-            }
-        }
         QDir::setCurrent(tmp);
 
         callbackConnection = QObject::connect(browser, &gnomonAbstractWorkspace::finished, [=]() {
             disconnect(callbackConnection);
             if(browser->view()->empty()) {
                 emit q->failed(file_path);
-                return false;
+                res = false;
+                return;
             } else {
                 browser->view()->transmit();
             }
@@ -369,7 +364,7 @@ bool gnomonSessionManager::loadFromPipeline(const QString &path) {
     gnomonPipelineManager::instance()->pipeline()->setName(pipeline->name());
     gnomonPipelineManager::instance()->pipeline()->setDescription(pipeline->description());
     auto scheduled_nodes = pipeline->scheduledNodeNames(true);
-    return d->runNodes(scheduled_nodes, pipeline, 0);
+    return d->runNodes(scheduled_nodes, pipeline, -1);
 }
 
 void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {

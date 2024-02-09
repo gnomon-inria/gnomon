@@ -41,12 +41,14 @@ gnomonProject *gnomonProjectManager::project(void)
     return d->project;
 }
 
-gnomonProject *gnomonProjectManager::openProject(const QString &path, bool restore_session) {
+gnomonProject *gnomonProjectManager::openProject(const QString &path, bool restore_session, bool load_pipeline) {
     closeProject();
     d->project = new gnomonProject(path);
-    if(!restore_session || !GNOMON_SESSION->load()) {
-        GNOMON_SESSION->newSession(d->project->projectInfo().default_source);
-    };
+    if(!load_pipeline){
+        if(!restore_session || !GNOMON_SESSION->load()) {
+            GNOMON_SESSION->newSession(d->project->projectInfo().default_source);
+        }
+    }
     QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
     return d->project;
 }

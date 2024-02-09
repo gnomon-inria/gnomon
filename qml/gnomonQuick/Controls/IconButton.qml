@@ -36,6 +36,7 @@ Button
       id: _icon_area;
 
       anchors.fill: parent;
+      anchors.margins: -2;
       hoverEnabled: true;
 
       onClicked: {

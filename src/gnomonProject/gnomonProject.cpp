@@ -173,7 +173,7 @@ void gnomonProject::setCurrentDir(const QString& url)
     }
 }
 
-bool gnomonProject::loadSessionFromPipeline(const QString &path, QObject *window)
+bool gnomonProject::loadSessionFromPipeline(const QString &path)
 {
     return GNOMON_SESSION->loadFromPipeline(path);
 }
