@@ -44,7 +44,7 @@ public:
 
     Q_INVOKABLE virtual int newWorkspace(const QString &source) = 0;
     
-    Q_INVOKABLE virtual void activeWorkspace(int id) = 0;
+    Q_INVOKABLE virtual void setActiveWorkspace(int id) = 0;
 
     virtual QJsonObject* getStorageForWorkspace(const QString &uuid) = 0;
 

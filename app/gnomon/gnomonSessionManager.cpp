@@ -410,7 +410,7 @@ int gnomonSessionManager::newWorkspace(const QString &source) {
     return index;
 }
 
-void gnomonSessionManager::activeWorkspace(int id) {
+void gnomonSessionManager::setActiveWorkspace(int id) {
     if(!d->loading_session) {
         d->active_workspace_id = id;
         this->sync();
