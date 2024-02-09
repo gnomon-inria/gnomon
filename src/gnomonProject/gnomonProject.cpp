@@ -381,12 +381,24 @@ void gnomonProject::recursiveRemoveDir(const QString &path) {
 
 QString gnomonProject::findFile(const QString& filename) const {
     QStringList search_paths;
-    search_paths.append(d->projectDir.path());
-    for (const auto &d_path : d->dataPath) {
-        search_paths.append(d_path);
+    search_paths << d->projectDir.path() << d->dataPath;
+
+    QStringList  recursive_search_paths;
+    recursive_search_paths << search_paths;
+    for(const auto& path: search_paths) {
+        QDirIterator it(path, QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            QString dir = it.next();
+            if (QFileInfo(dir).isDir() & !dir.contains("..") & !dir.endsWith("/.")) {
+                recursive_search_paths << dir;
+            }
+        }
     }
-    QDir::setSearchPaths("paths", search_paths);
-    QFile file(QString("paths:%1").arg(filename));
+
+    QDir::setSearchPaths("project", recursive_search_paths);
+
+    QFile file(QString("project:"+filename));
+
     QString target_file;
     if(file.exists())
         target_file = file.fileName();

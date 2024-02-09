@@ -97,9 +97,11 @@ G.Workspace {
                     // Don't emit fileNameChanged signal when Tab 0
                     if(!name.endsWith("0"))
                         d.code.fileName = name
+                    console.log(d.code.fileName)
                     let file_path = GP.ProjectManager.project.findFile(d.code.fileName)
+                    console.log(file_path)
                     _editor.readOnly = (file_path.length === 0) & (!d.code.fileName.includes("example.py"))
-
+                    console.log(_editor.readOnly)
                 }
 
                 onFileClosed : (name) => {
