@@ -643,10 +643,6 @@ def algorithmPlugin(version: str, coreversion: str, name: str = "", base_class=N
             for attr in getattr(cls, "_output_storage_list"):
                 setattr(self, attr, {})
 
-            logging.info(f"Clearing formData of {cls.__name__}")
-            for formData in getattr(cls, "formData_list"):
-                formData.__data_setter(None)
-
 
         def run_decorator(run):
             def run_wrapper(self):
