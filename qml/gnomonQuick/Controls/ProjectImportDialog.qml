@@ -15,6 +15,7 @@ G.Dialog {
     modal: true
 
     property alias importPath : _copy_path.text
+    property alias message: _message.text
 
     parent: Overlay.overlay
     x: (parent.width - width) / 2
