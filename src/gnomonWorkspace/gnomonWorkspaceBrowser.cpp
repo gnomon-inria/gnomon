@@ -536,6 +536,19 @@ QUrl gnomonWorkspaceBrowser::defaultReadPath()
     return settings.value("path").toString();
 }
 
+void gnomonWorkspaceBrowser::importFile(const QString& file_path, const QString& path)
+{
+    QString file_name = QFileInfo(file_path).fileName();
+
+    QString project_file = path + "/" + file_name;
+    if (QFile::copy(file_path, project_file)) {
+        QString relative_path = GNOMON_PROJECT->relativePath(project_file);
+        emit GNOMON_PROJECT->fileImported(relative_path);
+    } else {
+        qDebug()<<Q_FUNC_INFO<<"Unable to copy file"<<file_path;
+    }
+}
+
 QStringList gnomonWorkspaceBrowser::readerExtensions(void)
 {
     return d->fileReaderCommands.keys();

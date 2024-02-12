@@ -327,7 +327,15 @@ G.Workspace {
         message: "You have to import this file to your project to open it. Please select where you want to copy it."
 
         onAccepted: {
-            console.log(_import_dialog.importPath)
+            let relative_paths = [];
+            for (let i_f in _external_data_dialog.urls) {
+                let url = _external_data_dialog.urls[i_f];
+                d.importFile(url.slice(7), _import_dialog.importPath)
+                let file_name = url.split('/').pop()
+                let import_url = "file://" + _import_dialog.importPath + "/" + file_name
+                relative_paths.push(GP.ProjectManager.project.relativePath(import_url));
+            }
+            requestOpenFiles(relative_paths)
         }
     }
 
