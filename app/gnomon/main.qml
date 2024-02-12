@@ -77,7 +77,7 @@ G.Application {
 
     P.FileDialog {
         id: loadFileDialog
-        folder: "file://"+GP.ProjectManager.project.currentDir
+        folder: GP.ProjectManager.project.currentDir? "" : "file://"+GP.ProjectManager.project.currentDir
 
         nameFilters: ["Json files (*.json)"]
 

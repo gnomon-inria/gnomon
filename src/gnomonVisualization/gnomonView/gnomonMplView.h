@@ -57,10 +57,17 @@ public:
 signals:
     void limitsChanged(void);
 
+signals:
+    void figureCanvasReady(void);
+
 public slots:
     void render(void) override;
     void clear(void) override;
     void saveScreenshot(const QString& filename) override;
+
+public:
+    QJsonObject serialize(void) override;
+    void deserialize(const QJsonObject &serialization) override;
 
 private:
     class gnomonMplViewPrivate *dd;

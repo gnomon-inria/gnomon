@@ -64,14 +64,16 @@ public:
     gnomonMplView *q = nullptr;
 
 public:
-    int figureNumber;
+    int figureNumber = -1;
     bool no_python;
 
     double x_min = 0;
     double x_max = 1;
     double y_min = 0;
     double y_max = 1;
-    
+
+    QMetaObject::Connection connect_canvas;
+
 public:
     QMap<QString, QMap<QString, gnomonAbstractAdapterCommand *> > adapterCommands;
     QMap<QString, QMap<QString, QString> > adapterTargets;
@@ -443,6 +445,38 @@ double gnomonMplView::yMin(void)
 double gnomonMplView::yMax(void)
 {
     return dd->y_max;
+}
+
+QJsonObject gnomonMplView::serialize(void) {
+    auto serialization = gnomonAbstractView::serialize();
+
+    serialization.insert("xMin", dd->x_min);
+    serialization.insert("xMax", dd->x_max);
+    serialization.insert("yMin", dd->y_min);
+    serialization.insert("yMax", dd->y_max);
+
+    return serialization;
+}
+
+void gnomonMplView::deserialize(const QJsonObject &serialization) {
+    disconnect(dd->connect_canvas);
+
+    auto _deserialize = [=] () {
+        gnomonAbstractView::deserialize(serialization);
+
+        dd->x_min = serialization.value("xMin").toDouble();
+        dd->x_max = serialization.value("xMax").toDouble();
+        dd->y_min = serialization.value("yMin").toDouble();
+        dd->y_max = serialization.value("yMax").toDouble();
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    };
+
+    if (dd->figureNumber == -1) {
+        dd->connect_canvas = connect(this, &gnomonMplView::figureCanvasReady, _deserialize);
+    } else {
+        _deserialize();
+    }
 }
 
 // ///////////////////////////////////////////////////////////////////
