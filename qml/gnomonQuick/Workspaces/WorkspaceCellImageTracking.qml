@@ -32,6 +32,7 @@ G.Workspace {
     G.SessionSettings {
         category: uuid
         property alias state: d.state
+        property alias lineage_values: _lineage_values.text
     }
 
     d: GW.WorkspaceCellImageTracking {
@@ -84,6 +85,7 @@ G.Workspace {
             Layout.fillWidth: true;
             height: window.height/8;
             currentIndex: 0;
+            clip: true
             //interactive: false;
 
             Item  {

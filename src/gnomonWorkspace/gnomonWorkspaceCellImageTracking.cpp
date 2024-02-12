@@ -209,3 +209,19 @@ void gnomonWorkspaceCellImageTracking::viewOutputs()
         }
     }
 }
+
+QJsonObject gnomonWorkspaceCellImageTracking::serialize(void)
+{
+    QJsonObject state = gnomonAlgorithmWorkspace::serialize();
+
+    auto transformation_matrix = dd->source_dict->serialize();
+    state.insert("transformation_matrix", transformation_matrix);
+
+    return state;
+}
+
+void gnomonWorkspaceCellImageTracking::deserialize(const QJsonObject &state)
+{
+    gnomonAlgorithmWorkspace::deserialize(state);
+    dd->source_dict->deserialize(state["transformation_matrix"].toObject());
+}
