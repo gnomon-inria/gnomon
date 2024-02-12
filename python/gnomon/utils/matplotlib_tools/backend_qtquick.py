@@ -30,6 +30,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     hoverChanged = QtCore.Signal()
     mouseReleased = QtCore.Signal()
     wheelScrolled = QtCore.Signal()
+    parameter_editor_changed = QtCore.Signal()
 
     # map Qt button codes to MouseEvent's ones:
     buttond = {QtCore.Qt.LeftButton: MouseButton.LEFT,
@@ -52,6 +53,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         self._number = -1
         self._background_color = 'w'
         self._line_color = 'b'
+        self._parameter_editor = False
 
         # Activate hover events and mouse press events
         self.setAcceptHoverEvents(True)
@@ -111,6 +113,14 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
             self.figure.canvas.draw()
             self.line_color_changed.emit()
 
+    def parameter_editor(self):
+        return self._parameter_editor
+
+    def set_parameter_editor(self, p: bool):
+        if p != self._parameter_editor:
+            self._parameter_editor = p
+            self.parameter_editor_changed.emit()
+
     def boundingRect(self):
         return QtCore.QRectF(0, 0, self.width(), self.height())
 
@@ -156,6 +166,13 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
                             fset=set_line_color,
                             notify=line_color_changed)
 
+    parameterEditor = QtCore.Property(
+        bool,
+        fget=parameter_editor,
+        fset=set_parameter_editor,
+        notify=parameter_editor_changed
+    )
+
     def get_width_height(self):
         w, h = FigureCanvasBase.get_width_height(self)
         return int(w / self.dpi_ratio), int(h / self.dpi_ratio)
@@ -185,9 +202,10 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         with cbook._setattr_cm(self, _is_drawing=True):
             super().draw()
         self.update()
-        for ax in  self.figure.get_axes():
-            for line in ax.get_lines():
-                line.set_color(self._line_color)
+        if self._parameter_editor:
+            for ax in  self.figure.get_axes():
+                for line in ax.get_lines():
+                    line.set_color(self._line_color)
 
     def draw_idle(self):
         """
