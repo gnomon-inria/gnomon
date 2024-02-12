@@ -142,6 +142,7 @@ void gnomonMplViewPrivate::updateFigureLimits(void)
         limitsStatement += "figure = gnomon_figure(" + QString::number(this->figureNumber) + ")\n";
         limitsStatement += "figure.gca().set_xlim(" + QString::number(this->x_min) + ", " + QString::number(this->x_max) + ")\n";
         limitsStatement += "figure.gca().set_ylim(" + QString::number(this->y_min) + ", " + QString::number(this->y_max) + ")\n";
+        limitsStatement += "figure.canvas.draw()\n";
         dtkScriptInterpreterPython::instance()->interpret(limitsStatement, &stat);
     }
 }
