@@ -51,9 +51,10 @@ G.ToolBar {
                 y: parent.height + G.Style.smallPadding
 
                 Action {
-                    text: qsTr("Open")
+                    text: qsTr("Load Pipeline")
                     shortcut: StandardKey.Open
                     onTriggered: {
+                        loadFileDialog.folder = "file://"+GP.ProjectManager.project.currentDir
                         loadFileDialog.open();
                     }
                 }
@@ -62,6 +63,7 @@ G.ToolBar {
                     text: qsTr("Save Pipeline")
                     shortcut: StandardKey.Save
                     onTriggered: {
+                        saveFileDialog.currentFile = "file://"+GP.ProjectManager.project.currentDir + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
                         saveFileDialog.open()
                     }
                 }
@@ -103,16 +105,29 @@ G.ToolBar {
         Item { id: _placeholder_unanchored; Layout.fillWidth: true; Layout.fillHeight: true; }
 
         G.IconButton {
-            iconName: "trash-can";
+            iconName: "close-box-multiple";
             size: G.Style.iconMedium;
             color: G.Style.colors.textColorFaded;
+            hoverColor: G.Style.colors.hoveredDangerColor;
             tooltip: "Reset: clear all the forms and workspaces"
+            visible: stack_launcher.currentIndex != 0
 
             onClicked: {
-                reset();
+                _reset_dialog.open();
             }
         }
 
+        G.SimpleDialog {
+            id: _reset_dialog
+
+            message: "Exit project?"
+            caption: "Do you really want to close the project and clear all the forms and workspaces?"
+
+            onAccepted: {
+                console.log("reset!")
+                window.reset();
+            }
+        }
 
         G.IconButton {
             iconName: "help-circle";

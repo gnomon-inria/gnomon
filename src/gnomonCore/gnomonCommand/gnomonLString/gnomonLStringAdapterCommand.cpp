@@ -12,8 +12,7 @@ public:
 
 gnomonLStringAdapterCommand::gnomonLStringAdapterCommand() : d(new gnomonLStringAdapterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonLStringAdapterCommand)
 
     QStringList keys = gnomonCore::lStringAdapter::pluginFactory().keys();
     if (!keys.empty()) {
@@ -91,15 +90,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringAdapterC
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
-}
-
-bool gnomonLStringAdapterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonLStringAdapterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonLStringAdapterCommand::inputTypes() {

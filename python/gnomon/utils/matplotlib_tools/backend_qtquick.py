@@ -26,6 +26,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     dpi_ratio_changed = QtCore.Signal()
     numberChanged = QtCore.Signal()
     background_color_changed = QtCore.Signal()
+    line_color_changed = QtCore.Signal()
     hoverChanged = QtCore.Signal()
     mouseReleased = QtCore.Signal()
     wheelScrolled = QtCore.Signal()
@@ -50,6 +51,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         self._dpi_ratio = 1
         self._number = -1
         self._background_color = 'w'
+        self._line_color = 'b'
 
         # Activate hover events and mouse press events
         self.setAcceptHoverEvents(True)
@@ -99,6 +101,16 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
             self.figure.canvas.draw()
             self.background_color_changed.emit()
 
+    def line_color(self):
+        return self._line_color
+
+    def set_line_color(self, col: str):
+        if col != self._line_color:
+            self._line_color = col
+            self.draw()
+            self.figure.canvas.draw()
+            self.line_color_changed.emit()
+
     def boundingRect(self):
         return QtCore.QRectF(0, 0, self.width(), self.height())
 
@@ -139,6 +151,11 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         notify=background_color_changed
     )
 
+    lineColor = QtCore.Property(str,
+                            fget=line_color,
+                            fset=set_line_color,
+                            notify=line_color_changed)
+
     def get_width_height(self):
         w, h = FigureCanvasBase.get_width_height(self)
         return int(w / self.dpi_ratio), int(h / self.dpi_ratio)
@@ -168,6 +185,9 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         with cbook._setattr_cm(self, _is_drawing=True):
             super().draw()
         self.update()
+        for ax in  self.figure.get_axes():
+            for line in ax.get_lines():
+                line.set_color(self._line_color)
 
     def draw_idle(self):
         """

@@ -220981,6 +220981,12 @@ function receive(name, value) {
     case "rename":
         renameCurrentTab(data);
         break;
+    case "readonly":
+        editor.updateOptions({ readOnly: data})
+        break;
+    case "externalFile":
+        tabBackGroundColor(data);
+        break;
     default:
         break;
     }
@@ -221030,6 +221036,10 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
                 reader.onClose(() => languageClient.stop());
             };
         }
+    })
+
+    editor.onDidAttemptReadOnlyEdit((event) => {
+        send("attemptReadOnly")
     })
 
     bridge.init();
@@ -221125,11 +221135,24 @@ function switchTab(index, name="") {
         //console.log("create  " , activeTab);
         var newEditor = {};
         newEditor.model = monaco_editor_esm_vs_editor_editor_api_js__WEBPACK_IMPORTED_MODULE_11__.editor.createModel("", "python", "inmemory://model/" + activeTab);
+        newEditor.isReadOnly = true;
         editors[activeTab] = newEditor;
         editor.setModel(newEditor.model);
     }
     send("filename", tabs[activeTab].textContent.slice(0, -1));
     send("value", editor.getModel().getValue());
+}
+
+function tabBackGroundColor(read_only) {
+    tabs[activeTab].classList.toggle('not_saved', read_only)
+    const children = tabs[activeTab].children;
+    for(let i = 0; i < children.length; i++) {
+        const child = children[i];
+        if(child.classList.contains("closeTab")) {
+            child.classList.toggle('not_saved', read_only);
+        }
+    }
+
 }
 
 function renameCurrentTab(name) {

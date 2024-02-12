@@ -46,13 +46,12 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageFromImage";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageFromImageCommandPrivate *d;
 };
 
+GNOMON_COMMAND_TRAITS(gnomonCellImageFromImageCommand)
 //
 // gnomonCellImageFromImageCommand.h ends here

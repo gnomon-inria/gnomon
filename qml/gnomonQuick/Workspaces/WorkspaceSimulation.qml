@@ -28,10 +28,16 @@ G.Workspace {
         _source_view.droppedFromManager(world.currentRef);
     }
 
+    viewSelected: _source_view
+
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
 
+    G.SessionSettings {
+        category: uuid
+        property alias state: d.state
+    }
 
     d: GW.WorkspaceSimulation {
         id: d;

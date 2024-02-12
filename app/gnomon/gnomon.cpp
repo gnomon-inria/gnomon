@@ -226,6 +226,12 @@ QString gnomonQMLUtils::initDataPath(QString defaultPath) {
 
 }
 
+bool gnomonQMLUtils::fileExists(QString file_path)
+{
+    QFile file(file_path);
+    return file.exists();
+}
+
 gnomonQMLUtils* gnomonQMLUtils::instance(void)
 {
     if(!s_instance)
@@ -300,6 +306,7 @@ void gnomon_rinit()
     // -- Project Management
 
     qmlRegisterType<gnomonProject>("gnomon.Project", 1, 0, "Project");
+    qmlRegisterType<gnomonFileSystemModel>("gnomon.Project", 1, 0, "FileSystemModel");
     qmlRegisterSingletonInstance("gnomon.Project", 1, 0, "ProjectManager", gnomonProjectManager::instance());
     qmlRegisterSingletonInstance("gnomon.Project", 1, 0, "SessionManager", gnomonAbstractSessionManager::instance());
 

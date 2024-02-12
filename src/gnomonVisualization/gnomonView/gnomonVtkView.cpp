@@ -223,6 +223,8 @@ public:
     QMetaObject::Connection connectSlice;
     QMetaObject::Connection connectTime;
 
+    QMetaObject::Connection connectRenderWindowAdded;
+
 public:
     void clearConnections(void);
 
@@ -545,6 +547,7 @@ void gnomonVtkViewPrivate::adaptForm(const QString& adapter_plugin)
 
 gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 {
+    setObjectName("gnomonVtkView");
     dd = new gnomonVtkViewPrivate;
     dd->q = this;
 
@@ -595,6 +598,9 @@ void gnomonVtkView::associate(vtkRenderWindow *window)
     dd->updateOrientation();
     d->updateFormsTimes();
     dd->updateAxes();
+
+    update();
+    emit renderWindowAssociated();
 }
 
 void gnomonVtkView::switchTo3D(void)
@@ -1705,6 +1711,129 @@ void gnomonVtkView::drop(int index, bool new_visu)
         }
     }
     gnomonAbstractView::drop(index, new_visu);
+}
+
+QJsonObject gnomonVtkView::serialize(void) {
+    auto serialization = gnomonAbstractView::serialize();
+    {
+        vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+        gnomonCameraParameters p;
+        p.fromVtkCamera(cam);
+        QJsonObject camera_json = p.toJson();
+        serialization.insert("active_camera", camera_json);
+    }
+
+    QJsonObject other_cameras;
+    for(auto it = dd->cameras.keyValueBegin(); it!=dd->cameras.keyValueEnd(); it++) {
+        vtkSmartPointer<vtkCamera> cam = it->second;
+        gnomonCameraParameters p;
+        p.fromVtkCamera(cam);
+        QJsonObject camera_json = p.toJson();
+        other_cameras.insert(QString::number(it->first), camera_json);
+    }
+    serialization.insert("other_cameras", other_cameras);
+
+    serialization.insert("mode", dd->mode);
+    serialization.insert("ori", dd->ori);
+    serialization.insert("representation", dd->representation);
+    serialization.insert("grid_type", dd->grid_type);
+    serialization.insert("grid_orientation", dd->grid_orientation);
+    serialization.insert("grid_visible", dd->grid_visible);
+    serialization.insert("axes_visible", dd->axes_visible);
+    serialization.insert("camera_fixed", dd->camera_fixed);
+    serialization.insert("c_x", dd->c_x);
+    serialization.insert("c_y", dd->c_y);
+    serialization.insert("c_z", dd->c_z);
+    serialization.insert("xBounds0", dd->xBounds[0]);
+    serialization.insert("xBounds1", dd->xBounds[1]);
+    serialization.insert("yBounds0", dd->yBounds[0]);
+    serialization.insert("yBounds1", dd->yBounds[1]);
+    serialization.insert("zBounds0", dd->zBounds[0]);
+    serialization.insert("zBounds1", dd->zBounds[1]);
+
+    QJsonArray picked_cells;
+    for(const auto &val: dd->picked_cells) {
+        picked_cells.append((int)val);
+    }
+    serialization.insert("picked_cells", picked_cells);
+
+    return serialization;
+}
+
+void gnomonVtkView::deserialize(const QJsonObject &serialization) {
+
+    disconnect(dd->connectRenderWindowAdded);
+
+    auto lambda = [=] () {
+        gnomonAbstractView::deserialize(serialization);
+
+        auto mode = (gnomonVtkView::Mode)serialization.value("mode").toInt();
+        auto ori = (gnomonVtkView::Orientation)serialization.value("ori").toInt();
+        auto representation = (gnomonVtkView::Representation)serialization.value("representation").toInt();
+        auto grid_type = (gnomonVtkView::Grid)serialization.value("grid_type").toInt();
+        auto grid_orientation = (gnomonVtkView::Orientation)serialization.value("grid_orientation").toInt();
+
+        dd->c_x = serialization.value("c_x").toDouble();
+        dd->c_y = serialization.value("c_y").toDouble();
+        dd->c_z = serialization.value("c_z").toDouble();
+
+        double x0 = serialization.value("xBounds0").toDouble();
+        double x1 = serialization.value("xBounds1").toDouble();
+        double y0 = serialization.value("yBounds0").toDouble();
+        double y1 = serialization.value("yBounds1").toDouble();
+        double z0 = serialization.value("zBounds0").toDouble();
+        double z1 = serialization.value("zBounds1").toDouble();
+        setBounds(x0, x1, y0, y1, z0, z1);
+
+        dd->ori = ori;
+        setRepresentation(representation);
+        if(mode == gnomonVtkView::Mode::VIEW_MODE_3D) {
+            switchTo3D();
+        } else {
+            switchTo2D();
+        }
+
+        setGridType(grid_type);
+        setGridOrientation(grid_orientation);
+        setGridVisible(serialization.value("grid_visible").toBool());
+        setAxesVisible(serialization.value("axes_visible").toBool());
+        setCameraFixed(serialization.value("camera_fixed").toBool());
+
+
+        dd->picked_cells.clear();
+        QJsonArray picked_cells = serialization.value("picked_cells").toArray();
+        for(const auto &val: picked_cells) {
+            dd->picked_cells.append(val.toInt());
+        }
+
+       this->update();
+
+        QJsonObject other_cameras = serialization.value("other_cameras").toObject();
+        for(auto key: other_cameras.keys()) {
+            if(dd->cameras.contains((gnomonVtkView::Orientation)key.toInt())) {
+                vtkSmartPointer<vtkCamera> cam = dd->cameras[(gnomonVtkView::Orientation)key.toInt()];
+                gnomonCameraParameters p;
+                p.fromJson(other_cameras[key].toObject());
+                p.toVtkCamera(cam);
+            }
+        }
+
+        auto camera_json = serialization["active_camera"].toObject();
+        vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+        gnomonCameraParameters p;
+        p.fromJson(camera_json);
+        p.toVtkCamera(cam);
+        dd->renderer3D->ResetCameraClippingRange();
+
+        this->render();
+    };
+
+    if(dd->window) {
+        lambda();
+    } else {
+        dd->connectRenderWindowAdded = connect(this, &gnomonVtkView::renderWindowAssociated, lambda);
+    }
+
 }
 
 // ///////////////////////////////////////////////////////////////////

@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import gnomonQuick.Controls as G
+import gnomonQuick.Monaco as G
 
 G.Page {
 
@@ -41,12 +42,30 @@ G.Page {
         if (menu)
             menu.destroy();
 
-        var view = window.currentView;
+        var workspace = window.current_workspace();
+        var source;
+        var prop;
 
-        var menu_component = Qt.createComponent("qrc:/qt/qml/gnomonQuick/Menus/ViewMenu.qml")
+        if (window.currentView instanceof G.Monaco)
+        {
+            source = "qrc:/qt/qml/gnomonQuick/Menus/MonacoMenu.qml"
+            var editor = window.currentView;
+            prop = {
+                editor: editor,
+                d: workspace.d,
+                mode: workspace.workspace_title === "L-System Model (Beta)"? "L-Py" : "Python"
+            }
+
+        } else {
+            source = "qrc:/qt/qml/gnomonQuick/Menus/ViewMenu.qml";
+            var view = window.currentView;
+            prop = { view: view }
+        }
+
+        var menu_component = Qt.createComponent(source)
 
         if (menu_component.status == Component.Ready) {
-            menu = menu_component.createObject(_content, { view: view });
+            menu = menu_component.createObject(_content, prop);
             menu.anchors.fill = _content;
         } else {
             console.error(menu_component.errorString());

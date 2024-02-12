@@ -14,6 +14,8 @@ gnomonAbstractVisualization::gnomonAbstractVisualization(void) : d(new gnomonAbs
 
 gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
 {
+    disconnect(d->connectViewDestroyed);
+    disconnect(d->connectTime);
     delete d;
     d = nullptr;
 }
@@ -23,9 +25,14 @@ void gnomonAbstractVisualization::setView(gnomonAbstractView* view)
     this->clear();
     d->view = view;
 
-    d->connectTime = connect(view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
-
-    this->fill();
+    disconnect(d->connectViewDestroyed);
+    if(view) {
+        d->connectViewDestroyed = connect(view, &QObject::destroyed, [=] () {
+            setView(nullptr);
+        });
+        d->connectTime = connect(view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
+        this->fill();
+    }
 }
 
 gnomonAbstractView* gnomonAbstractVisualization::view(void)

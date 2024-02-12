@@ -22,8 +22,7 @@ public:
 
 gnomonCellImageFilterCommand::gnomonCellImageFilterCommand() : d(new gnomonCellImageFilterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellImageFilterCommand)
 
     QStringList keys = gnomonCore::cellImageFilter::pluginFactory().keys();
     if (!keys.empty()) {
@@ -103,11 +102,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageFilter
     return outputs;
 }
 
-bool gnomonCellImageFilterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellImageFilterCommand::inputTypes() {
     orderedMap input_types;
     input_types.emplace_back(std::make_pair("input", "gnomonCellImage"));
@@ -126,10 +120,6 @@ void gnomonCellImageFilterCommand::setInputForm(const QString &name, std::shared
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
-}
-
-QStringList gnomonCellImageFilterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonCellImageFilterCommand::deserializeResults(QJsonObject &serialization) {

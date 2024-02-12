@@ -22,8 +22,7 @@ public:
 
 gnomonImageFilterCommand::gnomonImageFilterCommand() : d(new gnomonImageFilterCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonImageFilterCommand)
 
     QStringList keys = gnomonCore::imageFilter::pluginFactory().keys();
     if (!keys.empty()) {
@@ -129,15 +128,6 @@ gnomonAbstractCommand::orderedMap gnomonImageFilterCommand::outputTypes()
     orderedMap output_types;
     output_types.emplace_back(std::make_pair("output", "gnomonImage"));
     return output_types;
-}
-
-bool gnomonImageFilterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonImageFilterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonImageFilterCommand::setMask(std::shared_ptr<gnomonBinaryImageSeries> init)

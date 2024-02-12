@@ -32,8 +32,10 @@ public:
 
 public:
     virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr);
+    virtual void setForm(const QString&, const QString&, const QString&, const QVariantMap&);
     virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
     virtual void removeForm(const QString& form_type);
+    virtual std::shared_ptr<gnomonAbstractVisualization> getVisualization(const QString&);
 
 public slots:
     virtual inline void render(void) {} // refresh the display of the view
@@ -49,6 +51,8 @@ public slots:
     virtual void transmit(void);
     virtual void transmitForm(const QString&);
     virtual void restoreState(void);
+    virtual QJsonObject serialize(void);
+    virtual void deserialize(const QJsonObject &serialization);
 
 public slots:
     virtual inline void saveScreenshot(const QString& filename) {};

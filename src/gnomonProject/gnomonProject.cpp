@@ -1,13 +1,6 @@
 #include "gnomonProject.h"
 #include "gnomonProject"
 
-
-#define PROJECT_INFO_FOLDER ".gnomon"
-#define PROJECT_INFO_FILE ".gnomon/project.json"
-#define PROJECT_BACKUP_FOLDER ".gnomon/backup"
-#define PROJECT_BACKUP_MANIFEST ".gnomon/backup/manifest.json"
-#define PROJECT_MANIFEST_FILE ".gnomon/manifest.json"
-
 // /////////////////////////////////////////////////////////////////
 // gnomonProjectPrivate
 // /////////////////////////////////////////////////////////////////
@@ -28,6 +21,7 @@ public:
 
     QDir projectDir;
     QDir currentDir;
+    QStringList dataPath;
 
     QString manifest_url;
 };
@@ -65,6 +59,7 @@ QJsonObject gnomonProjectPrivate::readFromJson(const QString& url)
     }
     return QJsonDocument::fromJson(storage).object();;
 }
+
 // /////////////////////////////////////////////////////////////////
 // gnomonProject
 // /////////////////////////////////////////////////////////////////
@@ -83,6 +78,7 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
     if(isProject) {
         readProjectInfo();
         d->manifest_url = d->projectDir.filePath(PROJECT_BACKUP_MANIFEST);
+        d->dataPath = d->projectInfo.data_path;
         wasSaved = QFile::exists(d->projectDir.filePath(PROJECT_MANIFEST_FILE));
     } else {
         auto pName = d->projectDir.dirName();
@@ -90,6 +86,11 @@ gnomonProject::gnomonProject(const QString &path): QObject(nullptr) {
         d->projectInfo.name = pName;
         d->projectInfo.lastModified = QDateTime::currentDateTime();
     };
+
+    connect(this, &gnomonProject::dataPathChanged, [=](){
+        d->projectInfo.data_path = d->dataPath;
+        this->saveProjectInfo();
+    });
 }
 
 gnomonProject::~gnomonProject(void)
@@ -122,6 +123,7 @@ void gnomonProject::readProjectInfo() {
     pInfo.path = storage["path"].toString();
     pInfo.default_source = storage["default_source"].toString();
     pInfo.lastModified = QDateTime::fromString(storage["lastModified"].toString(), Qt::ISODate);
+    pInfo.data_path = storage["data_path"].toStringList();
 }
 
 void gnomonProject::saveProjectInfo() {
@@ -135,6 +137,7 @@ void gnomonProject::saveProjectInfo() {
         storage["default_source"] = pInfo.default_source;
         pInfo.lastModified.setSecsSinceEpoch(QDateTime::currentSecsSinceEpoch());
         storage["lastModified"] = pInfo.lastModified.toString("yyyy-MM-ddTHH:mm:ss");
+        storage["data_path"] = QJsonArray::fromStringList(pInfo.data_path);
         QJsonDocument doc(storage);
         QTextStream out(&projectInfoFile);
         out << doc.toJson();
@@ -170,7 +173,7 @@ void gnomonProject::setCurrentDir(const QString& url)
     }
 }
 
-bool gnomonProject::loadSessionFromPipeline(const QString &path, QObject *window)
+bool gnomonProject::loadSessionFromPipeline(const QString &path)
 {
     return GNOMON_SESSION->loadFromPipeline(path);
 }
@@ -181,6 +184,7 @@ gnomonProject *gnomonProject::newProject(const QString &path, const QString &nam
     project->d->projectInfo.name = name;
     project->d->projectInfo.description = description;
     project->d->projectInfo.default_source = source;
+    project->d->projectInfo.data_path = QStringList();
     project->saveProjectInfo();
     return project;
 }
@@ -191,6 +195,42 @@ void gnomonProject::close() {
 
 QString gnomonProject::currentDir(void) {
     return d->currentDir.path();
+}
+
+void gnomonProject::addDirectoryToDataPath(const QString& path)
+{
+    QString path_dir = QDir(sanitizeUrlToPath(path)).path();
+    qDebug()<<Q_FUNC_INFO<<path<<"->"<<path_dir;
+    if(!d->dataPath.contains(path_dir)) {
+        d->dataPath.append(path_dir);
+        emit dataPathChanged();
+    }
+}
+
+bool gnomonProject::isAccessible(const QString& path) const
+{
+    return !this->relativePath(path).isEmpty();
+}
+
+QString gnomonProject::relativePath(const QString& path) const
+{
+    QString path_copy = sanitizeUrlToPath(path);
+    QString relative_path;
+    if (path_copy.contains(d->projectDir.path())) {
+        qDebug()<<Q_FUNC_INFO<<d->projectDir.relativeFilePath(path_copy);
+        relative_path = d->projectDir.relativeFilePath(path_copy);
+    } else {
+        for (const auto& data_dir : d->dataPath) {
+            if (path_copy.contains(data_dir)) {
+                relative_path = QDir(data_dir).relativeFilePath(path_copy);
+            }
+        }
+    }
+    return relative_path;
+}
+
+QStringList gnomonProject::dataPath(void) {
+    return d->dataPath;
 }
 
 gnomonAbstractSessionManager* gnomonProject::currentSession(void)
@@ -206,6 +246,7 @@ QString gnomonProject::sanitizeUrlToPath(const QString &url) {
 const gnomonProjectInfo &gnomonProject::projectInfo() {
     return d->projectInfo;
 }
+
 
 void gnomonProject::addToManifest(const QJsonObject& workspace_info)
 {
@@ -254,8 +295,27 @@ void gnomonProject::addToManifest(const QJsonObject& workspace_info)
 
 bool gnomonProject::backupFile(const QString &fname, const QString &content)
 {
-    auto file_path = d->projectDir.filePath(PROJECT_BACKUP_FOLDER + QString("/") + fname);
-    QFile f(file_path);
+    QString filename = fname.split('/').last();
+
+    QFile manifest_file(d->manifest_url);
+
+    QJsonObject manifest_data;
+    if(manifest_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        manifest_data = QJsonDocument::fromJson(manifest_file.readAll()).object();
+        manifest_file.close();
+    }
+
+    QJsonObject file_info;
+    file_info.insert("path", fname);
+    manifest_data[filename] = file_info;
+
+    if(manifest_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        manifest_file.write(QJsonDocument(manifest_data).toJson());
+        manifest_file.close();
+    }
+
+    auto backup_path = d->projectDir.filePath(PROJECT_BACKUP_FOLDER + QString("/") + filename);
+    QFile f(backup_path);
     if(f.open(QIODevice::WriteOnly| QIODevice::Text)) {
         QTextStream out(&f);
         out<<content;
@@ -280,14 +340,20 @@ QStringList gnomonProject::editorFileInfo(const QStringList& extensions)
     QDir backup_dir(d->projectDir.filePath(PROJECT_BACKUP_FOLDER));
 
     QStringList editor_files;
-    for(const QFileInfo& file_info: backup_dir.entryInfoList())
-    {
-        if (file_info.isFile()) {
-            for (const auto& ext : extensions) {
-                if (file_info.suffix() == ext) {
-                    editor_files.append(file_info.filePath());
-                    break;
-                }
+
+    QFile manifest_file(d->manifest_url);
+    QJsonObject manifest_data;
+    if(manifest_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        manifest_data = QJsonDocument::fromJson(manifest_file.readAll()).object();
+        manifest_file.close();
+    }
+
+    for (const auto& key: manifest_data.keys()) {
+        QFileInfo file_info(key);
+        for (const auto &ext: extensions) {
+            if (file_info.suffix() == ext) {
+                editor_files.append(manifest_data[key].toObject()["path"].toString());
+                break;
             }
         }
     }
@@ -307,6 +373,36 @@ QList< QPair<QString, QString> > gnomonProject::browserFormInfo(void)
     });
 
     return restore_info;
+}
+
+void gnomonProject::recursiveRemoveDir(const QString &path) {
+    QDir(path).removeRecursively();
+}
+
+QString gnomonProject::findFile(const QString& filename) const {
+    QStringList search_paths;
+    search_paths << d->projectDir.path() << d->dataPath;
+
+    QStringList  recursive_search_paths;
+    recursive_search_paths << search_paths;
+    for(const auto& path: search_paths) {
+        QDirIterator it(path, QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            QString dir = it.next();
+            if (QFileInfo(dir).isDir() & !dir.contains("..") & !dir.endsWith("/.")) {
+                recursive_search_paths << dir;
+            }
+        }
+    }
+
+    QDir::setSearchPaths("project", recursive_search_paths);
+
+    QFile file(QString("project:"+filename));
+
+    QString target_file;
+    if(file.exists())
+        target_file = file.fileName();
+    return target_file;
 }
 
 //

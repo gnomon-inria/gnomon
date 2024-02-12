@@ -91,6 +91,7 @@ Dialog {
             width: G.Style.buttonWidth
 
         }
+
         Component.onCompleted: {
             for (const [buttonCode, style, flat] of standardButtonsStyle) {
                 var button = _dbox.standardButton(buttonCode)

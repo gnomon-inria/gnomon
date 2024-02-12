@@ -29,10 +29,10 @@ public:
     orderedMap inputTypes() override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "meshWriter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonMeshWriterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonMeshWriterCommand)

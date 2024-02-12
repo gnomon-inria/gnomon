@@ -26,10 +26,10 @@ public:
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "dataDictQmlVisualization";
-    static QStringList availablePlugins();
 
 private:
     class gnomonDataDictQmlVisualizationCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonDataDictQmlVisualizationCommand)

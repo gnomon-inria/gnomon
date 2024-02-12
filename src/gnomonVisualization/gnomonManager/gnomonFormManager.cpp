@@ -1,13 +1,39 @@
 #include "gnomonFormManager.h"
 
+#include <QtGlobal>
+
+#if (defined (Q_OS_WIN))
+#include <windows.h>
+#include <psapi.h>
+#elif (defined (Q_OS_LINUX))
+#include "sys/types.h"
+#include "sys/sysinfo.h"
+#include "stdlib.h"
+#include "stdio.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#elif (defined (Q_OS_MAC))
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <mach/vm_statistics.h>
+#include <mach/mach_types.h>
+#include <mach/mach_init.h>
+#include <mach/mach_host.h>
+#include <mach/task.h>
+#endif
+
 #include <memory>
 #include <utility>
 
 #include "gnomonVisualizations/gnomonAbstractVtkVisualization.h"
 #include "gnomonVisualizations/gnomonAbstractMplVisualization.h"
+#include "gnomonVisualizations/gnomonAbstractQmlVisualization.h"
 
 
 #include "gnomonView/gnomonVtkView.h"
+#include "gnomonView/gnomonQmlView.h"
+#include "gnomonView/gnomonMplView.h"
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonPipeline/gnomonPipelineNodeReader.h>
@@ -38,7 +64,7 @@
 
 #include <vtkCamera.h>
 #include <vtkGenericOpenGLRenderWindow.h>
-
+#include <vtkRenderWindowInteractor.h>
 
 class gnomonFormManagerPrivate : public QObject
 {
@@ -64,7 +90,7 @@ public:
     QHash<int, bool> formDropped;
 
 public:
-    gnomonVtkView *view = nullptr;
+    gnomonAbstractView *view = nullptr;
     QTemporaryDir *tmpDir = nullptr;
 
 public:
@@ -80,6 +106,9 @@ public:
 public:
     bool deleteFormFromMemory(int id);
     void loadFormToMemory(int id);
+
+public:
+    gnomonAbstractView *createView(const QString& className, const QString& form_type, int figure_number=-1);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -153,58 +182,25 @@ bool gnomonFormManagerPrivate::deleteFormFromMemory(int id)
 
 void gnomonFormManagerPrivate::loadFormToMemory(int id)
 {
-    qDebug() << Q_FUNC_INFO << id;
-
     QString reader_plugin;
 
-    if(dynamic_cast<gnomonBinaryImageWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonBinaryImageReaderCommand();
-        reader_plugin = dynamic_cast<gnomonBinaryImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonCellComplexWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonCellComplexReaderCommand();
-        reader_plugin = dynamic_cast<gnomonCellComplexReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonCellImageWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonCellImageReaderCommand();
-        reader_plugin = dynamic_cast<gnomonCellImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonDataDictWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonDataDictReaderCommand();
-        reader_plugin = dynamic_cast<gnomonDataDictReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonDataFrameWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonDataFrameReaderCommand();
-        reader_plugin = dynamic_cast<gnomonDataFrameReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonImageWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonImageReaderCommand();
-        reader_plugin = dynamic_cast<gnomonImageReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonLStringWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonLStringReaderCommand();
-        reader_plugin = dynamic_cast<gnomonLStringReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonMeshWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonMeshReaderCommand();
-        reader_plugin = dynamic_cast<gnomonMeshReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonPointCloudWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonPointCloudReaderCommand();
-        reader_plugin = dynamic_cast<gnomonPointCloudReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    } else if(dynamic_cast<gnomonTreeWriterCommand *>(this->formWriterCommand[id]))
-    {
-        this->formReaderCommand[id] = new gnomonTreeReaderCommand();
-        reader_plugin = dynamic_cast<gnomonTreeReaderCommand *>(this->formReaderCommand[id])->availablePlugins()[0];
-    }
+    //get reader command name
+    QString writer_command_name = this->formWriterCommand[id]->metaObject()->className();
+    QString reader_command_name = writer_command_name.replace("WriterCommand", "ReaderCommand");
 
-    gnomonAbstractReaderCommand *readerCommand = this->formReaderCommand[id];
-    if(!readerCommand) {
+    //create reader command from name using metatype
+    auto reader_metatype = QMetaType::fromName(reader_command_name.toUtf8());
+    if(reader_metatype.isValid()) {
+        this->formReaderCommand[id] = static_cast<gnomonAbstractReaderCommand *>(reader_metatype.create());
+        reader_plugin = this->formReaderCommand[id]->availablePlugins()[0];
+    } else {
+        qWarning() << "No reader Command found for form " << reader_command_name;
         qWarning() << "cannot create reader to read file from cache!";
         qWarning() << "file " << this->cache_forms[id];
         return;
     }
+
+    gnomonAbstractReaderCommand *readerCommand = this->formReaderCommand[id];
     QString path = this->cache_forms.take(id);
     readerCommand->setAlgorithmName(reader_plugin);
     readerCommand->setPath(path);
@@ -221,70 +217,53 @@ void gnomonFormManagerPrivate::loadFormToMemory(int id)
     readerCommand->redo();
 }
 
-
 void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
 {
     gnomonAbstractWriterCommand *command = nullptr;
     QString writer_plugin;
 
-    if(form_name == "gnomonBinaryImage") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonBinaryImageWriterCommand);
+    QString writer_command_name = form_name + "WriterCommand";
+    if(!this->commands.contains(form_name)) {
+        auto writer_metatype = QMetaType::fromName(writer_command_name.toUtf8());
+        if(writer_metatype.isValid()) {
+            command = static_cast<gnomonAbstractWriterCommand *>(writer_metatype.create());
+            this->commands.insert(form_name, command);
+            writer_plugin = command->availablePlugins()[0];
+        } else {
+            qWarning() << Q_FUNC_INFO << "No writer Command found for form " << form_name;
+            return;
         }
-        writer_plugin = dynamic_cast<gnomonBinaryImageWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if(form_name == "gnomonCellComplex"){
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonCellComplexWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonCellComplexWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonCellImage") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonCellImageWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonCellImageWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonImage") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonImageWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonImageWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonLString") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonLStringWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonLStringWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonMesh") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonMeshWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonMeshWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonPointCloud") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonPointCloudWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonPointCloudWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonDataFrame") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonDataFrameWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonDataFrameWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonTree") {
-        if (!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonTreeWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonTreeWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else if (form_name == "gnomonDataDict") {
-        if(!this->commands.contains(form_name)) {
-            this->commands.insert(form_name, new gnomonDataDictWriterCommand);
-        }
-        writer_plugin = dynamic_cast<gnomonDataDictWriterCommand *>(this->commands[form_name])->availablePlugins()[0];
-    } else {
-        qWarning() << Q_FUNC_INFO << "No writer found for form " << form_name;
-        return;
     }
 
     this->formWriterCommand[item] = this->commands[form_name];
     this->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 }
+
+gnomonAbstractView *gnomonFormManagerPrivate::createView(const QString& className, const QString& form_type, int figure_number)
+{
+    gnomonAbstractView* view = nullptr;
+    if(className == "gnomonVtkView") {
+        view = new gnomonVtkView(this);
+        view->setAcceptForm(form_type, true);
+        vtkNew<vtkRenderWindow> temp_render_window;
+        temp_render_window->SetOffScreenRendering(true);
+        vtkNew<vtkRenderWindowInteractor> temp_render_window_interactor;
+        temp_render_window_interactor->SetRenderWindow(temp_render_window);
+        dynamic_cast<gnomonVtkView*>(view)->associate(temp_render_window);
+    } else if (className == "gnomonQmlView") {
+        view = new gnomonQmlView(this);
+        view->setAcceptForm(form_type, true);
+    } else if (className == "gnomonMplView") {
+        view = new gnomonMplView(this);
+        view->setAcceptForm(form_type, true);
+        dynamic_cast<gnomonMplView*>(view)->setFigureNumber(figure_number);
+    }
+    return view;
+};
+
+// ///////////////////////////////////////////////////////////////////
+// gnomonFormManager
+// ///////////////////////////////////////////////////////////////////
 
 bool gnomonFormManager::deleteForm(int id, bool force)
 {
@@ -323,10 +302,13 @@ void gnomonFormManager::compose(int first, int second) {
     QMap<QString, QString> outputs = {
             {"output", output->uuid()},
     };
-    gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
-    gnomonPipelineManager::instance()->addForm(output->uuid());
+
+    GNOMON_SESSION->addForm(output);
 
     this->addForm(output->uuid(), d->formThumbnail[first]);
+
+    gnomonPipelineManager::instance()->addTask("compose", inputs, outputs);
+    gnomonPipelineManager::instance()->addForm(output->uuid());
 }
 
 void gnomonFormManager::saveAs(int id, const QString& f, bool add_to_pipeline) const
@@ -525,6 +507,206 @@ void gnomonFormManager::setFormDropped(const QString& form_uuid)
     // onconsistency in the pipeline
     int index = d->forms.key(form_uuid);
     d->formDropped[index] = true;
+}
+
+QList<int> gnomonFormManager::systemStat(void) const
+{
+    QList<int> stat(3);
+#if (defined (Q_OS_WIN))
+    MEMORYSTATUSEX statex;
+    statex.dwLength = sizeof (statex);
+    GlobalMemoryStatusEx (&statex);
+
+    stat[0] = statex.ullTotalPhys / 1024);
+    stat[1] = (statex.ullTotalPhys - statex.ullAvailPhy) / (1024 );
+    
+    PROCESS_MEMORY_COUNTERS_EX pmc;
+    GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+    stat[2] = pmc.WorkingSetSize/ (1024 );
+    // virtualMemUsedByMe = pmc.PrivateUsage;
+#elif (defined (Q_OS_LINUX))
+    struct sysinfo memInfo;
+    sysinfo (&memInfo);
+    stat[0] = memInfo.totalram * memInfo.mem_unit / (1024*1024);
+    stat[1] = (memInfo.totalram - memInfo.freeram) * memInfo.mem_unit / (1024*1024);
+    std::ifstream procfile("/proc/self/smaps_rollup");
+    if(procfile.is_open()) {
+        std::string line;
+        while(std::getline(procfile, line)) {
+            if(line.find("Rss:") != std::string::npos) {
+                stat[2] = std::stol(line.substr(5, line.size()-3)) / 1024;
+                break;
+            }
+        }
+    }
+#elif (defined (Q_OS_MAC))
+    int mib[2]; 
+    int64_t total_memory;
+    mib[0] = CTL_HW;  mib[1] = HW_MEMSIZE;
+    size_t length = sizeof(int64_t);
+    sysctl(mib, 2, &total_memory, &length, NULL, 0);
+    stat[0] = total_memory / (1024*1024);
+
+    //free mem and used mem
+    vm_size_t page_size;
+    mach_port_t mach_port;
+    mach_msg_type_number_t count;
+    vm_statistics64_data_t vm_stats;
+
+    mach_port = mach_host_self();
+    count = sizeof(vm_stats) / sizeof(natural_t);
+    if (KERN_SUCCESS == host_page_size(mach_port, &page_size) &&
+        KERN_SUCCESS == host_statistics64(mach_port, HOST_VM_INFO,
+                                        (host_info64_t)&vm_stats, &count))
+    {
+        //long long free_memory = (int64_t)vm_stats.free_count * (int64_t)page_size;
+
+        stat[1] = (((int64_t)vm_stats.active_count +
+                    (int64_t)vm_stats.inactive_count +
+                    (int64_t)vm_stats.wire_count) *  (int64_t)page_size ) / (1024*1024);
+    }
+
+    struct task_basic_info t_info;
+    mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
+
+    if (KERN_SUCCESS != task_info(mach_task_self(),
+                                  TASK_BASIC_INFO, (task_info_t)&t_info,
+                                  &t_info_count))
+    {
+        qDebug() << "macos cannot get this_used_mem";
+        stat[2] = 0; 
+    } else {
+        stat[2] = t_info.resident_size / (1024*1024);
+    }
+#endif
+    return stat;
+}
+
+QJsonObject gnomonFormManager::serialize(void)
+{
+    QJsonObject state;
+    QJsonObject forms;
+    for( auto [id, form]: d->forms.asKeyValueRange()) {
+        forms[QString::number(id)] = form;
+    }
+    state["forms"] = forms;
+
+    QJsonObject form_visualizations;
+    for( auto [id, visualization]: d->formVisualizations.asKeyValueRange()) {
+        QVariantMap visu_info;
+        visu_info["form_type"] = GNOMON_SESSION->getForm(d->forms[id])->formName();
+        QString visu_type;
+        QString figure_number;
+        if(auto vtk_visu = std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visualization)) {
+            visu_type = "gnomonVtkView";
+        } else if (auto qml_visu = std::dynamic_pointer_cast<gnomonAbstractQmlVisualization>(visualization)) {
+            visu_type = "gnomonQmlView";
+        } else if (auto mpl_visu = std::dynamic_pointer_cast<gnomonAbstractMplVisualization>(visualization)) {
+            visu_type = "gnomonMplView";
+            auto mpl_view = dynamic_cast<gnomonMplView *>(mpl_visu->view());
+            if (mpl_view) {
+                figure_number = QString::number(mpl_view->figureNumber());
+            }
+        }
+        visu_info["visu_type"] = visu_type;
+        visu_info["figure_number"] = figure_number;
+        visu_info["visu_name"] = visualization->pluginName();
+        QVariantMap parameters;
+        for(auto [k, v]: visualization->parameters().asKeyValueRange()) {
+            parameters.insert(k, v->toVariantHash());
+        }
+        visu_info["parameters"] = parameters;
+
+        form_visualizations.insert(QString::number(id), QJsonObject::fromVariantMap(visu_info));
+    }
+    state["form_visualizations"] = form_visualizations;
+
+    QJsonObject form_cameras;
+    for( auto [id, camera]: d->formCameras.asKeyValueRange()) {
+        QVariantMap camera_info;
+        QStringList position;
+        QStringList focal_point;
+        QStringList view_up;
+        for(int i = 0; i < 3; i++) {
+            position << QString::number(camera->GetPosition()[i]);
+            focal_point << QString::number(camera->GetFocalPoint()[i]);
+            view_up << QString::number(camera->GetViewUp()[i]);
+        }
+
+        camera_info["position"] = QVariant::fromValue(position);
+        camera_info["focal_point"] = QVariant::fromValue(focal_point);
+        camera_info["view_up"] = QVariant::fromValue(view_up);
+
+        form_cameras[QString::number(id)] = QJsonObject::fromVariantMap(camera_info);
+    }
+    state["form_cameras"] = form_cameras;
+
+    return state;
+}
+
+void gnomonFormManager::deserialize(const QJsonObject& state)
+{
+    auto forms = state["forms"].toObject().toVariantHash();
+    auto form_visualizations = state["form_visualizations"].toObject().toVariantHash();
+
+    d->forms.clear();
+    d->formVisualizations.clear();
+    d->formThumbnail.clear();
+
+    QList<QString> ids = forms.keys();
+    ids.sort();
+
+    for(auto id : ids) {
+        int index = id.toInt();
+        QString uuid = forms[id].toString();
+        auto visualization = form_visualizations[id];
+        QString form_type = visualization.toMap()["form_type"].toString();
+        QString visu_type = visualization.toMap()["visu_type"].toString();
+        int figure_number = visualization.toMap()["figure_number"].toString().toInt();
+        QString visu_name = visualization.toMap()["visu_name"].toString();
+        auto parameters = visualization.toMap()["parameters"].toMap();
+        gnomonAbstractView *view = d->createView(visu_type, form_type, figure_number);
+        std::shared_ptr<gnomonAbstractVisualization> visu = nullptr;
+        QImage image(1500, 1500, QImage::Format_RGB32);
+        image.fill(Qt::GlobalColor::black);
+        if (view) {
+            view->setForm(uuid, form_type, visu_name, parameters);
+            visu = view->getVisualization(form_type);
+            image = view->getVisualization(form_type)->imageRendering();
+
+            view->clear();
+            delete view;
+        }
+
+        d->insertForm(index, uuid, image);
+        d->formVisualizations.insert(index, visu);
+        emit added(index, form_type);
+        d->item_counter++;
+    }
+
+    d->formCameras.clear();
+    auto form_cameras = state["form_cameras"].toObject().toVariantMap();
+    for(auto [id, camera]: form_cameras.asKeyValueRange()) {
+        int index = id.toInt();
+        auto position = camera.toMap()["position"].toStringList();
+        auto focal_point = camera.toMap()["focal_point"].toStringList();
+        auto view_up = camera.toMap()["view_up"].toStringList();
+        if(position.size()==3 && focal_point.size()==3 && view_up.size()==3) {
+            double position_val[3], focal_point_val[3], view_up_val[3];
+
+            for(int i = 0; i < 3; i++) {
+                position_val[i] = position[i].toDouble();
+                focal_point_val[i] = focal_point[i].toDouble();
+                view_up_val[i] = view_up[i].toDouble();
+            }
+
+            vtkSmartPointer<vtkCamera> cam = vtkCamera::New();
+            cam->SetPosition(position_val);
+            cam->SetFocalPoint(focal_point_val);
+            cam->SetViewUp(view_up_val);
+            d->formCameras.insert(index, cam);
+        }
+    }
 }
 
 #include "gnomonFormManager.moc"

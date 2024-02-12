@@ -11,8 +11,7 @@ public:
 
 gnomonCellComplexReaderCommand::gnomonCellComplexReaderCommand() : d(new gnomonCellComplexReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonCellComplexReaderCommand)
 
      for (const auto& key: gnomonCore::cellComplexReader::pluginFactory().keys()) {
         auto algo = gnomonCore::cellComplexReader::pluginFactory().create(key);
@@ -67,19 +66,10 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellComplexRead
     return outputs;
 }
 
-bool gnomonCellComplexReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
 gnomonAbstractCommand::orderedMap gnomonCellComplexReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("cellComplex", "gnomonCellComplex"));
     return types;
-}
-
-QStringList gnomonCellComplexReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 void gnomonCellComplexReaderCommand::deserializeResults(QJsonObject &serialization) {
@@ -96,5 +86,6 @@ QJsonObject gnomonCellComplexReaderCommand::serializeResults(void) {
     return out;
 }
 
+GNOMON_REGISTER_TYPE(gnomonCellComplexReaderCommand)
 //
 // gnomonCellComplexReaderCommand.cpp ends here

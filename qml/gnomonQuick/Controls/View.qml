@@ -46,6 +46,10 @@ Rectangle {
     signal sliceChange(double value);
     signal clear();
 
+    function forceFocus() {
+        _view.forceActiveFocus()
+    }
+
     XVis.Viewer {
 
         id: _view;
@@ -59,8 +63,9 @@ Rectangle {
         // }
 
         onActiveFocusChanged: {
-            if (_view.activeFocus)
+            if (_view.activeFocus) {
                 window.currentView = self;
+            }
         }
     }
 
@@ -785,6 +790,54 @@ Rectangle {
     //}
 
     Rectangle {
+        id: _icon_banner
+
+        anchors.left: _view.left
+        anchors.right: _view.right
+        anchors.top: _view.top
+        anchors.margins: G.Style.smallPadding/2
+
+        height: G.Style.iconLarge + G.Style.smallPadding
+        radius: G.Style.cardRadius;
+
+        color: G.Style.colors.fgColor
+        opacity: 0.33
+    }
+
+    Rectangle {
+        id: _2d_banner
+
+        anchors.left: _view.left
+        anchors.top: _icon_banner.bottom
+        anchors.bottom: _2d_slider.bottom
+        anchors.margins: G.Style.smallPadding/2
+
+        width: G.Style.iconLarge + G.Style.smallPadding;
+        radius: G.Style.cardRadius;
+
+        color: G.Style.colors.fgColor
+        opacity: 0.33
+        visible: _2d_slider.visible
+    }
+
+    Rectangle {
+        id: _camera_banner
+
+        anchors.horizontalCenter: _camera_icon.horizontalCenter
+        anchors.top: _icon_banner.bottom
+        anchors.bottom: _camera_yz_icon.bottom
+        anchors.margins: G.Style.smallPadding/2
+        anchors.bottomMargin: -G.Style.smallPadding/2
+
+        width: G.Style.iconLarge + G.Style.smallPadding;
+        radius: G.Style.cardRadius;
+
+        color: G.Style.colors.fgColor
+        opacity: 0.33
+        visible: _camera_yz_icon.visible
+    }
+
+    Rectangle {
 
         id: _focus_indicator;
 
@@ -799,6 +852,4 @@ Rectangle {
 
         visible: window.currentView == self;
     }
-
-    Component.onCompleted: window.currentView = self;
 }

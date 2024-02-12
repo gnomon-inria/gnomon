@@ -20,9 +20,8 @@ public:
 
 gnomonDataFrameMplVisualizationCommand::gnomonDataFrameMplVisualizationCommand() : d(new gnomonDataFrameMplVisualizationCommandPrivate)
 {
-    this->factory_name = groupName;
     this->factory = &gnomonVisualization::dataFrameMplVisualization::pluginFactory();
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonDataFrameMplVisualizationCommand)
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
@@ -79,15 +78,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataFrameMplVis
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["dataFrame"] = d->dataFrame;
     return inputs;
-}
-
-bool gnomonDataFrameMplVisualizationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonDataFrameMplVisualizationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonDataFrameMplVisualizationCommand::inputTypes() {

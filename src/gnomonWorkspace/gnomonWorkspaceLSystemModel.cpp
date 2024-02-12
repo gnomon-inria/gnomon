@@ -5,8 +5,7 @@
 #include <gnomonCore/gnomonPythonPluginLoader>
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
-#include <gnomonProject/gnomonProjectManager.h>
-#include <gnomonProject/gnomonProject.h>
+#include "gnomonProject"
 
 #include <gnomonVisualization/gnomonView/gnomonVtkView>
 #include <gnomonVisualization/gnomonView/gnomonQmlView>
@@ -14,6 +13,7 @@
 #include "gnomonForm/gnomonLString/gnomonLString.h"
 #include "gnomonVisualizations/gnomonLString/gnomonAbstractLStringVtkVisualization"
 #include <dtkScript>
+#include "gnomonVisualization/gnomonCoreParameterColorTableObject.h"
 
 QString vonKochLSystem(void)
 {
@@ -73,7 +73,9 @@ public:
     QString file;
     int currentIndex = 0;
 
-    QDir* tmpDir = nullptr;
+    QMap<QString, QString> open_files;
+
+    QDir* lpy_dir = nullptr;
     QFile* model_file = nullptr;
     QFuture<int> redo_future;
 
@@ -87,6 +89,9 @@ public:
     gnomonVtkView *view = nullptr;
     gnomonQmlView *text_view = nullptr;
     QJsonObject state;
+    QStringList missing_textures;
+
+    QMetaObject::Connection editor_connect;
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -113,18 +118,18 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
     emit modelsLoaded();
     d->keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     d->model = d->command->modelName();
-    auto temp_dir = GNOMON_PROJECT->projectDir() + "/.gnomon/lpy";
-    d->tmpDir =  new QDir(temp_dir);
-    
+    auto lpy_dir_path = GNOMON_PROJECT->projectDir() + "/.gnomon/lpy";
+    d->lpy_dir =  new QDir(lpy_dir_path);
+    d->lpy_dir->mkpath(lpy_dir_path);
     int stat;
-    QString temp_working_directory = "";
-    temp_working_directory += "import sys \n";
-    temp_working_directory += "cwdir = ";
-    temp_working_directory += "'" + d->tmpDir->path() + "'" + "\n";
-    temp_working_directory += "if not sys.path.__contains__(f'{cwdir}'): \n";
-    temp_working_directory += " sys.path.append(f'{cwdir}')\n";
+    QString working_directory = "";
+    working_directory += "import sys \n";
+    working_directory += "cwdir = ";
+    working_directory += "'" + GNOMON_PROJECT->projectDir() + "'" + "\n";
+    working_directory += "if not sys.path.__contains__(f'{cwdir}'): \n";
+    working_directory += " sys.path.append(f'{cwdir}')\n";
 
-    dtkScriptInterpreterPython::instance()->interpret(temp_working_directory, &stat);
+    dtkScriptInterpreterPython::instance()->interpret(working_directory, &stat);
 
     d->view = new gnomonVtkView(this);
     d->view->setNodePortNames({});
@@ -141,6 +146,18 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
                 d->view->setFormVisuParameter(name, "interpretation_lsystem", d->model_file->fileName());
             }
             auto visu_params = d->view->formVisuParameters(name);
+
+            d->missing_textures.clear();
+            QObject* parameters_object = qvariant_cast<QObject*>(visu_params.toVariant().toMap()["color_table"]);
+            gnomonCoreParameterColorTableObject* params = dynamic_cast<gnomonCoreParameterColorTableObject*>(parameters_object);
+            if(params) {
+                for(const auto i: params->parameter()->colorIndices()) {
+                    if(params->colorTable().isTexture(i))
+                        if(GNOMON_PROJECT->findFile(params->colorTable().textureFile(i).split("/").last()).isEmpty())
+                            d->missing_textures << params->colorTable().textureFile(i).split("/").last();
+                }
+                emit missingTexturesChanged();
+            }
             QJSValueIterator it(visu_params);
             while (it.hasNext()) {
                 it.next();
@@ -185,7 +202,7 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
     }
 
     if(d->model_file) {
-        d->model_file->remove();
+        // d->model_file->remove();
         delete d->model_file;
         d->model_file = nullptr;
     }
@@ -209,8 +226,8 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
     if (text != d->text) {
         d->text = text;
 
-        if(!d->model_file || d->model_file->fileName() != d->tmpDir->filePath(d->file)) {
-            d->model_file = new QFile(d->tmpDir->filePath(d->file));
+        if(!d->model_file) {
+            d->model_file = new QFile(d->lpy_dir->filePath(d->file));
         }
 
         if (d->model_file->open(QIODevice::WriteOnly)) {
@@ -220,7 +237,8 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
 
             d->model_file->close();
             d->command->setLSystem(d->model_file->fileName());
-            this->reset();
+            // TODO: doesn't that force recomputing / rendering at every character change?
+            // this->reset();
         } else {
             qWarning() << "cannot open temp file for writing" << d->model_file;
         }
@@ -265,28 +283,55 @@ void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
     }
 }
 
-void gnomonWorkspaceLSystemModel::read(const QString& file_url)
+// TODO: to factorize in a code editor workspace class
+void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only, bool restoring)
 {
     QString file_name = file_url.split(QRegularExpression("/")).last();
-    QString file_path = filePathFromUrl(file_url);
+    QString relative_path = filePathFromUrl(file_url);
 
-    QFile f(file_path);
-    QFileInfo finfo(file_path);
+    QString absolute_path;
+    if (!QFile::exists(relative_path)) {
+        qDebug() << Q_FUNC_INFO << "file " << relative_path << "doesn't exist";
+    } else {
+        absolute_path = GNOMON_PROJECT->findFile(relative_path);
+    }
+
+    bool to_copy = (!read_only) & (absolute_path=="");
+    if(to_copy) {
+        QString file_name = relative_path.split(QRegularExpression("/")).last();
+        QString project_file_path = GNOMON_PROJECT->projectDir() + "/" + file_name;
+        if(!QFile::copy(relative_path, project_file_path)) {
+            dtkWarn()<<"Failed to copy file "<< relative_path << "to Project";
+            return;
+        }
+        relative_path = GNOMON_PROJECT->relativePath(project_file_path);
+    }
+
+    QFile f(relative_path);
     if (f.open(QIODevice::ReadOnly)) {
         QTextStream in(&f);
 
         if(d->model_file) {
             delete d->model_file;
         }
+        if(read_only) {
+            d->model_file = new QFile(d->lpy_dir->filePath(file_name));
+        } else {
+            d->model_file = new QFile(relative_path);
+        }
 
-        d->model_file = new QFile(d->tmpDir->filePath(file_name));
         this->setFileName(file_name);
         this->setText(in.readAll());
-        this->reset();
-        this->backup();
+        d->open_files[file_name] = relative_path;
+        if (!restoring) {
+            this->reset();
+        }
+        if(!read_only)
+            this->backup();
     } else {
-        dtkWarn()<<"Could not open file"<<file_path;
+        dtkWarn()<<"Could not open file"<<relative_path;
     }
+    emit stateChanged();
 }
 
 void gnomonWorkspaceLSystemModel::save(const QString& file_url) const
@@ -300,6 +345,16 @@ void gnomonWorkspaceLSystemModel::save(const QString& file_url) const
         f.close();
     } else {
         dtkWarn()<<"Could not save to file"<<file_path;
+    }
+}
+
+void gnomonWorkspaceLSystemModel::close(const QString& file_name)
+{
+    if (d->open_files.contains(file_name)) {
+        d->open_files.remove(file_name);
+        emit stateChanged();
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"The file"<<file_name<<"was not open";
     }
 }
 
@@ -411,6 +466,7 @@ void gnomonWorkspaceLSystemModel::viewState()
     // TODO: pass lsystem to visu plugin
     auto lString = d->command->lString();
     if (lString) {
+        GNOMON_SESSION->trackForm(lString);
         d->view->setForm("gnomonLString", lString); //TODO only update, only do it if it's different ..
         if (lString->times().size() != 0) {
             d->view->setCurrentTime(lString->times().last());
@@ -523,8 +579,38 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
     return parameters;
 }
 
+QStringList gnomonWorkspaceLSystemModel::missingTextures(void) const
+{
+    return d->missing_textures;
+}
+
+void gnomonWorkspaceLSystemModel::copyTextureFiles(const QStringList& files)
+{
+    for(const auto& file : files) {
+        auto new_file = GNOMON_PROJECT->projectDir() + "/" + file.split("/").last();
+        QFile::copy(file, new_file);
+    }
+}
+
+void gnomonWorkspaceLSystemModel::importFile(const QString& file_name, const QString& path)
+{
+    auto project_file = path + "/" + file_name;
+    if (QFile::copy(d->lpy_dir->filePath(file_name), project_file)) {
+        QFile::remove(d->lpy_dir->filePath(file_name));
+        this->backup();
+        delete(d->model_file);
+        d->model_file = new QFile(project_file);
+    }
+}
+
 QJsonObject gnomonWorkspaceLSystemModel::serialize() {
     QJsonObject state;
+
+    QJsonObject open_file_json;
+    for (const auto& file_name : d->open_files.keys()) {
+        open_file_json.insert(file_name, d->open_files[file_name]);
+    }
+    state.insert("open_files", open_file_json);
 
     state.insert("text", d->text);
     state.insert("filename", d->file);
@@ -542,14 +628,36 @@ QJsonObject gnomonWorkspaceLSystemModel::serialize() {
     }
     state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
 
+    if (d->view) {
+        state.insert("view", d->view->serialize());
+    }
+    if (d->text_view) {
+        state.insert("text_view", d->text_view->serialize());
+    }
+
     return state;
 }
 
-void gnomonWorkspaceLSystemModel::unSerialize(const QJsonObject &state) {
+void gnomonWorkspaceLSystemModel::deserialize(const QJsonObject &state) {
+    disconnect(d->editor_connect);
+
+    QJsonObject open_file_json = state["open_files"].toObject();
+    for (auto file_name: open_file_json.keys()) {
+        QString file_path = open_file_json[file_name].toString();
+        d->open_files[file_name] = file_path;
+    }
+
+    d->editor_connect = connect(this, &gnomonWorkspaceLSystemModel::codeEditorReady, [=] () {
+        for (auto file_name: d->open_files.keys()) {
+            emit requestOpenFile(d->open_files[file_name]);
+        }
+    });
+
     QJsonObject parameters_json = state["parameters"].toObject();
 
-    setFileName(state["filename"].toString());
-    setText(state["text"].toString());
+    // TODO: to remove if code is restored from file / backup ?
+    // setFileName(state["filename"].toString());
+    // setText(state["text"].toString());
     setDerivationLength(state["derivation_length"].toInt());
     d->derivations = state["derivations"].toInt();
     setAnimationStep(state["animation_step"].toInt());
@@ -559,7 +667,13 @@ void gnomonWorkspaceLSystemModel::unSerialize(const QJsonObject &state) {
         auto param = parameters_json[param_name].toObject().toVariantHash();
         d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
     }
-    d->view->restoreState();
+
+    if (state.contains("view")) {
+        d->view->deserialize(state.value("view").toObject());
+    }
+    if (state.contains("text_view")) {
+        d->text_view->deserialize(state.value("text_view").toObject());
+    }
 }
 
 void gnomonWorkspaceLSystemModel::saveState() {
@@ -567,12 +681,18 @@ void gnomonWorkspaceLSystemModel::saveState() {
 }
 
 void gnomonWorkspaceLSystemModel::restoreState() {
-    unSerialize(d->state);
+    deserialize(d->state);
 }
 
 bool gnomonWorkspaceLSystemModel::backup(void)
 {
-    return GNOMON_PROJECT->backupFile(d->file, d->text);
+    QString file_name = d->file;
+    bool ok = false;
+    if (d->open_files.contains(file_name)) {
+        QString file_path = d->open_files[file_name];
+        ok = GNOMON_PROJECT->backupFile(file_path, d->text);
+    }
+    return ok;
 }
 
 void gnomonWorkspaceLSystemModel::restore()

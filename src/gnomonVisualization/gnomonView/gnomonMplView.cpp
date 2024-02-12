@@ -179,6 +179,7 @@ void gnomonMplViewPrivate::adaptForm(const QString& adapter_plugin)
 
 gnomonMplView::gnomonMplView(QObject *parent, bool no_python) : gnomonAbstractView(parent)
 {
+    setObjectName("gnomonMplView");
     dd = new gnomonMplViewPrivate(this);
     dd->q = this;
 

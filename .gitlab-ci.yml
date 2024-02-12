@@ -1,8 +1,9 @@
 image: conda/miniconda3
 
 stages:
-  - test
   - build
+  - test
+  - condabuild
   - deploy
 
 
@@ -12,8 +13,8 @@ stages:
     when: runner_system_failure
 
 
-test_linux:
-  stage: test
+build_mr_linux:
+  stage: build
   tags: 
     - linux
     - large
@@ -27,17 +28,33 @@ test_linux:
     - cd build
     - cmake ..
     - make -j3 install
-    - ctest -T test --timeout 120 --no-compress-output --output-on-failure --output-log report.xml
+  extends: .template_retry
+  only:
+    - merge_requests
+
+test_linux:
+  stage: test
+  needs: [build_mr_linux]
+  tags: 
+    - linux
+    - large
+  variables:
+    GIT_CHECKOUT: "false"
+  script:
+    - . "/builds/miniconda3/etc/profile.d/conda.sh"
+    - conda activate gnomon-dev
+    - cd build
+    - ctest -T test --timeout 120 --rerun-failed --output-on-failure --output-junit report.xml
   extends: .template_retry
   artifacts:
     when: always
     reports:
-      junit: report.xml
+      junit: build/report.xml
   only:
     - merge_requests
 
-test_macos:
-  stage: test
+build_mr_macos:
+  stage: build
   tags: 
     - macos
     - large
@@ -51,18 +68,34 @@ test_macos:
     - cd build
     - cmake ..
     - make -j2 install
-    - ctest -T test --timeout 120 --no-compress-output --output-on-failure --output-log report.xml
+  extends: .template_retry
+  only:
+    - merge_requests
+
+test_macos:
+  stage: test
+  needs: [build_mr_macos]
+  tags: 
+    - macos
+    - large
+  variables:
+    GIT_CHECKOUT: "false"
+  script:
+    - source /Users/ci/miniconda3/etc/profile.d/conda.sh
+    - conda activate gnomon-dev
+    - cd build
+    - ctest -T test --timeout 120 --rerun-failed --output-on-failure --output-junit report.xml
   extends: .template_retry
   artifacts:
     when: always
     reports:
-      junit: report.xml
+      junit: build/report.xml
   only:
     - merge_requests
 
 
 conda_build_linux:
-  stage: build
+  stage: condabuild
   tags: 
     - linux
     - large
@@ -70,7 +103,7 @@ conda_build_linux:
     - . "/builds/miniconda3/etc/profile.d/conda.sh"
     - conda activate base
     - mkdir conda-bld
-    - mamba mambabuild conda -c dtk-forge6 -c conda-forge --output-folder conda-bld/
+    - conda mambabuild -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   artifacts:
     paths:
@@ -79,7 +112,7 @@ conda_build_linux:
     - master
 
 conda_build_macos:
-  stage: build
+  stage: condabuild
   tags: 
     - macos
     - large
@@ -87,7 +120,7 @@ conda_build_macos:
     - source /Users/ci/miniconda3/etc/profile.d/conda.sh
     - conda activate base
     - mkdir conda-bld
-    - mamba mambabuild conda -c dtk-forge6 -c conda-forge --output-folder conda-bld/
+    - conda mambabuild -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   artifacts:
     paths:
@@ -97,7 +130,7 @@ conda_build_macos:
 
 
 conda_build_linux_develop:
-  stage: build
+  stage: condabuild
   tags: 
     - linux
     - large
@@ -105,7 +138,7 @@ conda_build_linux_develop:
     - . "/builds/miniconda3/etc/profile.d/conda.sh"
     - conda activate base  
     - mkdir conda-bld
-    - mamba mambabuild conda -c dtk-forge6 -c conda-forge --output-folder conda-bld/
+    - conda mambabuild -c dtk-forge6 -c conda-forge --output-folder conda-bld/
   extends: .template_retry
   when: manual
   artifacts:
@@ -121,6 +154,8 @@ anaconda_linux_master:
     - linux
     - large
   needs: [conda_build_linux]
+  variables:
+    GIT_CHECKOUT: "false"
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh"
     - conda activate base  
@@ -137,6 +172,8 @@ anaconda_macos_master:
     - macos
     - large
   needs: [conda_build_macos]
+  variables:
+    GIT_CHECKOUT: "false"
   script:
     - source /Users/ci/miniconda3/etc/profile.d/conda.sh
     - conda activate base
@@ -149,9 +186,12 @@ anaconda_macos_master:
 
 anaconda_linux_develop :
   stage: deploy
+  needs: [conda_build_linux_develop]
   tags: 
     - linux
     - large
+  variables:
+    GIT_CHECKOUT: "false"
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh" 
     - conda activate base 

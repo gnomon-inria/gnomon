@@ -25,6 +25,7 @@ G.Workspace {
     fill: () => {}
 
     property string current_file: "";
+    property string _dialog_source : "";
 
     P.FolderDialog {
         id: _open_project_folder_dialog;
@@ -33,9 +34,14 @@ G.Workspace {
         modality: Qt.NonModal;
 
         onAccepted: {
-            console.log('Loading an existing project');
-            load_project(_open_project_folder_dialog.folder);
-            add_to_history(_open_project_folder_dialog.folder)
+            if(GP.ProjectManager.isExistingProject(_open_project_folder_dialog.folder)) {
+                console.log('Loading an existing project');
+                load_project(_open_project_folder_dialog.folder);
+                add_to_history(_open_project_folder_dialog.folder)
+            } else {
+                _folder_path.text = _open_project_folder_dialog.folder
+                not_project_dialog.open()
+            }
         }
     }
 
@@ -194,6 +200,7 @@ G.Workspace {
                             type: G.Style.CardType.Foreground
                             title: header
                             body: paragraph
+                            titleTopMargin: G.Style.smallPadding
 
                             onClicked: {
                                 Qt.openUrlExternally(link);
@@ -267,22 +274,9 @@ G.Workspace {
                             text: "New"
                             iconName: "plus"
 
-                            Timer {
-                                id: _timer
-                                interval: 200
-                                onTriggered: {
-                                    new_project_dialog.open()
-                                }
-                            }
-
                             onClicked: {
-                                if(_timer.running)
-                                {
-                                    _timer.stop()
-                                    new_project_dialog.accept()
-                                } else {
-                                    _timer.restart()
-                                }
+                                _folder_path.text = ""
+                                new_project_dialog.open()
                             }
                         }
                     }
@@ -463,6 +457,9 @@ G.Workspace {
                                         }
                                         model = workspaces
                                         currentIndex = titles.indexOf(_settings.default_workspace)
+                                        if (currentIndex == -1) {
+                                            currentIndex = 0;
+                                        }
                                     }
                                 }
 
@@ -474,7 +471,7 @@ G.Workspace {
                                     width: G.Style.buttonWidth
                                     text: "Make default"
                                     checked: false
-                                    tooltip: "Check to make the chosen workspace the default option next time you create a new project."
+                                    tooltip: "Check to make the chosen workspace the default option when you create a new session for the project."
                                 }
                             }
 
@@ -486,17 +483,12 @@ G.Workspace {
                         }
 
                         onAccepted: {
-                            GP.ProjectManager.createProject(_folder_path.text,
-                                                            _project_title.text,
-                                                            _project_description.text,
-                                                            _pipeline_workspace.currentValue)
-                            GP.PipelineManager.pipeline.name = _project_title.text
-                            GP.PipelineManager.pipeline.description = _project_description.text
-                            if (_remember_workspace.checked) {
-                                _settings.default_workspace = _pipeline_workspace.currentText
+                            if(GP.ProjectManager.isExistingProject(_folder_path.text)) {
+                                _workspace._dialog_source = _folder_path.text
+                                existing_project_dialog.open()
+                            } else {
+                                create_project()
                             }
-                            add_to_history(_folder_path.text)
-                            launching_toast.open()
                         }
                     }
 
@@ -627,7 +619,9 @@ G.Workspace {
                                 outline: true
                                 title: name
                                 body: "last modified: " + lastModified + "\n" +description
-                                tooltip: source
+                                tooltip: decodeURIComponent(source).slice(7)
+                                titleTopMargin: G.Style.iconMedium
+
                                 background: Rectangle {
                                     color: _getBgColor()
                                     radius: G.Style.cardRadius
@@ -644,36 +638,134 @@ G.Workspace {
                                 }
 
                                 G.IconButton {
+                                    iconName: "close-thick";
+                                    size: (G.Style.iconSmall + G.Style.iconMedium)/2;
+                                    color: G.Style.colors.fgColor;
+                                    hoverColor: G.Style.colors.hoveredDangerColor;
+                                    tooltip: "Remove from the recent projects"
+
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    anchors.margins: G.Style.buttonRadius
+
+                                    onClicked: {
+                                        remove_from_history(source)
+                                    }
+                                }
+
+                                G.IconButton {
                                     id: _load_icon;
-                                    iconName: "arrow-down";
+                                    iconName:"play-box";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
-                                    tooltip: "Open"
+                                    hoverColor: G.Style.colors.hoveredBaseColor;
+                                    tooltip: "Load and restore last session"
 
                                     anchors.top: parent.top
                                     anchors.topMargin: G.Style.smallPadding
-                                    anchors.right: _trash_icon.left
-                                    anchors.rightMargin: G.Style.smallPadding
+                                    anchors.right: _more_icon.left
+                                    anchors.rightMargin: -G.Style.smallPadding
 
                                     onClicked: {
                                         history_set_last_used(source)
                                         load_project(source)
                                     }
                                 }
+
                                 G.IconButton {
-                                    id: _trash_icon;
-                                    iconName: "trash-can";
+                                    id: _more_icon;
+                                    property bool active: false;
+                                    iconName: "dots-vertical";
                                     size: G.Style.iconLarge;
                                     color: G.Style.colors.fgColor;
-                                    tooltip: "Delete"
+                                    hoverColor: G.Style.colors.hoveredBaseColor;
+                                    tooltip: "More reloading options..."
 
                                     anchors.top: parent.top
                                     anchors.topMargin: G.Style.smallPadding
+                                    anchors.leftMargin: -G.Style.smallPadding
                                     anchors.right: parent.right
-                                    anchors.rightMargin: G.Style.smallPadding
 
                                     onClicked: {
-                                        remove_from_history(source)
+                                        active = !active
+                                        _more_timer.start()
+                                    }
+                                }
+
+                                Timer {
+                                    id: _more_timer;
+                                    interval: 2000;
+                                    onTriggered: {
+                                        if (!(_restart_icon.containsMouse | _pipeline_icon.containsMouse)) {
+                                            _more_icon.active = false;
+                                        }
+                                    }
+                                }
+
+                                G.IconButton {
+                                    id: _restart_icon;
+                                    iconName: "file-plus";
+                                    size: G.Style.iconMedium;
+                                    color: G.Style.colors.fgColor;
+                                    hoverColor: G.Style.colors.hoveredOkColor;
+                                    tooltip: "Start new blank session"
+                                    visible: _more_icon.active
+
+                                    anchors.horizontalCenter: _more_icon.horizontalCenter
+                                    anchors.top: _more_icon.bottom
+                                    anchors.topMargin: G.Style.smallPadding / 2
+
+                                    onClicked: {
+                                        _blank_session_dialog.open()
+                                    }
+
+                                    onContainsMouseChanged: {
+                                        _more_timer.restart()
+                                    }
+                                }
+
+                                G.SimpleDialog {
+                                    id: _blank_session_dialog
+
+                                    message: "Do you really want to start a new session ?"
+                                    caption: "Any previously existing session will be deleted, and the generated data will be lost"
+
+                                    onAccepted : {
+                                        open_blank_project(source)
+                                    }
+                                }
+                               
+                                G.IconButton {
+                                    id: _pipeline_icon;
+                                    iconName: "play-network";
+                                    size: G.Style.iconMedium;
+                                    color: G.Style.colors.fgColor;
+                                    hoverColor: G.Style.colors.hoveredOkColor;
+                                    tooltip: "Replay session from pipeline"
+                                    visible: _more_icon.active
+
+                                    anchors.top: _restart_icon.bottom
+                                    anchors.topMargin: G.Style.smallPadding
+                                    anchors.horizontalCenter:  _more_icon.horizontalCenter
+
+                                    onClicked: {
+                                        _pipeline_file_dialog.folder = source
+                                        _pipeline_file_dialog.open()
+                                    }
+
+                                    onContainsMouseChanged: {
+                                        _more_timer.restart()
+                                    }
+                                }
+                                
+                                P.FileDialog {
+                                    id: _pipeline_file_dialog
+                            
+                                    nameFilters: ["Json files (*.json)"]
+                            
+                                    onAccepted: {
+                                        open_blank_project(source, true)
+                                        load_session(_pipeline_file_dialog.file)
                                     }
                                 }
                             }
@@ -695,6 +787,48 @@ G.Workspace {
         onOpened: {
             //switch_from_launcher(_pipeline_workspace.currentValue);
         }
+    }
+
+    G.SimpleDialog {
+        id: not_project_dialog
+
+        message: "Not an existing project, create a new one ?"
+
+        onAccepted : {
+            new_project_dialog.open()
+        }
+    }
+
+    G.SimpleDialog {
+        id: existing_project_dialog
+
+        message: "Do you really want to reset project settings ?"
+        caption: "Any previously existing session will be deleted, and all parameters will be set to their default values"
+
+        onAccepted : {
+             if(GP.ProjectManager.cleanProject(_workspace._dialog_source)) {
+                create_project()
+            }
+        }
+
+        onRejected : {
+            GP.ProjectManager.openProject(_workspace._dialog_source)
+            add_to_history(_workspace._dialog_source)
+        }
+    }
+
+    function create_project() {
+        GP.ProjectManager.createProject(_folder_path.text,
+                                        _project_title.text,
+                                        _project_description.text,
+                                        _pipeline_workspace.currentValue)
+        GP.PipelineManager.pipeline.name = _project_title.text
+        GP.PipelineManager.pipeline.description = _project_description.text
+        if (_remember_workspace.checked) {
+            _settings.default_workspace = _pipeline_workspace.currentText
+        }
+        add_to_history(_folder_path.text)
+        launching_toast.open()
     }
 
     Component.onCompleted:  window.drawelr_closed = true;

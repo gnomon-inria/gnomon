@@ -77,16 +77,12 @@ G.Application {
 
     P.FileDialog {
         id: loadFileDialog
-        folder: P.StandardPaths.writableLocation(P.StandardPaths.DocumentsLocation)
+        folder: "file://"+GP.ProjectManager.project.currentDir
 
-        Settings {
-            property alias last_open_folder: loadFileDialog.folder
-        }
         nameFilters: ["Json files (*.json)"]
 
         onAccepted: {
             load_session(loadFileDialog.file);
-            add_to_history(loadFileDialog.file)
         }
     }
 
@@ -96,18 +92,14 @@ G.Application {
         title: "save Gnomon Pipeline"
 
         fileMode: P.FileDialog.SaveFile
-        currentFile: "file:///" + GP.PipelineManager.pipeline.name + ".json"
-
-        Settings {
-            property alias last_save_folder: saveFileDialog.folder
-        }
+        folder: "file://"+GP.ProjectManager.project.currentDir
+        currentFile: folder + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
 
         modality: Qt.WindowModal;
         nameFilters: [ "Json files (*.json)" ]
 
          onAccepted: {
             GP.PipelineManager.pipeline.exportToJson(saveFileDialog.file);
-            add_to_history(saveFileDialog.file)
         }
     }
 
@@ -132,6 +124,7 @@ G.Application {
                     text: qsTr("Open")
                     shortcut: StandardKey.Open
                     onTriggered: {
+                        loadFileDialog.folder = "file://"+GP.ProjectManager.project.currentDir
                         loadFileDialog.open();
                     }
                 }
@@ -139,6 +132,7 @@ G.Application {
                     text: qsTr("Save Pipeline")
                     shortcut: StandardKey.Save
                     onTriggered: {
+                        saveFileDialog.currentFile = "file://"+GP.ProjectManager.project.currentDir + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
                         saveFileDialog.open();
                     }
                 }
@@ -384,6 +378,23 @@ G.Application {
         type: G.Style.ButtonType.Warning
     }
 
+        Timer {
+            interval: 10000  //in msec
+            running: true
+            repeat: true
+            onTriggered: {
+                let system_stats = GV.World.systemStat() //memory total, used, this
+                
+                if( (system_stats[0] - system_stats[1]) < 1000*1000   ) // if less than 1Gb of mem left
+                {
+                    console.log("implement cache strategy, mem left: ", (system_stats[0] - system_stats[1]));
+                    
+
+                }
+            }
+    }
+
+
 
 // /////////////////////////////////////////////////////////////////////////////
 // Focused views API
@@ -535,7 +546,7 @@ G.Application {
         return true;
     }
 
-    function add_workspace(source: string, uuid: string): int
+    function add_workspace(source: string, uuid: string, fill: bool): int
     {
         if(window.current_workspace()) {
             window.current_workspace().d.saveState();
@@ -549,10 +560,14 @@ G.Application {
                 workspaces.currentIndex = workspace_index;
                 const specific_menu = source.replace(".qml", "Menu.qml").replace("Workspaces", "Menus");
                 _internal.menu_sources.push(specific_menu);
+                drawel.update_menu()
                 drawer.update_menu(specific_menu);
-                workspace.fill()
+                if(fill) {
+                    workspace.fill()
+                }
                 // window.create_workspace_screenshot();
                 _workspaces_model.append({"title": workspace.workspace_title, "index": workspace_index});
+                GP.SessionManager.setActiveWorkspace(workspace_index)
                 return workspace_index;
             }
         } else {
@@ -578,8 +593,14 @@ G.Application {
 
         footer.workspaceName = window.current_workspace().workspace_title;
 
+        drawel.update_menu();
         drawer.update_menu(_internal.menu_sources[index]);
         window.current_workspace().d.restoreState();
+        if(window.current_workspace().viewSelected) {
+            window.currentView = window.current_workspace().viewSelected
+            window.currentView.forceFocus()
+        }
+        GP.SessionManager.setActiveWorkspace(index)
     }
 
 
@@ -707,6 +728,15 @@ G.Application {
         console.log("Loading session from ", project_url);
         //window.load_in_progress = true;
         GP.ProjectManager.openProject(project_url)
+        //GP.PrpjectManager.project.loadSession()
+
+        stack_launcher.currentIndex = 1;
+    }
+
+    function open_blank_project(project_url, load_pipeline=false) {
+        console.log("New session from ", project_url);
+        //window.load_in_progress = true;
+        GP.ProjectManager.openProject(project_url, false, load_pipeline)
         //GP.PrpjectManager.project.loadSession()
 
         stack_launcher.currentIndex = 1;

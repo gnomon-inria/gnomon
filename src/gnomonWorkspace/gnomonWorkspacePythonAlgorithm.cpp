@@ -41,9 +41,13 @@ public:
     QString algorithm_key;
     QString object_key;
 
+    QMap<QString, QString> open_files;
+
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
     gnomonFormAlgorithmCommand *command = nullptr;
     QJsonObject state;
+
+    QMetaObject::Connection editor_connect;
 };
 
 void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
@@ -177,27 +181,52 @@ QString gnomonWorkspacePythonAlgorithm::algorithm(void) const
     return d->algorithm_key;
 }
 
-void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
+void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_only)
 {
-    QString file_path;
+    QString relative_path;
     const QUrl url(file_url);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     if (url.isLocalFile()) {
-        file_path = QDir::toNativeSeparators(url.toLocalFile());
+        relative_path = QDir::toNativeSeparators(url.toLocalFile());
     } else {
-        file_path = file_url;
+        relative_path = file_url;
     }
 
-    QFile f(file_path);
+    QString absolute_path;
+    QString source;
+    if (!QFile::exists(relative_path)) {
+            qDebug() << Q_FUNC_INFO << "file " << relative_path << "doesn't exist";
+    } else {
+        absolute_path = GNOMON_PROJECT->findFile(relative_path);
+        source = QFileInfo(relative_path).fileName();
+    }
+
+    bool to_copy = (!read_only) & (absolute_path=="");
+    qDebug()<<Q_FUNC_INFO<<relative_path<<"["<<absolute_path<<"]"<<to_copy;
+
+    if(to_copy) {
+        QString file_name = relative_path.split(QRegularExpression("/")).last();
+        QString project_file_path = GNOMON_PROJECT->projectDir() + "/" + file_name;
+        if(!QFile::copy(relative_path, project_file_path)) {
+            dtkWarn()<<"Failed to copy file "<< relative_path << "to Project";
+            return;
+        }
+        relative_path = GNOMON_PROJECT->relativePath(project_file_path);
+    }
+
+    QFile f(relative_path);
     if (f.open(QIODevice::ReadOnly)) {
-        settings.setValue("Python/load", file_path);
+        settings.setValue("Python/load", relative_path);
         QTextStream s(&f);
         d->code->setText(s.readAll());
         d->code->parseCode();
+        d->open_files[d->code->fileName()] = relative_path;
         emit d->code->codeUpdated();
-        this->backup();
+        emit stateChanged();
+        if(!read_only)
+            this->backup();
     } else {
-        dtkWarn()<<"Could not open file"<<file_path;
+        dtkWarn()<<"Could not open file"<<relative_path;
     }
 }
 
@@ -225,7 +254,28 @@ void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
             dtkWarn()<<"Could not save to file"<<file_path;
         }
     }
+}
 
+void gnomonWorkspacePythonAlgorithm::close(const QString& file_name)
+{
+    if (d->open_files.contains(file_name)) {
+        d->open_files.remove(file_name);
+        emit stateChanged();
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"The file"<<file_name<<"was not open";
+    }
+}
+
+void gnomonWorkspacePythonAlgorithm::importFile(const QString& file_name, const QString& path)
+{
+    if (d->open_files.contains(file_name)) {
+        auto project_file = path + "/" + file_name;
+        QFile::copy(d->open_files[file_name], project_file);
+        QString relative_path = GNOMON_PROJECT->relativePath(project_file);
+        d->open_files[file_name] = relative_path;
+        this->backup();
+        emit GNOMON_PROJECT->fileImported(relative_path);
+    }
 }
 
 QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)
@@ -384,6 +434,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputBinaryImage(False).items()}",
                     &stat);
             output_form_added = true;
+            GNOMON_SESSION->trackForm(binaryImage);
             int form_count = gnomonFormManager::instance()->formCount(binaryImage->formName());
             binaryImage->metadata()->set("name",
                                          binaryImage->formName().remove("gnomon") + QString::number(form_count + 1));
@@ -402,6 +453,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellComplex(False).items()}",
                     &stat);
             output_form_added = true;
+            GNOMON_SESSION->trackForm(cellComplex);
             int form_count = gnomonFormManager::instance()->formCount(cellComplex->formName());
             cellComplex->metadata()->set("name",
                                          cellComplex->formName().remove("gnomon") + QString::number(form_count + 1));
@@ -420,6 +472,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellImage(False).items()}",
                     &stat);
             output_form_added = true;
+            GNOMON_SESSION->trackForm(cellImage);
             int form_count = gnomonFormManager::instance()->formCount(cellImage->formName());
             cellImage->metadata()->set("name",
                                        cellImage->formName().remove("gnomon") + QString::number(form_count + 1));
@@ -438,6 +491,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputImage(False).items()}",
                     &stat);
             output_form_added = true;
+            GNOMON_SESSION->trackForm(image);
             int form_count = gnomonFormManager::instance()->formCount(image->formName());
             image->metadata()->set("name", image->formName().remove("gnomon") + QString::number(form_count + 1));
             image->metadata()->set("source", d->algorithm_key);
@@ -455,6 +509,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputLString(False).items()}",
                     &stat);
             output_form_added = true;
+            GNOMON_SESSION->trackForm(lString);
             int form_count = gnomonFormManager::instance()->formCount(lString->formName());
             lString->metadata()->set("name", lString->formName().remove("gnomon") + QString::number(form_count + 1));
             lString->metadata()->set("source", d->algorithm_key);
@@ -472,6 +527,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputMesh(False).items()}",
                     &stat);
             output_form_added = true;
+            GNOMON_SESSION->trackForm(mesh);
             int form_count = gnomonFormManager::instance()->formCount(mesh->formName());
             mesh->metadata()->set("name", mesh->formName().remove("gnomon") + QString::number(form_count + 1));
             mesh->metadata()->set("source", d->algorithm_key);
@@ -489,6 +545,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                     form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputPointCloud(False).items()}",
                     &stat);
             output_form_added = true;
+            GNOMON_SESSION->trackForm(pointCloud);
             int form_count = gnomonFormManager::instance()->formCount(pointCloud->formName());
             pointCloud->metadata()->set("name",
                                         pointCloud->formName().remove("gnomon") + QString::number(form_count + 1));
@@ -557,7 +614,7 @@ void gnomonWorkspacePythonAlgorithm::saveState(void)
 
 void gnomonWorkspacePythonAlgorithm::restoreState(void)
 {
-    unSerialize(d->state);
+    deserialize(d->state);
     for (auto view : d->sources->views()) {
         view->restoreState();
     }
@@ -574,6 +631,13 @@ void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
 
 QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
     QJsonObject state;
+
+    QJsonObject open_file_json;
+    for (const auto& file_name : d->open_files.keys()) {
+        open_file_json.insert(file_name, d->open_files[file_name]);
+    }
+    state.insert("open_files", open_file_json);
+
     state.insert("code", d->code->text());
     state.insert("algoName", d->algorithm_key);
     state.insert("edit", d->edit_mode);
@@ -587,14 +651,38 @@ QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
         }
     }
     state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
-
+    QJsonArray sources;
+    for (auto view : d->sources->views()) {
+        sources.append(view->serialize());
+    }
+    QJsonArray targets;
+    for (auto view : d->targets->views()) {
+        targets.append(view->serialize());
+    }
+    state.insert("sources", sources);
+    state.insert("targets", targets);
 
     return state;
 }
 
-void gnomonWorkspacePythonAlgorithm::unSerialize(const QJsonObject &state) {
-    d->code->setText(state["code"].toString());
-    d->code->parseCode();
+void gnomonWorkspacePythonAlgorithm::deserialize(const QJsonObject &state) {
+    disconnect(d->editor_connect);
+
+    QJsonObject open_file_json = state["open_files"].toObject();
+    for (auto file_name: open_file_json.keys()) {
+        QString file_path = open_file_json[file_name].toString();
+        d->open_files[file_name] = file_path;
+    }
+
+    d->editor_connect = connect(this, &gnomonWorkspacePythonAlgorithm::codeEditorReady, [=] () {
+        for (auto file_name: d->open_files.keys()) {
+            emit requestOpenFile(d->open_files[file_name]);
+        }
+        d->code->parseCode();
+    });
+
+    // TODO: to remove if code is restored from file / backup ?
+    // d->code->setText(state["code"].toString());
     setEditMode(state["edit"].toBool());
 
     QJsonObject parameters_json = state["parameters"].toObject();
@@ -604,20 +692,38 @@ void gnomonWorkspacePythonAlgorithm::unSerialize(const QJsonObject &state) {
             d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
         }
     }
+    QJsonArray sources = state.value("sources").toArray();
+    int i = 0;
+    for (auto view : d->sources->views()) {
+        view->deserialize(sources[i].toObject());
+        i++;
+    }
+    QJsonArray targets = state.value("targets").toArray();
+    i = 0;
+    for (auto view : d->targets->views()) {
+        view->deserialize(targets[i].toObject());
+        i++;
+    }
 }
 
 bool gnomonWorkspacePythonAlgorithm::backup(void) const
 {
-    return GNOMON_PROJECT->backupFile(d->code->fileName(), d->code->text());
+    QString file_name = d->code->fileName();
+    bool ok = false;
+    if (d->open_files.contains(file_name)) {
+        QString file_path = d->open_files[file_name];
+        ok = GNOMON_PROJECT->backupFile(file_path, d->code->text());
+    }
+    return ok;
 }
 
 void gnomonWorkspacePythonAlgorithm::restore(void)
 {
     QStringList py_files = GNOMON_PROJECT->editorFileInfo({"py"});
 
-   for (auto f: py_files) {
-       emit requestOpenFile(f);
-   }
+    for (auto f: py_files) {
+        emit requestOpenFile(f);
+    }
 }
 
 //

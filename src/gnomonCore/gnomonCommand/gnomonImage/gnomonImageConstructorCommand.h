@@ -29,10 +29,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "imageConstructor";
-    static QStringList availablePlugins();
 
 private:
     class gnomonImageConstructorCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonImageConstructorCommand)

@@ -131,6 +131,18 @@ void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbst
     }
 }
 
+void gnomonAbstractView::setForm(const QString& form_uuid, const QString& form_type, const QString& visu_name, const QVariantMap& parameters)
+{
+    d->forms[form_type] = GNOMON_SESSION->getForm(form_uuid);
+    d->setFormVisualization(form_type, visu_name, parameters);
+}
+
+std::shared_ptr<gnomonAbstractVisualization> gnomonAbstractView::getVisualization(const QString& form_type)
+{
+    auto visualization = d->visualizationCommands[form_type]->visualization();
+    return visualization;
+}
+
 std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractView::form(const QString& form_type)
 {
     if (d->forms.contains(form_type)) {
@@ -146,6 +158,7 @@ void gnomonAbstractView::removeForm(const QString& form_type)
         QString visu_name = d->visualizationCommands[form_type]->visualizationName();
         d->viewParameters.parameters.remove(visu_name);
         d->visualizationCommands[form_type]->clear();
+        d->visualizationCommands[form_type]->setForm(nullptr);
         d->forms.remove(form_type);
         d->viewParameters.visuSelected.remove(form_type);
         emit formRemoved(form_type);
@@ -173,7 +186,8 @@ void gnomonAbstractView::update(void)
 
 void gnomonAbstractView::clear(void)
 {
-    for (const auto & form_type : d->forms.keys()) {
+    auto form_types = d->forms.keys();
+    for (const auto & form_type : form_types) {
         QString visu_name = d->visualizationCommands[form_type]->visualizationName();
         d->viewParameters.parameters.remove(visu_name);
         d->visualizationCommands[form_type]->clear();
@@ -182,6 +196,10 @@ void gnomonAbstractView::clear(void)
     d->viewParameters.visuSelected.clear();
 
     d->forms.clear();
+
+    for (const auto & form_type : form_types) {
+        emit formRemoved(form_type);
+    }
     emit formsChanged();
 }
 
@@ -434,4 +452,96 @@ QString gnomonAbstractView::lastFromTypeSelected() {
 
 QString gnomonAbstractView::lastVisuSelected(QString form_type) {
     return d->viewParameters.visuSelected[form_type];
+}
+
+QJsonObject gnomonAbstractView::serialize(void) {
+    QJsonObject serialization;
+    QJsonObject forms;
+    for(auto it = d->forms.keyValueBegin(); it!=d->forms.keyValueEnd(); it++) {
+        forms.insert(it->first, it->second->uuid());
+    }
+    serialization.insert("forms", forms);
+
+    QJsonObject visu_params;
+    QJsonObject visu_names;
+    for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {
+        auto parameters = it->second->parameters();
+        QVariantHash out;
+        for(auto param_it = parameters.keyValueBegin(); param_it!=parameters.keyValueEnd(); param_it++) {
+            out.insert(param_it->first, param_it->second->toVariantHash());
+        }
+        visu_params.insert(it->first, QJsonObject::fromVariantHash(out));
+        visu_names.insert(it->first, it->second->visualizationName());
+    }
+    serialization.insert("visu_params", visu_params);
+    serialization.insert("visu_names", visu_names);
+
+    QJsonObject viewParameters;
+    viewParameters.insert("currentFormType", d->viewParameters.currentFormType);
+    viewParameters.insert("currentFormIndex", d->viewParameters.currentFormIndex);
+    QJsonObject visuSelected;
+    QJsonObject parameters;
+    for(auto it = d->viewParameters.visuSelected.keyValueBegin(); it!=d->viewParameters.visuSelected.keyValueEnd(); it++) {
+        visuSelected.insert(it->first, it->second);
+    }
+   viewParameters.insert("visuSelected", visuSelected);
+   serialization.insert("viewParameters", viewParameters);
+   return serialization;
+}
+
+void gnomonAbstractView::deserialize(const QJsonObject &serialization) {
+    // set visu names
+    auto visu_names = serialization.value("visu_names").toObject();
+    for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {
+        if(visu_names.contains(it->first)) {
+            it->second->setVisualizationName(visu_names.value(it->first).toString());
+        }
+    }
+    this->update();
+
+    // set forms
+    auto forms = serialization.value("forms").toObject();
+    for(const auto &key: forms.keys()) {
+        QString form_uuid = forms.value(key).toString();
+        auto form = GNOMON_SESSION->getForm(form_uuid);
+        if (form) {
+            if (gnomonFormManager::instance()->formIndex(form_uuid) > 0) {
+                //TODO: try to get visu from formManager later
+                //auto index = gnomonFormManager::instance()->formIndex(form_uuid);
+                //this->setForm(key, form, gnomonFormManager::instance()->getVisualization(index));
+                this->setForm(key, form);
+            } else {
+                this->setForm(key, form);
+            }
+        }
+    }
+
+    // set visu params
+    auto visu_params = serialization.value("visu_params").toObject();
+    for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {
+        if(visu_params.contains(it->first)) {
+            it->second->setVisualizationName(visu_names.value(it->first).toString());
+            QVariantHash parameters_hash = visu_params.value(it->first).toObject().toVariantHash();
+            for(auto param_it = parameters_hash.keyValueBegin(); param_it!=parameters_hash.keyValueEnd(); param_it++) {
+                auto param = dtkCoreParameter::create(param_it->second.toHash());
+                it->second->setParameter(param_it->first, param->variant());
+            }
+
+            d->viewParameters.parameters[it->first] = it->second->visualizationParameters();
+        }
+    }
+
+    QJsonObject viewParameters = serialization.value("viewParameters").toObject();
+    d->viewParameters.currentFormType = viewParameters.value("currentFormType").toString();
+    d->viewParameters.currentFormIndex = viewParameters.value("currentFormIndex").toInt();
+    QVariantMap visuSelected = serialization.value("visuSelected").toObject().toVariantMap();
+    QVariantMap parameters = serialization.value("parameters").toObject().toVariantMap();
+    d->viewParameters.visuSelected.clear();
+    d->viewParameters.parameters.clear();
+    for(auto it = visuSelected.keyValueBegin(); it!=visuSelected.keyValueEnd(); it++) {
+        d->viewParameters.visuSelected.insert(it->first, it->second.toString());
+    }
+
+
+    restoreState();
 }

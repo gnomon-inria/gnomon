@@ -30,6 +30,7 @@ G.Workspace {
 
         _source_view.droppedFromManager(world.currentRef);
     }
+    viewSelected: _source_view
 
 // /////////////////////////////////////////////////////////////////////////////
 //

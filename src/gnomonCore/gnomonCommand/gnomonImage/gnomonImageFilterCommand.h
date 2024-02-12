@@ -40,10 +40,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "imageFilter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonImageFilterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonImageFilterCommand)

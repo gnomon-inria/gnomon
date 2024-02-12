@@ -40,10 +40,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "pointCloudFromImage";
-    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudFromImageCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonPointCloudFromImageCommand)

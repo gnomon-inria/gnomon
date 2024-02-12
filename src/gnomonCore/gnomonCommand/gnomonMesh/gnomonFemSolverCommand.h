@@ -37,10 +37,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "femSolver";
-    static QStringList availablePlugins();
 
 private:
     class gnomonFemSolverCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonFemSolverCommand)
