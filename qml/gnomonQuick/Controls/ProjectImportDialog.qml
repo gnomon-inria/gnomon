@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
+import gnomon.Utils
 
 import Qt.labs.platform as P
 
@@ -42,7 +43,7 @@ G.Dialog {
     G.TextField {
         id: _copy_path
 
-        property var isValid: _copy_path.text.includes(GP.ProjectManager.project.currentDir)
+        property var isValid: _copy_path.text.includes(GP.ProjectManager.project.currentDir) & GUtils.isValidPath(_copy_path.text)
 
         backgroundColor: G.Style.colors.gutterColor
         backgroundHighlightColor: isValid? G.Style.colors.okColor : G.Style.colors.warningColor
