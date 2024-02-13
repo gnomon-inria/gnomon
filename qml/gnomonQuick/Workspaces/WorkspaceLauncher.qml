@@ -13,6 +13,7 @@ import gnomonQuick.Style as G
 
 import gnomon.Pipeline  1.0 as GP
 import gnomon.Project   1.0 as GP
+import gnomon.Utils
 
 
 G.Workspace {
@@ -612,6 +613,8 @@ G.Workspace {
                                 required property string description
                                 required property string lastModified
 
+                                property bool has_thumbnail: GUtils.fileExists(source.slice(7) + "/.gnomon/thumbnail.png")
+
                                 height: _project_grid.cellHeight - G.Style.smallPadding
                                 width: _project_grid.cellWidth - G.Style.smallPadding
 
@@ -629,12 +632,28 @@ G.Workspace {
                                     border.width: G.Style.borderWidth
                                     border.color: _getBorderColor()
                                 }
-                                // there are no thumbnails for now
-                                //thumbnail: "image://thumbnails/project_" + index
+                                thumbnail: has_thumbnail? source + "/.gnomon/thumbnail.png": "qrc:/qt/qml/gnomon/assets/thumbnail.png"
 
                                 onDoubleClicked: {
                                     history_set_last_used(source)
                                     load_project(source)
+                                }
+
+                                G.IconButton {
+                                    iconName: "pencil";
+                                    size: G.Style.iconSmall;
+                                    color: has_thumbnail? G.Style.colors.gutterColor : G.Style.colors.fgColor;
+                                    hoverColor: G.Style.colors.neutralColor;
+                                    tooltip: "Change project thumbnail"
+
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: parent.height - parent.titleTopMargin - 2*G.Style.smallPadding - G.Style.tinyPadding
+                                    anchors.topMargin: parent.titleTopMargin + G.Style.tinyPadding
+
+                                    onClicked: {
+                                        console.log("Change thumbnail")
+                                    }
                                 }
 
                                 G.IconButton {
