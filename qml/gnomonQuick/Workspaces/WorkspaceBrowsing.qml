@@ -157,22 +157,67 @@ G.Workspace {
 
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
-        width: G.Style.smallDialogWidth;
-        height: G.Style.smallDialogHeight;
+        width: G.Style.mediumDialogWidth;
+        height: G.Style.smallDialogHeight + G.Style.smallDelegateHeight;
 
         padding: G.Style.smallPadding;
 
         parent: Overlay.overlay
         modal: true
         title: "External data"
-        standardButtons:  Dialog.Cancel | Dialog.Ok
+
+        footer: DialogButtonBox
+        {
+            visible: true
+            alignment: Qt.AlignRight
+            spacing: G.Style.smallPadding
+
+            G.Button {
+                id: _cancel_button
+
+
+                width: G.Style.shortButtonWidth
+                text: 'Cancel';
+                flat: true
+                type: G.Style.ButtonType.Neutral
+                onClicked: _external_data_dialog.reject();
+            }
+
+            G.Button {
+                id: _import_button
+
+                width: G.Style.mediumButtonWidth
+                text: 'Import To Project';
+                flat: true
+                type: G.Style.ButtonType.Base
+
+                onClicked: {
+                    _external_data_dialog.close();
+                    _import_dialog.importPath = GP.ProjectManager.project.currentDir;
+                    _import_dialog.open()
+                }
+            }
+
+            G.Button {
+                id: _add_button
+
+                width: G.Style.mediumButtonWidth
+                text: 'Add Data Path';
+                type: G.Style.ButtonType.OK
+                iconName: "database-plus-outline"
+
+                onClicked: {
+                    _external_data_dialog.accept();
+                }
+            }
+        }
 
         Label {
             id: _external_label
             anchors.left: parent.left;
             anchors.top: parent.top;
             anchors.right: parent.right;
-            text: "Your current folder is not part of the project data directories.\n Please specify the parent directory to add to the project"
+            text: "The files you are trying to open are not part of the project data directories. To open them, you can either specify a parent directory to add to the project data directories, or import the files to your project."
             wrapMode: Text.WordWrap
 
             font: G.Style.fonts.cardLabel
@@ -226,7 +271,7 @@ G.Workspace {
 
                     height: 2
 
-                    color: _delegate.acceptableInput? G.Style.colors.okColor : G.Style.colors.dangerColor
+                    color: _delegate.acceptableInput? G.Style.colors.okColor : G.Style.colors.warningColor
                 }
 
                 validator: RegularExpressionValidator {
@@ -238,9 +283,9 @@ G.Workspace {
                     for (let i_f in _external_data_dialog.paths) {
                         valid = valid & _external_list_view.itemAtIndex(i_f).acceptableInput
                     }
-                    _external_data_dialog.footer.standardButton(Dialog.Ok).type =  valid ? G.Style.ButtonType.Base : G.Style.ButtonType.Neutral
-                    _external_data_dialog.footer.standardButton(Dialog.Ok).flat = !valid
-                    _external_data_dialog.footer.standardButton(Dialog.Ok).enabled = valid
+                    _add_button.type = valid ? G.Style.ButtonType.OK : G.Style.ButtonType.Warning
+                    _add_button.flat = !valid
+                    _add_button.enabled = valid
                 }
 
                 Component.onCompleted: {
@@ -273,6 +318,24 @@ G.Workspace {
 
         onRejected: {
             _external_data_dialog.close();
+        }
+    }
+
+    G.ProjectImportDialog {
+        id: _import_dialog
+
+        message: "You have to import this file to your project to open it. Please select where you want to copy it."
+
+        onAccepted: {
+            let relative_paths = [];
+            for (let i_f in _external_data_dialog.urls) {
+                let url = _external_data_dialog.urls[i_f];
+                d.importFile(url.slice(7), _import_dialog.importPath)
+                let file_name = url.split('/').pop()
+                let import_url = "file://" + _import_dialog.importPath + "/" + file_name
+                relative_paths.push(GP.ProjectManager.project.relativePath(import_url));
+            }
+            requestOpenFiles(relative_paths)
         }
     }
 
