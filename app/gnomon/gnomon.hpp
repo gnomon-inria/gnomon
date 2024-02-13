@@ -56,6 +56,8 @@ public:
 
   Q_INVOKABLE bool fileExists(QString file_path);
 
+  Q_INVOKABLE QJsonObject projectInfo(const QString &path);
+
 signals:
   void dataPathChanged();
 

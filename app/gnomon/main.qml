@@ -19,6 +19,7 @@ import gnomonQuick.Style       as G
 
 import gnomon.Pipeline  as GP
 import gnomon.Project   as GP
+import gnomon.Utils
 import "." as G
 
 G.Application {
@@ -491,10 +492,7 @@ G.Application {
                 window.recent_projects.remove(14)
             }
             window.recent_projects.append({
-                name: project_name,
-                source : folder_source,
-                description: project_description,
-                lastModified: project_last_modified,
+                source : folder_source
             })
             recent_projects_array.splice(0, 0, window.recent_projects.get(window.recent_projects.count-1))
             window.opened_files = JSON.stringify(recent_projects_array)
@@ -791,12 +789,15 @@ G.Application {
         window.height = Math.max(window.height, G.Style.windowMinHeight)
 
         window.recent_projects.clear()
-    if(stt.opened_projects) {
-        let files = JSON.parse(stt.opened_projects)
+
+        if(stt.opened_projects) {
+            let files = JSON.parse(stt.opened_projects)
             for(let i=0; i<files.length; i++){
-                window.recent_projects.append(files[i])
+                let info = GUtils.projectInfo(files[i].source)
+                info.source = files[i].source
+                window.recent_projects.append(info)
             }
-    }
+        }
         footer.workspaceName = ""
     }
 }

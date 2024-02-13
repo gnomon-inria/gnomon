@@ -239,6 +239,16 @@ gnomonQMLUtils* gnomonQMLUtils::instance(void)
     return s_instance;
 }
 
+QJsonObject gnomonQMLUtils::projectInfo(const QString &path)
+{
+    QVariantMap project_info = gnomonProject::readProjectInfoFromPath(path);
+    QJsonObject project_info_json;
+    for (auto key: project_info.keys()) {
+        project_info_json.insert(key, project_info[key].toString());
+    }
+    return project_info_json;
+}
+
 gnomonQMLUtils *gnomonQMLUtils::s_instance = nullptr;
 
 // /////////////////////////////////////////////////////////////////////////////
