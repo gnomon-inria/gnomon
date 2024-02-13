@@ -608,6 +608,8 @@ G.Workspace {
                             }
 
                             delegate: G.Card {
+                                id: project_delegate
+
                                 required property string name
                                 required property string source
                                 required property string description
@@ -652,7 +654,9 @@ G.Workspace {
                                     anchors.topMargin: parent.titleTopMargin + G.Style.tinyPadding
 
                                     onClicked: {
-                                        console.log("Change thumbnail")
+                                        project_thumbnail_dialog.source = source
+                                        project_thumbnail_dialog.delegate = project_delegate
+                                        project_thumbnail_dialog.open()
                                     }
                                 }
 
@@ -833,6 +837,215 @@ G.Workspace {
         onRejected : {
             GP.ProjectManager.openProject(_workspace._dialog_source)
             add_to_history(_workspace._dialog_source)
+        }
+    }
+
+    G.Dialog {
+        id: project_thumbnail_dialog
+
+        property string source: "";
+        property var delegate;
+        property bool has_thumbnail: GUtils.fileExists(source.slice(7) + "/.gnomon/thumbnail.png")
+        property var thumbnail: has_thumbnail? source + "/.gnomon/thumbnail.png": "qrc:/qt/qml/gnomon/assets/thumbnail.png"
+
+        parent: Overlay.overlay
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.mediumDialogWidth
+        height: G.Style.largeDialogHeight
+
+        modal: true
+        title: "Select project thumbnail"
+
+        G.IconButton {
+            id: _open_image_button
+
+            anchors.top: parent.top
+            anchors.right: parent.right;
+            anchors.margins: G.Style.smallPadding
+            size: G.Style.iconSmall;
+            iconName: "folder-open"
+
+            onClicked: {
+                _image_file_dialog.open();
+            }
+        }
+
+        P.FileDialog {
+            id: _image_file_dialog
+
+            nameFilters: [ "Image files (*.jpg, *.png)" ]
+            title: "Open thumbnail image"
+            folder: project_thumbnail_dialog.source
+            modality: Qt.WindowModal;
+            fileMode: P.FileDialog.OpenFile
+
+            onAccepted: {
+                project_thumbnail_dialog.thumbnail = _image_file_dialog.file
+                project_thumbnail_dialog.resetSelection()
+            }
+        }
+
+        Image {
+            id: thumbnail_image
+
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: G.Style.mediumPanelWidth
+            height: G.Style.mediumPanelHeight
+            fillMode: Image.PreserveAspectFit
+            source: project_thumbnail_dialog.thumbnail
+
+            Rectangle {
+                id: _selection_rectangle
+
+                anchors.left: _top_left_handle.horizontalCenter
+                anchors.right: _bottom_right_handle.horizontalCenter
+                anchors.top: _top_left_handle.verticalCenter
+                anchors.bottom: _bottom_right_handle.verticalCenter
+
+                width: G.Style.mediumPanelWidth
+                height: G.Style.mediumPanelHeight
+
+                border.width: G.Style.borderWidth
+                border.color: G.Style.colors.baseColor
+                color: G.Style.colors.transparent
+            }
+
+            Rectangle {
+                id: _top_left_handle
+
+                x: 0
+                y: 0
+
+                width: G.Style.smallPadding
+                height: G.Style.smallPadding
+                radius: G.Style.smallPadding/2
+                color: G.Style.colors.G.Style.colors.baseColor
+
+                Drag.active: _top_left_drag_area.drag.active
+
+                onXChanged: _bottom_left_handle.x = _top_left_handle.x
+                onYChanged: _top_right_handle.y = _top_left_handle.y
+
+                MouseArea {
+                    id: _top_left_drag_area
+                    anchors.fill: parent
+                    drag.target: parent
+                    drag.minimumX: 0
+                    drag.maximumX: _top_right_handle.x
+                    drag.minimumY: 0
+                    drag.maximumY: _bottom_left_handle.y
+                    hoverEnabled: true
+                }
+            }
+
+            Rectangle {
+                id: _top_right_handle
+                x: parent.width
+                y: 0
+
+                width: G.Style.smallPadding
+                height: G.Style.smallPadding
+                radius: G.Style.smallPadding/2
+                color: G.Style.colors.G.Style.colors.baseColor
+
+                Drag.active: _top_right_drag_area.drag.active
+
+                onXChanged: _bottom_right_handle.x = _top_right_handle.x
+                onYChanged: _top_left_handle.y = _top_right_handle.y
+
+                MouseArea {
+                    id: _top_right_drag_area
+                    anchors.fill: parent
+                    drag.target: parent
+                    drag.minimumX: _top_left_handle.x
+                    drag.maximumX: thumbnail_image.width
+                    drag.minimumY: 0
+                    drag.maximumY: _bottom_right_handle.y
+                    hoverEnabled: true
+                }
+            }
+
+            Rectangle {
+                id: _bottom_left_handle
+                x: 0
+                y: parent.height
+
+                width: G.Style.smallPadding
+                height: G.Style.smallPadding
+                radius: G.Style.smallPadding/2
+                color: G.Style.colors.G.Style.colors.baseColor
+
+                Drag.active: _bottom_left_drag_area.drag.active
+
+                onXChanged: _top_left_handle.x = _bottom_left_handle.x
+                onYChanged: _bottom_right_handle.y = _bottom_left_handle.y
+
+                MouseArea {
+                    id: _bottom_left_drag_area
+                    anchors.fill: parent
+                    drag.target: parent
+                    drag.minimumX: 0
+                    drag.maximumX: _bottom_right_handle.x
+                    drag.minimumY: _top_left_handle.y
+                    drag.maximumY: thumbnail_image.height
+                    hoverEnabled: true
+                }
+            }
+
+            Rectangle {
+                id: _bottom_right_handle
+                x: parent.width
+                y: parent.height
+
+                width: G.Style.smallPadding
+                height: G.Style.smallPadding
+                radius: G.Style.smallPadding/2
+                color: G.Style.colors.G.Style.colors.baseColor
+
+                Drag.active: _bottom_right_drag_area.drag.active
+
+                onXChanged: _top_right_handle.x = _bottom_right_handle.x
+                onYChanged: _bottom_left_handle.y = _bottom_right_handle.y
+
+                MouseArea {
+                    id: _bottom_right_drag_area
+                    anchors.fill: parent
+                    drag.target: parent
+                    drag.minimumX: _bottom_left_handle.x
+                    drag.maximumX: thumbnail_image.width
+                    drag.minimumY: _top_right_handle.y
+                    drag.maximumY: thumbnail_image.height
+                    hoverEnabled: true
+                }
+            }
+        }
+
+        function resetSelection() {
+            _top_left_handle.x = 0
+            _top_left_handle.y = 0
+            _top_right_handle.x = thumbnail_image.width
+            _top_right_handle.y = 0
+            _bottom_left_handle.x = 0
+            _bottom_left_handle.y = thumbnail_image.height
+            _bottom_right_handle.x = thumbnail_image.width
+            _bottom_right_handle.y = thumbnail_image.height
+        }
+
+        onClosed: {
+            resetSelection()
+        }
+
+        standardButtons:  Dialog.Ok | Dialog.Cancel
+
+        onAccepted: {
+            let project_path = decodeURIComponent(project_thumbnail_dialog.source).slice(7)
+            let thumbnail_path = decodeURIComponent(project_thumbnail_dialog.thumbnail).slice(7)
+            let top_left = Qt.point(_top_left_handle.x/thumbnail_image.width, _top_left_handle.y/thumbnail_image.height)
+            let bottom_right = Qt.point(_bottom_right_handle.x/thumbnail_image.width, _bottom_right_handle.y/thumbnail_image.height)
+            GUtils.makeProjectThumbnail(project_path, thumbnail_path, top_left, bottom_right)
+            project_thumbnail_dialog.delegate.hasThumbnail = true;
         }
     }
 

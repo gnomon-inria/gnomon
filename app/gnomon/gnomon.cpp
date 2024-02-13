@@ -249,6 +249,25 @@ QJsonObject gnomonQMLUtils::projectInfo(const QString &path)
     return project_info_json;
 }
 
+void gnomonQMLUtils::makeProjectThumbnail(const QString &project_path, const QString &thumbnail_path, QPointF top_left, QPointF bottom_right)
+{
+    qDebug()<<Q_FUNC_INFO<<thumbnail_path;
+    QImage image(thumbnail_path);
+
+    qDebug()<<Q_FUNC_INFO<<image.width()<<image.size();
+    qDebug()<<Q_FUNC_INFO<<top_left.x()<<top_left.y();
+    qDebug()<<Q_FUNC_INFO<<bottom_right.x()<<bottom_right.y();
+
+    int x = int(top_left.x()*image.width());
+    int y = int(top_left.y()*image.height());
+    int width = int((bottom_right.x() - top_left.x())*image.width());
+    int height = int((bottom_right.y() - top_left.y())*image.height());
+
+    QImage thumbnail = image.copy(x, y, width, height);
+    thumbnail.save(project_path + "/.gnomon/thumbnail.png");
+}
+
+
 gnomonQMLUtils *gnomonQMLUtils::s_instance = nullptr;
 
 // /////////////////////////////////////////////////////////////////////////////
