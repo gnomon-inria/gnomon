@@ -260,8 +260,10 @@ void gnomonQMLUtils::makeProjectThumbnail(const QString &project_path, const QSt
 
     int x = int(top_left.x()*image.width());
     int y = int(top_left.y()*image.height());
-    int width = int((bottom_right.x() - top_left.x())*image.width());
-    int height = int((bottom_right.y() - top_left.y())*image.height());
+    int _width = int((bottom_right.x() - top_left.x())*image.width());
+    int _height = int((bottom_right.y() - top_left.y())*image.height());
+    int width = _width < _height ? _width : _height;
+    int height = _width < _height ? _width : _height;
 
     QImage thumbnail = image.copy(x, y, width, height);
     thumbnail.save(project_path + "/.gnomon/thumbnail.png");

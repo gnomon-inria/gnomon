@@ -615,7 +615,7 @@ G.Workspace {
                                 required property string description
                                 required property string lastModified
 
-                                property bool has_thumbnail: GUtils.fileExists(source.slice(7) + "/.gnomon/thumbnail.png")
+                                property bool has_thumbnail: false
 
                                 height: _project_grid.cellHeight - G.Style.smallPadding
                                 width: _project_grid.cellWidth - G.Style.smallPadding
@@ -634,7 +634,6 @@ G.Workspace {
                                     border.width: G.Style.borderWidth
                                     border.color: _getBorderColor()
                                 }
-                                thumbnail: has_thumbnail? source + "/.gnomon/thumbnail.png": "qrc:/qt/qml/gnomon/assets/thumbnail.png"
 
                                 onDoubleClicked: {
                                     history_set_last_used(source)
@@ -655,7 +654,9 @@ G.Workspace {
 
                                     onClicked: {
                                         project_thumbnail_dialog.source = source
+                                        project_thumbnail_dialog.thumbnail = thumbnail
                                         project_thumbnail_dialog.delegate = project_delegate
+                                        project_thumbnail_dialog.resetSelection()
                                         project_thumbnail_dialog.open()
                                     }
                                 }
@@ -791,6 +792,16 @@ G.Workspace {
                                         load_session(_pipeline_file_dialog.file)
                                     }
                                 }
+
+                                Component.onCompleted: {
+                                    refreshThumbnail()
+                                }
+
+                                function refreshThumbnail() {
+                                    project_delegate.thumbnail = ""
+                                    project_delegate.has_thumbnail = GUtils.fileExists(source.slice(7) + "/.gnomon/thumbnail.png")
+                                    project_delegate.thumbnail = has_thumbnail? source + "/.gnomon/thumbnail.png": "qrc:/qt/qml/gnomon/assets/thumbnail.png"
+                                }
                             }
                         }
                     }
@@ -845,30 +856,51 @@ G.Workspace {
 
         property string source: "";
         property var delegate;
-        property bool has_thumbnail: GUtils.fileExists(source.slice(7) + "/.gnomon/thumbnail.png")
-        property var thumbnail: has_thumbnail? source + "/.gnomon/thumbnail.png": "qrc:/qt/qml/gnomon/assets/thumbnail.png"
+        property string thumbnail: ""
 
         parent: Overlay.overlay
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
         width: G.Style.mediumDialogWidth
-        height: G.Style.largeDialogHeight
+        height: G.Style.largeDialogHeight + G.Style.smallDelegateHeight
 
         modal: true
         title: "Select project thumbnail"
+
+        onThumbnailChanged: {
+            console.log(thumbnail)
+            console.log(thumbnail != "" & !thumbnail.startsWith("qrc"))
+            console.log(_selection_rectangle.visible)
+        }
 
         G.IconButton {
             id: _open_image_button
 
             anchors.top: parent.top
-            anchors.right: parent.right;
+            anchors.left: thumbnail_image.left;
             anchors.margins: G.Style.smallPadding
             size: G.Style.iconSmall;
+
+            color: G.Style.colors.fgColor
+            hoverColor: G.Style.colors.neutralColor
+
             iconName: "folder-open"
 
             onClicked: {
                 _image_file_dialog.open();
             }
+        }
+
+        Label {
+            anchors.verticalCenter: _open_image_button.verticalCenter
+            anchors.left: _open_image_button.right;
+            anchors.right: parent.right;
+            anchors.margins: G.Style.smallPadding
+
+            text: "Load thumbnail image file..."
+
+            color: G.Style.colors.textColorBase;
+            font: G.Style.fonts.formLabel;
         }
 
         P.FileDialog {
@@ -889,7 +921,7 @@ G.Workspace {
         Image {
             id: thumbnail_image
 
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.top: _open_image_button.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             width: G.Style.mediumPanelWidth
             height: G.Style.mediumPanelHeight
@@ -904,6 +936,8 @@ G.Workspace {
                 anchors.top: _top_left_handle.verticalCenter
                 anchors.bottom: _bottom_right_handle.verticalCenter
 
+                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
+
                 width: G.Style.mediumPanelWidth
                 height: G.Style.mediumPanelHeight
 
@@ -915,13 +949,15 @@ G.Workspace {
             Rectangle {
                 id: _top_left_handle
 
-                x: 0
-                y: 0
+                x: -width/2
+                y: -width/2
 
-                width: G.Style.smallPadding
-                height: G.Style.smallPadding
-                radius: G.Style.smallPadding/2
+                width: 2*G.Style.smallPadding
+                height: 2*G.Style.smallPadding
+                radius: G.Style.smallPadding
                 color: G.Style.colors.G.Style.colors.baseColor
+
+                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
 
                 Drag.active: _top_left_drag_area.drag.active
 
@@ -932,23 +968,25 @@ G.Workspace {
                     id: _top_left_drag_area
                     anchors.fill: parent
                     drag.target: parent
-                    drag.minimumX: 0
-                    drag.maximumX: _top_right_handle.x
-                    drag.minimumY: 0
-                    drag.maximumY: _bottom_left_handle.y
+                    drag.minimumX: -width/2
+                    drag.maximumX: _top_right_handle.x-width/2
+                    drag.minimumY: -width/2
+                    drag.maximumY: _bottom_left_handle.y-width/2
                     hoverEnabled: true
                 }
             }
 
             Rectangle {
                 id: _top_right_handle
-                x: parent.width
-                y: 0
+                x: parent.width+width/2
+                y: -width/2
 
-                width: G.Style.smallPadding
-                height: G.Style.smallPadding
-                radius: G.Style.smallPadding/2
+                width: 2*G.Style.smallPadding
+                height: 2*G.Style.smallPadding
+                radius: G.Style.smallPadding
                 color: G.Style.colors.G.Style.colors.baseColor
+
+                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
 
                 Drag.active: _top_right_drag_area.drag.active
 
@@ -959,23 +997,25 @@ G.Workspace {
                     id: _top_right_drag_area
                     anchors.fill: parent
                     drag.target: parent
-                    drag.minimumX: _top_left_handle.x
-                    drag.maximumX: thumbnail_image.width
-                    drag.minimumY: 0
-                    drag.maximumY: _bottom_right_handle.y
+                    drag.minimumX: _top_left_handle.x+width/2
+                    drag.maximumX: thumbnail_image.width+width/2
+                    drag.minimumY: -width/2
+                    drag.maximumY: _bottom_right_handle.y-width/2
                     hoverEnabled: true
                 }
             }
 
             Rectangle {
                 id: _bottom_left_handle
-                x: 0
-                y: parent.height
+                x: -width/2
+                y: parent.height+width/2
 
-                width: G.Style.smallPadding
-                height: G.Style.smallPadding
-                radius: G.Style.smallPadding/2
+                width: 2*G.Style.smallPadding
+                height: 2*G.Style.smallPadding
+                radius: G.Style.smallPadding
                 color: G.Style.colors.G.Style.colors.baseColor
+
+                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
 
                 Drag.active: _bottom_left_drag_area.drag.active
 
@@ -986,23 +1026,25 @@ G.Workspace {
                     id: _bottom_left_drag_area
                     anchors.fill: parent
                     drag.target: parent
-                    drag.minimumX: 0
-                    drag.maximumX: _bottom_right_handle.x
-                    drag.minimumY: _top_left_handle.y
-                    drag.maximumY: thumbnail_image.height
+                    drag.minimumX: -width/2
+                    drag.maximumX: _bottom_right_handle.x-width/2
+                    drag.minimumY: _top_left_handle.y+width/2
+                    drag.maximumY: thumbnail_image.height+width/2
                     hoverEnabled: true
                 }
             }
 
             Rectangle {
                 id: _bottom_right_handle
-                x: parent.width
-                y: parent.height
+                x: parent.width+width/2
+                y: parent.height+width/2
 
-                width: G.Style.smallPadding
-                height: G.Style.smallPadding
-                radius: G.Style.smallPadding/2
+                width: 2*G.Style.smallPadding
+                height: 2*G.Style.smallPadding
+                radius: G.Style.smallPadding
                 color: G.Style.colors.G.Style.colors.baseColor
+
+                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
 
                 Drag.active: _bottom_right_drag_area.drag.active
 
@@ -1013,10 +1055,10 @@ G.Workspace {
                     id: _bottom_right_drag_area
                     anchors.fill: parent
                     drag.target: parent
-                    drag.minimumX: _bottom_left_handle.x
-                    drag.maximumX: thumbnail_image.width
-                    drag.minimumY: _top_right_handle.y
-                    drag.maximumY: thumbnail_image.height
+                    drag.minimumX: _bottom_left_handle.x+width/2
+                    drag.maximumX: thumbnail_image.width+width/2
+                    drag.minimumY: _top_right_handle.y+width/2
+                    drag.maximumY: thumbnail_image.height+width/2
                     hoverEnabled: true
                 }
             }
@@ -1045,7 +1087,7 @@ G.Workspace {
             let top_left = Qt.point(_top_left_handle.x/thumbnail_image.width, _top_left_handle.y/thumbnail_image.height)
             let bottom_right = Qt.point(_bottom_right_handle.x/thumbnail_image.width, _bottom_right_handle.y/thumbnail_image.height)
             GUtils.makeProjectThumbnail(project_path, thumbnail_path, top_left, bottom_right)
-            project_thumbnail_dialog.delegate.hasThumbnail = true;
+            project_thumbnail_dialog.delegate.refreshThumbnail();
         }
     }
 
