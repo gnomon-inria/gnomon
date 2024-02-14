@@ -88,3 +88,7 @@ void gnomonAbstractSessionManager::cleanExpiredForms() {
         }
     }
 }
+
+QStringList gnomonAbstractSessionManager::trackedForms() {
+    return m_tracked_forms.keys();
+}

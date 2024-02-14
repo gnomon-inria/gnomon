@@ -81,6 +81,7 @@ public:
 public:
     QHash<int, QString> forms;
     QHash<int, std::shared_ptr<gnomonAbstractVisualization> > formVisualizations;
+    QHash<int, QJsonObject > savedFormVisualizations;
     QHash<int, gnomonAbstractWriterCommand *> formWriterCommand;
     QHash<int, gnomonAbstractReaderCommand *> formReaderCommand;
     QHash<int, QImage> formThumbnail;
@@ -90,7 +91,6 @@ public:
     QHash<int, bool> formDropped;
 
 public:
-    gnomonAbstractView *view = nullptr;
     QTemporaryDir *tmpDir = nullptr;
 
 public:
@@ -118,7 +118,11 @@ private slots:
     void startMemoryTimer();
 
 public:
-    gnomonAbstractView *createView(const QString& className, const QString& form_type, int figure_number=-1);
+    std::shared_ptr<gnomonAbstractView> createView(const QString& className, const QString& form_type, int figure_number=-1);
+
+    QJsonObject serializeVisualization(std::shared_ptr<gnomonAbstractVisualization> visualization, int index);
+    QPair<std::shared_ptr<gnomonAbstractVisualization>, std::shared_ptr<gnomonAbstractView>>
+    deserializeVisualization(QJsonObject &state, int index, const QString &form_uuid);
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -260,26 +264,74 @@ void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
     this->formWriterCommand[item]->setAlgorithmName(writer_plugin);
 }
 
-gnomonAbstractView *gnomonFormManagerPrivate::createView(const QString& className, const QString& form_type, int figure_number)
+std::shared_ptr<gnomonAbstractView>
+gnomonFormManagerPrivate::createView(const QString& className, const QString& form_type, int figure_number)
 {
-    gnomonAbstractView* view = nullptr;
+    std::shared_ptr<gnomonAbstractView> view = nullptr;
     if(className == "gnomonVtkView") {
-        view = new gnomonVtkView(this);
+        view = std::make_shared<gnomonVtkView>(this);
         view->setAcceptForm(form_type, true);
         vtkNew<vtkRenderWindow> temp_render_window;
         temp_render_window->SetOffScreenRendering(true);
         vtkNew<vtkRenderWindowInteractor> temp_render_window_interactor;
         temp_render_window_interactor->SetRenderWindow(temp_render_window);
-        dynamic_cast<gnomonVtkView*>(view)->associate(temp_render_window);
+        std::dynamic_pointer_cast<gnomonVtkView>(view)->associate(temp_render_window);
     } else if (className == "gnomonQmlView") {
-        view = new gnomonQmlView(this);
+        view = std::make_shared<gnomonQmlView>(this);
         view->setAcceptForm(form_type, true);
     } else if (className == "gnomonMplView") {
-        view = new gnomonMplView(this);
+        view = std::make_shared<gnomonMplView>(this);
         view->setAcceptForm(form_type, true);
-        dynamic_cast<gnomonMplView*>(view)->setFigureNumber(figure_number);
+        std::dynamic_pointer_cast<gnomonMplView>(view)->setFigureNumber(figure_number);
     }
     return view;
+}
+
+QJsonObject gnomonFormManagerPrivate::serializeVisualization(std::shared_ptr<gnomonAbstractVisualization> visualization, int index) {
+    QVariantMap visu_info;
+    visu_info["form_type"] = GNOMON_SESSION->getForm(forms[index])->formName();
+    QString visu_type;
+    QString figure_number;
+    if(auto vtk_visu = std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visualization)) {
+        visu_type = "gnomonVtkView";
+    } else if (auto qml_visu = std::dynamic_pointer_cast<gnomonAbstractQmlVisualization>(visualization)) {
+        visu_type = "gnomonQmlView";
+    } else if (auto mpl_visu = std::dynamic_pointer_cast<gnomonAbstractMplVisualization>(visualization)) {
+        visu_type = "gnomonMplView";
+        auto mpl_view = dynamic_cast<gnomonMplView *>(mpl_visu->view());
+        if (mpl_view) {
+            figure_number = QString::number(mpl_view->figureNumber());
+        }
+    }
+    visu_info["visu_type"] = visu_type;
+    visu_info["figure_number"] = figure_number;
+    visu_info["visu_name"] = visualization->pluginName();
+    QVariantMap parameters;
+    for(auto [k, v]: visualization->parameters().asKeyValueRange()) {
+        parameters.insert(k, v->toVariantHash());
+    }
+    visu_info["parameters"] = parameters;
+    return QJsonObject::fromVariantMap(visu_info);
+}
+
+QPair<std::shared_ptr<gnomonAbstractVisualization>, std::shared_ptr<gnomonAbstractView>>
+gnomonFormManagerPrivate::deserializeVisualization(QJsonObject &state, int index, const QString &form_uuid) {
+    auto visualization = state.toVariantMap();
+    QString form_type = visualization["form_type"].toString();
+    QString visu_type = visualization["visu_type"].toString();
+    int figure_number = visualization["figure_number"].toString().toInt();
+    QString visu_name = visualization["visu_name"].toString();
+    auto parameters = visualization["parameters"].toMap();
+    auto view = createView(visu_type, form_type, figure_number);
+    std::shared_ptr<gnomonAbstractVisualization> visu = nullptr;
+    QImage image(1500, 1500, QImage::Format_RGB32);
+    image.fill(Qt::GlobalColor::black);
+    if (view) {
+        view->setForm(form_uuid, form_type, visu_name, parameters);
+        visu = view->getVisualization(form_type);
+    }
+
+    return {visu, view};
 }
 
 // ///////////////////////////////////////////////////////////////////
@@ -420,8 +472,9 @@ QString gnomonFormManager::get(int index)
 
 int gnomonFormManager::formIndex(const QString& form_uuid)
 {
-    if (d->forms.values().contains(form_uuid)) {
-        return d->forms.values().indexOf(form_uuid);
+    auto values = d->forms.values();
+    if (values.contains(form_uuid)) {
+        return d->forms.key(form_uuid);
     } else {
         return -1;
     }
@@ -429,6 +482,13 @@ int gnomonFormManager::formIndex(const QString& form_uuid)
 
 std::shared_ptr<gnomonAbstractVisualization> gnomonFormManager::getVisualization(int index)
 {
+    if(d->savedFormVisualizations.contains(index)) {
+        auto visu_state = d->savedFormVisualizations[index];
+        auto form_uuid = d->forms[index];
+        auto [visu, view] = d->deserializeVisualization(visu_state, index, form_uuid);
+        d->savedFormVisualizations.remove(index);
+        d->formVisualizations.insert(index, visu);
+    }
     return d->formVisualizations.value(index, nullptr);
 }
 
@@ -629,31 +689,11 @@ QJsonObject gnomonFormManager::serialize(void)
 
     QJsonObject form_visualizations;
     for( auto [id, visualization]: d->formVisualizations.asKeyValueRange()) {
-        QVariantMap visu_info;
-        visu_info["form_type"] = GNOMON_SESSION->getForm(d->forms[id])->formName();
-        QString visu_type;
-        QString figure_number;
-        if(auto vtk_visu = std::dynamic_pointer_cast<gnomonAbstractVtkVisualization>(visualization)) {
-            visu_type = "gnomonVtkView";
-        } else if (auto qml_visu = std::dynamic_pointer_cast<gnomonAbstractQmlVisualization>(visualization)) {
-            visu_type = "gnomonQmlView";
-        } else if (auto mpl_visu = std::dynamic_pointer_cast<gnomonAbstractMplVisualization>(visualization)) {
-            visu_type = "gnomonMplView";
-            auto mpl_view = dynamic_cast<gnomonMplView *>(mpl_visu->view());
-            if (mpl_view) {
-                figure_number = QString::number(mpl_view->figureNumber());
-            }
-        }
-        visu_info["visu_type"] = visu_type;
-        visu_info["figure_number"] = figure_number;
-        visu_info["visu_name"] = visualization->pluginName();
-        QVariantMap parameters;
-        for(auto [k, v]: visualization->parameters().asKeyValueRange()) {
-            parameters.insert(k, v->toVariantHash());
-        }
-        visu_info["parameters"] = parameters;
-
-        form_visualizations.insert(QString::number(id), QJsonObject::fromVariantMap(visu_info));
+        auto visu_state = d->serializeVisualization(visualization, id);
+        form_visualizations.insert(QString::number(id), visu_state);
+    }
+    for( auto [id, visu_state]: d->savedFormVisualizations.asKeyValueRange()) {
+        form_visualizations.insert(QString::number(id), visu_state);
     }
     state["form_visualizations"] = form_visualizations;
 
@@ -695,23 +735,16 @@ void gnomonFormManager::deserialize(const QJsonObject& state)
     for(auto id : ids) {
         int index = id.toInt();
         QString uuid = forms[id].toString();
-        auto visualization = form_visualizations[id];
-        QString form_type = visualization.toMap()["form_type"].toString();
-        QString visu_type = visualization.toMap()["visu_type"].toString();
-        int figure_number = visualization.toMap()["figure_number"].toString().toInt();
-        QString visu_name = visualization.toMap()["visu_name"].toString();
-        auto parameters = visualization.toMap()["parameters"].toMap();
-        gnomonAbstractView *view = d->createView(visu_type, form_type, figure_number);
-        std::shared_ptr<gnomonAbstractVisualization> visu = nullptr;
+
+        auto visualization = form_visualizations[id].toJsonObject();
+        QString form_type = visualization["form_type"].toString();
+
+        auto [visu, view] = d->deserializeVisualization(visualization, index, uuid);
+
         QImage image(1500, 1500, QImage::Format_RGB32);
         image.fill(Qt::GlobalColor::black);
         if (view) {
-            view->setForm(uuid, form_type, visu_name, parameters);
-            visu = view->getVisualization(form_type);
             image = view->getVisualization(form_type)->imageRendering();
-
-            view->clear();
-            delete view;
         }
 
         d->insertForm(index, uuid, image);
@@ -757,11 +790,11 @@ void gnomonFormManager::memoryManagement() {
         qInfo() << "Memory used threshold reached: hibernating workspaces (" << uuid << ")";
         emit requestHibernation(uuid);
         d->hibernating_workspaces.insert(uuid);
-        for(auto [index, uuid]: d->forms.asKeyValueRange()) {
-            auto form = GNOMON_SESSION->getForm(uuid);
-            qDebug() << "Form " << uuid << " :: use count: " << form.use_count();
+        for(auto& form_uuid: GNOMON_SESSION->trackedForms()) {
+            auto form = GNOMON_SESSION->getForm(form_uuid);
+            qDebug() << "Form " << form_uuid << " :: use count: " << form.use_count();
             if(form.use_count() <= 2) {
-                //form->unload();
+                form->unload();
             }
         }
     }
@@ -769,10 +802,29 @@ void gnomonFormManager::memoryManagement() {
 
 void gnomonFormManager::testDeactivate(void) {
     if(d->active_workspaces.size()>1) {
-        auto uuid =  d->active_workspaces.first();
+        auto workspace_uuid =  d->active_workspaces.first();
         d->active_workspaces.pop_front();
-        emit requestHibernation(uuid);
-        d->hibernating_workspaces.insert(uuid);
+        emit requestHibernation(workspace_uuid);
+        d->hibernating_workspaces.insert(workspace_uuid);
+        d->hibernating_workspaces.insert(workspace_uuid);
+        for(auto& form_uuid: GNOMON_SESSION->trackedForms()) {
+            auto form = GNOMON_SESSION->getForm(form_uuid);
+            int index = this->formIndex(form_uuid);
+            if(form.use_count() == 3 && index>=0) {
+                auto& visu = d->formVisualizations[index];
+                visu->clear();
+                qDebug() << "Visu " << visu.get() << " :: use count: " << visu.use_count();
+                if(visu.use_count()==1) {
+                    auto visu_state = d->serializeVisualization(visu, index);
+                    d->savedFormVisualizations.insert(index, visu_state);
+                    d->formVisualizations.remove(index);
+                }
+            }
+            qDebug() << "Form " << form_uuid << " :: use count: " << form.use_count();
+            if(form.use_count() <= 2) {
+                form->unload();
+            }
+        }
     } else {
         qDebug() << "$$ cannot deactivate more workspaces";
     }

@@ -58,6 +58,7 @@ public:
     bool addForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form);
     bool trackForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form);
     std::shared_ptr<gnomonAbstractDynamicForm> getForm(const QString& uuid);
+    QStringList trackedForms();
 
 signals:
     void progressChanged(void);
