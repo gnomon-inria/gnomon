@@ -887,6 +887,7 @@ G.Workspace {
             iconName: "folder-open"
 
             onClicked: {
+                _image_file_dialog.folder = project_thumbnail_dialog.source
                 _image_file_dialog.open();
             }
         }
@@ -925,6 +926,8 @@ G.Workspace {
             anchors.horizontalCenter: parent.horizontalCenter
             width: G.Style.mediumPanelWidth
             height: G.Style.mediumPanelHeight
+
+            cache: false
             fillMode: Image.PreserveAspectFit
             source: project_thumbnail_dialog.thumbnail
 

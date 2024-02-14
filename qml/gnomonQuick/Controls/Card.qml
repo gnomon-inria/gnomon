@@ -72,6 +72,8 @@ Control {
         Image {
             anchors.fill: _thumbnail
             z: _thumbnail.z - 1
+
+            cache: false
             fillMode: Image.PreserveAspectFit
             source: _control.thumbnail
         }
