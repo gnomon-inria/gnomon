@@ -74,11 +74,11 @@ public:
     gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
-    QJsonObject serialize(void) override;
-    void deserialize(const QJsonObject&) override;
+    QJsonObject _serialize(void) override;
+    void _deserialize(const QJsonObject&) override;
 
-    virtual void saveState(void) override;
-    virtual void restoreState(void) override;
+    void restoreView(void) override;
+
     void hibernate(QString uuid) override;
 
 protected:

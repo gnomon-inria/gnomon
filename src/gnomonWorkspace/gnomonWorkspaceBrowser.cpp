@@ -59,7 +59,6 @@ public:
     QMap<QString, gnomonAbstractReaderCommand*> form_type_commands;
     int progress = 0;
     QJsonObject workspace_info;
-    QJsonObject state;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -516,28 +515,18 @@ gnomonVtkView *gnomonWorkspaceBrowser::view(void) const
     return d->browse_view;
 }
 
-QJsonObject gnomonWorkspaceBrowser::serialize() {
+QJsonObject gnomonWorkspaceBrowser::_serialize() {
     QJsonObject serialization;
     serialization.insert("view", d->browse_view->serialize());
     return serialization;
 }
 
-void gnomonWorkspaceBrowser::deserialize(const QJsonObject &state) {
+void gnomonWorkspaceBrowser::_deserialize(const QJsonObject &state) {
     d->browse_view->deserialize(state.value("view").toObject());
 }
 
-void gnomonWorkspaceBrowser::saveState(void) {
-    if(awake) {
-        d->state = serialize();
-    }
-}
-
-void gnomonWorkspaceBrowser::restoreState(void)
-{
-    if(!d->state.empty()) {
-        deserialize(d->state);
-        d->browse_view->restoreState();
-    }
+void gnomonWorkspaceBrowser::restoreView(void) {
+    d->browse_view->restoreState();
 }
 
 void gnomonWorkspaceBrowser::hibernate(QString uuid) {

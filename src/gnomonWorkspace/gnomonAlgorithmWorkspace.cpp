@@ -283,7 +283,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     }
 }
 
-QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
+QJsonObject gnomonAlgorithmWorkspace::_serialize(void) {
     QJsonObject state;
     state.insert("algoName", algoName());
     state.insert("currentIndex", currentIndex());
@@ -316,7 +316,7 @@ QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
     return state;
 }
 
-void gnomonAlgorithmWorkspace::deserialize(const QJsonObject & state) {
+void gnomonAlgorithmWorkspace::_deserialize(const QJsonObject & state) {
     setCurrentIndex(state["currentIndex"].toInt());
     setAlgoName(state["algoName"].toString());
 
@@ -348,17 +348,13 @@ void gnomonAlgorithmWorkspace::deserialize(const QJsonObject & state) {
     emit parametersChanged();
 }
 
-void gnomonAlgorithmWorkspace::saveState(void) {
-    if(awake) {
-        d->savedState = serialize();
-    }
-    // if the workspace is not awake its current state is incomplete
-}
 
-void gnomonAlgorithmWorkspace::restoreState(void) {
-    if(!d->savedState.isEmpty()) {
-        QString previousAlgo = algoName();
-        deserialize(d->savedState);
+void gnomonAlgorithmWorkspace::restoreView(void) {
+    for (auto view : d->sources->views()) {
+        view->restoreState();
+    }
+    for (auto view : d->targets->views()) {
+        view->restoreState();
     }
 }
 

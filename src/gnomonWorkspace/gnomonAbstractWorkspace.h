@@ -42,8 +42,40 @@ public:
     bool canBeDestroyed(void) { return this->m_can_be_destroyed; };
     QString uuid() { return objectName(); };
 
-    virtual QJsonObject serialize() = 0;
-    virtual void deserialize(const QJsonObject &state) = 0;
+public:
+    virtual QJsonObject serialize() final {
+        if(awake) {
+            return _serialize();
+        } else {
+            return savedState;
+        }
+    };
+    virtual void deserialize(const QJsonObject &l_state) final {
+        return _deserialize(l_state);
+    };
+
+public slots:
+    virtual void saveState(void) {
+        if(awake) {
+            savedState = _serialize();
+        }
+        // if the workspace is not awake its current state is incomplete
+    };
+    virtual bool restoreState(void) {
+        if(!savedState.isEmpty()) {
+            _deserialize(savedState);
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    virtual void restoreView(void) = 0;
+
+protected:
+    virtual QJsonObject _serialize() = 0;
+    virtual void _deserialize(const QJsonObject &state) = 0;
+    QJsonObject savedState;
 
 public slots:
     virtual void wakeUp() {
@@ -62,9 +94,6 @@ public slots:
             awake = false;
         }
     };
-
-    virtual void saveState(void) = 0;
-    virtual void restoreState(void) = 0;
 
 protected:
     bool m_can_be_destroyed = true;

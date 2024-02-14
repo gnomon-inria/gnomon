@@ -45,7 +45,6 @@ public:
 
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
     gnomonFormAlgorithmCommand *command = nullptr;
-    QJsonObject state;
 
     QMetaObject::Connection editor_connect;
 };
@@ -607,14 +606,9 @@ bool gnomonWorkspacePythonAlgorithm::isEmpty(void)
     return false;
 }
 
-void gnomonWorkspacePythonAlgorithm::saveState(void)
-{
-    d->state = serialize();
-}
 
-void gnomonWorkspacePythonAlgorithm::restoreState(void)
+void gnomonWorkspacePythonAlgorithm::restoreView(void)
 {
-    deserialize(d->state);
     for (auto view : d->sources->views()) {
         view->restoreState();
     }
@@ -629,7 +623,7 @@ void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
     }
 }
 
-QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
+QJsonObject gnomonWorkspacePythonAlgorithm::_serialize() {
     QJsonObject state;
 
     QJsonObject open_file_json;
@@ -665,7 +659,7 @@ QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
     return state;
 }
 
-void gnomonWorkspacePythonAlgorithm::deserialize(const QJsonObject &state) {
+void gnomonWorkspacePythonAlgorithm::_deserialize(const QJsonObject &state) {
     disconnect(d->editor_connect);
 
     QJsonObject open_file_json = state["open_files"].toObject();

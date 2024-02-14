@@ -58,7 +58,6 @@ public:
     QFutureWatcher<void> *watcher = nullptr;
     QProcess *morphoplot_process =  nullptr;
     QTemporaryDir *morphoplot_tmp_dir = nullptr;
-    QJsonObject state;
 private:
     SimpleCrypt crypto = SimpleCrypt(Q_UINT64_C(0x0c2ad6a4adb3f073));
 };
@@ -491,21 +490,15 @@ gnomonVtkView *gnomonWorkspaceMorphonet::view(void)
     return d->view;
 }
 
-void gnomonWorkspaceMorphonet::saveState(void) 
-{
-    d->state = serialize();
-}
-
-void gnomonWorkspaceMorphonet::restoreState(void) 
-{
-    deserialize(d->state);
+void gnomonWorkspaceMorphonet::restoreView(void) {
+    d->view->restoreState();
 }
 
 void gnomonWorkspaceMorphonet::export_outputs(void) {
     d->view->transmit();
 }
 
-QJsonObject gnomonWorkspaceMorphonet::serialize() {
+QJsonObject gnomonWorkspaceMorphonet::_serialize() {
     QJsonObject state;
     state.insert("current_id", currentId());
     state.insert("upload", uploadMode());
@@ -516,7 +509,7 @@ QJsonObject gnomonWorkspaceMorphonet::serialize() {
     return state;
 }
 
-void gnomonWorkspaceMorphonet::deserialize(const QJsonObject &state) {
+void gnomonWorkspaceMorphonet::_deserialize(const QJsonObject &state) {
     setCurrentId(state["current_id"].toInt());
     setUploadMode(state["upload"].toBool());
     d->voxelsize = state["voxelsize"].toDouble();

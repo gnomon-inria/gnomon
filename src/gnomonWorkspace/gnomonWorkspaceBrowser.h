@@ -49,10 +49,9 @@ public slots:
     void export_outputs(void) override;
 
 public:
-    QJsonObject serialize() override;
-    void deserialize(const QJsonObject &state) override;
-    void saveState(void) override;
-    void restoreState(void) override;
+    QJsonObject _serialize() override;
+    void _deserialize(const QJsonObject &state) override;
+    void restoreView(void) override;
 
 public:
     Q_INVOKABLE QUrl defaultReadPath(void);
