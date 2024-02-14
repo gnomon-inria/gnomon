@@ -879,12 +879,6 @@ G.Workspace {
         modal: true
         title: "Select project thumbnail"
 
-        onThumbnailChanged: {
-            console.log(thumbnail)
-            console.log(thumbnail != "" & !thumbnail.startsWith("qrc"))
-            console.log(_selection_rectangle.visible)
-        }
-
         G.IconButton {
             id: _open_image_button
 
@@ -962,151 +956,18 @@ G.Workspace {
                 }
             }
 
-            Rectangle {
-                id: _selection_rectangle
+            G.SelectionRectangle {
+                id: _selection
 
-                anchors.left: _top_left_handle.horizontalCenter
-                anchors.right: _bottom_right_handle.horizontalCenter
-                anchors.top: _top_left_handle.verticalCenter
-                anchors.bottom: _bottom_right_handle.verticalCenter
-
-                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
-
-                width: G.Style.mediumPanelWidth
-                height: G.Style.mediumPanelHeight
-
-                border.width: G.Style.borderWidth
-                border.color: G.Style.colors.baseColor
-                color: G.Style.colors.transparent
-            }
-
-            Rectangle {
-                id: _top_left_handle
-
-                x: -width/2
-                y: -width/2
-
-                width: 2*G.Style.smallPadding
-                height: 2*G.Style.smallPadding
-                radius: G.Style.smallPadding
-                color: G.Style.colors.G.Style.colors.baseColor
-
-                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
-
-                Drag.active: _top_left_drag_area.drag.active
-
-                onXChanged: _bottom_left_handle.x = _top_left_handle.x
-                onYChanged: _top_right_handle.y = _top_left_handle.y
-
-                MouseArea {
-                    id: _top_left_drag_area
-                    anchors.fill: parent
-                    drag.target: parent
-                    drag.minimumX: -width/2
-                    drag.maximumX: _top_right_handle.x-width/2
-                    drag.minimumY: -width/2
-                    drag.maximumY: _bottom_left_handle.y-width/2
-                    hoverEnabled: true
-                }
-            }
-
-            Rectangle {
-                id: _top_right_handle
-                x: parent.width+width/2
-                y: -width/2
-
-                width: 2*G.Style.smallPadding
-                height: 2*G.Style.smallPadding
-                radius: G.Style.smallPadding
-                color: G.Style.colors.G.Style.colors.baseColor
-
-                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
-
-                Drag.active: _top_right_drag_area.drag.active
-
-                onXChanged: _bottom_right_handle.x = _top_right_handle.x
-                onYChanged: _top_left_handle.y = _top_right_handle.y
-
-                MouseArea {
-                    id: _top_right_drag_area
-                    anchors.fill: parent
-                    drag.target: parent
-                    drag.minimumX: _top_left_handle.x+width/2
-                    drag.maximumX: thumbnail_image.width+width/2
-                    drag.minimumY: -width/2
-                    drag.maximumY: _bottom_right_handle.y-width/2
-                    hoverEnabled: true
-                }
-            }
-
-            Rectangle {
-                id: _bottom_left_handle
-                x: -width/2
-                y: parent.height+width/2
-
-                width: 2*G.Style.smallPadding
-                height: 2*G.Style.smallPadding
-                radius: G.Style.smallPadding
-                color: G.Style.colors.G.Style.colors.baseColor
-
-                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
-
-                Drag.active: _bottom_left_drag_area.drag.active
-
-                onXChanged: _top_left_handle.x = _bottom_left_handle.x
-                onYChanged: _bottom_right_handle.y = _bottom_left_handle.y
-
-                MouseArea {
-                    id: _bottom_left_drag_area
-                    anchors.fill: parent
-                    drag.target: parent
-                    drag.minimumX: -width/2
-                    drag.maximumX: _bottom_right_handle.x-width/2
-                    drag.minimumY: _top_left_handle.y+width/2
-                    drag.maximumY: thumbnail_image.height+width/2
-                    hoverEnabled: true
-                }
-            }
-
-            Rectangle {
-                id: _bottom_right_handle
-                x: parent.width+width/2
-                y: parent.height+width/2
-
-                width: 2*G.Style.smallPadding
-                height: 2*G.Style.smallPadding
-                radius: G.Style.smallPadding
-                color: G.Style.colors.G.Style.colors.baseColor
-
-                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
-
-                Drag.active: _bottom_right_drag_area.drag.active
-
-                onXChanged: _top_right_handle.x = _bottom_right_handle.x
-                onYChanged: _bottom_left_handle.y = _bottom_right_handle.y
-
-                MouseArea {
-                    id: _bottom_right_drag_area
-                    anchors.fill: parent
-                    drag.target: parent
-                    drag.minimumX: _bottom_left_handle.x+width/2
-                    drag.maximumX: thumbnail_image.width+width/2
-                    drag.minimumY: _top_right_handle.y+width/2
-                    drag.maximumY: thumbnail_image.height+width/2
-                    hoverEnabled: true
-                }
+                target: thumbnail_image
             }
         }
 
         function resetSelection() {
-            _top_left_handle.x = 0
-            _top_left_handle.y = 0
-            _top_right_handle.x = thumbnail_image.width
-            _top_right_handle.y = 0
-            _bottom_left_handle.x = 0
-            _bottom_left_handle.y = thumbnail_image.height
-            _bottom_right_handle.x = thumbnail_image.width
-            _bottom_right_handle.y = thumbnail_image.height
+            _selection.left_x = 0
+            _selection.top_y = 0
+            _selection.right_x = thumbnail_image.width
+            _selection.bottom_y = thumbnail_image.height
         }
 
         onClosed: {
@@ -1118,8 +979,8 @@ G.Workspace {
         onAccepted: {
             let project_path = decodeURIComponent(project_thumbnail_dialog.source).slice(7)
             let thumbnail_path = decodeURIComponent(project_thumbnail_dialog.thumbnail).slice(7)
-            let top_left = Qt.point(_top_left_handle.x/thumbnail_image.width, _top_left_handle.y/thumbnail_image.height)
-            let bottom_right = Qt.point(_bottom_right_handle.x/thumbnail_image.width, _bottom_right_handle.y/thumbnail_image.height)
+            let top_left = Qt.point(_selection.left_x/thumbnail_image.width, _selection.top_y/thumbnail_image.height)
+            let bottom_right = Qt.point(_selection.right_x/thumbnail_image.width, _selection.bottom_y/thumbnail_image.height)
             GUtils.makeProjectThumbnail(project_path, thumbnail_path, top_left, bottom_right)
             project_thumbnail_dialog.delegate.refreshThumbnail();
         }

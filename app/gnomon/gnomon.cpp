@@ -254,10 +254,6 @@ void gnomonQMLUtils::makeProjectThumbnail(const QString &project_path, const QSt
     qDebug()<<Q_FUNC_INFO<<thumbnail_path;
     QImage image(thumbnail_path);
 
-    qDebug()<<Q_FUNC_INFO<<image.width()<<image.size();
-    qDebug()<<Q_FUNC_INFO<<top_left.x()<<top_left.y();
-    qDebug()<<Q_FUNC_INFO<<bottom_right.x()<<bottom_right.y();
-
     int x = int(top_left.x()*image.width());
     int y = int(top_left.y()*image.height());
     int _width = int((bottom_right.x() - top_left.x())*image.width());
