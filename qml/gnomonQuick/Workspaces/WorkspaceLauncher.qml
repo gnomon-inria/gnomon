@@ -907,7 +907,7 @@ G.Workspace {
             text: "Load thumbnail image file..."
 
             color: G.Style.colors.textColorBase;
-            font: G.Style.fonts.formLabel;
+            font: G.Style.fonts.value;
         }
 
         P.FileDialog {
@@ -930,6 +930,7 @@ G.Workspace {
 
             anchors.top: _open_image_button.bottom
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.margins: G.Style.smallPadding
             width: G.Style.mediumPanelWidth
             height: G.Style.mediumPanelHeight
 
@@ -947,12 +948,9 @@ G.Workspace {
                         let image_file = decodeURIComponent(drop.urls[0])
                         if (image_file.endsWith(".png") || image_file.endsWith(".jpg")) {
                             project_thumbnail_dialog.thumbnail = image_file
-                            drop.accept();
-                        } else {
-                            drop.reject();
                         }
                     }
-                    drop.reject();
+                    drop.accept();
                 }
             }
 
@@ -960,14 +958,15 @@ G.Workspace {
                 id: _selection
 
                 target: thumbnail_image
+                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
             }
         }
 
         function resetSelection() {
-            _selection.left_x = 0
-            _selection.top_y = 0
-            _selection.right_x = thumbnail_image.width
-            _selection.bottom_y = thumbnail_image.height
+            _selection.left_x = -_selection.handleRadius
+            _selection.top_y = -_selection.handleRadius
+            _selection.right_x = thumbnail_image.width-_selection.handleRadius
+            _selection.bottom_y = thumbnail_image.height-_selection.handleRadius
         }
 
         onClosed: {
@@ -979,8 +978,8 @@ G.Workspace {
         onAccepted: {
             let project_path = decodeURIComponent(project_thumbnail_dialog.source).slice(7)
             let thumbnail_path = decodeURIComponent(project_thumbnail_dialog.thumbnail).slice(7)
-            let top_left = Qt.point(_selection.left_x/thumbnail_image.width, _selection.top_y/thumbnail_image.height)
-            let bottom_right = Qt.point(_selection.right_x/thumbnail_image.width, _selection.bottom_y/thumbnail_image.height)
+            let top_left = Qt.point((_selection.left_x+_selection.handleRadius)/thumbnail_image.width, (_selection.top_y+_selection.handleRadius)/thumbnail_image.height)
+            let bottom_right = Qt.point((_selection.right_x+_selection.handleRadius)/thumbnail_image.width, (_selection.bottom_y+_selection.handleRadius)/thumbnail_image.height)
             GUtils.makeProjectThumbnail(project_path, thumbnail_path, top_left, bottom_right)
             project_thumbnail_dialog.delegate.refreshThumbnail();
         }

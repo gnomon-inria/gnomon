@@ -251,7 +251,6 @@ QJsonObject gnomonQMLUtils::projectInfo(const QString &path)
 
 void gnomonQMLUtils::makeProjectThumbnail(const QString &project_path, const QString &thumbnail_path, QPointF top_left, QPointF bottom_right)
 {
-    qDebug()<<Q_FUNC_INFO<<thumbnail_path;
     QImage image(thumbnail_path);
 
     int x = int(top_left.x()*image.width());
