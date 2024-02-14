@@ -943,6 +943,25 @@ G.Workspace {
             fillMode: Image.PreserveAspectFit
             source: project_thumbnail_dialog.thumbnail
 
+            DropArea {
+                id: _drop;
+
+                anchors.fill: parent;
+
+                onDropped: (drop) => {
+                    if (drop.hasUrls) {
+                        let image_file = decodeURIComponent(drop.urls[0])
+                        if (image_file.endsWith(".png") || image_file.endsWith(".jpg")) {
+                            project_thumbnail_dialog.thumbnail = image_file
+                            drop.accept();
+                        } else {
+                            drop.reject();
+                        }
+                    }
+                    drop.reject();
+                }
+            }
+
             Rectangle {
                 id: _selection_rectangle
 
