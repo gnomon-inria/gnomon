@@ -423,7 +423,8 @@ void gnomonMplView::updateLimits(void)
     Py_DECREF(pYlim);
     Py_DECREF(pAxes);
     Py_DECREF(pFigure);
-
+    Py_DECREF(pModule_mpl_tools);
+    
     PyGILState_Release(gstate);
 }
 
