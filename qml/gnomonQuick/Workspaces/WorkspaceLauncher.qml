@@ -625,7 +625,7 @@ G.Workspace {
                                 title: name
                                 body: "last modified: " + lastModified + "\n" +description
                                 tooltip: decodeURIComponent(source).slice(7)
-                                titleTopMargin: G.Style.iconMedium
+                                titleTopMargin: G.Style.smallPadding
 
                                 background: Rectangle {
                                     color: _getBgColor()
@@ -663,16 +663,28 @@ G.Workspace {
 
                                 G.IconButton {
                                     iconName: "close-thick";
-                                    size: (G.Style.iconSmall + G.Style.iconMedium)/2;
+                                    size: G.Style.iconSmall;
                                     color: G.Style.colors.fgColor;
                                     hoverColor: G.Style.colors.hoveredDangerColor;
                                     tooltip: "Remove from the recent projects"
 
                                     anchors.top: parent.top
                                     anchors.left: parent.left
-                                    anchors.margins: G.Style.buttonRadius
+                                    anchors.topMargin: parent.titleTopMargin + G.Style.tinyPadding
+                                    anchors.leftMargin: G.Style.smallPadding + G.Style.tinyPadding
 
                                     onClicked: {
+                                        _close_dialog.open()
+                                    }
+                                }
+
+                                G.SimpleDialog {
+                                    id: _close_dialog
+
+                                    message: "Do you really want to remove the project ?"
+                                    caption: "It will disappear from the list of recent projects, but no information will be lost and you will be able to reload it using the Open button."
+
+                                    onAccepted : {
                                         remove_from_history(source)
                                     }
                                 }
