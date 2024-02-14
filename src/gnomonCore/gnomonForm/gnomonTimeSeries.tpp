@@ -287,7 +287,8 @@ template <typename T> void gnomonTimeSeries<T>::load(uint id)
 
 template <typename T> void gnomonTimeSeries<T>::unload(uint id)
 {
-
+    m_forms.remove(id);
+    m_storage_info[id].loaded = false;
 }
 
 template <typename T> void gnomonTimeSeries<T>::load()
