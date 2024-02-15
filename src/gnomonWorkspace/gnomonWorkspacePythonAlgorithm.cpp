@@ -41,6 +41,8 @@ public:
     QString algorithm_key;
     QString object_key;
 
+    QString current_file;
+    bool read_only;
     QMap<QString, QString> open_files;
 
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
@@ -114,6 +116,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
 
     d->code = new gnomonPythonAlgorithmPluginCode(this);
     d->code->updateCode();
+    d->current_file = d->code->fileName();
 
     d->sources = new gnomonVtkViewList(this);
     d->targets = new gnomonVtkViewList(this);
@@ -191,6 +194,7 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_onl
     } else {
         relative_path = file_url;
     }
+    QString file_name = relative_path.split(QRegularExpression("/")).last();
 
     QString absolute_path;
     QString source;
@@ -205,7 +209,6 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_onl
     qDebug()<<Q_FUNC_INFO<<relative_path<<"["<<absolute_path<<"]"<<to_copy;
 
     if(to_copy) {
-        QString file_name = relative_path.split(QRegularExpression("/")).last();
         QString project_file_path = GNOMON_PROJECT->projectDir() + "/" + file_name;
         if(!QFile::copy(relative_path, project_file_path)) {
             dtkWarn()<<"Failed to copy file "<< relative_path << "to Project";
@@ -217,6 +220,7 @@ void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_onl
     QFile f(relative_path);
     if (f.open(QIODevice::ReadOnly)) {
         settings.setValue("Python/load", relative_path);
+        this->setFileName(file_name);
         QTextStream s(&f);
         d->code->setText(s.readAll());
         d->code->parseCode();
@@ -263,6 +267,33 @@ void gnomonWorkspacePythonAlgorithm::close(const QString& file_name)
         emit stateChanged();
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"The file"<<file_name<<"was not open";
+    }
+}
+
+QString gnomonWorkspacePythonAlgorithm::fileName(void) const
+{
+    return d->current_file;
+}
+
+bool gnomonWorkspacePythonAlgorithm::readOnly(void) const
+{
+    return d->read_only;
+}
+
+void gnomonWorkspacePythonAlgorithm::setFileName(const QString& file_name)
+{
+    if (file_name != d->current_file) {
+        d->code->setFileName(file_name);
+        d->current_file = file_name;
+        emit fileChanged(d->current_file);
+    }
+}
+
+void gnomonWorkspacePythonAlgorithm::setReadOnly(bool read_only)
+{
+    if (read_only != d->read_only) {
+        d->read_only = read_only;
+        emit readOnlyChanged(d->read_only);
     }
 }
 

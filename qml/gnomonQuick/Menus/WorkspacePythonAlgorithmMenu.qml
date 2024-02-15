@@ -87,6 +87,8 @@ Item {
                         size: G.Style.iconLarge;
                         tooltip: "Update code";
 
+                        visible: !d.readOnly
+
                         onClicked: {
                             d.code.updateCode();
                         }
@@ -99,6 +101,8 @@ Item {
 
                     Layout.fillWidth: true
                     text: d.code.pluginName
+
+                    enabled: !d.readOnly
 
                     onTextChanged: {
                         d.code.pluginName = _plugin_name.text
@@ -115,6 +119,8 @@ Item {
                         wrapMode: Text.Wrap
                         text: d.code.pluginDocumentation
 
+                        enabled: !d.readOnly
+
                         onTextChanged: {
                             d.code.pluginDocumentation = _plugin_doc.text
                         }
@@ -124,16 +130,19 @@ Item {
                 G.PythonPluginMenu {
                     type: "Input Form"
                     code: d.code
+                    readOnly: d.readOnly
                 }
 
                 G.PythonPluginMenu {
                     type: "Output Form"
                     code: d.code
+                    readOnly: d.readOnly
                 }
 
                 G.PythonPluginMenu {
                     type: "Parameter"
                     code: d.code
+                    readOnly: d.readOnly
                 }
             }
         }

@@ -14,6 +14,7 @@ Control {
     property var model;
     property var code;
     property string type: "Parameter";
+    property bool readOnly: false;
 
     Layout.fillWidth: true;
     Layout.fillHeight: true;
@@ -46,6 +47,8 @@ Control {
 
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
+
+                visible: !_self.readOnly
 
                 onClicked: {
                     _plugin_dialog.clear();
@@ -101,6 +104,8 @@ Control {
 
                         iconName: "minus"
                         tooltip: "Delete"
+
+                        visible: !_self.readOnly
 
                         onClicked: {
                             if(_self.type == "Parameter") {
