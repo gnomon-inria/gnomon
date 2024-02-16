@@ -134,6 +134,7 @@ Item {
 
         onAccepted: {
             _self._read_only = true
+            _read_only_toast.open()
             open_source_file(_file_dialog.file)
         }
     }
@@ -256,6 +257,16 @@ Item {
         parent: Overlay.overlay
         header: "Not a .lpy file"
         message: "The file you opened is not a .lpy file, and can therefore not be run as a LSystem model."
+
+        type: G.Style.ButtonType.Warning
+    }
+
+    G.Toast {
+        id: _read_only_toast
+
+        parent: Overlay.overlay
+        header: "Read-only file"
+        message: "The source file you opened does not belong to the project, therefore it is read-only in the code editor."
 
         type: G.Style.ButtonType.Warning
     }
