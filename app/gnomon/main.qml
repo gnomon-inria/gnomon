@@ -77,7 +77,7 @@ G.Application {
 
     P.FileDialog {
         id: loadFileDialog
-        folder: "file://"+GP.ProjectManager.project.currentDir
+        folder: GP.ProjectManager.project == null? "" : "file://"+GP.ProjectManager.project.currentDir
 
         nameFilters: ["Json files (*.json)"]
 
@@ -92,7 +92,7 @@ G.Application {
         title: "save Gnomon Pipeline"
 
         fileMode: P.FileDialog.SaveFile
-        folder: "file://"+GP.ProjectManager.project.currentDir
+        folder: GP.ProjectManager.project == null? "" : "file://"+GP.ProjectManager.project.currentDir
         currentFile: folder + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
 
         modality: Qt.WindowModal;

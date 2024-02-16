@@ -22,6 +22,11 @@ public:
 public:
     Q_PROPERTY(int figureNumber READ figureNumber WRITE setFigureNumber NOTIFY figureNumberChanged);
 
+    Q_PROPERTY(double xMin READ xMin WRITE setXMin NOTIFY limitsChanged);
+    Q_PROPERTY(double xMax READ xMax WRITE setXMax  NOTIFY limitsChanged);
+    Q_PROPERTY(double yMin READ yMin WRITE setYMin  NOTIFY limitsChanged);
+    Q_PROPERTY(double yMax READ yMax WRITE setYMax  NOTIFY limitsChanged);
+
 public:
     void setAcceptForm(const QString&, bool) override;
     void setAdaptedForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractMplVisualization> visualization = nullptr);
@@ -36,9 +41,33 @@ signals:
     void figureNumberChanged(int);
 
 public slots:
+    void setXMin(double x_min);
+    void setXMax(double x_max);
+    void setYMin(double y_min);
+    void setYMax(double y_max);
+
+    void updateLimits(void);
+
+public:
+    double xMin(void);
+    double xMax(void);
+    double yMin(void);
+    double yMax(void);
+
+signals:
+    void limitsChanged(void);
+
+signals:
+    void figureCanvasReady(void);
+
+public slots:
     void render(void) override;
     void clear(void) override;
     void saveScreenshot(const QString& filename) override;
+
+public:
+    QJsonObject serialize(void) override;
+    void deserialize(const QJsonObject &serialization) override;
 
 private:
     class gnomonMplViewPrivate *dd;
