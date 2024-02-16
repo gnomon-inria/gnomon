@@ -117,7 +117,7 @@ Control {
         panelHeight:  _camera_parameters.count * (G.Style.mediumLabelHeight + G.Style.mediumColumnSpacing) + G.Style.mediumColumnSpacing + G.Style.iconSmall
         implicitHeight: _control.collapsed ? 0 : panelHeight + G.Style.collapsibleMinHeight + 3*G.Style.smallPadding
 
-        visible: view.viewLogic.mode == GV.View.VIEW_MODE_3D
+        visible: (view instanceof G.View) & (view.viewLogic.mode == GV.View.VIEW_MODE_3D)
 
         ListView {
             id: _camera_list
@@ -253,4 +253,120 @@ Control {
             view.viewLogic.saveCamera(decodeURIComponent(_file_dialog_save.file));
         }
     }
+
+    ListModel {
+        id: _axes_limits_parameters
+
+        ListElement {
+            name: "X min"
+            from: -1000000
+            to: 1000000
+            target: "view.viewLogic.xMin"
+        }
+
+        ListElement {
+            name: "X max"
+            from: -1000000
+            to: 1000000
+            target: "view.viewLogic.xMax"
+        }
+
+        ListElement {
+            name: "Y min"
+            from: -1000000
+            to: 1000000
+            target: "view.viewLogic.yMin"
+        }
+
+        ListElement {
+            name: "Y max"
+            from: -1000000
+            to: 1000000
+            target: "view.viewLogic.yMax"
+        }
+    }
+
+    G.CollapsiblePanel {
+        id: _axes_limits_panel
+
+        anchors.top: _header.bottom;
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+        anchors.margins: G.Style.smallPadding
+
+        title: "Axes Limits"
+        collapsed: false
+
+        panelHeight:  _axes_limits_parameters.count * (G.Style.mediumLabelHeight + G.Style.mediumColumnSpacing) + G.Style.mediumColumnSpacing + G.Style.iconSmall
+        implicitHeight: _control.collapsed ? 0 : panelHeight + G.Style.collapsibleMinHeight + 3*G.Style.smallPadding
+
+        visible: (view instanceof G.Figure)
+
+        ListView {
+            id: _axes_limits_list
+
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.topMargin: G.Style.iconMedium
+
+            width: parent.width - G.Style.sizes.s4
+
+            spacing: G.Style.mediumColumnSpacing
+
+            model: _axes_limits_parameters
+
+            delegate: Item {
+                height: G.Style.mediumLabelHeight
+                width: _axes_limits_list.width;
+
+                Label {
+                    id: _label
+
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+
+                    text: model.name.toUpperCase()
+                    font: G.Style.fonts.label
+                    color: G.Style.colors.textColorBase
+                }
+
+                G.TextField {
+                    id: _text
+
+                    anchors.top: _label.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+
+                    font: G.Style.fonts.value
+                    color: G.Style.colors.textColorBase
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    text: eval("view ? "+model.target+".toFixed(2) : '0'");
+                    validator: DoubleValidator {
+                        bottom: model.from
+                        top: model.to
+                        decimals: 5
+                        notation: DoubleValidator.StandardNotation
+                    }
+
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: G.Style.colors.gutterColor
+                        radius: G.Style.panelRadius
+                    }
+
+                    onEditingFinished: {
+                        if (view) {
+                           let d = parseFloat(text)
+                           eval(model.target+" = parseFloat(d != NaN ? d : 0)");
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
 }

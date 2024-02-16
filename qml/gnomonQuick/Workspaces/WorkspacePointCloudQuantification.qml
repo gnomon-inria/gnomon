@@ -89,5 +89,6 @@ G.Workspace {
         d.onParametersChanged();
         console.log("Setting figure number",_target_figure.number)
         d.figure.figureNumber = _target_figure.number
+        d.figure.figureCanvasReady();
     }
 }
