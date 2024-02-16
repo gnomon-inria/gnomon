@@ -643,8 +643,12 @@ G.Workspace {
                                 G.IconButton {
                                     iconName: "pencil";
                                     size: G.Style.iconSmall;
-                                    color: has_thumbnail? G.Style.colors.gutterColor : G.Style.colors.fgColor;
-                                    hoverColor: G.Style.colors.neutralColor;
+                                    color: G.Style.colors.textColorFaded;
+                                    hoverColor: G.Style.colors.hoveredNeutralColor
+
+                                    outline: true
+                                    outlineColor:  G.Style.colors.bgColor;
+
                                     tooltip: "Change project thumbnail"
 
                                     anchors.top: parent.top
@@ -664,8 +668,11 @@ G.Workspace {
                                 G.IconButton {
                                     iconName: "close-thick";
                                     size: G.Style.iconSmall;
-                                    color: G.Style.colors.fgColor;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredDangerColor;
+
+                                    outline: true
+                                    outlineColor:  G.Style.colors.bgColor;
                                     tooltip: "Remove from the recent projects"
 
                                     anchors.top: parent.top
@@ -693,7 +700,7 @@ G.Workspace {
                                     id: _load_icon;
                                     iconName:"play-box";
                                     size: G.Style.iconLarge;
-                                    color: G.Style.colors.fgColor;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredBaseColor;
                                     tooltip: "Load and restore last session"
 
@@ -713,7 +720,7 @@ G.Workspace {
                                     property bool active: false;
                                     iconName: "dots-vertical";
                                     size: G.Style.iconLarge;
-                                    color: G.Style.colors.fgColor;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredBaseColor;
                                     tooltip: "More reloading options..."
 
@@ -742,7 +749,7 @@ G.Workspace {
                                     id: _restart_icon;
                                     iconName: "file-plus";
                                     size: G.Style.iconMedium;
-                                    color: G.Style.colors.fgColor;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredOkColor;
                                     tooltip: "Start new blank session"
                                     visible: _more_icon.active
@@ -775,7 +782,7 @@ G.Workspace {
                                     id: _pipeline_icon;
                                     iconName: "play-network";
                                     size: G.Style.iconMedium;
-                                    color: G.Style.colors.fgColor;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredOkColor;
                                     tooltip: "Replay session from pipeline"
                                     visible: _more_icon.active
@@ -885,10 +892,11 @@ G.Workspace {
             anchors.top: parent.top
             anchors.left: thumbnail_image.left;
             anchors.margins: G.Style.smallPadding
+            anchors.topMargin: -G.Style.smallPadding
             size: G.Style.iconSmall;
 
-            color: G.Style.colors.fgColor
-            hoverColor: G.Style.colors.neutralColor
+            color: G.Style.colors.textColorFaded;
+            hoverColor: G.Style.colors.hoveredNeutralColor
 
             iconName: "folder-open"
 
@@ -962,6 +970,36 @@ G.Workspace {
             }
         }
 
+        G.IconButton {
+            id: _clear_image_button
+
+            anchors.top: thumbnail_image.bottom
+            anchors.left: thumbnail_image.left;
+            anchors.margins: G.Style.smallPadding
+            size: G.Style.iconSmall;
+
+            color: G.Style.colors.textColorFaded;
+            hoverColor: G.Style.colors.hoveredNeutralColor
+
+            iconName: "image-remove"
+
+            onClicked: {
+                project_thumbnail_dialog.thumbnail = "qrc:/qt/qml/gnomon/assets/thumbnail.png"
+            }
+        }
+
+        Label {
+            anchors.verticalCenter: _clear_image_button.verticalCenter
+            anchors.left: _clear_image_button.right;
+            anchors.right: parent.right;
+            anchors.margins: G.Style.smallPadding
+
+            text: "Clear thumbnail image"
+
+            color: G.Style.colors.textColorBase;
+            font: G.Style.fonts.value;
+        }
+
         function resetSelection() {
             _selection.left_x = -_selection.handleRadius
             _selection.top_y = -_selection.handleRadius
@@ -977,10 +1015,15 @@ G.Workspace {
 
         onAccepted: {
             let project_path = decodeURIComponent(project_thumbnail_dialog.source).slice(7)
-            let thumbnail_path = decodeURIComponent(project_thumbnail_dialog.thumbnail).slice(7)
-            let top_left = Qt.point((_selection.left_x+_selection.handleRadius)/thumbnail_image.width, (_selection.top_y+_selection.handleRadius)/thumbnail_image.height)
-            let bottom_right = Qt.point((_selection.right_x+_selection.handleRadius)/thumbnail_image.width, (_selection.bottom_y+_selection.handleRadius)/thumbnail_image.height)
-            GUtils.makeProjectThumbnail(project_path, thumbnail_path, top_left, bottom_right)
+
+            if (project_thumbnail_dialog.thumbnail.startsWith("qrc")) {
+                GUtils.removeProjectThumbnail(project_path)
+            } else {
+                let thumbnail_path = decodeURIComponent(project_thumbnail_dialog.thumbnail).slice(7)
+                let top_left = Qt.point((_selection.left_x+_selection.handleRadius)/thumbnail_image.width, (_selection.top_y+_selection.handleRadius)/thumbnail_image.height)
+                let bottom_right = Qt.point((_selection.right_x+_selection.handleRadius)/thumbnail_image.width, (_selection.bottom_y+_selection.handleRadius)/thumbnail_image.height)
+                GUtils.makeProjectThumbnail(project_path, thumbnail_path, top_left, bottom_right)
+            }
             project_thumbnail_dialog.delegate.refreshThumbnail();
         }
     }

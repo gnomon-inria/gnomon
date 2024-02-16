@@ -33,6 +33,8 @@ G.Dialog {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: G.Style.smallPadding
+        anchors.leftMargin: 0
+        anchors.topMargin: 0
 
         text: _self.message
         font: G.Style.fonts.cardLabel

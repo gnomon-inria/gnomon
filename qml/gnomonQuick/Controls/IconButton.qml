@@ -12,9 +12,11 @@ Button
   property alias size: _icon.size;
   property alias rotation: _icon.rotation;
   property alias flip: _icon.flip
+  property alias outline: _icon.outline
 
   property color color : G.Style.colors.textColorBase;
   property color hoverColor : G.Style.colors.hoveredBaseColor;
+  property alias outlineColor: _icon.outlineColor
 
   property string tooltip: "";
   property alias containsMouse: _icon_area.containsMouse

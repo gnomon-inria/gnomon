@@ -64,7 +64,7 @@ Control {
         radius: _control.rounded? G.Style.panelRadius : 0
 
         border.width: G.Style.borderWidth
-        border.color: G.Style.colors.lightBlue
+        border.color: G.Style.colors.gutterColor
         color: G.Style.colors.transparent
 
         visible: _control.thumbnail

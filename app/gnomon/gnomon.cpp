@@ -264,6 +264,14 @@ void gnomonQMLUtils::makeProjectThumbnail(const QString &project_path, const QSt
     thumbnail.save(project_path + "/.gnomon/thumbnail.png");
 }
 
+void gnomonQMLUtils::removeProjectThumbnail(const QString &project_path)
+{
+    QFile file(project_path + "/.gnomon/thumbnail.png");
+    if (file.exists()) {
+        file.remove();
+    }
+}
+
 
 gnomonQMLUtils *gnomonQMLUtils::s_instance = nullptr;
 
