@@ -54,6 +54,7 @@ public slots:
 
 public:
     Q_INVOKABLE QUrl defaultReadPath(void);
+    Q_INVOKABLE void importFile(const QString& file_name, const QString& path);
     QStringList readerExtensions(void);
     void restore(void);
 
