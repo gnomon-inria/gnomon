@@ -369,6 +369,9 @@ bool gnomonSessionManager::loadFromPipeline(const QString &path) {
     return d->runNodes(scheduled_nodes, pipeline, -1);
 }
 
+bool gnomonSessionManager::loading(void) {
+    return d->loading_session;
+}
 void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {
     d->engine = engine;
 }

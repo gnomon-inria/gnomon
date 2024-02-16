@@ -34,6 +34,7 @@ public:
     Q_INVOKABLE virtual bool newSession(const QString &source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml") = 0;
 
     virtual bool loadFromPipeline(const QString &path) = 0;
+    virtual bool loading(void) = 0;
 
 public:
     virtual void setEngine(QQmlApplicationEngine *engine) = 0;

@@ -25,6 +25,8 @@ public:
 
     bool loadFromPipeline(const QString &path) override;
 
+    bool loading(void) override;
+
 public:
     void setEngine(QQmlApplicationEngine *engine) override;
 

@@ -26,6 +26,7 @@ void gnomonAbstractVisualization::setView(gnomonAbstractView* view)
     d->view = view;
 
     disconnect(d->connectViewDestroyed);
+    disconnect(d->connectTime);
     if(view && !view->empty()) {
         d->connectViewDestroyed = connect(view, &QObject::destroyed, [=] () {
             setView(nullptr);
