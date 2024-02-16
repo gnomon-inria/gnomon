@@ -393,6 +393,9 @@ bool gnomonSessionManager::loadFromPipeline(gnomonPipeline *pipeline, bool write
     return d->runPipeline(_pipeline, write_outputs);
 }
 
+bool gnomonSessionManager::loading(void) {
+    return d->loading_session;
+}
 void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {
     d->engine = engine;
 }

@@ -40,6 +40,7 @@ public:
 
     virtual bool loadFromPipelineFile(const QString &path) = 0;
     virtual bool loadFromPipeline(gnomonPipeline *pipeline, bool write_outputs=false) = 0;
+    virtual bool loading(void) = 0;
 
 public:
     virtual void setEngine(QQmlApplicationEngine *engine) = 0;

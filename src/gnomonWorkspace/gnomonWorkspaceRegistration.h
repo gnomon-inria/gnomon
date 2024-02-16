@@ -24,6 +24,10 @@ public:
     ~gnomonWorkspaceRegistration(void);
 
 public:
+    QJsonObject serialize(void) override;
+    void deserialize(const QJsonObject&) override;
+
+public:
     Q_PROPERTY(int stackSize READ stackSize NOTIFY stackSizeChanged);
     Q_PROPERTY(int stackLevel READ stackLevel WRITE setStackLevel NOTIFY stackLevelChanged);
 

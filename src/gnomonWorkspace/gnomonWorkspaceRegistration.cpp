@@ -49,8 +49,8 @@ public:
     ~gnomonWorkspaceRegistrationPrivate(void);
 
 public:
-    QHash<int, std::shared_ptr<gnomonImageSeries> > image_stack;
-    QHash<int, std::shared_ptr<gnomonDataDictSeries> > transformation_stack;
+    QHash<int, QString> image_stack;
+    QHash<int, QString> transformation_stack;
 
     int stack_level = -1;
 };
@@ -94,14 +94,16 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     d->text_view = new gnomonQmlView(this);
     d->text_view->setAcceptForm("gnomonDataDict", true);
 
-    std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->text_view->form("gnomonDataDict"));
-    if (!input_dict) {
-        d->text_view->setForm("gnomonDataDict", identityDataDict());
-    } else {
-        d->text_view->setForm("gnomonDataDict", input_dict);
+    if(!GNOMON_SESSION->loading()) {
+        std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->text_view->form("gnomonDataDict"));
+        if (!input_dict) {
+            d->text_view->setForm("gnomonDataDict", identityDataDict());
+        } else {
+            d->text_view->setForm("gnomonDataDict", input_dict);
+        }
+        dd->transformation_stack.insert(0, std::dynamic_pointer_cast<gnomonDataDictSeries>(d->text_view->form("gnomonDataDict"))->uuid());
+        emit stackSizeChanged();
     }
-    dd->transformation_stack.insert(0, std::dynamic_pointer_cast<gnomonDataDictSeries>(d->text_view->form("gnomonDataDict")));
-    emit stackSizeChanged();
 
     if(!d->pool)
         d->pool = new gnomonVtkViewPool(this);
@@ -156,20 +158,21 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
         dd->stack_level = level;
 
         if (dd->image_stack.contains(dd->stack_level)) {
-            if (dd->transformation_stack.contains(dd->stack_level) && dd->transformation_stack[dd->stack_level]) {
-                std::shared_ptr<gnomonDataDictSeries> data_dict = dd->transformation_stack[dd->stack_level];
+            if (dd->transformation_stack.contains(dd->stack_level)) {
+                std::shared_ptr<gnomonDataDictSeries> data_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(GNOMON_SESSION->getForm(dd->transformation_stack[dd->stack_level]));
                 if (data_dict) {
                     // Force display of floating transformation
                     data_dict->at(0);
                 }
                 d->text_view->setForm("gnomonDataDict", data_dict);
             } else {
+
                 d->text_view->setForm("gnomonDataDict", identityDataDict());
             }
 
-            std::shared_ptr<gnomonImageSeries> input_image = dd->image_stack[0];
+            std::shared_ptr<gnomonImageSeries> input_image = std::dynamic_pointer_cast<gnomonImageSeries>(GNOMON_SESSION->getForm(dd->image_stack[0]));
             if (dd->image_stack.contains(dd->stack_level) && level>=1) {
-                std::shared_ptr<gnomonImageSeries> output_image = dd->image_stack[dd->stack_level];
+                std::shared_ptr<gnomonImageSeries> output_image = std::dynamic_pointer_cast<gnomonImageSeries>(GNOMON_SESSION->getForm(dd->image_stack[dd->stack_level]));
                 this->targets()->views()[0]->setForm("gnomonImage", output_image);
             } else {
                 this->targets()->views()[0]->clear();
@@ -181,6 +184,7 @@ void gnomonWorkspaceRegistration::setStackLevel(int level)
 
 void gnomonWorkspaceRegistration::setInputs(void)
 {
+
     std::shared_ptr<gnomonImageSeries> input_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->inputs()["image"]);
     bool empty_input = (input_image == nullptr);
 
@@ -190,17 +194,19 @@ void gnomonWorkspaceRegistration::setInputs(void)
         d->command->setInputForm("initialTransformation", d->text_view->form("gnomonDataDict"));
     }
 
-    if (empty_input || !d->command->inputs()["image"]) {
-        dd->image_stack.clear();
-        dd->transformation_stack.clear();
-        emit stackSizeChanged();
-        this->setStackLevel(-1);
-
-        if (d->command->inputs()["image"]) {
-            input_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->inputs()["image"]);
-            dd->image_stack.insert(0, input_image);
+    if(!GNOMON_SESSION->loading()) {
+        if (empty_input || !d->command->inputs()["image"]) {
+            dd->image_stack.clear();
+            dd->transformation_stack.clear();
             emit stackSizeChanged();
-            this->setStackLevel(0);
+            this->setStackLevel(-1);
+
+            if (d->command->inputs()["image"]) {
+                input_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->inputs()["image"]);
+                dd->image_stack.insert(0, input_image->uuid());
+                emit stackSizeChanged();
+                this->setStackLevel(0);
+            }
         }
     }
 }
@@ -209,9 +215,9 @@ void gnomonWorkspaceRegistration::iterate(void)
 {
     std::shared_ptr<gnomonImageSeries> output_image = std::dynamic_pointer_cast<gnomonImageSeries>(d->command->outputs()["output"]);
     if (output_image) {
-        dd->image_stack.insert(dd->stack_level+1, output_image);
+        dd->image_stack.insert(dd->stack_level+1, output_image->uuid());
         std::shared_ptr<gnomonDataDictSeries> transformation = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->command->outputs()["outputTransformation"]);
-        dd->transformation_stack.insert(dd->stack_level+1, transformation);
+        dd->transformation_stack.insert(dd->stack_level+1, transformation->uuid());
         emit stackSizeChanged();
 
         this->setStackLevel(dd->stack_level+1);
@@ -238,6 +244,42 @@ void gnomonWorkspaceRegistration::viewOutputs()
     }
 }
 
+QJsonObject gnomonWorkspaceRegistration::serialize(void)
+{
+    QJsonObject state = gnomonAlgorithmWorkspace::serialize();
+    QJsonObject image_stack;
+    for( auto [id, form_uuid]: dd->image_stack.asKeyValueRange()) {
+        image_stack[QString::number(id)] = form_uuid;
+    }
+    state["image_stack"] = image_stack;
+
+    QJsonObject transformation_stack;
+    for( auto [id, data_uuid]: dd->transformation_stack.asKeyValueRange()) {
+        transformation_stack[QString::number(id)] = data_uuid;
+    }
+    state["transformation_stack"] = transformation_stack;
+
+    return state;
+}
+
+void gnomonWorkspaceRegistration::deserialize(const QJsonObject &state)
+{
+    dd->image_stack.clear();
+    dd->transformation_stack.clear();
+    auto image_stack = state["image_stack"].toObject().toVariantHash();
+    auto transformation_stack = state["transformation_stack"].toObject().toVariantHash();
+
+    for(auto id : image_stack.keys()) {
+        dd->image_stack.insert(id.toInt(), image_stack[id].toString());
+    }
+
+    for(auto id : transformation_stack.keys()) {
+        dd->transformation_stack.insert(id.toInt(), transformation_stack[id].toString());
+    }
+    gnomonAlgorithmWorkspace::deserialize(state);
+    emit stackSizeChanged();
+    this->setStackLevel(dd->stack_level+1);
+}
 
 //
 // gnomonWorkspaceRegistration.cpp ends here
