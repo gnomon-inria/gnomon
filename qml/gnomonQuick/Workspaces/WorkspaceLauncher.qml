@@ -277,6 +277,8 @@ G.Workspace {
 
                             onClicked: {
                                 _folder_path.text = ""
+                                _project_title.text = ""
+                                _project_description.text = ""
                                 new_project_dialog.open()
                             }
                         }
@@ -848,6 +850,9 @@ G.Workspace {
         message: "Not an existing project, create a new one ?"
 
         onAccepted : {
+            _folder_path.text = ""
+            _project_title.text = ""
+            _project_description.text = ""
             new_project_dialog.open()
         }
     }
@@ -855,8 +860,8 @@ G.Workspace {
     G.SimpleDialog {
         id: existing_project_dialog
 
-        message: "Do you really want to reset project settings ?"
-        caption: "Any previously existing session will be deleted, and all parameters will be set to their default values"
+        message: "This is an existing project, do you want to reset it ?"
+        caption: "It will overwrite all the project settings and any previously existing session will be deleted."
 
         onAccepted : {
              if(GP.ProjectManager.cleanProject(_workspace._dialog_source)) {

@@ -491,9 +491,9 @@ G.Application {
             if (window.recent_projects.count > 15) {
                 window.recent_projects.remove(14)
             }
-            window.recent_projects.append({
-                source : folder_source
-            })
+            let info = GUtils.projectInfo(folder_source)
+            info.source = folder_source
+            window.recent_projects.append(projectInfo)
             recent_projects_array.splice(0, 0, window.recent_projects.get(window.recent_projects.count-1))
             window.opened_files = JSON.stringify(recent_projects_array)
         } else {
