@@ -79,10 +79,12 @@ Item {
                         font: G.Style.fonts.header;
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignLeft
-                        leftPadding: G.Style.smallPadding
+                        height: G.Style.iconLarge
+                        padding: G.Style.smallPadding
                     }
 
-                    G.IconButton { id: _update_icon;
+                    G.IconButton {
+                        id: _update_icon;
                         iconName: "refresh";
                         size: G.Style.iconLarge;
                         tooltip: "Update code";
@@ -101,12 +103,26 @@ Item {
 
                     Layout.fillWidth: true
                     text: d.code.pluginName
+                    font: G.Style.fonts.formLabel;
 
-                    enabled: !d.readOnly
+                    visible: !d.readOnly
 
                     onTextChanged: {
                         d.code.pluginName = _plugin_name.text
                     }
+                }
+
+                Label {
+                    Layout.fillWidth: true
+                    height: _plugin_name.height
+                    padding: G.Style.smallPadding
+                    bottomPadding: G.Style.tinyPadding+2
+
+                    text: d.code.pluginName
+                    visible: d.readOnly
+
+                    color: G.Style.colors.fgColor;
+                    font: G.Style.fonts.formLabel;
                 }
 
                 ScrollView {
@@ -119,11 +135,25 @@ Item {
                         wrapMode: Text.Wrap
                         text: d.code.pluginDocumentation
 
-                        enabled: !d.readOnly
+                        visible: !d.readOnly
 
                         onTextChanged: {
                             d.code.pluginDocumentation = _plugin_doc.text
                         }
+                    }
+
+                    Label {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.margins: G.Style.smallPadding
+
+                        text: d.code.pluginDocumentation
+                        wrapMode: Text.Wrap
+                        visible: d.readOnly
+
+                        color: G.Style.colors.fgColor;
+                        font: G.Style.fonts.value;
                     }
                 }
 

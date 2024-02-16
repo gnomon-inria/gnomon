@@ -78,6 +78,10 @@ Control {
                     highlighted: false
                     required property var modelData
 
+                    color: _self.readOnly? G.Style.colors.bgColor : G.Style.colors.fgColor
+                    hoverColor: _self.readOnly?  G.Style.colors.bgColor : G.Style.colors.neutralColor
+                    textColor: _self.readOnly? G.Style.colors.fgColor : G.Style.colors.textColorNeutral
+
                     Label {
                         id: _name_label
                         anchors.left: parent.left;
@@ -89,7 +93,7 @@ Control {
                               modelData.name + " (" + modelData.type + ") = " + modelData.value:
                               modelData.name + " (" + (modelData.type).replace("gnomon","") + ")";
 
-                        color: G.Style.colors.textColorBase;
+                        color: _self.readOnly? G.Style.colors.fgColor : G.Style.colors.textColorBase;
                         font: G.Style.fonts.formLabel;
                     }
 
@@ -131,7 +135,7 @@ Control {
                               modelData.doc :
                               modelData.data_plugin;
 
-                        color: G.Style.colors.textColorBase;
+                        color: _self.readOnly? G.Style.colors.fgColor : G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
                     }
                 }

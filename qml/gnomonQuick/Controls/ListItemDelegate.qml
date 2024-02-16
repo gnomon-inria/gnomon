@@ -13,6 +13,11 @@ ItemDelegate {
     highlighted: false
     font: G.Style.fonts.formLabel
 
+    property color color: G.Style.colors.fgColor
+    property color hoverColor: G.Style.colors.neutralColor
+    property color highlightColor: G.Style.colors.baseColor
+    property color textColor: G.Style.colors.textColorNeutral
+
     contentItem: Item {
 
         Label {
@@ -25,7 +30,7 @@ ItemDelegate {
             text: self.text;
             visible: text;
             font: self.font
-            color: G.Style.colors.textColorNeutral
+            color: self.textColor
 
         }
     }
@@ -50,8 +55,8 @@ ItemDelegate {
     }
 
     function getBgColor() {
-      if(down || highlighted) return G.Style.colors.baseColor;
-      if(hovered) return G.Style.colors.neutralColor;
-      return G.Style.colors.fgColor;
+      if(down || highlighted) return self.highlightColor;
+      if(hovered) return self.hoverColor;
+      return self.color;
     }
 }
