@@ -14,6 +14,8 @@ Control
     property color color: G.Style.colors.textColorBase;
     property alias rotation: _text.rotation;
     property bool flip: false;
+    property bool outline: false;
+    property color outlineColor: G.Style.colors.baseColor
 
     readonly property real _implicitSize: I.icons[_control.icon].toString() ? size : 0
 
@@ -35,10 +37,13 @@ Control
         font.family: _loader.name;
         verticalAlignment: Text.AlignVCenter;
         horizontalAlignment: Text.AlignHCenter;
+
+        style: _control.outline? Text.Outline : Text.Normal;
+        styleColor: _control.outlineColor;
+
         transform: Scale {
             origin.x: _text.x + _text.width/2;
             xScale: _control.flip ? -1 : 1;
         }
-
     }
 }

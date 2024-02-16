@@ -28,8 +28,17 @@ G.Dialog {
 
     Label {
         id: _message
+
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: G.Style.smallPadding
+        anchors.leftMargin: 0
+        anchors.topMargin: 0
+
         text: _self.message
         font: G.Style.fonts.cardLabel
+        color: G.Style.colors.textColorBase
     }
 
     Text {

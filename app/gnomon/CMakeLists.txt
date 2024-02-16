@@ -30,6 +30,7 @@ main_temp.qml
   Settgs.qml
 RESOURCES
   assets/gnomon_logo.png
+  assets/thumbnail.png
 NO_CACHEGEN)
 
 target_link_libraries(${PROJECT_NAME}

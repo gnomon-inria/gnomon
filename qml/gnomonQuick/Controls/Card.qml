@@ -55,18 +55,25 @@ Control {
         id: _thumbnail;
 
         anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.bottom: parent.bottom
         anchors.margins: G.Style.smallPadding
+        anchors.topMargin: _control.titleTopMargin
 
-        height: parent.height - 2*G.Style.smallPadding
-        width: parent.height - 2*G.Style.smallPadding
+        height: parent.height - G.Style.smallPadding - _control.titleTopMargin
+        width: parent.height - G.Style.smallPadding - _control.titleTopMargin
         radius: _control.rounded? G.Style.panelRadius : 0
-        color: G.Style.colors.lightBlue
+
+        border.width: G.Style.borderWidth
+        border.color: G.Style.colors.gutterColor
+        color: G.Style.colors.transparent
 
         visible: _control.thumbnail
 
         Image {
             anchors.fill: _thumbnail
+            z: _thumbnail.z - 1
+
+            cache: false
             fillMode: Image.PreserveAspectFit
             source: _control.thumbnail
         }
@@ -80,7 +87,7 @@ Control {
         anchors.top: _control.thumbnail? _thumbnail.top : _control.top
 
         anchors.margins: _control.thumbnail? G.Style.smallPadding : G.Style.mediumPadding
-        anchors.topMargin: titleTopMargin;
+        anchors.topMargin: _control.thumbnail? 0 : titleTopMargin;
 
         text: _control.title
         font: G.Style.fonts.cardTitle
