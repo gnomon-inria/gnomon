@@ -28,12 +28,14 @@ public:
     Q_PROPERTY(bool canBeDestroyed READ canBeDestroyed NOTIFY canBeDestroyedChanged);
     Q_PROPERTY(QString uuid READ uuid CONSTANT) // a read-only alias for objectName
     Q_PROPERTY(QJsonObject state READ serialize WRITE deserialize NOTIFY stateChanged)
+    Q_PROPERTY(bool hibernating READ hibernating NOTIFY hibernatingChanged)
 
 signals:
     void started(void);
     void finished(bool success=true);
     void canBeDestroyedChanged(bool canBeDestroyed);
     void stateChanged();
+    void hibernatingChanged();
 
 public slots:
     virtual void export_outputs(void) = 0;
@@ -41,6 +43,9 @@ public slots:
 public:
     bool canBeDestroyed(void) { return this->m_can_be_destroyed; };
     QString uuid() { return objectName(); };
+    bool hibernating() {
+        return !awake;
+    }
 
 public:
     virtual QJsonObject serialize() final {
@@ -84,14 +89,16 @@ public slots:
             restoreState();
             timer->start();
             deactivated_forms.clear();
+            awake = true;
+            emit hibernatingChanged();
         }
-        awake = true;
     }
 
     virtual void hibernate(QString uuid) {
         if(uuid == this->uuid()) {
             timer->stop();
             awake = false;
+            emit hibernatingChanged();
         }
     };
 

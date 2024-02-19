@@ -844,6 +844,10 @@ void gnomonFormManager::registerWorkspaceWakeup(const QString &uuid) {
     d->active_workspaces.append(uuid);
 }
 
+bool gnomonFormManager::formLoaded(int id) {
+    return GNOMON_SESSION->getForm(d->forms[id])->loaded();
+}
+
 
 #include "gnomonFormManager.moc"
 //

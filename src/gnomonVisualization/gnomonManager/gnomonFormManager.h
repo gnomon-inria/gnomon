@@ -52,6 +52,7 @@ public:
     Q_INVOKABLE QVariantList timeKeys(int id);
     Q_INVOKABLE QStringList formMetadataKeysAtT(int id, double t);
     Q_INVOKABLE QString formMetadataValueAtT(int id, double t, const QString& key);
+    Q_INVOKABLE bool formLoaded(int id);
 
 public:
     Q_INVOKABLE QString formWriterNameFilter(int id);

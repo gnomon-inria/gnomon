@@ -82,6 +82,26 @@ Item {
             source: "image://thumbnails/" + form_id
         }
 
+        G.Icon {
+            id: _hibernating_icon
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: G.Style.smallPadding/2
+
+            icon: "database"
+            size: G.Style.iconSmall;
+            color: G.Style.colors.textColorLightBase;
+            visible: !GV.World.formLoaded(form_id)
+            G.ToolTip {
+                text: "This form is not in memory but available on the disk."
+                visible: _hibernating_icon.hovered
+            }
+            Timer {
+                interval: 1000; running: true; repeat: true
+                onTriggered: _hibernating_icon.visible = !GV.World.formLoaded(form_id)
+            }
+        }
+
         MouseArea {
             id: _dragger;
 

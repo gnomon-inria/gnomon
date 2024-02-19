@@ -109,9 +109,27 @@ G.Dialog {
                     anchors.right: _close_workspace.left
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
+                    anchors.rightMargin: G.Style.smallPadding
 
                     fillMode: Image.PreserveAspectFit
                     source: "image://workspaces/" + index;
+                }
+
+                G.Icon {
+                    id: _hibernating_icon
+                    anchors.right: _icon.left
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    anchors.rightMargin: G.Style.smallPadding
+
+                    icon: "database"
+                    size: G.Style.iconSmall;
+                    color: G.Style.colors.textColorBase;
+                    visible: window.workspace_at(index).d.hibernating
+                    G.ToolTip {
+                        text: "This workspace is hibernating to conserve memory."
+                        visible: _hibernating_icon.hovered
+                    }
                 }
 
                 Connections {
