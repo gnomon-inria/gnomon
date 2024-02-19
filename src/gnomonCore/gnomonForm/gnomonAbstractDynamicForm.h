@@ -76,7 +76,7 @@ public:
     }
 
     virtual void deserialize(const QJsonObject & json) {
-        p_metadata->deserialize(json);
+        p_metadata->deserialize(json["metadata"].toObject());
         if(json.contains("storage_dir")) {
             setFormStorageDir(json["storage_dir"].toString());
         }
