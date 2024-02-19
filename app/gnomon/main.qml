@@ -19,6 +19,7 @@ import gnomonQuick.Style       as G
 
 import gnomon.Pipeline  as GP
 import gnomon.Project   as GP
+import gnomon.Utils
 import "." as G
 
 G.Application {
@@ -77,7 +78,7 @@ G.Application {
 
     P.FileDialog {
         id: loadFileDialog
-        folder: "file://"+GP.ProjectManager.project.currentDir
+        folder: GP.ProjectManager.project == null? "" : "file://"+GP.ProjectManager.project.currentDir
 
         nameFilters: ["Json files (*.json)"]
 
@@ -92,7 +93,7 @@ G.Application {
         title: "save Gnomon Pipeline"
 
         fileMode: P.FileDialog.SaveFile
-        folder: "file://"+GP.ProjectManager.project.currentDir
+        folder: GP.ProjectManager.project == null? "" : "file://"+GP.ProjectManager.project.currentDir
         currentFile: folder + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
 
         modality: Qt.WindowModal;
@@ -497,12 +498,9 @@ G.Application {
             if (window.recent_projects.count > 15) {
                 window.recent_projects.remove(14)
             }
-            window.recent_projects.append({
-                name: project_name,
-                source : folder_source,
-                description: project_description,
-                lastModified: project_last_modified,
-            })
+            let info = GUtils.projectInfo(folder_source)
+            info.source = folder_source
+            window.recent_projects.append(projectInfo)
             recent_projects_array.splice(0, 0, window.recent_projects.get(window.recent_projects.count-1))
             window.opened_files = JSON.stringify(recent_projects_array)
         } else {
@@ -799,12 +797,15 @@ G.Application {
         window.height = Math.max(window.height, G.Style.windowMinHeight)
 
         window.recent_projects.clear()
-    if(stt.opened_projects) {
-        let files = JSON.parse(stt.opened_projects)
+
+        if(stt.opened_projects) {
+            let files = JSON.parse(stt.opened_projects)
             for(let i=0; i<files.length; i++){
-                window.recent_projects.append(files[i])
+                let info = GUtils.projectInfo(files[i].source)
+                info.source = files[i].source
+                window.recent_projects.append(info)
             }
-    }
+        }
         footer.workspaceName = ""
     }
 }

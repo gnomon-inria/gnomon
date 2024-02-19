@@ -2,7 +2,7 @@ import vtk
 import matplotlib.pyplot as plt
 
 from gnomon.visualization import gnomonAbstractView, gnomonVtkView, gnomonMplView
-from gnomon.utils.matplotlib_tools.backend_qtquickagg import manager_instance
+from gnomon.utils.matplotlib_tools.backend_qtquickagg import manager_instance, MplCanvasZoomDrag
 
 
 class gnomonStandaloneVtkView(gnomonVtkView):
@@ -47,6 +47,8 @@ class gnomonStandaloneMplView(gnomonMplView):
 
         manager_instance._canvas[num] = self._figure.canvas
         manager_instance._figures[num] = self._figure
+        manager_instance._connects[self.num] = MplCanvasZoomDrag(self._figure)
+        manager_instance._connects[self.num].connect()
         manager_instance.num += 1
 
     def render(self):

@@ -13,6 +13,7 @@ import gnomonQuick.Style as G
 
 import gnomon.Pipeline  1.0 as GP
 import gnomon.Project   1.0 as GP
+import gnomon.Utils
 
 
 G.Workspace {
@@ -276,6 +277,8 @@ G.Workspace {
 
                             onClicked: {
                                 _folder_path.text = ""
+                                _project_title.text = ""
+                                _project_description.text = ""
                                 new_project_dialog.open()
                             }
                         }
@@ -607,10 +610,14 @@ G.Workspace {
                             }
 
                             delegate: G.Card {
+                                id: project_delegate
+
                                 required property string name
                                 required property string source
                                 required property string description
                                 required property string lastModified
+
+                                property bool has_thumbnail: false
 
                                 height: _project_grid.cellHeight - G.Style.smallPadding
                                 width: _project_grid.cellWidth - G.Style.smallPadding
@@ -620,7 +627,7 @@ G.Workspace {
                                 title: name
                                 body: "last modified: " + lastModified + "\n" +description
                                 tooltip: decodeURIComponent(source).slice(7)
-                                titleTopMargin: G.Style.iconMedium
+                                titleTopMargin: G.Style.smallPadding
 
                                 background: Rectangle {
                                     color: _getBgColor()
@@ -629,8 +636,6 @@ G.Workspace {
                                     border.width: G.Style.borderWidth
                                     border.color: _getBorderColor()
                                 }
-                                // there are no thumbnails for now
-                                //thumbnail: "image://thumbnails/project_" + index
 
                                 onDoubleClicked: {
                                     history_set_last_used(source)
@@ -638,17 +643,57 @@ G.Workspace {
                                 }
 
                                 G.IconButton {
+                                    iconName: "pencil";
+                                    size: G.Style.iconSmall;
+                                    color: G.Style.colors.textColorFaded;
+                                    hoverColor: G.Style.colors.hoveredNeutralColor
+
+                                    outline: true
+                                    outlineColor:  G.Style.colors.bgColor;
+
+                                    tooltip: "Change project thumbnail"
+
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: parent.height - parent.titleTopMargin - 2*G.Style.smallPadding - G.Style.tinyPadding
+                                    anchors.topMargin: parent.titleTopMargin + G.Style.tinyPadding
+
+                                    onClicked: {
+                                        project_thumbnail_dialog.source = source
+                                        project_thumbnail_dialog.thumbnail = thumbnail
+                                        project_thumbnail_dialog.delegate = project_delegate
+                                        project_thumbnail_dialog.resetSelection()
+                                        project_thumbnail_dialog.open()
+                                    }
+                                }
+
+                                G.IconButton {
                                     iconName: "close-thick";
-                                    size: (G.Style.iconSmall + G.Style.iconMedium)/2;
-                                    color: G.Style.colors.fgColor;
+                                    size: G.Style.iconSmall;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredDangerColor;
+
+                                    outline: true
+                                    outlineColor:  G.Style.colors.bgColor;
                                     tooltip: "Remove from the recent projects"
 
                                     anchors.top: parent.top
                                     anchors.left: parent.left
-                                    anchors.margins: G.Style.buttonRadius
+                                    anchors.topMargin: parent.titleTopMargin + G.Style.tinyPadding
+                                    anchors.leftMargin: G.Style.smallPadding + G.Style.tinyPadding
 
                                     onClicked: {
+                                        _close_dialog.open()
+                                    }
+                                }
+
+                                G.SimpleDialog {
+                                    id: _close_dialog
+
+                                    message: "Do you really want to remove the project ?"
+                                    caption: "It will disappear from the list of recent projects, but no information will be lost and you will be able to reload it using the Open button."
+
+                                    onAccepted : {
                                         remove_from_history(source)
                                     }
                                 }
@@ -657,7 +702,7 @@ G.Workspace {
                                     id: _load_icon;
                                     iconName:"play-box";
                                     size: G.Style.iconLarge;
-                                    color: G.Style.colors.fgColor;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredBaseColor;
                                     tooltip: "Load and restore last session"
 
@@ -677,7 +722,7 @@ G.Workspace {
                                     property bool active: false;
                                     iconName: "dots-vertical";
                                     size: G.Style.iconLarge;
-                                    color: G.Style.colors.fgColor;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredBaseColor;
                                     tooltip: "More reloading options..."
 
@@ -706,7 +751,7 @@ G.Workspace {
                                     id: _restart_icon;
                                     iconName: "file-plus";
                                     size: G.Style.iconMedium;
-                                    color: G.Style.colors.fgColor;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredOkColor;
                                     tooltip: "Start new blank session"
                                     visible: _more_icon.active
@@ -739,7 +784,7 @@ G.Workspace {
                                     id: _pipeline_icon;
                                     iconName: "play-network";
                                     size: G.Style.iconMedium;
-                                    color: G.Style.colors.fgColor;
+                                    color: G.Style.colors.textColorFaded;
                                     hoverColor: G.Style.colors.hoveredOkColor;
                                     tooltip: "Replay session from pipeline"
                                     visible: _more_icon.active
@@ -768,6 +813,16 @@ G.Workspace {
                                         load_session(_pipeline_file_dialog.file)
                                     }
                                 }
+
+                                Component.onCompleted: {
+                                    refreshThumbnail()
+                                }
+
+                                function refreshThumbnail() {
+                                    project_delegate.thumbnail = ""
+                                    project_delegate.has_thumbnail = GUtils.fileExists(source.slice(7) + "/.gnomon/thumbnail.png")
+                                    project_delegate.thumbnail = has_thumbnail? source + "/.gnomon/thumbnail.png": "qrc:/qt/qml/gnomon/assets/thumbnail.png"
+                                }
                             }
                         }
                     }
@@ -795,6 +850,9 @@ G.Workspace {
         message: "Not an existing project, create a new one ?"
 
         onAccepted : {
+            _folder_path.text = ""
+            _project_title.text = ""
+            _project_description.text = ""
             new_project_dialog.open()
         }
     }
@@ -802,8 +860,8 @@ G.Workspace {
     G.SimpleDialog {
         id: existing_project_dialog
 
-        message: "Do you really want to reset project settings ?"
-        caption: "Any previously existing session will be deleted, and all parameters will be set to their default values"
+        message: "This is an existing project, do you want to reset it ?"
+        caption: "It will overwrite all the project settings and any previously existing session will be deleted."
 
         onAccepted : {
              if(GP.ProjectManager.cleanProject(_workspace._dialog_source)) {
@@ -814,6 +872,164 @@ G.Workspace {
         onRejected : {
             GP.ProjectManager.openProject(_workspace._dialog_source)
             add_to_history(_workspace._dialog_source)
+        }
+    }
+
+    G.Dialog {
+        id: project_thumbnail_dialog
+
+        property string source: "";
+        property var delegate;
+        property string thumbnail: ""
+
+        parent: Overlay.overlay
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.mediumDialogWidth
+        height: G.Style.largeDialogHeight + G.Style.smallDelegateHeight
+
+        modal: true
+        title: "Select project thumbnail"
+
+        G.IconButton {
+            id: _open_image_button
+
+            anchors.top: parent.top
+            anchors.left: thumbnail_image.left;
+            anchors.margins: G.Style.smallPadding
+            anchors.topMargin: -G.Style.smallPadding
+            size: G.Style.iconSmall;
+
+            color: G.Style.colors.textColorFaded;
+            hoverColor: G.Style.colors.hoveredNeutralColor
+
+            iconName: "folder-open"
+
+            onClicked: {
+                _image_file_dialog.folder = project_thumbnail_dialog.source
+                _image_file_dialog.open();
+            }
+        }
+
+        Label {
+            anchors.verticalCenter: _open_image_button.verticalCenter
+            anchors.left: _open_image_button.right;
+            anchors.right: parent.right;
+            anchors.margins: G.Style.smallPadding
+
+            text: "Load thumbnail image file..."
+
+            color: G.Style.colors.textColorBase;
+            font: G.Style.fonts.value;
+        }
+
+        P.FileDialog {
+            id: _image_file_dialog
+
+            nameFilters: [ "Image files (*.jpg, *.png)" ]
+            title: "Open thumbnail image"
+            folder: project_thumbnail_dialog.source
+            modality: Qt.WindowModal;
+            fileMode: P.FileDialog.OpenFile
+
+            onAccepted: {
+                project_thumbnail_dialog.thumbnail = _image_file_dialog.file
+                project_thumbnail_dialog.resetSelection()
+            }
+        }
+
+        Image {
+            id: thumbnail_image
+
+            anchors.top: _open_image_button.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.margins: G.Style.smallPadding
+            width: G.Style.mediumPanelWidth
+            height: G.Style.mediumPanelHeight
+
+            cache: false
+            fillMode: Image.PreserveAspectFit
+            source: project_thumbnail_dialog.thumbnail
+
+            DropArea {
+                id: _drop;
+
+                anchors.fill: parent;
+
+                onDropped: (drop) => {
+                    if (drop.hasUrls) {
+                        let image_file = decodeURIComponent(drop.urls[0])
+                        if (image_file.endsWith(".png") || image_file.endsWith(".jpg")) {
+                            project_thumbnail_dialog.thumbnail = image_file
+                        }
+                    }
+                    drop.accept();
+                }
+            }
+
+            G.SelectionRectangle {
+                id: _selection
+
+                target: thumbnail_image
+                visible: project_thumbnail_dialog.thumbnail != "" & !project_thumbnail_dialog.thumbnail.startsWith("qrc")
+            }
+        }
+
+        G.IconButton {
+            id: _clear_image_button
+
+            anchors.top: thumbnail_image.bottom
+            anchors.left: thumbnail_image.left;
+            anchors.margins: G.Style.smallPadding
+            size: G.Style.iconSmall;
+
+            color: G.Style.colors.textColorFaded;
+            hoverColor: G.Style.colors.hoveredNeutralColor
+
+            iconName: "image-remove"
+
+            onClicked: {
+                project_thumbnail_dialog.thumbnail = "qrc:/qt/qml/gnomon/assets/thumbnail.png"
+            }
+        }
+
+        Label {
+            anchors.verticalCenter: _clear_image_button.verticalCenter
+            anchors.left: _clear_image_button.right;
+            anchors.right: parent.right;
+            anchors.margins: G.Style.smallPadding
+
+            text: "Clear thumbnail image"
+
+            color: G.Style.colors.textColorBase;
+            font: G.Style.fonts.value;
+        }
+
+        function resetSelection() {
+            _selection.left_x = -_selection.handleRadius
+            _selection.top_y = -_selection.handleRadius
+            _selection.right_x = thumbnail_image.width-_selection.handleRadius
+            _selection.bottom_y = thumbnail_image.height-_selection.handleRadius
+        }
+
+        onClosed: {
+            resetSelection()
+        }
+
+        standardButtons:  Dialog.Ok | Dialog.Cancel
+
+        onAccepted: {
+            let project_path = decodeURIComponent(project_thumbnail_dialog.source).slice(7)
+
+            if (project_thumbnail_dialog.thumbnail.startsWith("qrc")) {
+                GUtils.removeProjectThumbnail(project_path)
+            } else {
+                let thumbnail_path = decodeURIComponent(project_thumbnail_dialog.thumbnail).slice(7)
+                let top_left = Qt.point((_selection.left_x+_selection.handleRadius)/thumbnail_image.width, (_selection.top_y+_selection.handleRadius)/thumbnail_image.height)
+                let bottom_right = Qt.point((_selection.right_x+_selection.handleRadius)/thumbnail_image.width, (_selection.bottom_y+_selection.handleRadius)/thumbnail_image.height)
+                GUtils.makeProjectThumbnail(project_path, thumbnail_path, top_left, bottom_right)
+            }
+            project_thumbnail_dialog.delegate.refreshThumbnail();
         }
     }
 

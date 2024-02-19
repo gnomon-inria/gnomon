@@ -70,6 +70,7 @@ QML_FILES
   RangeParameter.qml
   RangeSlider.qml
   ScrollIndicator.qml
+  SelectionRectangle.qml
   Separator.qml
   SimpleDialog.qml
   SimpleView.qml

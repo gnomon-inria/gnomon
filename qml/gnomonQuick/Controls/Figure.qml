@@ -47,6 +47,14 @@ Rectangle {
                 window.currentView = self;
         }
 
+        onMouseReleased : {
+            viewLogic.updateLimits()
+        }
+
+        onWheelScrolled : {
+            viewLogic.updateLimits()
+        }
+
         onWidthChanged: _view.setGeom(_view.width, _view.height);
         onHeightChanged: _view.setGeom(_view.width, _view.height);
     }

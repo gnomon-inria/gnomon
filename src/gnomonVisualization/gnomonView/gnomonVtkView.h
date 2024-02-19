@@ -60,7 +60,7 @@ public:
 
     Q_PROPERTY(double xMin READ xMin NOTIFY boundsChanged);
     Q_PROPERTY(double xMax READ xMax NOTIFY boundsChanged);
-    Q_PROPERTY(double yMin READ xMin NOTIFY boundsChanged);
+    Q_PROPERTY(double yMin READ yMin NOTIFY boundsChanged);
     Q_PROPERTY(double yMax READ yMax NOTIFY boundsChanged);
     Q_PROPERTY(double zMin READ zMin NOTIFY boundsChanged);
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);

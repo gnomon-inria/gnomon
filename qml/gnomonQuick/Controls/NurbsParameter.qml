@@ -48,8 +48,8 @@ Control {
         onHeightChanged: _view.setGeom(_view.width, _view.height);
 
         backgroundColor: G.Style.figureColors.bgColor
-
         lineColor: G.Style.figureColors.lineColor
+        parameterEditor: true
 
         onHoverChanged : {
             window.insideParamFigure()

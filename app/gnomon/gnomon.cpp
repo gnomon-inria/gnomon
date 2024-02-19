@@ -239,6 +239,40 @@ gnomonQMLUtils* gnomonQMLUtils::instance(void)
     return s_instance;
 }
 
+QJsonObject gnomonQMLUtils::projectInfo(const QString &path)
+{
+    QVariantMap project_info = gnomonProject::readProjectInfoFromPath(path);
+    QJsonObject project_info_json;
+    for (auto key: project_info.keys()) {
+        project_info_json.insert(key, project_info[key].toString());
+    }
+    return project_info_json;
+}
+
+void gnomonQMLUtils::makeProjectThumbnail(const QString &project_path, const QString &thumbnail_path, QPointF top_left, QPointF bottom_right)
+{
+    QImage image(thumbnail_path);
+
+    int x = int(top_left.x()*image.width());
+    int y = int(top_left.y()*image.height());
+    int _width = int((bottom_right.x() - top_left.x())*image.width());
+    int _height = int((bottom_right.y() - top_left.y())*image.height());
+    int width = _width < _height ? _width : _height;
+    int height = _width < _height ? _width : _height;
+
+    QImage thumbnail = image.copy(x, y, width, height);
+    thumbnail.save(project_path + "/.gnomon/thumbnail.png");
+}
+
+void gnomonQMLUtils::removeProjectThumbnail(const QString &project_path)
+{
+    QFile file(project_path + "/.gnomon/thumbnail.png");
+    if (file.exists()) {
+        file.remove();
+    }
+}
+
+
 gnomonQMLUtils *gnomonQMLUtils::s_instance = nullptr;
 
 // /////////////////////////////////////////////////////////////////////////////
