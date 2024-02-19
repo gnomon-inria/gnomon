@@ -61,7 +61,8 @@ G.Workspace {
             let file_path = decodeURIComponent(path);
             // let file_name = file_path.split('/').pop()
             // d.fileName = file_name;
-            d.read(file_path, false);
+            let read_only = !GP.ProjectManager.project.isAccessible(file_path)
+            d.read(file_path, read_only);
         }
     }
 

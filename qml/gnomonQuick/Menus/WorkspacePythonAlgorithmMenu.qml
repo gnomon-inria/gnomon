@@ -115,8 +115,7 @@ Item {
                 Label {
                     Layout.fillWidth: true
                     height: _plugin_name.height
-                    padding: G.Style.smallPadding
-                    bottomPadding: G.Style.tinyPadding+2
+                    padding: (G.Style.smallPadding+G.Style.tinyPadding+2)/2
 
                     text: d.code.pluginName
                     visible: d.readOnly
