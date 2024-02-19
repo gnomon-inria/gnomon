@@ -91,6 +91,7 @@ Item {
             icon: "database"
             size: G.Style.iconSmall;
             color: G.Style.colors.textColorLightBase;
+            outline: true
             visible: !GV.World.formLoaded(form_id)
             G.ToolTip {
                 text: "This form is not in memory but available on the disk."
