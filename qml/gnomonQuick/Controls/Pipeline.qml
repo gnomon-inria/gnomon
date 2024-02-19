@@ -22,6 +22,8 @@ Control {
     property int windowHeight: _self.height
     property int windowWidth: _self.width
 
+    property bool edgeThumbnails: true
+
     clip: true;
 
     // /////////////////////////////////////////////////////////////////////////////
@@ -265,6 +267,7 @@ Control {
                 "tgt": tgt,
                 "src_component": src_component,
                 "tgt_component": tgt_component,
+                "thumbnail": _self.edgeThumbnails,
                 "inputWorkspaceIndex": src_component.workspaceIndex,
                 "outputWorkspaceIndex": tgt_component.workspaceIndex,
             });
@@ -292,7 +295,9 @@ Control {
             _internal.edgeComponents.splice(edge_index, 1)
         }
 
-        _internal.layout.graph.removeNode(node)
+        let n = new PJS.Node(node.name, node)
+        _internal.layout.removeNode(n)
+        _internal.layout.graph.removeNode(n)
         _internal.nodeComponents[node.name].destroy()
         delete _internal.nodeComponents[node.name]
     }

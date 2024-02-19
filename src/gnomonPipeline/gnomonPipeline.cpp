@@ -13,7 +13,7 @@
 #include "gnomonPythonPluginLoader.h"
 
 #include <cmath>
-
+#include <algorithm>
 
 // /////////////////////////////////////////////////////////////////
 // gnomonPipelinePrivate
@@ -417,6 +417,12 @@ Q_INVOKABLE QString gnomonPipeline::outputNodePath(const QString& node_name) con
 
 void gnomonPipeline::clear(void)
 {
+    QStringList node_names = this->scheduledNodeNames();
+    std::reverse(node_names.begin(), node_names.end());
+    for (auto node_name: node_names) {
+        gnomonPipelineNode *node = d->pipeline_nodes.take(node_name);
+        emit nodeRemoved(node);
+    }
     d->clear();
 }
 
@@ -751,6 +757,8 @@ bool gnomonPipeline::readFromJson(const QString& url, bool check_plugins)
     d->name = rootObj.value("name").toString();
     d->description = rootObj.value("description").toString();
 
+    this->blockSignals(true);
+
     bool read_ok = true;
     for(auto k:rootObj.keys()) {
         QJsonObject node_json = rootObj.value(k).toObject();
@@ -836,15 +844,24 @@ bool gnomonPipeline::readFromJson(const QString& url, bool check_plugins)
         }
     }
 
+    this->blockSignals(false);
+
     for (QPair<QString, QString> target : edges.keys()) {
         QPair<QString, QString> source = edges[target];
-
 
         gnomonPipelineEdge *edge = new gnomonPipelineEdge();
         edge->setSource(d->pipeline_nodes[source.first]->outputPort(source.second));
         edge->setTarget(d->pipeline_nodes[target.first]->inputPort(target.second));
         edge->link();
     }
+
+    for (auto node_name: this->scheduledNodeNames()) {
+        auto node = d->pipeline_nodes[node_name];
+        emit nodeAdded(node);
+    }
+    emit nodeNamesChanged();
+    emit inputNodeNamesChanged();
+    emit outputNodeNamesChanged();
 
     return read_ok;
 }

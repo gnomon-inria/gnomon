@@ -35,16 +35,19 @@ G.Dialog {
         id: _pipeline_view
 
         pipeline: _self.pipeline
+        edgeThumbnails: false
 
         anchors.left: parent.left
         anchors.right: parent.right
-        height: G.Style.smallPanelHeight
+        height: G.Style.largeDelegateHeight
     }
 
     onPipelineFileChanged: {
-        _self.pipeline.clear()
         _self.pipeline.readFromJson(_self.pipelineFile)
-        console.log(_self.pipeline.scheduledNodeNames())
+    }
+
+    onClosed: {
+        _self.pipeline.clear()
     }
 
     standardButtons: Dialog.Ok | Dialog.Cancel

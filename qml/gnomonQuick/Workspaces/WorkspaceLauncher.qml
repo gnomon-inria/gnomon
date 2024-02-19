@@ -819,7 +819,7 @@ G.Workspace {
 
                                     onAccepted: {
                                         open_blank_project(source, true)
-                                        load_session(pipeline_preview_dialog.pipelineFile)
+                                        load_session(_pipeline_preview_dialog.pipelineFile)
                                     }
                                 }
 
