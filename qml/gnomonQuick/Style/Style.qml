@@ -127,6 +127,7 @@ QtObject {
     property int smallDialogHeight: S.spacing["12"]
     property int mediumDialogHeight: S.spacing["13"]
     property int largeDialogHeight: S.spacing["14"]
+    property int hugeDialogHeight: S.spacing["15"]
 
     //This is not arbitrary but chosen to fit in a 48px section with a label and margins
     property int comboBoxHeight: 28;

@@ -15,6 +15,8 @@ Control {
 
     id: _self;
 
+    property var pipeline: GP.PipelineManager.pipeline
+
     // these are used in case the window height or width
     // are variable (as is the case for a collapsible menu)
     property int windowHeight: _self.height
@@ -45,7 +47,7 @@ Control {
             console.log("saving pipeline");
             //This is actually defined in main.qml
             //at some point we need some serious cleanup
-            saveFileDialog.currentFile = "file://"+GP.ProjectManager.project.currentDir + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
+            saveFileDialog.currentFile = "file://"+GP.ProjectManager.project.currentDir + "/" + (_self.pipeline.name ? _self.pipeline.name : "pipeline") + ".json"
             saveFileDialog.open()
         }
     }
@@ -59,8 +61,8 @@ Control {
 
         height: G.Style.smallLabelHeight
 
-        text: GP.PipelineManager.pipeline.name != "" ? GP.PipelineManager.pipeline.name : "Enter pipeline name..."
-        color: GP.PipelineManager.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.neutralColor
+        text: _self.pipeline.name != "" ? _self.pipeline.name : "Enter pipeline name..."
+        color: _self.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.neutralColor
         font: G.Style.fonts.value
 
         G.Icon {
@@ -70,7 +72,7 @@ Control {
             visible: _edit_area.containsMouse
 
             size: G.Style.iconSmall;
-            color: GP.PipelineManager.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDeEmphasize
+            color: _self.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDeEmphasize
 
             icon: "pencil"
         }
@@ -174,7 +176,7 @@ Control {
         Behavior on y { PropertyAnimation { duration: _internal.transitionDuration;  easing.type: Easing.InOutCubic } }
 
         Connections {
-            target: GP.PipelineManager.pipeline
+            target: _self.pipeline
             function onNodeAdded (node) {
 
                 let n = new PJS.Node(node.name, node)
@@ -192,7 +194,7 @@ Control {
         }
 
         Connections {
-            target: GP.PipelineManager.pipeline
+            target: _self.pipeline
             function onNodeRemoved (node) {
                 _self.removeNode(node);
             }

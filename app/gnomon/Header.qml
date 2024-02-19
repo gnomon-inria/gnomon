@@ -310,6 +310,8 @@ G.ToolBar {
 
         id: _pipeline;
 
+        pipeline : GP.PipelineManager.pipeline
+
         anchors.fill: parent;
         windowHeight: _control.maximumSize - _control.baseSize
         windowWidth: _control.width
