@@ -375,10 +375,12 @@ QStringList gnomonPipeline::inputNodeNames(void) const
     QStringList node_names;
     for (const auto& node_name : d->pipeline_node_names) {
         auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(d->pipeline_nodes[node_name]);
+        qDebug()<<Q_FUNC_INFO<<node_name<<node_reader;
         if (node_reader) {
             node_names.append(node_name);
         }
     }
+    qDebug()<<Q_FUNC_INFO<<node_names;
     return node_names;
 }
 
@@ -754,8 +756,8 @@ bool gnomonPipeline::readFromJson(const QString& url, bool check_plugins)
 
     QMap<QPair<QString, QString>, QPair<QString, QString> > edges;
 
-    d->name = rootObj.value("name").toString();
-    d->description = rootObj.value("description").toString();
+    this->setName(rootObj.value("name").toString());
+    this->setDescription(rootObj.value("description").toString());
 
     this->blockSignals(true);
 

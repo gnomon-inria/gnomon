@@ -23,7 +23,9 @@ Control {
     property int windowWidth: _self.width
 
     property alias zoomLevel: _internal.zoomLevel
+
     property bool edgeThumbnails: true
+    property bool readOnly: false
 
     clip: true;
 
@@ -45,6 +47,7 @@ Control {
 
         iconName: "content-save";
         tooltip: "Save the pipeline"
+        visible: !_self.readOnly
 
         onClicked: {
             console.log("saving pipeline");
@@ -72,7 +75,7 @@ Control {
             anchors.top: parent.top
             anchors.left: parent.right
             anchors.margins: G.Style.smallPadding;
-            visible: _edit_area.containsMouse
+            visible: !_self.readOnly & _edit_area.containsMouse
 
             size: G.Style.iconSmall;
             color: _self.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDeEmphasize
@@ -87,7 +90,9 @@ Control {
             hoverEnabled: true
 
             onClicked: {
-                _pipeline_info_dialog.open()
+                if (!_self.readOnly) {
+                    _pipeline_info_dialog.open()
+                }
             }
         }
     }
@@ -110,7 +115,7 @@ Control {
 
         onWheel: (wheel) => {
             //We use only significant mouse wheel events to avoid sensitivity issues
-            if(wheel.angleDelta.y < 30 && wheel.angleDelta.y > -30) return
+            if(wheel.angleDelta.y < 10 && wheel.angleDelta.y > -10) return
             //We only enable 5 zoom levels by default
             if((_internal.zoomLevel === 0 && wheel.angleDelta.y > 0) || _internal.zoomLevel === -5 && wheel.angleDelta.y < 0) return
             //update zoom level

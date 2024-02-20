@@ -58,6 +58,8 @@ public:
 
   Q_INVOKABLE QJsonObject projectInfo(const QString &path);
 
+  Q_INVOKABLE bool fileBelongsToProject(const QString &relative_path, const QString &project_path);
+
   Q_INVOKABLE void makeProjectThumbnail(const QString &project_path, const QString &thumbnail_path, QPointF top_left, QPointF bottom_right);
   Q_INVOKABLE void removeProjectThumbnail(const QString &project_path);
 

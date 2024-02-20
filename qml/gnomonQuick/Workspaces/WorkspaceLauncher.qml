@@ -810,6 +810,7 @@ G.Workspace {
                             
                                     onAccepted: {
                                         _pipeline_preview_dialog.pipelineFile = _pipeline_file_dialog.file
+                                        _pipeline_preview_dialog.projectSource = source
                                         _pipeline_preview_dialog.open()
                                     }
                                 }
