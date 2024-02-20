@@ -22,6 +22,7 @@ Control {
     property int windowHeight: _self.height
     property int windowWidth: _self.width
 
+    property alias zoomLevel: _internal.zoomLevel
     property bool edgeThumbnails: true
 
     clip: true;
@@ -115,21 +116,7 @@ Control {
             //update zoom level
             _internal.zoomLevel = wheel.angleDelta.y > 0 ? Math.min(_internal.zoomLevel + 1, 0) : Math.max(_internal.zoomLevel - 1, -5);
 
-            //This is to compute the pan
-            let scaleChange = Math.pow(_internal.factor, _internal.zoomLevel) / _transform.scale
-            let dx = (1 - scaleChange) * (wheel.x - _canvas.x);
-            let dy = (1 - scaleChange) * (wheel.y - _canvas.y);
-
-            //pan lower bounds
-            let lx = _self.windowWidth - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
-            let ly = _self.windowHeight - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
-
-            // update scale (zoom factor powered to the current zoom level)
-            _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
-
-            //update pan
-            _canvas.x = Math.max(Math.min(0, _canvas.x + dx), lx);
-            _canvas.y = Math.max(Math.min(0, _canvas.y + dy), ly);
+            updateCanvas(wheel.x, wheel.y)
         }
     }
 
@@ -393,6 +380,26 @@ Control {
         property var nodeComponents: new Object()
         property var edgeComponents: []
 
+        onZoomLevelChanged: {
+            updateCanvas(_self.width/2, _self.height/2);
+        }
     }
 
+    function updateCanvas(x, y) {
+        //This is to compute the pan
+        let scaleChange = Math.pow(_internal.factor, _internal.zoomLevel) / _transform.scale
+        let dx = (1 - scaleChange) * (x - _canvas.x);
+        let dy = (1 - scaleChange) * (y - _canvas.y);
+
+        //pan lower bounds
+        let lx = _self.windowWidth - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
+        let ly = _self.windowHeight - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
+
+        // update scale (zoom factor powered to the current zoom level)
+        _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
+
+        //update pan
+        _canvas.x = Math.max(Math.min(0, _canvas.x + dx), lx);
+        _canvas.y = Math.max(Math.min(0, _canvas.y + dy), ly);
+    }
 }

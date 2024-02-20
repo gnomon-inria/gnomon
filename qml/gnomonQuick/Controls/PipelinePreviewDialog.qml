@@ -39,15 +39,24 @@ G.Dialog {
 
         anchors.left: parent.left
         anchors.right: parent.right
-        height: G.Style.largeDelegateHeight
+        anchors.top: parent.top
+        anchors.margins: -2*G.Style.smallPadding
+        height: G.Style.largeDelegateHeight + 2*G.Style.smallPadding
     }
 
     onPipelineFileChanged: {
-        _self.pipeline.readFromJson(_self.pipelineFile)
+        if (_self.pipelineFile != "") {
+            _self.pipeline.readFromJson(_self.pipelineFile)
+        }
     }
 
     onClosed: {
         _self.pipeline.clear()
+        _self.pipelineFile = ""
+    }
+
+    onOpened: {
+        _pipeline_view.zoomLevel = -4;
     }
 
     standardButtons: Dialog.Ok | Dialog.Cancel
