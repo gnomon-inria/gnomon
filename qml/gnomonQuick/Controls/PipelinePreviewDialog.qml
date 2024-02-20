@@ -62,6 +62,8 @@ G.Dialog {
         anchors.top: _pipeline_view.bottom
         anchors.bottom: parent.bottom
         anchors.horizontalCenter:  parent.horizontalCenter
+        anchors.topMargin: G.Style.smallPadding
+        anchors.bottomMargin: -2*G.Style.smallPadding
         width: 2
 
         color: G.Style.colors.embossColor
@@ -77,6 +79,7 @@ G.Dialog {
         anchors.right: _separator.left
         anchors.margins: G.Style.smallPadding
         anchors.bottomMargin: 0
+        anchors.leftMargin: -2*G.Style.smallPadding
 
         color: G.Style.colors.textColorNeutral
         font: G.Style.fonts.formLabel
@@ -91,6 +94,7 @@ G.Dialog {
         anchors.right: _separator.left
 
         anchors.margins: G.Style.smallPadding
+        anchors.leftMargin: -2*G.Style.smallPadding
 
         model: _pipeline.inputNodeNames
 
@@ -105,6 +109,7 @@ G.Dialog {
                 text: modelData
 
                 anchors.left: parent.left
+                anchors.margins: G.Style.smallPadding
                 anchors.verticalCenter: parent.verticalCenter
                 width: G.Style.largeDelegateHeight;
 
@@ -116,7 +121,6 @@ G.Dialog {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: _input_name_label.bottom
-                anchors.topMargin: G.Style.smallPadding
 
                 height: G.Style.mediumLabelHeight
 
@@ -179,6 +183,7 @@ G.Dialog {
         anchors.right: parent.right
         anchors.margins: G.Style.smallPadding
         anchors.bottomMargin: 0
+        anchors.rightMargin: -G.Style.smallPadding
 
         color: G.Style.colors.textColorNeutral
         font: G.Style.fonts.formLabel
@@ -193,6 +198,7 @@ G.Dialog {
         anchors.right: parent.right
 
         anchors.margins: G.Style.smallPadding
+        anchors.rightMargin: -2*G.Style.smallPadding
 
         model: _pipeline.outputNodeNames
 
@@ -208,6 +214,7 @@ G.Dialog {
 
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: G.Style.smallPadding
                 width: G.Style.largeDelegateHeight;
 
                 color: G.Style.colors.textColorNeutral
@@ -218,7 +225,6 @@ G.Dialog {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: _output_name_label.bottom
-                anchors.topMargin: G.Style.smallPadding
 
                 height: G.Style.mediumLabelHeight
 
