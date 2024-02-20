@@ -14,6 +14,7 @@ Control {
     property var model;
     property var code;
     property string type: "Parameter";
+    property bool readOnly: false;
 
     Layout.fillWidth: true;
     Layout.fillHeight: true;
@@ -47,6 +48,8 @@ Control {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
 
+                visible: !_self.readOnly
+
                 onClicked: {
                     _plugin_dialog.clear();
                     _plugin_dialog.open();
@@ -75,6 +78,10 @@ Control {
                     highlighted: false
                     required property var modelData
 
+                    color: _self.readOnly? G.Style.colors.bgColor : G.Style.colors.fgColor
+                    hoverColor: _self.readOnly?  G.Style.colors.bgColor : G.Style.colors.neutralColor
+                    textColor: _self.readOnly? G.Style.colors.fgColor : G.Style.colors.textColorNeutral
+
                     Label {
                         id: _name_label
                         anchors.left: parent.left;
@@ -86,7 +93,7 @@ Control {
                               modelData.name + " (" + modelData.type + ") = " + modelData.value:
                               modelData.name + " (" + (modelData.type).replace("gnomon","") + ")";
 
-                        color: G.Style.colors.textColorBase;
+                        color: _self.readOnly? G.Style.colors.fgColor : G.Style.colors.textColorBase;
                         font: G.Style.fonts.formLabel;
                     }
 
@@ -101,6 +108,8 @@ Control {
 
                         iconName: "minus"
                         tooltip: "Delete"
+
+                        visible: !_self.readOnly
 
                         onClicked: {
                             if(_self.type == "Parameter") {
@@ -126,7 +135,7 @@ Control {
                               modelData.doc :
                               modelData.data_plugin;
 
-                        color: G.Style.colors.textColorBase;
+                        color: _self.readOnly? G.Style.colors.fgColor : G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
                     }
                 }
