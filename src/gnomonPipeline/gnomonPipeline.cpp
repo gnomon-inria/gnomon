@@ -375,12 +375,10 @@ QStringList gnomonPipeline::inputNodeNames(void) const
     QStringList node_names;
     for (const auto& node_name : d->pipeline_node_names) {
         auto *node_reader = dynamic_cast<gnomonPipelineNodeReader *>(d->pipeline_nodes[node_name]);
-        qDebug()<<Q_FUNC_INFO<<node_name<<node_reader;
         if (node_reader) {
             node_names.append(node_name);
         }
     }
-    qDebug()<<Q_FUNC_INFO<<node_names;
     return node_names;
 }
 
