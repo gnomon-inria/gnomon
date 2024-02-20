@@ -222,6 +222,7 @@ Control {
                         return _internal.originY
                     }
                 ),
+                interactive: !_self.readOnly,
                 workspaceIndex: window.current_workspace_index(),
             });
 
