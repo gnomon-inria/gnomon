@@ -130,7 +130,7 @@ G.Dialog {
                 G.TextField {
                     id: _input_file_path
 
-                    property var isValid: GUtils.fileBelongsToProject(_input_file_path.text, _self.projectSource)
+                    property var isValid: checkFileExistence(_input_file_path.text)
 
                     anchors.right: _check_input_path_icon.left
                     anchors.left: parent.left
@@ -166,7 +166,35 @@ G.Dialog {
                     iconName: "folder-open"
 
                     onClicked: {
-                        console.log("edit")
+                        let path = GUtils.findProjectFile(_input_file_path.text.split(',')[0], _self.projectSource)
+                        console.log(path)
+                        let parent_folder = path.split("/").slice(0, -1).join("/")
+                        _file_dialog.folder = "file://"+parent_folder
+                        _file_dialog.currentFile = "file://"+path
+                        _file_dialog.open()
+                    }
+                }
+
+                P.FileDialog {
+                    id: _file_dialog;
+
+                    folder: _self.projectSource
+                    fileMode: P.FileDialog.OpenFiles;
+
+                    modality: Qt.NonModal;
+
+                    onAccepted: {
+                        let urls = _file_dialog.files
+                        let relative_paths = []
+                        for(let i_n in urls) {
+                            let path = decodeURIComponent(urls[i_n]).slice(7)
+                            let relative_path = GUtils.projectRelativePath(path, _self.projectSource)
+                            console.log(relative_path)
+                            if (relative_path != "") {
+                                relative_paths.push(relative_path)
+                            }
+                        }
+                        _input_file_path.text = relative_paths.join(',');
                     }
                 }
             }
@@ -234,8 +262,8 @@ G.Dialog {
                 G.TextField {
                     id: _output_file_path
 
-                    property var isValid: GUtils.fileBelongsToProject(_output_file_path.text.split("/").slice(0, -1).join("/"), _self.projectSource)
-                    property var overwrites: GUtils.fileBelongsToProject(_output_file_path.text, _self.projectSource)
+                    property var isValid: checkParentFolderExistence(_output_file_path.text)
+                    property var overwrites: checkFileExistence(_output_file_path.text)
 
                     anchors.right: _check_output_path_icon.left
                     anchors.left: parent.left
@@ -271,11 +299,56 @@ G.Dialog {
                     iconName: "folder-open"
 
                     onClicked: {
-                        console.log("edit")
+                        let path = GUtils.findProjectFile(_output_file_path.text.split(',')[0], _self.projectSource)
+                        let parent_folder = path.split("/").slice(0, -1).join("/")
+                        _file_dialog_save.folder = "file://"+parent_folder
+                        _file_dialog_save.currentFile = "file://"+path
+                        _file_dialog_save.open()
+                    }
+                }
+
+                P.FileDialog {
+                    id: _file_dialog_save;
+
+                    folder: _self.projectSource
+                    fileMode: P.FileDialog.SaveFile;
+
+                    modality: Qt.NonModal;
+
+                    onAccepted: {
+                        let urls = _file_dialog_save.files
+                        let relative_paths = []
+                        for(let i_n in urls) {
+                            let path = decodeURIComponent(urls[i_n]).slice(7)
+                            let relative_path = GUtils.projectRelativePath(path, _self.projectSource)
+                            if (relative_path != "") {
+                                relative_paths.push(relative_path)
+                            }
+                        }
+                        _output_file_path.text = relative_paths.join(',');
                     }
                 }
             }
         }
+    }
+
+    function checkFileExistence(path) {
+        let paths = path.split(",")
+        let exists = true;
+        for (var i in paths) {
+            exists = exists & GUtils.fileBelongsToProject(paths[i], _self.projectSource)
+        }
+        return exists
+    }
+
+    function checkParentFolderExistence(path) {
+        let paths = path.split(",")
+        let exists = true;
+        for (var i in paths) {
+            let parent_folder = paths[i].split("/").slice(0, -1).join("/")
+            exists = exists & GUtils.fileBelongsToProject(parent_folder, _self.projectSource)
+        }
+        return exists
     }
 
     onClosed: {

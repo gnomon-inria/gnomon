@@ -220,6 +220,7 @@ Item {
             text: qsTr("Save")
             shortcut: StandardKey.Save
             onTriggered: {
+                _file_dialog.folder = GP.ProjectManager.project.currentDir;
                 _file_dialog.open()
             }
         }

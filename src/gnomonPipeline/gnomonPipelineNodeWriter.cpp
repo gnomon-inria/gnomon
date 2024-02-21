@@ -72,7 +72,12 @@ QString gnomonPipelineNodeWriter::toToml(void)
 const QJsonObject gnomonPipelineNodeWriter::toJson(void)
 {
     QJsonObject json = gnomonPipelineNode::toJson();
-    json.insert("path", GNOMON_PROJECT->relativePath(dd->path));
+    QStringList paths = dd->path.split(',');
+    QStringList relative_paths;
+    for (const auto& path: paths) {
+        relative_paths << GNOMON_PROJECT->relativePath(path);
+    }
+    json.insert("path", relative_paths.join(','));
 
     /*QJsonObject in;
     for (auto it = d->input_ports.begin(); it != d->input_ports.end(); ++it) {

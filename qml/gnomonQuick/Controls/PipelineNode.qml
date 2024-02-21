@@ -27,7 +27,7 @@ Rectangle {
     border.color: G.Style.colors.baseColor;
     border.width: _self.workspaceIndex === window.current_workspace_index() ? 2 : 0;
 
-    opacity: _dragArea.containsMouse ? 0.8 : 1.0
+    opacity: _self.interactive & _dragArea.containsMouse ? 0.8 : 1.0
 
     Drag.active: _dragArea.drag.active
 
