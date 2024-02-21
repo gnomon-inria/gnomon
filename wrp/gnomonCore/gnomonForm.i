@@ -618,8 +618,8 @@ PyObject *FromFormSeries(std::shared_ptr<gnomonAbstractDynamicForm> series) {
             t = *it;
             c = new std::shared_ptr<gnomonAbstractForm>(series->atAsAbstract(t));
             v = SWIG_NewPointerObj(SWIG_as_voidptr(c), swig_type, SWIG_POINTER_OWN);  // ref count: 1
-            PyDict_SetItem(dict, PyFloat_FromDouble(t), v);  // ref count: 3 (+2)
-            Py_XDECREF(v);  // ref count: 2 (-1)
+            PyDict_SetItem(dict, PyFloat_FromDouble(t), v);  // ref count: 2 (+1)
+            Py_XDECREF(v);  // ref count: 1 (-1)
         }
         return dict;
     } else {
