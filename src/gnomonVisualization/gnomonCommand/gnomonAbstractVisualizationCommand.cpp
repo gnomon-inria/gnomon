@@ -90,7 +90,6 @@ void gnomonAbstractVisualizationCommand::clear(void)
 {
     this->disconnectVisualization();
     if (this->visu) {
-        this->visu->clear();
         this->visu = nullptr;
     }
 }
