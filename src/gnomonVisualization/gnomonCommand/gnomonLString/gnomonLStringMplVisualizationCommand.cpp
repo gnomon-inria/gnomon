@@ -103,5 +103,10 @@ void gnomonLStringMplVisualizationCommand::clear(void) {
     d->lString = nullptr;
 }
 
+void gnomonLStringMplVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->lString = nullptr;
+}
+
 //
 // gnomonLStringMplVisualizationCommand.cpp ends here

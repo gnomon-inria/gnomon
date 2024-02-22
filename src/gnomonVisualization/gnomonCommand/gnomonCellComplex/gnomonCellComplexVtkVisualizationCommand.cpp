@@ -90,5 +90,10 @@ void gnomonCellComplexVtkVisualizationCommand::clear(void) {
     d->cellComplex = nullptr;
 }
 
+void gnomonCellComplexVtkVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->cellComplex = nullptr;
+}
+
 //
 // gnomonCellComplexVtkVisualizationCommand.cpp ends here

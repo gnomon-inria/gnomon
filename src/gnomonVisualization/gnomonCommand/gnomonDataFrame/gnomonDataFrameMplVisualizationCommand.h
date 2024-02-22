@@ -26,6 +26,7 @@ public:
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
     void clear(void) override;
+    void clear(bool clear_visu) override;
 
 public:
     inline static const QString groupName = "dataFrameMplVisualization";

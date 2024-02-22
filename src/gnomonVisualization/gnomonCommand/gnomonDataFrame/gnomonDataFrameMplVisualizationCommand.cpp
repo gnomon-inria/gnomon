@@ -103,5 +103,10 @@ void gnomonDataFrameMplVisualizationCommand::clear(void) {
     d->dataFrame = nullptr;
 }
 
+void gnomonDataFrameMplVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->dataFrame = nullptr;
+}
+
 //
 // gnomonDataFrameMplVisualizationCommand.cpp ends here

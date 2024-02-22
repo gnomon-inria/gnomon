@@ -90,5 +90,10 @@ void gnomonPointCloudVtkVisualizationCommand::clear(void) {
     d->pointCloud = nullptr;
 }
 
+void gnomonPointCloudVtkVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->pointCloud = nullptr;
+}
+
 //
 // gnomonPointCloudVtkVisualizationCommand.cpp ends here

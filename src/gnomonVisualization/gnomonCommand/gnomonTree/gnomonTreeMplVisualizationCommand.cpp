@@ -103,5 +103,10 @@ void gnomonTreeMplVisualizationCommand::clear(void) {
     d->tree = nullptr;
 }
 
+void gnomonTreeMplVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->tree = nullptr;
+}
+
 //
 // gnomonTreeMplVisualizationCommand.cpp ends here

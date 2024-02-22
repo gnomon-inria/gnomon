@@ -103,5 +103,10 @@ void gnomonDataDictQmlVisualizationCommand::clear(void) {
     d->dataDict = nullptr;
 }
 
+void gnomonDataDictQmlVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->dataDict = nullptr;
+}
+
 //
 // gnomonDataDictQmlVisualizationCommand.cpp ends here

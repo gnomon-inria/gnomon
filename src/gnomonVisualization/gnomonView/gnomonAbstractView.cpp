@@ -191,7 +191,11 @@ void gnomonAbstractView::clear(void)
         QString visu_name = d->visualizationCommands[form_type]->visualizationName();
         d->viewParameters.parameters.remove(visu_name);
         auto visu_view = d->visualizationCommands[form_type]->visualization()->view();
-        d->visualizationCommands[form_type]->clear();
+        if(this == visu_view) {
+            d->visualizationCommands[form_type]->clear(true);
+        } else {
+            d->visualizationCommands[form_type]->clear(false);
+        }
         d->visualizationCommands[form_type]->setForm(nullptr);
     }
     d->viewParameters.visuSelected.clear();

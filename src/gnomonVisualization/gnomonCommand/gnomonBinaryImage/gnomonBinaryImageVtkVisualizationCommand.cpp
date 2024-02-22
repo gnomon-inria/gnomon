@@ -90,5 +90,10 @@ void gnomonBinaryImageVtkVisualizationCommand::clear(void) {
     d->binaryImage = nullptr;
 }
 
+void gnomonBinaryImageVtkVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->binaryImage = nullptr;
+}
+
 //
 // gnomonBinaryImageVtkVisualizationCommand.cpp ends here

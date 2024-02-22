@@ -90,5 +90,10 @@ void gnomonImageVtkVisualizationCommand::clear(void) {
     d->image = nullptr;
 }
 
+void gnomonImageVtkVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->image = nullptr;
+}
+
 //
 // gnomonImageVtkVisualizationCommand.cpp ends here

@@ -90,5 +90,10 @@ void gnomonMeshVtkVisualizationCommand::clear(void) {
     d->mesh = nullptr;
 }
 
+void gnomonMeshVtkVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->mesh = nullptr;
+}
+
 //
 // gnomonMeshVtkVisualizationCommand.cpp ends here

@@ -90,5 +90,10 @@ void gnomonCellImageVtkVisualizationCommand::clear(void) {
     d->cellImage = nullptr;
 }
 
+void gnomonCellImageVtkVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->cellImage = nullptr;
+}
+
 //
 // gnomonCellImageVtkVisualizationCommand.cpp ends here

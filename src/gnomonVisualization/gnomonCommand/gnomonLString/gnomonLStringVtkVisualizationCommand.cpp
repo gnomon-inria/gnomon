@@ -90,5 +90,10 @@ void gnomonLStringVtkVisualizationCommand::clear(void) {
     d->lString = nullptr;
 }
 
+void gnomonLStringVtkVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->lString = nullptr;
+}
+
 //
 // gnomonLStringVtkVisualizationCommand.cpp ends here
