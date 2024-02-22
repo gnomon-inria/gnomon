@@ -708,10 +708,10 @@ G.Application {
         return workspace.d
     }
 
-    function load_session_from_pipeline(pipeline) {
-        console.log("Loading session from", pipeline.name, "pipeline");
+    function load_session_from_pipeline(pipeline, write_outputs=false) {
+        console.log("Loading session from", pipeline.name, "pipeline ( write outputs =", write_outputs, ")");
         window.load_in_progress = true;
-        let res = GP.ProjectManager.project.loadSessionFromPipeline(pipeline);
+        let res = GP.ProjectManager.project.loadSessionFromPipeline(pipeline, write_outputs);
         if(res) {
             console.log("Session Loaded ");
         } else {

@@ -17,6 +17,7 @@ G.Dialog {
     property string pipelineFile: ""
     property string projectSource: ""
     property alias pipeline: _pipeline
+    property alias writeOutputs: _write_outputs.checked
 
     property var _file_paths: []
     property bool isValid: true
@@ -223,7 +224,33 @@ G.Dialog {
             }
         }
     }
-    
+
+    G.Switch {
+        id: _write_outputs
+
+        anchors.verticalCenter: _outputs_label.verticalCenter
+        anchors.right: parent.right
+        anchors.margins: G.Style.smallPadding
+        anchors.rightMargin: -G.Style.smallPadding
+
+        checked: true
+    }
+
+    Label {
+            id: _write_outputs_label
+
+            text: "Write outputs"
+
+            anchors.verticalCenter: _outputs_label.verticalCenter
+            anchors.right: _write_outputs.left
+            width: G.Style.buttonWidth
+            anchors.margins: G.Style.smallPadding
+
+            horizontalAlignment: Text.AlignRight
+            color: G.Style.colors.textColorNeutral
+            font: G.Style.fonts.value
+        }
+
     Label {
         id: _outputs_label
 
@@ -231,10 +258,8 @@ G.Dialog {
 
         anchors.top: _pipeline_view.bottom
         anchors.left: _separator.right
-        anchors.right: parent.right
+        anchors.right: _write_outputs_label.left
         anchors.margins: G.Style.smallPadding
-        anchors.bottomMargin: 0
-        anchors.rightMargin: -G.Style.smallPadding
 
         color: G.Style.colors.textColorNeutral
         font: G.Style.fonts.formLabel
@@ -250,6 +275,8 @@ G.Dialog {
 
         anchors.margins: G.Style.smallPadding
         anchors.rightMargin: -2*G.Style.smallPadding
+
+        visible: _write_outputs.checked
 
         model: _pipeline.outputNodeNames
 
@@ -290,7 +317,7 @@ G.Dialog {
                 G.TextField {
                     id: _output_file_path
 
-                    property var isValid: checkParentFolderExistence(_output_file_path.text)
+                    property var isValid: !_write_outputs.checked | checkParentFolderExistence(_output_file_path.text)
                     property var overwrites: checkFileExistence(_output_file_path.text)
 
                     anchors.right: _check_output_path_icon.left
@@ -402,6 +429,12 @@ G.Dialog {
 
     onOpened: {
         _pipeline_view.zoomLevel = -4;
+    }
+
+    onClosed: {
+        _self._file_paths = [];
+        _self.pipeline.clear()
+        _self.pipelineFile = ""
     }
 
     footer: DialogButtonBox {

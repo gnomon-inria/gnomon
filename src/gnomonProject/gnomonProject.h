@@ -45,7 +45,7 @@ public:
 
     Q_INVOKABLE void save(void);
     Q_INVOKABLE bool loadSessionFromPipelineFile(const QString &path);
-    Q_INVOKABLE bool loadSessionFromPipeline(gnomonPipeline *pipeline);
+    Q_INVOKABLE bool loadSessionFromPipeline(gnomonPipeline *pipeline, bool write_outputs=false);
     gnomonAbstractSessionManager *currentSession(void);
 public:
     QString projectDir(void);

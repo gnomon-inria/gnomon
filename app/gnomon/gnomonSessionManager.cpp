@@ -19,8 +19,8 @@ public:
     gnomonSessionManagerPrivate(QObject *parent = nullptr);
     ~gnomonSessionManagerPrivate(void);
 public:
-    bool runPipeline(std::shared_ptr<gnomonPipeline> pipeline);
-    bool runNodes(QStringList scheduled_nodes, std::shared_ptr<gnomonPipeline> pipeline, double progress_increment);
+    bool runPipeline(std::shared_ptr<gnomonPipeline> pipeline, bool write_outputs=false);
+    bool runNodes(QStringList scheduled_nodes, std::shared_ptr<gnomonPipeline> pipeline, double progress_increment, bool write_outputs=false);
 
 public:
     gnomonSessionManager *q = nullptr;
@@ -54,16 +54,16 @@ gnomonSessionManagerPrivate::~gnomonSessionManagerPrivate(void)
 
 }
 
-bool gnomonSessionManagerPrivate::runPipeline(std::shared_ptr<gnomonPipeline> pipeline)
+bool gnomonSessionManagerPrivate::runPipeline(std::shared_ptr<gnomonPipeline> pipeline, bool write_outputs)
 {
     gnomonPipelineManager::instance()->pipeline()->setName(pipeline->name());
     gnomonPipelineManager::instance()->pipeline()->setDescription(pipeline->description());
     auto scheduled_nodes = pipeline->scheduledNodeNames(true);
-    return this->runNodes(scheduled_nodes, pipeline, -1);
+    return this->runNodes(scheduled_nodes, pipeline, -1, write_outputs);
 }
 
 bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::shared_ptr<gnomonPipeline> pipeline,
-                                           double progress_increment)
+                                           double progress_increment, bool write_outputs)
 {
     res = true;
 
@@ -107,7 +107,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 browser->view()->transmit();
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
         browser->setReaderPath(paths.join(","));
@@ -135,13 +135,21 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 morphonet->view()->transmit();
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
     } else if(node->algorithmClass().contains("Writer", Qt::CaseInsensitive)) {
-        dtkInfo() << "Writer node (not creating anything) : " << node->algorithmClass();
+        dtkInfo() << "Writer node : " << node->algorithmClass();
+        if (write_outputs) {
+            auto inputPortsNames = node->inputPortsNames();
+            int index = node->inputPort(inputPortsNames.first())->formIndex();
+            QString write_path = node->path();
+            gnomonFormManager::instance()->saveAs(index, write_path);
+        } else {
+            dtkInfo() << "Not writing anything";
+        }
         q->setProgress(q->progress() + progress_increment);
-        res = runNodes(scheduled_nodes, pipeline, progress_increment);
+        res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
     } else if(node->algorithmClass() == "task") {
         qInfo() << "Task node : " << node->algorithmPlugin();
         // auto node = dynamic_cast<gnomonPipelineNodeTask>(node);
@@ -157,7 +165,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
         }
 
         q->setProgress(q->progress() + progress_increment);
-        res = runNodes(scheduled_nodes, pipeline, progress_increment);
+        res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
     } else if(node->algorithmClass().contains("formAlgorithm", Qt::CaseInsensitive)) {
         dtkInfo() << "Node : Python Workspace";
         gnomonWorkspacePythonAlgorithm * w_p = nullptr;
@@ -193,7 +201,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 (*w_p->targets())[0]->transmit();
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
         w_p->run();
@@ -218,7 +226,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 w_p->view()->transmit();
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
         w_p->run();
@@ -312,7 +320,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 return;
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
         w_d->run();
@@ -375,14 +383,14 @@ bool gnomonSessionManager::loadFromPipelineFile(const QString &path) {
     return d->runPipeline(pipeline);
 }
 
-bool gnomonSessionManager::loadFromPipeline(gnomonPipeline *pipeline) {
+bool gnomonSessionManager::loadFromPipeline(gnomonPipeline *pipeline, bool write_outputs) {
     if(!d->alive) {
         return false;
     }
     // TODO: QML pipeline will be cleared, so copy is required: is there a better way ?
     auto _pipeline = std::make_shared<gnomonPipeline>();
     _pipeline->fromJson(pipeline->toJson());
-    return d->runPipeline(_pipeline);
+    return d->runPipeline(_pipeline, write_outputs);
 }
 
 void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {

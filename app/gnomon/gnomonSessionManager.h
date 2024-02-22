@@ -24,7 +24,7 @@ public:
     bool load() override;
 
     bool loadFromPipelineFile(const QString &path) override;
-    bool loadFromPipeline(gnomonPipeline *pipeline) override;
+    bool loadFromPipeline(gnomonPipeline *pipeline, bool write_outputs=false) override;
 
 public:
     void setEngine(QQmlApplicationEngine *engine) override;
