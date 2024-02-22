@@ -19,6 +19,7 @@ public:
     gnomonSessionManagerPrivate(QObject *parent = nullptr);
     ~gnomonSessionManagerPrivate(void);
 public:
+    bool runPipeline(std::shared_ptr<gnomonPipeline> pipeline);
     bool runNodes(QStringList scheduled_nodes, std::shared_ptr<gnomonPipeline> pipeline, double progress_increment);
 
 public:
@@ -51,6 +52,14 @@ gnomonSessionManagerPrivate::gnomonSessionManagerPrivate(QObject *parent) : QObj
 gnomonSessionManagerPrivate::~gnomonSessionManagerPrivate(void)
 {
 
+}
+
+bool gnomonSessionManagerPrivate::runPipeline(std::shared_ptr<gnomonPipeline> pipeline)
+{
+    gnomonPipelineManager::instance()->pipeline()->setName(pipeline->name());
+    gnomonPipelineManager::instance()->pipeline()->setDescription(pipeline->description());
+    auto scheduled_nodes = pipeline->scheduledNodeNames(true);
+    return this->runNodes(scheduled_nodes, pipeline, -1);
 }
 
 bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::shared_ptr<gnomonPipeline> pipeline,
@@ -356,17 +365,24 @@ void gnomonSessionManager::initialize() {
     gnomonAbstractSessionManager::registerInstance(new gnomonSessionManager(nullptr));
 }
 
-bool gnomonSessionManager::loadFromPipeline(const QString &path) {
+bool gnomonSessionManager::loadFromPipelineFile(const QString &path) {
     if(!d->alive) {
         return false;
     }
     auto pipeline = std::make_shared<gnomonPipeline>();
     d->file_path = path;
     pipeline->readFromJson(path, true);
-    gnomonPipelineManager::instance()->pipeline()->setName(pipeline->name());
-    gnomonPipelineManager::instance()->pipeline()->setDescription(pipeline->description());
-    auto scheduled_nodes = pipeline->scheduledNodeNames(true);
-    return d->runNodes(scheduled_nodes, pipeline, -1);
+    return d->runPipeline(pipeline);
+}
+
+bool gnomonSessionManager::loadFromPipeline(gnomonPipeline *pipeline) {
+    if(!d->alive) {
+        return false;
+    }
+    // TODO: QML pipeline will be cleared, so copy is required: is there a better way ?
+    auto _pipeline = std::make_shared<gnomonPipeline>();
+    _pipeline->fromJson(pipeline->toJson());
+    return d->runPipeline(_pipeline);
 }
 
 void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {

@@ -142,6 +142,12 @@ G.Dialog {
 
                     text: _pipeline.inputNodePath(modelData)
                     font: G.Style.fonts.value
+
+                    onTextChanged: {
+                        if (_input_file_path.isValid) {
+                            _pipeline.setInputNodePath(modelData, _input_file_path.text)
+                        }
+                    }
                 }
 
                 G.Icon {
@@ -275,6 +281,12 @@ G.Dialog {
 
                     text: _pipeline.outputNodePath(modelData)
                     font: G.Style.fonts.value
+
+                    onTextChanged: {
+                        if (_output_file_path.isValid) {
+                            _pipeline.setOutputNodePath(modelData, _output_file_path.text)
+                        }
+                    }
                 }
 
                 G.Icon {
@@ -349,11 +361,6 @@ G.Dialog {
             exists = exists & GUtils.fileBelongsToProject(parent_folder, _self.projectSource)
         }
         return exists
-    }
-
-    onClosed: {
-        _self.pipeline.clear()
-        _self.pipelineFile = ""
     }
 
     onOpened: {

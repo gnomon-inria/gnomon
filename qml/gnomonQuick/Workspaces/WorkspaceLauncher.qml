@@ -820,7 +820,14 @@ G.Workspace {
 
                                     onAccepted: {
                                         open_blank_project(source, true)
-                                        load_session(_pipeline_preview_dialog.pipelineFile)
+                                        load_session_from_pipeline(_pipeline_preview_dialog.pipeline)
+                                        _pipeline_preview_dialog.pipeline.clear()
+                                        _pipeline_preview_dialog.pipelineFile = ""
+                                    }
+
+                                    onRejected: {
+                                        _pipeline_preview_dialog.pipeline.clear()
+                                        _pipeline_preview_dialog.pipelineFile = ""
                                     }
                                 }
 

@@ -63,6 +63,7 @@ public:
     const QString& algorithmPlugin(void);
 
     virtual inline QString path(void) { return ""; };
+    virtual void setPath(const QString& path) { return; };
     virtual QJsonObject parameters(void);
     virtual QJsonObject morphonet_data(void);
     virtual QStringList parametersName(void);

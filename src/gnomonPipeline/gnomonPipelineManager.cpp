@@ -308,8 +308,14 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
     //qDebug() << "Form added, cannot be destroyed! ";
     //qDebug() << "todo tell reader command ? ";
     QMap<QString, QString > forms = d->commandFormUuids(command, "output");
-    gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(command->factoryName(), command->algorithmName(),
-                                                                  command->path(), forms.keys());
+    QStringList paths = command->path().split(',');
+    QStringList relative_paths;
+    for (const auto& path: paths) {
+        relative_paths << GNOMON_PROJECT->relativePath(path);
+    }
+    gnomonPipelineNodeReader *node = new gnomonPipelineNodeReader(
+            command->factoryName(), command->algorithmName(), relative_paths.join(','), forms.keys()
+    );
     node->setVersion(command->version());
 
     for (auto it = forms.begin(); it != forms.end(); ++it) {
@@ -323,8 +329,14 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
 void gnomonPipelineManager::addWriter(gnomonAbstractWriterCommand *command)
 {
     QMap<QString, QString > input_forms = d->commandFormUuids(command, "input");
-
-    gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(command->factoryName(), command->algorithmName(), command->path(), input_forms.keys());
+    QStringList paths = command->path().split(',');
+    QStringList relative_paths;
+    for (const auto& path: paths) {
+        relative_paths << GNOMON_PROJECT->relativePath(path);
+    }
+    gnomonPipelineNodeWriter *node = new gnomonPipelineNodeWriter(
+            command->factoryName(), command->algorithmName(), relative_paths.join(','), input_forms.keys()
+    );
     node->setVersion(command->version());
 
     d->node_input_forms[node] = input_forms;

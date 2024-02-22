@@ -40,9 +40,11 @@ public:
 public:
     QStringList inputNodeNames(void) const;
     Q_INVOKABLE QString inputNodePath(const QString& node_name) const;
+    Q_INVOKABLE void setInputNodePath(const QString& node_name, const QString& path);
 
     QStringList outputNodeNames(void) const;
     Q_INVOKABLE QString outputNodePath(const QString& node_name) const;
+    Q_INVOKABLE void setOutputNodePath(const QString& node_name, const QString& path);
 
 public slots:
     void addNode(gnomonPipelineNode *node);
@@ -68,6 +70,9 @@ public slots:
     Q_INVOKABLE bool readFromJson(const QString& url, bool check_plugins=true);
     void exportToToml(const QString& path);
     void exportToLuigiScript(const QString& path);
+
+    Q_INVOKABLE QJsonObject toJson(void) const;
+    Q_INVOKABLE bool fromJson(const QJsonObject& pipeline_json, bool check_plugins=true);
 
 public slots:
     void updateLayout(void);
