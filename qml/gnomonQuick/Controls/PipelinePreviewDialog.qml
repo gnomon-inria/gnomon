@@ -18,6 +18,9 @@ G.Dialog {
     property string projectSource: ""
     property alias pipeline: _pipeline
 
+    property var _file_paths: []
+    property bool isValid: true
+
     modal: true
 
     parent: Overlay.overlay
@@ -127,6 +130,11 @@ G.Dialog {
                 color: G.Style.colors.gutterColor;
                 radius: G.Style.panelRadius
 
+                G.ToolTip {
+                    visible: (!_input_file_path.isValid) & (_input_file_path.hovered | _check_input_path_icon.hovered)
+                    text: "The file does not exist"
+                }
+
                 G.TextField {
                     id: _input_file_path
 
@@ -147,6 +155,14 @@ G.Dialog {
                         if (_input_file_path.isValid) {
                             _pipeline.setInputNodePath(modelData, _input_file_path.text)
                         }
+                    }
+
+                    onIsValidChanged : {
+                        _self.isValid = _file_paths.every((p) => p.isValid)
+                    }
+
+                    Component.onCompleted : {
+                        _file_paths.push(_input_file_path)
                     }
                 }
 
@@ -170,6 +186,7 @@ G.Dialog {
                     anchors.rightMargin: G.Style.smallPadding
                     size: G.Style.iconSmall;
                     iconName: "folder-open"
+                    tooltip: "Select file path(s)"
 
                     onClicked: {
                         let path = GUtils.findProjectFile(_input_file_path.text.split(',')[0], _self.projectSource)
@@ -265,6 +282,11 @@ G.Dialog {
                 color: G.Style.colors.gutterColor;
                 radius: G.Style.panelRadius
 
+                G.ToolTip {
+                    visible: (_output_file_path.overwrites | !_output_file_path.isValid) & (_output_file_path.hovered | _check_output_path_icon.hovered)
+                    text: _output_file_path.overwrites? "The existing file will be overwritten" : "The parent directory does not exist"
+                }
+
                 G.TextField {
                     id: _output_file_path
 
@@ -287,6 +309,14 @@ G.Dialog {
                             _pipeline.setOutputNodePath(modelData, _output_file_path.text)
                         }
                     }
+
+                    onIsValidChanged : {
+                        _self.isValid = _file_paths.every((p) => p.isValid)
+                    }
+
+                    Component.onCompleted : {
+                        _file_paths.push(_output_file_path)
+                    }
                 }
 
                 G.Icon {
@@ -298,7 +328,7 @@ G.Dialog {
 
                     color: _output_file_path.isValid? (_output_file_path.overwrites? G.Style.colors.warningColor : G.Style.colors.okColor) : G.Style.colors.dangerColor
                     size: G.Style.iconSmall;
-                    icon: _output_file_path.isValid & !_output_file_path.overwrites? "file-check" : "file-alert"
+                    icon: _output_file_path.isValid? (_output_file_path.overwrites? "file-edit" : "file-check") : "file-alert"
                 }
 
                 G.IconButton {
@@ -309,6 +339,7 @@ G.Dialog {
                     anchors.rightMargin: G.Style.smallPadding
                     size: G.Style.iconSmall;
                     iconName: "folder-open"
+                    tooltip: "Select file path(s)"
 
                     onClicked: {
                         let path = GUtils.findProjectFile(_output_file_path.text.split(',')[0], _self.projectSource)
@@ -345,6 +376,9 @@ G.Dialog {
     }
 
     function checkFileExistence(path) {
+        if (path == "") {
+            return false;
+        }
         let paths = path.split(",")
         let exists = true;
         for (var i in paths) {
@@ -354,6 +388,9 @@ G.Dialog {
     }
 
     function checkParentFolderExistence(path) {
+        if (path == "") {
+            return false;
+        }
         let paths = path.split(",")
         let exists = true;
         for (var i in paths) {
@@ -386,9 +423,11 @@ G.Dialog {
 
         G.Button {
             text: 'Run';
-            iconName: "play"
-            type: G.Style.ButtonType.OK
+            iconName: _self.isValid ? "play-box" : "play-box-lock"
+            type: _self.isValid ? G.Style.ButtonType.OK : G.Style.ButtonType.Danger
             width: G.Style.buttonWidth
+            enabled: _self.isValid
+            flat: !_self.isValid
             onClicked: _self.accept();
         }
     }
