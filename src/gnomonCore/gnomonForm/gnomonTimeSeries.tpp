@@ -304,15 +304,13 @@ template <typename T> void gnomonTimeSeries<T>::load()
 
 template <typename T> void gnomonTimeSeries<T>::unload()
 {
-    readManifest();
-    for(uint id: m_storage_info.keys()) {
-        save(id);
-    }
-    updateManifest();
+    // If any form has changed compared to what was saved it should be saved. Unfortunately there are no
+    // way implemented at the moment to check for changes that is not memory and cpu intensive
+    // A mechanism should be implemented for forms (and form datas) to compute a hash of themselves that would be
+    // stored in the manifest when saved
     for(uint id: m_storage_info.keys()) {
         unload(id);
     }
-
 }
 
 template <typename T> bool gnomonTimeSeries<T>::loaded()
