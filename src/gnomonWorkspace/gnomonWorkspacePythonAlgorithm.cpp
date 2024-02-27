@@ -1,3 +1,4 @@
+#include <gnomonCore>
 #include "gnomonProject"
 #include "gnomonWorkspacePythonAlgorithm.h"
 
@@ -14,6 +15,7 @@
 #include "gnomonAlgorithmsLogs/gnomonLogCaptureServer"
 
 #include <dtkScript>
+#include <QtConcurrent>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePythonAlgorithmPrivate
@@ -50,6 +52,8 @@ public:
     QJsonObject state;
 
     QMetaObject::Connection editor_connect;
+
+    QFutureWatcher<void> *watcher = nullptr;
 };
 
 void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
@@ -315,14 +319,61 @@ QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)
     return settings.value("Python/load").toString();
 }
 
+void runner(gnomonAbstractAlgorithmCommand* _command) {
+    auto command = dynamic_cast<gnomonFormAlgorithmCommand *>(_command);
+    if (command) {
+        auto algorithm = command->formAlgorithm();
+        algorithm->run();
+
+        std::shared_ptr<gnomonBinaryImageSeries> binaryImage = algorithm->outputBinaryImage();
+        if ((binaryImage) && (binaryImage->times().size() != 0)) {
+            command->addOutput(binaryImage);
+        }
+        std::shared_ptr<gnomonCellComplexSeries> cellComplex = algorithm->outputCellComplex();
+        if ((cellComplex) && (cellComplex->times().size() != 0)) {
+            command->addOutput(cellComplex);
+        }
+        std::shared_ptr<gnomonCellImageSeries> cellImage = algorithm->outputCellImage();
+        if ((cellImage) && (cellImage->times().size() != 0)) {
+            command->addOutput(cellImage);
+        }
+        std::shared_ptr<gnomonImageSeries> image = algorithm->outputImage();
+        if ((image) && (image->times().size() != 0) && (image->current()->channels().size() != 0)) {
+            command->addOutput(image);
+        }
+        std::shared_ptr<gnomonLStringSeries> lString = algorithm->outputLString();
+        if ((lString) && (lString->times().size() != 0)) {
+            command->addOutput(lString);
+        }
+        std::shared_ptr<gnomonMeshSeries> mesh = algorithm->outputMesh();
+        if ((mesh) && (mesh->times().size() != 0)) {
+            command->addOutput(mesh);
+        }
+        std::shared_ptr<gnomonPointCloudSeries> pointCloud = algorithm->outputPointCloud();
+        if ((pointCloud) && (pointCloud->times().size() != 0)) {
+            command->addOutput(pointCloud);
+        }
+
+        if (gnomonCore::gui_thread) {
+            for (const QString &k: command->outputs().keys()) {
+                if (command->outputs()[k])
+                    command->outputs()[k]->metadata()->moveToThread(gnomonCore::gui_thread);
+            }
+        }
+    }
+}
+
 void gnomonWorkspacePythonAlgorithm::run(void) {
 
     if(d->algorithm) {
         emit started();
+        d->algorithm->is_async = true;
         d->algorithm->setLogServerAddress(gnomonLogCaptureServer::instance()->completeAddress());
-        d->algorithm->run();
-        this->viewOutputs();
-        emit finished();
+
+        d->watcher = new QFutureWatcher<void>();
+        connect(d->watcher, &QFutureWatcher<void>::finished, d->command, &gnomonAbstractAlgorithmCommand::finished);
+        auto future = QtConcurrent::run(runner, d->command);
+        d->watcher->setFuture(future);
     } else {
         dtkWarn() << Q_FUNC_INFO << "d->algorithm is null, nothing is done!";
     }
@@ -453,134 +504,25 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
 
         bool output_form_added = false;
 
-        std::shared_ptr<gnomonBinaryImageSeries> binaryImage = d->algorithm->outputBinaryImage();
-        if ((binaryImage) && (binaryImage->times().size() != 0)) {
-            d->command->addOutput(binaryImage);
-            this->target()->setForm("gnomonBinaryImage", binaryImage);
-            QString form_name("binaryImage_out");
-            if (d->code->outputForms().contains("gnomonBinaryImage")) {
-                form_name = d->code->outputForms()["gnomonBinaryImage"].name;
+        for (auto output_name: d->command->outputs().keys()) {
+            auto form = d->command->outputs()[output_name];
+            if ((form) && (form->times().size() != 0)) {
+                QString form_name = form->formName();
+                this->target()->setForm(form_name, form);
+                QString form_variable = form_name.remove("gnomon") + "_out";
+                form_variable = form_variable.left(1).toLower() + form_variable.mid(1);
+                if (d->code->outputForms().contains("gnomonBinaryImage")) {
+                    form_variable = d->code->outputForms()["gnomonBinaryImage"].name;
+                }
+                QString form_statement = form_variable + " = ";
+                form_statement += "{t: f.data().__data_getter() for t,f in algorithm.output" + form_name.remove("gnomon") + "(False).items()}";
+                output = dtkScriptInterpreterPython::instance()->interpret(form_statement, &stat);
+                output_form_added = true;
+                GNOMON_SESSION->trackForm(form);
+                int form_count = gnomonFormManager::instance()->formCount(form_name);
+                form->metadata()->set("name", form_name.remove("gnomon") + QString::number(form_count + 1));
+                form->metadata()->set("source", d->algorithm_key);
             }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputBinaryImage(False).items()}",
-                    &stat);
-            output_form_added = true;
-            GNOMON_SESSION->trackForm(binaryImage);
-            int form_count = gnomonFormManager::instance()->formCount(binaryImage->formName());
-            binaryImage->metadata()->set("name",
-                                         binaryImage->formName().remove("gnomon") + QString::number(form_count + 1));
-            binaryImage->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonCellComplexSeries> cellComplex = d->algorithm->outputCellComplex();
-        if ((cellComplex) && (cellComplex->times().size() != 0)) {
-            d->command->addOutput(cellComplex);
-            this->target()->setForm("gnomonCellComplex", cellComplex);
-            QString form_name("cellcomplex_out");
-            if (d->code->outputForms().contains("gnomonCellComplex")) {
-                form_name = d->code->outputForms()["gnomonCellComplex"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellComplex(False).items()}",
-                    &stat);
-            output_form_added = true;
-            GNOMON_SESSION->trackForm(cellComplex);
-            int form_count = gnomonFormManager::instance()->formCount(cellComplex->formName());
-            cellComplex->metadata()->set("name",
-                                         cellComplex->formName().remove("gnomon") + QString::number(form_count + 1));
-            cellComplex->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonCellImageSeries> cellImage = d->algorithm->outputCellImage();
-        if ((cellImage) && (cellImage->times().size() != 0)) {
-            d->command->addOutput(cellImage);
-            this->target()->setForm("gnomonCellImage", cellImage);
-            QString form_name("cellimage_out");
-            if (d->code->outputForms().contains("gnomonCellImage")) {
-                form_name = d->code->outputForms()["gnomonCellImage"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellImage(False).items()}",
-                    &stat);
-            output_form_added = true;
-            GNOMON_SESSION->trackForm(cellImage);
-            int form_count = gnomonFormManager::instance()->formCount(cellImage->formName());
-            cellImage->metadata()->set("name",
-                                       cellImage->formName().remove("gnomon") + QString::number(form_count + 1));
-            cellImage->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonImageSeries> image = d->algorithm->outputImage();
-        if ((image) && (image->times().size() != 0) && (image->current()->channels().size() != 0)) {
-            d->command->addOutput(image);
-            this->target()->setForm("gnomonImage", image);
-            QString form_name("image_out");
-            if (d->code->outputForms().contains("gnomonImage")) {
-                form_name = d->code->outputForms()["gnomonImage"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputImage(False).items()}",
-                    &stat);
-            output_form_added = true;
-            GNOMON_SESSION->trackForm(image);
-            int form_count = gnomonFormManager::instance()->formCount(image->formName());
-            image->metadata()->set("name", image->formName().remove("gnomon") + QString::number(form_count + 1));
-            image->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonLStringSeries> lString = d->algorithm->outputLString();
-        if ((lString) && (lString->times().size() != 0)) {
-            d->command->addOutput(lString);
-            this->target()->setForm("gnomonLString", lString);
-            QString form_name("lString_out");
-            if (d->code->outputForms().contains("gnomonLString")) {
-                form_name = d->code->outputForms()["gnomonLString"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputLString(False).items()}",
-                    &stat);
-            output_form_added = true;
-            GNOMON_SESSION->trackForm(lString);
-            int form_count = gnomonFormManager::instance()->formCount(lString->formName());
-            lString->metadata()->set("name", lString->formName().remove("gnomon") + QString::number(form_count + 1));
-            lString->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonMeshSeries> mesh = d->algorithm->outputMesh();
-        if ((mesh) && (mesh->times().size() != 0)) {
-            d->command->addOutput(mesh);
-            this->target()->setForm("gnomonMesh", mesh);
-            QString form_name("mesh_out");
-            if (d->code->outputForms().contains("gnomonMesh")) {
-                form_name = d->code->outputForms()["gnomonMesh"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputMesh(False).items()}",
-                    &stat);
-            output_form_added = true;
-            GNOMON_SESSION->trackForm(mesh);
-            int form_count = gnomonFormManager::instance()->formCount(mesh->formName());
-            mesh->metadata()->set("name", mesh->formName().remove("gnomon") + QString::number(form_count + 1));
-            mesh->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonPointCloudSeries> pointCloud = d->algorithm->outputPointCloud();
-        if ((pointCloud) && (pointCloud->times().size() != 0)) {
-            d->command->addOutput(pointCloud);
-            this->target()->setForm("gnomonPointCloud", pointCloud);
-            QString form_name("pointcloud_out");
-            if (d->code->outputForms().contains("gnomonPointCloud")) {
-                form_name = d->code->outputForms()["gnomonPointCloud"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputPointCloud(False).items()}",
-                    &stat);
-            output_form_added = true;
-            GNOMON_SESSION->trackForm(pointCloud);
-            int form_count = gnomonFormManager::instance()->formCount(pointCloud->formName());
-            pointCloud->metadata()->set("name",
-                                        pointCloud->formName().remove("gnomon") + QString::number(form_count + 1));
-            pointCloud->metadata()->set("source", d->algorithm_key);
         }
 
         if (output_form_added) {
