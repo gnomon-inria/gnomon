@@ -924,7 +924,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
         """Increment the progress counter by increase and can pause or stop the computation if requested"""
         self._progress += increase
         if message:
-            self.set_progress_message()
+            self.set_progress_message(message)
         self._event.wait()
         if self._stop_requested:
             raise InterruptProcess
