@@ -482,6 +482,15 @@ void gnomonSessionManager::sync() {
 bool gnomonSessionManager::load() {
     qDebug() << "===========" << "loading session";
     d->loading_session = true;
+
+    auto setSessionLoader = [=](double progress, const QString& message){
+        this->setLoadingSessionProgress(this->loadingSessionProgress() + progress, message);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 200);
+    };
+
+    double progress_increment = 0.05;
+    setSessionLoader(progress_increment, "Project Directory");
+
     QDir dir(GNOMON_PROJECT->projectDir());
 
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
@@ -492,9 +501,17 @@ bool gnomonSessionManager::load() {
     QStringList form_ids = settings.value("form_ids").toStringList();
     QStringList owned_form_ids = settings.value("owned_form_ids").toStringList();
 
+    // thirty five percent of total time
+    progress_increment = 0.35 / form_ids.size();
+    int counter = 0;
+    QString message;
+
     // hold a reference to every form until load is finished, every unused form should be cleaned up
     QList<std::shared_ptr<gnomonAbstractDynamicForm>> form_holder;
     for(const auto &uuid: form_ids) {
+        message = " Form " + QString::number(++counter) + "/" + QString::number(form_ids.size());
+        setSessionLoader(progress_increment, message);
+
         auto form = gnomonForm::createDynamicForm(settings.value(uuid).toJsonObject());
         m_tracked_forms.insert(uuid, form);
         form_holder.append(form);
@@ -514,9 +531,15 @@ bool gnomonSessionManager::load() {
         QJsonObject workspace_properties = workspaces_info["workspace_properties"].toObject();
         QJsonArray workspace_order = workspaces_info["workspace_order"].toArray();
         QJsonObject workspace_sources = workspaces_info["workspace_sources"].toObject();
+        // fifty percent of total time
+        progress_increment = 0.5 / workspace_order.count();
+        counter = 0;
         for(const auto &id_: workspace_order) {
+            message = " Workspaces " + QString::number(++counter) + "/" + QString::number(workspace_order.count());
+            setSessionLoader(progress_increment, message);
+
             auto id = id_.toString();
-            d->workspace_properties[id] = workspace_properties[id].toObject();;
+            d->workspace_properties[id] = workspace_properties[id].toObject();
 
             loadWorkspace(workspace_sources[id].toString(), id);
         }
@@ -535,6 +558,9 @@ bool gnomonSessionManager::load() {
         QJsonObject pipeline_manager_state = settings.value("pipeline_manager_state").toJsonObject();
         gnomonPipelineManager::instance()->deserialize(pipeline_manager_state, pipeline);
         settings.endGroup();
+
+        progress_increment = 0.1;
+        setSessionLoader(progress_increment, "Active Workspace");
 
         d->active_workspace_id = workspaces_info["active_workspace_id"].toInt();
         QMetaObject::invokeMethod(d->window, "switch_workspace",

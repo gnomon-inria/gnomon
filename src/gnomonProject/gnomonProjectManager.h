@@ -32,6 +32,9 @@ public:
 
     gnomonProject *project(void);
 
+signals:
+    void projectLoaded(void);
+
 protected:
     gnomonProjectManager(QObject *parent = nullptr);
     ~gnomonProjectManager(void);

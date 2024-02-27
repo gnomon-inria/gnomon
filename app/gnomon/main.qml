@@ -368,6 +368,13 @@ G.Application {
         }
     }
 
+    Connections {
+        target:  GP.ProjectManager;
+        function onProjectLoaded() {
+            stack_launcher.currentIndex = 1;
+        }
+    }
+
     G.Toast {
         id: _failed_pipeline_toast
 
@@ -493,7 +500,7 @@ G.Application {
             }
             let info = GUtils.projectInfo(folder_source)
             info.source = folder_source
-            window.recent_projects.append(projectInfo)
+            window.recent_projects.append(info)
             recent_projects_array.splice(0, 0, window.recent_projects.get(window.recent_projects.count-1))
             window.opened_files = JSON.stringify(recent_projects_array)
         } else {
@@ -728,7 +735,7 @@ G.Application {
         GP.ProjectManager.openProject(project_url)
         //GP.PrpjectManager.project.loadSession()
 
-        stack_launcher.currentIndex = 1;
+        // stack_launcher.currentIndex = 1;
     }
 
     function open_blank_project(project_url, load_pipeline=false) {
