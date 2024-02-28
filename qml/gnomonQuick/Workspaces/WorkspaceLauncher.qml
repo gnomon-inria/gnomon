@@ -59,6 +59,7 @@ G.Workspace {
     }
 
     G.Panel {
+        id : panel
         anchors.fill: parent
 
         RowLayout {
@@ -712,8 +713,11 @@ G.Workspace {
                                     anchors.rightMargin: -G.Style.smallPadding
 
                                     onClicked: {
+                                        panel.visible = false
                                         history_set_last_used(source)
-                                        load_project(source)
+                                        _overlay.visible = true
+                                        splash_screen.project_source = source
+                                        splash_screen.source = "qrc:/qt/qml/gnomonQuick/Controls/SplashScreen.qml"
                                     }
                                 }
 
@@ -1030,6 +1034,34 @@ G.Workspace {
                 GUtils.makeProjectThumbnail(project_path, thumbnail_path, top_left, bottom_right)
             }
             project_thumbnail_dialog.delegate.refreshThumbnail();
+        }
+    }
+
+    Loader {
+        id: splash_screen
+
+        property string project_source: ""
+        asynchronous: true
+    }
+
+    Rectangle {
+        id: _overlay
+
+        parent:  Overlay.overlay
+        anchors.fill: parent
+        visible: false
+
+        color: G.Style.colors.overlayColor
+    }
+
+    Connections {
+        target: splash_screen
+        function onLoaded() {
+            load_project(splash_screen.project_source)
+            splash_screen.source = "";
+            splash_screen.project_source = "";
+            _overlay.visible = false
+            panel.visible = true
         }
     }
 

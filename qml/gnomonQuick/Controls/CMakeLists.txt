@@ -33,6 +33,7 @@ QML_FILES
   FormSelectorDelegate.qml
   GraphicalParameter.qml
   SessionSettings.qml
+  SplashScreen.qml
   Gutter.qml
   Icon.qml
   Icons.js
