@@ -11,22 +11,24 @@ Window {
     id: splashScreen
     modality: Qt.ApplicationModal
     flags: Qt.SplashScreen
-    width: window.width
-    height: window.height
-    x : window.x
-    y : window.y
+
+    width: window.width/2
+    height: window.height/2
+    x: window.x + width/2
+    y: window.y + height/2
+
     Rectangle {
         id : _splash_image
         anchors.fill: parent
         color: G.Style.colors.bgColor;
+
         Text {
             id: _loading_title
             text: "Loading your session..."
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.margins: G.Style.smallPadding
-            font.bold: true
-            font.pixelSize: 20
+            anchors.margins: G.Style.mediumPadding
+            font: G.Style.fonts.h3
             color: G.Style.colors.neutralColor
         }
 
@@ -39,7 +41,7 @@ Window {
             anchors.margins: G.Style.smallPadding
 
             palette.dark: G.Style.colors.neutralColor
-            width: parent.width / 24
+            width: G.Style.thumbnailLarge
             height: width / 4
             running: true
         }
@@ -49,8 +51,7 @@ Window {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: _busy_animation.bottom
             anchors.margins: G.Style.largePadding
-            font.bold: true
-            font.pixelSize: 15
+            font: G.Style.fonts.cardText
             color: G.Style.colors.neutralColor
             text : "Loading..."
         }
@@ -83,7 +84,6 @@ Window {
                 opacity: 0.5
                 to: 100.
             }
-
         }
 
         Connections {
