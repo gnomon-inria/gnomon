@@ -24,7 +24,7 @@ Window {
 
         Text {
             id: _loading_title
-            text: "Loading your session..."
+            text: "Restoring last session..."
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.margins: G.Style.mediumPadding
