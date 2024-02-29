@@ -15,7 +15,6 @@
 #include "gnomonAlgorithmsLogs/gnomonLogCaptureServer"
 
 #include <dtkScript>
-#include <QtConcurrent>
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonWorkspacePythonAlgorithmPrivate
@@ -54,6 +53,7 @@ public:
     QMetaObject::Connection editor_connect;
 
     QFutureWatcher<void> *watcher = nullptr;
+    QMetaObject::Connection connect_finished;
 };
 
 void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
@@ -319,61 +319,16 @@ QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)
     return settings.value("Python/load").toString();
 }
 
-void runner(gnomonAbstractAlgorithmCommand* _command) {
-    auto command = dynamic_cast<gnomonFormAlgorithmCommand *>(_command);
-    if (command) {
-        auto algorithm = command->formAlgorithm();
-        algorithm->run();
-
-        std::shared_ptr<gnomonBinaryImageSeries> binaryImage = algorithm->outputBinaryImage();
-        if ((binaryImage) && (binaryImage->times().size() != 0)) {
-            command->addOutput(binaryImage);
-        }
-        std::shared_ptr<gnomonCellComplexSeries> cellComplex = algorithm->outputCellComplex();
-        if ((cellComplex) && (cellComplex->times().size() != 0)) {
-            command->addOutput(cellComplex);
-        }
-        std::shared_ptr<gnomonCellImageSeries> cellImage = algorithm->outputCellImage();
-        if ((cellImage) && (cellImage->times().size() != 0)) {
-            command->addOutput(cellImage);
-        }
-        std::shared_ptr<gnomonImageSeries> image = algorithm->outputImage();
-        if ((image) && (image->times().size() != 0) && (image->current()->channels().size() != 0)) {
-            command->addOutput(image);
-        }
-        std::shared_ptr<gnomonLStringSeries> lString = algorithm->outputLString();
-        if ((lString) && (lString->times().size() != 0)) {
-            command->addOutput(lString);
-        }
-        std::shared_ptr<gnomonMeshSeries> mesh = algorithm->outputMesh();
-        if ((mesh) && (mesh->times().size() != 0)) {
-            command->addOutput(mesh);
-        }
-        std::shared_ptr<gnomonPointCloudSeries> pointCloud = algorithm->outputPointCloud();
-        if ((pointCloud) && (pointCloud->times().size() != 0)) {
-            command->addOutput(pointCloud);
-        }
-
-        if (gnomonCore::gui_thread) {
-            for (const QString &k: command->outputs().keys()) {
-                if (command->outputs()[k])
-                    command->outputs()[k]->metadata()->moveToThread(gnomonCore::gui_thread);
-            }
-        }
-    }
-}
-
 void gnomonWorkspacePythonAlgorithm::run(void) {
 
     if(d->algorithm) {
+        disconnect(d->connect_finished);
+        d->connect_finished = connect(d->command, &gnomonAbstractCommand::finished, [this]() {
+            this->viewOutputs();
+            emit finished();
+        });
         emit started();
-        d->algorithm->is_async = true;
-        d->algorithm->setLogServerAddress(gnomonLogCaptureServer::instance()->completeAddress());
-
-        d->watcher = new QFutureWatcher<void>();
-        connect(d->watcher, &QFutureWatcher<void>::finished, d->command, &gnomonAbstractAlgorithmCommand::finished);
-        auto future = QtConcurrent::run(runner, d->command);
-        d->watcher->setFuture(future);
+        d->command->redo();
     } else {
         dtkWarn() << Q_FUNC_INFO << "d->algorithm is null, nothing is done!";
     }
