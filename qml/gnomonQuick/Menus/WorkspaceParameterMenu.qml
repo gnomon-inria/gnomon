@@ -38,6 +38,12 @@ Control {
                 iconName: "information-outline";
                 size: G.Style.iconMedium;
                 color: G.Style.colors.textColorFaded;
+
+                onClicked: {
+                    _plugin_info_dialog.pluginName = d.algorithmsData[_algos.currentIndex]['name']
+                    _plugin_info_dialog.pluginMetaData = d.algoMetaData
+                    _plugin_info_dialog.open()
+                }
             }
 
             G.ComboBoxWithLabel {
@@ -201,6 +207,10 @@ Control {
                 }
             }
         }
+    }
+
+    G.PluginInfoDialog {
+        id: _plugin_info_dialog
     }
 
     function getTitleString(group : string) : string {
