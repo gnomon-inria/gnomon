@@ -106,6 +106,7 @@ G.Page {
             visible: window.load_in_progress
             opacity: 0.5
             to: 100
+            progressValueCentered: false
         }
 
         BusyIndicator {
