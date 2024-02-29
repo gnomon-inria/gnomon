@@ -100,8 +100,6 @@ G.Dialog {
         anchors.margins: G.Style.smallPadding
         anchors.leftMargin: -2*G.Style.smallPadding
 
-        model: _pipeline.inputNodeNames
-
         delegate: ItemDelegate {
 
             width: _input_list.width;
@@ -278,8 +276,6 @@ G.Dialog {
 
         visible: _write_outputs.checked
 
-        model: _pipeline.outputNodeNames
-
         delegate: ItemDelegate {
 
             width: _output_list.width;
@@ -429,6 +425,10 @@ G.Dialog {
 
     onOpened: {
         _pipeline_view.zoomLevel = -4;
+        // Fill models here, to avoid an infinity loop
+        // with signals; inputNodeNamesChanged and outputNodeNamesChanged
+        _input_list.model = _pipeline.inputNodeNames
+        _output_list.model = _pipeline.outputNodeNames
     }
 
     onClosed: {

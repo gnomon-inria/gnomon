@@ -900,9 +900,6 @@ bool gnomonPipeline::fromJson(const QJsonObject& pipeline_json, bool check_plugi
         auto node = d->pipeline_nodes[node_name];
         emit nodeAdded(node);
     }
-    emit nodeNamesChanged();
-    emit inputNodeNamesChanged();
-    emit outputNodeNamesChanged();
 
     return read_ok;
 }
