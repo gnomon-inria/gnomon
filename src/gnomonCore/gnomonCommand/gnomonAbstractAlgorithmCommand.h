@@ -60,6 +60,14 @@ public:
         }
     };
 
+    inline virtual QString progressMessage(void) override {
+        if(this->action) {
+            return this->action->progressMessage();
+        } else {
+            return "";
+        }
+    };
+
 public:
     inline virtual dtkCoreParameters parameters() const override {return this->action->parameters();};
     inline virtual void setParameter(const QString& parameter, const QVariant& value) override {

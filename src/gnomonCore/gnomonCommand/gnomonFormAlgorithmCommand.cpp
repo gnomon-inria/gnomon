@@ -1,4 +1,5 @@
 #include "gnomonFormAlgorithmCommand.h"
+#include "gnomonCore"
 
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm>
 #include <gnomonCore/gnomonForm/gnomonDynamicFormFactory>
@@ -80,12 +81,49 @@ gnomonAbstractFormAlgorithm *gnomonFormAlgorithmCommand::formAlgorithm(void)
 
 void gnomonFormAlgorithmCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonFormAlgorithmCommand::postdo(void)
 {
+    auto algorithm = this->formAlgorithm();
+    algorithm->run();
 
+    std::shared_ptr<gnomonBinaryImageSeries> binaryImage = algorithm->outputBinaryImage();
+    if ((binaryImage) && (binaryImage->times().size() != 0)) {
+        this->addOutput(binaryImage);
+    }
+    std::shared_ptr<gnomonCellComplexSeries> cellComplex = algorithm->outputCellComplex();
+    if ((cellComplex) && (cellComplex->times().size() != 0)) {
+        this->addOutput(cellComplex);
+    }
+    std::shared_ptr<gnomonCellImageSeries> cellImage = algorithm->outputCellImage();
+    if ((cellImage) && (cellImage->times().size() != 0)) {
+        this->addOutput(cellImage);
+    }
+    std::shared_ptr<gnomonImageSeries> image = algorithm->outputImage();
+    if ((image) && (image->times().size() != 0) && (image->current()->channels().size() != 0)) {
+        this->addOutput(image);
+    }
+    std::shared_ptr<gnomonLStringSeries> lString = algorithm->outputLString();
+    if ((lString) && (lString->times().size() != 0)) {
+        this->addOutput(lString);
+    }
+    std::shared_ptr<gnomonMeshSeries> mesh = algorithm->outputMesh();
+    if ((mesh) && (mesh->times().size() != 0)) {
+        this->addOutput(mesh);
+    }
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud = algorithm->outputPointCloud();
+    if ((pointCloud) && (pointCloud->times().size() != 0)) {
+        this->addOutput(pointCloud);
+    }
+
+    if (gnomonCore::gui_thread) {
+        for (const QString &k: this->outputs().keys()) {
+            if (this->outputs()[k])
+                this->outputs()[k]->metadata()->moveToThread(gnomonCore::gui_thread);
+        }
+    }
 }
 
 void gnomonFormAlgorithmCommand::undo(void)

@@ -275,11 +275,14 @@ user using a graphical interface) is passed to the function as
 
 Now that we have a functioning plugin we might want to give some
 information on the progress of the computation back to _gnomon_.
-To achieve that, gnomon provides 2 pre-implemented methods to
-every plugins: `set_max_progress(self, v: int)` and
-`increment_progress(self, increase: int = 1)`
+To achieve that, gnomon provides 3 pre-implemented methods to
+every plugin: `set_max_progress(self, v: int)` and
+`increment_progress(self, increase: int = 1)` to update the progress bar 
+as well as `set_progress_message(self, message: str)`
+to provide a short message detailing what computation is happening.
 
-First, we need to call `self.increment_progress()` every so often
+First, we need to call `self.increment_progress()` and
+`set_progress_message(message)` every so often
 inside `run()`. Then, for this to work properly, we must set max progress to the number
 of expected calls to `increment_progress`.
 
@@ -295,6 +298,7 @@ def run(self):
 
         for channel in self.images[time].keys():
             img = self.images[time][channel]
+            self.set_progress_message(f"T {time} - channel {channel} : applying filter")
             filtered_img = linear_filtering(img, method='gaussian_smoothing', sigma=self['gaussian_sigma'])
             self.increment_progress()
             self.filtered_images[time][channel] = filtered_img

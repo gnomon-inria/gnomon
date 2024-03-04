@@ -23,6 +23,7 @@ public slots:
     inline void resume(void) override { }
     inline void stop(void) override { }
     inline int progress(void) override { return 0; }
+    inline QString progressMessage(void) override { return ""; }
 
 public:
     inline virtual QString documentation(void) override { return model->documentation(); }

@@ -58,7 +58,12 @@ public:
     QMap<QString, QMap<QString, QString> > fileReaderImagePath;
     QMap<QString, gnomonAbstractReaderCommand*> form_type_commands;
     int progress = 0;
+    QString progress_message;
     QJsonObject workspace_info;
+
+    QTimer timer;
+    QMetaObject::Connection connect_started;
+    QMetaObject::Connection connect_finished;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -202,6 +207,26 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
 
     readerCommand->setPath(path);
     readerCommand->setSource(source);
+
+    this->timer.setInterval(100);
+    connect(&this->timer, &QTimer::timeout, [=]() {
+        this->progress = readerCommand->progress();
+        this->progress_message = readerCommand->progressMessage();
+        emit q->progressChanged(this->progress);
+        // FIXME: progress message is not changed :(
+        emit q->progressMessageChanged(this->progress_message);
+    });
+    disconnect(this->connect_started);
+    this->connect_started = connect(q, &gnomonAbstractWorkspace::started, [=]() {
+        this->timer.start();
+    });
+    disconnect(this->connect_finished);
+    this->connect_finished = connect(q, &gnomonAbstractWorkspace::finished, [=]() {
+        this->timer.stop();
+        this->timer.disconnect();
+    });
+
+    emit q->started();
     readerCommand->redo();
     if(!this->object_name.isEmpty()) {
         QJsonObject data_json;
@@ -418,6 +443,10 @@ int gnomonWorkspaceBrowser::progress(void) {
     return d->progress;
 }
 
+QString gnomonWorkspaceBrowser::progressMessage(void) {
+    return d->progress_message;
+}
+
 const QString& gnomonWorkspaceBrowser::readerPath(void) const
 {
     return d->filename;
@@ -506,7 +535,6 @@ void gnomonWorkspaceBrowser::requestReaders(QString default_reader="")
 
 bool gnomonWorkspaceBrowser::readWith(const QString& reader)
 {
-    emit started();
     return d->readForm(reader);
 }
 

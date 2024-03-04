@@ -891,6 +891,7 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
     def init(self, *args, **kwargs):
         self._stop_requested = False
         self._max_progress = -1
+        self._progress_message = ""
         self._event = Event()
         self._event.set()  # release the lock
         self._swigDisownList = []
@@ -919,14 +920,22 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
 
     cls.set_max_progress = set_max_progress
 
-    def increment_progress(self, increase: int = 1):
+    def increment_progress(self, increase: int = 1, message: str = None):
         """Increment the progress counter by increase and can pause or stop the computation if requested"""
         self._progress += increase
+        if message:
+            self.set_progress_message(message)
         self._event.wait()
         if self._stop_requested:
             raise InterruptProcess
 
     cls.increment_progress = increment_progress
+
+    def set_progress_message(self, message: str):
+        """Sets the progress message that will be displayed in the progress bar"""
+        self._progress_message = message
+
+    cls.set_progress_message = set_progress_message
 
     def progress(self):
         if self._max_progress <= 0 or self._progress < 0:
@@ -935,6 +944,11 @@ def _gnomonPlugin(version, coreversion, cls, namespace, name="", base_class=None
             return self._progress*100//self._max_progress
 
     cls.progress = progress
+
+    def progressMessage(self):
+        return self._progress_message
+
+    cls.progressMessage = progressMessage
 
     # -----------------------------------------------------
     # Python error management
