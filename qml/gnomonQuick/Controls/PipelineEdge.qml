@@ -16,6 +16,8 @@ Shape {
     property Item src_component;
     property Item tgt_component;
 
+    property bool thumbnail: true;
+
     property int inputWorkspaceIndex;
     property int outputWorkspaceIndex;
     property int formIndex: edge ? edge.formIndex : -1;
@@ -64,11 +66,12 @@ Shape {
 
         x: _self.stt.x + _self.width / 2 -_thumbnail.width /2
         y: _self.stt.y + _self.height / 2 -_thumbnail.height /2
+        visible: _self.thumbnail
 
         bgColor: window.world.currentIndex === _self.formIndex
                 ? G.Style.colors.highlightColor
                 : G.Style.colors.neutralColor
-        url: "image://thumbnails/" + _self.formIndex
+        url:  _self.thumbnail? "image://thumbnails/" + _self.formIndex : ""
         onDoubleClicked: window.world.currentIndex = _self.formIndex;
     }
 

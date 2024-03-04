@@ -715,11 +715,23 @@ G.Application {
         return workspace.d
     }
 
+    function load_session_from_pipeline(pipeline, write_outputs=false) {
+        console.log("Loading session from", pipeline.name, "pipeline ( write outputs =", write_outputs, ")");
+        window.load_in_progress = true;
+        let res = GP.ProjectManager.project.loadSessionFromPipeline(pipeline, write_outputs);
+        if(res) {
+            console.log("Session Loaded ");
+        } else {
+            console.warn("An error occured while loading the session");
+        }
+        stack_launcher.currentIndex = 1;
+    }
 
+    // TODO: still necessary? (called only from the menu)
     function load_session(json_path) {
         console.log("Loading session from ", json_path);
         window.load_in_progress = true;
-        let res = GP.ProjectManager.project.loadSessionFromPipeline(json_path);
+        let res = GP.ProjectManager.project.loadSessionFromPipelineFile(json_path);
         if(res) {
             console.log("Session Loaded ");
         } else {

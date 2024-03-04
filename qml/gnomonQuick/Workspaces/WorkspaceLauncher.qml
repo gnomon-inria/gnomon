@@ -813,8 +813,18 @@ G.Workspace {
                                     nameFilters: ["Json files (*.json)"]
                             
                                     onAccepted: {
+                                        _pipeline_preview_dialog.pipelineFile = _pipeline_file_dialog.file
+                                        _pipeline_preview_dialog.projectSource = source
+                                        _pipeline_preview_dialog.open()
+                                    }
+                                }
+
+                                G.PipelinePreviewDialog {
+                                    id: _pipeline_preview_dialog
+
+                                    onAccepted: {
                                         open_blank_project(source, true)
-                                        load_session(_pipeline_file_dialog.file)
+                                        load_session_from_pipeline(_pipeline_preview_dialog.pipeline, _pipeline_preview_dialog.writeOutputs)
                                     }
                                 }
 
