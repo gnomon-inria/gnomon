@@ -477,14 +477,18 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         }
 
         if (d->input_forms.size()>0) {
+            plugin_code += "        self.set_max_progress(len(self." + d->input_forms.values()[0].name +")) # Should be equal to the number of progress increments\n";
             plugin_code += "        for time in self." + d->input_forms.values()[0].name +  ".keys():\n";
         } else {
+            plugin_code += "        self.set_max_progress(1) # Should be equal to the number of progress increments\n";
             plugin_code += "        for time in [0]:\n";
         }
+        plugin_code += "            self.set_progress_message(f'T {time} : Running')\n";
         for (const auto &form_type : d->input_forms.keys()) {
             gnomonFormDescription desc = d->input_forms[form_type];
             plugin_code += "            " + desc.name + " = self." + desc.name + "[time]\n";
         }
+        plugin_code += "            self.increment_progress()\n";
         plugin_code += "            # #}\n";
         if (run_code.isEmpty() | run_code.startsWith(default_run_code_indented) | run_code.startsWith(default_run_code)) {
             plugin_code += default_run_code_indented;
