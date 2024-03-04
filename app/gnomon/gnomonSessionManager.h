@@ -28,8 +28,6 @@ public:
 
     bool loading(void) override;
 
-    bool loading(void) override;
-
 public:
     void setEngine(QQmlApplicationEngine *engine) override;
 
