@@ -169,7 +169,7 @@ template <typename T> void gnomonTimeSeries<T>::insert(double t, std::shared_ptr
     }
 
     if(m_auto_save)
-        save(t);
+        save(id);
     else
         m_has_unsaved_times = true;
 }
