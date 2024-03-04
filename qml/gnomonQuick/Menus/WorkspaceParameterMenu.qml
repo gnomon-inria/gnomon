@@ -42,6 +42,7 @@ Control {
                 onClicked: {
                     _plugin_info_dialog.pluginName = d.algorithmsData[_algos.currentIndex]['name']
                     _plugin_info_dialog.pluginMetaData = d.algoMetaData
+                    _plugin_info_dialog.pluginParameters = d.parameters
                     _plugin_info_dialog.open()
                 }
             }

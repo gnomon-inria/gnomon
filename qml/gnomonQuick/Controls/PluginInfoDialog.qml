@@ -13,6 +13,7 @@ G.Dialog {
 
     property string pluginName: ""
     property var pluginMetaData
+    property var pluginParameters
 
     parent: Overlay.overlay
 
@@ -75,6 +76,7 @@ G.Dialog {
         id: documentation_label
 
         anchors.top: version_label.bottom
+        anchors.bottom: parameter_list.top
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: G.Style.smallPadding
@@ -84,6 +86,28 @@ G.Dialog {
         font: G.Style.fonts.value
         color: G.Style.colors.textColorBase
         wrapMode: Text.Wrap
+    }
+
+    ListView {
+        id: parameter_list
+
+        anchors.bottom: source_label.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: G.Style.smallPadding
+        height: G.Style.smallPanelHeight
+
+        spacing: G.Style.smallColumnSpacing;
+        clip: true;
+
+        model: _self.pluginParameters
+
+        delegate: G.ListItemDelegate {
+            width: parameter_list.width
+            height: G.Style.smallDelegateHeight
+
+            text: modelData.label + ": " + modelData.doc
+        }
     }
 
     Label {
@@ -107,5 +131,14 @@ G.Dialog {
             let md = GM.MetaData.pluginMetaData(_self.pluginMetaData["group"], _self.pluginMetaData["name"])
             source_label.text = "Source package: `" + md["package"] + "` (Conda channel: `" + md["conda_channel"] + "`)"
         }
+    }
+
+    onPluginParametersChanged: {
+        console.log(_self.pluginParameters)
+        console.log(_self.pluginParameters.count)
+        for (var param_name in _self.pluginParameters) {
+            console.log(param_name)
+        }
+        console.log(parameter_list.model.count)
     }
 }
