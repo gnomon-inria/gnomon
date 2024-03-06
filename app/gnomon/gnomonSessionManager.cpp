@@ -429,6 +429,32 @@ int gnomonSessionManager::newWorkspace(const QString &source) {
     return index;
 }
 
+void gnomonSessionManager::closeWorkspace(int index) {
+    QObject* workspace_component;
+    auto success = QMetaObject::invokeMethod(d->window, "workspace_at",
+                                             Q_RETURN_ARG(QObject*, workspace_component),
+                                             Q_ARG(int, index));
+    QString uuid;
+    if(success) {
+        uuid = workspace_component->property("uuid").toString();
+    } else {
+        return;
+    }
+
+    success = QMetaObject::invokeMethod(d->window, "closeWorkspace",
+                                             Q_ARG(int, index));
+    if(success) {
+        d->workspace_sources.remove(uuid);
+        d->workspace_properties.remove(uuid);
+        //remove this workspace from the settings
+        QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
+        settings.beginGroup(uuid);
+        settings.remove("");
+        settings.endGroup();
+        this->sync();
+    }
+}
+
 void gnomonSessionManager::setActiveWorkspace(int id) {
     if(!d->loading_session) {
         d->active_workspace_id = id;

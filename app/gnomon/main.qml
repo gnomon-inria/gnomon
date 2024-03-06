@@ -428,7 +428,7 @@ G.Application {
         return workspaces;
     }
 
-    function workspace_at(index)
+    function workspace_at(index: int): QtObject
     {
         return workspaces.children[index];
     }
@@ -759,7 +759,7 @@ G.Application {
         stack_launcher.currentIndex = 1;
     }
 
-    function closeWorkspace(index) {
+    function closeWorkspace(index: int) {
         if (window.workspace_list.count == 1) {
             _switch_workspace_dialog.reject();
             reset();
@@ -767,12 +767,28 @@ G.Application {
         }
 
         _workspaces_model.remove(index)
-        workspaces.children[index].destroy()
+
+        for(let i = 0; i < _workspaces_model.count; i++) {
+            console.log(i, "==>", _workspaces_model.get(i)["index"])
+            _workspaces_model.get(i)["index"] = i
+
+        }
+        let new_workspace_list = []
+        for(let i = 0; i < workspaces.count; i++) {
+            if(i!=index) {
+                new_workspace_list.push(workspaces.children[i])
+            }
+        }
 
         //if we remove from index < to currentIndex, the currentIndex needs to change
-        if(workspaces.currentIndex >= index) {
-            switch_workspace(workspaces.currentIndex-1);
+        let expected_index = workspaces.currentIndex >= index ? workspaces.currentIndex-1 : workspaces.currentIndex
+        if(workspaces.currentIndex === index) {
+            switch_workspace(expected_index)
         }
+
+        workspaces.children[index].destroy()
+        workspaces.children = new_workspace_list
+        workspaces.currentIndex = expected_index
     }
 
     function reset() {

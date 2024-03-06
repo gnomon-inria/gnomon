@@ -97,7 +97,7 @@ G.Dialog {
                     iconName: "close"
                     color: G.Style.colors.textColorBase;
 
-                    visible: window.workspace_at(index).canBeDestroyed
+                    visible: window.workspace_at(index) ? window.workspace_at(index).canBeDestroyed : false
                     onClicked: {
                         console.log("close wp... ", index );
                         closeWorkspace(index);
