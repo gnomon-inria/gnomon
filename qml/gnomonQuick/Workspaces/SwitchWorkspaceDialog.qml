@@ -51,7 +51,17 @@ G.Dialog {
             }
         }
     }
+    onOpened: {
+        // this is insurance
+        listView.currentIndex = window.current_workspace_index()
+    }
 
+    Connections {
+        target: window
+        function onCurrentWorkspaceIndexChanged(index: int) {
+            listView.currentIndex = index
+        }
+    }
 
     ListView {
         id: listView

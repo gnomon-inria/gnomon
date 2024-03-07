@@ -38,6 +38,7 @@ G.Application {
     signal getScreenshot(string id);
     signal workspaceThumbnailUpdated(int id);
     signal insideParamFigure();
+    signal currentWorkspaceIndexChanged(int index)
 
 
     palette {
@@ -304,6 +305,9 @@ G.Application {
 
                 StackLayout {
                     id: workspaces;
+                    onCurrentIndexChanged: {
+                        currentWorkspaceIndexChanged(currentIndex)
+                    }
                 }
             }
 
