@@ -36,8 +36,15 @@ public:
     bool canBeDestroyed(void) { return this->m_can_be_destroyed; };
     QString uuid() { return objectName(); };
 
-    virtual QJsonObject serialize() = 0;
-    virtual void deserialize(const QJsonObject &state) = 0;
+    virtual QJsonObject serialize() {
+        QJsonObject state;
+        state.insert("canBeDestroyed", m_can_be_destroyed);
+        return state;
+    };
+    virtual void deserialize(const QJsonObject &state) {
+        m_can_be_destroyed = state.value("canBeDestroyed").toBool();
+        emit canBeDestroyedChanged(m_can_be_destroyed);
+    };
 
 
 protected:
