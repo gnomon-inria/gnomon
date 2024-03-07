@@ -38,6 +38,8 @@ public:
 
     Q_INVOKABLE virtual bool newSession(const QString &source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml") = 0;
 
+    Q_INVOKABLE virtual void setResetting(bool resetting) = 0;
+
     virtual bool loadFromPipelineFile(const QString &path) = 0;
     virtual bool loadFromPipeline(gnomonPipeline *pipeline, bool write_outputs=false) = 0;
 
