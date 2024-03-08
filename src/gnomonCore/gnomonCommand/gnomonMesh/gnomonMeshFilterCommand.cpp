@@ -39,13 +39,13 @@ void gnomonMeshFilterCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
 
-        delete this->action;
+    delete this->action;
     this->action = gnomonCore::meshFilter::pluginFactory().create(algo_name);
 }
 
 void gnomonMeshFilterCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonMeshFilterCommand::postdo(void)

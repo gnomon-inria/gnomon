@@ -71,6 +71,7 @@ public slots:
     virtual void resume(void) = 0;
     virtual void stop(void) = 0;
     virtual int progress(void) = 0;
+    virtual QString progressMessage(void) = 0;
 
 public:
     virtual void deserializeResults(QJsonObject &serialization) = 0;

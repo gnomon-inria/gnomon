@@ -39,6 +39,7 @@ public:
     virtual void resume(void) {};
     virtual void stop(void) {};
     virtual int progress(void) {return -1;}
+    virtual QString progressMessage(void) {return {};}
 
     virtual void setLogServerAddress(QString addr) {};
 
