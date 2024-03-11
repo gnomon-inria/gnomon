@@ -285,7 +285,6 @@ G.Workspace {
                     }
 
                     viewLogic: d.source;
-                    ts_slider.value: Math.max(d.target.currentTime-1, ts_slider.from)
 
                     Component.onCompleted: G.Associator.associate(_source_view, d.source);
                 }
@@ -299,10 +298,8 @@ G.Workspace {
 
                     viewLogic: d.target;
 
-                    ts_slider.to: d.source.timeMax
-                    ts_slider.value: Math.min(d.source.currentTime+1, ts_slider.to)
 
-                    ts_slider.enabled: true;
+                    ts_slider.enabled: false;
                     ts_slider.visible: true;
 
                     Component.onCompleted: G.Associator.associate(_target_view, d.target);

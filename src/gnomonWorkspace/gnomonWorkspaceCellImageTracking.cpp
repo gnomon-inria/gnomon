@@ -86,15 +86,35 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
 
     d->updatePool();
 
+    auto setInterval = [=] (double t) {
+        auto form = this->target()->form("gnomonCellImage");
+        auto times = form->times();
+        if(times.length()<=1) {
+            this->target()->setCurrentTime(t);
+            return;
+        }
+        if(t == times.last()) {
+            this->source()->setCurrentTime(times[times.length()-2]);
+            return;
+        }
+        for(auto new_t: times) {
+            if(new_t > t) {
+                this->target()->setCurrentTime(new_t);
+                return;
+            }
+        }
+    };
+    connect(this->source(), &gnomonAbstractView::timeChanged, setInterval);
+
     connect(this->target(), &gnomonVtkView::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
-        this->target()->setCurrentTime(this->source()->currentTime()+1.0);
+        setInterval(this->source()->currentTime());
     });
     connect(this->source(), &gnomonVtkView::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
-        this->target()->setCurrentTime(this->source()->currentTime()+1.0);
+        setInterval(this->source()->currentTime());
     });
     connect(this->target(), &gnomonVtkView::formAdded, [=](const QString &name) {
         const QString plugin_name = "cellImageVtkVisualizationMarchingCubes";
