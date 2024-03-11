@@ -267,6 +267,30 @@ QJsonObject gnomonQMLUtils::projectInfo(const QString &path)
     return project_info_json;
 }
 
+bool gnomonQMLUtils::fileBelongsToProject(const QString &relative_path, const QString &project_path)
+{
+    gnomonProject *project = new gnomonProject(project_path);
+    QString absolute_path = project->findFile(relative_path);
+    delete project;
+    return !absolute_path.isEmpty();
+}
+
+QString gnomonQMLUtils::findProjectFile(const QString &relative_path, const QString &project_path)
+{
+    gnomonProject *project = new gnomonProject(project_path);
+    QString absolute_path = project->findFile(relative_path);
+    delete project;
+    return absolute_path;
+}
+
+QString gnomonQMLUtils::projectRelativePath(const QString &absolute_path, const QString &project_path)
+{
+    gnomonProject *project = new gnomonProject(project_path);
+    QString relative_path = project->relativePath(absolute_path);
+    delete project;
+    return relative_path;
+}
+
 void gnomonQMLUtils::makeProjectThumbnail(const QString &project_path, const QString &thumbnail_path, QPointF top_left, QPointF bottom_right)
 {
     QImage image(thumbnail_path);

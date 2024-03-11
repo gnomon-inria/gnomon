@@ -15,6 +15,7 @@ Rectangle {
     property int workspaceIndex;
 
     property var node;
+    property bool interactive: true
 
     property var inputPorts: new Object();
     property var outputPorts: new Object();
@@ -26,7 +27,7 @@ Rectangle {
     border.color: G.Style.colors.baseColor;
     border.width: _self.workspaceIndex === window.current_workspace_index() ? 2 : 0;
 
-    opacity: _dragArea.containsMouse ? 0.8 : 1.0
+    opacity: _self.interactive & _dragArea.containsMouse ? 0.8 : 1.0
 
     Drag.active: _dragArea.drag.active
 
@@ -62,7 +63,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: G.Style.borderWidth;
-        visible: _dragArea.containsMouse
+        visible: _self.interactive & _dragArea.containsMouse
 
         size: G.Style.iconSmall;
         color: G.Style.colors.textColorDarkNeutral
@@ -83,8 +84,10 @@ Rectangle {
         hoverEnabled: true
 
         onDoubleClicked: {
-            console.log("Switching to workspace ", _self.workspaceIndex)
-            window.switch_workspace(_self.workspaceIndex)
+            if (_self.interactive) {
+                console.log("Switching to workspace ", _self.workspaceIndex)
+                window.switch_workspace(_self.workspaceIndex)
+            }
         }
     }
 
@@ -99,12 +102,14 @@ Rectangle {
         }
 
         onClicked: {
-            var node_dialog_component = Qt.createComponent("PipelineNodeDialog.qml");
-            if (node_dialog_component.status == Component.Ready || false) {
-                var dialog = node_dialog_component.createObject(_self, {
-                    "node": _self.node.data,
-                });
-                _test_dummy.open()
+            if (_self.interactive) {
+                var node_dialog_component = Qt.createComponent("PipelineNodeDialog.qml");
+                if (node_dialog_component.status == Component.Ready || false) {
+                    var dialog = node_dialog_component.createObject(_self, {
+                        "node": _self.node.data,
+                    });
+                    _test_dummy.open()
+                }
             }
         }
     }

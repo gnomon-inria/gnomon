@@ -56,6 +56,10 @@ QString gnomonPipelineNodeReader::path(void) {
     return dd->path;
 }
 
+void gnomonPipelineNodeReader::setPath(const QString& path) {
+    dd->path = path;
+}
+
 QString gnomonPipelineNodeReader::toToml(void)
 {
     QString node_string;
@@ -71,7 +75,7 @@ QString gnomonPipelineNodeReader::toToml(void)
 const QJsonObject gnomonPipelineNodeReader::toJson(void)
 {
     QJsonObject json = gnomonPipelineNode::toJson();
-    json.insert("path", GNOMON_PROJECT->relativePath(dd->path));
+    json.insert("path", dd->path);
 
     return json;
 }

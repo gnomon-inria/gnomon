@@ -34,6 +34,7 @@ public:
     Q_PROPERTY(gnomonMplView* figure READ figure CONSTANT);
     Q_PROPERTY(gnomonQmlView* textView READ textView CONSTANT);
     Q_PROPERTY(int progress READ progress NOTIFY progressChanged);
+    Q_PROPERTY(QString progressMessage READ progressMessage NOTIFY progressMessageChanged);
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
@@ -42,6 +43,7 @@ signals:
     void parametersChanged(void);
     void currentIndexChanged(void);
     void progressChanged(int progress);
+    void progressMessageChanged(QString message);
 
 public slots:
     virtual void run(bool no_async=false);
@@ -65,6 +67,7 @@ public:
     int currentIndex(void) const;
     void setCurrentIndex(int);
     int progress(void);
+    QString progressMessage(void);
 
 public:
     gnomonVtkViewList *sources(void) const;

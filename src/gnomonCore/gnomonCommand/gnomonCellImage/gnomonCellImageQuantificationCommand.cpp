@@ -40,7 +40,7 @@ void gnomonCellImageQuantificationCommand::setAlgorithmName(const QString& algo_
 
 void gnomonCellImageQuantificationCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonCellImageQuantificationCommand::postdo(void)

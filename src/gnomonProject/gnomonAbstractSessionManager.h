@@ -12,6 +12,7 @@
 #define PROJECT_PIPELINE_FILE ".gnomon/session/pipeline.json"
 
 class QQmlApplicationEngine;
+class gnomonPipeline;
 
 class GNOMONPROJECT_EXPORT gnomonAbstractSessionManager: public QObject {
     Q_OBJECT
@@ -37,7 +38,8 @@ public:
 
     Q_INVOKABLE virtual bool newSession(const QString &source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml") = 0;
 
-    virtual bool loadFromPipeline(const QString &path) = 0;
+    virtual bool loadFromPipelineFile(const QString &path) = 0;
+    virtual bool loadFromPipeline(gnomonPipeline *pipeline, bool write_outputs=false) = 0;
 
 public:
     virtual void setEngine(QQmlApplicationEngine *engine) = 0;

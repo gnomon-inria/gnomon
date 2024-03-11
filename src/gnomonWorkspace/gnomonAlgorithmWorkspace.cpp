@@ -103,6 +103,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
     connect(&d->timer, &QTimer::timeout, [=]() {
         //qDebug() << "============= PROGRESS : " << d->command->progress();
         emit progressChanged(d->command->progress());
+        emit progressMessageChanged(d->command->progressMessage());
     });
     connect(this, &gnomonAbstractWorkspace::started, [=]() {
        d->timer.start();
@@ -403,6 +404,10 @@ void gnomonAlgorithmWorkspace::addOutputView(const QVector<QString> &accepted_fo
 
 int gnomonAlgorithmWorkspace::progress(void) {
     return d->command->progress();
+}
+
+QString gnomonAlgorithmWorkspace::progressMessage(void) {
+    return d->command->progressMessage();
 }
 
 void gnomonAlgorithmWorkspace::pause(void) {

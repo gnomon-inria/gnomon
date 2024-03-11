@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import Qt.labs.platform  1.0 as P
 
 import gnomon.Visualization 1.0 as GV
+import gnomon.Project    as GP
 
 import gnomonQuick.Style     1.0 as G
 import gnomonQuick.Controls  1.0 as G
@@ -200,7 +201,10 @@ Item {
             anchors.rightMargin: G.Style.borderWidth
             visible: _self.containsMouse && world.height > G.Style.smallDelegateHeight
 
-            onClicked: _file_dialog.open()
+            onClicked: {
+                _file_dialog.folder = GP.ProjectManager.project.currentDir;
+                _file_dialog.open()
+            }
         }
     }
 
@@ -216,6 +220,7 @@ Item {
             text: qsTr("Save")
             shortcut: StandardKey.Save
             onTriggered: {
+                _file_dialog.folder = GP.ProjectManager.project.currentDir;
                 _file_dialog.open()
             }
         }
