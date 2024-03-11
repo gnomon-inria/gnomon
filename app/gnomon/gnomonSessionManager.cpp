@@ -38,8 +38,7 @@ public:
 
     bool alive = true;
     bool init = false;
-    bool loading_session = false;
-    bool resetting = false;
+    bool disable_sync = false;
     int active_workspace_id = -1;
 
 private:
@@ -398,8 +397,8 @@ void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {
     d->engine = engine;
 }
 
-void gnomonSessionManager::setResetting(bool resetting) {
-    d->resetting = resetting;
+void gnomonSessionManager::disableSync(bool sync) {
+    d->disable_sync = sync;
 }
 
 void gnomonSessionManager::setWindow(QObject *window) {
@@ -435,7 +434,7 @@ int gnomonSessionManager::newWorkspace(const QString &source) {
 }
 
 void gnomonSessionManager::setActiveWorkspace(int id) {
-    if(!d->loading_session) {
+    if(!d->disable_sync) {
         d->active_workspace_id = id;
         this->sync();
     }
@@ -453,7 +452,7 @@ void gnomonSessionManager::sync() {
         return;
     }
 
-    if(!d->loading_session && !d->resetting) {
+    if(!d->disable_sync) {
         qDebug() << "===========" << "saving session";
         QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
         QDir dir(GNOMON_PROJECT->projectDir());
@@ -510,7 +509,7 @@ void gnomonSessionManager::sync() {
 bool gnomonSessionManager::load() {
     qDebug() << "===========" << "loading session";
     this->setLoadingSessionProgress(0, "Loading Session");
-    d->loading_session = true;
+    d->disable_sync = true;
 
     auto setSessionLoader = [=](double progress, const QString& message){
         this->setLoadingSessionProgress(this->loadingSessionProgress() + progress, message);
@@ -596,12 +595,12 @@ bool gnomonSessionManager::load() {
                                   Q_ARG(int, d->active_workspace_id));
 
         d->init = true;
-        d->loading_session = false;
+        d->disable_sync = false;
 
         return true;
     } else {
 
-        d->loading_session = false;
+        d->disable_sync = false;
         return false;
     }
 }

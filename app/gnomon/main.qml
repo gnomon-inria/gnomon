@@ -778,7 +778,7 @@ G.Application {
     function reset() {
         console.log("reset called");
 
-        GP.SessionManager.setResetting(true);
+        GP.SessionManager.disableSync(true);
         window.drawelr_closed = true
         header.state = 'UNANCHORED'
         footer.state = 'UNANCHORED'
@@ -799,7 +799,7 @@ G.Application {
         for(let i=nb_forms; i>=0; i--) {
             GV.World.deleteForm(header.getAndRemoveWorldId(i), true)
         }
-        GP.SessionManager.setResetting(false);
+        GP.SessionManager.disableSync(false);
     }
 
     Component.onCompleted: {
