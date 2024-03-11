@@ -18,7 +18,7 @@ Control {
     property var parameters
     property var d
 
-    property alias algo_combobox: _algos;
+    property bool headerVisible: true
 
     ColumnLayout {
 
@@ -28,6 +28,8 @@ Control {
         Item {
             Layout.fillWidth: true;
             Layout.preferredHeight: G.Style.iconMedium + 2*G.Style.smallPadding
+
+            visible: _menu.headerVisible
 
             G.IconButton {
                 id: _info_button
