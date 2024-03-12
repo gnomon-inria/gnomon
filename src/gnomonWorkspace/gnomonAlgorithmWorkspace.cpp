@@ -285,7 +285,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
 }
 
 QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
-    QJsonObject state;
+    QJsonObject state = gnomonAbstractWorkspace::serialize();
     state.insert("algoName", algoName());
     state.insert("currentIndex", currentIndex());
 
@@ -318,6 +318,7 @@ QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
 }
 
 void gnomonAlgorithmWorkspace::deserialize(const QJsonObject & state) {
+    gnomonAbstractWorkspace::deserialize(state);
     setCurrentIndex(state["currentIndex"].toInt());
     setAlgoName(state["algoName"].toString());
 
