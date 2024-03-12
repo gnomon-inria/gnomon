@@ -48,6 +48,8 @@ public:
 
     bool newSession(const QString &source) override;
 
+    void disableSync(bool sync) override;
+
 protected:
     void timerEvent(QTimerEvent *event) override;
 

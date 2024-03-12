@@ -38,7 +38,7 @@ public:
 
     bool alive = true;
     bool init = false;
-    bool loading_session = false;
+    bool disable_sync = false;
     int active_workspace_id = -1;
 
 private:
@@ -397,6 +397,10 @@ void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {
     d->engine = engine;
 }
 
+void gnomonSessionManager::disableSync(bool sync) {
+    d->disable_sync = sync;
+}
+
 void gnomonSessionManager::setWindow(QObject *window) {
     d->window = window;
 }
@@ -456,7 +460,7 @@ void gnomonSessionManager::closeWorkspace(int index) {
 }
 
 void gnomonSessionManager::setActiveWorkspace(int id) {
-    if(!d->loading_session) {
+    if(!d->disable_sync) {
         d->active_workspace_id = id;
         this->sync();
     }
@@ -474,65 +478,64 @@ void gnomonSessionManager::sync() {
         return;
     }
 
-    qDebug() << "===========" << "saving session";
-    QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
-    QDir dir(GNOMON_PROJECT->projectDir());
+    if(!d->disable_sync) {
+        qDebug() << "===========" << "saving session";
+        QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
+        QDir dir(GNOMON_PROJECT->projectDir());
 
-    // building json object for properties
-    QJsonObject session_json;
-    QJsonObject workspace_properties;
-    QJsonObject workspace_sources;
-    QJsonArray workspace_order;
-    auto workspaces = qmlContext(d->window)->objectForName("workspaces");
-    for(auto child: workspaces->children()) {
-        if(child && child->property("d").isValid() && child->property("uuid").isValid()) {
-            auto uuid = child->property("uuid").toString();
-            workspace_order.append(uuid);
-            workspace_properties.insert(uuid, d->workspace_properties.value(uuid));
-            workspace_sources.insert(uuid, d->workspace_sources.value(uuid));
+        // building json object for properties
+        QJsonObject session_json;
+        QJsonObject workspace_properties;
+        QJsonObject workspace_sources;
+        QJsonArray workspace_order;
+        auto workspaces = qmlContext(d->window)->objectForName("workspaces");
+        for(auto child: workspaces->children()) {
+            if(child && child->property("d").isValid() && child->property("uuid").isValid()) {
+                auto uuid = child->property("uuid").toString();
+                workspace_order.append(uuid);
+                workspace_properties.insert(uuid, d->workspace_properties.value(uuid));
+                workspace_sources.insert(uuid, d->workspace_sources.value(uuid));
+            }
         }
-    }
-    session_json.insert("current_index", workspaces->property("currentIndex").toInt());
-    session_json.insert("workspace_order", workspace_order);
-    session_json.insert("workspace_properties", workspace_properties);
-    session_json.insert("workspace_sources", workspace_sources);
-    session_json.insert("active_workspace_id", d->active_workspace_id);
+        session_json.insert("current_index", workspaces->property("currentIndex").toInt());
+        session_json.insert("workspace_order", workspace_order);
+        session_json.insert("workspace_properties", workspace_properties);
+        session_json.insert("workspace_sources", workspace_sources);
+        session_json.insert("active_workspace_id", d->active_workspace_id);
 
-    settings.setValue("workspaces", session_json);
+        settings.setValue("workspaces", session_json);
 
-    // pipeline
-    auto url = QUrl::fromLocalFile(dir.absoluteFilePath(PROJECT_PIPELINE_FILE));
-    gnomonPipelineManager::instance()->pipeline()->exportToJson(url.toString());
-    
+        // pipeline
+        auto url = QUrl::fromLocalFile(dir.absoluteFilePath(PROJECT_PIPELINE_FILE));
+        gnomonPipelineManager::instance()->pipeline()->exportToJson(url.toString());
 
-    //TODO: forms
-    cleanExpiredForms();
-    settings.beginGroup("forms");
-    settings.setValue("form_manager_state", gnomonFormManager::instance()->serialize());
+        cleanExpiredForms();
+        settings.beginGroup("forms");
+        settings.setValue("form_manager_state", gnomonFormManager::instance()->serialize());
 
-    settings.setValue("owned_form_ids", m_owned_forms.keys());
-    QStringList form_ids;
-    for(auto it = m_tracked_forms.keyValueBegin(); it != m_tracked_forms.keyValueEnd(); it++) {
-        if(!it->second.expired()) {
-            auto form = it->second.lock();
-            settings.setValue(it->first, form->serialize());
-            form_ids.append(it->first);
+        settings.setValue("owned_form_ids", m_owned_forms.keys());
+        QStringList form_ids;
+        for(auto it = m_tracked_forms.keyValueBegin(); it != m_tracked_forms.keyValueEnd(); it++) {
+            if(!it->second.expired()) {
+                auto form = it->second.lock();
+                settings.setValue(it->first, form->serialize());
+                form_ids.append(it->first);
+            }
         }
+        settings.setValue("form_ids", form_ids);
+        settings.endGroup();
+
+        settings.beginGroup("pipeline");
+        settings.setValue("pipeline_manager_state", gnomonPipelineManager::instance()->serialize());
+        settings.endGroup();
     }
-    settings.setValue("form_ids", form_ids);
-    settings.endGroup();
-
-    settings.beginGroup("pipeline");
-    settings.setValue("pipeline_manager_state", gnomonPipelineManager::instance()->serialize());
-    settings.endGroup();
-
 
 }
 
 bool gnomonSessionManager::load() {
     qDebug() << "===========" << "loading session";
     this->setLoadingSessionProgress(0, "Loading Session");
-    d->loading_session = true;
+    d->disable_sync = true;
 
     auto setSessionLoader = [=](double progress, const QString& message){
         this->setLoadingSessionProgress(this->loadingSessionProgress() + progress, message);
@@ -618,12 +621,12 @@ bool gnomonSessionManager::load() {
                                   Q_ARG(int, d->active_workspace_id));
 
         d->init = true;
-        d->loading_session = false;
+        d->disable_sync = false;
 
         return true;
     } else {
 
-        d->loading_session = false;
+        d->disable_sync = false;
         return false;
     }
 }
