@@ -26,12 +26,14 @@ G.Page {
     Connections {
         target: window
         function onCurrentViewChanged() {
-            let parent_object = window.currentView.parent
-            while(parent_object != _self && parent_object != window && parent_object) {
-                parent_object = parent_object.parent
-            }
-            if(parent_object === _self) {
-                _self.viewSelected = window.currentView
+            if (window.currentView) {
+                let parent_object = window.currentView.parent
+                while(parent_object != _self && parent_object != window && parent_object) {
+                    parent_object = parent_object.parent
+                }
+                if(parent_object === _self) {
+                    _self.viewSelected = window.currentView
+                }
             }
         }
     }
@@ -75,7 +77,7 @@ G.Page {
             anchors.verticalCenter: parent.top;
             orientation: Qt.Horizontal;
 
-            z: _self.parent.z + 1;
+            z: _self.parent? _self.parent.z + 1 : 0;
 
             onClicked: {
                 if (_logs_control.opened())
