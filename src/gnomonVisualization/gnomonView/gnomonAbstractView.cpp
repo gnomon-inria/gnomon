@@ -465,13 +465,15 @@ QJsonObject gnomonAbstractView::serialize(void) {
     QJsonObject visu_params;
     QJsonObject visu_names;
     for(auto it = d->visualizationCommands.keyValueBegin(); it!=d->visualizationCommands.keyValueEnd(); it++) {
-        auto parameters = it->second->parameters();
-        QVariantHash out;
-        for(auto param_it = parameters.keyValueBegin(); param_it!=parameters.keyValueEnd(); param_it++) {
-            out.insert(param_it->first, param_it->second->toVariantHash());
+        if(it->second->visualization()) {
+            auto parameters = it->second->parameters();
+            QVariantHash out;
+            for(auto param_it = parameters.keyValueBegin(); param_it!=parameters.keyValueEnd(); param_it++) {
+                out.insert(param_it->first, param_it->second->toVariantHash());
+            }
+            visu_params.insert(it->first, QJsonObject::fromVariantHash(out));
+            visu_names.insert(it->first, it->second->visualizationName());
         }
-        visu_params.insert(it->first, QJsonObject::fromVariantHash(out));
-        visu_names.insert(it->first, it->second->visualizationName());
     }
     serialization.insert("visu_params", visu_params);
     serialization.insert("visu_names", visu_names);
