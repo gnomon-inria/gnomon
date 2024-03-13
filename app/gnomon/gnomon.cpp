@@ -69,7 +69,7 @@ void workspaceImageProvider::makeScreenshot(const QString &id) {
 }
 
 // /////////////////////////////////////////////////////////////////////////////
-// GnomonViewerAssociator
+// gnomonViewAssociator
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonViewAssociator : public QObject
@@ -112,6 +112,10 @@ void gnomonViewAssociator::associate(QObject *source, gnomonVtkView *destination
 
 gnomonViewAssociator *gnomonViewAssociator::s_instance = 0;
 
+// /////////////////////////////////////////////////////////////////////////////
+// gnomonMetaDataFetcher
+// /////////////////////////////////////////////////////////////////////////////
+
 class gnomonMetaDataFetcher : public QObject
 {
     Q_OBJECT
@@ -120,6 +124,7 @@ public:
     Q_INVOKABLE QString workspaceMetaData(const QString& type, const QString& key);
     Q_INVOKABLE QStringList pluginGroupMetaData(const QString& key);
     Q_INVOKABLE QStringList pluginGroupMetaData(const QStringList& keys);
+    Q_INVOKABLE QJsonObject pluginMetaData(const QString& group, const QString& key);
     static gnomonMetaDataFetcher *instance(void);
 
 private:
@@ -160,6 +165,19 @@ QStringList gnomonMetaDataFetcher::pluginGroupMetaData(const QStringList& keys)
         plugins += this->pluginGroupMetaData(key);
     }
     return plugins;
+}
+
+QJsonObject gnomonMetaDataFetcher::pluginMetaData(const QString& group, const QString& key)
+{
+    QJsonObject md_json;
+    auto group_keys = availablePluginsFromGroup(group);
+    if (group_keys.contains(key)) {
+        QMap<QString, QString> metadata = pluginMetadata(group, key);
+        for (const auto &md_key: metadata.keys()) {
+            md_json.insert(md_key, metadata[md_key]);
+        }
+    }
+    return md_json;
 }
 
 gnomonMetaDataFetcher* gnomonMetaDataFetcher::instance(void)

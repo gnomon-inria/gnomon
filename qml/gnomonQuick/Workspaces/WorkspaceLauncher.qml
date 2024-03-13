@@ -37,7 +37,8 @@ G.Workspace {
         onAccepted: {
             if(GP.ProjectManager.isExistingProject(_open_project_folder_dialog.folder)) {
                 console.log('Loading an existing project');
-                load_project(_open_project_folder_dialog.folder);
+                splash_screen.project_source = _open_project_folder_dialog.folder
+                splash_screen.start()
                 add_to_history(_open_project_folder_dialog.folder)
             } else {
                 _folder_path.text = _open_project_folder_dialog.folder
@@ -639,8 +640,8 @@ G.Workspace {
                                 }
 
                                 onDoubleClicked: {
-                                    history_set_last_used(source)
-                                    load_project(source)
+                                    splash_screen.project_source = source
+                                    splash_screen.start()
                                 }
 
                                 G.IconButton {
@@ -713,11 +714,8 @@ G.Workspace {
                                     anchors.rightMargin: -G.Style.smallPadding
 
                                     onClicked: {
-                                        panel.visible = false
-                                        history_set_last_used(source)
-                                        _overlay.visible = true
                                         splash_screen.project_source = source
-                                        splash_screen.source = "qrc:/qt/qml/gnomonQuick/Controls/SplashScreen.qml"
+                                        splash_screen.start()
                                     }
                                 }
 
@@ -864,7 +862,6 @@ G.Workspace {
         message: "Not an existing project, create a new one ?"
 
         onAccepted : {
-            _folder_path.text = ""
             _project_title.text = ""
             _project_description.text = ""
             new_project_dialog.open()
@@ -1052,6 +1049,21 @@ G.Workspace {
 
         property string project_source: ""
         asynchronous: true
+
+        function start()  {
+            panel.visible = false
+            _overlay.visible = true
+            splash_screen.source = "qrc:/qt/qml/gnomonQuick/Controls/SplashScreen.qml"
+        }
+
+        onLoaded: {
+            load_project(splash_screen.project_source)
+            history_set_last_used(splash_screen.project_source)
+            splash_screen.source = "";
+            splash_screen.project_source = "";
+            _overlay.visible = false
+            panel.visible = true
+        }
     }
 
     Rectangle {
@@ -1062,17 +1074,6 @@ G.Workspace {
         visible: false
 
         color: G.Style.colors.overlayColor
-    }
-
-    Connections {
-        target: splash_screen
-        function onLoaded() {
-            load_project(splash_screen.project_source)
-            splash_screen.source = "";
-            splash_screen.project_source = "";
-            _overlay.visible = false
-            panel.visible = true
-        }
     }
 
     function create_project() {

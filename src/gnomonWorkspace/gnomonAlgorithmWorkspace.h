@@ -23,6 +23,7 @@ public:
 
 public:
     Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName NOTIFY algorithmChanged);
+    Q_PROPERTY(QJsonObject algoMetaData READ algoMetaData NOTIFY algorithmChanged);
     Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded);
     Q_PROPERTY(QVariantList algorithmsData READ algorithmsData NOTIFY algorithmsLoaded);
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged);
@@ -59,6 +60,7 @@ public slots:
 
 public:
     QString algoName(void) const;
+    QJsonObject algoMetaData(void) const;
     QStringList algorithms(void) const;
     QVariantList algorithmsData(void) const;
     void setAlgoName(const QString &);

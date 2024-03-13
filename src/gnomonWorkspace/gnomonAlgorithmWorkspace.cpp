@@ -123,6 +123,16 @@ QString gnomonAlgorithmWorkspace::algoName(void) const
     return d->algorithm;
 }
 
+QJsonObject gnomonAlgorithmWorkspace::algoMetaData(void) const
+{
+    QJsonObject algo_json;
+    algo_json.insert("name", d->command->algorithmName());
+    algo_json.insert("documentation", d->command->documentation());
+    algo_json.insert("version", d->command->version());
+    algo_json.insert("group", d->command->factoryName());
+    return algo_json;
+}
+
 QStringList gnomonAlgorithmWorkspace::algorithms(void) const
 {
     return d->keys;

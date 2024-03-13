@@ -595,19 +595,25 @@ G.Application {
 
     function switch_workspace(index: int)
     {
-        window.current_workspace().d.saveState();
+        if (window.current_workspace()) {
+            window.current_workspace().d.saveState();
+        }
         window.drawelr_closed = false
         stack_launcher.currentIndex  = 1
         workspaces.currentIndex = index;
 
-        footer.workspaceName = window.current_workspace().workspace_title;
+        if (window.current_workspace()) {
+            footer.workspaceName = window.current_workspace().workspace_title;
+        }
 
         drawel.update_menu();
         drawer.update_menu(_internal.menu_sources[index]);
-        window.current_workspace().d.restoreState();
-        if(window.current_workspace().viewSelected) {
-            window.currentView = window.current_workspace().viewSelected
-            window.currentView.forceFocus()
+        if (window.current_workspace()) {
+            window.current_workspace().d.restoreState();
+            if(window.current_workspace().viewSelected) {
+                window.currentView = window.current_workspace().viewSelected
+                window.currentView.forceFocus()
+            }
         }
         GP.SessionManager.setActiveWorkspace(index)
     }
