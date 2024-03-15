@@ -88,6 +88,9 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
 
     auto setInterval = [=] (double t) {
         auto form = this->target()->form("gnomonCellImage");
+        if(!form) {
+            return;
+        }
         auto times = form->times();
         if(times.length()<=1) {
             this->target()->setCurrentTime(t);
@@ -109,11 +112,13 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
     connect(this->target(), &gnomonVtkView::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
+        this->source()->setCurrentTime(this->source()->times().first());
         setInterval(this->source()->currentTime());
     });
     connect(this->source(), &gnomonVtkView::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
+        this->source()->setCurrentTime(this->source()->times().first());
         setInterval(this->source()->currentTime());
     });
     connect(this->target(), &gnomonVtkView::formAdded, [=](const QString &name) {

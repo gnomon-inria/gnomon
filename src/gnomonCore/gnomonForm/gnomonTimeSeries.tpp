@@ -97,9 +97,29 @@ template <typename T> double gnomonTimeSeries<T>::time(void) const
     return m_current_time;
 }
 
+template <typename T> double gnomonTimeSeries<T>::nextTime(void) const
+{
+    uint next_id = std::min(m_current_time_id+1, (uint)(m_times.count()-1));
+    return m_times[next_id];
+}
+
+template <typename T> double gnomonTimeSeries<T>::previousTime(void) const
+{
+    int previous_id = std::max((int)m_current_time_id - 1, 0);
+    return m_times[previous_id];
+}
+
 template <typename T> QList<double> gnomonTimeSeries<T>::times(void) const
 {
     return m_times.values();
+}
+
+template <typename T> void gnomonTimeSeries<T>::selectCurrentTime(double t)
+{
+    if(containsTime(t)) {
+        m_current_time = closestT(t);
+        m_current_time_id = idAtT(m_current_time);
+    }
 }
 
 template <typename T> QMap<QString,QString> gnomonTimeSeries<T>::metadataAtT(double t) const
