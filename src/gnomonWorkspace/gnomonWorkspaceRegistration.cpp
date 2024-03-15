@@ -94,7 +94,7 @@ gnomonWorkspaceRegistration::gnomonWorkspaceRegistration(QObject *parent) : gnom
     d->text_view = new gnomonQmlView(this);
     d->text_view->setAcceptForm("gnomonDataDict", true);
 
-    if(!GNOMON_SESSION->loading()) {
+    if(!GNOMON_SESSION->syncDisabled()) {
         std::shared_ptr<gnomonDataDictSeries> input_dict = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->text_view->form("gnomonDataDict"));
         if (!input_dict) {
             d->text_view->setForm("gnomonDataDict", identityDataDict());
@@ -194,7 +194,7 @@ void gnomonWorkspaceRegistration::setInputs(void)
         d->command->setInputForm("initialTransformation", d->text_view->form("gnomonDataDict"));
     }
 
-    if(!GNOMON_SESSION->loading()) {
+    if(!GNOMON_SESSION->syncDisabled()) {
         if (empty_input || !d->command->inputs()["image"]) {
             dd->image_stack.clear();
             dd->transformation_stack.clear();
