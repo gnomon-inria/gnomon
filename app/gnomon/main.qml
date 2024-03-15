@@ -38,6 +38,7 @@ G.Application {
     signal getScreenshot(string id);
     signal workspaceThumbnailUpdated(int id);
     signal insideParamFigure();
+    signal currentWorkspaceIndexChanged(int index)
 
 
     palette {
@@ -304,6 +305,9 @@ G.Application {
 
                 StackLayout {
                     id: workspaces;
+                    onCurrentIndexChanged: {
+                        currentWorkspaceIndexChanged(currentIndex)
+                    }
                 }
             }
 
@@ -428,7 +432,7 @@ G.Application {
         return workspaces;
     }
 
-    function workspace_at(index)
+    function workspace_at(index: int): QtObject
     {
         return workspaces.children[index];
     }
@@ -591,19 +595,25 @@ G.Application {
 
     function switch_workspace(index: int)
     {
-        window.current_workspace().d.saveState();
+        if (window.current_workspace()) {
+            window.current_workspace().d.saveState();
+        }
         window.drawelr_closed = false
         stack_launcher.currentIndex  = 1
         workspaces.currentIndex = index;
 
-        footer.workspaceName = window.current_workspace().workspace_title;
+        if (window.current_workspace()) {
+            footer.workspaceName = window.current_workspace().workspace_title;
+        }
 
         drawel.update_menu();
         drawer.update_menu(_internal.menu_sources[index]);
-        window.current_workspace().d.restoreState();
-        if(window.current_workspace().viewSelected) {
-            window.currentView = window.current_workspace().viewSelected
-            window.currentView.forceFocus()
+        if (window.current_workspace()) {
+            window.current_workspace().d.restoreState();
+            if(window.current_workspace().viewSelected) {
+                window.currentView = window.current_workspace().viewSelected
+                window.currentView.forceFocus()
+            }
         }
         GP.SessionManager.setActiveWorkspace(index)
     }
@@ -759,7 +769,7 @@ G.Application {
         stack_launcher.currentIndex = 1;
     }
 
-    function closeWorkspace(index) {
+    function closeWorkspace(index: int) {
         if (window.workspace_list.count == 1) {
             _switch_workspace_dialog.reject();
             reset();
@@ -767,17 +777,34 @@ G.Application {
         }
 
         _workspaces_model.remove(index)
-        workspaces.children[index].destroy()
+
+        for(let i = 0; i < _workspaces_model.count; i++) {
+            console.log(i, "==>", _workspaces_model.get(i)["index"])
+            _workspaces_model.get(i)["index"] = i
+
+        }
+        let new_workspace_list = []
+        for(let i = 0; i < workspaces.count; i++) {
+            if(i!=index) {
+                new_workspace_list.push(workspaces.children[i])
+            }
+        }
 
         //if we remove from index < to currentIndex, the currentIndex needs to change
-        if(workspaces.currentIndex >= index) {
-            switch_workspace(workspaces.currentIndex-1);
+        let expected_index = workspaces.currentIndex >= index ? workspaces.currentIndex-1 : workspaces.currentIndex
+        if(workspaces.currentIndex === index) {
+            switch_workspace(expected_index)
         }
+
+        workspaces.children[index].destroy()
+        workspaces.children = new_workspace_list
+        workspaces.currentIndex = expected_index
     }
 
     function reset() {
         console.log("reset called");
 
+        GP.SessionManager.disableSync(true);
         window.drawelr_closed = true
         header.state = 'UNANCHORED'
         footer.state = 'UNANCHORED'
@@ -798,6 +825,7 @@ G.Application {
         for(let i=nb_forms; i>=0; i--) {
             GV.World.deleteForm(header.getAndRemoveWorldId(i), true)
         }
+        GP.SessionManager.disableSync(false);
     }
 
     Component.onCompleted: {

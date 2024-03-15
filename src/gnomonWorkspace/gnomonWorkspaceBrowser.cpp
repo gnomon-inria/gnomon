@@ -554,12 +554,13 @@ gnomonVtkView *gnomonWorkspaceBrowser::view(void) const
 }
 
 QJsonObject gnomonWorkspaceBrowser::serialize() {
-    QJsonObject serialization;
+    QJsonObject serialization = gnomonAbstractWorkspace::serialize();
     serialization.insert("view", d->browse_view->serialize());
     return serialization;
 }
 
 void gnomonWorkspaceBrowser::deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::deserialize(state);
     d->browse_view->deserialize(state.value("view").toObject());
 }
 

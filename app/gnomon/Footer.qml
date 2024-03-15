@@ -63,6 +63,7 @@ G.ToolBar {
             visible: !start_state;
 
             onClicked: {
+                window.create_workspace_screenshot();
                 _workspace_dialog.update_highlight();
                 _workspace_dialog.open();
             }

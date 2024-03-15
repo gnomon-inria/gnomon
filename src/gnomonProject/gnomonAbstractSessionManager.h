@@ -38,6 +38,8 @@ public:
 
     Q_INVOKABLE virtual bool newSession(const QString &source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml") = 0;
 
+    Q_INVOKABLE virtual void disableSync(bool sync) = 0;
+
     virtual bool loadFromPipelineFile(const QString &path) = 0;
     virtual bool loadFromPipeline(gnomonPipeline *pipeline, bool write_outputs=false) = 0;
     virtual bool loading(void) = 0;
@@ -50,7 +52,9 @@ public:
     Q_INVOKABLE virtual int loadWorkspace(const QString &source, const QString &uuid) = 0;
 
     Q_INVOKABLE virtual int newWorkspace(const QString &source) = 0;
-    
+
+    Q_INVOKABLE virtual void closeWorkspace(int index) = 0;
+
     Q_INVOKABLE virtual void setActiveWorkspace(int id) = 0;
 
     virtual QJsonObject* getStorageForWorkspace(const QString &uuid) = 0;

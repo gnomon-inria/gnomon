@@ -18,40 +18,66 @@ Control {
     property var parameters
     property var d
 
-    property alias algo_combobox: _algos;
+    property bool headerVisible: true
 
     ColumnLayout {
 
         anchors.fill: parent
         anchors.margins: G.Style.smallPadding;
 
-        G.ComboBoxWithLabel {
-            id: _algos;
-
-            label: "Algorithm:"
-            textRole: "name"
-            valueRole: "counter"
-            model: d ? d.algorithmsData : null;
-
+        Item {
             Layout.fillWidth: true;
-            /* Layout.leftMargin: 20 */
-            /* Layout.rightMargin: 20 */
+            Layout.preferredHeight: G.Style.iconMedium + 2*G.Style.smallPadding
 
-            onCurrentIndexChanged: {
-                if (d && d.algorithms) {
-                    d.currentIndex = _algos.currentIndex;
-                    d.algoName = d.algorithms[d.currentIndex];
+            visible: _menu.headerVisible
+
+            G.IconButton {
+                id: _info_button
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.topMargin: G.Style.smallPadding
+
+                iconName: "information-outline";
+                size: G.Style.iconMedium;
+                color: G.Style.colors.textColorFaded;
+
+                onClicked: {
+                    _plugin_info_dialog.pluginName = d.algorithmsData[_algos.currentIndex]['name']
+                    _plugin_info_dialog.pluginMetaData = d.algoMetaData
+                    _plugin_info_dialog.pluginParameters = d.parameters
+                    _plugin_info_dialog.open()
                 }
             }
 
-            // creating an alias for signal handling
-            property string algoName: d ? d.algoName : ""
-            onAlgoNameChanged: {
-                if(d.algoName != d.algorithms[_algos.currentIndex]) {
-                    for(let i=0; i<model.length; i++) {
-                        if(d.algorithms[i] == d.algoName) {
-                            _algos.currentIndex = i
-                            d.currentIndex = i
+            G.ComboBoxWithLabel {
+                id: _algos;
+
+                anchors.left: parent.left
+                anchors.right: _info_button.left
+                anchors.rightMargin: G.Style.smallPadding
+                anchors.verticalCenter: _info_button.verticalCenter
+
+                label: "Algorithm:"
+                textRole: "name"
+                valueRole: "counter"
+                model: d ? d.algorithmsData : null;
+
+                onCurrentIndexChanged: {
+                    if (d && d.algorithms) {
+                        d.currentIndex = _algos.currentIndex;
+                        d.algoName = d.algorithms[d.currentIndex];
+                    }
+                }
+
+                // creating an alias for signal handling
+                property string algoName: d ? d.algoName : ""
+                onAlgoNameChanged: {
+                    if(d.algoName != d.algorithms[_algos.currentIndex]) {
+                        for(let i=0; i<model.length; i++) {
+                            if(d.algorithms[i] == d.algoName) {
+                                _algos.currentIndex = i
+                                d.currentIndex = i
+                            }
                         }
                     }
                 }
@@ -184,6 +210,10 @@ Control {
                 }
             }
         }
+    }
+
+    G.PluginInfoDialog {
+        id: _plugin_info_dialog
     }
 
     function getTitleString(group : string) : string {
