@@ -103,6 +103,7 @@ void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbst
 {
     QString form_type = form->formName();
     if (d->acceptForms.contains(form_type)  && d->acceptForms[form_type]) {
+        setCurrentTime(form->time());
         // If another form of the same type is already in the view, we need to create a new visualization instance
         bool existing_visu = d->forms.contains(form_type) && (form != d->visualizationCommands[form_type]->inputs()[form_type]);
         d->forms[form_type] = form;
@@ -124,6 +125,7 @@ void gnomonAbstractView::setForm(const QString& name, std::shared_ptr<gnomonAbst
             d->setFormVisualization(form_type, visu_name, parameters);
         }
         emit formAdded(form_type);
+        emit timeChanged(currentTime());
     } else {
         // TODO: restore the adaption mechanism
         // this->setAdaptedForm(form_name, form);
@@ -331,9 +333,15 @@ double gnomonAbstractView::timeMax(void)
 
 void gnomonAbstractView::setCurrentTime(double time)
 {
-    QList<double> sorted_times = this->times();
     if (d->current_time != time) {
         d->current_time = time;
+        for(auto [key, form]: d->forms.asKeyValueRange()) {
+            if(form->containsTime(time, 1e-9)) {
+                form->selectCurrentTime(time);
+            } else {
+                qWarning() << Q_FUNC_INFO << "form " << form->uuid() << "does not have time index " << time;
+            }
+        }
         emit timeChanged(d->current_time);
     }
 }

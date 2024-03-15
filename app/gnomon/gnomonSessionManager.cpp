@@ -393,6 +393,10 @@ bool gnomonSessionManager::loadFromPipeline(gnomonPipeline *pipeline, bool write
     return d->runPipeline(_pipeline, write_outputs);
 }
 
+bool gnomonSessionManager::syncDisabled(void) {
+    return d->disable_sync;
+}
+
 void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {
     d->engine = engine;
 }

@@ -22,6 +22,10 @@ public:
     ~gnomonWorkspaceCellImageTracking(void);
 
 public:
+    QJsonObject serialize(void) override;
+    void deserialize(const QJsonObject&) override;
+
+public:
     Q_PROPERTY(gnomonQmlView* sourceDict READ sourceDict CONSTANT);
 
     gnomonQmlView *sourceDict(void) const;

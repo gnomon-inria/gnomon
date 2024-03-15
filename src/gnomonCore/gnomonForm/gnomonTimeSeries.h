@@ -30,7 +30,10 @@ public:
     std::shared_ptr<T> at(double t);
     std::shared_ptr<T> current(void);
     double time(void) const override;
+    double nextTime(void) const override;
+    double previousTime(void) const override;
     QList<double> times(void) const override;
+    void selectCurrentTime(double t) override;
     QMap<QString,QString> metadataAtT(double t) const override;
 
     bool containsId(uint id) const override;
