@@ -1,7 +1,7 @@
 #{% set build_string = '{}_py{}h{}_{}'.format(build_type, CONDA_PY, PKG_HASH, GIT_DESCRIBE_NUMBER) %}
 
 package:
-  name: gnomon-{{ build_type }}
+  name: {{ "lib" if build_type == "lib" }}gnomon
   version: {{ GIT_DESCRIBE_TAG }}
 
 source:
