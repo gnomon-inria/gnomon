@@ -246,10 +246,10 @@ void gnomonImageVtkVisualizationChannelBlending::update(void)
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
     ddd->channelLookupTables.clear();
-    if(ddd->image->channels().size()==1) {
-        ddd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
-    } else {
-        for (const auto& channelName : ddd->image->channels()) {
+    for (const auto& channelName : ddd->image->channels()) {
+        if(channelName.isEmpty()) {
+            ddd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
+        } else {
             ddd->channelLookupTables[channelName] = ((gnomonCoreParameterLookupTable *)d->parameters[channelName+"\nlookuptable"])->value();
         }
     }

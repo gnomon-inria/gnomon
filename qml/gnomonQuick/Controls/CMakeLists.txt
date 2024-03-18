@@ -65,6 +65,7 @@ QML_FILES
   PipelinePort.qml
   PipelinePortEdit.qml
   PipelinePreviewDialog.qml
+  PluginInfoDialog.qml
   Project.qml
   ProjectBrowser.qml
   ProjectImportDialog.qml

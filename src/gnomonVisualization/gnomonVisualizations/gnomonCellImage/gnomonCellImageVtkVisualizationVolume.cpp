@@ -168,7 +168,6 @@ void gnomonCellImageVtkVisualizationVolume::update(void)
         return;
 
     if (ddd->image) {
-        ddd->image->Delete();
         ddd->image = nullptr;
     }
 

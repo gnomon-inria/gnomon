@@ -49,7 +49,10 @@ public:
     virtual bool containsForm(std::shared_ptr<gnomonAbstractForm> form) const = 0;
 
     virtual double time(void) const = 0;
+    virtual double nextTime(void) const = 0;
+    virtual double previousTime(void) const = 0;
     virtual QList<double> times(void) const = 0;
+    virtual void selectCurrentTime(double t) = 0;
     virtual void compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) = 0;
 
     virtual void drop(double t) = 0;

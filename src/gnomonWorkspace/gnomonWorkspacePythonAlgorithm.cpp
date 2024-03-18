@@ -558,7 +558,7 @@ void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
 }
 
 QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
-    QJsonObject state;
+    QJsonObject state = gnomonAbstractWorkspace::serialize();
 
     QJsonObject open_file_json;
     for (const auto& file_name : d->open_files.keys()) {
@@ -594,6 +594,7 @@ QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
 }
 
 void gnomonWorkspacePythonAlgorithm::deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::deserialize(state);
     disconnect(d->editor_connect);
 
     QJsonObject open_file_json = state["open_files"].toObject();

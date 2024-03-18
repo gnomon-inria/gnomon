@@ -189,6 +189,7 @@ Item {
 
                 anchors.left: parent.left
                 anchors.right: parent.right
+                anchors.margins: G.Style.smallPadding;
                 enabled: false
             }
 
@@ -200,10 +201,8 @@ Item {
                 anchors.top: _combo_box.bottom
                 anchors.bottom: parent.bottom
 
-                property alias model: _parameters_menu.algo_combobox.model
-
                 d: _self.d
-                algo_combobox.visible: false
+                headerVisible: false
             }
         }
     }

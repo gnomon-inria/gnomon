@@ -123,6 +123,16 @@ QString gnomonAlgorithmWorkspace::algoName(void) const
     return d->algorithm;
 }
 
+QJsonObject gnomonAlgorithmWorkspace::algoMetaData(void) const
+{
+    QJsonObject algo_json;
+    algo_json.insert("name", d->command->algorithmName());
+    algo_json.insert("documentation", d->command->documentation());
+    algo_json.insert("version", d->command->version());
+    algo_json.insert("group", d->command->factoryName());
+    return algo_json;
+}
+
 QStringList gnomonAlgorithmWorkspace::algorithms(void) const
 {
     return d->keys;
@@ -285,7 +295,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
 }
 
 QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
-    QJsonObject state;
+    QJsonObject state = gnomonAbstractWorkspace::serialize();
     state.insert("algoName", algoName());
     state.insert("currentIndex", currentIndex());
 
@@ -318,6 +328,7 @@ QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
 }
 
 void gnomonAlgorithmWorkspace::deserialize(const QJsonObject & state) {
+    gnomonAbstractWorkspace::deserialize(state);
     setCurrentIndex(state["currentIndex"].toInt());
     setAlgoName(state["algoName"].toString());
 

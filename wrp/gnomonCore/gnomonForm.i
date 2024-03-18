@@ -609,6 +609,7 @@ PyObject *FromFormSeries(std::shared_ptr<gnomonAbstractDynamicForm> series) {
         QList<double> times = series->times();
         std::shared_ptr<gnomonAbstractForm> *c;
         double t;
+        double current_t = series->time();
         PyObject *v;
 
         QString type_name = "std::shared_ptr< " + series->formName() + " > *";
@@ -620,6 +621,7 @@ PyObject *FromFormSeries(std::shared_ptr<gnomonAbstractDynamicForm> series) {
             v = SWIG_NewPointerObj(SWIG_as_voidptr(c), swig_type, SWIG_POINTER_OWN |  0 );
             PyDict_SetItem(dict, PyFloat_FromDouble(t), v);
         }
+        series->selectCurrentTime(current_t);
         return dict;
     } else {
         Py_RETURN_NONE;
