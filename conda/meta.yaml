@@ -54,7 +54,9 @@ requirements:
 
   host:
     - qt6-main >=6.5,<7
-    - dtk-forge6::vtk =9.2.6
+    - qt6-webengine
+    - boost=1.78
+    - dtk-forge6::vtk =9.2.6=Release_qt6_py39h1234567_104
     - pyside6
     - dtk-core >=2.13
     - dtk-core-python >=2.8
@@ -68,7 +70,7 @@ requirements:
 
   run:
     - qt6-main >=6.5,<7
-    - dtk-forge6::vtk =9.2.6
+    - dtk-forge6::vtk =9.2.6=Release_qt6_py39h1234567_104
     - pyside6
     - dtk-core >=2.13
     - dtk-core-python >=2.8
