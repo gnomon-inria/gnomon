@@ -2,7 +2,8 @@
 
 package:
   name: {{ "lib" if build_type == "lib" }}gnomon
-  version: {{ GIT_DESCRIBE_TAG }}
+  #version: {{ GIT_DESCRIBE_TAG }}
+  version: 1.0.0.pre
 
 source:
   path: ../
@@ -84,6 +85,11 @@ requirements:
     - pymongo
     - jinja2
     - swig >=4.1
+    - libzip
+    - matplotlib
+    - qtpy >=2.0
+    - x-vis                    # [build_type == app]
+    - qtconsole-base >=5.2     # [build_type == app]
     - importlib_metadata       # [build_type == app]
     - matplotlib-base=3.5.1    # [build_type == app]
     - qtpy=2.0                 # [build_type == app]
