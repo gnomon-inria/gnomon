@@ -48,7 +48,7 @@ public slots:
     bool readWith(const QString&);
     QJsonObject serialize() override;
     void deserialize(const QJsonObject &state) override;
-    inline void saveState(void) {};  // nothing to be saved
+    void saveState(void);
     void restoreState(void);
     int progress(void);
     QString progressMessage(void);

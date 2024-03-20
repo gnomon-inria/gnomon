@@ -543,12 +543,6 @@ void gnomonWorkspacePythonAlgorithm::saveState(void)
 void gnomonWorkspacePythonAlgorithm::restoreState(void)
 {
     deserialize(d->state);
-    for (auto view : d->sources->views()) {
-        view->restoreState();
-    }
-    for (auto view : d->targets->views()) {
-        view->restoreState();
-    }
 }
 
 void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
