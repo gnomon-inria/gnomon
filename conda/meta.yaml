@@ -65,6 +65,7 @@ requirements:
     - dtk-imaging-python >=2.0
     - dtk-log >=2.5
     - dtk-script >=2.5
+    - x-vis
     - python
     - numpy {{numpy}}
     - swig >=4.1
