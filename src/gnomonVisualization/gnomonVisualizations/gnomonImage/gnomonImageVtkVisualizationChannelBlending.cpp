@@ -368,12 +368,14 @@ void gnomonImageVtkVisualizationChannelBlending::onXZ(void)
 
 void gnomonImageVtkVisualizationChannelBlending::onTimeChanged(double value)
 {
-    if (ddd->imageSeries->times().contains(value)) {
-        ddd->image = ddd->imageSeries->at(value);
-        this->updateChannelImages();
-        this->update();
+    if(this->image()) {
+        if (ddd->imageSeries->times().contains(value)) {
+            ddd->image = ddd->imageSeries->at(value);
+            this->updateChannelImages();
+            this->update();
+        }
+        this->render();
     }
-    this->render();
 }
 
 const QString gnomonImageVtkVisualizationChannelBlending::name(void) {

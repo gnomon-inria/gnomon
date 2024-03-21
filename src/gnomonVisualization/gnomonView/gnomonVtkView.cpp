@@ -1806,7 +1806,8 @@ void gnomonVtkView::deserialize(const QJsonObject &serialization) {
             dd->picked_cells.append(val.toInt());
         }
 
-       this->update();
+        // FIXME: This should not be necessary
+        // this->update();
 
         QJsonObject other_cameras = serialization.value("other_cameras").toObject();
         for(auto key: other_cameras.keys()) {

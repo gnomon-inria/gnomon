@@ -315,8 +315,10 @@ void gnomonImageVtkVisualization::onXZ(void)
 
 void gnomonImageVtkVisualization::onTimeChanged(double value)
 {
-    qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
-    this->render();
+    if(this->image()) {
+        qDebug()<<Q_FUNC_INFO<<"Time changed"<<value;
+        this->render();
+    }
 }
 
 const QString gnomonImageVtkVisualization::name(void) {

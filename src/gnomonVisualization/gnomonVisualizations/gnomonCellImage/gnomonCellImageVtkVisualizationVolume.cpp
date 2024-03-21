@@ -320,11 +320,13 @@ void gnomonCellImageVtkVisualizationVolume::onXZ(void)
 
 void gnomonCellImageVtkVisualizationVolume::onTimeChanged(double value)
 {
-    if (ddd->cellImageSeries->times().contains(value)) {
-        ddd->cellImage = ddd->cellImageSeries->at(value);
-        this->update();
+    if(this->cellImage()) {
+        if (ddd->cellImageSeries->times().contains(value)) {
+            ddd->cellImage = ddd->cellImageSeries->at(value);
+            this->update();
+        }
+        this->render();
     }
-    this->render();
 }
 
 const QString gnomonCellImageVtkVisualizationVolume::name(void) {

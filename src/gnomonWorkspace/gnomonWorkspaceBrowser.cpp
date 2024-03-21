@@ -60,6 +60,7 @@ public:
     int progress = 0;
     QString progress_message;
     QJsonObject workspace_info;
+    QJsonObject savedState;
 
     QTimer timer;
     QMetaObject::Connection connect_started;
@@ -564,9 +565,14 @@ void gnomonWorkspaceBrowser::deserialize(const QJsonObject &state) {
     d->browse_view->deserialize(state.value("view").toObject());
 }
 
-void gnomonWorkspaceBrowser::restoreState(void)
-{
-    d->browse_view->restoreState();
+void gnomonWorkspaceBrowser::saveState(void) {
+    d->savedState = serialize();
+}
+
+void gnomonWorkspaceBrowser::restoreState(void) {
+    if(!d->savedState.isEmpty()) {
+        deserialize(d->savedState);
+    }
 }
 
 QUrl gnomonWorkspaceBrowser::defaultReadPath()
