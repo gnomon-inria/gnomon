@@ -3,7 +3,7 @@
 package:
   name: {{ "lib" if build_type == "lib" }}gnomon
   #version: {{ GIT_DESCRIBE_TAG }}
-  version: 1.0.0.pre
+  version: 1.0.0a1
 
 source:
   path: ../
@@ -11,9 +11,6 @@ source:
 build:
   number: {{ GIT_DESCRIBE_NUMBER }}
 #  string: {{ build_string }}
-  script_env:
-    - HAS_GUI=False # [build_type == lib]
-    - HAS_GUI=True # [build_type == app]
 
 requirements:
   build:
@@ -52,6 +49,7 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
     - libxkbfile                         # [linux]
     - libwebp=1.2.2
+    - libzip
 
   host:
     - qt6-main >=6.5,<7
@@ -81,6 +79,7 @@ requirements:
     - dtk-plugins-imaging >=2.0
     - dtk-log >=2.5
     - dtk-script >=2.5
+    - x-vis
     - python
     - numpy {{numpy}}
     - pymongo
@@ -89,19 +88,15 @@ requirements:
     - libzip
     - matplotlib-base=3.7.1
     - qtpy >=2.0
-    - x-vis                    # [build_type == app]
-    - qtconsole-base >=5.2     # [build_type == app]
-    - importlib_metadata       # [build_type == app]
-    - matplotlib-base=3.5.1    # [build_type == app]
-    - qtpy=2.0                 # [build_type == app]
-    - qtconsole-base=5.2       # [build_type == app]
-    - jedi=0.18.2              # [build_type == app]
-    - python-lsp-server=1.7.1  # [build_type == app]
-    - pip                      # [build_type == app]
+    - qtconsole-base >=5.2
+    - importlib_metadata
+    - jedi=0.18.2
+    - python-lsp-server=1.7.1
+    - pip
 
 
 about:
   home: https://gnomon.gitlabpages.inria.fr/gnomon
-  license: LGPL-3.0
+  license: LGPL-3.0-or-later
   license_file: LICENSE
   summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D
