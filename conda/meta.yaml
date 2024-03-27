@@ -2,8 +2,7 @@
 
 package:
   name: {{ "lib" if build_type == "lib" }}gnomon
-  #version: {{ GIT_DESCRIBE_TAG }}
-  version: 1.0.0a1
+  version: {{ GIT_DESCRIBE_TAG }}
 
 source:
   path: ../

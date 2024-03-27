@@ -158,9 +158,10 @@ anaconda_linux_master:
     GIT_CHECKOUT: "false"
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh"
-    - conda activate base  
+    - conda activate base
     - mamba install -c conda-forge anaconda-client
-    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
+    - cph transmute conda-bld/linux-64/gnomon-*.tar.bz2 .conda
+    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-*.conda --force --user gnomon
     - conda build purge
   extends: .template_retry
   only:
@@ -178,7 +179,8 @@ anaconda_macos_master:
     - source /Users/ci/miniconda3/etc/profile.d/conda.sh
     - conda activate base
     - mamba install -c conda-forge anaconda-client
-    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/osx-64/libgnomon-* --force --user gnomon
+    - cph transmute conda-bld/osx-64/gnomon-*.tar.bz2 .conda
+    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/osx-64/gnomon-*.conda --force --user gnomon
     - conda build purge
   extends: .template_retry
   only:
@@ -198,7 +200,8 @@ anaconda_linux_develop :
     - conda install -n base -c defaults conda python=3.9 -y
     - conda install conda-build anaconda-client curl
     #- curl -X POST https://ci.inria.fr/gnomon/job/gnomon-conda-mac-develop/build?token=$JENKINS_TOKEN
-    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/libgnomon-* --force --user gnomon
+    - cph transmute conda-bld/linux-64/gnomon-*.tar.bz2 .conda
+    - anaconda --token=$ANACONDA_TOKEN upload conda-bld/linux-64/gnomon-*.conda --force --user gnomon
   extends: .template_retry
   when: manual
   only:
