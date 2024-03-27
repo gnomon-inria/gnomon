@@ -19,4 +19,4 @@ CONDA_BUILD_SYSROOT:                             # [osx]
   # Modify here if you don't build on the CI machine
   # For instance: - /Users/gcerutti/Development/MacOSX-SDKs/MacOSX10.14.sdk # [osx]
   # Dowload the 10.14 SDK from https://github.com/phracker/MacOSX-SDKs
-  - /Users/ci/Desktop/MacOSX-SDKs/MacOSX11.0.sdk # [osx]
+  - /Users/ci/Desktop/MacOSX-SDKs/MacOSX11.3.sdk # [osx]
