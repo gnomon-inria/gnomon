@@ -49,7 +49,16 @@ conda config --env --set subdir osx-64
 mamba install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
 ```
 
-- **Step 4:** Congrats, you can now launch the application
+:::{note}
+At this stage the `gnomon` application is installed but it is "empty" since no plugins are installed by default. To actually make it useable, you will have to install **plugin packages**
+:::
+
+- **Step 4:** Install plugin packages for gnomon for instance:
+```shell script
+mamba install -c gnomon -c dtk-forge6 -c conda-forge -c mosaic -c morpheme gnomon_package_tissueimagemesh
+```
+
+- **Step 5:** Congrats, you can now launch the application
 ```shell script
 gnomon
 ```
