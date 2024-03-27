@@ -92,6 +92,7 @@ requirements:
     - importlib_metadata
     - jedi=0.18.2
     - python-lsp-server=1.7.1
+    - conda
     - pip
 
 
