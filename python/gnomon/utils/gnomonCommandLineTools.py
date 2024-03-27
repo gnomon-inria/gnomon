@@ -141,4 +141,4 @@ update_parser = package_subparsers.add_parser(
     """
 )
 update_parser.set_defaults(func=update)
-update_parser.add_argument("packages", action="extend", nargs="+", help="List of package specifications")
+update_parser.add_argument("packages", action="extend", nargs="*", help="List of package specifications")

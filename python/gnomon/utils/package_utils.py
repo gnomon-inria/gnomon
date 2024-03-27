@@ -44,11 +44,16 @@ def update(packages: list[str]):
     if packages:
         subprocess.run([CONDA_EXE, "update"] + packages + INSTALL_CHANNELS)
     else:
+        print("Looking for installed gnomon packages")
         packages = list(list(zip(*installed_packages()))[0])
         if "libgnomon" in packages:
             packages.remove("libgnomon")
         if "gnomon" not in packages:
             packages.append("gnomon")
+        packages = [
+            package_name.replace("-", "_") if package_name.startswith("gnomon-package-") else package_name
+            for package_name in packages
+        ]
         subprocess.run([CONDA_EXE, "update"] + packages + INSTALL_CHANNELS)
 
 
@@ -135,5 +140,9 @@ def print_available_packages():
 
 
 def install_package(packages: list[str]):
+    packages = [
+        package_name.replace("-", "_") if package_name.startswith("gnomon-package-") else package_name
+        for package_name in packages
+    ]
     subprocess.run([CONDA_EXE, "install"] + packages + INSTALL_CHANNELS)
 
