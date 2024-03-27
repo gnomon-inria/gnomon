@@ -85,6 +85,13 @@ or alternatively:
 mamba update -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
 ```
 
+## Finding existing plugin packages
+
+You can find available packages by running the following command in your environment
+```shell script
+gnomon-utils package search
+```
+
 ## [Windows] Install with Windows Subsystem for Linux (WSL)
 
 Sources used for these instructions are:
