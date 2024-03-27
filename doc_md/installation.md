@@ -24,7 +24,7 @@ Conda is an open source package management system and environment management sys
 Installing `gnomon` requires around *6 GB* of free disk space.
 :::
 
-- **Step 1:** Install Mamba in your `(base)` environment
+- **Step 1:** (Optional) Install Mamba in your `(base)` environment
 ```shell script
 conda install -n base -c conda-forge mamba
 ```
@@ -50,10 +50,15 @@ mamba install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomo
 ```
 
 :::{note}
-At this stage the `gnomon` application is installed but it is "empty" since no plugins are installed by default. To actually make it useable, you will have to install **plugin packages**
+At this stage the `gnomon` application is installed but it is "empty" since no plugins are installed by default. To actually make it usable, you will have to install **plugin packages**
 :::
 
 - **Step 4:** Install plugin packages for gnomon for instance:
+```shell script
+gnomon-utils package install gnomon_package_tissueimagemesh
+```
+
+or alternatively:
 ```shell script
 mamba install -c gnomon -c dtk-forge6 -c conda-forge -c mosaic -c morpheme gnomon_package_tissueimagemesh
 ```
@@ -71,6 +76,11 @@ conda activate gnomon
 ```
 
 - **Step 2:**  Update **gnomon** and its **dependencies**
+```shell script
+gnomon-utils package update
+```
+
+or alternatively:
 ```shell script
 mamba update -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
 ```
