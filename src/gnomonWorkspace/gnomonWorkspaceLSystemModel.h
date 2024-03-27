@@ -34,6 +34,7 @@ public:
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileChanged);
+    Q_PROPERTY(QStringList missingTextures READ missingTextures NOTIFY missingTexturesChanged);
 
 signals:
     void textChanged(const QString&);
@@ -46,12 +47,19 @@ signals:
     void fileChanged(const QString& file_name);
     void parametersChanged(void);
     void currentIndexChanged(void);
+    void requestOpenFile(const QString& path);
+    void missingTexturesChanged(void);
+
+    // TODO: factorize in a code editor workspace class
+    void codeEditorReady(void);
 
 public:
     QString message(void) const;
 
     QString text(void);
     Q_INVOKABLE void setText(const QString& text);
+    Q_INVOKABLE void copyTextureFiles(const QStringList& files);
+    Q_INVOKABLE void importFile(const QString& file_name, const QString& path);
 
     int derivationLength(void);
     void setDerivationLength(int l);
@@ -63,8 +71,9 @@ public:
     Q_INVOKABLE QUrl defaultReadPath();
 
 public slots:
-    void read(const QString& file_url);
+    void read(const QString& file_url, bool read_only=false, bool restoring=false);
     void save(const QString& file_url) const;
+    void close(const QString& file_name);
 
     void setDefaultLSystem(void);
 
@@ -75,6 +84,7 @@ public slots:
     void reset(void);
     void stop(void);
     void setAnimationTime(const QString& time);
+    void restore(void);
 
     void setInitialState(void);
     void viewState(void);
@@ -89,11 +99,19 @@ public:
     void setFileName(const QString &);
     int currentIndex(void) const;
     void setCurrentIndex(int);
+    bool backup(void);
+    QStringList missingTextures(void) const;
 
     gnomonVtkView *view(void) const;
     gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
+
+    QJsonObject serialize() override;
+    void deserialize(const QJsonObject &state) override;
+public slots:
+    void saveState();
+    void restoreState();
 
 protected:
     class gnomonWorkspaceLSystemModelPrivate *d = nullptr;

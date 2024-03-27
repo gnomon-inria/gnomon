@@ -4,9 +4,10 @@
 
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
-class GNOMONCORE_EXPORT gnomonPointCloudQuantificationCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonPointCloudQuantificationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonPointCloudQuantificationCommand(void);
@@ -19,6 +20,7 @@ public:
 
 public:
     void setImage(std::shared_ptr<gnomonImageSeries> image);
+    void setMesh(std::shared_ptr<gnomonMeshSeries> mesh);
     void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud);
     void setAlgorithmName(const QString &) override;
 
@@ -39,10 +41,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "pointCloudQuantification";
-    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudQuantificationCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonPointCloudQuantificationCommand)

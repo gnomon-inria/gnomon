@@ -18,24 +18,22 @@ class gnomonAbstractVtkVisualization;
 
 class vtkCamera;
 class vtkRenderer;
+class vtkRenderWindow;
 class vtkRenderWindowInteractor;
-class vtkGenericOpenGLRenderWindow;
 
 class GNOMONVISUALIZATION_EXPORT gnomonVtkView : public gnomonAbstractView
 {
     Q_OBJECT
 public:
      gnomonVtkView(QObject *parent = nullptr);
-    ~gnomonVtkView(void);
+    virtual ~gnomonVtkView(void);
 
 public:
-    Q_ENUMS(Mode);
-    Q_ENUMS(Orientation);
-
     enum Mode {
         VIEW_MODE_3D = 3,
         VIEW_MODE_2D = 2,
     };
+    Q_ENUM(Mode);
 
     enum Orientation {
         SLICE_ORIENTATION_XY = 2,
@@ -43,6 +41,7 @@ public:
         SLICE_ORIENTATION_YZ = 0,
         NONE = -1
     };
+    Q_ENUM(Orientation);
 
     enum Representation {
         VTK_REPRESENTATION_POINTS = 0,
@@ -61,7 +60,7 @@ public:
 
     Q_PROPERTY(double xMin READ xMin NOTIFY boundsChanged);
     Q_PROPERTY(double xMax READ xMax NOTIFY boundsChanged);
-    Q_PROPERTY(double yMin READ xMin NOTIFY boundsChanged);
+    Q_PROPERTY(double yMin READ yMin NOTIFY boundsChanged);
     Q_PROPERTY(double yMax READ yMax NOTIFY boundsChanged);
     Q_PROPERTY(double zMin READ zMin NOTIFY boundsChanged);
     Q_PROPERTY(double zMax READ zMax NOTIFY boundsChanged);
@@ -69,9 +68,6 @@ public:
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged);
     Q_PROPERTY(Representation representation READ representation WRITE setRepresentation NOTIFY representationChanged)
     Q_PROPERTY(bool inPool READ inPool WRITE setInPool NOTIFY inPoolChanged);
-    Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
-    Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
-    Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
 
     Q_PROPERTY(QColor bgColor READ bgColor WRITE setBgColor NOTIFY bgColorChanged);
     Q_PROPERTY(bool gridVisible READ gridVisible WRITE setGridVisible NOTIFY gridVisibleChanged);
@@ -92,10 +88,11 @@ public:
 // /////////////////////////////////////////////////////////////////////////////
 //
 // /////////////////////////////////////////////////////////////////////////////
-    void associate(vtkGenericOpenGLRenderWindow *);
+    void associate(vtkRenderWindow *);
 // /////////////////////////////////////////////////////////////////////////////
 
 signals:
+    void renderWindowAssociated(void);
     void updated(void);
 
 signals:
@@ -196,8 +193,6 @@ public slots:
     double zMin(void) const;
     double zMax(void) const;
     Mode mode(void) const;
-    double currentTime(void) const;
-    double timeMax(void);
 
     void setBgColor(const QColor& color);
     const QColor& bgColor(void);
@@ -260,20 +255,6 @@ signals:
     void sliceOrientationChanged(int);
     void sliceChanged(double);
 
-signals:
-    void timeChanged(double);
-    void timeMaxChanged(double);
-    void timesChanged(void);
-
-public:
-    QList<double> times(void);
-
-public slots:
-    void setCurrentTime(double);
-
-public slots:
-    void onTimeChanged(double);
-
 public slots:
     void setInPool(bool);
 
@@ -282,6 +263,11 @@ public slots:
 
 public slots:
     void updateShortcutKeys(void);
+
+public:
+    QJsonObject serialize(void) override;
+
+    void deserialize(const QJsonObject &serialization) override;
 
 private:
     class gnomonVtkViewPrivate *dd;

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 
-class GNOMONCORE_EXPORT gnomonCellImageFilterCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellImageFilterCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonCellImageFilterCommand();
@@ -35,10 +35,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageFilter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageFilterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellImageFilterCommand)

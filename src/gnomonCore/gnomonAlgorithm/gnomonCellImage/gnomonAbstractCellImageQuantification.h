@@ -12,13 +12,15 @@
 #include "gnomonForm/gnomonCellImage/gnomonCellImage.h"
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractCellImageQuantification : public gnomonAbstractAlgorithm
 {
     //Inputs
 public:
-  virtual void setImage(std::shared_ptr<gnomonImageSeries> image) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
-  virtual void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) = 0;
+    virtual void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) = 0;
+    virtual void setImage(std::shared_ptr<gnomonImageSeries> image) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+    virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
 
     // Outputs
 public:
@@ -27,25 +29,29 @@ public:
 
 public:
     static inline QString defaultSetter(QString formName) {
-        if(formName == "gnomonImage") {
-            return {"setImage"};
-        } else if(formName == "gnomonCellImage") {
+        if (formName == "gnomonCellImage") {
             return {"setCellImage"};
+        } else if (formName == "gnomonImage") {
+            return {"setImage"};
+        } else if (formName == "gnomonMesh") {
+            return {"setMesh"};
         }
         return {};
     };
     static inline QString defaultGetter(QString formName) {
-        if(formName == "gnomonImage") {
-            return {"getImageInput"};
-        } else if(formName == "gnomonCellImage") {
+        if (formName == "gnomonCellImage") {
             return {"getCellImageInput"};
+        } else if (formName == "gnomonImage") {
+            return {"getImageInput"};
+        } else if (formName == "gnomonMesh") {
+            return {"getMeshInput"};
         }
         return {};
     };
     static inline QString defaultOutput(QString formName) {
-        if(formName == "gnomonCellImage") {
+        if (formName == "gnomonCellImage") {
             return {"cellImage"};
-        } else if(formName == "gnomonDataFrame") {
+        } else if (formName == "gnomonDataFrame") {
             return {"dataFrame"};
         }
         return {};
@@ -55,13 +61,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellImageQuantification *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT, cellImageQuantification, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageQuantification, GNOMONCORE_EXPORT, cellImageQuantification);
-}
 
 //
 // gnomonAbstractCellImageQuantification.h ends here

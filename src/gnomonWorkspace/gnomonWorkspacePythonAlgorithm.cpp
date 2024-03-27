@@ -1,3 +1,5 @@
+#include <gnomonCore>
+#include "gnomonProject"
 #include "gnomonWorkspacePythonAlgorithm.h"
 
 #include <gnomonCore/gnomonAlgorithm/gnomonAbstractFormAlgorithm>
@@ -40,8 +42,18 @@ public:
     QString algorithm_key;
     QString object_key;
 
+    QString current_file;
+    bool read_only;
+    QMap<QString, QString> open_files;
+
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
     gnomonFormAlgorithmCommand *command = nullptr;
+    QJsonObject state;
+
+    QMetaObject::Connection editor_connect;
+
+    QFutureWatcher<void> *watcher = nullptr;
+    QMetaObject::Connection connect_finished;
 };
 
 void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
@@ -108,6 +120,7 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
 
     d->code = new gnomonPythonAlgorithmPluginCode(this);
     d->code->updateCode();
+    d->current_file = d->code->fileName();
 
     d->sources = new gnomonVtkViewList(this);
     d->targets = new gnomonVtkViewList(this);
@@ -138,7 +151,9 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
         v->setAcceptForm("gnomonMesh",true);
         v->setAcceptForm("gnomonPointCloud",true);
         connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
-            gnomonPipelineManager::instance()->addForm(f);
+            gnomonPipelineManager::instance()->addForm(f->uuid());
+            this->m_can_be_destroyed = false;
+            emit canBeDestroyedChanged(false);
         });
     });
 
@@ -173,26 +188,53 @@ QString gnomonWorkspacePythonAlgorithm::algorithm(void) const
     return d->algorithm_key;
 }
 
-void gnomonWorkspacePythonAlgorithm::read(const QString& file_url)
+void gnomonWorkspacePythonAlgorithm::read(const QString& file_url, bool read_only)
 {
-    QString file_path;
+    QString relative_path;
     const QUrl url(file_url);
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     if (url.isLocalFile()) {
-        file_path = QDir::toNativeSeparators(url.toLocalFile());
+        relative_path = QDir::toNativeSeparators(url.toLocalFile());
     } else {
-        file_path = file_url;
+        relative_path = file_url;
+    }
+    QString file_name = relative_path.split(QRegularExpression("/")).last();
+
+    QString absolute_path;
+    QString source;
+    if (!QFile::exists(relative_path)) {
+            qDebug() << Q_FUNC_INFO << "file " << relative_path << "doesn't exist";
+    } else {
+        absolute_path = GNOMON_PROJECT->findFile(relative_path);
+        source = QFileInfo(relative_path).fileName();
     }
 
-    QFile f(file_path);
+    bool to_copy = (!read_only) & (absolute_path=="");
+    qDebug()<<Q_FUNC_INFO<<relative_path<<"["<<absolute_path<<"]"<<to_copy;
+
+    if(to_copy) {
+        QString project_file_path = GNOMON_PROJECT->projectDir() + "/" + file_name;
+        if(!QFile::copy(relative_path, project_file_path)) {
+            dtkWarn()<<"Failed to copy file "<< relative_path << "to Project";
+            return;
+        }
+        relative_path = GNOMON_PROJECT->relativePath(project_file_path);
+    }
+
+    QFile f(relative_path);
     if (f.open(QIODevice::ReadOnly)) {
-        settings.setValue("Python/load", file_path);
+        settings.setValue("Python/load", relative_path);
+        this->setFileName(file_name);
         QTextStream s(&f);
         d->code->setText(s.readAll());
         d->code->parseCode();
+        d->open_files[d->code->fileName()] = relative_path;
         emit d->code->codeUpdated();
+        emit stateChanged();
+        if(!read_only)
+            this->backup();
     } else {
-        dtkWarn()<<"Could not open file"<<file_path;
+        dtkWarn()<<"Could not open file"<<relative_path;
     }
 }
 
@@ -214,11 +256,61 @@ void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
             out << d->code->text();
             settings.setValue("Python/load", file_path);
             f.close();
+            emit d->code->codeUpdated();
+            this->backup();
         } else {
             dtkWarn()<<"Could not save to file"<<file_path;
         }
     }
+}
 
+void gnomonWorkspacePythonAlgorithm::close(const QString& file_name)
+{
+    if (d->open_files.contains(file_name)) {
+        d->open_files.remove(file_name);
+        emit stateChanged();
+    } else {
+        dtkWarn()<<Q_FUNC_INFO<<"The file"<<file_name<<"was not open";
+    }
+}
+
+QString gnomonWorkspacePythonAlgorithm::fileName(void) const
+{
+    return d->current_file;
+}
+
+bool gnomonWorkspacePythonAlgorithm::readOnly(void) const
+{
+    return d->read_only;
+}
+
+void gnomonWorkspacePythonAlgorithm::setFileName(const QString& file_name)
+{
+    if (file_name != d->current_file) {
+        d->code->setFileName(file_name);
+        d->current_file = file_name;
+        emit fileChanged(d->current_file);
+    }
+}
+
+void gnomonWorkspacePythonAlgorithm::setReadOnly(bool read_only)
+{
+    if (read_only != d->read_only) {
+        d->read_only = read_only;
+        emit readOnlyChanged(d->read_only);
+    }
+}
+
+void gnomonWorkspacePythonAlgorithm::importFile(const QString& file_name, const QString& path)
+{
+    if (d->open_files.contains(file_name)) {
+        auto project_file = path + "/" + file_name;
+        QFile::copy(d->open_files[file_name], project_file);
+        QString relative_path = GNOMON_PROJECT->relativePath(project_file);
+        d->open_files[file_name] = relative_path;
+        this->backup();
+        emit GNOMON_PROJECT->fileImported(relative_path);
+    }
 }
 
 QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)
@@ -230,11 +322,13 @@ QUrl gnomonWorkspacePythonAlgorithm::defaultReadPath(void)
 void gnomonWorkspacePythonAlgorithm::run(void) {
 
     if(d->algorithm) {
+        disconnect(d->connect_finished);
+        d->connect_finished = connect(d->command, &gnomonAbstractCommand::finished, [this]() {
+            this->viewOutputs();
+            emit finished();
+        });
         emit started();
-        d->algorithm->setLogServerAddress(gnomonLogCaptureServer::instance()->completeAddress());
-        d->algorithm->run();
-        this->viewOutputs();
-        emit finished();
+        d->command->redo();
     } else {
         dtkWarn() << Q_FUNC_INFO << "d->algorithm is null, nothing is done!";
     }
@@ -365,127 +459,25 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
 
         bool output_form_added = false;
 
-        std::shared_ptr<gnomonBinaryImageSeries> binaryImage = d->algorithm->outputBinaryImage();
-        if ((binaryImage) && (binaryImage->times().size() != 0)) {
-            d->command->addOutput(binaryImage);
-            this->target()->setForm("gnomonBinaryImage", binaryImage);
-            QString form_name("binaryImage_out");
-            if (d->code->outputForms().contains("gnomonBinaryImage")) {
-                form_name = d->code->outputForms()["gnomonBinaryImage"].name;
+        for (auto output_name: d->command->outputs().keys()) {
+            auto form = d->command->outputs()[output_name];
+            if ((form) && (form->times().size() != 0)) {
+                QString form_name = form->formName();
+                this->target()->setForm(form_name, form);
+                QString form_variable = form_name.remove("gnomon") + "_out";
+                form_variable = form_variable.left(1).toLower() + form_variable.mid(1);
+                if (d->code->outputForms().contains("gnomonBinaryImage")) {
+                    form_variable = d->code->outputForms()["gnomonBinaryImage"].name;
+                }
+                QString form_statement = form_variable + " = ";
+                form_statement += "{t: f.data().__data_getter() for t,f in algorithm.output" + form_name.remove("gnomon") + "(False).items()}";
+                output = dtkScriptInterpreterPython::instance()->interpret(form_statement, &stat);
+                output_form_added = true;
+                GNOMON_SESSION->trackForm(form);
+                int form_count = gnomonFormManager::instance()->formCount(form_name);
+                form->metadata()->set("name", form_name.remove("gnomon") + QString::number(form_count + 1));
+                form->metadata()->set("source", d->algorithm_key);
             }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputBinaryImage(False).items()}",
-                    &stat);
-            output_form_added = true;
-            int form_count = gnomonFormManager::instance()->formCount(binaryImage->formName());
-            binaryImage->metadata()->set("name",
-                                         binaryImage->formName().remove("gnomon") + QString::number(form_count + 1));
-            binaryImage->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonCellComplexSeries> cellComplex = d->algorithm->outputCellComplex();
-        if ((cellComplex) && (cellComplex->times().size() != 0)) {
-            d->command->addOutput(cellComplex);
-            this->target()->setForm("gnomonCellComplex", cellComplex);
-            QString form_name("cellcomplex_out");
-            if (d->code->outputForms().contains("gnomonCellComplex")) {
-                form_name = d->code->outputForms()["gnomonCellComplex"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellComplex(False).items()}",
-                    &stat);
-            output_form_added = true;
-            int form_count = gnomonFormManager::instance()->formCount(cellComplex->formName());
-            cellComplex->metadata()->set("name",
-                                         cellComplex->formName().remove("gnomon") + QString::number(form_count + 1));
-            cellComplex->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonCellImageSeries> cellImage = d->algorithm->outputCellImage();
-        if ((cellImage) && (cellImage->times().size() != 0)) {
-            d->command->addOutput(cellImage);
-            this->target()->setForm("gnomonCellImage", cellImage);
-            QString form_name("cellimage_out");
-            if (d->code->outputForms().contains("gnomonCellImage")) {
-                form_name = d->code->outputForms()["gnomonCellImage"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputCellImage(False).items()}",
-                    &stat);
-            output_form_added = true;
-            int form_count = gnomonFormManager::instance()->formCount(cellImage->formName());
-            cellImage->metadata()->set("name",
-                                       cellImage->formName().remove("gnomon") + QString::number(form_count + 1));
-            cellImage->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonImageSeries> image = d->algorithm->outputImage();
-        if ((image) && (image->times().size() != 0) && (image->current()->channels().size() != 0)) {
-            d->command->addOutput(image);
-            this->target()->setForm("gnomonImage", image);
-            QString form_name("image_out");
-            if (d->code->outputForms().contains("gnomonImage")) {
-                form_name = d->code->outputForms()["gnomonImage"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputImage(False).items()}",
-                    &stat);
-            output_form_added = true;
-            int form_count = gnomonFormManager::instance()->formCount(image->formName());
-            image->metadata()->set("name", image->formName().remove("gnomon") + QString::number(form_count + 1));
-            image->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonLStringSeries> lString = d->algorithm->outputLString();
-        if ((lString) && (lString->times().size() != 0)) {
-            d->command->addOutput(lString);
-            this->target()->setForm("gnomonLString", lString);
-            QString form_name("lString_out");
-            if (d->code->outputForms().contains("gnomonLString")) {
-                form_name = d->code->outputForms()["gnomonLString"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputLString(False).items()}",
-                    &stat);
-            output_form_added = true;
-            int form_count = gnomonFormManager::instance()->formCount(lString->formName());
-            lString->metadata()->set("name", lString->formName().remove("gnomon") + QString::number(form_count + 1));
-            lString->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonMeshSeries> mesh = d->algorithm->outputMesh();
-        if ((mesh) && (mesh->times().size() != 0)) {
-            d->command->addOutput(mesh);
-            this->target()->setForm("gnomonMesh", mesh);
-            QString form_name("mesh_out");
-            if (d->code->outputForms().contains("gnomonMesh")) {
-                form_name = d->code->outputForms()["gnomonMesh"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputMesh(False).items()}",
-                    &stat);
-            output_form_added = true;
-            int form_count = gnomonFormManager::instance()->formCount(mesh->formName());
-            mesh->metadata()->set("name", mesh->formName().remove("gnomon") + QString::number(form_count + 1));
-            mesh->metadata()->set("source", d->algorithm_key);
-        }
-
-        std::shared_ptr<gnomonPointCloudSeries> pointCloud = d->algorithm->outputPointCloud();
-        if ((pointCloud) && (pointCloud->times().size() != 0)) {
-            d->command->addOutput(pointCloud);
-            this->target()->setForm("gnomonPointCloud", pointCloud);
-            QString form_name("pointcloud_out");
-            if (d->code->outputForms().contains("gnomonPointCloud")) {
-                form_name = d->code->outputForms()["gnomonPointCloud"].name;
-            }
-            output = dtkScriptInterpreterPython::instance()->interpret(
-                    form_name + " = {t:f.data().__data_getter() for t,f in algorithm.outputPointCloud(False).items()}",
-                    &stat);
-            output_form_added = true;
-            int form_count = gnomonFormManager::instance()->formCount(pointCloud->formName());
-            pointCloud->metadata()->set("name",
-                                        pointCloud->formName().remove("gnomon") + QString::number(form_count + 1));
-            pointCloud->metadata()->set("source", d->algorithm_key);
         }
 
         if (output_form_added) {
@@ -545,18 +537,12 @@ bool gnomonWorkspacePythonAlgorithm::isEmpty(void)
 
 void gnomonWorkspacePythonAlgorithm::saveState(void)
 {
-    //TODO
+    d->state = serialize();
 }
 
 void gnomonWorkspacePythonAlgorithm::restoreState(void)
 {
-    //TODO
-    for (auto view : d->sources->views()) {
-        view->restoreState();
-    }
-    for (auto view : d->targets->views()) {
-        view->restoreState();
-    }
+    deserialize(d->state);
 }
 
 void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
@@ -565,7 +551,103 @@ void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
     }
 }
 
+QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
+    QJsonObject state = gnomonAbstractWorkspace::serialize();
 
+    QJsonObject open_file_json;
+    for (const auto& file_name : d->open_files.keys()) {
+        open_file_json.insert(file_name, d->open_files[file_name]);
+    }
+    state.insert("open_files", open_file_json);
+
+    state.insert("code", d->code->text());
+    state.insert("algoName", d->algorithm_key);
+    state.insert("edit", d->edit_mode);
+
+    QVariantMap parameters_json;
+    if(d->command) {
+        dtkCoreParameters dtkParameters = d->command->parameters();
+        for(const auto& param_name : dtkParameters.keys()){
+            auto param_value = dtkParameters[param_name]->toVariantHash();
+            parameters_json.insert(param_name, QJsonObject::fromVariantHash(param_value));
+        }
+    }
+    state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
+    QJsonArray sources;
+    for (auto view : d->sources->views()) {
+        sources.append(view->serialize());
+    }
+    QJsonArray targets;
+    for (auto view : d->targets->views()) {
+        targets.append(view->serialize());
+    }
+    state.insert("sources", sources);
+    state.insert("targets", targets);
+
+    return state;
+}
+
+void gnomonWorkspacePythonAlgorithm::deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::deserialize(state);
+    disconnect(d->editor_connect);
+
+    QJsonObject open_file_json = state["open_files"].toObject();
+    for (auto file_name: open_file_json.keys()) {
+        QString file_path = open_file_json[file_name].toString();
+        d->open_files[file_name] = file_path;
+    }
+
+    d->editor_connect = connect(this, &gnomonWorkspacePythonAlgorithm::codeEditorReady, [=] () {
+        for (auto file_name: d->open_files.keys()) {
+            emit requestOpenFile(d->open_files[file_name]);
+        }
+        d->code->parseCode();
+    });
+
+    // TODO: to remove if code is restored from file / backup ?
+    // d->code->setText(state["code"].toString());
+    setEditMode(state["edit"].toBool());
+
+    QJsonObject parameters_json = state["parameters"].toObject();
+    if(d->command && !parameters_json.empty()) {
+        for(const auto& param_name: parameters_json.keys()) {
+            auto param = parameters_json[param_name].toObject().toVariantHash();
+            d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
+        }
+    }
+    QJsonArray sources = state.value("sources").toArray();
+    int i = 0;
+    for (auto view : d->sources->views()) {
+        view->deserialize(sources[i].toObject());
+        i++;
+    }
+    QJsonArray targets = state.value("targets").toArray();
+    i = 0;
+    for (auto view : d->targets->views()) {
+        view->deserialize(targets[i].toObject());
+        i++;
+    }
+}
+
+bool gnomonWorkspacePythonAlgorithm::backup(void) const
+{
+    QString file_name = d->code->fileName();
+    bool ok = false;
+    if (d->open_files.contains(file_name)) {
+        QString file_path = d->open_files[file_name];
+        ok = GNOMON_PROJECT->backupFile(file_path, d->code->text());
+    }
+    return ok;
+}
+
+void gnomonWorkspacePythonAlgorithm::restore(void)
+{
+    QStringList py_files = GNOMON_PROJECT->editorFileInfo({"py"});
+
+    for (auto f: py_files) {
+        emit requestOpenFile(f);
+    }
+}
 
 //
 // gnomonWorkspacePythonAlgorithm.cpp ends here

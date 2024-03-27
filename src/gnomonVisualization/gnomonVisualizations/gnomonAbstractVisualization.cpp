@@ -14,6 +14,8 @@ gnomonAbstractVisualization::gnomonAbstractVisualization(void) : d(new gnomonAbs
 
 gnomonAbstractVisualization::~gnomonAbstractVisualization(void)
 {
+    disconnect(d->connectViewDestroyed);
+    disconnect(d->connectTime);
     delete d;
     d = nullptr;
 }
@@ -22,7 +24,18 @@ void gnomonAbstractVisualization::setView(gnomonAbstractView* view)
 {
     this->clear();
     d->view = view;
-    this->fill();
+
+    disconnect(d->connectViewDestroyed);
+    disconnect(d->connectTime);
+    if(view && !view->empty()) {
+        d->connectViewDestroyed = connect(view, &QObject::destroyed, [=] () {
+            setView(nullptr);
+        });
+        d->connectTime = connect(view, &gnomonAbstractView::timeChanged, [=](double value){
+            this->onTimeChanged(value);
+        });
+        this->fill();
+    }
 }
 
 gnomonAbstractView* gnomonAbstractVisualization::view(void)
@@ -48,6 +61,11 @@ void gnomonAbstractVisualization::setVisuParameters(QVariantMap parameters)
         QVariant param = parameters[param_name];
         this->setParameter(param_name, param);
     }
+}
+
+void gnomonAbstractVisualization::clearConnections(void)
+{
+    disconnect(d->connectTime);
 }
 
 void gnomonAbstractVisualization::connectParameter(const QString& parameter_name)

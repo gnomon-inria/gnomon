@@ -1,7 +1,5 @@
 #pragma once
 
-class dtkImage;
-
 #include <QtCore>
 
 #include <dtkCore>
@@ -9,6 +7,8 @@ class dtkImage;
 #include <gnomonCoreExport.h>
 #include "gnomonCore/gnomonCorePlugin.h"
 #include "gnomonForm/gnomonAbstractFormData"
+
+class vtkImageData;
 
 // ///////////////////////////////////////////////////////////////////
 //
@@ -34,8 +34,8 @@ public:
     virtual const QString pluginName(void) = 0;
 
 public:
-    virtual void setImage(dtkImage *image) = 0;
-    virtual dtkImage* image(void) const = 0;
+    virtual void setImage(vtkImageData* image) = 0;
+    virtual vtkImageData* image(void) const = 0;
 
     virtual QList<long> cellIds(void) const = 0;
     virtual long cellCount(void) const = 0;
@@ -52,6 +52,18 @@ public:
     virtual void removeCellProperty(const QString& propertyName) = 0;
 
     virtual QMap<long, QVariant> computeCellProperty(const QString& propertyName) = 0;
+
+    virtual QList<long> wallIds(void) const= 0;
+    virtual QList<long> wallCellIds(long wallId) = 0;
+
+    virtual QStringList wallPropertyNames(void) const = 0;
+    virtual bool hasWallProperty(const QString& propertyName) const = 0;
+
+    virtual QMap<long, QVariant> wallProperty(const QString& propertyName) const = 0;
+
+    virtual void addWallProperty(const QString& propertyName) = 0;
+    virtual void updateWallProperty(const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) = 0;
+    virtual void removeWallProperty(const QString& propertyName) = 0;
 };
 
 // ///////////////////////////////////////////////////////////////////
@@ -60,15 +72,7 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractCellImageData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractCellImageData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageData, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellImageData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellImageData, GNOMONCORE_EXPORT, cellImageData, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellImageData, GNOMONCORE_EXPORT, cellImageData);
-}
 
 // gnomonAbstractCellImageData.h ends here

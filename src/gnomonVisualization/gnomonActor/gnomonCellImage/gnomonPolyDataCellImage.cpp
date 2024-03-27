@@ -3,8 +3,6 @@
 
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 
-#include <dtkImagingCore>
-
 #include <vtkActor.h>
 #include <vtkAppendPolyData.h>
 #include <vtkAssembly.h>
@@ -105,15 +103,7 @@ void gnomonPolyDataCellImage::update(void)
          }
      }
 
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    if(!converter)
-        return;
-
-    dtkImage *image = d->cellimage->image();
-    converter->setInput(image);
-    if(!converter->convert())
-        return;
-     vtkImageData *volume = static_cast<vtkImageData *>(converter->output());
+     vtkImageData *volume = d->cellimage->image();
 
     float v_x = volume->GetSpacing()[0];
     float v_y = volume->GetSpacing()[1];

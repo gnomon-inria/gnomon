@@ -15,8 +15,9 @@ class GNOMONCORE_EXPORT gnomonTimeSeries : public gnomonAbstractDynamicForm
 {
 
 public:
-     gnomonTimeSeries(void) = default;
-     gnomonTimeSeries(const gnomonTimeSeries& o);
+    explicit gnomonTimeSeries(void) : m_uuid(QUuid::createUuid().toString(QUuid::WithoutBraces)) {};
+    gnomonTimeSeries(const gnomonTimeSeries& o);
+    gnomonTimeSeries(const QString& uuid);
     ~gnomonTimeSeries(void) = default;
 
 public:
@@ -27,31 +28,75 @@ public:
 
 public:
     std::shared_ptr<T> at(double t);
-    std::shared_ptr<T> current(void) const;
+    std::shared_ptr<T> current(void);
     double time(void) const override;
+    double nextTime(void) const override;
+    double previousTime(void) const override;
     QList<double> times(void) const override;
+    void selectCurrentTime(double t) override;
     QMap<QString,QString> metadataAtT(double t) const override;
 
+    bool containsId(uint id) const override;
+    bool containsTime(double t, double precision = 1e-9) const override;
+    bool containsForm(std::shared_ptr<gnomonAbstractForm> form) const override;
+
+    void insert(double t, std::shared_ptr<gnomonAbstractForm> form) override;
     void insert(double t, std::shared_ptr<T> form);
-//    void insert(const T& form) override;
     void drop(double t) override;
+
+    void setAutoSave(bool auto_save);
 
     void compose(std::shared_ptr<gnomonAbstractDynamicForm> pForm) override;
 
 public:
     virtual inline QString formName(void) override { return T::formName(); }
 
+    virtual inline QString uuid(void) override { return this->m_uuid; };
+
     QJsonObject serialize(void) override;
 
-    void deserialize(QJsonObject &serialization) override;
+    void deserialize(const QJsonObject &serialization) override;
+
+public:
+    void load() override;
+
+    void unload() override;
+
+    bool loaded() override;
 
 protected:
-    T *at_impl(double t) override;
-    T *current_impl(void) const override;
+    std::shared_ptr<gnomonAbstractForm> atAsAbstract(double t) override;
+    std::shared_ptr<gnomonAbstractForm> currentAsAbstract(void) override;
+
+    uint idAtT(double t) const;
+    double closestT(double t) const;
+
+private:
+    struct formStorageInfo {
+        double time = 0;
+        uint id = 0;
+        QString fileName = "";
+        bool loaded = true;
+    };
+
+    void save(uint id);
+    void load(uint id);
+    void unload(uint id);
+    void updateManifest();
+    void readManifest();
+
+    QMap<uint, formStorageInfo> m_storage_info;
+    uint form_id_counter = 0; // counter for incrementing unique form indices
 
 protected:
-    QMap<double, std::shared_ptr<T>> m_forms;
+    QMap<uint, std::shared_ptr<T>> m_forms;
+    QMap<uint, double> m_times;
     double m_current_time = 0.;
+    uint m_current_time_id = 0;
+    QString m_uuid;
+
+    bool m_auto_save = true;
+    bool m_has_unsaved_times = false;
 };
 
 #include "gnomonTimeSeries.tpp"

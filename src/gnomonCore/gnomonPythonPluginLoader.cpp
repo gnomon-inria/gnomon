@@ -28,7 +28,9 @@ void loadPluginGroup (const QString& module)
     dtkScriptInterpreterPython::instance()->interpret(code, &stat);
 
     if(!pluginsManagers()[module]) {
-        dtkWarn() << "cannot find plugin manager for " << module;
+        dtkWarn() << Q_FUNC_INFO
+                  << "cannot find plugin manager for "
+                  << module << pluginsManagers()[module];
         dtkWarn() << "keys are " << pluginsManagers().keys();
         return;
     }
@@ -38,15 +40,6 @@ void loadPluginGroup (const QString& module)
 
 QStringList availablePluginsFromGroup(const QString & module) {
     QStringList available_plugins;
-    if(!pluginsManagers()[module]) {
-      dtkWarn() << "cannot find plugin Manager for " << module;
-      dtkWarn() << "keys are " << pluginsManagers().keys();
-    } else {
-        //needs to initialize the plugins manager to
-        //initialize factory for c++ plugins
-        pluginsManagers()[module]->initialize(GNOMON_PLUGIN_PATH);
-        available_plugins += pluginsFactories()[module]->keys();
-    }
 
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure();
@@ -84,6 +77,18 @@ QStringList availablePluginsFromGroup(const QString & module) {
     Py_DECREF(pName);
 
     PyGILState_Release(gstate);
+
+    if(!pluginsManagers()[module]) {
+        dtkWarn() << Q_FUNC_INFO
+                  << "cannot find plugin Manager for "
+                  << module << pluginsManagers()[module];
+        dtkWarn() << "keys are " << pluginsManagers().keys();
+    } else {
+        //needs to initialize the plugins manager to
+        //initialize factory for c++ plugins
+        pluginsManagers()[module]->initialize(GNOMON_PLUGIN_PATH);
+        available_plugins += pluginsFactories()[module]->keys();
+    }
 
     return available_plugins;
 }

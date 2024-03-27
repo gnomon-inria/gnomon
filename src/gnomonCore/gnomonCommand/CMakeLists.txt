@@ -35,6 +35,8 @@ add_subdirectory(gnomonTree)
 ADD_GNOMON_HEADERS(
   gnomonAbstractAdapterCommand
   gnomonAbstractAdapterCommand.h
+  gnomonAbstractAlgorithmCommand
+  gnomonAbstractAlgorithmCommand.h
   gnomonAbstractCommand
   gnomonAbstractCommand.h
   gnomonAbstractConstructorCommand
@@ -61,7 +63,10 @@ ADD_GNOMON_HEADERS(
 
 
 ADD_GNOMON_SOURCES(
-  gnomonAbstractCommand.cpp
+  gnomonAbstractAlgorithmCommand.cpp
+  gnomonAbstractReaderCommand.cpp
+  gnomonAbstractWriterCommand.cpp
+  gnomonFormAlgorithmCommand.cpp
   ${${PROJECT_NAME}_COMMAND_BINARYIMAGE_SOURCES}
   ${${PROJECT_NAME}_COMMAND_CELLCOMPLEX_SOURCES}
   ${${PROJECT_NAME}_COMMAND_CELLGRAPH_SOURCES}
@@ -72,10 +77,7 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_COMMAND_LSTRING_SOURCES}
   ${${PROJECT_NAME}_COMMAND_MESH_SOURCES}
   ${${PROJECT_NAME}_COMMAND_POINTCLOUD_SOURCES}
-  ${${PROJECT_NAME}_COMMAND_TREE_SOURCES}
-  gnomonAbstractReaderCommand.cpp
-  gnomonAbstractWriterCommand.cpp
-  gnomonFormAlgorithmCommand.cpp)
+  ${${PROJECT_NAME}_COMMAND_TREE_SOURCES})
 
 
 ######################################################################

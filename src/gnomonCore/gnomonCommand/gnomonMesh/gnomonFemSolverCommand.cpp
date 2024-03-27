@@ -22,8 +22,7 @@ public:
 
 gnomonFemSolverCommand::gnomonFemSolverCommand() : d(new gnomonFemSolverCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonFemSolverCommand)
 
     QStringList keys = gnomonCore::femSolver::pluginFactory().keys();
     if (!keys.empty()) {
@@ -68,15 +67,6 @@ void gnomonFemSolverCommand::setMesh(std::shared_ptr<gnomonMeshSeries> mesh)
 std::shared_ptr<gnomonMeshSeries> gnomonFemSolverCommand::updatedMesh()
 {
     return ((gnomonAbstractFemSolver *) this->action)->updatedMesh();
-}
-
-bool gnomonFemSolverCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonFemSolverCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonFemSolverCommand::inputs() {

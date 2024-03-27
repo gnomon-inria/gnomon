@@ -1,21 +1,3 @@
-## Version: $Id$
-##
-######################################################################
-##
-### Commentary:
-##
-######################################################################
-##
-### Change Log:
-##
-######################################################################
-##
-### Code:
-
-## #################################################################
-## Inputs
-## #################################################################
-
 add_subdirectory(gnomonBinaryImage)
 add_subdirectory(gnomonCellComplex)
 add_subdirectory(gnomonCellGraph)
@@ -23,7 +5,7 @@ add_subdirectory(gnomonCellImage)
 add_subdirectory(gnomonDataDict)
 add_subdirectory(gnomonDataFrame)
 add_subdirectory(gnomonImage)
-add_subdirectory(gnomonIntensityImage)
+#add_subdirectory(gnomonIntensityImage)
 add_subdirectory(gnomonLString)
 add_subdirectory(gnomonMesh)
 add_subdirectory(gnomonPointCloud)
@@ -42,6 +24,8 @@ ADD_GNOMON_HEADERS(
   gnomonAbstractFormData.h
   gnomonDynamicFormMetadata
   gnomonDynamicFormMetadata.h
+  gnomonDynamicFormFactory
+  gnomonDynamicFormFactory.h
   gnomonSphereForm
   gnomonSphereForm.h
   gnomonTimeSeries
@@ -56,7 +40,7 @@ ADD_GNOMON_HEADERS(
   ${${PROJECT_NAME}_FORM_DATADICT_HEADERS}
   ${${PROJECT_NAME}_FORM_DATAFRAME_HEADERS}
   ${${PROJECT_NAME}_FORM_IMAGE_HEADERS}
-  ${${PROJECT_NAME}_FORM_INTENSITYIMAGE_HEADERS}
+ # ${${PROJECT_NAME}_FORM_INTENSITYIMAGE_HEADERS}
   ${${PROJECT_NAME}_FORM_LSTRING_HEADERS}
   ${${PROJECT_NAME}_FORM_MESH_HEADERS}
   ${${PROJECT_NAME}_FORM_POINTCLOUD_HEADERS}
@@ -67,6 +51,7 @@ ADD_GNOMON_HEADERS(
 ADD_GNOMON_SOURCES(
   gnomonAbstractForm.cpp
   gnomonDynamicFormMetadata.cpp
+  gnomonDynamicFormFactory.cpp
   gnomonSphereForm.cpp
   gnomonWallForm.cpp
   ${${PROJECT_NAME}_FORM_BINARYIMAGE_SOURCES}
@@ -76,7 +61,7 @@ ADD_GNOMON_SOURCES(
   ${${PROJECT_NAME}_FORM_DATADICT_SOURCES}
   ${${PROJECT_NAME}_FORM_DATAFRAME_SOURCES}
   ${${PROJECT_NAME}_FORM_IMAGE_SOURCES}
-  ${${PROJECT_NAME}_FORM_INTENSITYIMAGE_SOURCES}
+#  ${${PROJECT_NAME}_FORM_INTENSITYIMAGE_SOURCES}
   ${${PROJECT_NAME}_FORM_LSTRING_SOURCES}
   ${${PROJECT_NAME}_FORM_MESH_SOURCES}
   ${${PROJECT_NAME}_FORM_POINTCLOUD_SOURCES}

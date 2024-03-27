@@ -15,8 +15,7 @@ public:
 
 gnomonMeshConstructorCommand::gnomonMeshConstructorCommand() : d(new gnomonMeshConstructorCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonMeshConstructorCommand)
 
     QStringList keys = gnomonCore::meshConstructor::pluginFactory().keys();
     if (!keys.empty()) {
@@ -69,15 +68,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonMeshConstructor
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
     outputs["output"] = this->output();
     return outputs;
-}
-
-bool gnomonMeshConstructorCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonMeshConstructorCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonMeshConstructorCommand::outputTypes() {

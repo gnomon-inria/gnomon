@@ -45,16 +45,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractTreeWriter *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractTreeWriter, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeWriter, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeWriter, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeWriter, GNOMONCORE_EXPORT, treeWriter, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractTreeWriter, GNOMONCORE_EXPORT, treeWriter);
-}
 
 //
 // gnomonAbstractImageWriter.h ends here

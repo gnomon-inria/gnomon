@@ -43,7 +43,7 @@ A computational platform to analyze and simulate the development of living forms
 .. toctree::
     :hidden:
     :maxdepth: 2
-    
+
     installation
     getting_started
     concepts
@@ -52,11 +52,9 @@ A computational platform to analyze and simulate the development of living forms
     shortcuts
     examples
     workspaces
+    howto
     run_pipeline
-    package
-    existing_abstraction_existing_data_plugin
     gnomon_utils
-    python_script
 ```
 
 ---
@@ -64,79 +62,78 @@ A computational platform to analyze and simulate the development of living forms
 ```{eval-rst}
 .. grid:: 2
     :gutter: 3
-  
-    .. grid-item-card:: 
+
+    .. grid-item-card::
         :class-header: sd-text-white sd-bg-primary sd-fs-5 sd-font-weight-bold
         :class-footer: sd-bg-light
-    
+
         Installation
         ^^^
-        
-        Guidelines for installing the Gnomon platform, from sources or already packaged.   
+
+        Guidelines for installing the Gnomon platform, from sources or already packaged.
         +++
-        
+
         .. button-link:: installation.html
             :color: primary
             :expand:
             :outline:
             :click-parent:
-            
+
             How to install gnomon
-    
-    .. grid-item-card:: 
+
+    .. grid-item-card::
         :class-header: sd-text-white sd-bg-primary sd-fs-5 sd-font-weight-bold
         :class-footer: sd-bg-light
-    
+
         Getting started
         ^^^
-        
+
         Discover the basic functionalities of the Gnomon platform : load data, visualize it and open your first workspace.
         +++
-        
+
         .. button-link:: getting_started.html
             :color: primary
             :expand:
             :outline:
             :click-parent:
-            
+
             Gnomon "hello world"
 
-    
+
     .. grid-item-card::
         :class-header: sd-text-white sd-bg-primary sd-fs-5 sd-font-weight-bold
         :class-footer: sd-bg-light
-    
+
         Examples
         ^^^
-        
+
         Perform simple 3D image analysis tasks such as signal enhancement and cell segmentation.
         +++
-        
+
         .. button-link:: examples.html
             :color: primary
             :expand:
             :outline:
             :click-parent:
-            
+
             Tutorials on simple scenarios
-    
-    .. grid-item-card:: 
+
+    .. grid-item-card::
         :class-header: sd-text-white sd-bg-primary sd-fs-5 sd-font-weight-bold
         :class-footer: sd-bg-light
-    
+
         Architecture
         ^^^
-        
+
         Get a better understanding of the generic principles underlying the architecture of the Gnomon platform.
         +++
-    
+
         .. button-link:: concepts.html
             :color: primary
             :expand:
             :outline:
             :click-parent:
-            
-            Learn more about concepts
-    
-```
 
+            Learn more about concepts
+
+```

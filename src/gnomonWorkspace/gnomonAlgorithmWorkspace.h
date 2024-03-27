@@ -9,8 +9,9 @@
 #include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 #include <gnomonVisualization/gnomonView/gnomonMplView.h>
 #include <gnomonVisualization/gnomonView/gnomonQmlView.h>
+#include <qtmetamacros.h>
 
-class gnomonAbstractCommand;
+class gnomonAbstractAlgorithmCommand;
 
 class GNOMONWORKSPACE_EXPORT gnomonAlgorithmWorkspace : public gnomonAbstractWorkspace
 {
@@ -22,6 +23,7 @@ public:
 
 public:
     Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName NOTIFY algorithmChanged);
+    Q_PROPERTY(QJsonObject algoMetaData READ algoMetaData NOTIFY algorithmChanged);
     Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded);
     Q_PROPERTY(QVariantList algorithmsData READ algorithmsData NOTIFY algorithmsLoaded);
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged);
@@ -31,8 +33,8 @@ public:
     Q_PROPERTY(gnomonVtkView* target READ target CONSTANT); //for ease of use
     Q_PROPERTY(gnomonMplView* figure READ figure CONSTANT);
     Q_PROPERTY(gnomonQmlView* textView READ textView CONSTANT);
-    Q_PROPERTY(int progress READ progress NOTIFY progressChanged)
-
+    Q_PROPERTY(int progress READ progress NOTIFY progressChanged);
+    Q_PROPERTY(QString progressMessage READ progressMessage NOTIFY progressMessageChanged);
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
@@ -41,6 +43,7 @@ signals:
     void parametersChanged(void);
     void currentIndexChanged(void);
     void progressChanged(int progress);
+    void progressMessageChanged(QString message);
 
 public slots:
     virtual void run(bool no_async=false);
@@ -48,7 +51,7 @@ public slots:
     virtual void viewOutputs(void);
     virtual void saveState(void);
     virtual void restoreState(void);
-    virtual void export_outputs(void);
+    virtual void export_outputs(void) override;
 
 public slots:
     virtual void pause(void);
@@ -57,12 +60,14 @@ public slots:
 
 public:
     QString algoName(void) const;
+    QJsonObject algoMetaData(void) const;
     QStringList algorithms(void) const;
     QVariantList algorithmsData(void) const;
     void setAlgoName(const QString &);
     int currentIndex(void) const;
     void setCurrentIndex(int);
     int progress(void);
+    QString progressMessage(void);
 
 public:
     gnomonVtkViewList *sources(void) const;
@@ -76,8 +81,8 @@ public:
     gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
-    QJsonObject serialize(void);
-    void unSerialize(QJsonObject&);
+    QJsonObject serialize(void) override;
+    void deserialize(const QJsonObject&) override;
 
 protected:
     void addInputView(const QVector<QString>& accepted_forms = {}, QStringList nodePortNames = {});

@@ -74,6 +74,7 @@ public:
     }
     void deserialize(QJsonObject &serialization) override {
         delete m_data;
+        loadPluginGroup("cellImageData");
         m_data = gnomonCore::cellImageData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }
@@ -82,8 +83,8 @@ public:
     static inline QString formName(void) { return "gnomonCellImage"; }
 
 public:
-    virtual void setImage(dtkImage *image) { return m_data->setImage(image); }
-    virtual dtkImage* image(void) const { return m_data->image(); }
+    virtual void setImage(vtkImageData *image) { return m_data->setImage(image); }
+    virtual vtkImageData *image(void) const { return m_data->image(); }
 
     virtual QList<long> cellIds(void) const { return m_data->cellIds(); }
     virtual long cellCount(void) const { return m_data->cellCount(); }
@@ -100,6 +101,19 @@ public:
     virtual void removeCellProperty(const QString& propertyName) { return m_data->removeCellProperty(propertyName); }
 
     virtual QMap<long, QVariant> computeCellProperty(const QString& propertyName) { return m_data->computeCellProperty(propertyName); };
+
+    QList<long> wallIds(void) const { return m_data->wallIds(); };
+    QList<long> wallCellIds(long wallId) { return m_data->wallCellIds(wallId); };
+
+    virtual QStringList wallPropertyNames(void) const { return m_data->wallPropertyNames(); };
+    virtual bool hasWallProperty(const QString& propertyName) const { return m_data->hasWallProperty(propertyName); }
+
+    virtual QMap<long, QVariant> wallProperty(const QString& propertyName) const { return m_data->wallProperty(propertyName); }
+
+    virtual void addWallProperty(const QString& propertyName) { return m_data->addWallProperty(propertyName); }
+    virtual void updateWallProperty(const QString& propertyName, const QMap<long, QVariant>& values, bool eraseProperty = true) { return m_data->updateWallProperty(propertyName, values, eraseProperty); }
+    virtual void removeWallProperty(const QString& propertyName) { return m_data->removeWallProperty(propertyName); }
+
 };
 
 // ///////////////////////////////////////////////////////////////////

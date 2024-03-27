@@ -19,8 +19,7 @@ public:
 
 gnomonTreeReaderCommand::gnomonTreeReaderCommand() : d(new gnomonTreeReaderCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonTreeReaderCommand)
 
     for (const auto& key: gnomonCore::treeReader::pluginFactory().keys()) {
         auto algo = gnomonCore::treeReader::pluginFactory().create(key);
@@ -75,15 +74,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeReaderComma
     return outputs;
 }
 
-bool gnomonTreeReaderCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonTreeReaderCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
-}
-
 gnomonAbstractCommand::orderedMap gnomonTreeReaderCommand::outputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("tree", "gnomonTree"));
@@ -103,6 +93,8 @@ QJsonObject gnomonTreeReaderCommand::serializeResults(void) {
     out["tree"] = d->tree->serialize();
     return out;
 }
+
+GNOMON_REGISTER_TYPE(gnomonTreeReaderCommand)
 
 //
 // gnomonTreeReaderCommand.cpp ends here

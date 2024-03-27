@@ -1,10 +1,10 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 
-class GNOMONCORE_EXPORT gnomonCellComplexFromCellImageCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellComplexFromCellImageCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonCellComplexFromCellImageCommand();
@@ -37,10 +37,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellComplexFromCellImage";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellComplexFromCellImageCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellComplexFromCellImageCommand)

@@ -12,12 +12,14 @@
 #include "gnomonForm/gnomonPointCloud/gnomonPointCloud.h"
 #include "gnomonForm/gnomonDataFrame/gnomonDataFrame.h"
 #include "gnomonForm/gnomonImage/gnomonImage.h"
+#include "gnomonForm/gnomonMesh/gnomonMesh.h"
 
 class GNOMONCORE_EXPORT gnomonAbstractPointCloudQuantification : public gnomonAbstractAlgorithm
 {
     //Inputs
 public:
-  virtual void setImage(std::shared_ptr<gnomonImageSeries> image) = 0;
+  virtual void setImage(std::shared_ptr<gnomonImageSeries> image) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+  virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
   virtual void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud) = 0;
 
     // Outputs
@@ -27,25 +29,29 @@ public:
 
 public:
     static inline QString defaultSetter(QString formName) {
-        if(formName == "gnomonImage") {
-            return {"setImage"};
-        } else if(formName == "gnomonPointCloud") {
+        if (formName == "gnomonPointCloud") {
             return {"setPointCloud"};
+        } else if (formName == "gnomonImage") {
+            return {"setImage"};
+        } else if (formName == "gnomonMesh") {
+            return {"setMesh"};
         }
         return {};
     };
     static inline QString defaultGetter(QString formName) {
-        if(formName == "gnomonImage") {
-            return {"getImageInput"};
-        } else if(formName == "gnomonPointCloud") {
+        if (formName == "gnomonPointCloud") {
             return {"getPointCloudInput"};
+        } else if (formName == "gnomonImage") {
+            return {"getImageInput"};
+        } else if (formName == "gnomonMesh") {
+            return {"getMeshInput"};
         }
         return {};
     };
     static inline QString defaultOutput(QString formName) {
-        if(formName == "gnomonPointCloud") {
+        if (formName == "gnomonPointCloud") {
             return {"pointCloud"};
-        } else if(formName == "gnomonDataFrame") {
+        } else if (formName == "gnomonDataFrame") {
             return {"dataFrame"};
         }
         return {};
@@ -61,13 +67,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractPointCloudQuantification *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT, pointCloudQuantification, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractPointCloudQuantification, GNOMONCORE_EXPORT, pointCloudQuantification);
-}
 
 //
 // gnomonAbstractPointCloudQuantification.h ends here

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 
-class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonFemSolverCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonFemSolverCommand(void);
@@ -37,10 +37,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "femSolver";
-    static QStringList availablePlugins();
 
 private:
     class gnomonFemSolverCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonFemSolverCommand)

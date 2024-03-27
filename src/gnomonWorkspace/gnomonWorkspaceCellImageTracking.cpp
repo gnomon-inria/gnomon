@@ -1,6 +1,7 @@
 #include "gnomonWorkspaceCellImageTracking.h"
 #include "gnomonAlgorithmWorkspace_p.h"
 #include "gnomonVisualizations/gnomonCellImage/gnomonAbstractCellImageVtkVisualization"
+#include "gnomonProject"
 
 #include <gnomonCore>
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageTrackingCommand>
@@ -85,15 +86,40 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
 
     d->updatePool();
 
+    auto setInterval = [=] (double t) {
+        auto form = this->target()->form("gnomonCellImage");
+        if(!form) {
+            return;
+        }
+        auto times = form->times();
+        if(times.length()<=1) {
+            this->target()->setCurrentTime(t);
+            return;
+        }
+        if(t == times.last()) {
+            this->source()->setCurrentTime(times[times.length()-2]);
+            return;
+        }
+        for(auto new_t: times) {
+            if(new_t > t) {
+                this->target()->setCurrentTime(new_t);
+                return;
+            }
+        }
+    };
+    connect(this->source(), &gnomonAbstractView::timeChanged, setInterval);
+
     connect(this->target(), &gnomonVtkView::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
-        this->target()->setCurrentTime(this->source()->currentTime()+1.0);
+        this->source()->setCurrentTime(this->source()->times().first());
+        setInterval(this->source()->currentTime());
     });
     connect(this->source(), &gnomonVtkView::syncedChanged, [=]() {
         this->target()->disconnectTime();
         this->source()->disconnectTime();
-        this->target()->setCurrentTime(this->source()->currentTime()+1.0);
+        this->source()->setCurrentTime(this->source()->times().first());
+        setInterval(this->source()->currentTime());
     });
     connect(this->target(), &gnomonVtkView::formAdded, [=](const QString &name) {
         const QString plugin_name = "cellImageVtkVisualizationMarchingCubes";
@@ -185,6 +211,7 @@ void gnomonWorkspaceCellImageTracking::viewOutputs()
 
     if(command->cellImage()) {
         auto cellImage = command->cellImage();
+        GNOMON_SESSION->trackForm(cellImage);
         int count = gnomonFormManager::instance()->formCount(cellImage->formName());
         cellImage->metadata()->set("name", cellImage->formName() + QString::number(count+1));
         cellImage->metadata()->set("source", d->algorithm);
@@ -206,4 +233,20 @@ void gnomonWorkspaceCellImageTracking::viewOutputs()
             this->target()->setCurrentTime(this->source()->currentTime()+1.0);
         }
     }
+}
+
+QJsonObject gnomonWorkspaceCellImageTracking::serialize(void)
+{
+    QJsonObject state = gnomonAlgorithmWorkspace::serialize();
+
+    auto transformation_matrix = dd->source_dict->serialize();
+    state.insert("transformation_matrix", transformation_matrix);
+
+    return state;
+}
+
+void gnomonWorkspaceCellImageTracking::deserialize(const QJsonObject &state)
+{
+    gnomonAlgorithmWorkspace::deserialize(state);
+    dd->source_dict->deserialize(state["transformation_matrix"].toObject());
 }

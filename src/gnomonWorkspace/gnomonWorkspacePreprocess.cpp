@@ -1,5 +1,7 @@
 #include "gnomonWorkspacePreprocess.h"
 #include "gnomonAlgorithmWorkspace_p.h"
+#include "gnomonProject"
+
 
 #include <gnomonCore/gnomonAlgorithm/gnomonImage/gnomonAbstractImageFilter.h>
 #include <gnomonCore/gnomonCommand/gnomonImage/gnomonImageFilterCommand.h>

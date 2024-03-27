@@ -1,13 +1,13 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonBinaryImage/gnomonBinaryImage>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
-class GNOMONCORE_EXPORT gnomonCellImageFromImageCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellImageFromImageCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonCellImageFromImageCommand();
@@ -46,13 +46,12 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageFromImage";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageFromImageCommandPrivate *d;
 };
 
+GNOMON_COMMAND_TRAITS(gnomonCellImageFromImageCommand)
 //
 // gnomonCellImageFromImageCommand.h ends here

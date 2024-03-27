@@ -1,7 +1,8 @@
 #include "gnomonAlgorithmWorkspace.h"
 #include "gnomonAlgorithmWorkspace_p.h"
+#include "gnomonProject"
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand.h>
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
@@ -23,7 +24,7 @@ gnomonAlgorithmWorkspacePrivate::~gnomonAlgorithmWorkspacePrivate(void)
     if(this->pool)
         delete pool;
 
-    if(this->sources) 
+    if(this->sources)
         delete this->sources;
 
     if(this->targets)
@@ -81,7 +82,10 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
     d->targets = new gnomonVtkViewList(this);
     connect(d->targets, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
         connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
-            d->pipeline_manager->addForm(f);
+            d->registerPipeline();
+            d->pipeline_manager->addForm(f->uuid());
+            this->m_can_be_destroyed = false;
+            emit canBeDestroyedChanged(false);
         });
     });
 
@@ -91,12 +95,15 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
         emit parametersChanged();
     });
 
-    connect(this, &gnomonAlgorithmWorkspace::parametersChanged, this, &gnomonAlgorithmWorkspace::saveState);
+    connect(this, &gnomonAlgorithmWorkspace::parametersChanged, [=] () {
+        emit stateChanged();
+    });
 
     d->timer.setInterval(100);
     connect(&d->timer, &QTimer::timeout, [=]() {
         //qDebug() << "============= PROGRESS : " << d->command->progress();
         emit progressChanged(d->command->progress());
+        emit progressMessageChanged(d->command->progressMessage());
     });
     connect(this, &gnomonAbstractWorkspace::started, [=]() {
        d->timer.start();
@@ -107,13 +114,23 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
 }
 
 gnomonAlgorithmWorkspace::~gnomonAlgorithmWorkspace(void)
-{    
+{
     delete d;
 }
 
 QString gnomonAlgorithmWorkspace::algoName(void) const
 {
     return d->algorithm;
+}
+
+QJsonObject gnomonAlgorithmWorkspace::algoMetaData(void) const
+{
+    QJsonObject algo_json;
+    algo_json.insert("name", d->command->algorithmName());
+    algo_json.insert("documentation", d->command->documentation());
+    algo_json.insert("version", d->command->version());
+    algo_json.insert("group", d->command->factoryName());
+    return algo_json;
 }
 
 QStringList gnomonAlgorithmWorkspace::algorithms(void) const
@@ -132,6 +149,11 @@ void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
         emit algorithmChanged(algorithm);
         d->command->undo();
         this->setInputs();
+        for(auto & param:d->command->parameters()) {
+            param->connect([=] {
+               emit parametersChanged();
+            });
+        }
         emit parametersChanged();
     }
 }
@@ -253,6 +275,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     for(auto [name, output_type] : d->command->outputTypes()) {
         if(d->command->outputs()[name] && (*d->targets)[i]->acceptedForms().contains(output_type)) {
             auto form =  d->command->outputs()[name];
+            GNOMON_SESSION->trackForm(form);
             int form_count = gnomonFormManager::instance()->formCount(output_type);
             form->metadata()->set("name", output_type.remove("gnomon") + QString::number(form_count+1));
             form->metadata()->set("source", d->algorithm);
@@ -265,7 +288,6 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     }
 
     if (!empty_output) {
-        d->registerPipeline();
         if(!this->target()->synced()) {
             this->target()->tryLinking();
         }
@@ -273,29 +295,68 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
 }
 
 QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
-    QJsonObject state;
+    QJsonObject state = gnomonAbstractWorkspace::serialize();
     state.insert("algoName", algoName());
     state.insert("currentIndex", currentIndex());
 
     QVariantMap parameters_json;
     dtkCoreParameters dtkParameters = d->command->parameters();
     for(const auto& param_name : dtkParameters.keys()){
-        QVariant param_value = dtkParameters[param_name]->variant();
-        parameters_json.insert(param_name, param_value);
+        auto param_value = dtkParameters[param_name]->toVariantHash();
+        parameters_json.insert(param_name, QJsonObject::fromVariantHash(param_value));
     }
-    state.insert("parameters_json", QJsonObject::fromVariantMap(parameters_json));
+    state.insert("parameters", QJsonObject::fromVariantMap(parameters_json));
+
+    QJsonArray sources;
+    for (auto view : d->sources->views()) {
+        sources.append(view->serialize());
+    }
+    QJsonArray targets;
+    for (auto view : d->targets->views()) {
+        targets.append(view->serialize());
+    }
+    state.insert("sources", sources);
+    state.insert("targets", targets);
+    if (d->figure) {
+        state.insert("figure", d->figure->serialize());
+    }
+    if (d->text_view) {
+        state.insert("text_view", d->text_view->serialize());
+    }
+
     return state;
 }
 
-void gnomonAlgorithmWorkspace::unSerialize(QJsonObject & state) {
+void gnomonAlgorithmWorkspace::deserialize(const QJsonObject & state) {
+    gnomonAbstractWorkspace::deserialize(state);
     setCurrentIndex(state["currentIndex"].toInt());
     setAlgoName(state["algoName"].toString());
 
     QJsonObject parameters_json = state["parameters"].toObject();
     for(const auto& param_name: parameters_json.keys()) {
-        QVariant param = parameters_json[param_name].toVariant();
-        d->command->setParameter(param_name, param);
+        auto param = parameters_json[param_name].toObject().toVariantHash();
+        d->command->setParameter(param_name, dtkCoreParameter::create(param)->variant());
     }
+
+    QJsonArray sources = state.value("sources").toArray();
+    int i = 0;
+    for (auto view : d->sources->views()) {
+        view->deserialize(sources[i].toObject());
+        i++;
+    }
+    QJsonArray targets = state.value("targets").toArray();
+    i = 0;
+    for (auto view : d->targets->views()) {
+        view->deserialize(targets[i].toObject());
+        i++;
+    }
+    if (state.contains("figure")) {
+        d->figure->deserialize(state.value("figure").toObject());
+    }
+    if (state.contains("text_view")) {
+        d->text_view->deserialize(state.value("text_view").toObject());
+    }
+
     emit parametersChanged();
 }
 
@@ -304,14 +365,9 @@ void gnomonAlgorithmWorkspace::saveState(void) {
 }
 
 void gnomonAlgorithmWorkspace::restoreState(void) {
-    QString previousAlgo = algoName();
-    unSerialize(d->savedState);
-
-    for (auto view : d->sources->views()) {
-        view->restoreState();
-    }
-    for (auto view : d->targets->views()) {
-        view->restoreState();
+    if(!d->savedState.isEmpty()) {
+        QString previousAlgo = algoName();
+        deserialize(d->savedState);
     }
 }
 
@@ -349,6 +405,10 @@ void gnomonAlgorithmWorkspace::addOutputView(const QVector<QString> &accepted_fo
 
 int gnomonAlgorithmWorkspace::progress(void) {
     return d->command->progress();
+}
+
+QString gnomonAlgorithmWorkspace::progressMessage(void) {
+    return d->command->progressMessage();
 }
 
 void gnomonAlgorithmWorkspace::pause(void) {

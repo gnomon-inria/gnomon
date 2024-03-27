@@ -1,13 +1,13 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include "gnomonCore/gnomonForm/gnomonImage/gnomonImage"
 #include "gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict.h"
 
 class gnomonImage;
 
-class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonImageRegistrationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonImageRegistrationCommand(void);
@@ -39,10 +39,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "imageRegistration";
-    static QStringList availablePlugins();
 
 private:
     class gnomonImageRegistrationCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonImageRegistrationCommand)

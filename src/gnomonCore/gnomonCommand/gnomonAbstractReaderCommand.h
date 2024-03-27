@@ -2,14 +2,13 @@
 
 #include <gnomonCoreExport>
 
-#include <gnomonCore/gnomonAlgorithm/gnomonAbstractAlgorithm.h>
-#include "gnomonAbstractCommand.h"
+#include "gnomonAbstractAlgorithmCommand.h"
 
 #include <QtCore>
 
 class gnomonAbstractDynamicForm;
 
-class GNOMONCORE_EXPORT gnomonAbstractReaderCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonAbstractReaderCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
     ~gnomonAbstractReaderCommand() override;

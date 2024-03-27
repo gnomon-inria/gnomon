@@ -1,12 +1,12 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCore/gnomonForm/gnomonPointCloud/gnomonPointCloud>
 
-class GNOMONCORE_EXPORT gnomonPointCloudFromImageCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonPointCloudFromImageCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonPointCloudFromImageCommand(void);
@@ -40,10 +40,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "pointCloudFromImage";
-    static QStringList availablePlugins();
 
 private:
     class gnomonPointCloudFromImageCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonPointCloudFromImageCommand)

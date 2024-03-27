@@ -138,16 +138,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractCellGraphData *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractCellGraphData, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellGraphData, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellGraphData, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellGraphData, GNOMONCORE_EXPORT, cellGraphData, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellGraphData, GNOMONCORE_EXPORT, cellGraphData);
-}
 
 //
 // gnomonAbstractCellGraphData.h ends here

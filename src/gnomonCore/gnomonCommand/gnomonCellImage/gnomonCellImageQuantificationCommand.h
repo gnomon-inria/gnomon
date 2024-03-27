@@ -1,11 +1,12 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
+#include <gnomonCore/gnomonForm/gnomonMesh/gnomonMesh>
 #include <gnomonCore/gnomonForm/gnomonDataFrame/gnomonDataFrame>
 
-class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellImageQuantificationCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonCellImageQuantificationCommand();
@@ -18,6 +19,7 @@ public:
 
 public:
     void setImage(std::shared_ptr<gnomonImageSeries> image);
+    void setMesh(std::shared_ptr<gnomonMeshSeries> mesh);
     void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage);
 
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override;
@@ -39,10 +41,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageQuantification";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageQuantificationCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellImageQuantificationCommand)

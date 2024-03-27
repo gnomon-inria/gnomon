@@ -1,0 +1,97 @@
+{
+    "description": "Dynamically implement an image resampling plugin",
+    "fileFormatVersion": "0.0.1",
+    "formAlgorithm1": {
+        "description": "",
+        "inputs": {
+            "inputImage": "imageReader1 -> image"
+        },
+        "name": "formAlgorithm1",
+        "outputs": [
+            "outputImage"
+        ],
+        "parameters": {
+            "python_code": "from copy import deepcopy\nimport numpy as np\n\nfrom dtkcore import d_real\n\nimport gnomon.core\nfrom gnomon.utils import algorithmPlugin\nfrom gnomon.utils.decorators import imageInput, imageOutput\n\nfrom timagetk.algorithms.resample import isometric_resampling\n\n\n@algorithmPlugin(version='0.1.0', coreversion='0.81.0')\n@imageInput(attr='in_img', data_plugin='gnomonImageDataMultiChannelImage')\n@imageOutput(attr='out_img', data_plugin='gnomonImageDataMultiChannelImage')\nclass isometricResampling(gnomon.core.gnomonAbstractFormAlgorithm):\n\n    def __init__(self):\n        super().__init__()\n\n        self._parameters = {}\n        self._parameters['voxelsize'] = d_real(\"Voxelsize\", 1., 0.1, 5., 2, \"Target voxelsize after resampling\")\n\n        self.in_img = {}\n        self.out_img = {}\n\n    def run(self):\n        self.out_img = {}\n\n        for time in self.in_img.keys():\n            resampled_img = isometric_resampling(deepcopy(self.in_img[time]), method=self['voxelsize'])\n            self.out_img[time] = resampled_img\n\n",
+            "voxelsize": {
+                "decimals": 2,
+                "doc": "Target voxelsize after resampling",
+                "label": "Voxelsize",
+                "max": 5,
+                "min": 0.1,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 1.135680300690407
+            }
+        },
+        "plugin_group": "formAlgorithm",
+        "plugin_name": "isometricResampling",
+        "plugin_version": "0.1.0"
+    },
+    "formAlgorithm2": {
+        "description": "",
+        "inputs": {
+            "inputImage": "formAlgorithm1 -> outputImage"
+        },
+        "name": "formAlgorithm2",
+        "outputs": [
+            "outputImage"
+        ],
+        "parameters": {
+            "filter_type": {
+                "doc": "Type of filter function applied to the eigenvalues",
+                "index": 2,
+                "label": "Filter type",
+                "type": "dtkCoreParameterInList<QString>",
+                "values": [
+                    "hill",
+                    "exp",
+                    "none"
+                ]
+            },
+            "gamma": {
+                "decimals": 2,
+                "doc": "Enhancement factor used in the filter function",
+                "label": "Gamma",
+                "max": 1,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 1
+            },
+            "python_code": "# {# gnomon, plugin.imports\nfrom dtkcore import d_real, d_inliststring\n\nimport gnomon.core\n\nfrom gnomon.utils import algorithmPlugin\nfrom gnomon.utils.decorators import imageInput, imageOutput\n# #}\n# add your imports before the next gnomon tag\n\nimport numpy as np\nfrom skimage.feature import hessian_matrix, hessian_matrix_eigvals\nfrom timagetk import SpatialImage, MultiChannelImage\n\n\n# {# gnomon, plugin.class\n\n@algorithmPlugin(version='0.1.0', coreversion='0.81.0')\n@imageInput(attr='img', data_plugin='gnomonImageDataMultiChannelImage')\n@imageOutput(attr='filtered_img', data_plugin='gnomonImageDataMultiChannelImage')\nclass hessianEigenvalueImageFilter(gnomon.core.gnomonAbstractFormAlgorithm):\n    \"\"\"\n    Implements a Hessian eigenvalue filter.\n    \"\"\"\n\n    def __init__(self):\n        super().__init__()\n\n        self._parameters = {}\n        self._parameters['sigma'] = d_real('Sigma', 0.2, 0., 3., 2, 'Sigma for the Hessian matrix computation (in µm)')\n        self._parameters['filter_type'] = d_inliststring('Filter type', \"none\", [\"hill\", \"exp\", \"none\"], 'Type of filter function applied to the eigenvalues')\n        self._parameters['gamma'] = d_real('Gamma', 1., 0., 1., 2, 'Enhancement factor used in the filter function')\n        self._parameters['channel_name'] = d_inliststring('Channel', '', [''], 'Channel to process')\n\n        self.img = {}\n        self.filtered_img = {}\n\n    def run(self):\n        self.filtered_img = {}\n        for time in self.img.keys():\n            img = self.img[time]\n            # #}\n            # implement the run method\n\n            channel_name = self['channel_name'] if 'channel_name' in self._parameters.keys() else img.channel_names[0]\n            img = img.get_channel(channel_name)\n\n            hess = hessian_matrix(img, sigma=self['sigma']/np.array(img.voxelsize))\n            hess_evals = hessian_matrix_eigvals(hess)\n\n            last_hess_evals = np.abs(np.minimum(0, hess_evals[2]))\n\n            if self['filter_type'] == 'hill':\n                hess_img = 1./(1 + np.power(last_hess_evals/self['gamma'], 2))\n            elif self['filter_type'] == 'exp':\n                hess_img = np.exp(-np.power(last_hess_evals/self['gamma'], 2))\n            else:\n                hess_img = -last_hess_evals\n\n            max_intensity = 255 if img.dtype == np.uint8 else 65535\n\n            hess_img = max_intensity * (np.nanmax(hess_img) - hess_img)/(np.nanmax(hess_img) - np.nanmin(hess_img))\n            hess_img = SpatialImage(hess_img.astype(img.dtype),\n                                    voxelsize=img.voxelsize)\n\n            self.filtered_img[time] = MultiChannelImage({'': hess_img})\n\n    def refreshParameters(self):\n        if len(self.img) > 0:\n            img = list(self.img.values())[0]\n            if len(img.channel_names) == 1:\n                if 'channel_name' in self._parameters.keys():\n                    del self._parameters['channel_name']\n            else:\n                if 'channel_name' not in self._parameters.keys():\n                    self._parameters['channel_name'] = d_inliststring('Channel to process', '', [''])\n                channel_name = self['channel_name']\n                self._parameters['channel_name'].setValues(img.channel_names)\n\n                if channel_name in img.channel_names:\n                    self._parameters['channel_name'].setValue(channel_name)\n                else:\n                    self._parameters['channel_name'].setValue(img.channel_names[0])\n",
+            "sigma": {
+                "decimals": 2,
+                "doc": "Sigma for the Hessian matrix computation (in µm)",
+                "label": "Sigma",
+                "max": 3,
+                "min": 0,
+                "type": "dtkCoreParameterNumeric<double>",
+                "value": 0.2
+            }
+        },
+        "plugin_group": "formAlgorithm",
+        "plugin_name": "hessianEigenvalueImageFilter",
+        "plugin_version": "0.1.0"
+    },
+    "gnomonVersion": "0.81.0",
+    "imageReader1": {
+        "description": "",
+        "inputs": {
+        },
+        "name": "imageReader1",
+        "outputs": [
+            "image"
+        ],
+        "path": "YR01_t40_crop.inr.gz",
+        "plugin_group": "imageReader",
+        "plugin_name": "imageReaderTimagetk",
+        "plugin_version": "0.3.0"
+    },
+    "input": [
+        {
+            "imageReader1_path": "imageReader1 -> path"
+        }
+    ],
+    "name": "Image_python_plugin_scenario",
+    "output": [
+    ],
+    "type": "pipeline"
+}

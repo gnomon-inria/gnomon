@@ -2,6 +2,7 @@
 #include "gnomonCommand/gnomonAbstractEvolutionModelCommand.h"
 #include "gnomonModel/gnomonAbstractModel.h"
 
+#include <dtkLog.h>
 #include <gnomonCore>
 #include <gnomonCore/gnomonModel/gnomonAbstractLStringEvolutionModel.h>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
@@ -35,15 +36,18 @@ public:
 
 gnomonLStringEvolutionModelCommand::gnomonLStringEvolutionModelCommand() : d(new gnomonLStringEvolutionModelCommandPrivate)
 {
-    this->factory_name = groupName;
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonLStringEvolutionModelCommand)
 
     QStringList keys = gnomonCore::lStringEvolutionModel::pluginFactory().keys();
     if (!keys.empty()) {
         this->model_name = keys[0];
         this->model = gnomonCore::lStringEvolutionModel::pluginFactory().create(this->model_name);
         connect(this->model, &gnomonAbstractModel::modelMessage, this, &gnomonAbstractEvolutionModelCommand::modelMessage);
+    } else {
+        dtkWarn() << "lStringEvolutionModel factory is empty";
+        dtkWarn() << "No model created, I may crash!!";
     }
+
 }
 
 gnomonLStringEvolutionModelCommand::~gnomonLStringEvolutionModelCommand()
@@ -102,6 +106,9 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
             maxDerivationLength = i+1;
         }
 
+        if(this->simulationType == SimulationType::animate)
+            d->lString->setAutoSave(false);
+
         //let's slow down the computation!
         // time during each iteration
         int sleeptime = int(d->animation_time*1000*d->animation_step / maxDerivationLength);
@@ -144,6 +151,10 @@ QFuture<int> gnomonLStringEvolutionModelCommand::redo(QMutex* mutex, QWaitCondit
             if (promise.isCanceled())
                 return;
         }
+
+        if(this->simulationType == SimulationType::animate)
+            d->lString->setAutoSave(true);
+
         promise.finish();
     }); //.onFailed([] {
     // qWarning() << "Error running " << Q_FUNC_INFO;
@@ -255,15 +266,6 @@ gnomonAbstractCommand::orderedMap gnomonLStringEvolutionModelCommand::stateTypes
     gnomonAbstractCommand::orderedMap types;
     types.emplace_back(std::make_pair("lString", "gnomonLString"));
     return types;
-}
-
-bool gnomonLStringEvolutionModelCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonLStringEvolutionModelCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 //

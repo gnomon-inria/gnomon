@@ -19,7 +19,10 @@ public:
 
 gnomonTreeWriterCommand::gnomonTreeWriterCommand() : d(new gnomonTreeWriterCommandPrivate)
 {
+    GNOMON_COMMANDS_INIT(gnomonTreeWriterCommand)
+
     this->factory_name = groupName;
+    this->m_traits = new gnomonTreeWriterCommandTraits();
     loadPluginGroup(this->factoryName());
 
         //see MeshWriterCommand for what to do when there is multiple writers
@@ -32,6 +35,7 @@ gnomonTreeWriterCommand::gnomonTreeWriterCommand() : d(new gnomonTreeWriterComma
 
 gnomonTreeWriterCommand::~gnomonTreeWriterCommand()
 {
+    delete this->m_traits;
     delete d;
 }
 
@@ -77,15 +81,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeWriterComma
     return inputs;
 }
 
-bool gnomonTreeWriterCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonTreeWriterCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
-}
-
 gnomonAbstractCommand::orderedMap gnomonTreeWriterCommand::inputTypes() {
     orderedMap types;
     types.emplace_back(std::make_pair("tree", "gnomonTree"));
@@ -99,6 +94,8 @@ void gnomonTreeWriterCommand::setInputForm(const QString &name, std::shared_ptr<
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
 }
+
+GNOMON_REGISTER_TYPE(gnomonTreeWriterCommand)
 
 //
 // gnomonTreeWriterCommand.cpp ends here

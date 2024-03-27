@@ -29,10 +29,10 @@ public:
     QJsonObject serializeResults(void) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageConstructor";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageConstructorCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellImageConstructorCommand)

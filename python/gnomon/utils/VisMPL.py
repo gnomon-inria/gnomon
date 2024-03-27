@@ -75,7 +75,7 @@ class VisConfig(vis.VisConfigAbstract):
 
     def __init__(self, **kwargs):
         super(VisConfig, self).__init__(**kwargs)
-        self.dtype = np.float
+        self.dtype = np.float32
         self.display_ctrlpts = kwargs.get('ctrlpts', True)
         self.display_evalpts = kwargs.get('evalpts', True)
         self.display_bbox = kwargs.get('bbox', False)
@@ -179,7 +179,7 @@ class VisCurve2D(vis.VisAbstract):
             pts = np.array(plot['ptsarr'])
             # Plot control points
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=self.ctrl_color,
+                self.cpplot, = self.ax.plot(pts[:, 0], pts[:, 1], color=self.ctrl_color, alpha=0.66,
                                             linestyle='-.', marker='o', picker=True, pickradius=5)
                 legend_proxy.append(self.cpplot)
                 legend_names.append(plot['name'])

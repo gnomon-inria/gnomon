@@ -52,6 +52,9 @@ public:
 
     Q_PROPERTY(gnomonPythonAlgorithmPluginCode* code READ code CONSTANT);
 
+    Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileChanged);
+    Q_PROPERTY(bool readOnly READ readOnly WRITE setReadOnly NOTIFY readOnlyChanged);
+
     Q_PROPERTY(gnomonVtkViewList* sources READ sources CONSTANT);
     Q_PROPERTY(gnomonVtkViewList* targets READ targets CONSTANT);
     Q_PROPERTY(gnomonVtkView* source READ source CONSTANT); //for ease of use
@@ -63,12 +66,26 @@ signals:
     void editModeChanged(void);
     void algorithmLoaded(void);
     void parametersChanged(void);
+    void requestOpenFile(const QString& path);
+    void codeEditorReady(void);
+
+    void fileChanged(const QString& file_name);
+    void readOnlyChanged(bool read_only);
 
 public slots:
-    void read(const QString& file_url);
+    void read(const QString& file_url, bool read_only=false);
     void save(const QString& file_url) const;
+    void close(const QString& file_name);
 
 public:
+    QString fileName(void) const;
+    bool readOnly(void) const;
+
+    void setFileName(const QString& file_name);
+    void setReadOnly(bool read_only);
+
+public:
+    Q_INVOKABLE void importFile(const QString& file_name, const QString& path);
     Q_INVOKABLE QUrl defaultReadPath();
 
 public slots:
@@ -102,9 +119,15 @@ public:
 
     QJSValue parameters(void);
 
+    QJsonObject serialize() override;
+
+    void deserialize(const QJsonObject &state) override;
+
 public slots:
     void saveState(void);
     void restoreState(void);
+    bool backup(void) const;
+    void restore(void);
 
 private:
     class gnomonWorkspacePythonAlgorithmPrivate *d;

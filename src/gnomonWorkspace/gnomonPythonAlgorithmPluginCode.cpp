@@ -15,6 +15,7 @@ public:
 public:
     QString plugin_name;
     QString plugin_documentation;
+    QString file_name;
 
 public:
     QMap<QString, QString> parameter_types;
@@ -73,6 +74,19 @@ void gnomonPythonAlgorithmPluginCode::setText(const QString& text)
     if (text != d->text) {
         d->text = text;
         emit textChanged(d->text);
+    }
+}
+
+QString gnomonPythonAlgorithmPluginCode::fileName(void)
+{
+    return d->file_name;
+}
+
+void gnomonPythonAlgorithmPluginCode::setFileName(const QString& name)
+{
+    if(name != d->file_name) {
+        d->file_name = name;
+        emit fileChanged(d->file_name);
     }
 }
 
@@ -369,7 +383,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
     plugin_code += "# {# gnomon, plugin.class\n";
     plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
 
-    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='0.81.1')\n";
+    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='1.0.0')\n";
 
     for (const auto &form_type : d->input_forms.keys()) {
         gnomonFormDescription desc = d->input_forms[form_type];
@@ -463,14 +477,18 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         }
 
         if (d->input_forms.size()>0) {
+            plugin_code += "        self.set_max_progress(len(self." + d->input_forms.values()[0].name +")) # Should be equal to the number of progress increments\n";
             plugin_code += "        for time in self." + d->input_forms.values()[0].name +  ".keys():\n";
         } else {
+            plugin_code += "        self.set_max_progress(1) # Should be equal to the number of progress increments\n";
             plugin_code += "        for time in [0]:\n";
         }
+        plugin_code += "            self.set_progress_message(f'T {time} : Running')\n";
         for (const auto &form_type : d->input_forms.keys()) {
             gnomonFormDescription desc = d->input_forms[form_type];
             plugin_code += "            " + desc.name + " = self." + desc.name + "[time]\n";
         }
+        plugin_code += "            self.increment_progress()\n";
         plugin_code += "            # #}\n";
         if (run_code.isEmpty() | run_code.startsWith(default_run_code_indented) | run_code.startsWith(default_run_code)) {
             plugin_code += default_run_code_indented;
@@ -482,6 +500,9 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
             plugin_code += run_code;
         }
     }
+
+    if(d->file_name.isEmpty())
+        d->file_name = "example.py";
 
     this->setText(plugin_code);
     emit codeUpdated();

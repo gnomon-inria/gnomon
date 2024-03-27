@@ -1,12 +1,12 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 
 #include "gnomonLandmark.h"
 
-class GNOMONCORE_EXPORT gnomonImageFusionCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonImageFusionCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonImageFusionCommand(void);
@@ -42,10 +42,10 @@ public:
     void removeLandmarks();
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "imageFusion";
-    static QStringList availablePlugins();
 
 private:
     class gnomonImageFusionCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonImageFusionCommand)

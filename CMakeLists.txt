@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.20.0)
 
 ######################################################################
 
-project(gnomon)
+project(gnomon
+  VERSION 1.0.0
+  LANGUAGES C CXX)
 
 ## ###################################################################
 ## cmake modules folder
@@ -16,9 +18,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 ## Version setup
 ## ###################################################################
 
-set(${PROJECT_NAME}_VERSION_MAJOR 0)
-set(${PROJECT_NAME}_VERSION_MINOR 81)
-set(${PROJECT_NAME}_VERSION_PATCH 1)
+set(${PROJECT_NAME}_VERSION_MAJOR 1)
+set(${PROJECT_NAME}_VERSION_MINOR 0)
+set(${PROJECT_NAME}_VERSION_PATCH 0)
 set(${PROJECT_NAME}_VERSION
   ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
 
@@ -69,7 +71,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_SKIP_BUILD_RPATH  FALSE)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_BUILD_RPATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
@@ -84,6 +87,7 @@ endif("${isSystemDir}" STREQUAL "-1")
 ## #################################################################
 
 option(GNOMON_ENABLE_VISU "Enable Visualization and workspaces" true)
+option(GNOMON_ENABLE_GUI "Enable Gui" true)
 
 ## ###################################################################
 ## Test setup
@@ -112,17 +116,24 @@ find_package(Python3 3.9 EXACT COMPONENTS Interpreter Development NumPy)
 set(DTK_PYTHON_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Concurrent Network Qml Test Xml)
+if(QT_KNOWN_POLICY_QTP0001)
+  qt_policy(SET QTP0001 NEW)
+endif()
+
 
 find_package(dtkLog      REQUIRED)
 find_package(dtkCore     REQUIRED)
-find_package(dtkImaging  REQUIRED)
 find_package(dtkScript   REQUIRED)
-find_package(VTK         REQUIRED) # only for vtkImageData in gnomonImageDtk
-find_package(xtensor     REQUIRED) # because of dtkImaging
+find_package(VTK         REQUIRED)
+find_package(libzip         REQUIRED) # for workspaceBrowsing
 
 if(GNOMON_ENABLE_VISU)
   add_definitions(-DGNOMON_USE_VISU)
   find_package(Qt6 REQUIRED COMPONENTS Gui Quick QuickWidgets)
+  if(GNOMON_ENABLE_GUI)
+    find_package(Qt6 REQUIRED COMPONENTS Qml QuickControls2 WebEngineQuick Widgets)
+    find_package(xVis REQUIRED)
+  endif()
 endif(GNOMON_ENABLE_VISU)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/gnomon)
@@ -143,6 +154,10 @@ include(gnomonSubdirectoryAddFiles)
 add_subdirectory(src)
 add_subdirectory(app)
 add_subdirectory(wrp)
+if(GNOMON_ENABLE_GUI)
+  add_subdirectory(qml)
+endif()
+
 add_subdirectory(python)
 # add_subdirectory(doc)
 

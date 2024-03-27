@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 %module(directors="1", doctring="Wrapping of gnomonCore for python usage", package="gnomon.core", moduleimport="import _gnomoncore") gnomoncore
 
 #ifdef SWIGWIN
@@ -13,17 +14,8 @@
 %include <dtkBase/dtkBase.i>
 %include <gnomonMacro.i>
 %import <dtkCore/dtkCore.i>
-%import <dtkImagingCore/dtkImagingCore.i>
 
 %{
-
-// VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
-// with SWIG's preprocessor macro
-#if PY_VERSION_HEX < 0x3020000
-#ifdef Py_hash_t
-#undef Py_hash_t
-#endif
-#endif
 
 #include <dtkCore>
 #include <gnomonCore/gnomonAbstractDataDriver.h>
@@ -91,15 +83,11 @@
 
 #include <gnomonCore/gnomonCore.h>
 #include <gnomonCore/gnomonCorePlugin.h>
-#include <gnomonCore/gnomonDataManager.h>
-#include <gnomonCore/gnomonFileSystemFormReader.h>
 #include <gnomonCore/gnomonFormVisitor.h>
 #include <gnomonCore/gnomonLandmark.h>
 #include <gnomonCore/gnomonPluginFactory.h>
 #include <gnomonCore/gnomonTime.h>
 #include <gnomonCore/gnomonTypeDef.h>
-#include <vtkPythonUtil.h>
-#include <vtkImageData.h>
 
 %}
 
@@ -178,40 +166,6 @@
 }
 
 %include <gnomonCore/gnomonForm.i>
-
-// VTK
-
-%typemap(out) vtkImageData* {
-
-    PyImport_ImportModule("vtk");
-
-    $result = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
- }
-
-%typemap(directorin) vtkImageData* {
-
-    PyImport_ImportModule("vtk");
-
-    $input = vtkPythonUtil::GetObjectFromPointer ( (vtkImageData*)$1 );
- }
-
-%typemap(in) vtkImageData* {
-
-    $1 = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $input, "vtkImageData" );
-
-    if ( $1 == NULL ) {
-        qDebug("Fail to convert to vtkImageData*");
-    }
-}
-
-%typemap(directorout) vtkImageData* {
-
-    $result = (vtkImageData*) vtkPythonUtil::GetPointerFromObject ( $1, "vtkImageData" );
-
-    if ( $result == NULL ) {
-        qDebug("Fail to convert to vtkImageData*");
-    }
-}
 
 // /////////////////////////////////////////////////////////////////
 // Landmarks
@@ -366,8 +320,6 @@ INCLUDE_GNOMON_CONCEPT(gnomonAbstractPointCloudWriter, PointCloudWriter, gnomonC
 %include <gnomonCore/gnomonModel/gnomonSystem.h>
 
 %include <gnomonCore/gnomonCore.h>
-%include <gnomonCore/gnomonDataManager.h>
-%include <gnomonCore/gnomonFileSystemFormReader.h>
 %include <gnomonCore/gnomonFormVisitor.h>
 %include <gnomonCore/gnomonLandmark.h>
 %include <gnomonCore/gnomonTime.h>

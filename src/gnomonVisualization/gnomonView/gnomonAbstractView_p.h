@@ -27,6 +27,8 @@ public slots:
     void exportToManager(void);
     void setFormVisualization(const QString& form_type, const QString& visu_name, const QVariantMap &parameters = {});
 
+    void updateFormsTimes(void);
+
 public:
     gnomonAbstractView *q = nullptr;
 
@@ -40,9 +42,13 @@ public:
     QMap<QString, bool> acceptForms;
 
 public:
-    QMap<QString, gnomonAbstractVisualizationCommand *> visualizationCommands;
+    QMap<QString, std::shared_ptr<gnomonAbstractVisualizationCommand> > visualizationCommands;
     ViewParameters viewParameters;
 
 public:
     bool input_view = false;
+
+public:
+    QSet<double> forms_times;
+    double current_time = 0.;
 };

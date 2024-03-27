@@ -15,5 +15,5 @@ cmake .. \
       -DCMAKE_PREFIX_PATH="${PREFIX}" \
       -DCMAKE_INSTALL_LIBDIR=lib
 
-make -j${CPU_COUNT}
+make -j${CPU_COUNT-2}
 make install

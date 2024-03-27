@@ -32,7 +32,8 @@ signals:
     void alreadyAdded(void);
 
 public slots:
-    void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image, std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr);
+    // void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image, std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr);
+    void addForm(const QString&, const QImage& image, std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr);
 
 public slots:
     void saveAs(int id, const QString& filename, bool add_to_pipeline = true) const;
@@ -48,17 +49,18 @@ public:
     Q_INVOKABLE QVariantList timeKeys(int id);
     Q_INVOKABLE QStringList formMetadataKeysAtT(int id, double t);
     Q_INVOKABLE QString formMetadataValueAtT(int id, double t, const QString& key);
+    Q_INVOKABLE QList<int> systemStat(void) const; //total_mem, used_mem, this_mem
 
 public:
     Q_INVOKABLE QString formWriterNameFilter(int id);
 
 public:
     int formCount(const QString& form_name);
-    void setFormDropped(std::shared_ptr<gnomonAbstractDynamicForm> form);
+    void setFormDropped(const QString& form_uuid);
 
 public:
-    int formIndex(std::shared_ptr<gnomonAbstractDynamicForm> form);
-    std::shared_ptr<gnomonAbstractDynamicForm> get(int index);
+    int formIndex(const QString& form_uuid);
+    QString get(int index);
     std::shared_ptr<gnomonAbstractVisualization> getVisualization(int index);
 
 public:
@@ -67,6 +69,10 @@ public:
 
 public:
     Q_INVOKABLE QImage thumbnail(int index);
+
+public:
+    QJsonObject serialize(void);
+    void deserialize(const QJsonObject& state);
 
 protected:
      gnomonFormManager(QObject *parent = nullptr);

@@ -9,7 +9,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleIconFile</key>
-	<string>@PROJECT_NAME@</string>
+	<string>gnomon</string>
 	<key>CFBundleIdentifier</key>
 	<string>fr.inria.gnomon</string>
 	<key>CFBundleInfoDictionaryVersion</key>

@@ -14,6 +14,10 @@ public:
 
 public:
     dtkCoreParameters parameters;
+
+public:
+    QMetaObject::Connection connectTime;
+    QMetaObject::Connection connectViewDestroyed;
 };
 
 //

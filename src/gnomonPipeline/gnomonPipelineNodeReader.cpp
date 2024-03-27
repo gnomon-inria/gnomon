@@ -1,5 +1,7 @@
 #include "gnomonPipelineNodeReader.h"
 
+#include <gnomonProject>
+
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
 #include "gnomonPythonPluginLoader"
@@ -52,6 +54,10 @@ gnomonPipelineNodeReader::~gnomonPipelineNodeReader(void)
 
 QString gnomonPipelineNodeReader::path(void) {
     return dd->path;
+}
+
+void gnomonPipelineNodeReader::setPath(const QString& path) {
+    dd->path = path;
 }
 
 QString gnomonPipelineNodeReader::toToml(void)

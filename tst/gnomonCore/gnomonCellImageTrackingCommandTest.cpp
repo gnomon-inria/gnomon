@@ -2,13 +2,13 @@
 #include "gnomonAlgorithm/gnomonCellImage/gnomonAbstractCellImageTracking"
 #include "gnomonCommand/gnomonCellImage/gnomonCellImageTrackingCommand"
 
+#include <QtCore>
+
 #include <gnomonCore>
 #include <gnomonTest>
 
 #include <dtkCore>
 #include <dtkScriptInterpreterPython>
-#include <QTestAccessibility>
-
 
 namespace tracking{
     bool t_run_called = false;

@@ -3,6 +3,11 @@
 
 #include <dtkScript>
 
+#pragma push_macro("slots")
+#undef slots
+#include <Python.h>
+#pragma pop_macro("slots")
+
 #include <gnomonCore/gnomonAlgorithm/gnomonLString/gnomonAbstractLStringAdapter>
 #include <gnomonCore/gnomonAlgorithm/gnomonTree/gnomonAbstractTreeAdapter>
 #include <gnomonCore/gnomonCommand/gnomonLString/gnomonLStringAdapterCommand>
@@ -50,6 +55,7 @@ public slots:
     void saveFigure(const QString& path);
     void clearFigure(void);
     void renderFigure(void);
+    void updateFigureLimits(void);
 
 public slots:
     void adaptForm(const QString& adapter_plugin);
@@ -58,7 +64,15 @@ public:
     gnomonMplView *q = nullptr;
 
 public:
-    int figureNumber;
+    int figureNumber = -1;
+    bool no_python;
+
+    double x_min = 0;
+    double x_max = 1;
+    double y_min = 0;
+    double y_max = 1;
+
+    QMetaObject::Connection connect_canvas;
 
 public:
     QMap<QString, QMap<QString, gnomonAbstractAdapterCommand *> > adapterCommands;
@@ -89,21 +103,24 @@ void gnomonMplViewPrivate::saveFigure(const QString& path)
     export_file_path = QFileDialog::getSaveFileName(this, tr("Save figure"), path, tr("Figures (*.png *.eps *.pdf *.svg)"));*/
 
     QString figure_number = QString::number(this->figureNumber);
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
-    QString figure_statement = "figure = plt.figure("+figure_number+")";
-    dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
-    dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
-    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
-    QString save_statement = "figure.savefig('"+path+"')";
-    dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
-    dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
+
+    if (!this->no_python) {
+        int stat;
+        dtkScriptInterpreterPython::instance()->interpret("import matplotlib.pyplot as plt", &stat);
+        QString figure_statement = "figure = plt.figure(" + figure_number + ")";
+        dtkScriptInterpreterPython::instance()->interpret(figure_statement, &stat);
+        dtkScriptInterpreterPython::instance()->interpret("s = figure.get_size_inches()", &stat);
+        dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(10,10)", &stat);
+        QString save_statement = "figure.savefig('" + path + "')";
+        dtkScriptInterpreterPython::instance()->interpret(save_statement, &stat);
+        dtkScriptInterpreterPython::instance()->interpret("figure.set_size_inches(*s)", &stat);
+    }
 
 }
 
 void gnomonMplViewPrivate::clearFigure(void)
 {
-    if (this->figureNumber != -1) {
+    if ((this->figureNumber != -1) && (!this->no_python)) {
         int stat;
         QString clearStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.clf()\nfigure.canvas.draw()";
         dtkScriptInterpreterPython::instance()->interpret(clearStatement, &stat);
@@ -112,10 +129,23 @@ void gnomonMplViewPrivate::clearFigure(void)
 
 void gnomonMplViewPrivate::renderFigure(void)
 {
-    if (this->figureNumber != -1) {
+    if ((this->figureNumber != -1) && (!this->no_python)) {
         int stat;
         QString renderStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\nfigure = gnomon_figure(" + QString::number(this->figureNumber) + ")\nfigure.canvas.draw()";
         dtkScriptInterpreterPython::instance()->interpret(renderStatement, &stat);
+    }
+}
+
+void gnomonMplViewPrivate::updateFigureLimits(void)
+{
+    if ((this->figureNumber != -1) && (!this->no_python)) {
+        int stat;
+        QString limitsStatement = "from gnomon.utils.matplotlib_tools import gnomon_figure\n";
+        limitsStatement += "figure = gnomon_figure(" + QString::number(this->figureNumber) + ")\n";
+        limitsStatement += "figure.gca().set_xlim(" + QString::number(this->x_min) + ", " + QString::number(this->x_max) + ")\n";
+        limitsStatement += "figure.gca().set_ylim(" + QString::number(this->y_min) + ", " + QString::number(this->y_max) + ")\n";
+        limitsStatement += "figure.canvas.draw()\n";
+        dtkScriptInterpreterPython::instance()->interpret(limitsStatement, &stat);
     }
 }
 
@@ -150,69 +180,22 @@ void gnomonMplViewPrivate::adaptForm(const QString& adapter_plugin)
 // gnomonMplView
 // ///////////////////////////////////////////////////////////////////
 
-gnomonMplView::gnomonMplView(QObject *parent) : gnomonAbstractView(parent)
+gnomonMplView::gnomonMplView(QObject *parent, bool no_python) : gnomonAbstractView(parent)
 {
+    setObjectName("gnomonMplView");
     dd = new gnomonMplViewPrivate(this);
     dd->q = this;
 
-    d->visualizationCommands["gnomonDataFrame"] = new gnomonDataFrameMplVisualizationCommand;
-    d->visualizationCommands["gnomonLString"] = new gnomonLStringMplVisualizationCommand;
-    d->visualizationCommands["gnomonTree"] = new gnomonTreeMplVisualizationCommand;
+    dd->no_python = no_python;
 
-    for (const auto &form_type: d->visualizationCommands.keys()) {
-        d->visualizationCommands[form_type]->setView(this);
-        connect(d->visualizationCommands[form_type], &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
-            emit formVisuParametersChanged();
-        });
-        d->acceptForms[form_type] = false;
+    d->acceptForms["gnomonDataFrame"] = false;
+    d->acceptForms["gnomonLString"] = false;
+    d->acceptForms["gnomonTree"] = false;
+
+    if (!dd->no_python) {
+        int stat;
+        dtkScriptInterpreterPython::instance()->interpret("import gnomon.utils.matplotlib_tools", &stat);
     }
-
-    for (const auto& form : d->visualizationCommands.keys()) {
-        if (form=="gnomonLString") {
-            loadPluginGroup("lStringAdapter");
-            for (const auto& key : gnomonCore::lStringAdapter::pluginFactory().keys())
-            {
-                gnomonAbstractLStringAdapter *adapter = dynamic_cast<gnomonAbstractLStringAdapter *>(gnomonCore::lStringAdapter::pluginFactory().create(key));
-                if (!dd->adapterCommands.contains(form))
-                {
-                    QMap<QString, QString> empty_target;
-                    dd->adapterTargets[form] = empty_target;
-                    QMap<QString, QString> empty_desc;
-                    dd->adapterDescriptions[form] = empty_desc;
-                    QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
-                    dd->adapterCommands[form] = empty_list;
-                }
-                dd->adapterTargets[form][key] = adapter->target();
-                dd->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                dd->adapterCommands[form][key] = new gnomonLStringAdapterCommand;
-                dd->adapterCommands[form][key]->setAlgorithmName(key);
-                delete adapter;
-            }
-        } else if (form=="gnomonTree") {
-            loadPluginGroup("treeAdapter");
-            for (const auto& key : gnomonCore::treeAdapter::pluginFactory().keys())
-            {
-                gnomonAbstractTreeAdapter *adapter = dynamic_cast<gnomonAbstractTreeAdapter *>(gnomonCore::treeAdapter::pluginFactory().create(key));
-                if (!dd->adapterCommands.contains(form))
-                {
-                    QMap<QString, QString> empty_target;
-                    dd->adapterTargets[form] = empty_target;
-                    QMap<QString, QString> empty_desc;
-                    dd->adapterDescriptions[form] = empty_desc;
-                    QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
-                    dd->adapterCommands[form] = empty_list;
-                }
-                dd->adapterTargets[form][key] = adapter->target();
-                dd->adapterDescriptions[form][key] = adapter->documentation().split("\n")[1];
-                dd->adapterCommands[form][key] = new gnomonTreeAdapterCommand;
-                dd->adapterCommands[form][key]->setAlgorithmName(key);
-                delete adapter;
-            }
-        }
-    }
-
-    int stat;
-    dtkScriptInterpreterPython::instance()->interpret("import gnomon.utils.matplotlib_tools", &stat);
 
     connect(this, &gnomonMplView::formAdded, [=] (const QString& key) {
         this->render();
@@ -223,6 +206,73 @@ gnomonMplView::gnomonMplView(QObject *parent) : gnomonAbstractView(parent)
 gnomonMplView::~gnomonMplView(void)
 {
     delete dd;
+}
+
+void gnomonMplView::setAcceptForm(const QString& form_type, bool accept)
+{
+    if(!d->acceptForms.contains(form_type)) { // Form not supported by VtkView
+        return;
+    }
+    d->acceptForms[form_type] = accept;
+
+    if(!accept) {
+        return;
+    }
+
+    if(form_type == "gnomonDataFrame") {
+        d->visualizationCommands["gnomonDataFrame"] = std::make_shared<gnomonDataFrameMplVisualizationCommand>();
+    } else if(form_type == "gnomonLString") {
+        d->visualizationCommands["gnomonLString"] = std::make_shared<gnomonLStringMplVisualizationCommand>();
+    } else if(form_type == "gnomonTree") {
+        d->visualizationCommands["gnomonTree"] = std::make_shared<gnomonTreeMplVisualizationCommand>();
+    }
+
+    d->visualizationCommands[form_type]->setView(this);
+    connect(d->visualizationCommands[form_type].get(), &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
+        emit formVisuParametersChanged();
+    });
+
+    if (form_type=="gnomonLString") {
+        loadPluginGroup("lStringAdapter");
+        for (const auto& key : gnomonCore::lStringAdapter::pluginFactory().keys())
+        {
+            gnomonAbstractLStringAdapter *adapter = dynamic_cast<gnomonAbstractLStringAdapter *>(gnomonCore::lStringAdapter::pluginFactory().create(key));
+            if (!dd->adapterCommands.contains(form_type))
+            {
+                QMap<QString, QString> empty_target;
+                dd->adapterTargets[form_type] = empty_target;
+                QMap<QString, QString> empty_desc;
+                dd->adapterDescriptions[form_type] = empty_desc;
+                QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
+                dd->adapterCommands[form_type] = empty_list;
+            }
+            dd->adapterTargets[form_type][key] = adapter->target();
+            dd->adapterDescriptions[form_type][key] = adapter->documentation().split("\n")[1];
+            dd->adapterCommands[form_type][key] = new gnomonLStringAdapterCommand;
+            dd->adapterCommands[form_type][key]->setAlgorithmName(key);
+            delete adapter;
+        }
+    } else if (form_type=="gnomonTree") {
+        loadPluginGroup("treeAdapter");
+        for (const auto& key : gnomonCore::treeAdapter::pluginFactory().keys())
+        {
+            gnomonAbstractTreeAdapter *adapter = dynamic_cast<gnomonAbstractTreeAdapter *>(gnomonCore::treeAdapter::pluginFactory().create(key));
+            if (!dd->adapterCommands.contains(form_type))
+            {
+                QMap<QString, QString> empty_target;
+                dd->adapterTargets[form_type] = empty_target;
+                QMap<QString, QString> empty_desc;
+                dd->adapterDescriptions[form_type] = empty_desc;
+                QMap<QString, gnomonAbstractAdapterCommand *> empty_list;
+                dd->adapterCommands[form_type] = empty_list;
+            }
+            dd->adapterTargets[form_type][key] = adapter->target();
+            dd->adapterDescriptions[form_type][key] = adapter->documentation().split("\n")[1];
+            dd->adapterCommands[form_type][key] = new gnomonTreeAdapterCommand;
+            dd->adapterCommands[form_type][key]->setAlgorithmName(key);
+            delete adapter;
+        }
+    }
 }
 
 void gnomonMplView::setAdaptedForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form, std::shared_ptr<gnomonAbstractMplVisualization> visualization)
@@ -271,7 +321,7 @@ void gnomonMplView::saveScreenshot(const QString& filename)
         file_path = filename;
     }
 
-    if (dd->figureNumber != -1) {
+    if ((dd->figureNumber != -1) && (!dd->no_python)) {
         int stat;
         QString screenshotStatement = "";
         screenshotStatement += "from gnomon.utils.matplotlib_tools import gnomon_figure\n";
@@ -292,6 +342,142 @@ void gnomonMplView::setFigureNumber(int num)
 {
     dd->figureNumber = num;
     emit figureNumberChanged(num);
+}
+
+void gnomonMplView::setXMin(double x_min)
+{
+    if (x_min != dd->x_min) {
+        dd->x_min = x_min;
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    }
+}
+
+void gnomonMplView::setXMax(double x_max)
+{
+    if (x_max != dd->x_max) {
+        dd->x_max = x_max;
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    }
+}
+
+void gnomonMplView::setYMin(double y_min)
+{
+    if (y_min != dd->y_min) {
+        dd->y_min = y_min;
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    }
+}
+
+void gnomonMplView::setYMax(double y_max)
+{
+    if (y_max != dd->y_max) {
+        dd->y_max = y_max;
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    }
+}
+
+void gnomonMplView::updateLimits(void)
+{
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
+
+    PyObject* pModule_mpl_tools = PyImport_Import(PyUnicode_FromString("gnomon.utils.matplotlib_tools"));
+    if(!pModule_mpl_tools) {
+        dtkWarn() << Q_FUNC_INFO << "Error importing module gnomon.utils.matplotlib_tools";
+        PyGILState_Release(gstate);
+        return;
+    }
+
+    PyObject* pFigure = PyObject_CallMethodOneArg(pModule_mpl_tools, PyUnicode_FromString("gnomon_figure"), PyLong_FromLong(dd->figureNumber));
+    if(!pFigure) {
+        dtkWarn() << Q_FUNC_INFO << "Error calling function gnomon_figure("+QString::number(dd->figureNumber)+")";
+        PyGILState_Release(gstate);
+        return;
+    }
+
+    PyObject* pAxes = PyObject_CallMethodNoArgs(pFigure, PyUnicode_FromString("gca"));
+    PyObject* pXlim = PyObject_CallMethodNoArgs(pAxes, PyUnicode_FromString("get_xlim"));
+    PyObject* pYlim = PyObject_CallMethodNoArgs(pAxes, PyUnicode_FromString("get_ylim"));
+
+    double x_min = PyFloat_AsDouble(PyTuple_GetItem(pXlim, 0));
+    double x_max = PyFloat_AsDouble(PyTuple_GetItem(pXlim, 1));
+    double y_min = PyFloat_AsDouble(PyTuple_GetItem(pYlim, 0));
+    double y_max = PyFloat_AsDouble(PyTuple_GetItem(pYlim, 1));
+    
+    bool limits_changed = (x_min != dd->x_min) || (x_max != dd->x_max) || (y_min != dd->y_min) || (y_max != dd->y_max);
+
+    dd->x_min = x_min;
+    dd->x_max = x_max;
+    dd->y_min = y_min;
+    dd->y_max = y_max;
+
+    if (limits_changed) {
+        emit this->limitsChanged();
+    }
+
+    Py_DECREF(pXlim);
+    Py_DECREF(pYlim);
+    Py_DECREF(pAxes);
+    Py_DECREF(pFigure);
+    Py_DECREF(pModule_mpl_tools);
+    
+    PyGILState_Release(gstate);
+}
+
+double gnomonMplView::xMin(void)
+{
+    return dd->x_min;    
+}
+
+double gnomonMplView::xMax(void)
+{
+    return dd->x_max;
+}
+
+double gnomonMplView::yMin(void)
+{
+    return dd->y_min;
+}
+
+double gnomonMplView::yMax(void)
+{
+    return dd->y_max;
+}
+
+QJsonObject gnomonMplView::serialize(void) {
+    auto serialization = gnomonAbstractView::serialize();
+
+    serialization.insert("xMin", dd->x_min);
+    serialization.insert("xMax", dd->x_max);
+    serialization.insert("yMin", dd->y_min);
+    serialization.insert("yMax", dd->y_max);
+
+    return serialization;
+}
+
+void gnomonMplView::deserialize(const QJsonObject &serialization) {
+    disconnect(dd->connect_canvas);
+
+    auto _deserialize = [=] () {
+        gnomonAbstractView::deserialize(serialization);
+
+        dd->x_min = serialization.value("xMin").toDouble();
+        dd->x_max = serialization.value("xMax").toDouble();
+        dd->y_min = serialization.value("yMin").toDouble();
+        dd->y_max = serialization.value("yMax").toDouble();
+        dd->updateFigureLimits();
+        emit limitsChanged();
+    };
+
+    if (dd->figureNumber == -1) {
+        dd->connect_canvas = connect(this, &gnomonMplView::figureCanvasReady, _deserialize);
+    } else {
+        _deserialize();
+    }
 }
 
 // ///////////////////////////////////////////////////////////////////

@@ -10,8 +10,6 @@
 #include "gnomonAlgorithm/gnomonAbstractAlgorithm.h"
 #include "gnomonForm/gnomonCellComplex/gnomonCellComplex.h"
 
-class dtkImage;
-
 class GNOMONCORE_EXPORT gnomonAbstractCellComplexConstructor : public gnomonAbstractAlgorithm
 {
 public:
@@ -35,13 +33,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractCellComplexConstructor *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractCellComplexConstructor, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexConstructor, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractCellComplexConstructor, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractCellComplexConstructor, GNOMONCORE_EXPORT, cellComplexConstructor, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractCellComplexConstructor, GNOMONCORE_EXPORT, cellComplexConstructor);
-}
 
 //
 // gnomonAbstractCellComplexConstructor.h ends here

@@ -1,0 +1,74 @@
+#pragma once
+
+#include <qquickimageprovider.h>
+#include <QtCore>
+#include <QQuickItemGrabResult>
+#include <memory>
+
+class gnomonImageProvider : public QQuickImageProvider
+{
+public:
+    gnomonImageProvider();
+
+    QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
+};
+
+class workspaceImageProvider : public QQuickImageProvider
+{
+    Q_OBJECT
+
+public:
+    workspaceImageProvider(QObject *parent = nullptr);
+    QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
+
+protected:
+    QMap<int, QImage> m_thumbnails;
+
+public slots:
+    void makeScreenshot(const QString &id);
+};
+
+void gnomon_rinit();
+void gnomonInitLogServer();
+
+class gnomonPipeline;
+
+class gnomonQMLUtils: public QObject
+{
+  Q_OBJECT
+
+protected:
+  gnomonQMLUtils() = default;
+
+public:
+  ~gnomonQMLUtils() = default;
+
+  Q_PROPERTY(QString dataPath READ dataPath WRITE setDataPath NOTIFY dataPathChanged)
+
+
+  QString dataPath();
+  void setDataPath(QString);
+
+  static gnomonQMLUtils *instance();
+
+  Q_INVOKABLE bool isValidPath(QString path);
+  Q_INVOKABLE QString initDataPath(QString defaultPath);
+
+  Q_INVOKABLE bool fileExists(QString file_path);
+
+  Q_INVOKABLE QJsonObject projectInfo(const QString &path);
+
+  Q_INVOKABLE bool fileBelongsToProject(const QString &relative_path, const QString &project_path);
+  Q_INVOKABLE QString findProjectFile(const QString &relative_path, const QString &project_path);
+  Q_INVOKABLE QString projectRelativePath(const QString &absolute_path, const QString &project_path);
+
+  Q_INVOKABLE void makeProjectThumbnail(const QString &project_path, const QString &thumbnail_path, QPointF top_left, QPointF bottom_right);
+  Q_INVOKABLE void removeProjectThumbnail(const QString &project_path);
+
+signals:
+  void dataPathChanged();
+
+private:
+  static gnomonQMLUtils *s_instance;
+
+};

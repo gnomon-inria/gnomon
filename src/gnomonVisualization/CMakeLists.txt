@@ -100,12 +100,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Xml)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Qml)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Quick)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::QuickWidgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Gui)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkScript)
-target_link_libraries(${PROJECT_NAME} PUBLIC dtkImagingCore)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE gnomonCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE gnomonPipeline)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonPipeline)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonProject)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${VTK_LIBRARIES})
 

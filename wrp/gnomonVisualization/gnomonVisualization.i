@@ -14,20 +14,18 @@
 %include <gnomonMacro.i>
 %import <dtkBase/dtkBase.i>
 %import <dtkCore/dtkCore.i>
-%import <dtkImagingCore/dtkImagingCore.i>
 
 %{
 
 #include <dtkCore>
-#include <dtkImagingCore>
 
 #include <gnomonVisualization/gnomonActor/gnomonActor.h>
 #include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
+#include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 #include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 #include <gnomonVisualization/gnomonView/gnomonMplView.h>
 #include <gnomonVisualization/gnomonView/gnomonQmlView.h>
-#include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMplVisualization.h>
 #include <gnomonVisualization/gnomonVisualizations/gnomonAbstractQmlVisualization.h>
@@ -58,14 +56,6 @@
 %include <gnomonCore/gnomonForm.i>
 
 %{
-// VTK also includes a Py_hash_t typedef definition for Python 2 that clashes
-// with SWIG's preprocessor macro
-#if PY_VERSION_HEX < 0x3020000
-#ifdef Py_hash_t
-#undef Py_hash_t
-#endif
-#endif
-
 
 // /////////////////////////////////////////////////////////////////
 // VTK
@@ -85,6 +75,8 @@
 #define GNOMONVISUALIZATION_EXPORT
 #undef  Q_INVOKABLE
 #define Q_INVOKABLE
+#undef  Q_ENUM(x)
+#define Q_ENUM(x)
 
 // /////////////////////////////////////////////////////////////////
 // typemaps
@@ -101,6 +93,22 @@
 %typemap(in) vtkRenderer* {
 
     $1 = (vtkRenderer *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderer");
+
+    if ($1 == NULL) {
+        SWIG_fail;
+    }
+}
+
+%typemap(out) vtkRenderWindow* {
+
+    PyImport_ImportModule("vtk");
+
+    $result = vtkPythonUtil::GetObjectFromPointer((vtkObjectBase*)$1);
+}
+
+%typemap(in) vtkRenderWindow* {
+
+    $1 = (vtkRenderWindow *)vtkPythonUtil::GetPointerFromObject($input, "vtkRenderWindow");
 
     if ($1 == NULL) {
         SWIG_fail;
@@ -721,6 +729,7 @@
 // /////////////////////////////////////////////////////////////////
 // QJsonObject for Lpy  colors and texture
 // /////////////////////////////////////////////////////////////////
+/*
 %fragment("Gnomon_QJsonValue", "header") {
     QJsonValue Gnomon_QJsonValue(PyObject *obj) {
         QJsonValue result = 0;
@@ -870,7 +879,7 @@
         PyDict_SetItemString($result, k_str.c_str(), value);
     }
 }
-
+*/
 // /////////////////////////////////////////////////////////////////
 // Wrapper input
 // /////////////////////////////////////////////////////////////////
@@ -903,10 +912,10 @@ WRAP_DTKCORE_PARAMETER_NO_TEMPLATE(gnomonCoreParameterNurbs, ParameterNurbs)
 %include <gnomonVisualization/gnomonInteractorStyle/gnomonInteractorStyle.h>
 %include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 // %include <gnomonVisualization/gnomonView/gnomonViewManager.h>
+%include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 %include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 %include <gnomonVisualization/gnomonView/gnomonMplView.h>
 %include <gnomonVisualization/gnomonView/gnomonQmlView.h>
-%include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractMplVisualization.h>
 %include <gnomonVisualization/gnomonVisualizations/gnomonAbstractQmlVisualization.h>

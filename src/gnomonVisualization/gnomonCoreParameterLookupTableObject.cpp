@@ -36,6 +36,16 @@ QVariantMap gnomonCoreParameterLookupTableObject::colorMap(void) const
     return color_map;
 }
 
+
+QVariantMap gnomonCoreParameterLookupTableObject::getColorMap(const QString &clut = "viridis") {
+    gnomonColorMap map = m_param->getColorMap(clut);
+    QVariantMap color_map;
+    for (auto it = map.begin(); it != map.end(); ++it) {
+        color_map[QString::number(it.key())] = QVariant(it.value());
+    }
+    return color_map;
+}
+
 void gnomonCoreParameterLookupTableObject::setColorMapName(const QString &id)
 {
     m_param->setColorMap(id);

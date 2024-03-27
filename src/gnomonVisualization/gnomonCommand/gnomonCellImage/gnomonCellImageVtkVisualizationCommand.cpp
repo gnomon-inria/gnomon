@@ -26,7 +26,7 @@ gnomonCellImageVtkVisualizationCommand::gnomonCellImageVtkVisualizationCommand()
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
-        this->algorithm_name = keys[0];
+        this->visu_name = keys[0];
     }
 }
 
@@ -38,14 +38,14 @@ gnomonCellImageVtkVisualizationCommand::~gnomonCellImageVtkVisualizationCommand(
 void gnomonCellImageVtkVisualizationCommand::newVisualization(void)
 {
     this->clear();
-    auto visu = gnomonVisualization::cellImageVtkVisualization::pluginFactory().create(this->algorithm_name);
+    auto visu = gnomonVisualization::cellImageVtkVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractCellImageVtkVisualization>(visu);
     this->connectVisualization();
 }
 
 void gnomonCellImageVtkVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
-    this->setAlgorithmName(visu_name);
+    this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractCellImageVtkVisualization>(this->visu);
     if (visu) {
         visu->setCellImage(d->cellImage);

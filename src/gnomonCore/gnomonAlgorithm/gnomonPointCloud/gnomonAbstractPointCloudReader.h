@@ -53,16 +53,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractPointCloudReader *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractPointCloudReader, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudReader, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudReader, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudReader, GNOMONCORE_EXPORT, pointCloudReader, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractPointCloudReader, GNOMONCORE_EXPORT, pointCloudReader);
-}
 
 //
 // gnomonAbstractPointCloudReader.h ends here

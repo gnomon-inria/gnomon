@@ -20,7 +20,6 @@
 #include <gnomonWidgets>
 #include <gnomonVisualization>
 
-#include <dtkImagingCore>
 #include <dtkScript>
 #include <dtkWidgets>
 #include <dtkWidgetsMenuBar_p.h>
@@ -83,7 +82,7 @@ QStringList gnomonWorkspaceCellImageFilterPrivate::keys(void) const
 gnomonWorkspaceCellImageFilter::gnomonWorkspaceCellImageFilter(QWidget *parent) : dtkWidgetsWorkspace(parent)
 {
     loadPluginGroup("cellImageFilter");
-    
+
     d = new gnomonWorkspaceCellImageFilterPrivate;
 
     d->source = new gnomonVtkView(this);

@@ -2,13 +2,12 @@
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 #include "gnomonVisualizations/gnomonAbstractVtkVisualization_p.h"
 
-#include <dtkImagingCore>
-
 #include "gnomonView/gnomonVtkView.h"
 #include "gnomonActor/gnomonImage/gnomonImageDataChannelBlending.h"
 #include "gnomonActor/gnomonImageData/gnomonActorImageRGBAVolume.h"
 #include "gnomonActor/gnomonImageData/gnomonActor2DImageRGBA.h"
 
+#include <dtkLog.h>
 #include <gnomonVisualization/gnomonCoreParameterLookupTable>
 #include <gnomonVisualization/gnomonLookupTable.h>
 
@@ -29,7 +28,6 @@ public:
 public:
     std::shared_ptr<gnomonImageSeries> imageSeries;
     std::shared_ptr<gnomonImage> image;
-    QHash<QString, std::shared_ptr<dtkImage>> dtk_img_by_channel;
 
 public:
     int orientation = 2;
@@ -59,7 +57,6 @@ void gnomonImageVtkVisualizationChannelBlendingPrivate::reset(void)
     this->image.reset();
 
     this->channelLookupTables.clear();
-    this->dtk_img_by_channel.clear();
     this->vtk_img_by_channel.clear();
 
     /*
@@ -175,11 +172,11 @@ void gnomonImageVtkVisualizationChannelBlending::setImage(std::shared_ptr<gnomon
     int channel_id = 0;
     auto img_channels = ddd->image->channels();
     for (auto channel : img_channels) {
-        auto dtk_img = ddd->image->image(channel);
+        auto vtk_img = ddd->image->image(channel);
 
-        if (dtk_img->storageType() == QMetaType::UChar) {
+        if (vtk_img->GetScalarType() == VTK_UNSIGNED_CHAR) {
             valueRange[1] = 255;
-        } else if (dtk_img->storageType() == QMetaType::UShort) {
+        } else if (vtk_img->GetScalarType() == VTK_UNSIGNED_SHORT) {
             valueRange[1] = 65535;
         }
         channelRange[0] = ddd->image->minValue(channel);
@@ -207,20 +204,12 @@ void gnomonImageVtkVisualizationChannelBlending::setImage(std::shared_ptr<gnomon
 void gnomonImageVtkVisualizationChannelBlending::updateChannelImages(void)
 {
     if (ddd->image) {
-        ddd->dtk_img_by_channel.clear();
         ddd->vtk_img_by_channel.clear();
 
         auto img_channels = ddd->image->channels();
         for (auto channel : img_channels) {
-            auto dtk_img = ddd->image->image(channel);
-            ddd->dtk_img_by_channel[channel].reset(dtk_img);
-
-            // Fill vtk maps
-            dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-            converter->setInput(dtk_img);
-            converter->convert();
-            ddd->vtk_img_by_channel[channel] = static_cast<vtkImageData *>(converter->output());
-            delete converter;
+            vtkSmartPointer<vtkImageData> vtk_img(ddd->image->image(channel));
+            ddd->vtk_img_by_channel[channel] = vtk_img;
         }
     }
 }
@@ -251,16 +240,16 @@ QImage gnomonImageVtkVisualizationChannelBlending::imageRendering(void)
 
 void gnomonImageVtkVisualizationChannelBlending::update(void)
 {
-    if(!ddd->image)
+    if(!ddd->image || !((gnomonVtkView *) d->view)->renderer2D()->GetRenderWindow())
         return;
 
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
     ddd->channelLookupTables.clear();
-    if(ddd->image->channels().size()==1) {
-        ddd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
-    } else {
-        for (const auto& channelName : ddd->image->channels()) {
+    for (const auto& channelName : ddd->image->channels()) {
+        if(channelName.isEmpty()) {
+            ddd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
+        } else {
             ddd->channelLookupTables[channelName] = ((gnomonCoreParameterLookupTable *)d->parameters[channelName+"\nlookuptable"])->value();
         }
     }
@@ -379,16 +368,22 @@ void gnomonImageVtkVisualizationChannelBlending::onXZ(void)
 
 void gnomonImageVtkVisualizationChannelBlending::onTimeChanged(double value)
 {
-    if (ddd->imageSeries->times().contains(value)) {
-        ddd->image = ddd->imageSeries->at(value);
-        this->updateChannelImages();
-        this->update();
+    if(this->image()) {
+        if (ddd->imageSeries->times().contains(value)) {
+            ddd->image = ddd->imageSeries->at(value);
+            this->updateChannelImages();
+            this->update();
+        }
+        this->render();
     }
-    this->render();
 }
 
 const QString gnomonImageVtkVisualizationChannelBlending::name(void) {
     return "Channel Blending";
+}
+
+QString gnomonImageVtkVisualizationChannelBlending::documentation(void) {
+    return "Visualize an Image by blending its channels.";
 }
 
 //

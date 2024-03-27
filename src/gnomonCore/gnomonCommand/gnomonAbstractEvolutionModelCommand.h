@@ -5,7 +5,7 @@
 #include <gnomonCore/gnomonModel/gnomonAbstractEvolutionModel>
 #include "gnomonAlgorithmsLogs/gnomonLogCaptureServer"
 
-class GNOMONCORE_EXPORT gnomonAbstractEvolutionModelCommand : public QObject
+class GNOMONCORE_EXPORT gnomonAbstractEvolutionModelCommand : public gnomonAbstractCommand
 {
 Q_OBJECT
 
@@ -14,12 +14,20 @@ public:
     ~gnomonAbstractEvolutionModelCommand(void) = default;
 
 public slots:
-    virtual void  predo(void) {
+    inline virtual void predo(void) override {
         this->model->setLogServerAddress(gnomonLogCaptureServer::instance()->completeAddress());
-};
-    virtual void postdo(void) = 0;
-    virtual void   undo(void) = 0;
-    virtual void   redo(void) = 0;
+    };
+    inline void clear(void) override { }
+
+    inline void pause(void) override { }
+    inline void resume(void) override { }
+    inline void stop(void) override { }
+    inline int progress(void) override { return 0; }
+    inline QString progressMessage(void) override { return ""; }
+
+public:
+    inline virtual QString documentation(void) override { return model->documentation(); }
+    inline virtual QString version(void) override { return model->version(); };
 
 signals:
     void modelMessage(QString);
@@ -27,8 +35,6 @@ signals:
 public:
     inline virtual const QString& modelName(void) { return this->model_name; };
     inline virtual void setModelName(const QString& name) = 0;
-
-    inline QString version(void) { return "0.1.0"; };
 
     inline virtual const QString& factoryName(void) { return this->factory_name; }
 
@@ -41,9 +47,38 @@ public:
     virtual gnomonAbstractCommand::orderedMap stateTypes() = 0;
 
 public:
-    inline virtual dtkCoreParameters parameters() const { return this->model->parameters(); };
-    inline virtual void setParameter(const QString& parameter, const QVariant& value) { this->model->setParameter(parameter, value); }
-    inline virtual QMap<QString, QString> parameterGroups() const { return this->model->parameterGroups(); };
+    inline QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs() override {
+        return this->initialState();
+    }
+
+    inline orderedMap inputTypes() override {
+        return this->initialStateTypes();
+    }
+
+    inline void setInputForm(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) override {
+        this->setInitialState(name, form);
+    }
+
+    inline QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override {
+        return this->state();
+    }
+
+    inline orderedMap outputTypes() override {
+        return this->stateTypes();
+    }
+
+    inline void deserializeResults(QJsonObject &serialization) override {
+
+    }
+
+    inline QJsonObject serializeResults(void) override {
+        return QJsonObject();
+    }
+
+public:
+    inline virtual dtkCoreParameters parameters() const override { return this->model->parameters(); };
+    inline virtual void setParameter(const QString& parameter, const QVariant& value) override { this->model->setParameter(parameter, value); }
+    inline virtual QMap<QString, QString> parameterGroups() const override { return this->model->parameterGroups(); };
 
 protected:
     class gnomonAbstractModel *model = nullptr;

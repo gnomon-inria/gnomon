@@ -1,11 +1,12 @@
 #include "gnomonWorkspaceBrowser.h"
+#include "gnomonProject"
 
 #include <gnomonPipeline/gnomonPipelineManager.h>
 
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 #include <gnomonVisualization/gnomonView/gnomonVtkView.h>
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCommand/gnomonBinaryImage/gnomonBinaryImageReaderCommand>
 #include <gnomonCore/gnomonAlgorithm/gnomonBinaryImage/gnomonAbstractBinaryImageReader.h>
@@ -46,16 +47,24 @@ public slots:
 
 public:
     gnomonPipelineManager *pipeline_manager;
-    gnomonVtkView *browse_view;
+    gnomonVtkView *browse_view = nullptr;
     gnomonWorkspaceBrowser *q;
-    QMap<QString, QMap<QString, gnomonAbstractReaderCommand *> > fileReaderCommands;
+    QMap<QString, QMap<QString, gnomonAbstractReaderCommand* > > fileReaderCommands;
     QMap<QString, QMap<QString, QString> > fileReaderDescriptions;
     QMap<QString, QMap<QString, QVariant> > fileReaderMetadata;
     QString filename;
+    QString object_name;
     QString ext;
     QMap<QString, QMap<QString, QString> > fileReaderImagePath;
-    QList<gnomonAbstractReaderCommand *> commands;
+    QMap<QString, gnomonAbstractReaderCommand*> form_type_commands;
+    int progress = 0;
+    QString progress_message;
+    QJsonObject workspace_info;
+    QJsonObject savedState;
 
+    QTimer timer;
+    QMetaObject::Connection connect_started;
+    QMetaObject::Connection connect_finished;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -67,23 +76,24 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
     this->q = q;
     QVariantList pluginsMetadata;
 
-    commands << new gnomonBinaryImageReaderCommand;
+    form_type_commands["gnomonBinaryImage"] = new gnomonBinaryImageReaderCommand();
+    form_type_commands["gnomonCellComplex"] = new gnomonCellComplexReaderCommand();
+    form_type_commands["gnomonCellImage"] = new gnomonCellImageReaderCommand();
+    form_type_commands["gnomonDataFrame"] = new gnomonDataFrameReaderCommand();
+    form_type_commands["gnomonImage"] = new gnomonImageReaderCommand();
+    form_type_commands["gnomonLString"] = new gnomonLStringReaderCommand();
+    form_type_commands["gnomonMesh"] = new gnomonMeshReaderCommand();
+    form_type_commands["gnomonPointCloud"] = new gnomonPointCloudReaderCommand();
+    form_type_commands["gnomonTree"] = new gnomonTreeReaderCommand();
+
     pluginsMetadata += gnomonCore::binaryImageReader::pluginFactory().dataList();
-    commands << new gnomonCellImageReaderCommand;
     pluginsMetadata += gnomonCore::cellImageReader::pluginFactory().dataList();
-    commands << new gnomonCellComplexReaderCommand;
     pluginsMetadata += gnomonCore::cellComplexReader::pluginFactory().dataList();
-    commands << new gnomonDataFrameReaderCommand;
     pluginsMetadata += gnomonCore::dataFrameReader::pluginFactory().dataList();
-    commands << new gnomonImageReaderCommand;
     pluginsMetadata += gnomonCore::imageReader::pluginFactory().dataList();
-    commands << new gnomonLStringReaderCommand;
     pluginsMetadata += gnomonCore::lStringReader::pluginFactory().dataList();
-    commands << new gnomonMeshReaderCommand;
     pluginsMetadata += gnomonCore::meshReader::pluginFactory().dataList();
-    commands << new gnomonPointCloudReaderCommand;
     pluginsMetadata += gnomonCore::pointCloudReader::pluginFactory().dataList();
-    commands << new gnomonTreeReaderCommand;
     pluginsMetadata += gnomonCore::treeReader::pluginFactory().dataList();
 
     QMap<QString, QVariant> pluginsMetadata2; // key -> variant
@@ -91,7 +101,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
         pluginsMetadata2.insert(var.toMap()["key"].toString(), var);
     }
 
-    for (auto command: commands) {
+    for (auto command: form_type_commands) {
         QMap<QString, QStringList> extensions = command->extensions();
         auto descriptions = command->descriptions();
         auto preview = command->preview();
@@ -101,7 +111,7 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
                 if (!this->fileReaderCommands.contains(ext)) {
                     QMap<QString, QString> empty_desc;
                     fileReaderDescriptions[ext] = empty_desc;
-                    QMap<QString, gnomonAbstractReaderCommand *> empty_list;
+                    QMap<QString, gnomonAbstractReaderCommand* > empty_list;
                     fileReaderCommands[ext] = empty_list;
                     fileReaderImagePath[ext] = empty_desc;
                 }
@@ -124,10 +134,11 @@ gnomonWorkspaceBrowserPrivate::gnomonWorkspaceBrowserPrivate(gnomonWorkspaceBrow
 
 gnomonWorkspaceBrowserPrivate::~gnomonWorkspaceBrowserPrivate(void)
 {
-    for(auto c : commands) {
+    for(auto c : form_type_commands) {
         delete c;
     }
-    commands.clear();
+    form_type_commands.clear();
+    fileReaderCommands.clear(); // commands have been deleted
 }
 
 void gnomonWorkspaceBrowserPrivate::findReaders(const QString &default_plugin)
@@ -167,6 +178,7 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
     }
     readerCommand->setAlgorithmName(reader_plugin);
 
+    QStringList relative_paths;
     QStringList paths;
     QStringList sources;
     for (auto file : this->filename.split(",")) {
@@ -175,25 +187,55 @@ bool gnomonWorkspaceBrowserPrivate::readForm(const QString& reader_plugin)
             if(!QFile::exists(file_path)) {
                 dtkWarn() << Q_FUNC_INFO << "file " << file_path << "doesn't exist";
             } else {
-                paths.append(file_path);
+                relative_paths.append(file_path);
+                paths.append(GNOMON_PROJECT->findFile(file_path));
                 sources.append(QFileInfo(file_path).fileName());
             }
         } else {
             //it's not a file, most likely a url
             //
-            paths.append(file);
+            relative_paths.append(file);
+            paths.append(GNOMON_PROJECT->findFile(file));
             sources.append(QUrl(file).fileName());
         }
     }
     if (paths.size() == 0) {
         return false;
     }
+    QString relative_path = relative_paths.join(",");
     QString path = paths.join(",");
     QString source = sources.join(",");
 
     readerCommand->setPath(path);
     readerCommand->setSource(source);
+
+    this->timer.setInterval(100);
+    connect(&this->timer, &QTimer::timeout, [=]() {
+        this->progress = readerCommand->progress();
+        this->progress_message = readerCommand->progressMessage();
+        emit q->progressChanged(this->progress);
+        // FIXME: progress message is not changed :(
+        emit q->progressMessageChanged(this->progress_message);
+    });
+    disconnect(this->connect_started);
+    this->connect_started = connect(q, &gnomonAbstractWorkspace::started, [=]() {
+        this->timer.start();
+    });
+    disconnect(this->connect_finished);
+    this->connect_finished = connect(q, &gnomonAbstractWorkspace::finished, [=]() {
+        this->timer.stop();
+        this->timer.disconnect();
+    });
+
+    emit q->started();
     readerCommand->redo();
+    if(!this->object_name.isEmpty()) {
+        QJsonObject data_json;
+        data_json.insert("path", relative_path);
+        data_json.insert("plugin_name", reader_plugin);
+        data_json.insert("workspace_name", "Browser");
+        workspace_info.insert(this->object_name, data_json);
+    }
 
     return true;
 }
@@ -208,13 +250,15 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting image series is void.";
             return false;
         } else {
+            image_series->selectCurrentTime(image_series->times().first());
+            GNOMON_SESSION->trackForm(image_series);
             int form_count = gnomonFormManager::instance()->formCount(image_series->formName());
             image_series->metadata()->set("name", image_series->formName().remove("gnomon") + QString::number(form_count+1));
             image_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonImage",image_series);
             //this->pipeline_manager->addClonedForm(image_series,this->browse_view->image());
-            gnomonPipelineManager::instance()->addForm(image_series);
-            this->pipeline_manager->addReader(imageCommand);
+            //gnomonPipelineManager::instance()->addForm(image_series->uuid());
+            //this->pipeline_manager->addReader(imageCommand);
         }
     } else if (gnomonCellImageReaderCommand *cellImageCommand = dynamic_cast<gnomonCellImageReaderCommand *>(command))
     {
@@ -223,13 +267,16 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting cellImage series is void.";
             return false;
         } else {
+            cellImage_series->selectCurrentTime(cellImage_series->times().first());
+            qDebug() << "###### " << cellImage_series->time() << cellImage_series->times();
+            GNOMON_SESSION->trackForm(cellImage_series);
             int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
             cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             cellImage_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonCellImage",cellImage_series);
-            gnomonPipelineManager::instance()->addForm(cellImage_series);
+            //gnomonPipelineManager::instance()->addForm(cellImage_series->uuid());
             //this->pipeline_manager->addClonedForm(cellImage_series,this->browse_view->cellImage());
-            this->pipeline_manager->addReader(cellImageCommand);
+            //this->pipeline_manager->addReader(cellImageCommand);
         }
     } else if (gnomonCellComplexReaderCommand *cellComplexCommand = dynamic_cast<gnomonCellComplexReaderCommand *>(command))
     {
@@ -238,13 +285,15 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting cellComplex series is void.";
             return false;
         } else {
+            cellComplex_series->selectCurrentTime(cellComplex_series->times().first());
+            GNOMON_SESSION->trackForm(cellComplex_series);
             int form_count = gnomonFormManager::instance()->formCount(cellComplex_series->formName());
             cellComplex_series->metadata()->set("name", cellComplex_series->formName().remove("gnomon") + QString::number(form_count+1));
             cellComplex_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonCellComplex",cellComplex_series);
-            gnomonPipelineManager::instance()->addForm(cellComplex_series);
+            //gnomonPipelineManager::instance()->addForm(cellComplex_series->uuid());
             //this->pipeline_manager->addClonedForm(cellComplex_series,this->browse_view->cellComplex());
-            this->pipeline_manager->addReader(cellComplexCommand);
+            //this->pipeline_manager->addReader(cellComplexCommand);
         }
     } else if (gnomonBinaryImageReaderCommand *binaryImageCommand = dynamic_cast<gnomonBinaryImageReaderCommand *>(command))
     {
@@ -253,13 +302,15 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting binaryImage series is void.";
             return false;
         } else {
+            binaryImage_series->selectCurrentTime(binaryImage_series->times().first());
+            GNOMON_SESSION->trackForm(binaryImage_series);
             int form_count = gnomonFormManager::instance()->formCount(binaryImage_series->formName());
             binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             binaryImage_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonBinaryImage",binaryImage_series);
-            gnomonPipelineManager::instance()->addForm(binaryImage_series);
+            //gnomonPipelineManager::instance()->addForm(binaryImage_series->uuid());
             //this->pipeline_manager->addClonedForm(binaryImage_series, this->browse_view->binaryImage());
-            this->pipeline_manager->addReader(binaryImageCommand);
+            //this->pipeline_manager->addReader(binaryImageCommand);
         }
     } else if (gnomonDataFrameReaderCommand *dataFrameCommand = dynamic_cast<gnomonDataFrameReaderCommand *>(command))
     {
@@ -268,13 +319,15 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting dataFrame series is void.";
             return false;
         } else {
+            dataFrame_series->selectCurrentTime(dataFrame_series->times().first());
+            GNOMON_SESSION->trackForm(dataFrame_series);
             int form_count = gnomonFormManager::instance()->formCount(dataFrame_series->formName());
             dataFrame_series->metadata()->set("name", dataFrame_series->formName().remove("gnomon") + QString::number(form_count+1));
             dataFrame_series->metadata()->set("source", source);
 //            this->browse_figure->setForm("gnomonDataFrame",dataFrame_series);
 //            this->pipeline_manager->addClonedForm(dataFrame_series,this->browse_figure->form("gnomonDataFrame"));
-            gnomonPipelineManager::instance()->addForm(dataFrame_series);
-            this->pipeline_manager->addReader(dataFrameCommand);
+            //gnomonPipelineManager::instance()->addForm(dataFrame_series->uuid());
+            //this->pipeline_manager->addReader(dataFrameCommand);
         }
     } else if (gnomonLStringReaderCommand *lStringCommand = dynamic_cast<gnomonLStringReaderCommand *>(command))
     {
@@ -283,13 +336,15 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting lString series is void.";
             return false;
         } else {
+            lString_series->selectCurrentTime(lString_series->times().first());
+            GNOMON_SESSION->trackForm(lString_series);
             int form_count = gnomonFormManager::instance()->formCount(lString_series->formName());
             lString_series->metadata()->set("name", lString_series->formName().remove("gnomon") + QString::number(form_count+1));
             lString_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonLString",lString_series);
-            gnomonPipelineManager::instance()->addForm(lString_series);
+            //gnomonPipelineManager::instance()->addForm(lString_series->uuid());
             //this->pipeline_manager->addClonedForm(lString_series,this->browse_view->lString());
-            this->pipeline_manager->addReader(lStringCommand);
+            //this->pipeline_manager->addReader(lStringCommand);
         }
     } else if (gnomonMeshReaderCommand *meshCommand = dynamic_cast<gnomonMeshReaderCommand *>(command))
     {
@@ -298,13 +353,15 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting mesh series is void.";
             return false;
         } else {
+            mesh_series->selectCurrentTime(mesh_series->times().first());
+            GNOMON_SESSION->trackForm(mesh_series);
             int form_count = gnomonFormManager::instance()->formCount(mesh_series->formName());
             mesh_series->metadata()->set("name", mesh_series->formName().remove("gnomon") + QString::number(form_count+1));
             mesh_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonMesh",mesh_series);
-            gnomonPipelineManager::instance()->addForm(mesh_series);
+            //gnomonPipelineManager::instance()->addForm(mesh_series->uuid());
             //this->pipeline_manager->addClonedForm(mesh_series,this->browse_view->mesh());
-            this->pipeline_manager->addReader(meshCommand);
+            //this->pipeline_manager->addReader(meshCommand);
         }
     } else if (gnomonPointCloudReaderCommand *pointCloudCommand = dynamic_cast<gnomonPointCloudReaderCommand *>(command))
     {
@@ -313,13 +370,15 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting pointCloud series is void.";
             return false;
         } else {
+            pointCloud_series->selectCurrentTime(pointCloud_series->times().first());
+            GNOMON_SESSION->trackForm(pointCloud_series);
             int form_count = gnomonFormManager::instance()->formCount(pointCloud_series->formName());
             pointCloud_series->metadata()->set("name", pointCloud_series->formName().remove("gnomon") + QString::number(form_count+1));
             pointCloud_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonPointCloud",pointCloud_series);
-            gnomonPipelineManager::instance()->addForm(pointCloud_series);
+            //gnomonPipelineManager::instance()->addForm(pointCloud_series->uuid());
             //this->pipeline_manager->addClonedForm(pointCloud_series,this->browse_view->pointCloud());
-            this->pipeline_manager->addReader(pointCloudCommand);
+            //this->pipeline_manager->addReader(pointCloudCommand);
         }
     } else if (gnomonTreeReaderCommand *treeCommand = dynamic_cast<gnomonTreeReaderCommand *>(command))
     {
@@ -328,15 +387,18 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             dtkWarn() << Q_FUNC_INFO << "Resulting tree series is void.";
             return false;
         } else {
+            tree_series->selectCurrentTime(tree_series->times().first());
+            GNOMON_SESSION->trackForm(tree_series);
             int form_count = gnomonFormManager::instance()->formCount(tree_series->formName());
             tree_series->metadata()->set("name", tree_series->formName().remove("gnomon") + QString::number(form_count+1));
             tree_series->metadata()->set("source", source);
-            gnomonPipelineManager::instance()->addForm(tree_series);
+            //gnomonPipelineManager::instance()->addForm(tree_series->uuid());
 //            this->browse_figure->setForm("gnomonTree",tree_series);
 //            this->pipeline_manager->addClonedForm(tree_series,this->browse_figure->form("gnomonTree"));
-            this->pipeline_manager->addReader(treeCommand);
+            //this->pipeline_manager->addReader(treeCommand);
         }
     }
+    emit q->stateChanged();
     return true;
 }
 
@@ -361,212 +423,40 @@ gnomonWorkspaceBrowser::gnomonWorkspaceBrowser(QObject *parent) : gnomonAbstract
     d->browse_view->setAcceptForm("gnomonMesh",true);
     d->browse_view->setAcceptForm("gnomonPointCloud",true);
     // d->browse_view->setAcceptDrops(true);
-
     connect(d->browse_view, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
-        d->pipeline_manager->addForm(f);
+        auto * command = d->form_type_commands[f->formName()];
+        d->pipeline_manager->addReader(command);
+        d->pipeline_manager->addForm(f->uuid());
+        this->m_can_be_destroyed = false;
+        if(!d->workspace_info.isEmpty())
+            GNOMON_PROJECT->addToManifest(d->workspace_info);
+        emit canBeDestroyedChanged(false);
     });
-    // d->browse_figure = new gnomonMplView(this);
-    // d->browse_figure->setAcceptForm("gnomonTree",true);
-    // d->browse_figure->setAcceptForm("gnomonDataFrame",true);
-    // d->browse_figure->setAcceptForm("gnomonLString",true);
-    // d->browse_figure->setAcceptDrops(true);
 
-    // connect(d->browse_figure, SIGNAL(exportedForm(gnomonAbstractDynamicForm *)), d->pipeline_manager, SLOT(addForm(gnomonAbstractDynamicForm *)));
+    connect(d->browse_view, &gnomonAbstractView::formRemoved, [&] (const QString& form_type) {
+            d->form_type_commands[form_type]->clear();
+        });
 
-    // d->view_message = new gnomonMessageBoard(this);
-    // d->view_message->setMessage("Double-click or drop a file");
+    if(GNOMON_PROJECT->wasSaved)
+        this->restore();
+    d->object_name = QUuid::createUuid().toString(QUuid::WithoutBraces);
 
-    // d->view_stack = new QStackedWidget(this);
-    // d->view_stack->addWidget(d->view_message);
-    // d->view_stack->addWidget(d->browse_view);
-    // d->view_stack->addWidget(d->browse_figure);
-
-    // connect(d->browse_view, &gnomonVtkView::formAdded, [=] (const QString&)
-    // {
-    //     d->view_stack->setCurrentWidget(d->browse_view);
-    // });
-
-    // connect(d->browse_figure, &gnomonMplView::formAdded, [=] (const QString&)
-    // {
-    //     d->view_stack->setCurrentWidget(d->browse_figure);
-    //     d->browse_figure->updateVisualizations();
-    // });
-
-    // QToolButton *view_button = new QToolButton(this);
-    // view_button->setIcon(dtkFontAwesome::instance()->icon(fa::cubes));
-    // view_button->setToolTip("3D Form Viewer");
-    // QToolButton *figure_button = new QToolButton(this);
-    // figure_button->setIcon(dtkFontAwesome::instance()->icon(fa::square));
-    // figure_button->setToolTip("2D Form Viewer");
-
-    // QHBoxLayout *v_layout = new QHBoxLayout;
-    // v_layout->addWidget(view_button);
-    // v_layout->addWidget(figure_button);
-    // v_layout->addStretch();
-
-    // QVBoxLayout *viewers_layout = new QVBoxLayout;
-    // viewers_layout->setContentsMargins(0, 0, 0, 0);
-    // viewers_layout->setSpacing(0);
-    // viewers_layout->addLayout(v_layout);
-    // viewers_layout->addWidget(d->view_stack);
-
-    // QWidget *viewers = new QWidget(this);
-    // viewers->setLayout(viewers_layout);
-
-    // connect(view_button, &QToolButton::clicked, [=] (void) -> void
-    // {
-    //     d->view_stack->setCurrentWidget(d->browse_view);
-    // });
-
-    // connect(figure_button, &QToolButton::clicked, [=] (void) -> void
-    // {
-    //     d->view_stack->setCurrentWidget(d->browse_figure);
-    // });
-
-/////////////////////////////////////////////////////////////////////////////
-
-
-
-//     QLineEdit *path = new QLineEdit(settings.value("path").toString(), this);
-
-//     QToolButton *up = new QToolButton(this); up->setIcon(dtkFontAwesome::instance()->icon(fa::arrowleft));
-//     QToolButton *ls = new QToolButton(this); ls->setIcon(dtkFontAwesome::instance()->icon(fa::th));
-//     QToolButton *tr = new QToolButton(this); tr->setIcon(dtkFontAwesome::instance()->icon(fa::list));
-
-//     QHBoxLayout *t_layout = new QHBoxLayout;
-//     t_layout->addWidget(up);
-//     t_layout->addWidget(ls);
-//     t_layout->addWidget(tr);
-//     t_layout->addWidget(path);
-
-//     QFileSystemModel *model = new QFileSystemModel(this);
-
-//     gnomonFinderListView *l_browser = new gnomonFinderListView(this);
-//     l_browser->setModel(model);
-//     l_browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
-
-//     gnomonFinderTreeView *t_browser = new gnomonFinderTreeView(this);
-//     t_browser->setModel(model);
-//     t_browser->setRootIndex(model->setRootPath(settings.value("path").toString()));
-
-//     QStackedWidget *browser = new QStackedWidget(this);
-//     browser->addWidget(t_browser);
-//     browser->addWidget(l_browser);
-
-//     QVBoxLayout *r_layout = new QVBoxLayout;
-//     r_layout->setContentsMargins(0, 0, 0, 0);
-//     r_layout->setSpacing(0);
-//     r_layout->addLayout(t_layout);
-//     r_layout->addWidget(browser);
-
-//     QWidget *finder = new QWidget(this);
-//     finder->setLayout(r_layout);
-
-//     d->splitter = new QSplitter(this);
-//     d->splitter->addWidget(viewers);
-//     d->splitter->addWidget(finder);
-
-// /////////////////////////////////////////////////////////////////////////////
-
-//     QHBoxLayout *layout = new QHBoxLayout(this);
-//     layout->setContentsMargins(0, 0, 0, 0);
-//     layout->setSpacing(0);
-//     layout->addWidget(d->splitter);
-
-// /////////////////////////////////////////////////////////////////////////////
-//     connect(d->browse_view, &gnomonVtkView::fileDropped, [=] (const QString& filename)
-//     {
-//         d->findReaders(filename);
-//     });
-
-//     connect(d->browse_figure, &gnomonMplView::fileDropped, [=] (const QString& filename)
-//     {
-//         d->findReaders(filename);
-//     });
-
-//     connect(d->view_message, &gnomonMessageBoard::fileDropped, [=] (const QString& filename)
-//     {
-//         d->findReaders(filename);
-//     });
-
-//     connect(l_browser, &gnomonFinderListView::opened, [=] (const QString& filename) -> void
-//     {
-//         d->findReaders(filename);
-//     });
-
-//     connect(t_browser, &gnomonFinderTreeView::opened, [=] (const QString& filename) -> void
-//     {
-//         d->findReaders(filename);
-//     });
-
-//     connect(l_browser, &gnomonFinderListView::changed, [=] (const QString& value) -> void
-//     {
-//         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-//         settings.setValue("path", value);
-
-//         t_browser->setRootIndex(model->setRootPath(value));
-
-//         path->setText(value);
-//     });
-
-//     connect(t_browser, &gnomonFinderTreeView::changed, [=] (const QString& value) -> void
-//     {
-//         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-//         settings.setValue("path", value);
-
-//         l_browser->setRootIndex(model->setRootPath(value));
-
-//         path->setText(value);
-//     });
-
-//     connect(path, &QLineEdit::editingFinished, [=] (void) -> void
-//     {
-//         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-//         settings.setValue("path", path->text());
-
-//         l_browser->setRootIndex(model->setRootPath(path->text()));
-//         t_browser->setRootIndex(model->setRootPath(path->text()));
-//     });
-
-//     connect(up, &QToolButton::clicked, [=] (void) -> void
-//     {
-//         QDir dir = QDir(model->filePath(l_browser->rootIndex()));
-//         dir.cdUp();
-
-//         l_browser->setRootIndex(model->index(dir.absolutePath()));
-//         t_browser->setRootIndex(model->index(dir.absolutePath()));
-
-//         path->setText(dir.absolutePath());
-
-//         QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-//         settings.setValue("path", dir.absolutePath());
-//     });
-
-//     connect(ls, &QToolButton::clicked, [=] (void) -> void
-//     {
-//         browser->setCurrentWidget(l_browser);
-//     });
-
-//     connect(tr, &QToolButton::clicked, [=] (void) -> void
-//     {
-//         browser->setCurrentWidget(t_browser);
-//     });
-
-// /////////////////////////////////////////////////////////////////////////////
-
-//     d->splitter->restoreState(settings.value("browser/splitter").toByteArray());
-
-//     t_browser->header()->resizeSection(0,300);
 }
 
 gnomonWorkspaceBrowser::~gnomonWorkspaceBrowser(void)
 {
-    // QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
-    // settings.setValue("browser/splitter", d->splitter->saveState());
-
+    delete d->browse_view;
+    d->browse_view = nullptr;
     delete d;
 }
 
+int gnomonWorkspaceBrowser::progress(void) {
+    return d->progress;
+}
+
+QString gnomonWorkspaceBrowser::progressMessage(void) {
+    return d->progress_message;
+}
 
 const QString& gnomonWorkspaceBrowser::readerPath(void) const
 {
@@ -583,7 +473,7 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
         QString filename = filenames[0].split(".").join(".").toLower();
         QString ext = "";
 
-        QMap<QString, QMap<QString, gnomonAbstractReaderCommand *> > ::iterator i;
+        QMap<QString, QMap<QString, gnomonAbstractReaderCommand* > > ::iterator i;
         for (i = d->fileReaderCommands.begin(); i != d->fileReaderCommands.end(); ++i)
         {
             if( filename.endsWith(i.key()))
@@ -591,8 +481,6 @@ void gnomonWorkspaceBrowser::setReaderPath(const QString& path)
                 ext = i.key();
             }
         }
-
-
 
         if(filename.endsWith(".zip")) {
             // reading the manifest
@@ -658,7 +546,6 @@ void gnomonWorkspaceBrowser::requestReaders(QString default_reader="")
 
 bool gnomonWorkspaceBrowser::readWith(const QString& reader)
 {
-    emit started();
     return d->readForm(reader);
 }
 
@@ -667,15 +554,44 @@ gnomonVtkView *gnomonWorkspaceBrowser::view(void) const
     return d->browse_view;
 }
 
-void gnomonWorkspaceBrowser::restoreState(void)
-{
-    d->browse_view->restoreState();
+QJsonObject gnomonWorkspaceBrowser::serialize() {
+    QJsonObject serialization = gnomonAbstractWorkspace::serialize();
+    serialization.insert("view", d->browse_view->serialize());
+    return serialization;
+}
+
+void gnomonWorkspaceBrowser::deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::deserialize(state);
+    d->browse_view->deserialize(state.value("view").toObject());
+}
+
+void gnomonWorkspaceBrowser::saveState(void) {
+    d->savedState = serialize();
+}
+
+void gnomonWorkspaceBrowser::restoreState(void) {
+    if(!d->savedState.isEmpty()) {
+        deserialize(d->savedState);
+    }
 }
 
 QUrl gnomonWorkspaceBrowser::defaultReadPath()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "inria", "gnomon");
     return settings.value("path").toString();
+}
+
+void gnomonWorkspaceBrowser::importFile(const QString& file_path, const QString& path)
+{
+    QString file_name = QFileInfo(file_path).fileName();
+
+    QString project_file = path + "/" + file_name;
+    if (QFile::copy(file_path, project_file)) {
+        QString relative_path = GNOMON_PROJECT->relativePath(project_file);
+        emit GNOMON_PROJECT->fileImported(relative_path);
+    } else {
+        qDebug()<<Q_FUNC_INFO<<"Unable to copy file"<<file_path;
+    }
 }
 
 QStringList gnomonWorkspaceBrowser::readerExtensions(void)
@@ -687,6 +603,18 @@ void gnomonWorkspaceBrowser::export_outputs(void) {
     d->browse_view->transmit();
 }
 
+// TODO: to be removed when forms are restored through the session
+void gnomonWorkspaceBrowser::restore(void)
+{
+    QList< QPair<QString, QString> > browser_info = GNOMON_PROJECT->browserFormInfo();
+    return;
+
+    for (auto data_info : browser_info) {
+        this->setReaderPath(data_info.first);
+        this->readWith(data_info.second);
+        d->browse_view->transmit();
+    }
+}
 // /////////////////////////////////////////////////////////////////////////////
 
 #include "gnomonWorkspaceBrowser.moc"

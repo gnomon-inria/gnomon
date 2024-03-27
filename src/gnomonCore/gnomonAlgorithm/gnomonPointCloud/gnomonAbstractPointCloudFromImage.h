@@ -57,13 +57,8 @@ public:
 DTK_DECLARE_OBJECT(gnomonAbstractPointCloudFromImage *)
 
 DTK_DECLARE_PLUGIN(gnomonAbstractPointCloudFromImage, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudFromImage, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractPointCloudFromImage, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractPointCloudFromImage, GNOMONCORE_EXPORT, pointCloudFromImage, gnomonCore)
 
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractPointCloudFromImage, GNOMONCORE_EXPORT, pointCloudFromImage);
-}
 
 //
 // gnomonAbstractPointCloudFromImage.h ends here

@@ -6,6 +6,7 @@
 
 #include <dtkCore>
 #include <QtCore>
+#include <gnomonProject>
 
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
@@ -25,14 +26,14 @@ gnomonPipelineNodeTask::gnomonPipelineNodeTask(const QString &task, QList<QStrin
     }
 }
 
-QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>>
-gnomonPipelineNodeTask::runTask(QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> inputs) {
-    QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> outputs;
+QMap<QString, QString>
+gnomonPipelineNodeTask::runTask(QMap<QString, QString> inputs) {
+    QMap<QString, QString> outputs;
 
     if(d->algorithm == "compose") {
-        auto first  = inputs["first"]->clone();
-        first->compose(inputs["second"]);
-        outputs["output"] = first;
+        auto first = GNOMON_SESSION->getForm(inputs["first"])->clone();
+        first->compose(GNOMON_SESSION->getForm(inputs["second"]));
+        outputs["output"] = first->uuid();
     } else {
         qWarning() << Q_FUNC_INFO << "Unknown task: " << d->algorithm;
     }

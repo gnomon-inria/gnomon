@@ -9,8 +9,6 @@
 
 #include <QtCore>
 
-class dtkImage;
-
 // ///////////////////////////////////////////////////////////////////
 //
 // ///////////////////////////////////////////////////////////////////
@@ -76,6 +74,7 @@ public:
     }
     void deserialize(QJsonObject &serialization) override {
         delete m_data;
+        loadPluginGroup("imageData");
         m_data = gnomonCore::imageData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }
@@ -84,8 +83,8 @@ public:
     static inline QString formName(void) { return "gnomonImage"; }
 
 public:
-    dtkImage *image(QString channel="") const { return m_data->image(channel); };
-    void setImage(dtkImage *image, QString channel="") { return m_data->setImage(image,channel); };
+    vtkImageData *image(QString channel="") const { return m_data->image(channel); };
+    void setImage(vtkImageData *image_array, QString channel="") { return m_data->setImage(image_array,channel); };
 
 public:
     void setChannelName(const QString& channel, const QString& name) { return m_data->setChannelName(channel,name); };

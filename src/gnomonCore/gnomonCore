@@ -52,6 +52,7 @@
 #include "gnomonAlgorithmsLogs/gnomonLogConnection.h"
 
 #include "gnomonForm/gnomonDynamicFormMetadata.h"
+#include "gnomonForm/gnomonDynamicFormFactory.h"
 #include "gnomonForm/gnomonBinaryImage/gnomonAbstractBinaryImageData.h"
 #include "gnomonForm/gnomonBinaryImage/gnomonBinaryImage.h"
 #include "gnomonForm/gnomonCellComplex/gnomonAbstractCellComplexData.h"
@@ -92,8 +93,6 @@
 #include "dtkCoreParameter.h"
 #include "gnomonCoreSettings.h"
 #include "gnomonDataDriver.h"
-#include "gnomonDataManager.h"
-#include "gnomonFileSystemFormReader.h"
 #include "gnomonFormVisitor.h"
 #include "gnomonLandmark.h"
 #include "gnomonTime.h"

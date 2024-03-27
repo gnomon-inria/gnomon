@@ -20,13 +20,12 @@ public:
 
 gnomonTreeMplVisualizationCommand::gnomonTreeMplVisualizationCommand() : d(new gnomonTreeMplVisualizationCommandPrivate)
 {
-    this->factory_name = groupName;
     this->factory = &gnomonVisualization::treeMplVisualization::pluginFactory();
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonTreeMplVisualizationCommand)
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
-        this->algorithm_name = keys[0];
+        this->visu_name = keys[0];
     }
 }
 
@@ -38,17 +37,17 @@ gnomonTreeMplVisualizationCommand::~gnomonTreeMplVisualizationCommand()
 void gnomonTreeMplVisualizationCommand::newVisualization(void)
 {
     this->clear();
-    auto visu = gnomonVisualization::treeMplVisualization::pluginFactory().create(this->algorithm_name);
+    auto visu = gnomonVisualization::treeMplVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractTreeMplVisualization>(visu);
     this->connectVisualization();
 }
 
 void gnomonTreeMplVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
-    this->setAlgorithmName(visu_name);
+    this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractTreeMplVisualization>(this->visu);
     if (visu) {
-        visu->setTree(d->tree->current());
+        visu->setTree(d->tree);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();
         visu->update();
@@ -57,7 +56,7 @@ void gnomonTreeMplVisualizationCommand::setFormVisualization(const QString& visu
 
 void gnomonTreeMplVisualizationCommand::predo(void)
 {
-    std::dynamic_pointer_cast<gnomonAbstractTreeMplVisualization>(this->visu)->setTree(d->tree->current());
+    std::dynamic_pointer_cast<gnomonAbstractTreeMplVisualization>(this->visu)->setTree(d->tree);
 }
 
 void gnomonTreeMplVisualizationCommand::postdo(void)
@@ -79,15 +78,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonTreeMplVisualiz
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["tree"] = d->tree;
     return inputs;
-}
-
-bool gnomonTreeMplVisualizationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonTreeMplVisualizationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonTreeMplVisualizationCommand::inputTypes() {

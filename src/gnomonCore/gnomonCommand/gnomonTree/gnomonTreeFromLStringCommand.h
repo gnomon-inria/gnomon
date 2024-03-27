@@ -1,11 +1,11 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 
 #include <gnomonCore/gnomonForm/gnomonLString/gnomonLString>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
-class GNOMONCORE_EXPORT gnomonTreeFromLStringCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonTreeFromLStringCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonTreeFromLStringCommand(void);
@@ -38,10 +38,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "treeFromLString";
-    static QStringList availablePlugins();
 
 private:
     class gnomonTreeFromLStringCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonTreeFromLStringCommand)

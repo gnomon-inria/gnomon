@@ -9,8 +9,6 @@
 
 #include <QtCore>
 
-class dtkImage;
-
 class GNOMONCORE_EXPORT gnomonBinaryImage : public gnomonAbstractForm {
 protected:
     gnomonAbstractBinaryImageData* m_data;
@@ -70,6 +68,7 @@ public:
     }
     void deserialize(QJsonObject &serialization) override {
         delete m_data;
+        loadPluginGroup("binaryImageData");
         m_data = gnomonCore::binaryImageData::pluginFactory().create(serialization["pluginName"].toString());
         m_data->deserialize(serialization["data"].toString());
     }
@@ -78,8 +77,8 @@ public:
     static inline QString formName(void) { return "gnomonBinaryImage"; }
 
 public:
-    virtual void setImage(dtkImage* image) {return m_data->setImage(image);}
-    virtual dtkImage* image() {return m_data->image();}
+    virtual void setImage(vtkImageData* image) {return m_data->setImage(image);}
+    virtual vtkImageData* image() {return m_data->image();}
 };
 
 // ///////////////////////////////////////////////////////////////////

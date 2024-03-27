@@ -1,5 +1,7 @@
 #include "gnomonPipelineNodeWriter.h"
 
+#include <gnomonProject>
+
 #include "gnomonPipelineNode_p.h"
 #include "gnomonPipelinePort.h"
 #include "gnomonPythonPluginLoader.h"
@@ -53,6 +55,10 @@ gnomonPipelineNodeWriter::~gnomonPipelineNodeWriter(void)
 
 QString gnomonPipelineNodeWriter::path(void) {
     return dd->path;
+}
+
+void gnomonPipelineNodeWriter::setPath(const QString& path) {
+    dd->path = path;
 }
 
 QString gnomonPipelineNodeWriter::toToml(void)

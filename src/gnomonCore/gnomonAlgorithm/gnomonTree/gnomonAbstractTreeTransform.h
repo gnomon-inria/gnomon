@@ -51,16 +51,8 @@ public:
 
 DTK_DECLARE_OBJECT        (gnomonAbstractTreeTransform *)
 DTK_DECLARE_PLUGIN        (gnomonAbstractTreeTransform, GNOMONCORE_EXPORT)
-GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeTransform, GNOMONCORE_EXPORT)
-//DTK_DECLARE_PLUGIN_MANAGER(gnomonAbstractTreeTransform, GNOMONCORE_EXPORT)
+GNOMON_DECLARE_PLUGIN_FACTORY(gnomonAbstractTreeTransform, GNOMONCORE_EXPORT, treeTransform, gnomonCore)
 
-// /////////////////////////////////////////////////////////////////
-// Register to gnomonCore layer
-// /////////////////////////////////////////////////////////////////
-
-namespace gnomonCore {
-    GNOMON_DECLARE_CONCEPT(gnomonAbstractTreeTransform, GNOMONCORE_EXPORT, treeTransform);
-}
 
 //
 // gnomonAbstractTreeTransform.h ends here

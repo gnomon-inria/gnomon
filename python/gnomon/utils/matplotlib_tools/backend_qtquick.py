@@ -7,8 +7,15 @@ from matplotlib import cbook
 from matplotlib.backend_bases import FigureCanvasBase, NavigationToolbar2, MouseButton
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import TimerQT, SPECIAL_KEYS, _MODIFIER_KEYS, cursord
-from .qt_compat import QtCore, QtGui, QtQuick, QtWidgets, QT_API, QT_API_PYSIDE6
-from qtpy.QtCore import Slot
+
+from PySide6 import QtCore, QtGui, QtWidgets, QtQuick, QtQml,  __version__
+from PySide6.QtCore import Slot
+import shiboken6
+def _isdeleted(obj): return not shiboken6.isValid(obj)
+
+#from .qt_compat import QtCore, QtGui, QtQuick, QtWidgets, QT_API, QT_API_PYSIDE6
+#from qtpy.QtCore import Slot
+
 
 class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     """ This class creates a QtQuick Item encapsulating a Matplotlib
@@ -18,8 +25,12 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
 
     dpi_ratio_changed = QtCore.Signal()
     numberChanged = QtCore.Signal()
+    background_color_changed = QtCore.Signal()
+    line_color_changed = QtCore.Signal()
     hoverChanged = QtCore.Signal()
     mouseReleased = QtCore.Signal()
+    wheelScrolled = QtCore.Signal()
+    parameter_editor_changed = QtCore.Signal()
 
     # map Qt button codes to MouseEvent's ones:
     buttond = {QtCore.Qt.LeftButton: MouseButton.LEFT,
@@ -34,12 +45,15 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
             figure = Figure((6.0, 4.0))
 
         # It seems like Qt doesn't implement cooperative inheritance
-        QtQuick.QQuickPaintedItem.__init__(self, parent=parent)
+        QtQuick.QQuickPaintedItem.__init__(self)
         FigureCanvasBase.__init__(self, figure=figure)
 
         # The dpi ratio (property without leading _)
         self._dpi_ratio = 1
         self._number = -1
+        self._background_color = 'w'
+        self._line_color = 'b'
+        self._parameter_editor = False
 
         # Activate hover events and mouse press events
         self.setAcceptHoverEvents(True)
@@ -75,6 +89,38 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
     def get_number(self):
         return self._number
 
+    def background_color(self):
+        return self._background_color
+
+    def set_background_color(self, col: str):
+        print(self._background_color, "-->",  col)
+        if col != self._background_color:
+            self._background_color = col
+            self.figure.set_facecolor(self._background_color)
+            for ax in self.figure.get_axes():
+                ax.set_facecolor(self._background_color)
+            matplotlib.rcParams['axes.facecolor']=self._background_color
+            self.figure.canvas.draw()
+            self.background_color_changed.emit()
+
+    def line_color(self):
+        return self._line_color
+
+    def set_line_color(self, col: str):
+        if col != self._line_color:
+            self._line_color = col
+            self.draw()
+            self.figure.canvas.draw()
+            self.line_color_changed.emit()
+
+    def parameter_editor(self):
+        return self._parameter_editor
+
+    def set_parameter_editor(self, p: bool):
+        if p != self._parameter_editor:
+            self._parameter_editor = p
+            self.parameter_editor_changed.emit()
+
     def boundingRect(self):
         return QtCore.QRectF(0, 0, self.width(), self.height())
 
@@ -108,6 +154,25 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
                                 set_dpi_ratio,
                                 notify=dpi_ratio_changed)
 
+    backgroundColor = QtCore.Property(
+        str,
+        fget=background_color,
+        fset=set_background_color,
+        notify=background_color_changed
+    )
+
+    lineColor = QtCore.Property(str,
+                            fget=line_color,
+                            fset=set_line_color,
+                            notify=line_color_changed)
+
+    parameterEditor = QtCore.Property(
+        bool,
+        fget=parameter_editor,
+        fset=set_parameter_editor,
+        notify=parameter_editor_changed
+    )
+
     def get_width_height(self):
         w, h = FigureCanvasBase.get_width_height(self)
         return int(w / self.dpi_ratio), int(h / self.dpi_ratio)
@@ -137,6 +202,10 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         with cbook._setattr_cm(self, _is_drawing=True):
             super().draw()
         self.update()
+        if self._parameter_editor:
+            for ax in  self.figure.get_axes():
+                for line in ax.get_lines():
+                    line.set_color(self._line_color)
 
     def draw_idle(self):
         """
@@ -284,6 +353,7 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
             steps = event.pixelDelta().y()
         if steps:
             FigureCanvasBase.scroll_event(self, x, y, steps, guiEvent=event)
+            self.wheelScrolled.emit()
 
     def keyPressEvent(self, event):
         key = self._get_key(event)
@@ -300,14 +370,18 @@ class FigureCanvasQtQuick(QtQuick.QQuickPaintedItem, FigureCanvasBase):
         #     return None
 
         event_key = event.key()
-        event_mods = int(event.modifiers())  # actually a bitmask
+        event_mods = event.modifiers()
 
         # get names of the pressed modifier keys
         # bit twiddling to pick out modifier keys from event_mods bitmask,
         # if event_key is a MODIFIER, it should not be duplicated in mods
         # mods = [name for name, mod_key, qt_key in MODIFIER_KEYS
-        mods = [SPECIAL_KEYS[qt_key] for mod_key, qt_key in _MODIFIER_KEYS
-                if event_key != qt_key and (event_mods & mod_key) == mod_key]
+        mods = [
+            SPECIAL_KEYS[qt_key].replace('control', 'ctrl')
+            for mod_key, qt_key  in _MODIFIER_KEYS
+            if event_key != qt_key and (event_mods == mod_key)
+        ]
+
         try:
             # for certain keys (enter, left, backspace, etc) use a word for the
             # key, rather than unicode

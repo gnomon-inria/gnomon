@@ -50,6 +50,9 @@ public:
     void setTimeEnd(int);
     void setUploadMode(bool);
 
+    QJsonObject serialize() override;
+    void deserialize(const QJsonObject &state) override;
+
     Q_INVOKABLE bool deleteDataset(int id=-1);
     Q_INVOKABLE QString importDatasetInfos(const QString& search = "");
     Q_INVOKABLE void importDataset(int id, double voxelsize, int time_start=-1, int time_end=-1);

@@ -1,12 +1,16 @@
+#{% set build_string = '{}_py{}h{}_{}'.format(build_type, CONDA_PY, PKG_HASH, GIT_DESCRIBE_NUMBER) %}
+
 package:
-  name: libgnomon
-  version: {{ GIT_DESCRIBE_TAG }}
+  name: {{ "lib" if build_type == "lib" }}gnomon
+  #version: {{ GIT_DESCRIBE_TAG }}
+  version: 1.0.0a1
 
 source:
   path: ../
 
 build:
   number: {{ GIT_DESCRIBE_NUMBER }}
+#  string: {{ build_string }}
 
 requirements:
   build:
@@ -43,40 +47,57 @@ requirements:
     - {{ cdt('libxfixes') }}             # [linux]
     - {{ cdt('libxfixes-devel') }}       # [linux]
     - {{ cdt('libxxf86vm') }}            # [linux]
+    - libxkbfile                         # [linux]
+    - libwebp=1.2.2
+    - libzip
 
   host:
-    - qt >=6.2
-    - dtk-core >=2.11
+    - qt6-main >=6.5,<7
+    - qt6-webengine
+    - boost=1.78
+    - dtk-forge6::vtk =9.2.6=Release_qt6_py39h1234567_104
+    - pyside6
+    - dtk-core >=2.13
     - dtk-core-python >=2.8
     - dtk-imaging >=2.0
     - dtk-imaging-python >=2.0
     - dtk-log >=2.5
     - dtk-script >=2.5
+    - x-vis
     - python
     - numpy {{numpy}}
     - swig >=4.1
-    - vtk =9.1.0
-    - libtiff <4.5
 
   run:
-    - qt >=6.2
-    - dtk-core >=2.11
+    - qt6-main >=6.5,<7
+    - dtk-forge6::vtk =9.2.6=Release_qt6_py39h1234567_104
+    - pyside6
+    - dtk-core >=2.13
     - dtk-core-python >=2.8
     - dtk-imaging >=2.0
     - dtk-imaging-python >=2.0
     - dtk-plugins-imaging >=2.0
     - dtk-log >=2.5
     - dtk-script >=2.5
+    - x-vis
     - python
     - numpy {{numpy}}
     - pymongo
     - jinja2
     - swig >=4.1
-    - vtk =9.1.0
-    - libtiff <4.5
+    - libzip
+    - matplotlib-base=3.7.1
+    - qtpy >=2.0
+    - qtconsole-base >=5.2
+    - importlib_metadata
+    - jedi=0.18.2
+    - python-lsp-server=1.7.1
+    - conda
+    - pip
+
 
 about:
   home: https://gnomon.gitlabpages.inria.fr/gnomon
-  license: LGPL-3.0
+  license: LGPL-3.0-or-later
   license_file: LICENSE
   summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D

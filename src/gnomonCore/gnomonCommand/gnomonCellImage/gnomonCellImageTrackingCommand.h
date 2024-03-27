@@ -1,12 +1,12 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand>
 #include <gnomonCore/gnomonForm/gnomonDataDict/gnomonDataDict>
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage>
 #include <gnomonCore/gnomonForm/gnomonImage/gnomonImage>
 #include <gnomonCore/gnomonForm/gnomonTree/gnomonTree>
 
-class GNOMONCORE_EXPORT gnomonCellImageTrackingCommand : public gnomonAbstractCommand
+class GNOMONCORE_EXPORT gnomonCellImageTrackingCommand : public gnomonAbstractAlgorithmCommand
 {
 public:
      gnomonCellImageTrackingCommand(void);
@@ -41,10 +41,10 @@ public:
     void setAlgorithmName(const QString &) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellImageTracking";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellImageTrackingCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellImageTrackingCommand)

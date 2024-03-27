@@ -1,7 +1,5 @@
 #include "gnomonActor2DImage.h"
 
-#include <dtkImagingCore>
-
 #include <QtGui>
 
 #include <vtkActor.h>
@@ -258,10 +256,10 @@ void gnomonActor2DImage::setFlatRendering(bool value)
 
 gnomonActor2DImage::gnomonActor2DImage(void) : gnomonActor(), d(new gnomonActor2DImagePrivate)
 {
-    d->image = Q_NULLPTR;
+    d->image = nullptr;
 
-    d->colorFunction = Q_NULLPTR;
-    d->opacity = Q_NULLPTR;
+    d->colorFunction = nullptr;
+    d->opacity = nullptr;
 
     d->orientation = 2;
 
@@ -278,7 +276,7 @@ gnomonActor2DImage::gnomonActor2DImage(void) : gnomonActor(), d(new gnomonActor2
 gnomonActor2DImage::~gnomonActor2DImage(void)
 {
     delete d;
-    d = NULL;
+    d = nullptr;
 }
 
 //

@@ -17,7 +17,10 @@ public:
 public:
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged);
-    Q_PROPERTY(QStringList nodeNames READ nodeNames);
+    Q_PROPERTY(QStringList nodeNames READ nodeNames NOTIFY nodeNamesChanged);
+
+    Q_PROPERTY(QStringList inputNodeNames READ inputNodeNames NOTIFY inputNodeNamesChanged);
+    Q_PROPERTY(QStringList outputNodeNames READ outputNodeNames NOTIFY outputNodeNamesChanged);
 
 public:
     const QString& name(void);
@@ -34,6 +37,15 @@ public:
     QStringList nodeNames(void);
     Q_INVOKABLE gnomonPipelineNode *node(const QString& node_name);
 
+public:
+    QStringList inputNodeNames(void) const;
+    Q_INVOKABLE QString inputNodePath(const QString& node_name) const;
+    Q_INVOKABLE void setInputNodePath(const QString& node_name, const QString& path);
+
+    QStringList outputNodeNames(void) const;
+    Q_INVOKABLE QString outputNodePath(const QString& node_name) const;
+    Q_INVOKABLE void setOutputNodePath(const QString& node_name, const QString& path);
+
 public slots:
     void addNode(gnomonPipelineNode *node);
     void removeNode(gnomonPipelineNode *node);
@@ -45,6 +57,10 @@ signals:
     void pluginChanged(void);
     void nodeRemoved(gnomonPipelineNode *);
 
+    void nodeNamesChanged(void);
+    void inputNodeNamesChanged(void);
+    void outputNodeNamesChanged(void);
+
 public:
     QList<QStringList> scheduleGroups(void);
     Q_INVOKABLE QStringList scheduledNodeNames(bool recompute_form_indices=false);
@@ -54,6 +70,9 @@ public slots:
     Q_INVOKABLE bool readFromJson(const QString& url, bool check_plugins=true);
     void exportToToml(const QString& path);
     void exportToLuigiScript(const QString& path);
+
+    Q_INVOKABLE QJsonObject toJson(void) const;
+    Q_INVOKABLE bool fromJson(const QJsonObject& pipeline_json, bool check_plugins=true);
 
 public slots:
     void updateLayout(void);

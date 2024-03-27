@@ -43,6 +43,8 @@ public:
     void setRangeMax(double);
     void setVisibility(bool);
 
+    gnomonColorMap & getColorMap(const QString &clut);
+
 private:
 	QString name;
     gnomonColorMap colormap;

@@ -5,6 +5,7 @@
 #include <gnomonCore/gnomonCommand/gnomonCellImage/gnomonCellImageQuantificationCommand>
 #include <gnomonCore/gnomonPythonPluginLoader.h>
 
+#include <gnomonProject>
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonVisualization/gnomonManager/gnomonFormManager.h>
 
@@ -27,7 +28,8 @@ gnomonWorkspaceCellImageQuantification::gnomonWorkspaceCellImageQuantification(Q
     d->figure = new gnomonMplView(this);
     d->figure->setAcceptForm("gnomonDataFrame",true);
     connect(d->figure, &gnomonMplView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
-        d->pipeline_manager->addForm(f);
+        GNOMON_SESSION->addForm(f);
+        d->pipeline_manager->addForm(f->uuid());
     });
     emit parametersChanged();
     d->updatePool(); //unused here
@@ -46,6 +48,9 @@ void gnomonWorkspaceCellImageQuantification::setInputs()
     for(gnomonVtkView *f : d->sources->views()) {
         if (f->image()) {
             command->setInputForm("image", f->image());
+        }
+        if (f->mesh()) {
+            command->setInputForm("mesh", f->mesh());
         }
         if (f->cellImage()) {
             command->setInputForm("cellImage", f->cellImage());
@@ -68,15 +73,18 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
         d->sources->views()[0]->removeForm("gnomonCellImage");
         d->sources->views()[0]->setForm("gnomonCellImage", command->cellImage());
         std::shared_ptr<gnomonCellImageSeries> out_cellimage = d->sources->views()[0]->cellImage();
+        GNOMON_SESSION->trackForm(out_cellimage);
         int form_count = gnomonFormManager::instance()->formCount(out_cellimage->formName());
         out_cellimage->metadata()->set("name", out_cellimage->formName().remove("gnomon") + QString::number(form_count+1));
         out_cellimage->metadata()->set("source", d->algorithm);
         //gnomonPipelineManager::instance()->addClonedForm(command->cellImage(), out_cellimage);
-        gnomonPipelineManager::instance()->addForm(command->cellImage());
+        GNOMON_SESSION->addForm(command->cellImage());
+        gnomonPipelineManager::instance()->addForm(command->cellImage()->uuid());
         d->sources->views()[0]->setInputView(false);
     }
     if(command->dataFrame()) {
         d->figure->setForm("gnomonDataFrame", command->dataFrame());
+        GNOMON_SESSION->trackForm(command->dataFrame());
         int form_count = gnomonFormManager::instance()->formCount(command->dataFrame()->formName());
         command->dataFrame()->metadata()->set("name", command->dataFrame()->formName().remove("gnomon") + QString::number(form_count+1));
         command->dataFrame()->metadata()->set("source", d->algorithm);

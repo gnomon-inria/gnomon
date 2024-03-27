@@ -1,8 +1,8 @@
-from .gnomonDataDriverMongo import gnomonDataDriverMongo
+#from .gnomonDataDriverMongo import gnomonDataDriverMongo
 from .gnomonPlugin import (
     load_plugin_group,
-    corePlugin,
     algorithmPlugin,
+    modelPlugin,
     visualizationPlugin,
     formDataPlugin,
     available_plugins,

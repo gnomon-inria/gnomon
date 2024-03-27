@@ -36,6 +36,8 @@ public:
     gnomonCoreParameterColorMap& operator = (const QVariant&);
     gnomonCoreParameterColorMap& operator = (const gnomonCoreParameterColorMap&);
 
+    gnomonColorMap& getColorMap(const QString &clut);
+
     void setValue(const gnomonColorMap&);
     void setValue(const QString&);
     void setValue(const QVariant&) override;

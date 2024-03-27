@@ -8,28 +8,40 @@ channels:
   - gnomon
 dependencies:
     - cmake
-    - qt >=6.2
+    - qt6-main >=6.5
+    - qt6-webengine
     - git
-    - rust
-    - vtk =9.1.0
+    - x-vis =1.1
+    - dtk-forge6::vtk =9.2.6
     - dtk-core
+    - dtk-log
     - dtk-script >= 2.5.1
     - dtk-core-python
     - dtk-imaging
     - dtk-imaging-python
     - dtk-plugins-imaging
     - python =3.9
+    - openalea.lpy >=3.13
+    - libzip
     - ipython
     - numpy
     - scipy != 1.8.1
     - swig >=4.1
     - pymongo
     - jinja2
-    - matplotlib-base
+    - matplotlib-base=3.7.1
+    - geomdl
     - timagetk =3
     - python-lsp-server
     - pyside6
     - qtconsole-base
+    - python-lsp-server=1.7.1
+    - jedi=0.18.2
+    - scipy != 1.8.1
+    - importlib_metadata
+    - pyvista
+    - conda
     - pip
     - pip:
         - morphonet
+        - python-lsp-server[websockets]

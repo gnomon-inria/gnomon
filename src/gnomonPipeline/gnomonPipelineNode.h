@@ -13,8 +13,6 @@ class GNOMONPIPELINE_EXPORT gnomonPipelineNode : public QObject
     Q_OBJECT
 
 public:
-    Q_ENUMS(Type);
-
     enum Type {
         NODE_DEFAULT = -1,
         NODE_ALGORITHM = 0,
@@ -28,6 +26,7 @@ public:
         NODE_MORPHONET = 8,
         NODE_EVOLUTION_MODEL = 9
     };
+    Q_ENUM(Type);
 
 public:
     gnomonPipelineNode(void);
@@ -64,6 +63,7 @@ public:
     const QString& algorithmPlugin(void);
 
     virtual inline QString path(void) { return ""; };
+    virtual void setPath(const QString& path) { return; };
     virtual QJsonObject parameters(void);
     virtual QJsonObject morphonet_data(void);
     virtual QStringList parametersName(void);
@@ -103,7 +103,7 @@ public:
 
 public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);*/
-    
+
 public:
     QList<gnomonPipelineEdge *> inputEdges(void);
     QList<gnomonPipelineEdge *> outputEdges(void);

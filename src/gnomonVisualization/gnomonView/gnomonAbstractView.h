@@ -16,7 +16,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractView : public QObject
 
 public:
     gnomonAbstractView(QObject *parent = nullptr);
-    ~gnomonAbstractView(void);
+    virtual ~gnomonAbstractView(void);
 
 public:
     Q_PROPERTY(QStringList formNames READ formNames NOTIFY formsChanged);
@@ -24,12 +24,18 @@ public:
     Q_PROPERTY(QStringList acceptedForms READ acceptedForms);
     Q_PROPERTY(bool inputView READ inputView WRITE setInputView NOTIFY inputViewChanged);
 
+    Q_PROPERTY(double currentTime READ currentTime WRITE setCurrentTime NOTIFY timeChanged);
+    Q_PROPERTY(double timeMax READ timeMax NOTIFY timeMaxChanged);
+    Q_PROPERTY(QList<double> times READ times NOTIFY timesChanged);
+
     Q_PROPERTY(bool empty READ empty NOTIFY formsChanged);
 
 public:
     virtual void setForm(const QString&, std::shared_ptr<gnomonAbstractDynamicForm>, std::shared_ptr<gnomonAbstractVisualization> = nullptr);
+    virtual void setForm(const QString&, const QString&, const QString&, const QVariantMap&);
     virtual std::shared_ptr<gnomonAbstractDynamicForm>  form(const QString&);
     virtual void removeForm(const QString& form_type);
+    virtual std::shared_ptr<gnomonAbstractVisualization> getVisualization(const QString&);
 
 public slots:
     virtual inline void render(void) {} // refresh the display of the view
@@ -45,6 +51,8 @@ public slots:
     virtual void transmit(void);
     virtual void transmitForm(const QString&);
     virtual void restoreState(void);
+    virtual QJsonObject serialize(void);
+    virtual void deserialize(const QJsonObject &serialization);
 
 public slots:
     virtual inline void saveScreenshot(const QString& filename) {};
@@ -62,6 +70,14 @@ public:
 
     bool contains(const QString&);
     virtual bool empty(void);
+
+public:
+    QList<double> times(void);
+    double currentTime(void) const;
+    double timeMax(void);
+
+public slots:
+    void setCurrentTime(double);
 
 public:
     Q_INVOKABLE QString formVisuName(const QString& form_type);
@@ -93,6 +109,10 @@ signals:
     void formVisualizationChanged(const QString&);
 
     void badFormDropped(const QString& form_type, const QString& acceptedForms);
+
+    void timeChanged(double);
+    void timeMaxChanged(double);
+    void timesChanged(void);
 
 public:
     class gnomonAbstractViewPrivate *d;

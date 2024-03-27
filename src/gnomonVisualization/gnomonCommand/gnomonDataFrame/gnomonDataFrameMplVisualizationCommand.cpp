@@ -20,13 +20,12 @@ public:
 
 gnomonDataFrameMplVisualizationCommand::gnomonDataFrameMplVisualizationCommand() : d(new gnomonDataFrameMplVisualizationCommandPrivate)
 {
-    this->factory_name = groupName;
     this->factory = &gnomonVisualization::dataFrameMplVisualization::pluginFactory();
-    loadPluginGroup(this->factoryName());
+    GNOMON_COMMANDS_INIT(gnomonDataFrameMplVisualizationCommand)
 
     QStringList keys = this->factory->keys();
     if (!keys.empty()) {
-        this->algorithm_name = keys[0];
+        this->visu_name = keys[0];
     }
 }
 
@@ -38,17 +37,17 @@ gnomonDataFrameMplVisualizationCommand::~gnomonDataFrameMplVisualizationCommand(
 void gnomonDataFrameMplVisualizationCommand::newVisualization(void)
 {
     this->clear();
-    auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(this->algorithm_name);
+    auto visu = gnomonVisualization::dataFrameMplVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractDataFrameMplVisualization>(visu);
     this->connectVisualization();
 }
 
 void gnomonDataFrameMplVisualizationCommand::setFormVisualization(const QString& visu_name, const QVariantMap &parameters)
 {
-    this->setAlgorithmName(visu_name);
+    this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu);
     if (visu) {
-        visu->setDataFrame(d->dataFrame->current());
+        visu->setDataFrame(d->dataFrame);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();
         visu->update();
@@ -57,7 +56,7 @@ void gnomonDataFrameMplVisualizationCommand::setFormVisualization(const QString&
 
 void gnomonDataFrameMplVisualizationCommand::predo(void)
 {
-    std::dynamic_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu)->setDataFrame(d->dataFrame->current());
+    std::dynamic_pointer_cast<gnomonAbstractDataFrameMplVisualization>(this->visu)->setDataFrame(d->dataFrame);
 }
 
 void gnomonDataFrameMplVisualizationCommand::postdo(void)
@@ -79,15 +78,6 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonDataFrameMplVis
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
     inputs["dataFrame"] = d->dataFrame;
     return inputs;
-}
-
-bool gnomonDataFrameMplVisualizationCommand::isEmpty()
-{
-    return availablePlugins().empty();
-}
-
-QStringList gnomonDataFrameMplVisualizationCommand::availablePlugins() {
-    return availablePluginsFromGroup(groupName);
 }
 
 gnomonAbstractCommand::orderedMap gnomonDataFrameMplVisualizationCommand::inputTypes() {

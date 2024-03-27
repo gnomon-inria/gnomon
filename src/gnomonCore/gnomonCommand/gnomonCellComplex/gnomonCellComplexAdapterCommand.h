@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gnomonCore/gnomonCommand/gnomonAbstractCommand.h>
+#include <gnomonCore/gnomonCommand/gnomonAbstractAlgorithmCommand.h>
 #include <gnomonCore/gnomonCommand/gnomonAbstractAdapterCommand.h>
 #include <gnomonCore/gnomonForm/gnomonCellComplex/gnomonCellComplex.h>
 
@@ -36,10 +36,10 @@ public:
     orderedMap inputTypes() override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "cellComplexAdapter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonCellComplexAdapterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonCellComplexAdapterCommand)

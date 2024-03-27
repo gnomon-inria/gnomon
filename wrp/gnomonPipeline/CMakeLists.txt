@@ -32,6 +32,7 @@ swig_link_libraries(${PROJECT_NAME}
   ${LAYER_NAME}
   Python3::Python
   Python3::NumPy
+  ${VTK_LIBRARIES}
   dtkCore
   gnomonCore
   Qt6::Core

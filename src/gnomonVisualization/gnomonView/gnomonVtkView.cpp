@@ -35,7 +35,7 @@
 #include <vtkCamera.h>
 #include <vtkCaptionActor2D.h>
 #include <vtkCubeAxesActor.h>
-#include <vtkGenericOpenGLRenderWindow.h>
+//#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkInteractorObserver.h>
 #include <vtkInteractorStyle.h>
 #include <vtkInteractorStyleImage.h>
@@ -45,6 +45,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
+#include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTextProperty.h>
 #include <vtkWindowToImageFilter.h>
@@ -191,7 +192,6 @@ public:
     void updateOrientation(void);
 
 public:
-    void updateFormsTimes(void);
     void updateGrid(void);
     void updateAxes(void);
 
@@ -199,7 +199,7 @@ public:
     void addCameraObserver(vtkSmartPointer<vtkCamera> cam);
 
 public:
-    vtkSmartPointer<vtkGenericOpenGLRenderWindow> window;
+    vtkSmartPointer<vtkRenderWindow> window;
     vtkSmartPointer<vtkRenderer> renderer2D;
     vtkSmartPointer<vtkRenderer> renderer3D;
 
@@ -222,6 +222,8 @@ public:
     QMetaObject::Connection connectYZ;
     QMetaObject::Connection connectSlice;
     QMetaObject::Connection connectTime;
+
+    QMetaObject::Connection connectRenderWindowAdded;
 
 public:
     void clearConnections(void);
@@ -247,15 +249,11 @@ public:
     bool in_pool = false;
 
 public:
-    QSet<double> forms_times;
     QList<long> picked_cells;
 
 public:
     double xBounds[2] = {0,0}, yBounds[2] = {0,0}, zBounds[2] = {0,0};
     double c_x = 0., c_y = 0., c_z = 0.;
-
-public:
-    double c_t = 0.;
 
 public:
     QSettings *settings;
@@ -308,6 +306,13 @@ gnomonVtkViewPrivate::gnomonVtkViewPrivate(QObject *parent) : QObject(parent)
 gnomonVtkViewPrivate::~gnomonVtkViewPrivate(void)
 {
     this->clearConnections();
+
+    for(auto map : adapterCommands) {
+        for(auto command: map) {
+            delete command;
+        }
+        map.clear();
+    }
 }
 
 void gnomonVtkViewPrivate::clearConnections(void)
@@ -394,19 +399,6 @@ void gnomonVtkViewPrivate::updateOrientation(void)
     this->interactor()->Render();
 }
 
-void gnomonVtkViewPrivate::updateFormsTimes(void)
-{
-    this->forms_times.clear();
-
-    for (const auto& key : q->formNames()) {
-        for(auto time : q->form(key)->times()) {
-            this->forms_times.insert(time);
-        }
-    }
-
-    emit q->timeMaxChanged(q->timeMax());
-    q->timesChanged();
-}
 
 void gnomonVtkViewPrivate::updateGrid(void)
 {
@@ -555,6 +547,7 @@ void gnomonVtkViewPrivate::adaptForm(const QString& adapter_plugin)
 
 gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 {
+    setObjectName("gnomonVtkView");
     dd = new gnomonVtkViewPrivate;
     dd->q = this;
 
@@ -581,13 +574,8 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     d->acceptForms["gnomonMesh"] = false;
     d->acceptForms["gnomonPointCloud"] = false;
 
-    connect(this, &gnomonVtkView::formAdded, [=] (const QString& key) {
-        dd->updateFormsTimes();
-        emit formsChanged();
-    });
-
     connect(this, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> form) {
-        int index = gnomonFormManager::instance()->formIndex(form);
+        int index = gnomonFormManager::instance()->formIndex(form->uuid());
         gnomonFormManager::instance()->setCamera(index, dd->renderer3D->GetActiveCamera());
     });
     connect(this, &gnomonVtkView::formsChanged, this, &gnomonVtkView::updateBounds);
@@ -595,10 +583,11 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
 
 gnomonVtkView::~gnomonVtkView(void)
 {
+    d->visualizationCommands.clear();
     delete dd;
 }
 
-void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
+void gnomonVtkView::associate(vtkRenderWindow *window)
 {
     dd->window = window;
     dd->window->AddRenderer(dd->renderer2D);
@@ -607,8 +596,11 @@ void gnomonVtkView::associate(vtkGenericOpenGLRenderWindow *window)
     this->switchTo3D();
 
     dd->updateOrientation();
-    dd->updateFormsTimes();
+    d->updateFormsTimes();
     dd->updateAxes();
+
+    update();
+    emit renderWindowAssociated();
 }
 
 void gnomonVtkView::switchTo3D(void)
@@ -744,40 +736,6 @@ void gnomonVtkView::sliceChange(double value)
     dd->interactor()->Render();
 }
 
-void gnomonVtkView::setCurrentTime(double time)
-{
-    QList<double> sorted_times = this->times();
-    if(sorted_times.contains(time)) {
-        if (dd->c_t != time) {
-            dd->c_t = time;
-            emit timeChanged(dd->c_t);
-        }
-    }
-}
-
-double gnomonVtkView::currentTime(void) const
-{
-    return dd->c_t;
-}
-
-double gnomonVtkView::timeMax(void)
-{
-    QList<double> times = this->times();
-    if (times.isEmpty()) {
-        return -1;
-    }  else {
-        return this->times().last();
-    }
-}
-
-QList<double> gnomonVtkView::times(void)
-{
-    QList<double> sorted_times = QList<double>(dd->forms_times.begin(), dd->forms_times.end());
-    std::sort(sorted_times.begin(), sorted_times.end());
-
-    return sorted_times;
-}
-
 void gnomonVtkView::setPickedCells(QList<long> new_list)
 {
     dd->picked_cells = new_list;
@@ -801,23 +759,23 @@ void gnomonVtkView::setAcceptForm(const QString& form_type, bool accept)
     }
 
     if(form_type == "gnomonBinaryImage") {
-        d->visualizationCommands["gnomonBinaryImage"] = new gnomonBinaryImageVtkVisualizationCommand;
+        d->visualizationCommands["gnomonBinaryImage"] = std::make_shared<gnomonBinaryImageVtkVisualizationCommand>();
     } else if(form_type == "gnomonCellComplex") {
-        d->visualizationCommands["gnomonCellComplex"] = new gnomonCellComplexVtkVisualizationCommand;
+        d->visualizationCommands["gnomonCellComplex"] = std::make_shared<gnomonCellComplexVtkVisualizationCommand>();
     } else if(form_type == "gnomonCellImage") {
-        d->visualizationCommands["gnomonCellImage"] = new gnomonCellImageVtkVisualizationCommand;
+        d->visualizationCommands["gnomonCellImage"] = std::make_shared<gnomonCellImageVtkVisualizationCommand>();
     } else if(form_type == "gnomonImage") {
-        d->visualizationCommands["gnomonImage"] = new gnomonImageVtkVisualizationCommand;
+        d->visualizationCommands["gnomonImage"] = std::make_shared<gnomonImageVtkVisualizationCommand>();
     } else if(form_type == "gnomonLString") {
-        d->visualizationCommands["gnomonLString"] = new gnomonLStringVtkVisualizationCommand;
+        d->visualizationCommands["gnomonLString"] = std::make_shared<gnomonLStringVtkVisualizationCommand>();
     } else if(form_type == "gnomonMesh") {
-        d->visualizationCommands["gnomonMesh"] = new gnomonMeshVtkVisualizationCommand;
+        d->visualizationCommands["gnomonMesh"] = std::make_shared<gnomonMeshVtkVisualizationCommand>();
     } else if(form_type == "gnomonPointCloud") {
-        d->visualizationCommands["gnomonPointCloud"] = new gnomonPointCloudVtkVisualizationCommand;
+        d->visualizationCommands["gnomonPointCloud"] = std::make_shared<gnomonPointCloudVtkVisualizationCommand>();
     }
 
     d->visualizationCommands[form_type]->setView(this);
-    connect(d->visualizationCommands[form_type], &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
+    connect(d->visualizationCommands[form_type].get(), &gnomonAbstractVisualizationCommand::visuParametersChanged, [=] () {
         emit formVisuParametersChanged();
     });
 
@@ -930,7 +888,7 @@ void gnomonVtkView::link(gnomonVtkView *other)
         this->sliceChange(value);
     });
     dd->connectTime = connect(other, &gnomonVtkView::timeChanged, [=] (double value) {
-        this->onTimeChanged(value);
+        this->setCurrentTime(value);
     });
 
     emit syncedChanged();
@@ -1058,7 +1016,7 @@ std::shared_ptr<gnomonPointCloudSeries> gnomonVtkView::pointCloud(void)
 void gnomonVtkView::removeForm(const QString& form_type)
 {
     gnomonAbstractView::removeForm(form_type);
-    dd->updateFormsTimes();
+    d->updateFormsTimes();
     if (this->empty()) {
         this->setBounds(0, 0, 0, 0, 0, 0);
     }
@@ -1606,7 +1564,7 @@ void gnomonVtkView::clear(void)
 {
     gnomonAbstractView::clear();
     this->setBounds(0, 0, 0, 0, 0, 0);
-    dd->updateFormsTimes();
+    d->updateFormsTimes();
     this->render();
 }
 
@@ -1620,8 +1578,24 @@ void gnomonVtkView::saveScreenshot(const QString& filename)
         file_path = filename;
     }
 
-    QImage image = this->toImage();
-    image.save(file_path);
+    //QImage image = this->toImage();
+    //image.save(file_path);
+
+    vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+    windowToImageFilter->SetInput(dd->window);
+    windowToImageFilter->SetInputBufferTypeToRGBA();
+    windowToImageFilter->ReadFrontBufferOff();
+
+    vtkSmartPointer<vtkImageWriter> writer = nullptr;
+    if (file_path.endsWith(".png")) {
+        writer = vtkSmartPointer<vtkPNGWriter>::New();
+    }
+
+    if (writer) {
+        writer->SetFileName(file_path.toStdString().c_str());
+        writer->SetInputConnection(windowToImageFilter->GetOutputPort());
+        writer->Write();
+    }
 }
 
 QImage gnomonVtkView::toImage(void)
@@ -1662,9 +1636,9 @@ QImage gnomonVtkView::toImage(void)
 
 void gnomonVtkView::startPicking() {
     if(!d->forms.contains("gnomonCellImage") ||
-        d->visualizationCommands["gnomonCellImage"]->algorithmName() != "cellImageVtkVisualizationMarchingCubes") {
+        d->visualizationCommands["gnomonCellImage"]->visualizationName() != "cellImageVtkVisualizationMarchingCubes") {
         qWarning() << "Picking not implemented for : "
-                   <<  d->visualizationCommands["gnomonCellImage"]->algorithmName()
+                   <<  d->visualizationCommands["gnomonCellImage"]->visualizationName()
                    << " only cellImageVtkVisualizationMarchingCubes has picking";
         return;
     }
@@ -1704,11 +1678,6 @@ void gnomonVtkView::onSliceChanged(double slice)
     Q_UNUSED(slice);
 }
 
-void gnomonVtkView::onTimeChanged(double time)
-{
-    this->setCurrentTime(time);
-}
-
 void gnomonVtkView::setInPool(bool inpool)
 {
     dd->in_pool = inpool;
@@ -1742,6 +1711,130 @@ void gnomonVtkView::drop(int index, bool new_visu)
         }
     }
     gnomonAbstractView::drop(index, new_visu);
+}
+
+QJsonObject gnomonVtkView::serialize(void) {
+    auto serialization = gnomonAbstractView::serialize();
+    {
+        vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+        gnomonCameraParameters p;
+        p.fromVtkCamera(cam);
+        QJsonObject camera_json = p.toJson();
+        serialization.insert("active_camera", camera_json);
+    }
+
+    QJsonObject other_cameras;
+    for(auto it = dd->cameras.keyValueBegin(); it!=dd->cameras.keyValueEnd(); it++) {
+        vtkSmartPointer<vtkCamera> cam = it->second;
+        gnomonCameraParameters p;
+        p.fromVtkCamera(cam);
+        QJsonObject camera_json = p.toJson();
+        other_cameras.insert(QString::number(it->first), camera_json);
+    }
+    serialization.insert("other_cameras", other_cameras);
+
+    serialization.insert("mode", dd->mode);
+    serialization.insert("ori", dd->ori);
+    serialization.insert("representation", dd->representation);
+    serialization.insert("grid_type", dd->grid_type);
+    serialization.insert("grid_orientation", dd->grid_orientation);
+    serialization.insert("grid_visible", dd->grid_visible);
+    serialization.insert("axes_visible", dd->axes_visible);
+    serialization.insert("camera_fixed", dd->camera_fixed);
+    serialization.insert("c_x", dd->c_x);
+    serialization.insert("c_y", dd->c_y);
+    serialization.insert("c_z", dd->c_z);
+    serialization.insert("xBounds0", dd->xBounds[0]);
+    serialization.insert("xBounds1", dd->xBounds[1]);
+    serialization.insert("yBounds0", dd->yBounds[0]);
+    serialization.insert("yBounds1", dd->yBounds[1]);
+    serialization.insert("zBounds0", dd->zBounds[0]);
+    serialization.insert("zBounds1", dd->zBounds[1]);
+
+    QJsonArray picked_cells;
+    for(const auto &val: dd->picked_cells) {
+        picked_cells.append((int)val);
+    }
+    serialization.insert("picked_cells", picked_cells);
+
+    return serialization;
+}
+
+void gnomonVtkView::deserialize(const QJsonObject &serialization) {
+
+    disconnect(dd->connectRenderWindowAdded);
+
+    auto lambda = [=] () {
+        gnomonAbstractView::deserialize(serialization);
+
+        auto mode = (gnomonVtkView::Mode)serialization.value("mode").toInt();
+        auto ori = (gnomonVtkView::Orientation)serialization.value("ori").toInt();
+        auto representation = (gnomonVtkView::Representation)serialization.value("representation").toInt();
+        auto grid_type = (gnomonVtkView::Grid)serialization.value("grid_type").toInt();
+        auto grid_orientation = (gnomonVtkView::Orientation)serialization.value("grid_orientation").toInt();
+
+        dd->c_x = serialization.value("c_x").toDouble();
+        dd->c_y = serialization.value("c_y").toDouble();
+        dd->c_z = serialization.value("c_z").toDouble();
+
+        double x0 = serialization.value("xBounds0").toDouble();
+        double x1 = serialization.value("xBounds1").toDouble();
+        double y0 = serialization.value("yBounds0").toDouble();
+        double y1 = serialization.value("yBounds1").toDouble();
+        double z0 = serialization.value("zBounds0").toDouble();
+        double z1 = serialization.value("zBounds1").toDouble();
+        setBounds(x0, x1, y0, y1, z0, z1);
+
+        dd->ori = ori;
+        setRepresentation(representation);
+        if(mode == gnomonVtkView::Mode::VIEW_MODE_3D) {
+            switchTo3D();
+        } else {
+            switchTo2D();
+        }
+
+        setGridType(grid_type);
+        setGridOrientation(grid_orientation);
+        setGridVisible(serialization.value("grid_visible").toBool());
+        setAxesVisible(serialization.value("axes_visible").toBool());
+        setCameraFixed(serialization.value("camera_fixed").toBool());
+
+
+        dd->picked_cells.clear();
+        QJsonArray picked_cells = serialization.value("picked_cells").toArray();
+        for(const auto &val: picked_cells) {
+            dd->picked_cells.append(val.toInt());
+        }
+
+        // FIXME: This should not be necessary
+        // this->update();
+
+        QJsonObject other_cameras = serialization.value("other_cameras").toObject();
+        for(auto key: other_cameras.keys()) {
+            if(dd->cameras.contains((gnomonVtkView::Orientation)key.toInt())) {
+                vtkSmartPointer<vtkCamera> cam = dd->cameras[(gnomonVtkView::Orientation)key.toInt()];
+                gnomonCameraParameters p;
+                p.fromJson(other_cameras[key].toObject());
+                p.toVtkCamera(cam);
+            }
+        }
+
+        auto camera_json = serialization["active_camera"].toObject();
+        vtkSmartPointer<vtkCamera> cam = dd->renderer3D->GetActiveCamera();
+        gnomonCameraParameters p;
+        p.fromJson(camera_json);
+        p.toVtkCamera(cam);
+        dd->renderer3D->ResetCameraClippingRange();
+
+        this->render();
+    };
+
+    if(dd->window) {
+        lambda();
+    } else {
+        dd->connectRenderWindowAdded = connect(this, &gnomonVtkView::renderWindowAssociated, lambda);
+    }
+
 }
 
 // ///////////////////////////////////////////////////////////////////

@@ -4,7 +4,6 @@
 
 #include <dtkCore/dtkCoreParameters>
 #include <gnomonVisualizationExport.h>
-#include <dtkImagingCore>
 
 #include <gnomonVisualization/gnomonView/gnomonAbstractView.h>
 
@@ -14,7 +13,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonAbstractVisualization : public QObject
 
 public:
     gnomonAbstractVisualization();
-    ~gnomonAbstractVisualization(void);
+    virtual ~gnomonAbstractVisualization(void);
 
 public:
     virtual void setView(gnomonAbstractView *view);
@@ -23,6 +22,8 @@ public:
 public:
     virtual const QString pluginName(void) = 0;
     virtual const QString name(void) = 0;
+    virtual QString documentation(void) = 0;
+    virtual QString version(void) { return "X.X.X"; }
 
 public:
     virtual void setParameter(const QString&, const QVariant&) = 0;
@@ -55,7 +56,10 @@ public slots:
     // add the form visualization to its view, if possible without any recomputing
     virtual void fill(void) = 0;
 
-    virtual inline void clearConnections(void) {  };
+    virtual void clearConnections(void);
+
+public slots:
+    virtual void onTimeChanged(double) = 0;
 
 public slots:
     virtual void setVisible(bool visible) = 0;

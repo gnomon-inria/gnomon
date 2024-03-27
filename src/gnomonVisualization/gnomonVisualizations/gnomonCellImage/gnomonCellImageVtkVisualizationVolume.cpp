@@ -2,8 +2,6 @@
 #include "gnomonVisualizations/gnomonAbstractVisualization_p.h"
 #include "gnomonVisualizations/gnomonAbstractVtkVisualization_p.h"
 
-#include <dtkImagingCore>
-
 #include <gnomonVisualization/gnomonCoreParameterColor>
 
 #include "gnomonView/gnomonVtkView.h"
@@ -170,19 +168,10 @@ void gnomonCellImageVtkVisualizationVolume::update(void)
         return;
 
     if (ddd->image) {
-        ddd->image->Delete();
         ddd->image = nullptr;
     }
 
-    dtkImageConverter *converter = dtkImaging::converter::pluginFactory().create("dtkVtkImageConverter");
-    if(!converter) {
-        dtkWarn() << Q_FUNC_INFO << "cannot instanciate a dtkVtkImageConverter, please check that dtk-plugins-imaging is installed!";
-        return;
-    }
-    converter->setInput(ddd->cellImage->image());
-    converter->convert();
-    ddd->image = static_cast<vtkImageData *>(converter->output());
-    delete converter;
+    ddd->image = ddd->cellImage->image();
 
     if (colormap_name=="glasbey") {
         int shape[3];
@@ -331,15 +320,21 @@ void gnomonCellImageVtkVisualizationVolume::onXZ(void)
 
 void gnomonCellImageVtkVisualizationVolume::onTimeChanged(double value)
 {
-    if (ddd->cellImageSeries->times().contains(value)) {
-        ddd->cellImage = ddd->cellImageSeries->at(value);
-        this->update();
+    if(this->cellImage()) {
+        if (ddd->cellImageSeries->times().contains(value)) {
+            ddd->cellImage = ddd->cellImageSeries->at(value);
+            this->update();
+        }
+        this->render();
     }
-    this->render();
 }
 
 const QString gnomonCellImageVtkVisualizationVolume::name(void) {
     return "Cell Image Volume";
+}
+
+QString gnomonCellImageVtkVisualizationVolume::documentation(void) {
+    return "Visualize a CellImage using volume rendering.";
 }
 
 //

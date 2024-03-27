@@ -28,10 +28,10 @@ public:
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
 public:
-    static bool isEmpty();
     inline static const QString groupName = "dataFrameWriter";
-    static QStringList availablePlugins();
 
 private:
     class gnomonDataFrameWriterCommandPrivate *d;
 };
+
+GNOMON_COMMAND_TRAITS(gnomonDataFrameWriterCommand)
