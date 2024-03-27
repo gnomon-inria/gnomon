@@ -64,7 +64,7 @@ if(GNOMON_ENABLE_VISU)
 endif(GNOMON_ENABLE_VISU)
 target_link_libraries(${PROJECT_NAME} PRIVATE dtkCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC gnomonCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE gnomonProject)
+target_link_libraries(${PROJECT_NAME} PUBLIC gnomonProject)
 
 ## #############################################################################
 ##
