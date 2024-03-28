@@ -109,7 +109,7 @@ G.Workspace {
                             font: G.Style.fonts.subHeader
                             color: G.Style.colors.textColorBase;
 
-                            text: "version 0.81.0"
+                            text: "version 1.0.0"
 
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter

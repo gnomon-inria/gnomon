@@ -5,7 +5,7 @@ from gnomon.utils import formDataPlugin
 from gnomon.core import gnomonAbstractImageData, gnomonImage
 
 
-@formDataPlugin(version="0.5.0", coreversion="0.81.0", data_setter='set_image', data_getter='get_image', name="DummyImageData")
+@formDataPlugin(version="0.5.0", coreversion="1.0.0", data_setter='set_image', data_getter='get_image', name="DummyImageData")
 class dummyImageData(gnomonAbstractImageData):
     def __init__(self, image=None):
         super().__init__()

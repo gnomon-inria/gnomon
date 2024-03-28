@@ -6,7 +6,7 @@ from gnomon.utils import algorithmPlugin
 from gnomon.utils.decorators import imageInput
 from gnomon.core import gnomonAbstractImageWriter
 
-@algorithmPlugin(version='0.1.0', coreversion='0.81.1', name="Dummy Image Writer")
+@algorithmPlugin(version='0.1.0', coreversion='1.0.0', name="Dummy Image Writer")
 @imageInput(attr='img', data_plugin="dummyImageData")
 class dummyImageWriter(gnomonAbstractImageWriter):
     def __init__(self):

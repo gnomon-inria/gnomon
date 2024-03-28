@@ -1,5 +1,36 @@
 # ChangeLog
 
+## version 1.0.0 - 2024-03-27
+* Gather gnomon library and GUI in a single repository
+* Include the notion of Project throughout the application:
+    * Manage a hidden folder in each project directory
+    * Manage data paths when reading external data files
+    * Store the current session and make it possible to reload it
+    * Serialize all forms and deserialize them when reloading session
+    * Start a new session from apipeline, or a blank one
+    * Manage code source files in Python/L-Py workspaces
+    * Allow to define a thumbmail image per project
+* Use metatypes to simplify Form creation and inspection
+* Move from dtkImage to vtkImageData in Image Forms
+    * Better memory management of Form data
+* Manipulate forms and workspaces through UUIDs
+* Allow to close workspaces when possible
+* Configure pipeline input and output paths when replaying
+* Display info on the current plugin in a dialog
+* Explicit the notion of active view for each workspace
+* Support time in 2D views (Matplotlib and Text)
+* Zoom, pan and manage axes limits in Matplotlib View
+* Track memory usage during execution
+* Generalize progress bar to all algos and workspaces
+* Display logs in a collapsible panel
+* More intelligible workspace names
+* Restyle 2D curve editors
+* New command-line interface to install/update plugin packages
+* Add wall properties in the CellImage abstraction
+* Allow to pass a mesh as an input of quantification
+* Switch from dark to light theme in GUI
+* Various bugfixes
+
 ## version 0.81.1 - 2023-07-20
 * fixing the registration workspace
 
@@ -102,6 +133,6 @@
 * colormaps per channels
 * world with metadata on images
 * blending with 2 images
-*
+
 ## version 0.9.0 - 2018-11-20
-*initial release
+* initial release
