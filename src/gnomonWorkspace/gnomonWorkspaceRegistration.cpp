@@ -244,9 +244,9 @@ void gnomonWorkspaceRegistration::viewOutputs()
     }
 }
 
-QJsonObject gnomonWorkspaceRegistration::serialize(void)
+QJsonObject gnomonWorkspaceRegistration::_serialize(void)
 {
-    QJsonObject state = gnomonAlgorithmWorkspace::serialize();
+    QJsonObject state = gnomonAlgorithmWorkspace::_serialize();
     QJsonObject image_stack;
     for( auto [id, form_uuid]: dd->image_stack.asKeyValueRange()) {
         image_stack[QString::number(id)] = form_uuid;
@@ -262,7 +262,7 @@ QJsonObject gnomonWorkspaceRegistration::serialize(void)
     return state;
 }
 
-void gnomonWorkspaceRegistration::deserialize(const QJsonObject &state)
+void gnomonWorkspaceRegistration::_deserialize(const QJsonObject &state)
 {
     dd->image_stack.clear();
     dd->transformation_stack.clear();
@@ -276,7 +276,7 @@ void gnomonWorkspaceRegistration::deserialize(const QJsonObject &state)
     for(auto id : transformation_stack.keys()) {
         dd->transformation_stack.insert(id.toInt(), transformation_stack[id].toString());
     }
-    gnomonAlgorithmWorkspace::deserialize(state);
+    gnomonAlgorithmWorkspace::_deserialize(state);
     emit stackSizeChanged();
     this->setStackLevel(dd->stack_level+1);
 }

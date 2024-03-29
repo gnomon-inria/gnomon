@@ -23,9 +23,9 @@ public:
      gnomonWorkspaceRegistration(QObject *parent = nullptr);
     ~gnomonWorkspaceRegistration(void);
 
-public:
-    QJsonObject serialize(void) override;
-    void deserialize(const QJsonObject&) override;
+protected:
+    QJsonObject _serialize(void) override;
+    void _deserialize(const QJsonObject&) override;
 
 public:
     Q_PROPERTY(int stackSize READ stackSize NOTIFY stackSizeChanged);
