@@ -18,6 +18,7 @@ public:
 
 public:
     virtual QString path(void) override;
+    virtual void setPath(const QString& path) override;
 
 public:
     virtual QString toToml(void) override;

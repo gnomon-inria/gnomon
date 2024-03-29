@@ -23,6 +23,7 @@ public:
 
 public:
     Q_PROPERTY(QString algoName READ algoName WRITE setAlgoName NOTIFY algorithmChanged);
+    Q_PROPERTY(QJsonObject algoMetaData READ algoMetaData NOTIFY algorithmChanged);
     Q_PROPERTY(QStringList algorithms READ algorithms NOTIFY algorithmsLoaded);
     Q_PROPERTY(QVariantList algorithmsData READ algorithmsData NOTIFY algorithmsLoaded);
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged);
@@ -33,6 +34,7 @@ public:
     Q_PROPERTY(gnomonMplView* figure READ figure CONSTANT);
     Q_PROPERTY(gnomonQmlView* textView READ textView CONSTANT);
     Q_PROPERTY(int progress READ progress NOTIFY progressChanged);
+    Q_PROPERTY(QString progressMessage READ progressMessage NOTIFY progressMessageChanged);
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
 
 signals:
@@ -41,6 +43,7 @@ signals:
     void parametersChanged(void);
     void currentIndexChanged(void);
     void progressChanged(int progress);
+    void progressMessageChanged(QString message);
 
 public slots:
     virtual void run(bool no_async=false);
@@ -55,12 +58,14 @@ public slots:
 
 public:
     QString algoName(void) const;
+    QJsonObject algoMetaData(void) const;
     QStringList algorithms(void) const;
     QVariantList algorithmsData(void) const;
     void setAlgoName(const QString &);
     int currentIndex(void) const;
     void setCurrentIndex(int);
     int progress(void);
+    QString progressMessage(void);
 
 public:
     gnomonVtkViewList *sources(void) const;

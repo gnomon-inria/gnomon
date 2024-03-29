@@ -323,6 +323,28 @@ Layout.ForceDirected = function(graph, stiffness, repulsion, damping, minEnergyT
 	this.edgeSprings = {}; // keep track of springs associated with edges
 };
 
+Layout.ForceDirected.prototype.removeNode = function(node) {
+	if (node.id in this.nodePoints) {
+		delete this.nodePoints[node.id];
+	}
+	this.detachNode(node);
+}
+
+Layout.ForceDirected.prototype.detachNode = function(node) {
+	var tmpEdges = this.graph.edges.slice();
+	tmpEdges.forEach(function(e) {
+		if (e.source.id === node.id || e.target.id === node.id) {
+			this.removeEdge(e);
+		}
+	}, this);
+};
+
+Layout.ForceDirected.prototype.removeEdge = function(edge) {
+	if (edge.id in this.edgeSprings) {
+		delete this.edgeSprings[node.id];
+	}
+}
+
 Layout.ForceDirected.prototype.point = function(node) {
 	if (!(node.id in this.nodePoints)) {
 		let point = new Layout.ForceDirected.Point(Vector.random());

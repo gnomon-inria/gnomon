@@ -46,7 +46,7 @@ void gnomonCellImageFilterCommand::setAlgorithmName(const QString& algo_name)
 
 void gnomonCellImageFilterCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonCellImageFilterCommand::postdo(void)

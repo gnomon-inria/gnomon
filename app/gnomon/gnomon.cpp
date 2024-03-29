@@ -69,7 +69,7 @@ void workspaceImageProvider::makeScreenshot(const QString &id) {
 }
 
 // /////////////////////////////////////////////////////////////////////////////
-// GnomonViewerAssociator
+// gnomonViewAssociator
 // /////////////////////////////////////////////////////////////////////////////
 
 class gnomonViewAssociator : public QObject
@@ -112,6 +112,10 @@ void gnomonViewAssociator::associate(QObject *source, gnomonVtkView *destination
 
 gnomonViewAssociator *gnomonViewAssociator::s_instance = 0;
 
+// /////////////////////////////////////////////////////////////////////////////
+// gnomonMetaDataFetcher
+// /////////////////////////////////////////////////////////////////////////////
+
 class gnomonMetaDataFetcher : public QObject
 {
     Q_OBJECT
@@ -120,6 +124,7 @@ public:
     Q_INVOKABLE QString workspaceMetaData(const QString& type, const QString& key);
     Q_INVOKABLE QStringList pluginGroupMetaData(const QString& key);
     Q_INVOKABLE QStringList pluginGroupMetaData(const QStringList& keys);
+    Q_INVOKABLE QJsonObject pluginMetaData(const QString& group, const QString& key);
     static gnomonMetaDataFetcher *instance(void);
 
 private:
@@ -160,6 +165,19 @@ QStringList gnomonMetaDataFetcher::pluginGroupMetaData(const QStringList& keys)
         plugins += this->pluginGroupMetaData(key);
     }
     return plugins;
+}
+
+QJsonObject gnomonMetaDataFetcher::pluginMetaData(const QString& group, const QString& key)
+{
+    QJsonObject md_json;
+    auto group_keys = availablePluginsFromGroup(group);
+    if (group_keys.contains(key)) {
+        QMap<QString, QString> metadata = pluginMetadata(group, key);
+        for (const auto &md_key: metadata.keys()) {
+            md_json.insert(md_key, metadata[md_key]);
+        }
+    }
+    return md_json;
 }
 
 gnomonMetaDataFetcher* gnomonMetaDataFetcher::instance(void)
@@ -247,6 +265,30 @@ QJsonObject gnomonQMLUtils::projectInfo(const QString &path)
         project_info_json.insert(key, project_info[key].toString());
     }
     return project_info_json;
+}
+
+bool gnomonQMLUtils::fileBelongsToProject(const QString &relative_path, const QString &project_path)
+{
+    gnomonProject *project = new gnomonProject(project_path);
+    QString absolute_path = project->findFile(relative_path);
+    delete project;
+    return !absolute_path.isEmpty();
+}
+
+QString gnomonQMLUtils::findProjectFile(const QString &relative_path, const QString &project_path)
+{
+    gnomonProject *project = new gnomonProject(project_path);
+    QString absolute_path = project->findFile(relative_path);
+    delete project;
+    return absolute_path;
+}
+
+QString gnomonQMLUtils::projectRelativePath(const QString &absolute_path, const QString &project_path)
+{
+    gnomonProject *project = new gnomonProject(project_path);
+    QString relative_path = project->relativePath(absolute_path);
+    delete project;
+    return relative_path;
 }
 
 void gnomonQMLUtils::makeProjectThumbnail(const QString &project_path, const QString &thumbnail_path, QPointF top_left, QPointF bottom_right)

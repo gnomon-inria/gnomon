@@ -26,11 +26,14 @@ void gnomonAbstractVisualization::setView(gnomonAbstractView* view)
     d->view = view;
 
     disconnect(d->connectViewDestroyed);
-    if(view) {
+    disconnect(d->connectTime);
+    if(view && !view->empty()) {
         d->connectViewDestroyed = connect(view, &QObject::destroyed, [=] () {
             setView(nullptr);
         });
-        d->connectTime = connect(view, SIGNAL(timeChanged(double)), this, SLOT(onTimeChanged(double)));
+        d->connectTime = connect(view, &gnomonAbstractView::timeChanged, [=](double value){
+            this->onTimeChanged(value);
+        });
         this->fill();
     }
 }

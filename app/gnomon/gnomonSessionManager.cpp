@@ -19,7 +19,8 @@ public:
     gnomonSessionManagerPrivate(QObject *parent = nullptr);
     ~gnomonSessionManagerPrivate(void);
 public:
-    bool runNodes(QStringList scheduled_nodes, std::shared_ptr<gnomonPipeline> pipeline, double progress_increment);
+    bool runPipeline(std::shared_ptr<gnomonPipeline> pipeline, bool write_outputs=false);
+    bool runNodes(QStringList scheduled_nodes, std::shared_ptr<gnomonPipeline> pipeline, double progress_increment, bool write_outputs=false);
 
 public:
     gnomonSessionManager *q = nullptr;
@@ -37,7 +38,7 @@ public:
 
     bool alive = true;
     bool init = false;
-    bool loading_session = false;
+    bool disable_sync = false;
     int active_workspace_id = -1;
 
 private:
@@ -53,8 +54,16 @@ gnomonSessionManagerPrivate::~gnomonSessionManagerPrivate(void)
 
 }
 
+bool gnomonSessionManagerPrivate::runPipeline(std::shared_ptr<gnomonPipeline> pipeline, bool write_outputs)
+{
+    gnomonPipelineManager::instance()->pipeline()->setName(pipeline->name());
+    gnomonPipelineManager::instance()->pipeline()->setDescription(pipeline->description());
+    auto scheduled_nodes = pipeline->scheduledNodeNames(true);
+    return this->runNodes(scheduled_nodes, pipeline, -1, write_outputs);
+}
+
 bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::shared_ptr<gnomonPipeline> pipeline,
-                                           double progress_increment)
+                                           double progress_increment, bool write_outputs)
 {
     res = true;
 
@@ -98,7 +107,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 browser->view()->transmit();
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
         browser->setReaderPath(paths.join(","));
@@ -126,13 +135,21 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 morphonet->view()->transmit();
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
     } else if(node->algorithmClass().contains("Writer", Qt::CaseInsensitive)) {
-        dtkInfo() << "Writer node (not creating anything) : " << node->algorithmClass();
+        dtkInfo() << "Writer node : " << node->algorithmClass();
+        if (write_outputs) {
+            auto inputPortsNames = node->inputPortsNames();
+            int index = node->inputPort(inputPortsNames.first())->formIndex();
+            QString write_path = node->path();
+            gnomonFormManager::instance()->saveAs(index, write_path);
+        } else {
+            dtkInfo() << "Not writing anything";
+        }
         q->setProgress(q->progress() + progress_increment);
-        res = runNodes(scheduled_nodes, pipeline, progress_increment);
+        res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
     } else if(node->algorithmClass() == "task") {
         qInfo() << "Task node : " << node->algorithmPlugin();
         // auto node = dynamic_cast<gnomonPipelineNodeTask>(node);
@@ -148,7 +165,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
         }
 
         q->setProgress(q->progress() + progress_increment);
-        res = runNodes(scheduled_nodes, pipeline, progress_increment);
+        res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
     } else if(node->algorithmClass().contains("formAlgorithm", Qt::CaseInsensitive)) {
         dtkInfo() << "Node : Python Workspace";
         gnomonWorkspacePythonAlgorithm * w_p = nullptr;
@@ -184,7 +201,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 (*w_p->targets())[0]->transmit();
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
         w_p->run();
@@ -209,7 +226,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 w_p->view()->transmit();
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
         w_p->run();
@@ -303,7 +320,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
                 return;
             }
             q->setProgress(q->progress() + progress_increment);
-            res = runNodes(scheduled_nodes, pipeline, progress_increment);
+            res = runNodes(scheduled_nodes, pipeline, progress_increment, write_outputs);
         });
 
         w_d->run();
@@ -356,21 +373,36 @@ void gnomonSessionManager::initialize() {
     gnomonAbstractSessionManager::registerInstance(new gnomonSessionManager(nullptr));
 }
 
-bool gnomonSessionManager::loadFromPipeline(const QString &path) {
+bool gnomonSessionManager::loadFromPipelineFile(const QString &path) {
     if(!d->alive) {
         return false;
     }
     auto pipeline = std::make_shared<gnomonPipeline>();
     d->file_path = path;
     pipeline->readFromJson(path, true);
-    gnomonPipelineManager::instance()->pipeline()->setName(pipeline->name());
-    gnomonPipelineManager::instance()->pipeline()->setDescription(pipeline->description());
-    auto scheduled_nodes = pipeline->scheduledNodeNames(true);
-    return d->runNodes(scheduled_nodes, pipeline, -1);
+    return d->runPipeline(pipeline);
+}
+
+bool gnomonSessionManager::loadFromPipeline(gnomonPipeline *pipeline, bool write_outputs) {
+    if(!d->alive) {
+        return false;
+    }
+    // TODO: QML pipeline will be cleared, so copy is required: is there a better way ?
+    auto _pipeline = std::make_shared<gnomonPipeline>();
+    _pipeline->fromJson(pipeline->toJson());
+    return d->runPipeline(_pipeline, write_outputs);
+}
+
+bool gnomonSessionManager::syncDisabled(void) {
+    return d->disable_sync;
 }
 
 void gnomonSessionManager::setEngine(QQmlApplicationEngine *engine) {
     d->engine = engine;
+}
+
+void gnomonSessionManager::disableSync(bool sync) {
+    d->disable_sync = sync;
 }
 
 void gnomonSessionManager::setWindow(QObject *window) {
@@ -405,8 +437,34 @@ int gnomonSessionManager::newWorkspace(const QString &source) {
     return index;
 }
 
+void gnomonSessionManager::closeWorkspace(int index) {
+    QObject* workspace_component;
+    auto success = QMetaObject::invokeMethod(d->window, "workspace_at",
+                                             Q_RETURN_ARG(QObject*, workspace_component),
+                                             Q_ARG(int, index));
+    QString uuid;
+    if(success) {
+        uuid = workspace_component->property("uuid").toString();
+    } else {
+        return;
+    }
+
+    success = QMetaObject::invokeMethod(d->window, "closeWorkspace",
+                                             Q_ARG(int, index));
+    if(success) {
+        d->workspace_sources.remove(uuid);
+        d->workspace_properties.remove(uuid);
+        //remove this workspace from the settings
+        QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
+        settings.beginGroup(uuid);
+        settings.remove("");
+        settings.endGroup();
+        this->sync();
+    }
+}
+
 void gnomonSessionManager::setActiveWorkspace(int id) {
-    if(!d->loading_session) {
+    if(!d->disable_sync) {
         d->active_workspace_id = id;
         this->sync();
     }
@@ -424,64 +482,73 @@ void gnomonSessionManager::sync() {
         return;
     }
 
-    qDebug() << "===========" << "saving session";
-    QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
-    QDir dir(GNOMON_PROJECT->projectDir());
+    if(!d->disable_sync) {
+        qDebug() << "===========" << "saving session";
+        QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
+        QDir dir(GNOMON_PROJECT->projectDir());
 
-    // building json object for properties
-    QJsonObject session_json;
-    QJsonObject workspace_properties;
-    QJsonObject workspace_sources;
-    QJsonArray workspace_order;
-    auto workspaces = qmlContext(d->window)->objectForName("workspaces");
-    for(auto child: workspaces->children()) {
-        if(child && child->property("d").isValid() && child->property("uuid").isValid()) {
-            auto uuid = child->property("uuid").toString();
-            workspace_order.append(uuid);
-            workspace_properties.insert(uuid, d->workspace_properties.value(uuid));
-            workspace_sources.insert(uuid, d->workspace_sources.value(uuid));
+        // building json object for properties
+        QJsonObject session_json;
+        QJsonObject workspace_properties;
+        QJsonObject workspace_sources;
+        QJsonArray workspace_order;
+        auto workspaces = qmlContext(d->window)->objectForName("workspaces");
+        for(auto child: workspaces->children()) {
+            if(child && child->property("d").isValid() && child->property("uuid").isValid()) {
+                auto uuid = child->property("uuid").toString();
+                workspace_order.append(uuid);
+                workspace_properties.insert(uuid, d->workspace_properties.value(uuid));
+                workspace_sources.insert(uuid, d->workspace_sources.value(uuid));
+            }
         }
-    }
-    session_json.insert("current_index", workspaces->property("currentIndex").toInt());
-    session_json.insert("workspace_order", workspace_order);
-    session_json.insert("workspace_properties", workspace_properties);
-    session_json.insert("workspace_sources", workspace_sources);
-    session_json.insert("active_workspace_id", d->active_workspace_id);
+        session_json.insert("current_index", workspaces->property("currentIndex").toInt());
+        session_json.insert("workspace_order", workspace_order);
+        session_json.insert("workspace_properties", workspace_properties);
+        session_json.insert("workspace_sources", workspace_sources);
+        session_json.insert("active_workspace_id", d->active_workspace_id);
 
-    settings.setValue("workspaces", session_json);
+        settings.setValue("workspaces", session_json);
 
-    // pipeline
-    auto url = QUrl::fromLocalFile(dir.absoluteFilePath(PROJECT_PIPELINE_FILE));
-    gnomonPipelineManager::instance()->pipeline()->exportToJson(url.toString());
-    
+        // pipeline
+        auto url = QUrl::fromLocalFile(dir.absoluteFilePath(PROJECT_PIPELINE_FILE));
+        gnomonPipelineManager::instance()->pipeline()->exportToJson(url.toString());
 
-    //TODO: forms
-    cleanExpiredForms();
-    settings.beginGroup("forms");
-    settings.setValue("form_manager_state", GNOMON_FORM_MANAGER->serialize());
+        cleanExpiredForms();
+        settings.beginGroup("forms");
+        settings.setValue("form_manager_state", GNOMON_FORM_MANAGER->serialize());
 
-    settings.setValue("owned_form_ids", m_owned_forms.keys());
-    QStringList form_ids;
-    for(auto it = m_tracked_forms.keyValueBegin(); it != m_tracked_forms.keyValueEnd(); it++) {
-        if(!it->second.expired()) {
-            auto form = it->second.lock();
-            settings.setValue(it->first, form->serialize());
-            form_ids.append(it->first);
+        settings.setValue("owned_form_ids", m_owned_forms.keys());
+        QStringList form_ids;
+        for(auto it = m_tracked_forms.keyValueBegin(); it != m_tracked_forms.keyValueEnd(); it++) {
+            if(!it->second.expired()) {
+                auto form = it->second.lock();
+                settings.setValue(it->first, form->serialize());
+                form_ids.append(it->first);
+            }
         }
+        settings.setValue("form_ids", form_ids);
+        settings.endGroup();
+
+        settings.beginGroup("pipeline");
+        settings.setValue("pipeline_manager_state", gnomonPipelineManager::instance()->serialize());
+        settings.endGroup();
     }
-    settings.setValue("form_ids", form_ids);
-    settings.endGroup();
-
-    settings.beginGroup("pipeline");
-    settings.setValue("pipeline_manager_state", gnomonPipelineManager::instance()->serialize());
-    settings.endGroup();
-
 
 }
 
 bool gnomonSessionManager::load() {
     qDebug() << "===========" << "loading session";
-    d->loading_session = true;
+    this->setLoadingSessionProgress(0, "Loading Session");
+    d->disable_sync = true;
+
+    auto setSessionLoader = [=](double progress, const QString& message){
+        this->setLoadingSessionProgress(this->loadingSessionProgress() + progress, message);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 200);
+    };
+
+    double progress_increment = 0.05;
+    setSessionLoader(progress_increment, "Project Directory");
+
     QDir dir(GNOMON_PROJECT->projectDir());
 
     QSettings settings(PROJECT_SESSION_FILE, QSettings::IniFormat);
@@ -492,9 +559,17 @@ bool gnomonSessionManager::load() {
     QStringList form_ids = settings.value("form_ids").toStringList();
     QStringList owned_form_ids = settings.value("owned_form_ids").toStringList();
 
+    // thirty five percent of total time
+    progress_increment = 0.35 / form_ids.size();
+    int counter = 0;
+    QString message;
+
     // hold a reference to every form until load is finished, every unused form should be cleaned up
     QList<std::shared_ptr<gnomonAbstractDynamicForm>> form_holder;
     for(const auto &uuid: form_ids) {
+        message = " Form " + QString::number(++counter) + "/" + QString::number(form_ids.size());
+        setSessionLoader(progress_increment, message);
+
         auto form = gnomonForm::createDynamicForm(settings.value(uuid).toJsonObject());
         m_tracked_forms.insert(uuid, form);
         form_holder.append(form);
@@ -514,9 +589,15 @@ bool gnomonSessionManager::load() {
         QJsonObject workspace_properties = workspaces_info["workspace_properties"].toObject();
         QJsonArray workspace_order = workspaces_info["workspace_order"].toArray();
         QJsonObject workspace_sources = workspaces_info["workspace_sources"].toObject();
+        // fifty percent of total time
+        progress_increment = 0.5 / workspace_order.count();
+        counter = 0;
         for(const auto &id_: workspace_order) {
+            message = " Workspaces " + QString::number(++counter) + "/" + QString::number(workspace_order.count());
+            setSessionLoader(progress_increment, message);
+
             auto id = id_.toString();
-            d->workspace_properties[id] = workspace_properties[id].toObject();;
+            d->workspace_properties[id] = workspace_properties[id].toObject();
 
             loadWorkspace(workspace_sources[id].toString(), id);
         }
@@ -536,17 +617,20 @@ bool gnomonSessionManager::load() {
         gnomonPipelineManager::instance()->deserialize(pipeline_manager_state, pipeline);
         settings.endGroup();
 
+        progress_increment = 0.1;
+        setSessionLoader(progress_increment, "Active Workspace");
+
         d->active_workspace_id = workspaces_info["active_workspace_id"].toInt();
         QMetaObject::invokeMethod(d->window, "switch_workspace",
                                   Q_ARG(int, d->active_workspace_id));
 
         d->init = true;
-        d->loading_session = false;
+        d->disable_sync = false;
 
         return true;
     } else {
 
-        d->loading_session = false;
+        d->disable_sync = false;
         return false;
     }
 }

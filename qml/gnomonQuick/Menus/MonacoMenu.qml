@@ -94,7 +94,7 @@ Item {
             flat: true
 
             onClicked: {
-                let file_name = _self.mode == "Python" ? d.code.fileName : d.fileName;
+                let file_name = d.fileName;
                 let default_file_name = _self.mode == "Python" ? "example.py" : "vonKoch.lpy";
                 if(file_name == default_file_name) {
                     _file_dialog_save.open()
@@ -134,6 +134,7 @@ Item {
 
         onAccepted: {
             _self._read_only = true
+            _read_only_toast.open()
             open_source_file(_file_dialog.file)
         }
     }
@@ -153,11 +154,12 @@ Item {
             let file_path = decodeURIComponent(_file_dialog_save.file);
             let file_name = file_path.split('/').pop()
 
-            let old_file_name = _self.mode == "Python" ? d.code.fileName : d.fileName;
+            let old_file_name = d.fileName;
 
             if ((old_file_name.split('.').length == 1) || (old_file_name.split('.').pop() == file_name.split('.').pop())) { //same extension
                 if (_self.mode == "Python") {
-                    d.code.fileName = file_name;
+                    d.fileName = file_name;
+                    _editor.tabName = d.fileName;
                 } else {
                     _editor.tabName = file_name
                 }
@@ -260,6 +262,16 @@ Item {
     }
 
     G.Toast {
+        id: _read_only_toast
+
+        parent: Overlay.overlay
+        header: "Read-only file"
+        message: "The source file you opened does not belong to the project, therefore it is read-only in the code editor."
+
+        type: G.Style.ButtonType.Warning
+    }
+
+    G.Toast {
         id: _wrong_extension_toast
 
         parent: Overlay.overlay
@@ -273,9 +285,9 @@ Item {
         let file_path = decodeURIComponent(path);
         let file_name = file_path.split('/').pop()
         
-        if (_self.mode == "Python") {
+        /* if (_self.mode == "Python") {
             d.code.fileName = file_name;
-        }
+        } */
         
         d.read(file_path, _self._read_only);
         

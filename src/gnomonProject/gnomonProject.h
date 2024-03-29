@@ -12,6 +12,8 @@
 #define PROJECT_MANIFEST_FILE ".gnomon/manifest.json"
 
 class gnomonAbstractSessionManager;
+class gnomonPipeline;
+
 struct gnomonProjectInfo {
     QString name;
     QString description;
@@ -42,7 +44,8 @@ public:
     void close();
 
     Q_INVOKABLE void save(void);
-    Q_INVOKABLE bool loadSessionFromPipeline(const QString &path);
+    Q_INVOKABLE bool loadSessionFromPipelineFile(const QString &path);
+    Q_INVOKABLE bool loadSessionFromPipeline(gnomonPipeline *pipeline, bool write_outputs=false);
     gnomonAbstractSessionManager *currentSession(void);
 public:
     QString projectDir(void);

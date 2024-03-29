@@ -56,9 +56,11 @@ void gnomonActorImageVolumePrivate::updateOpacity(void)
 
     if (this->flat_rendering) {
         this->opacity->AddPoint(this->value_range[0],this->alpha);
-        this->opacity->AddPoint(this->background_value - 0.5,this->alpha);
+        this->opacity->AddPoint(this->background_value - 0.90,this->alpha);
+        this->opacity->AddPoint(this->background_value - 0.5,0.00);
         this->opacity->AddPoint(this->background_value,0.00);
-        this->opacity->AddPoint(this->background_value + 0.5,this->alpha);
+        this->opacity->AddPoint(this->background_value + 0.5,0.00);
+        this->opacity->AddPoint(this->background_value + 0.90,this->alpha);
         this->opacity->AddPoint(this->value_range[1],this->alpha);
     } else {
         this->opacity->AddPoint(this->value_range[0],0.00);
@@ -122,7 +124,7 @@ void gnomonActorImageVolume::update(void)
         d->volume_mapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
 
     d->volume_mapper->SetInputData(d->image);
-    d->volume_mapper->SetRequestedRenderModeToRayCast();
+    d->volume_mapper->SetRequestedRenderModeToDefault();
     d->volume_mapper->Modified();
     d->volume_mapper->Update();
 

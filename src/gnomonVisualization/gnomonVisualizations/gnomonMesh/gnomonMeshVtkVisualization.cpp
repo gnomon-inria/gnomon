@@ -458,12 +458,14 @@ void gnomonMeshVtkVisualization::onXZ(void)
 
 void gnomonMeshVtkVisualization::onTimeChanged(double value)
 {
-    if (ddd->meshSeries->times().contains(value)) {
-        ddd->mesh = ddd->meshSeries->at(value);
-        ddd->updateGrid();
-        this->update();
+    if(this->mesh()) {
+        if (ddd->meshSeries->times().contains(value)) {
+            ddd->mesh = ddd->meshSeries->at(value);
+            ddd->updateGrid();
+            this->update();
+        }
+        this->render();
     }
-    this->render();
 }
 
 const QString gnomonMeshVtkVisualization::name(void) {

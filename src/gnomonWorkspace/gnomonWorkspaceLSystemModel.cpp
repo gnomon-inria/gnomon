@@ -604,7 +604,7 @@ void gnomonWorkspaceLSystemModel::importFile(const QString& file_name, const QSt
 }
 
 QJsonObject gnomonWorkspaceLSystemModel::_serialize() {
-    QJsonObject state;
+    QJsonObject state = gnomonAbstractWorkspace::_serialize();
 
     QJsonObject open_file_json;
     for (const auto& file_name : d->open_files.keys()) {
@@ -639,6 +639,7 @@ QJsonObject gnomonWorkspaceLSystemModel::_serialize() {
 }
 
 void gnomonWorkspaceLSystemModel::_deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::_deserialize(state);
     disconnect(d->editor_connect);
 
     QJsonObject open_file_json = state["open_files"].toObject();

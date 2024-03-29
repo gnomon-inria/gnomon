@@ -103,6 +103,7 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
     connect(&d->timer, &QTimer::timeout, [=]() {
         //qDebug() << "============= PROGRESS : " << d->command->progress();
         emit progressChanged(d->command->progress());
+        emit progressMessageChanged(d->command->progressMessage());
     });
     connect(this, &gnomonAbstractWorkspace::started, [=]() {
        d->timer.start();
@@ -120,6 +121,16 @@ gnomonAlgorithmWorkspace::~gnomonAlgorithmWorkspace(void)
 QString gnomonAlgorithmWorkspace::algoName(void) const
 {
     return d->algorithm;
+}
+
+QJsonObject gnomonAlgorithmWorkspace::algoMetaData(void) const
+{
+    QJsonObject algo_json;
+    algo_json.insert("name", d->command->algorithmName());
+    algo_json.insert("documentation", d->command->documentation());
+    algo_json.insert("version", d->command->version());
+    algo_json.insert("group", d->command->factoryName());
+    return algo_json;
 }
 
 QStringList gnomonAlgorithmWorkspace::algorithms(void) const
@@ -284,7 +295,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
 }
 
 QJsonObject gnomonAlgorithmWorkspace::_serialize(void) {
-    QJsonObject state;
+    QJsonObject state = gnomonAbstractWorkspace::_serialize();
     state.insert("algoName", algoName());
     state.insert("currentIndex", currentIndex());
 
@@ -317,6 +328,7 @@ QJsonObject gnomonAlgorithmWorkspace::_serialize(void) {
 }
 
 void gnomonAlgorithmWorkspace::_deserialize(const QJsonObject & state) {
+    gnomonAbstractWorkspace::_deserialize(state);
     setCurrentIndex(state["currentIndex"].toInt());
     setAlgoName(state["algoName"].toString());
 
@@ -424,6 +436,10 @@ void gnomonAlgorithmWorkspace::addOutputView(const QVector<QString> &accepted_fo
 
 int gnomonAlgorithmWorkspace::progress(void) {
     return d->command->progress();
+}
+
+QString gnomonAlgorithmWorkspace::progressMessage(void) {
+    return d->command->progressMessage();
 }
 
 void gnomonAlgorithmWorkspace::pause(void) {

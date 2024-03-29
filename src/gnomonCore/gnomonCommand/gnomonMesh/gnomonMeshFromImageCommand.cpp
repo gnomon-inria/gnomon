@@ -32,13 +32,13 @@ void gnomonMeshFromImageCommand::setAlgorithmName(const QString& algo_name)
 {
     this->algorithm_name = algo_name;
 
-        delete this->action;
+    delete this->action;
     this->action = gnomonCore::meshFromImage::pluginFactory().create(algo_name);
 }
 
 void gnomonMeshFromImageCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonMeshFromImageCommand::postdo(void)

@@ -499,7 +499,7 @@ void gnomonWorkspaceMorphonet::export_outputs(void) {
 }
 
 QJsonObject gnomonWorkspaceMorphonet::_serialize() {
-    QJsonObject state;
+    QJsonObject state = gnomonAbstractWorkspace::_serialize();
     state.insert("current_id", currentId());
     state.insert("upload", uploadMode());
     state.insert("voxelsize", d->voxelsize);
@@ -510,6 +510,7 @@ QJsonObject gnomonWorkspaceMorphonet::_serialize() {
 }
 
 void gnomonWorkspaceMorphonet::_deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::_deserialize(state);
     setCurrentId(state["current_id"].toInt());
     setUploadMode(state["upload"].toBool());
     d->voxelsize = state["voxelsize"].toDouble();

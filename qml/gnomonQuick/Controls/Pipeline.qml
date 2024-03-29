@@ -15,10 +15,17 @@ Control {
 
     id: _self;
 
+    property var pipeline: GP.PipelineManager.pipeline
+
     // these are used in case the window height or width
     // are variable (as is the case for a collapsible menu)
     property int windowHeight: _self.height
     property int windowWidth: _self.width
+
+    property alias zoomLevel: _internal.zoomLevel
+
+    property bool edgeThumbnails: true
+    property bool readOnly: false
 
     clip: true;
 
@@ -40,12 +47,13 @@ Control {
 
         iconName: "content-save";
         tooltip: "Save the pipeline"
+        visible: !_self.readOnly
 
         onClicked: {
             console.log("saving pipeline");
             //This is actually defined in main.qml
             //at some point we need some serious cleanup
-            saveFileDialog.currentFile = "file://"+GP.ProjectManager.project.currentDir + "/" + (GP.PipelineManager.pipeline.name ? GP.PipelineManager.pipeline.name : "pipeline") + ".json"
+            saveFileDialog.currentFile = "file://"+GP.ProjectManager.project.currentDir + "/" + (_self.pipeline.name ? _self.pipeline.name : "pipeline") + ".json"
             saveFileDialog.open()
         }
     }
@@ -59,18 +67,18 @@ Control {
 
         height: G.Style.smallLabelHeight
 
-        text: GP.PipelineManager.pipeline.name != "" ? GP.PipelineManager.pipeline.name : "Enter pipeline name..."
-        color: GP.PipelineManager.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.neutralColor
+        text: _self.pipeline.name != "" ? _self.pipeline.name : "Enter pipeline name..."
+        color: _self.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.neutralColor
         font: G.Style.fonts.value
 
         G.Icon {
             anchors.top: parent.top
             anchors.left: parent.right
             anchors.margins: G.Style.smallPadding;
-            visible: _edit_area.containsMouse
+            visible: !_self.readOnly & _edit_area.containsMouse
 
             size: G.Style.iconSmall;
-            color: GP.PipelineManager.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDeEmphasize
+            color: _self.pipeline.name != "" ? G.Style.colors.textColorNeutral : G.Style.colors.textColorDeEmphasize
 
             icon: "pencil"
         }
@@ -82,7 +90,9 @@ Control {
             hoverEnabled: true
 
             onClicked: {
-                _pipeline_info_dialog.open()
+                if (!_self.readOnly) {
+                    _pipeline_info_dialog.open()
+                }
             }
         }
     }
@@ -105,27 +115,13 @@ Control {
 
         onWheel: (wheel) => {
             //We use only significant mouse wheel events to avoid sensitivity issues
-            if(wheel.angleDelta.y < 30 && wheel.angleDelta.y > -30) return
+            if(wheel.angleDelta.y < 10 && wheel.angleDelta.y > -10) return
             //We only enable 5 zoom levels by default
             if((_internal.zoomLevel === 0 && wheel.angleDelta.y > 0) || _internal.zoomLevel === -5 && wheel.angleDelta.y < 0) return
             //update zoom level
             _internal.zoomLevel = wheel.angleDelta.y > 0 ? Math.min(_internal.zoomLevel + 1, 0) : Math.max(_internal.zoomLevel - 1, -5);
 
-            //This is to compute the pan
-            let scaleChange = Math.pow(_internal.factor, _internal.zoomLevel) / _transform.scale
-            let dx = (1 - scaleChange) * (wheel.x - _canvas.x);
-            let dy = (1 - scaleChange) * (wheel.y - _canvas.y);
-
-            //pan lower bounds
-            let lx = _self.windowWidth - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
-            let ly = _self.windowHeight - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
-
-            // update scale (zoom factor powered to the current zoom level)
-            _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
-
-            //update pan
-            _canvas.x = Math.max(Math.min(0, _canvas.x + dx), lx);
-            _canvas.y = Math.max(Math.min(0, _canvas.y + dy), ly);
+            updateCanvas(wheel.x, wheel.y)
         }
     }
 
@@ -174,7 +170,7 @@ Control {
         Behavior on y { PropertyAnimation { duration: _internal.transitionDuration;  easing.type: Easing.InOutCubic } }
 
         Connections {
-            target: GP.PipelineManager.pipeline
+            target: _self.pipeline
             function onNodeAdded (node) {
 
                 let n = new PJS.Node(node.name, node)
@@ -192,7 +188,7 @@ Control {
         }
 
         Connections {
-            target: GP.PipelineManager.pipeline
+            target: _self.pipeline
             function onNodeRemoved (node) {
                 _self.removeNode(node);
             }
@@ -226,6 +222,7 @@ Control {
                         return _internal.originY
                     }
                 ),
+                interactive: !_self.readOnly,
                 workspaceIndex: window.current_workspace_index(),
             });
 
@@ -263,6 +260,7 @@ Control {
                 "tgt": tgt,
                 "src_component": src_component,
                 "tgt_component": tgt_component,
+                "thumbnail": _self.edgeThumbnails,
                 "inputWorkspaceIndex": src_component.workspaceIndex,
                 "outputWorkspaceIndex": tgt_component.workspaceIndex,
             });
@@ -290,7 +288,9 @@ Control {
             _internal.edgeComponents.splice(edge_index, 1)
         }
 
-        _internal.layout.graph.removeNode(node)
+        let n = new PJS.Node(node.name, node)
+        _internal.layout.removeNode(n)
+        _internal.layout.graph.removeNode(n)
         _internal.nodeComponents[node.name].destroy()
         delete _internal.nodeComponents[node.name]
     }
@@ -386,6 +386,26 @@ Control {
         property var nodeComponents: new Object()
         property var edgeComponents: []
 
+        onZoomLevelChanged: {
+            updateCanvas(_self.width/2, _self.height/2);
+        }
     }
 
+    function updateCanvas(x, y) {
+        //This is to compute the pan
+        let scaleChange = Math.pow(_internal.factor, _internal.zoomLevel) / _transform.scale
+        let dx = (1 - scaleChange) * (x - _canvas.x);
+        let dy = (1 - scaleChange) * (y - _canvas.y);
+
+        //pan lower bounds
+        let lx = _self.windowWidth - _canvas.width * Math.pow(_internal.factor, _internal.zoomLevel);
+        let ly = _self.windowHeight - _canvas.height * Math.pow(_internal.factor, _internal.zoomLevel);
+
+        // update scale (zoom factor powered to the current zoom level)
+        _transform.scale = Math.pow(_internal.factor, _internal.zoomLevel)
+
+        //update pan
+        _canvas.x = Math.max(Math.min(0, _canvas.x + dx), lx);
+        _canvas.y = Math.max(Math.min(0, _canvas.y + dy), ly);
+    }
 }

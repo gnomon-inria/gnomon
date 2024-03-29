@@ -47,8 +47,8 @@ class gnomonStandaloneMplView(gnomonMplView):
 
         manager_instance._canvas[num] = self._figure.canvas
         manager_instance._figures[num] = self._figure
-        manager_instance._connects[self.num] = MplCanvasZoomDrag(self._figure)
-        manager_instance._connects[self.num].connect()
+        manager_instance._connects[num] = MplCanvasZoomDrag(self._figure)
+        manager_instance._connects[num].connect()
         manager_instance.num += 1
 
     def render(self):

@@ -40,7 +40,7 @@ void gnomonPointCloudQuantificationCommand::setAlgorithmName(const QString& algo
 
 void gnomonPointCloudQuantificationCommand::predo(void)
 {
-
+    this->action->is_async = true;
 }
 
 void gnomonPointCloudQuantificationCommand::postdo(void)

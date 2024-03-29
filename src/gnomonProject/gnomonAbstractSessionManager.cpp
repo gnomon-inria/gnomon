@@ -28,6 +28,17 @@ void gnomonAbstractSessionManager::setProgress(double progress)
     emit progressChanged();
 }
 
+double gnomonAbstractSessionManager::loadingSessionProgress(void)
+{
+    return this->m_session_progress;
+}
+
+void gnomonAbstractSessionManager::setLoadingSessionProgress(double progress, const QString& step)
+{
+    this->m_session_progress = progress;
+    emit loadProgress(step);
+}
+
 bool gnomonAbstractSessionManager::addForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form)
 {
     this->trackForm(form);

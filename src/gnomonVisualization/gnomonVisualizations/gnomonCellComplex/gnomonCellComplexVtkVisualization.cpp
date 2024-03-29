@@ -347,11 +347,13 @@ void gnomonCellComplexVtkVisualization::onXZ(void)
 
 void gnomonCellComplexVtkVisualization::onTimeChanged(double value)
 {
-    if (ddd->cellComplexSeries->times().contains(value)) {
-        ddd->cellComplex = ddd->cellComplexSeries->at(value);
-        this->update();
+    if(this->cellComplex()) {
+        if (ddd->cellComplexSeries->times().contains(value)) {
+            ddd->cellComplex = ddd->cellComplexSeries->at(value);
+            this->update();
+        }
+        this->render();
     }
-    this->render();
 }
 
 const QString gnomonCellComplexVtkVisualization::name(void) {

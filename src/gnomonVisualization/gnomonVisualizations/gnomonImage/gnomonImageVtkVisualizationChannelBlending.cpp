@@ -246,10 +246,10 @@ void gnomonImageVtkVisualizationChannelBlending::update(void)
     double alpha = ((dtk::d_real *)d->parameters["alpha"])->value();
 
     ddd->channelLookupTables.clear();
-    if(ddd->image->channels().size()==1) {
-        ddd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
-    } else {
-        for (const auto& channelName : ddd->image->channels()) {
+    for (const auto& channelName : ddd->image->channels()) {
+        if(channelName.isEmpty()) {
+            ddd->channelLookupTables[""] = ((gnomonCoreParameterLookupTable *)d->parameters["lookuptable"])->value();
+        } else {
             ddd->channelLookupTables[channelName] = ((gnomonCoreParameterLookupTable *)d->parameters[channelName+"\nlookuptable"])->value();
         }
     }
@@ -368,12 +368,14 @@ void gnomonImageVtkVisualizationChannelBlending::onXZ(void)
 
 void gnomonImageVtkVisualizationChannelBlending::onTimeChanged(double value)
 {
-    if (ddd->imageSeries->times().contains(value)) {
-        ddd->image = ddd->imageSeries->at(value);
-        this->updateChannelImages();
-        this->update();
+    if(this->image()) {
+        if (ddd->imageSeries->times().contains(value)) {
+            ddd->image = ddd->imageSeries->at(value);
+            this->updateChannelImages();
+            this->update();
+        }
+        this->render();
     }
-    this->render();
 }
 
 const QString gnomonImageVtkVisualizationChannelBlending::name(void) {

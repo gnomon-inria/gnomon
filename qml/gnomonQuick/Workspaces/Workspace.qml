@@ -26,12 +26,14 @@ G.Page {
     Connections {
         target: window
         function onCurrentViewChanged() {
-            let parent_object = window.currentView.parent
-            while(parent_object != _self && parent_object != window && parent_object) {
-                parent_object = parent_object.parent
-            }
-            if(parent_object === _self) {
-                _self.viewSelected = window.currentView
+            if (window.currentView) {
+                let parent_object = window.currentView.parent
+                while(parent_object != _self && parent_object != window && parent_object) {
+                    parent_object = parent_object.parent
+                }
+                if(parent_object === _self) {
+                    _self.viewSelected = window.currentView
+                }
             }
         }
     }
@@ -75,7 +77,7 @@ G.Page {
             anchors.verticalCenter: parent.top;
             orientation: Qt.Horizontal;
 
-            z: _self.parent.z + 1;
+            z: _self.parent? _self.parent.z + 1 : 0;
 
             onClicked: {
                 if (_logs_control.opened())
@@ -106,6 +108,7 @@ G.Page {
             visible: window.load_in_progress
             opacity: 0.5
             to: 100
+            progressValueCentered: false
         }
 
         BusyIndicator {
@@ -124,8 +127,11 @@ G.Page {
             anchors.right: parent.right;
             anchors.verticalCenter: _banner_progress_bar.verticalCenter;
             anchors.margins: G.Style.smallPadding
+            property string progress_message: d ? d.progressMessage ? " - " + d.progressMessage : "" : ""
+            property string load_text: "Session loading in progress please dont launch other computations"
+            property string computation_text: "Computation in progress" + progress_message
 
-            text: window.load_in_progress ? "Session loading in progress please dont launch other computations" : "Computation in progress" ;
+            text: window.load_in_progress ? load_text :  computation_text;
 
             font: G.Style.fonts.value
         }

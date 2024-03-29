@@ -33,6 +33,7 @@ QML_FILES
   FormSelectorDelegate.qml
   GraphicalParameter.qml
   SessionSettings.qml
+  SplashScreen.qml
   Gutter.qml
   Icon.qml
   Icons.js
@@ -63,6 +64,8 @@ QML_FILES
   PipelineNodeDialog.qml
   PipelinePort.qml
   PipelinePortEdit.qml
+  PipelinePreviewDialog.qml
+  PluginInfoDialog.qml
   Project.qml
   ProjectBrowser.qml
   ProjectImportDialog.qml

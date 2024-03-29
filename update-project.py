@@ -6,7 +6,11 @@ import concurrent.futures
 from functools import wraps
 from typing import Callable, Iterable
 
-from git import Repo, Head
+try:
+    from git import Repo, Head
+except ImportError:
+    subprocess.run(["pip", "install", "gitpython"])
+    from git import Repo, Head
 
 parser = argparse.ArgumentParser()
 parser.add_argument("path", default=".", help="Path to the directory containing "
@@ -16,13 +20,15 @@ parser.add_argument("--branch", "-b", required=False, default="develop",
                     help="The branch name that should be used to checkout "
                          "and update gnomon, gnomon-x and the plugin"
                          " packages. Defaults to develop")
-parser.add_argument("--compile", "-c", action="store_true", required=False, default=False, help="Compile libgnomon "
-                                                                                                "and gnomon-x")
-parser.add_argument("--update-env", "-u", action="store_true", required=False, default=False, help="Updates the conda"
-                                                                                                   " environment")
-parser.add_argument("--force-reinstall", action="store_true", required=False, default=False, help="Forces the "
-                                                                                                  "reinstallation of "
-                                                                                                  "the plugin packages")
+parser.add_argument("--compile", "-c", action="store_true", required=False, default=False,
+                    help="Compile libgnomon and gnomon-x")
+parser.add_argument("--update-env", "-u", action="store_true", required=False, default=False,
+                    help="Updates the conda environment")
+parser.add_argument("--jobs", "-j", action="store", required=False, default=min(os.cpu_count(), 16),
+                    type=int, help=f"Number of jobs to use for compiling gnomon and the packages (default: {min(os.cpu_count(), 16)})")
+parser.add_argument("--force-reinstall", action="store_true", required=False, default=False,
+                    help="Forces the reinstallation of the plugin packages")
+
 args = parser.parse_args()
 
 
@@ -105,7 +111,7 @@ def _plugin_package_update(path):
     if os.path.exists(os.path.join(path, "CMakeLists.txt")):
         build_folder_path = os.path.join(path, "build")
         subprocess.run(["cmake", "-B",  build_folder_path, path])
-        subprocess.run(["make", "-C", build_folder_path, f"-j{os.cpu_count()}", "install"])
+        subprocess.run(["make", "-C", build_folder_path, f"-j{args.jobs}", "-B", "install"])
     if (diff or args.force_reinstall) and\
             (os.path.exists(os.path.join(path, "pyproject.toml")) or os.path.exists(os.path.join(path, "setup.py"))):
         print(f" -- number of files changed: {diff:+}")
@@ -157,18 +163,25 @@ def main():
         concurrent.futures.wait(futures)
         futures = []
 
+        # Check if a CPP plugin package is present
+        compile_required = False
+        for dir_path in glob.glob("**/gnomon-*", recursive=True):
+            if os.path.exists(os.path.join(dir_path, "CMakeLists.txt")):
+                compile_required = True
+                break
+
         # Compiling
-        if args.compile:
+        if args.compile or compile_required:
             print("Compiling")
             os.chdir("gnomon/build")
             subprocess.run(["rm", "-r", "wrp"])
-            subprocess.run(["make", f"-j{os.cpu_count()}", "install"])
+            subprocess.run(["make", f"-j{args.jobs}", "-B", "install"])
             os.chdir("../../gnomon-x")
             subprocess.run(["cargo",  "build"])
             os.chdir(args.path)
 
         # Updating gnomon-packages
-        futures += _plugin_package_update(glob.glob("**/gnomon-package-*", recursive=True), executor)
+        futures += _plugin_package_update(glob.glob("**/gnomon-*", recursive=True), executor)
 
         # Waiting for completion
         concurrent.futures.wait(futures)

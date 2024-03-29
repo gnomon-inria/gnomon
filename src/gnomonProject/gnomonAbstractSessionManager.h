@@ -12,6 +12,7 @@
 #define PROJECT_PIPELINE_FILE ".gnomon/session/pipeline.json"
 
 class QQmlApplicationEngine;
+class gnomonPipeline;
 
 class GNOMONPROJECT_EXPORT gnomonAbstractSessionManager: public QObject {
     Q_OBJECT
@@ -20,9 +21,13 @@ public:
 
 public:
     Q_PROPERTY(double progress READ progress NOTIFY progressChanged);
+    Q_PROPERTY(double loadingSessionProgress READ loadingSessionProgress NOTIFY loadProgress);
 
     double progress();
     void setProgress(double);
+
+    double loadingSessionProgress(void);
+    void setLoadingSessionProgress(double, const QString&);
 
 public:
     Q_INVOKABLE virtual bool save(const QString &id, const QString &path) = 0;
@@ -33,7 +38,11 @@ public:
 
     Q_INVOKABLE virtual bool newSession(const QString &source = "qrc:/gnomonQuick/Workspaces/WorkspaceBrowsing.qml") = 0;
 
-    virtual bool loadFromPipeline(const QString &path) = 0;
+    Q_INVOKABLE virtual void disableSync(bool sync) = 0;
+
+    virtual bool loadFromPipelineFile(const QString &path) = 0;
+    virtual bool loadFromPipeline(gnomonPipeline *pipeline, bool write_outputs=false) = 0;
+    virtual bool syncDisabled(void) = 0;
 
 public:
     virtual void setEngine(QQmlApplicationEngine *engine) = 0;
@@ -43,7 +52,9 @@ public:
     Q_INVOKABLE virtual int loadWorkspace(const QString &source, const QString &uuid) = 0;
 
     Q_INVOKABLE virtual int newWorkspace(const QString &source) = 0;
-    
+
+    Q_INVOKABLE virtual void closeWorkspace(int index) = 0;
+
     Q_INVOKABLE virtual void setActiveWorkspace(int id) = 0;
 
     virtual QJsonObject* getStorageForWorkspace(const QString &uuid) = 0;
@@ -64,11 +75,13 @@ signals:
     void progressChanged(void);
     void finished(void);
     void failed(QString);
+    void loadProgress(const QString&);
 
 protected:
     void cleanExpiredForms();
 
     double m_progress = 0.; // from 0 to 1
+    double m_session_progress = 0.;
     static void registerInstance(gnomonAbstractSessionManager *o);
 
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> m_owned_forms;

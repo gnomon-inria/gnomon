@@ -38,6 +38,7 @@ G.Application {
     signal getScreenshot(string id);
     signal workspaceThumbnailUpdated(int id);
     signal insideParamFigure();
+    signal currentWorkspaceIndexChanged(int index)
 
 
     palette {
@@ -311,6 +312,9 @@ G.Application {
 
                 StackLayout {
                     id: workspaces;
+                    onCurrentIndexChanged: {
+                        currentWorkspaceIndexChanged(currentIndex)
+                    }
                 }
             }
 
@@ -375,6 +379,13 @@ G.Application {
         }
     }
 
+    Connections {
+        target:  GP.ProjectManager;
+        function onProjectLoaded() {
+            stack_launcher.currentIndex = 1;
+        }
+    }
+
     G.Toast {
         id: _failed_pipeline_toast
 
@@ -428,7 +439,7 @@ G.Application {
         return workspaces;
     }
 
-    function workspace_at(index)
+    function workspace_at(index: int): QtObject
     {
         return workspaces.children[index];
     }
@@ -500,7 +511,7 @@ G.Application {
             }
             let info = GUtils.projectInfo(folder_source)
             info.source = folder_source
-            window.recent_projects.append(projectInfo)
+            window.recent_projects.append(info)
             recent_projects_array.splice(0, 0, window.recent_projects.get(window.recent_projects.count-1))
             window.opened_files = JSON.stringify(recent_projects_array)
         } else {
@@ -591,20 +602,26 @@ G.Application {
 
     function switch_workspace(index: int)
     {
-        window.current_workspace().d.saveState();
+        if (window.current_workspace()) {
+            window.current_workspace().d.saveState();
+        }
         window.workspace_at(index).d.wakeUp();
         window.drawelr_closed = false
         stack_launcher.currentIndex  = 1
         workspaces.currentIndex = index;
 
-        footer.workspaceName = window.current_workspace().workspace_title;
+        if (window.current_workspace()) {
+            footer.workspaceName = window.current_workspace().workspace_title;
+        }
 
         drawel.update_menu();
         drawer.update_menu(_internal.menu_sources[index]);
-        window.current_workspace().d.restoreView();
-        if(window.current_workspace().viewSelected) {
-            window.currentView = window.current_workspace().viewSelected
-            window.currentView.forceFocus()
+        if (window.current_workspace()) {
+            window.current_workspace().d.restoreView();
+            if(window.current_workspace().viewSelected) {
+                window.currentView = window.current_workspace().viewSelected
+                window.currentView.forceFocus()
+            }
         }
         GP.SessionManager.setActiveWorkspace(index)
     }
@@ -716,11 +733,23 @@ G.Application {
         return workspace.d
     }
 
+    function load_session_from_pipeline(pipeline, write_outputs=false) {
+        console.log("Loading session from", pipeline.name, "pipeline ( write outputs =", write_outputs, ")");
+        window.load_in_progress = true;
+        let res = GP.ProjectManager.project.loadSessionFromPipeline(pipeline, write_outputs);
+        if(res) {
+            console.log("Session Loaded ");
+        } else {
+            console.warn("An error occured while loading the session");
+        }
+        stack_launcher.currentIndex = 1;
+    }
 
+    // TODO: still necessary? (called only from the menu)
     function load_session(json_path) {
         console.log("Loading session from ", json_path);
         window.load_in_progress = true;
-        let res = GP.ProjectManager.project.loadSessionFromPipeline(json_path);
+        let res = GP.ProjectManager.project.loadSessionFromPipelineFile(json_path);
         if(res) {
             console.log("Session Loaded ");
         } else {
@@ -736,7 +765,7 @@ G.Application {
         GP.ProjectManager.openProject(project_url)
         //GP.PrpjectManager.project.loadSession()
 
-        stack_launcher.currentIndex = 1;
+        // stack_launcher.currentIndex = 1;
     }
 
     function open_blank_project(project_url, load_pipeline=false) {
@@ -748,7 +777,7 @@ G.Application {
         stack_launcher.currentIndex = 1;
     }
 
-    function closeWorkspace(index) {
+    function closeWorkspace(index: int) {
         if (window.workspace_list.count == 1) {
             _switch_workspace_dialog.reject();
             reset();
@@ -756,17 +785,34 @@ G.Application {
         }
 
         _workspaces_model.remove(index)
-        workspaces.children[index].destroy()
+
+        for(let i = 0; i < _workspaces_model.count; i++) {
+            console.log(i, "==>", _workspaces_model.get(i)["index"])
+            _workspaces_model.get(i)["index"] = i
+
+        }
+        let new_workspace_list = []
+        for(let i = 0; i < workspaces.count; i++) {
+            if(i!=index) {
+                new_workspace_list.push(workspaces.children[i])
+            }
+        }
 
         //if we remove from index < to currentIndex, the currentIndex needs to change
-        if(workspaces.currentIndex >= index) {
-            switch_workspace(workspaces.currentIndex-1);
+        let expected_index = workspaces.currentIndex >= index ? workspaces.currentIndex-1 : workspaces.currentIndex
+        if(workspaces.currentIndex === index) {
+            switch_workspace(expected_index)
         }
+
+        workspaces.children[index].destroy()
+        workspaces.children = new_workspace_list
+        workspaces.currentIndex = expected_index
     }
 
     function reset() {
         console.log("reset called");
 
+        GP.SessionManager.disableSync(true);
         window.drawelr_closed = true
         header.state = 'UNANCHORED'
         footer.state = 'UNANCHORED'
@@ -787,6 +833,7 @@ G.Application {
         for(let i=nb_forms; i>=0; i--) {
             GV.World.deleteForm(header.getAndRemoveWorldId(i), true)
         }
+        GP.SessionManager.disableSync(false);
     }
 
     Component.onCompleted: {

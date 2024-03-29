@@ -37,7 +37,8 @@ G.Workspace {
         onAccepted: {
             if(GP.ProjectManager.isExistingProject(_open_project_folder_dialog.folder)) {
                 console.log('Loading an existing project');
-                load_project(_open_project_folder_dialog.folder);
+                splash_screen.project_source = _open_project_folder_dialog.folder
+                splash_screen.start()
                 add_to_history(_open_project_folder_dialog.folder)
             } else {
                 _folder_path.text = _open_project_folder_dialog.folder
@@ -59,6 +60,7 @@ G.Workspace {
     }
 
     G.Panel {
+        id : panel
         anchors.fill: parent
 
         RowLayout {
@@ -107,7 +109,7 @@ G.Workspace {
                             font: G.Style.fonts.subHeader
                             color: G.Style.colors.textColorBase;
 
-                            text: "version 0.81.0"
+                            text: "version 1.0.0"
 
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -638,8 +640,8 @@ G.Workspace {
                                 }
 
                                 onDoubleClicked: {
-                                    history_set_last_used(source)
-                                    load_project(source)
+                                    splash_screen.project_source = source
+                                    splash_screen.start()
                                 }
 
                                 G.IconButton {
@@ -712,8 +714,8 @@ G.Workspace {
                                     anchors.rightMargin: -G.Style.smallPadding
 
                                     onClicked: {
-                                        history_set_last_used(source)
-                                        load_project(source)
+                                        splash_screen.project_source = source
+                                        splash_screen.start()
                                     }
                                 }
 
@@ -809,8 +811,18 @@ G.Workspace {
                                     nameFilters: ["Json files (*.json)"]
                             
                                     onAccepted: {
+                                        _pipeline_preview_dialog.pipelineFile = _pipeline_file_dialog.file
+                                        _pipeline_preview_dialog.projectSource = source
+                                        _pipeline_preview_dialog.open()
+                                    }
+                                }
+
+                                G.PipelinePreviewDialog {
+                                    id: _pipeline_preview_dialog
+
+                                    onAccepted: {
                                         open_blank_project(source, true)
-                                        load_session(_pipeline_file_dialog.file)
+                                        load_session_from_pipeline(_pipeline_preview_dialog.pipeline, _pipeline_preview_dialog.writeOutputs)
                                     }
                                 }
 
@@ -850,7 +862,6 @@ G.Workspace {
         message: "Not an existing project, create a new one ?"
 
         onAccepted : {
-            _folder_path.text = ""
             _project_title.text = ""
             _project_description.text = ""
             new_project_dialog.open()
@@ -1031,6 +1042,38 @@ G.Workspace {
             }
             project_thumbnail_dialog.delegate.refreshThumbnail();
         }
+    }
+
+    Loader {
+        id: splash_screen
+
+        property string project_source: ""
+        asynchronous: true
+
+        function start()  {
+            panel.visible = false
+            _overlay.visible = true
+            splash_screen.source = "qrc:/qt/qml/gnomonQuick/Controls/SplashScreen.qml"
+        }
+
+        onLoaded: {
+            load_project(splash_screen.project_source)
+            history_set_last_used(splash_screen.project_source)
+            splash_screen.source = "";
+            splash_screen.project_source = "";
+            _overlay.visible = false
+            panel.visible = true
+        }
+    }
+
+    Rectangle {
+        id: _overlay
+
+        parent:  Overlay.overlay
+        anchors.fill: parent
+        visible: false
+
+        color: G.Style.colors.overlayColor
     }
 
     function create_project() {

@@ -246,6 +246,9 @@ void gnomonFormManagerPrivate::addFormWriter(const QString& form_name, int item)
 {
     gnomonAbstractWriterCommand *command = nullptr;
     QString writer_plugin;
+    if (this->commands.contains(form_name)) {
+        writer_plugin = this->commands[form_name]->algorithmName();
+    }
 
     QString writer_command_name = form_name + "WriterCommand";
     if(!this->commands.contains(form_name)) {

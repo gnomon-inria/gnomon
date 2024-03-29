@@ -23,7 +23,10 @@ public:
 
     bool load() override;
 
-    bool loadFromPipeline(const QString &path) override;
+    bool loadFromPipelineFile(const QString &path) override;
+    bool loadFromPipeline(gnomonPipeline *pipeline, bool write_outputs=false) override;
+
+    bool syncDisabled(void) override;
 
 public:
     void setEngine(QQmlApplicationEngine *engine) override;
@@ -37,6 +40,8 @@ public:
 
     int newWorkspace(const QString &source) override;
 
+    void closeWorkspace(int index) override;
+
     void setActiveWorkspace(int id) override;
 
     QJsonObject *getStorageForWorkspace(const QString &uuid) override;
@@ -44,6 +49,8 @@ public:
     void sync() override;
 
     bool newSession(const QString &source) override;
+
+    void disableSync(bool sync) override;
 
 protected:
     void timerEvent(QTimerEvent *event) override;

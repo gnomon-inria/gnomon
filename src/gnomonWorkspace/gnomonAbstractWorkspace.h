@@ -78,8 +78,15 @@ public slots:
     virtual void restoreView(void) = 0;
 
 protected:
-    virtual QJsonObject _serialize() = 0;
-    virtual void _deserialize(const QJsonObject &state) = 0;
+    virtual QJsonObject _serialize() {
+        QJsonObject state;
+        state.insert("canBeDestroyed", m_can_be_destroyed);
+        return state;
+    };
+    virtual void _deserialize(const QJsonObject &state) {
+        m_can_be_destroyed = state.value("canBeDestroyed").toBool();
+        emit canBeDestroyedChanged(m_can_be_destroyed);
+    };
     QJsonObject savedState;
 
 public slots:

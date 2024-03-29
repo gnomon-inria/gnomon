@@ -59,9 +59,10 @@ G.Workspace {
 
         onRequestOpenFile: (path) => {
             let file_path = decodeURIComponent(path);
-            let file_name = file_path.split('/').pop()
-            d.code.fileName = file_name;
-            d.read(file_path, false);
+            // let file_name = file_path.split('/').pop()
+            // d.fileName = file_name;
+            let read_only = !GP.ProjectManager.project.isAccessible(file_path)
+            d.read(file_path, read_only);
         }
     }
 
@@ -85,7 +86,7 @@ G.Workspace {
 
                 theme: G.Style.mode == G.Style.Mode.Dark ? 'vs-dark' : 'vs-light';
                 language: 'python';
-                fileName: d.code.fileName
+                fileName: d.fileName
 
                 onModified: (contents) => {
                     d.code.text = eval(contents);
@@ -96,11 +97,11 @@ G.Workspace {
                     name = eval(name)
                     // Don't emit fileNameChanged signal when Tab 0
                     if(!name.endsWith("0"))
-                        d.code.fileName = name
-                    console.log(d.code.fileName)
-                    let file_path = GP.ProjectManager.project.findFile(d.code.fileName)
+                        d.fileName = name
+                    console.log(d.fileName)
+                    let file_path = GP.ProjectManager.project.findFile(d.fileName)
                     console.log(file_path)
-                    _editor.readOnly = (file_path.length === 0) & (!d.code.fileName.includes("example.py"))
+                    _editor.readOnly = (file_path.length === 0) & (!d.fileName.includes("example.py"))
                     console.log(_editor.readOnly)
                 }
 
@@ -116,6 +117,10 @@ G.Workspace {
                 onMakeFileEditable: () => {
                     import_file_to_project.importPath = GP.ProjectManager.project.currentDir;
                     import_file_to_project.open()
+                }
+
+                onReadOnlyChanged: () => {
+                    d.readOnly = _editor.readOnly
                 }
             }
 
@@ -158,7 +163,6 @@ G.Workspace {
     Connections {
         target: d.code
         function onCodeUpdated() {
-            _editor.tabName = d.code.fileName;
             _editor.contents = d.code.text; 
         }
     }
@@ -168,15 +172,15 @@ G.Workspace {
 
         onAccepted : {
             _editor.readOnly = false
-            d.importFile(d.code.fileName, import_file_to_project.importPath)
+            d.importFile(d.fileName, import_file_to_project.importPath)
         }
     }
 
     Component.onCompleted: {
         G.Associator.associate(_source_view, d.source);
         G.Associator.associate(_target_view, d.target);
-        if(d.code.fileName)
-            _editor.tabName = d.code.fileName;
+        if(d.fileName)
+            _editor.tabName = d.fileName;
         _editor.contents = d.code.text;
         drawel.close();
     }

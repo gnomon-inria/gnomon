@@ -117,7 +117,7 @@ Control {
         panelHeight:  _camera_parameters.count * (G.Style.mediumLabelHeight + G.Style.mediumColumnSpacing) + G.Style.mediumColumnSpacing + G.Style.iconSmall
         implicitHeight: _control.collapsed ? 0 : panelHeight + G.Style.collapsibleMinHeight + 3*G.Style.smallPadding
 
-        visible: (view instanceof G.View) & (view.viewLogic.mode == GV.View.VIEW_MODE_3D)
+        visible: view & (view instanceof G.View) & (view.viewLogic.mode == GV.View.VIEW_MODE_3D)
 
         ListView {
             id: _camera_list

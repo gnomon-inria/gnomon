@@ -28,13 +28,15 @@ public:
     Q_PROPERTY(gnomonVtkView* view READ view CONSTANT);
     Q_PROPERTY(QStringList extensions READ readerExtensions);
     Q_PROPERTY(QString readerPath READ readerPath WRITE setReaderPath NOTIFY readerPathChanged);
-    Q_PROPERTY(int progress READ progress NOTIFY progressChanged)
+    Q_PROPERTY(int progress READ progress NOTIFY progressChanged);
+    Q_PROPERTY(QString progressMessage READ progressMessage NOTIFY progressMessageChanged);
 
 signals:
     void available(QJsonObject readers);
     void readerPathChanged(void);
     void noReaderAvailable(QString);
     void progressChanged(int progress);
+    void progressMessageChanged(QString message);
 
 public:
     gnomonVtkView *view(void) const;
@@ -45,13 +47,16 @@ public slots:
     void requestReaders(QString default_reader);
     bool readWith(const QString&);
     int progress(void);
+    QString progressMessage(void);
 
     void export_outputs(void) override;
 
 public:
+    void restoreView(void) override;
+
+protected:
     QJsonObject _serialize() override;
     void _deserialize(const QJsonObject &state) override;
-    void restoreView(void) override;
 
 public:
     Q_INVOKABLE QUrl defaultReadPath(void);

@@ -42,7 +42,9 @@ void gnomonBinaryImageFromImageCommand::setAlgorithmName(const QString& algo_nam
     this->action = gnomonCore::binaryImageFromImage::pluginFactory().create(algo_name);
 }
 
-void gnomonBinaryImageFromImageCommand::predo(void) {}
+void gnomonBinaryImageFromImageCommand::predo(void) {
+    this->action->is_async = true;
+}
 
 void gnomonBinaryImageFromImageCommand::postdo(void)
 {

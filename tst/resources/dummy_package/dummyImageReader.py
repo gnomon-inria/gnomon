@@ -6,7 +6,7 @@ from gnomon.utils.decorators import imageOutput
 from gnomon.core import gnomonAbstractImageReader
 
 
-@algorithmPlugin(version='0.1.0', coreversion='0.81.1', name="Dummy Image Reader")
+@algorithmPlugin(version='0.1.0', coreversion='1.0.0', name="Dummy Image Reader")
 @imageOutput(attr='img', data_plugin="dummyImageData")
 class dummyImageReader(gnomonAbstractImageReader):
     def __init__(self):

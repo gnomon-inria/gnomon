@@ -1,7 +1,7 @@
 #{% set build_string = '{}_py{}h{}_{}'.format(build_type, CONDA_PY, PKG_HASH, GIT_DESCRIBE_NUMBER) %}
 
 package:
-  name: gnomon-{{ build_type }}
+  name: {{ "lib" if build_type == "lib" }}gnomon
   version: {{ GIT_DESCRIBE_TAG }}
 
 source:
@@ -10,9 +10,6 @@ source:
 build:
   number: {{ GIT_DESCRIBE_NUMBER }}
 #  string: {{ build_string }}
-  script_env:
-    - HAS_GUI=False # [build_type == lib]
-    - HAS_GUI=True # [build_type == app]
 
 requirements:
   build:
@@ -51,10 +48,13 @@ requirements:
     - {{ cdt('libxxf86vm') }}            # [linux]
     - libxkbfile                         # [linux]
     - libwebp=1.2.2
+    - libzip
 
   host:
     - qt6-main >=6.5,<7
-    - dtk-forge6::vtk =9.2.6
+    - qt6-webengine
+    - boost=1.78
+    - dtk-forge6::vtk =9.2.6=Release_qt6_py39h1234567_104
     - pyside6
     - dtk-core >=2.13
     - dtk-core-python >=2.8
@@ -62,13 +62,14 @@ requirements:
     - dtk-imaging-python >=2.0
     - dtk-log >=2.5
     - dtk-script >=2.5
+    - x-vis
     - python
     - numpy {{numpy}}
     - swig >=4.1
 
   run:
     - qt6-main >=6.5,<7
-    - dtk-forge6::vtk =9.2.6
+    - dtk-forge6::vtk =9.2.6=Release_qt6_py39h1234567_104
     - pyside6
     - dtk-core >=2.13
     - dtk-core-python >=2.8
@@ -77,22 +78,25 @@ requirements:
     - dtk-plugins-imaging >=2.0
     - dtk-log >=2.5
     - dtk-script >=2.5
+    - x-vis
     - python
     - numpy {{numpy}}
     - pymongo
     - jinja2
     - swig >=4.1
-    - importlib_metadata       # [build_type == app]
-    - matplotlib-base=3.5.1    # [build_type == app]
-    - qtpy=2.0                 # [build_type == app]
-    - qtconsole-base=5.2       # [build_type == app]
-    - jedi=0.18.2              # [build_type == app]
-    - python-lsp-server=1.7.1  # [build_type == app]
-    - pip                      # [build_type == app]
+    - libzip
+    - matplotlib-base=3.7.1
+    - qtpy >=2.0
+    - qtconsole-base >=5.2
+    - importlib_metadata
+    - jedi=0.18.2
+    - python-lsp-server=1.7.1
+    - conda
+    - pip
 
 
 about:
   home: https://gnomon.gitlabpages.inria.fr/gnomon
-  license: LGPL-3.0
+  license: LGPL-3.0-or-later
   license_file: LICENSE
   summary: Gnomon is a computational platform to analyse and simulate the development of life forms in 3D

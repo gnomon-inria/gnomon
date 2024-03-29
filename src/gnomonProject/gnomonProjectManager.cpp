@@ -50,6 +50,7 @@ gnomonProject *gnomonProjectManager::openProject(const QString &path, bool resto
         }
     }
     QQmlEngine::setObjectOwnership(d->project, QQmlEngine::CppOwnership);
+    emit projectLoaded();
     return d->project;
 }
 

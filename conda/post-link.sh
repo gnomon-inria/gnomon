@@ -1,10 +1,5 @@
 #!/bin/bash
 
-if [ "$(HAS_GUI)" == "FALSE" ]; then
-    # This post-link script is only for the GUI app
-    exit 0;
-fi
-
 ${PREFIX}/bin/pip install morphonet
 ${PREFIX}/bin/pip install 'python-lsp-server[websockets]'
 
@@ -37,6 +32,7 @@ fi
 
 if [ `uname` == Darwin ]
 then
+    ln -s ${PREFIX}/bin/Gnomon.app/Contents/Resources/gnomon ${PREFIX}/bin/
     ln -s ${PREFIX}/bin/Gnomon.app /Applications/
     mv ${PREFIX}/bin/Gnomon.app/Contents/MacOS/gnomon ${PREFIX}/bin/Gnomon.app/Contents/Resources/gnomon_app
     cat > ${PREFIX}/bin/Gnomon.app/Contents/MacOS/gnomon <<EOF
