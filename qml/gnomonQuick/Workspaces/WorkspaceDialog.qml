@@ -475,6 +475,14 @@ G.Dialog {
             available: true
             highlightElement: false
         }
+        ListElement {
+            type: "gnomonWorkspaceCellImageFilter"
+            title: "Cell Image Filter"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceCellImageFilter.qml"
+            available: true
+            initial: true
+            highlightElement: false
+        }
     }
 
     function has_loaded_plugins(index) {
@@ -516,6 +524,7 @@ G.Dialog {
         _internal.workspace_groups["gnomonWorkspaceRegistration"] = "imageRegistration"
         _internal.workspace_groups["gnomonWorkspaceSegmentation"] = "cellImageFromImage"
         _internal.workspace_groups["gnomonWorkspaceSimulation"] = "femSolver"
+        _internal.workspace_groups["gnomonWorkspaceCellImageFilter"] = "cellImageFilter"
 
         _internal.workspace_forms["gnomonWorkspaceBinarization"] = ["gnomonImage", "gnomonBinaryImage"]
         _internal.workspace_forms["gnomonWorkspaceCellImageQuantification"] = ["gnomonCellImage", "gnomonImage"]
@@ -531,6 +540,7 @@ G.Dialog {
         _internal.workspace_forms["gnomonWorkspaceRegistration"] = ["gnomonImage"]
         _internal.workspace_forms["gnomonWorkspaceSegmentation"] = ["gnomonImage", "gnomonBinaryImage", "gnomonPointCloud"]
         _internal.workspace_forms["gnomonWorkspaceSimulation"] = ["gnomonMesh", "gnomonDataDict"]
+        _internal.workspace_forms["gnomonWorkspaceCellImageFilter"] = ["gnomonCellImage"]
 
         for (var i=0; i<_available_workspaces.count; i++) {
             let w = _available_workspaces.get(i)

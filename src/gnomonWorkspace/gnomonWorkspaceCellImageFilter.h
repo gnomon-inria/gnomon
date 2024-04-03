@@ -1,47 +1,25 @@
-// Version: $Id$
-//
-//
-
-// Commentary:
-//
-//
-
-// Change Log:
-//
-//
-
-// Code:
-
 #pragma once
 
 #include <gnomonWorkspaceExport>
 
-#include <dtkWidgets>
+#include "gnomonAlgorithmWorkspace.h"
 
-class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageFilter : public dtkWidgetsWorkspace
+#include <QtCore>
+#include <QtQml>
+
+class GNOMONWORKSPACE_EXPORT gnomonWorkspaceCellImageFilter : public gnomonAlgorithmWorkspace
 {
     Q_OBJECT
+    Q_CLASSINFO("description", "\
+This workspace allows to filters on the cell image, producing a new output cell image.\n\
+\n\
+Using the input cell Image from the left view, a filter will be computed \
+and displayed in the right view.\n\
+\n")
 
 public:
-     gnomonWorkspaceCellImageFilter(QWidget *parent = nullptr);
+    gnomonWorkspaceCellImageFilter(QObject *parent = nullptr);
     ~gnomonWorkspaceCellImageFilter(void);
-
-public:
-    void enter(void) override;
-    void leave(void) override;
-
-public slots:
-    void apply(void) override;
-    void configure(const QString& text);
-
-public:
-    static const QColor color;
-
-public:
-    static bool isEmpty(void);
-
-private:
-    class gnomonWorkspaceCellImageFilterPrivate *d;
 };
 
 //

@@ -28,6 +28,7 @@ QML_FILES
   WorkspaceRegistration.qml
   WorkspaceSegmentation.qml
   WorkspaceSimulation.qml
+  WorkspaceCellImageFilter.qml
 RESOURCES
   gnomonWorkspaceBinarization.png
   gnomonWorkspaceBrowser.png
