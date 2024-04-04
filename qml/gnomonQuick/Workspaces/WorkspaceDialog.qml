@@ -373,6 +373,14 @@ G.Dialog {
             highlightElement: false
         }
         ListElement {
+            type: "gnomonWorkspaceCellImageFilter"
+            title: "Cell Image Filter"
+            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceCellImageFilter.qml"
+            available: true
+            initial: true
+            highlightElement: false
+        }
+        ListElement {
             type: "gnomonWorkspaceCellImageQuantification"
             title: "Cell Image Quantification"
             source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceCellImageQuantification.qml"
@@ -473,14 +481,6 @@ G.Dialog {
             title: "Simulation"
             source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceSimulation.qml"
             available: true
-            highlightElement: false
-        }
-        ListElement {
-            type: "gnomonWorkspaceCellImageFilter"
-            title: "Cell Image Filter"
-            source: "qrc:/qt/qml/gnomonQuick/Workspaces/WorkspaceCellImageFilter.qml"
-            available: true
-            initial: true
             highlightElement: false
         }
     }
