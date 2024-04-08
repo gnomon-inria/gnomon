@@ -2,6 +2,11 @@
 
 ## [Mac and Linux] Install gnomon using conda
 
+:::{warning}
+[Mac] Gnomon requires Mac OS 11 (Big Sur) or later
+:::
+
+
 ### Prerequisite: Install Conda
 - Make sure you have `conda` installed on your system. To check, simply open a new terminal window and type:
 ```shell script
@@ -24,27 +29,28 @@ Conda is an open source package management system and environment management sys
 Installing `gnomon` requires around *6 GB* of free disk space.
 :::
 
-- **Step 1:** (Optional) Install Mamba in your `(base)` environment
+#### **Step 1:** (Optional) Install Mamba in your `(base)` environment
 ```shell script
 conda install -n base -c conda-forge mamba
 ```
 
-- **Step 2:**  Create a conda environment with the right python version. Then activate this environment
+#### **Step 2:**  Create a conda environment with the right python version. Then activate this environment
 ```shell script
 conda create -n gnomon python=3.9
 
 conda activate gnomon
 ```
 
+:::{note}
 For Mac M1, you need to tell conda to use x86 architecture like this:
-
 ```shell script
 CONDA_SUBDIR=osx-64 conda create -n gnomon python=3.9
 conda activate gnomon
 conda config --env --set subdir osx-64
 ```
+:::
 
-- **Step 3:** Install **gnomon** and its **dependencies**
+#### **Step 3:** Install **gnomon** and its **dependencies**
 ```shell script
 mamba install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
 ```
@@ -53,44 +59,47 @@ mamba install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomo
 At this stage the `gnomon` application is installed but it is "empty" since no plugins are installed by default. To actually make it usable, you will have to install **plugin packages**
 :::
 
-- **Step 4:** Install plugin packages for gnomon for instance:
-```shell script
-gnomon-utils package install gnomon_package_tissueimagemesh
-```
-
-or alternatively:
-```shell script
-mamba install -c gnomon -c dtk-forge6 -c conda-forge -c mosaic -c morpheme gnomon_package_tissueimagemesh
-```
-
-- **Step 5:** Congrats, you can now launch the application
-```shell script
-gnomon
-```
-
-### Update `gnomon`
-
-- **Step 1:** Activate your `(gnomon)` environment
-```shell script
-conda activate gnomon
-```
-
-- **Step 2:**  Update **gnomon** and its **dependencies**
-```shell script
-gnomon-utils package update
-```
-
-or alternatively:
-```shell script
-mamba update -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
-```
-
-## Finding existing plugin packages
-
+#### **Step 4:** Install plugin packages for gnomon:
+:::{admonition} Finding existing plugin packages
 You can find available packages by running the following command in your environment
 ```shell script
 gnomon-utils package search
 ```
+:::
+
+```shell script
+gnomon-utils package install gnomon_package_tissueimagemesh
+```
+
+:::{dropdown} Alternative command
+```shell script
+mamba install -c gnomon -c dtk-forge6 -c conda-forge -c mosaic -c morpheme gnomon_package_tissueimagemesh
+```
+:::
+
+#### **Step 5:** Congrats, you can now launch the application
+```shell script
+gnomon
+```
+
+### Update Gnomon
+
+#### **Step 1:** Activate your `(gnomon)` environment
+```shell script
+conda activate gnomon
+```
+
+#### **Step 2:**  Update **gnomon** and its **dependencies**
+```shell script
+gnomon-utils package update
+```
+
+:::{dropdown} Alternative command
+```shell script
+mamba update -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
+```
+:::
+
 
 ## [Windows] Install with Windows Subsystem for Linux (WSL)
 
