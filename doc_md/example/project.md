@@ -4,7 +4,7 @@
 This section is under construction! Some information might be missing.
 :::
 
-When you lauch the Gnomon application, you land on a home screen where you can have access to your recently opened **Projects**. A project in Gnomon represents a series of processing steps performed starting from one or several data files. It can generally be represented as a [**Pipeline**](../concepts.md#pipeline) where the steps are building blocks linked together.
+When you launch the Gnomon application, you land on a home screen where you can have access to your recently opened **Projects**. A project in Gnomon represents a series of processing steps performed starting from one or several data files. It can generally be represented as a [**Pipeline**](../concepts.md#pipeline) where the steps are building blocks linked together.
 
 ## Load a project
 
