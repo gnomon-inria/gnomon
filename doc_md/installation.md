@@ -1,11 +1,5 @@
 # How to install gnomon
 
-:::{toctree}
-:maxdepth: 1
-:hidden:
-installation_windows
-:::
-
 ## [Mac and Linux] Install Gnomon using conda
 
 :::{warning}
@@ -120,3 +114,9 @@ mamba update -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
 :::
 
 [Installation guidelines for Windows](installation_windows)
+
+:::{toctree}
+:maxdepth: 1
+:hidden:
+installation_windows
+:::

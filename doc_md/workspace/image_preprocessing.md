@@ -1,6 +1,6 @@
 # Image Preprocessing Workspace
 
-The Image Preprocessing Workspace allows to apply preprocessing steps on the intensity signal of an Image form, producing a new output Image.
+The Image Preprocessing Workspace allows to apply preprocessing steps on the intensity signal of an [Image form](../form/image), producing a new output Image.
 
 :::::{hint}
 ::::{grid}

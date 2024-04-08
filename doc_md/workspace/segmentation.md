@@ -1,6 +1,6 @@
 # Segmentation Workspace
 
-The Segmentation Workspace allows to segment an Image form passed as input into a CellImage form, where cells are represented as image regions carrying identical labels.
+The Segmentation Workspace allows to segment an [Image form](../form/image) passed as input into a [Cell Image form](../form/cell_image), where cells are represented as image regions carrying identical labels.
 
 :::::{hint}
 ::::{grid}
