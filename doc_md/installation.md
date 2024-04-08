@@ -1,5 +1,11 @@
 # How to install gnomon
 
+:::{toctree}
+:maxdepth: 1
+:hidden:
+installation_windows
+:::
+
 ## [Mac and Linux] Install Gnomon using conda
 
 :::{warning}
@@ -45,6 +51,13 @@ For Mac M1, you need to tell conda to use x86 architecture like this:
 CONDA_SUBDIR=osx-64 conda create -n gnomon python=3.9
 conda activate gnomon
 conda config --env --set subdir osx-64
+```
+:::
+
+:::{dropdown} Existing environment
+In case you already have a conda environment named `(gnomon)`, you can specify another name after the `-n` option: 
+```shell script
+conda create -n gnomon-stable python=3.9
 ```
 :::
 

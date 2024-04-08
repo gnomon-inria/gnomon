@@ -1,5 +1,12 @@
 # Image Registration Scenario
 
+:::{note}
+To run this example you will need to install the following plugin package(s):
+```shell script
+gnomon-utils package install gnomon_package_tissueimage
+```
+:::
+
 :::{warning}
 This section is under construction! Some information might be missing.
 :::

@@ -3,7 +3,6 @@
 :::{toctree}
 :maxdepth: 1
 :hidden:
-howto/form_abstraction
 form/binary_image
 form/cell_image
 form/data_dict
@@ -12,6 +11,7 @@ form/image
 form/lstring
 form/mesh
 form/point_cloud
+howto/form_abstraction
 :::
 
 In Gnomon, **Forms** are archetypes of data structures that are commonly used to represent the state of a developing biological system. Several examples of such Forms are provided by the platform, defining a generic interface of how to interact with various computational representations, independently of their underlying implementation.
