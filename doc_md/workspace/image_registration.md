@@ -26,3 +26,10 @@ Image Registration Scenario
 :::::
 
 The output is a Image form that corresponds to the transformed Image series where the time points have been registered. The resulting geometrical trasformation is also output as a [Data Dict form](../form/data_dict).
+
+:::{note}
+Plugins for this workspace can be installed with the following plugin package(s):
+```shell script
+gnomon-utils package install gnomon_package_tissueimage
+```
+:::
