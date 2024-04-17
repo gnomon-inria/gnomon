@@ -236,7 +236,7 @@ Control {
                     G.TextField {
                         id: _up_name;
                         Layout.fillWidth: true;
-                        helperText: "New Dataset Name";
+                        placeholderText: "New Dataset Name";
                         color: G.Style.colors.textColorBase;
                         font: G.Style.fonts.value;
                     }
