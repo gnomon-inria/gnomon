@@ -151,7 +151,7 @@ void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
         this->setInputs();
         for(auto & param:d->command->parameters()) {
             param->connect([=] {
-               emit parametersChanged();
+                emit stateChanged();
             });
         }
         emit parametersChanged();
