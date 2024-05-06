@@ -6,6 +6,7 @@
 #include <gnomonCore/gnomonForm/gnomonCellImage/gnomonCellImage.h>
 #include <gnomonCore/gnomonMorphonetHelper.h>
 #include <gnomonCore/simpleCrypt.h>
+#include <gnomonProject>
 #include "gnomonManager/gnomonFormManager"
 #include <gnomonPipeline/gnomonPipelineManager.h>
 #include <gnomonVisualization/gnomonView/gnomonVtkView.h>
@@ -380,6 +381,7 @@ void gnomonWorkspaceMorphonet::onDataLoaded(int startTime, int endTime)
         int form_count = gnomonFormManager::instance()->formCount(d->img_series->formName());
         d->img_series->metadata()->set("name", d->img_series->formName().remove("gnomon") + QString::number(form_count+1));
         d->view->setForm("gnomonCellImage", d->img_series, {});
+        GNOMON_SESSION->trackForm(d->img_series);
         d->pipeline_manager->addMorphoForm(d->img_series->uuid(), d->current_id, d->voxelsize, startTime, endTime);
 
         emit timeEndChanged();
