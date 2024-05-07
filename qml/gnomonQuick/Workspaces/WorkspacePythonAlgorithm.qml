@@ -111,6 +111,7 @@ G.Workspace {
 
                 onIdeIsReady : () => {
                     //d.restore();
+                    _self.viewSelected = _editor
                     d.codeEditorReady()
                 }
 
@@ -182,6 +183,5 @@ G.Workspace {
         if(d.fileName)
             _editor.tabName = d.fileName;
         _editor.contents = d.code.text;
-        drawel.close();
     }
 }
