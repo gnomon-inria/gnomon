@@ -5,6 +5,7 @@
 #include <dtkCore/dtkCoreParameterObject>
 
 #include "gnomonCoreParameterNurbs.h"
+#include <gnomonVisualization/gnomonView/gnomonNurbsView.h>
 
 class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterNurbsObject : public dtkCoreParameterObject
 {
@@ -14,6 +15,7 @@ class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterNurbsObject : public dtkCore
     Q_PROPERTY(int degree READ degree WRITE setDegree NOTIFY degreeChanged)
     Q_PROPERTY(double delta READ delta WRITE setDelta NOTIFY deltaChanged)
     Q_PROPERTY(QStringList controlPoints READ controlPoints WRITE setControlPoints NOTIFY controlPointsChanged)
+    Q_PROPERTY(gnomonNurbsView* nurbsView READ nurbsView CONSTANT);
 
 public:
     gnomonCoreParameterNurbsObject(gnomonCoreParameterNurbs *p);
@@ -27,6 +29,7 @@ public:
     double delta(void);
     QStringList controlPoints(void);
     int figureNumber(void);
+    gnomonNurbsView *nurbsView(void);
 
     void setDegree(int);
     void setDelta(double);

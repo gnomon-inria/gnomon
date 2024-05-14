@@ -11,13 +11,15 @@ gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(void) : dtkCoreParameterBase<
     m_object = new gnomonCoreParameterNurbsObject(this);
 }
 
-gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, bool is_function, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterNurbs>()
+gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, NURBS_TYPE nurbs_type, const QString& doc) : dtkCoreParameterBase<gnomonCoreParameterNurbs>()
 {
     m_label = label;
     m_doc = doc;
     m_ctrl_points = control_points;
     m_dimension = dimension;
-    m_is_function = is_function;
+    m_nurbs_type = nurbs_type;
+    if(nurbs_type == NURBS_TYPE::FUNCTION)
+        m_is_function = true;
 
     //set dimension before creating the object
     m_object = new gnomonCoreParameterNurbsObject(this);
@@ -58,6 +60,7 @@ gnomonCoreParameterNurbs::gnomonCoreParameterNurbs(const gnomonCoreParameterNurb
     m_degree = o.m_degree;
     m_delta = o.m_delta;
     m_is_function = o.m_is_function;
+    m_nurbs_type = o.m_nurbs_type;
     m_object = new gnomonCoreParameterNurbsObject(this);
 }
 
@@ -103,6 +106,7 @@ gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const gnomonCore
         m_degree = o.m_degree;
         m_delta = o.m_delta;
         m_is_function = o.m_is_function;
+        m_nurbs_type = o.m_nurbs_type;
     }
 
     return *this;
@@ -131,6 +135,11 @@ int gnomonCoreParameterNurbs::degree(void) const
 bool gnomonCoreParameterNurbs::is_function(void) const
 {
     return m_is_function;
+}
+
+int gnomonCoreParameterNurbs::type(void) const
+{
+    return m_nurbs_type;
 }
 
 void gnomonCoreParameterNurbs::setDegree(int degree)

@@ -60,6 +60,12 @@ Control {
         }
     }
 
+    G.ViewNurbs {
+        id: _nurbs_view;
+
+        Component.onCompleted: G.Associator.associate_nurbs(_nurbs_view, param.nurbsView)
+    }
+
     RowLayout {
         anchors.right: _control.right
         anchors.top: _view.bottom
@@ -94,6 +100,7 @@ Control {
 
     Component.onCompleted: {
         //d.onParametersChanged();
+        // Find a way to choose FigureCanvas or ViewNurbs
         param.figureNumber = _view.number
     }
 }

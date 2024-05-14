@@ -11,13 +11,19 @@
 class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterNurbs : public dtkCoreParameterBase<gnomonCoreParameterNurbs>
 {
 public:
+    enum NURBS_TYPE {
+        CURVE,
+        FUNCTION,
+        SURFACE
+    };
+public:
 
     using self_type = gnomonCoreParameterNurbs;
     using base_type = dtkCoreParameterBase<self_type>;
     using ctrls_type = QList<std::array<double, 3>>;
 
     gnomonCoreParameterNurbs(void);
-    gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, bool is_function, const QString& doc = QString());
+    gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, NURBS_TYPE nurbs_type, const QString& doc = QString());
     gnomonCoreParameterNurbs(const dtkCoreParameter *);
     gnomonCoreParameterNurbs(const QVariant&);
     gnomonCoreParameterNurbs(const gnomonCoreParameterNurbs&);
@@ -36,6 +42,9 @@ public:
     int dimension(void) const;
     double delta(void) const;
     bool is_function(void) const;
+    int type(void) const;
+    inline std::vector<double> knotVectorU(void) { return {0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0};};
+    inline std::vector<double> knotVectorV(void) { return {0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0};};
 
     void setDegree(int);
     void setDelta(double);
@@ -64,6 +73,7 @@ private:
     double m_delta = 0.01;
     ctrls_type m_ctrl_points;
     bool m_is_function = false;
+    NURBS_TYPE m_nurbs_type = NURBS_TYPE::CURVE;
 
     QString m_n = QStringLiteral("no name");
 
