@@ -45,7 +45,7 @@ void gnomonCellImageTrackingCommand::predo(void)
 
 void gnomonCellImageTrackingCommand::postdo(void)
 {
-    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageTracking *) this->action)->cellImage();
+    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageTracking *) this->action)->cellImageOutput();
 
     if ((!cellImage)||cellImage->times().empty()) {
         d->cellImage = nullptr;
@@ -65,7 +65,7 @@ void gnomonCellImageTrackingCommand::postdo(void)
 void gnomonCellImageTrackingCommand::undo()
 {
     ((gnomonAbstractCellImageTracking *) this->action)->setImage(nullptr);
-    ((gnomonAbstractCellImageTracking *) this->action)->setCellImage(nullptr);
+    ((gnomonAbstractCellImageTracking *) this->action)->setCellImageInput(nullptr);
     this->action->refreshParameters();
 }
 
@@ -89,7 +89,7 @@ void gnomonCellImageTrackingCommand::setCellImage(std::shared_ptr<gnomonCellImag
         d->input_cellImage = cellImage;
     }
     Q_ASSERT(this->action);
-    ((gnomonAbstractCellImageTracking *) this->action)->setCellImage(d->input_cellImage);
+    ((gnomonAbstractCellImageTracking *) this->action)->setCellImageInput(d->input_cellImage);
     this->action->refreshParameters();
 }
 

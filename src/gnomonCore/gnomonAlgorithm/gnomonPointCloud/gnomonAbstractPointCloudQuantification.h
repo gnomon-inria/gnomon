@@ -18,9 +18,9 @@ class GNOMONCORE_EXPORT gnomonAbstractPointCloudQuantification : public gnomonAb
 {
     //Inputs
 public:
-  virtual void setImage(std::shared_ptr<gnomonImageSeries> image) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
-  virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
-  virtual void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud) = 0;
+  virtual void setImageInput(std::shared_ptr<gnomonImageSeries> image) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+  virtual void setMeshInput(std::shared_ptr<gnomonMeshSeries> mesh) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+  virtual void setPointCloudInput(std::shared_ptr<gnomonPointCloudSeries> pointCloud) = 0;
 
     // Outputs
 public:
@@ -30,21 +30,21 @@ public:
 public:
     static inline QString defaultSetter(QString formName) {
         if (formName == "gnomonPointCloud") {
-            return {"setPointCloud"};
+            return {"setPointCloudInput"};
         } else if (formName == "gnomonImage") {
-            return {"setImage"};
+            return {"setImageInput"};
         } else if (formName == "gnomonMesh") {
-            return {"setMesh"};
+            return {"setMeshInput"};
         }
         return {};
     };
     static inline QString defaultGetter(QString formName) {
         if (formName == "gnomonPointCloud") {
-            return {"getPointCloudInput"};
+            return {"pointCloudInput"};
         } else if (formName == "gnomonImage") {
-            return {"getImageInput"};
+            return {"imageInput"};
         } else if (formName == "gnomonMesh") {
-            return {"getMeshInput"};
+            return {"meshInput"};
         }
         return {};
     };

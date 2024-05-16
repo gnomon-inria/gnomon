@@ -18,7 +18,7 @@ class GNOMONCORE_EXPORT gnomonAbstractCellImageTracking : public gnomonAbstractA
 {
     //Inputs
 public:
-  virtual void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) = 0;
+  virtual void setCellImageInput(std::shared_ptr<gnomonCellImageSeries> cellimage) = 0;
   virtual void setImage(std::shared_ptr<gnomonImageSeries> image) = 0;
   virtual inline void setTransformation(std::shared_ptr<gnomonDataDictSeries> data_dict_series) {
       dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
@@ -26,7 +26,7 @@ public:
 
     // Outputs
 public:
-    virtual std::shared_ptr<gnomonCellImageSeries> cellImage() const = 0;
+    virtual std::shared_ptr<gnomonCellImageSeries> cellImageOutput() const = 0;
     virtual std::shared_ptr<gnomonTreeSeries> tree() const { return nullptr; };
 
 public:
@@ -34,7 +34,7 @@ public:
         if(formName == "gnomonImage") {
             return {"setImage"};
         } else if(formName == "gnomonCellImage") {
-            return {"setCellImage"};
+            return {"setCellImageInput"};
         } else if(formName == "gnomonDataDict") {
             return {"setTransformation"};
         }
@@ -52,7 +52,7 @@ public:
     };
     static inline QString defaultOutput(QString formName) {
         if(formName == "gnomonCellImage") {
-            return {"cellImage"};
+            return {"cellImageOutput"};
         } else if(formName == "gnomonTree") {
             return {"tree"};
         }

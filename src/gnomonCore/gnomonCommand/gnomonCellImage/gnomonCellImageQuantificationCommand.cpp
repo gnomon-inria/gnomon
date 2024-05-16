@@ -45,7 +45,7 @@ void gnomonCellImageQuantificationCommand::predo(void)
 
 void gnomonCellImageQuantificationCommand::postdo(void)
 {
-    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
+    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->outputCellImage();
 
     if ((!cellImage)||cellImage->times().empty()) {
         d->cellImage = nullptr;
@@ -53,7 +53,7 @@ void gnomonCellImageQuantificationCommand::postdo(void)
         d->cellImage = cellImage;
     }
 
-    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->outputDataFrame();
 
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;

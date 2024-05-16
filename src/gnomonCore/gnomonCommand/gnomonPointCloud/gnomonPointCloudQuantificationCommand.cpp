@@ -65,9 +65,9 @@ void gnomonPointCloudQuantificationCommand::postdo(void)
 
 void gnomonPointCloudQuantificationCommand::undo()
 {
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(nullptr);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setMesh(nullptr);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(nullptr);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setImageInput(nullptr);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setMeshInput(nullptr);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloudInput(nullptr);
     this->action->refreshParameters();
 }
 
@@ -79,7 +79,7 @@ void gnomonPointCloudQuantificationCommand::setImage(std::shared_ptr<gnomonImage
         d->image = image;
     }
     Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(d->image);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setImageInput(d->image);
     this->action->refreshParameters();
 }
 
@@ -91,7 +91,7 @@ void gnomonPointCloudQuantificationCommand::setMesh(std::shared_ptr<gnomonMeshSe
         d->mesh = mesh;
     }
     Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setMesh(d->mesh);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setMeshInput(d->mesh);
     this->action->refreshParameters();
 }
 
@@ -103,7 +103,7 @@ void gnomonPointCloudQuantificationCommand::setPointCloud(std::shared_ptr<gnomon
         d->input_pointCloud = pointCloud;
     }
     Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(d->input_pointCloud);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloudInput(d->input_pointCloud);
     this->action->refreshParameters();
 }
 
@@ -120,9 +120,9 @@ std::shared_ptr<gnomonDataFrameSeries> gnomonPointCloudQuantificationCommand::da
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudQuantificationCommand::inputs()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
-    inputs["image"] = d->image;
-    inputs["mesh"] = d->mesh;
-    inputs["pointCloud"] = d->input_pointCloud;
+    inputs["imageInput"] = d->image;
+    inputs["meshInput"] = d->mesh;
+    inputs["pointCloudInput"] = d->input_pointCloud;
     return inputs;
 }
 
@@ -136,9 +136,9 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudQuant
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::inputTypes() {
     orderedMap input_types;
-    input_types.emplace_back(std::make_pair("image", "gnomonImage"));
-    input_types.emplace_back(std::make_pair("mesh", "gnomonMesh"));
-    input_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));
+    input_types.emplace_back(std::make_pair("imageInput", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("meshInput", "gnomonMesh"));
+    input_types.emplace_back(std::make_pair("pointCloudInput", "gnomonPointCloud"));
     return input_types;
 }
 
