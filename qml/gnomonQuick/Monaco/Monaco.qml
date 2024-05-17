@@ -151,6 +151,11 @@ Control {
         onJavaScriptConsoleMessage: (level, message, lineNumber, sourceID) => {
             console.log(message, lineNumber, sourceID);
         }
+
+        onScrollPositionChanged: {
+            // prevent view from scrolling (and hiding tab bar)
+            view.runJavaScript("document.body.scrollIntoView({ behavior: 'smooth' });");
+        }
     }
 
     Component.onCompleted: {
