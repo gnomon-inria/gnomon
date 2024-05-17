@@ -23,7 +23,7 @@ public:
     using ctrls_type = QList<std::array<double, 3>>;
 
     gnomonCoreParameterNurbs(void);
-    gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, NURBS_TYPE nurbs_type, const QString& doc = QString());
+    gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, gnomonCoreParameterNurbs::NURBS_TYPE nurbs_type, const QList<double>& ctrl_points_size, const QString& doc = QString());
     gnomonCoreParameterNurbs(const dtkCoreParameter *);
     gnomonCoreParameterNurbs(const QVariant&);
     gnomonCoreParameterNurbs(const gnomonCoreParameterNurbs&);
@@ -37,12 +37,13 @@ public:
 public:
     void setControlPoints(const ctrls_type& ctrl_points);
     ctrls_type controlPoints(void) const;
+    QList<double> cpsize(void) const;
 
     int degree(void) const;
     int dimension(void) const;
     double delta(void) const;
     bool is_function(void) const;
-    int type(void) const;
+    NURBS_TYPE type(void) const;
     inline std::vector<double> knotVectorU(void) { return {0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0};};
     inline std::vector<double> knotVectorV(void) { return {0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0};};
 
@@ -74,6 +75,7 @@ private:
     ctrls_type m_ctrl_points;
     bool m_is_function = false;
     NURBS_TYPE m_nurbs_type = NURBS_TYPE::CURVE;
+    QList<double> m_ctrl_points_size;
 
     QString m_n = QStringLiteral("no name");
 

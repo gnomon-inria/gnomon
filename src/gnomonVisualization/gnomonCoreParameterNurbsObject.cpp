@@ -195,7 +195,12 @@ void gnomonCoreParameterNurbsObjectPrivate::initPSurface(gnomonCoreParameterNurb
                 PyList_SetItem(p_ctrlpts, i++, p_point);
                 Py_DECREF(p_point);
             }
-            PyObject_SetAttrString(this->pSurface, "ctrlpts", p_ctrlpts);
+            PyObject* pFunc_ctrlpts = PyObject_GetAttrString(this->pSurface, "set_ctrlpts");
+            PyObject* args = Py_BuildValue("(Oii)", p_ctrlpts, param->cpsize()[0], param->cpsize()[1]);
+            PyObject_CallObject(pFunc_ctrlpts, args);
+
+            Py_DECREF(args);
+            Py_DECREF(pFunc_ctrlpts);
             Py_DECREF(p_ctrlpts);
         }
 
