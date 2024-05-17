@@ -13,6 +13,7 @@ public:
     QString text;
 
 public:
+    QString plugin_class_name;
     QString plugin_name;
     QString plugin_documentation;
     QString file_name;
@@ -37,7 +38,8 @@ public:
 
 gnomonPythonAlgorithmPluginCodePrivate::gnomonPythonAlgorithmPluginCodePrivate(void)
 {
-    this->plugin_name = "pythonAlgorithm";
+    this->plugin_class_name = "pythonAlgorithm";
+    this->plugin_name = "Custom Algorithm";
     this->plugin_documentation = "Implements a custom form algorithm plugin.";
 
     this->parser = new gnomonPythonPluginParser();
@@ -87,6 +89,22 @@ void gnomonPythonAlgorithmPluginCode::setFileName(const QString& name)
     if(name != d->file_name) {
         d->file_name = name;
         emit fileChanged(d->file_name);
+    }
+}
+
+const QString& gnomonPythonAlgorithmPluginCode::pluginClassName(void) const
+{
+    return d->plugin_class_name;
+}
+
+void gnomonPythonAlgorithmPluginCode::setPluginClassName(const QString& name, bool update_code)
+{
+    if (name != d->plugin_class_name) {
+        d->plugin_class_name = name;
+        if (update_code) {
+            this->updateCode();
+        }
+        emit pluginClassNameChanged();
     }
 }
 
@@ -383,7 +401,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
     plugin_code += "# {# gnomon, plugin.class\n";
     plugin_code += "# do not modify, any code after the gnomon tag will be overwritten\n";
 
-    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='1.0.0')\n";
+    plugin_code += "@algorithmPlugin(version='0.1.0', coreversion='1.0.0', name='" + d->plugin_name + "')\n";
 
     for (const auto &form_type : d->input_forms.keys()) {
         gnomonFormDescription desc = d->input_forms[form_type];
@@ -397,7 +415,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         plugin_code += "attr='" + desc.name + "', ";
         plugin_code += "data_plugin='" + desc.data_plugin + "')\n";
     }
-    plugin_code += "class " + d->plugin_name + "(gnomon.core.gnomonAbstractFormAlgorithm):\n";
+    plugin_code += "class " + d->plugin_class_name + "(gnomon.core.gnomonAbstractFormAlgorithm):\n";
     plugin_code += "    \"\"\"";
     QStringList doc_lines = d->plugin_documentation.split("\n");
     for (int i=0; i<doc_lines.size(); i++) {
