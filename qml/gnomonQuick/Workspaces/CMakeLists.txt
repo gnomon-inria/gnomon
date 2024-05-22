@@ -32,6 +32,7 @@ QML_FILES
 RESOURCES
   gnomonWorkspaceBinarization.png
   gnomonWorkspaceBrowser.png
+  gnomonWorkspaceCellImageFilter.png
   gnomonWorkspaceCellImageQuantification.png
   gnomonWorkspaceCellImageTracking.png
   gnomonWorkspaceImageMeshing.png
