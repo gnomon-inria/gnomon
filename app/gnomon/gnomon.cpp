@@ -421,6 +421,7 @@ void gnomon_rinit()
     qmlRegisterType<gnomonWorkspaceRegistration>("gnomon.Workspaces", 1, 0, "WorkspaceRegistration");
     qmlRegisterType<gnomonWorkspaceSegmentation>("gnomon.Workspaces", 1, 0, "WorkspaceSegmentation");
     qmlRegisterType<gnomonWorkspaceSimulation>("gnomon.Workspaces", 1, 0, "WorkspaceSimulation");
+    qmlRegisterType<gnomonWorkspaceCellImageFilter>("gnomon.Workspaces", 1, 0, "WorkspaceCellImageFilter");
 
 
     // -- Link helper
