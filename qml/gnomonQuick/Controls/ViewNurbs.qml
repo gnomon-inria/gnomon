@@ -3,6 +3,9 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 
+import gnomonQuick.Controls as G
+import gnomonQuick.Style as G
+
 import xQuick.Vis as XVis
 
 Rectangle {

@@ -2,6 +2,7 @@
 
 #include <QtCore>
 #include <vtkActor.h>
+#include <vtkRenderWindow.h>
 
 #pragma push_macro("slots")
 #undef slots
@@ -195,10 +196,32 @@ void gnomonCoreParameterNurbsObjectPrivate::initPSurface(gnomonCoreParameterNurb
                 PyList_SetItem(p_ctrlpts, i++, p_point);
                 Py_DECREF(p_point);
             }
-            PyObject* pFunc_ctrlpts = PyObject_GetAttrString(this->pSurface, "set_ctrlpts");
-            PyObject* args = Py_BuildValue("(Oii)", p_ctrlpts, param->cpsize()[0], param->cpsize()[1]);
-            PyObject_CallObject(pFunc_ctrlpts, args);
+            if(!p_ctrlpts) { //  || !PyCallable_Check(pFunc_ctrlpts)
+                dtkWarn() << Q_FUNC_INFO << "Error Building ControlPoint list!";
+                Py_XDECREF(p_ctrlpts);
+                return;
+            }
 
+            PyObject* pFunc_ctrlpts = PyObject_GetAttrString(this->pSurface, "set_ctrlpts");
+            if(!pFunc_ctrlpts) { 
+                dtkWarn() << Q_FUNC_INFO << "Error calling function set_ctrlpts";
+                Py_XDECREF(pFunc_ctrlpts);
+                return;
+            }
+            PyObject* args = Py_BuildValue("(Oii)", p_ctrlpts, param->cpsize()[0], param->cpsize()[1]);
+            if(!args) {
+                dtkWarn() << "Could not Create set_ctrlpts args correctly!";
+                Py_DECREF(pFunc_ctrlpts);
+                return;
+            }
+
+            PyObject* pResult = PyObject_CallObject(pFunc_ctrlpts, args);
+            if (!pResult) {
+                dtkWarn() << Q_FUNC_INFO << "Error calling function set_ctrlpts with arguments";
+                return;
+            }
+            
+            Py_XDECREF(pResult);
             Py_DECREF(args);
             Py_DECREF(pFunc_ctrlpts);
             Py_DECREF(p_ctrlpts);
@@ -291,6 +314,9 @@ void gnomonCoreParameterNurbsObjectPrivate::initPVisSurface(void)
 gnomonCoreParameterNurbsObject::gnomonCoreParameterNurbsObject(gnomonCoreParameterNurbs *p) : dtkCoreParameterObject(p), m_param(p)
 {
     d = new gnomonCoreParameterNurbsObjectPrivate();
+    if(m_param->type() == gnomonCoreParameterNurbs::NURBS_TYPE::SURFACE) {
+        d->nurbsView = new gnomonNurbsView(this);
+    }
 }
 
 gnomonCoreParameterNurbsObject::~gnomonCoreParameterNurbsObject(void)
@@ -369,6 +395,11 @@ int gnomonCoreParameterNurbsObject::figureNumber(void)
 gnomonNurbsView* gnomonCoreParameterNurbsObject::nurbsView(void) 
 {
     return d->nurbsView;
+}
+
+int gnomonCoreParameterNurbsObject::nurbsType(void) const
+{
+    return m_param->type();
 }
 
 void gnomonCoreParameterNurbsObject::setDegree(int degree)
@@ -512,67 +543,58 @@ void gnomonCoreParameterNurbsObject::notifyControlPointsChanged()
 void gnomonCoreParameterNurbsObject::setFigureNumber(int fig)
 {
     d->figureNumber = fig;
-    if(m_param->type() == gnomonCoreParameterNurbs::NURBS_TYPE::SURFACE) {
-        if(!d->pSurface) {
-            d->initPSurface(m_param);
-        }
+   
+    if(!d->pCurve) {
+        d->initPCurve(m_param);
+    }
 
-        if(!d->pVisSurface) {
-            d->initPVisSurface();
-        }
+    if(!d->pVisCurve) {
+        d->initPVisCurve(m_param->dimension(), m_param->is_function());
+    }
 
-        d->nurbsView = new gnomonNurbsView(this);
+    if(d->pVisCurve && d->pCurve) {
+        PyGILState_STATE gstate;
+        gstate = PyGILState_Ensure();
 
-        if(d->pSurface && d->pVisSurface) {
-            PyGILState_STATE gstate;
-            gstate = PyGILState_Ensure();
+        PyObject* pFunc = PyObject_GetAttrString(d->pVisCurve, "setFigureNumber");
+        PyObject *p_fig = PyLong_FromLong(fig);
+        PyObject_CallOneArg(pFunc, p_fig);
+        Py_DECREF(p_fig);
+        Py_DECREF(pFunc);
 
-            PyObject* pActors = PyObject_CallMethod(d->pVisSurface, "get_actors", nullptr);
-            if(pActors && PyList_Check(pActors)) {
-                int number_actors = PyList_Size(pActors);
-                for(int i = 0; i < number_actors; i++) {
-                    PyObject* pActor = PyList_GetItem(pActors, i);
-                    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-                    actor.TakeReference(vtkActor::SafeDownCast(vtkPythonUtil::GetPointerFromObject(pActor, "VisSurface")));
-                    if(actor) {
-                        d->nurbsView->addActor(actor);
-                    } else {
-                        dtkWarn() << "Could not retrieve actor from python VisVTK";
-                    }
-                }
-            }
-            Py_DECREF(pActors);
+        PyObject* pFunc2 = PyObject_GetAttrString(d->pCurve, "render");
+        PyObject_CallNoArgs(pFunc2);
+        Py_DECREF(pFunc2);
 
-            PyGILState_Release(gstate);
-        } else {
-            dtkWarn() << "Problem pCurve or pVisCurve is not initialized";
-        }
+        PyGILState_Release(gstate);
     } else {
-        if(!d->pCurve) {
-            d->initPCurve(m_param);
+        dtkWarn() << "Problem pCurve or pVisCurve is not initialized";
+    }
+    
+}
+
+void gnomonCoreParameterNurbsObject::buildNurbsPatch(void)
+{
+    if(!d->pSurface) {
+        d->initPSurface(m_param);
+    }
+
+    if(!d->pVisSurface) {
+        d->initPVisSurface();
+    }
+
+    if(d->pSurface && d->pVisSurface) {
+        PyGILState_STATE gstate;
+        gstate = PyGILState_Ensure();
+
+        PyObject* pRenderWindow = PyObject_CallMethod(d->pVisSurface, "set_renderer_window","O",  vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase*>(d->nurbsView->getRendererWindow())));
+        if(!pRenderWindow) {
+            dtkWarn() << "Could not set render window from C++ to VisVTK python!";
         }
+        Py_DECREF(pRenderWindow);
 
-        if(!d->pVisCurve) {
-            d->initPVisCurve(m_param->dimension(), m_param->is_function());
-        }
-
-        if(d->pVisCurve && d->pCurve) {
-            PyGILState_STATE gstate;
-            gstate = PyGILState_Ensure();
-
-            PyObject* pFunc = PyObject_GetAttrString(d->pVisCurve, "setFigureNumber");
-            PyObject *p_fig = PyLong_FromLong(fig);
-            PyObject_CallOneArg(pFunc, p_fig);
-            Py_DECREF(p_fig);
-            Py_DECREF(pFunc);
-
-            PyObject* pFunc2 = PyObject_GetAttrString(d->pCurve, "render");
-            PyObject_CallNoArgs(pFunc2);
-            Py_DECREF(pFunc2);
-
-            PyGILState_Release(gstate);
-        } else {
-            dtkWarn() << "Problem pCurve or pVisCurve is not initialized";
-        }
+        PyGILState_Release(gstate);
+    } else {
+        dtkWarn() << "Problem pCurve or pVisCurve is not initialized";
     }
 }

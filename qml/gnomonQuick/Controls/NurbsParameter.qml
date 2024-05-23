@@ -4,6 +4,7 @@ import QtQuick.Layouts  1.15
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
+import gnomon.Utils as G
 
 import gnomon.Visualization 1.0 as GV
 import gnomon.Mpl           1.0 as GV
@@ -63,7 +64,7 @@ Control {
     G.ViewNurbs {
         id: _nurbs_view;
 
-        Component.onCompleted: G.Associator.associate_nurbs(_nurbs_view, param.nurbsView)
+        // Component.onCompleted: G.Associator.associate_nurbs(_nurbs_view, param.nurbsView)
     }
 
     RowLayout {
@@ -100,7 +101,16 @@ Control {
 
     Component.onCompleted: {
         //d.onParametersChanged();
-        // Find a way to choose FigureCanvas or ViewNurbs
-        param.figureNumber = _view.number
+        let nurbs_surface = 2
+        if(param.nurbsType == nurbs_surface) {
+            G.Associator.associateNurbs(_nurbs_view, param.nurbsView)
+            _view.visible = false
+            _nurbs_view.visible = true
+            param.buildNurbsPatch()
+        } else {
+            _view.visible = true
+            _nurbs_view.visible = false
+            param.figureNumber = _view.number
+        }
     }
 }

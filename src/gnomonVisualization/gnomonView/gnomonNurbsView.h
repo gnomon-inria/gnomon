@@ -20,6 +20,8 @@ public:
 public:
     void associate(vtkRenderWindow *);
     void addActor(vtkSmartPointer<vtkActor> actor);
+    vtkRenderWindow* getRendererWindow(void) const;
+
 private:
     vtkSmartPointer<vtkRenderWindow> m_window;
     vtkSmartPointer<vtkRenderer> m_renderer;
