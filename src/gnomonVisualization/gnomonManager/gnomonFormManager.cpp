@@ -630,7 +630,7 @@ QList<int> gnomonFormManager::systemStat(void) const
     if(procfile.is_open()) {
         std::string line;
         while(std::getline(procfile, line)) {
-            if(line.find("Rss:") != std::string::npos) {
+            if(line.find("Pss:") != std::string::npos) {
                 auto start = line.find_first_of("123456789");
                 auto stop = line.find_last_of("1234567890");
                 stat[2] = std::stol(line.substr(start, stop-start+1)) / 1000;
@@ -785,49 +785,50 @@ void gnomonFormManager::memoryManagement() {
     auto stats = systemStat();
     int total_mem = stats[0];
     int used_mem = stats[1];
-    //qDebug() << "$$ Memory usage: " << used_mem << " | " << total_mem << " | " << stats[2];
-    while((used_mem > 3000 || (float)used_mem/(float)total_mem>0.8) && d->active_workspaces.size()>1) {
-        break;
-        auto uuid =  d->active_workspaces.first();
-        d->active_workspaces.pop_front();
-        qInfo() << "Memory used threshold reached: hibernating workspaces (" << uuid << ")";
-        emit requestHibernation(uuid);
-        d->hibernating_workspaces.insert(uuid);
-        for(auto& form_uuid: GNOMON_SESSION->trackedForms()) {
-            auto form = GNOMON_SESSION->getForm(form_uuid);
-            qDebug() << "Form " << form_uuid << " :: use count: " << form.use_count();
-            if(form.use_count() <= 2) {
-                form->unload();
+    int this_mem = stats[2];
+    qDebug() << "$$ Memory usage: " << used_mem << " | " << total_mem << " | " << stats[2];
+    while((this_mem > 2000 || (float)used_mem/(float)total_mem>0.8) && d->active_workspaces.size()>1) {
+        callHibernateWorkspace();
+    }
+    checkHibernateForms();
+}
+
+void gnomonFormManager::testDeactivate(void) {
+    callHibernateWorkspace();
+    checkHibernateForms();
+}
+
+void gnomonFormManager::checkHibernateForms() {
+    // checks if any form can be unloaded
+    for(auto& form_uuid: GNOMON_SESSION->trackedForms()) {
+        auto form = GNOMON_SESSION->getForm(form_uuid);
+        int index = formIndex(form_uuid);
+        if(form.use_count() == 3 && index>=0) {
+            auto& visu = d->formVisualizations[index];
+            visu->clear();
+            // qDebug() << "Visu " << visu.get() << " :: use count: " << visu.use_count();
+            if(visu.use_count()==1) {
+                auto visu_state = d->serializeVisualization(visu, index);
+                d->savedFormVisualizations.insert(index, visu_state);
+                d->formVisualizations.remove(index);
             }
+        }
+        if(form.use_count() <= 2) {
+            // qDebug() << "Form " << form_uuid << " :: use count: " << form.use_count();
+            form->unload();
         }
     }
 }
 
-void gnomonFormManager::testDeactivate(void) {
-    if(d->active_workspaces.size()>1) {
+void gnomonFormManager::callHibernateWorkspace() {
+    // calls requestHibernation for the next workspace
+    if(d->active_workspaces.size() > 1) {
         auto workspace_uuid =  d->active_workspaces.first();
         d->active_workspaces.pop_front();
         emit requestHibernation(workspace_uuid);
         d->hibernating_workspaces.insert(workspace_uuid);
         d->hibernating_workspaces.insert(workspace_uuid);
-        for(auto& form_uuid: GNOMON_SESSION->trackedForms()) {
-            auto form = GNOMON_SESSION->getForm(form_uuid);
-            int index = this->formIndex(form_uuid);
-            if(form.use_count() == 3 && index>=0) {
-                auto& visu = d->formVisualizations[index];
-                visu->clear();
-                qDebug() << "Visu " << visu.get() << " :: use count: " << visu.use_count();
-                if(visu.use_count()==1) {
-                    auto visu_state = d->serializeVisualization(visu, index);
-                    d->savedFormVisualizations.insert(index, visu_state);
-                    d->formVisualizations.remove(index);
-                }
-            }
-            qDebug() << "Form " << form_uuid << " :: use count: " << form.use_count();
-            if(form.use_count() <= 2) {
-                form->unload();
-            }
-        }
+
     } else {
         qDebug() << "$$ cannot deactivate more workspaces";
     }

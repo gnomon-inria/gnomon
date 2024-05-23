@@ -89,6 +89,10 @@ public:
 public slots:
     void memoryManagement();
 
+private:
+    void callHibernateWorkspace();
+    void checkHibernateForms();
+
 protected:
      gnomonFormManager(QObject *parent = nullptr);
     ~gnomonFormManager(void);

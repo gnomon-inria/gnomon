@@ -399,7 +399,7 @@ G.Application {
 
         Timer {
             interval: 10000  //in msec
-            running: true
+            running: false
             repeat: true
             onTriggered: {
                 let system_stats = GV.World.systemStat() //memory total, used, this
