@@ -78,6 +78,11 @@ gnomonWorkspaceCellImageTracking::gnomonWorkspaceCellImageTracking(QObject *pare
     //create the views
     this->addInputView();
     this->addOutputView();
+
+    for (auto connect_export : d->connect_target_view_exports) {
+        disconnect(connect_export);
+    }
+
     dd->source_dict = new gnomonQmlView();
     dd->source_dict->setInputView(true);
     dd->source_dict->setAcceptForm("gnomonDataDict", true);
@@ -212,9 +217,13 @@ void gnomonWorkspaceCellImageTracking::viewOutputs()
     if(command->cellImage()) {
         auto cellImage = command->cellImage();
         GNOMON_SESSION->trackForm(cellImage);
+        d->registerPipeline();
+
         int count = gnomonFormManager::instance()->formCount(cellImage->formName());
         cellImage->metadata()->set("name", cellImage->formName() + QString::number(count+1));
         cellImage->metadata()->set("source", d->algorithm);
+        GNOMON_SESSION->addForm(cellImage);
+        gnomonPipelineManager::instance()->addForm(cellImage->uuid());
 
         this->source()->removeForm("gnomonCellImage");
         this->source()->setForm("gnomonCellImage", cellImage);
@@ -226,7 +235,6 @@ void gnomonWorkspaceCellImageTracking::viewOutputs()
     }
 
     if (command->cellImage() != nullptr) {
-        d->registerPipeline();
         if(!this->target()->synced()) {
             this->target()->tryLinking();
         } else {
