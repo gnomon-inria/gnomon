@@ -26,8 +26,8 @@ public:
 
     // Outputs
 public:
-    virtual std::shared_ptr<gnomonCellImageSeries> cellImage() const = 0;
-    virtual std::shared_ptr<gnomonTreeSeries> tree() const { return nullptr; };
+    virtual std::shared_ptr<gnomonCellImageSeries> outputCellImage() const = 0;
+    virtual std::shared_ptr<gnomonTreeSeries> outputTree() const { return nullptr; };
 
 public:
     static inline QString defaultSetter(QString formName) {
@@ -44,7 +44,7 @@ public:
         if(formName == "gnomonImage") {
             return {"image"};
         } else if(formName == "gnomonCellImage") {
-            return {"cellImageInput"};
+            return {"cellImage"};
         } else if(formName == "gnomonDataDict") {
             return {"transformation"};
         }
@@ -52,9 +52,9 @@ public:
     };
     static inline QString defaultOutput(QString formName) {
         if(formName == "gnomonCellImage") {
-            return {"cellImage"};
+            return {"outputCellImage"};
         } else if(formName == "gnomonTree") {
-            return {"tree"};
+            return {"outputTree"};
         }
         return {};
     };

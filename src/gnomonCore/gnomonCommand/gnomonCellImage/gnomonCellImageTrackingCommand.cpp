@@ -45,7 +45,7 @@ void gnomonCellImageTrackingCommand::predo(void)
 
 void gnomonCellImageTrackingCommand::postdo(void)
 {
-    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageTracking *) this->action)->cellImage();
+    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageTracking *) this->action)->outputCellImage();
 
     if ((!cellImage)||cellImage->times().empty()) {
         d->cellImage = nullptr;
@@ -53,7 +53,7 @@ void gnomonCellImageTrackingCommand::postdo(void)
         d->cellImage = cellImage;
     }
 
-    std::shared_ptr<gnomonTreeSeries> tree = ((gnomonAbstractCellImageTracking *) this->action)->tree();
+    std::shared_ptr<gnomonTreeSeries> tree = ((gnomonAbstractCellImageTracking *) this->action)->outputTree();
 
     if ((!tree)||(tree->times().empty())) {
         d->tree = nullptr;
@@ -127,8 +127,8 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageTracki
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageTrackingCommand::outputs()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
-    outputs["cellImage"] = this->cellImage();
-    outputs["tree"] = this->tree();
+    outputs["outputCellImage"] = this->cellImage();
+    outputs["outputTree"] = this->tree();
     return outputs;
 }
 
@@ -142,8 +142,8 @@ gnomonAbstractCommand::orderedMap gnomonCellImageTrackingCommand::inputTypes() {
 
 gnomonAbstractCommand::orderedMap gnomonCellImageTrackingCommand::outputTypes() {
     orderedMap types;
-    types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
-    types.emplace_back(std::make_pair("tree", "gnomonTree"));
+    types.emplace_back(std::make_pair("outputCellImage", "gnomonCellImage"));
+    types.emplace_back(std::make_pair("outputTree", "gnomonTree"));
     return types;
 }
 
@@ -163,19 +163,19 @@ void gnomonCellImageTrackingCommand::deserializeResults(QJsonObject &serializati
     if(!d->cellImage) {
         d->cellImage = std::make_shared<gnomonCellImageSeries>();
     }
-    auto tmp = serialization["cellImage"].toObject();
+    auto tmp = serialization["outputCellImage"].toObject();
     d->cellImage->deserialize(tmp);
     if(!d->tree) {
         d->tree = std::make_shared<gnomonTreeSeries>();
     }
-    auto tmp2 = serialization["tree"].toObject();
+    auto tmp2 = serialization["outputTree"].toObject();
     d->tree->deserialize(tmp2);
 }
 
 QJsonObject gnomonCellImageTrackingCommand::serializeResults(void) {
     QJsonObject out;
-    out["cellImage"] = d->cellImage->serialize();
-    out["tree"] = d->tree->serialize();
+    out["outputCellImage"] = d->cellImage->serialize();
+    out["outputTree"] = d->tree->serialize();
     return out;
 }
 

@@ -33,11 +33,11 @@ public:
         tracking::t_set_image_called = true;
     }
 
-    std::shared_ptr<gnomonCellImageSeries> cellImage() const override {
+    std::shared_ptr<gnomonCellImageSeries> outputCellImage() const override {
         return nullptr;
     }
 
-    std::shared_ptr<gnomonTreeSeries> tree() const override {
+    std::shared_ptr<gnomonTreeSeries> outputTree() const override {
         return nullptr;
     }
     void clearInputs(void) override {};
