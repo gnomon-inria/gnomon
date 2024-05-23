@@ -25,7 +25,7 @@ public:
     int run(void) override{ tracking::t_run_called = true; return 0;};
     QString documentation(void) override {return "empty";};
 
-    void setCellImageInput(std::shared_ptr<gnomonCellImageSeries> cellimage) override {
+    void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) override {
         tracking::t_set_cell_image_called = true;
     }
 
@@ -33,11 +33,11 @@ public:
         tracking::t_set_image_called = true;
     }
 
-    std::shared_ptr<gnomonCellImageSeries> cellImageOutput() const override {
+    std::shared_ptr<gnomonCellImageSeries> outputCellImage() const override {
         return nullptr;
     }
 
-    std::shared_ptr<gnomonTreeSeries> tree() const override {
+    std::shared_ptr<gnomonTreeSeries> outputTree() const override {
         return nullptr;
     }
     void clearInputs(void) override {};

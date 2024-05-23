@@ -18,7 +18,7 @@ class GNOMONCORE_EXPORT gnomonAbstractCellImageTracking : public gnomonAbstractA
 {
     //Inputs
 public:
-  virtual void setCellImageInput(std::shared_ptr<gnomonCellImageSeries> cellimage) = 0;
+  virtual void setCellImage(std::shared_ptr<gnomonCellImageSeries> cellimage) = 0;
   virtual void setImage(std::shared_ptr<gnomonImageSeries> image) = 0;
   virtual inline void setTransformation(std::shared_ptr<gnomonDataDictSeries> data_dict_series) {
       dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
@@ -26,15 +26,15 @@ public:
 
     // Outputs
 public:
-    virtual std::shared_ptr<gnomonCellImageSeries> cellImageOutput() const = 0;
-    virtual std::shared_ptr<gnomonTreeSeries> tree() const { return nullptr; };
+    virtual std::shared_ptr<gnomonCellImageSeries> outputCellImage() const = 0;
+    virtual std::shared_ptr<gnomonTreeSeries> outputTree() const { return nullptr; };
 
 public:
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonImage") {
             return {"setImage"};
         } else if(formName == "gnomonCellImage") {
-            return {"setCellImageInput"};
+            return {"setCellImage"};
         } else if(formName == "gnomonDataDict") {
             return {"setTransformation"};
         }
@@ -44,7 +44,7 @@ public:
         if(formName == "gnomonImage") {
             return {"image"};
         } else if(formName == "gnomonCellImage") {
-            return {"cellImageInput"};
+            return {"cellImage"};
         } else if(formName == "gnomonDataDict") {
             return {"transformation"};
         }
@@ -52,9 +52,9 @@ public:
     };
     static inline QString defaultOutput(QString formName) {
         if(formName == "gnomonCellImage") {
-            return {"cellImageOutput"};
+            return {"outputCellImage"};
         } else if(formName == "gnomonTree") {
-            return {"tree"};
+            return {"outputTree"};
         }
         return {};
     };

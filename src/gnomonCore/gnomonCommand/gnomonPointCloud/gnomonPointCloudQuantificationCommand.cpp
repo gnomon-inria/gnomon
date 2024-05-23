@@ -45,7 +45,7 @@ void gnomonPointCloudQuantificationCommand::predo(void)
 
 void gnomonPointCloudQuantificationCommand::postdo(void)
 {
-    std::shared_ptr<gnomonPointCloudSeries> pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->pointCloud();
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->outputPointCloud();
 
     if ((!pointCloud)||pointCloud->times().empty()) {
         d->pointCloud = nullptr;
@@ -53,7 +53,7 @@ void gnomonPointCloudQuantificationCommand::postdo(void)
         d->pointCloud = pointCloud;
     }
 
-    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->dataFrame();
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->outputDataFrame();
 
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
@@ -65,9 +65,9 @@ void gnomonPointCloudQuantificationCommand::postdo(void)
 
 void gnomonPointCloudQuantificationCommand::undo()
 {
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setImageInput(nullptr);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setMeshInput(nullptr);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloudInput(nullptr);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(nullptr);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setMesh(nullptr);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(nullptr);
     this->action->refreshParameters();
 }
 
@@ -79,7 +79,7 @@ void gnomonPointCloudQuantificationCommand::setImage(std::shared_ptr<gnomonImage
         d->image = image;
     }
     Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setImageInput(d->image);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(d->image);
     this->action->refreshParameters();
 }
 
@@ -91,7 +91,7 @@ void gnomonPointCloudQuantificationCommand::setMesh(std::shared_ptr<gnomonMeshSe
         d->mesh = mesh;
     }
     Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setMeshInput(d->mesh);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setMesh(d->mesh);
     this->action->refreshParameters();
 }
 
@@ -103,7 +103,7 @@ void gnomonPointCloudQuantificationCommand::setPointCloud(std::shared_ptr<gnomon
         d->input_pointCloud = pointCloud;
     }
     Q_ASSERT(this->action);
-    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloudInput(d->input_pointCloud);
+    ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(d->input_pointCloud);
     this->action->refreshParameters();
 }
 
@@ -120,32 +120,32 @@ std::shared_ptr<gnomonDataFrameSeries> gnomonPointCloudQuantificationCommand::da
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudQuantificationCommand::inputs()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs;
-    inputs["imageInput"] = d->image;
-    inputs["meshInput"] = d->mesh;
-    inputs["pointCloudInput"] = d->input_pointCloud;
+    inputs["image"] = d->image;
+    inputs["mesh"] = d->mesh;
+    inputs["pointCloud"] = d->input_pointCloud;
     return inputs;
 }
 
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudQuantificationCommand::outputs()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
-    outputs["pointCloud"] = this->pointCloud();
-    outputs["dataFrame"] = this->dataFrame();
+    outputs["outputPointCloud"] = this->pointCloud();
+    outputs["outputDataFrame"] = this->dataFrame();
     return outputs;
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::inputTypes() {
     orderedMap input_types;
-    input_types.emplace_back(std::make_pair("imageInput", "gnomonImage"));
-    input_types.emplace_back(std::make_pair("meshInput", "gnomonMesh"));
-    input_types.emplace_back(std::make_pair("pointCloudInput", "gnomonPointCloud"));
+    input_types.emplace_back(std::make_pair("image", "gnomonImage"));
+    input_types.emplace_back(std::make_pair("mesh", "gnomonMesh"));
+    input_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));
     return input_types;
 }
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::outputTypes() {
     orderedMap output_types;
-    output_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));
-    output_types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));
+    output_types.emplace_back(std::make_pair("outputPointCloud", "gnomonPointCloud"));
+    output_types.emplace_back(std::make_pair("outputDataFrame", "gnomonDataFrame"));
     return output_types;
 }
 
@@ -165,19 +165,19 @@ void gnomonPointCloudQuantificationCommand::deserializeResults(QJsonObject &seri
     if(!d->pointCloud) {
         d->pointCloud = std::make_shared<gnomonPointCloudSeries>();
     }
-    auto tmp = serialization["pointCloud"].toObject();
+    auto tmp = serialization["outputPointCloud"].toObject();
     d->pointCloud->deserialize(tmp);
     if(!d->dataFrame) {
         d->dataFrame = std::make_shared<gnomonDataFrameSeries>();
     }
-    auto tmp2 = serialization["dataFrame"].toObject();
+    auto tmp2 = serialization["outputDataFrame"].toObject();
     d->dataFrame->deserialize(tmp2);
 }
 
 QJsonObject gnomonPointCloudQuantificationCommand::serializeResults(void) {
     QJsonObject out;
-    out["pointCloud"] = d->pointCloud->serialize();
-    out["dataFrame"] = d->dataFrame->serialize();
+    out["outputPointCloud"] = d->pointCloud->serialize();
+    out["outputDataFrame"] = d->dataFrame->serialize();
     return out;
 }
 

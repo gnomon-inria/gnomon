@@ -18,45 +18,54 @@ class GNOMONCORE_EXPORT gnomonAbstractPointCloudQuantification : public gnomonAb
 {
     //Inputs
 public:
-  virtual void setImageInput(std::shared_ptr<gnomonImageSeries> image) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
-  virtual void setMeshInput(std::shared_ptr<gnomonMeshSeries> mesh) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
-  virtual void setPointCloudInput(std::shared_ptr<gnomonPointCloudSeries> pointCloud) = 0;
+    virtual void setImage(std::shared_ptr<gnomonImageSeries> image) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+    virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) {dtkWarn()<<Q_FUNC_INFO<< "not implemented";};
+    virtual void setPointCloud(std::shared_ptr<gnomonPointCloudSeries> pointCloud) = 0;
+
+    virtual inline std::shared_ptr<gnomonPointCloudSeries> pointCloud() = 0;
+    virtual inline std::shared_ptr<gnomonImageSeries> image() const {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
+    virtual inline std::shared_ptr<gnomonMeshSeries> mesh() const {
+        dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
+        return nullptr;
+    };
 
     // Outputs
 public:
-    virtual std::shared_ptr<gnomonPointCloudSeries> pointCloud() const = 0;
-    virtual std::shared_ptr<gnomonDataFrameSeries> dataFrame() const = 0;
+    virtual std::shared_ptr<gnomonPointCloudSeries> outputPointCloud() const = 0;
+    virtual std::shared_ptr<gnomonDataFrameSeries> outputDataFrame() const = 0;
 
 public:
     static inline QString defaultSetter(QString formName) {
         if (formName == "gnomonPointCloud") {
-            return {"setPointCloudInput"};
+            return {"setPointCloud"};
         } else if (formName == "gnomonImage") {
-            return {"setImageInput"};
+            return {"setImage"};
         } else if (formName == "gnomonMesh") {
-            return {"setMeshInput"};
+            return {"setMesh"};
         }
         return {};
     };
     static inline QString defaultGetter(QString formName) {
         if (formName == "gnomonPointCloud") {
-            return {"pointCloudInput"};
+            return {"pointCloud"};
         } else if (formName == "gnomonImage") {
-            return {"imageInput"};
+            return {"image"};
         } else if (formName == "gnomonMesh") {
-            return {"meshInput"};
+            return {"mesh"};
         }
         return {};
     };
     static inline QString defaultOutput(QString formName) {
         if (formName == "gnomonPointCloud") {
-            return {"pointCloud"};
+            return {"outputPointCloud"};
         } else if (formName == "gnomonDataFrame") {
-            return {"dataFrame"};
+            return {"outputDataFrame"};
         }
         return {};
     };
-
 
 public:
     virtual int run(void) override = 0;
