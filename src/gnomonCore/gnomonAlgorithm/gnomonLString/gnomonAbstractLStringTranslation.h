@@ -45,6 +45,31 @@ public:
     virtual std::shared_ptr<gnomonTreeSeries> outputTree(void) const { return nullptr; };
     virtual std::shared_ptr<gnomonLStringSeries> inputLString(void) const { return nullptr; };
     virtual std::shared_ptr<gnomonLStringSeries> outputLString(void) const { return nullptr; };
+
+public:
+    static inline QString defaultSetter(QString formName) {
+        if(formName == "gnomonLString") {
+            return {"setInputLString"};
+        } else if (formName == "gnomonTree") {
+            return {"setInputTree"};
+        }
+        return {};
+    };
+    static inline QString defaultGetter(QString formName) {
+        if(formName == "gnomonLString") {
+            return {"inputLString"};
+        } else if (formName == "gnomonTree") {
+            return {"inputTree"};
+        }
+        return {};
+    };
+    static inline QString defaultOutput(QString formName) {
+        if(formName == "gnomonLString") {
+            return {"outputLString"};
+        } else if (formName == "gnomonTree") {
+            return {"outputTree"};
+        }
+    };
 };
 
 DTK_DECLARE_OBJECT(gnomonAbstractLStringTranslation *)

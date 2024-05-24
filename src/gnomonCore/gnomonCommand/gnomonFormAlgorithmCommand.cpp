@@ -156,9 +156,9 @@ dtkCoreParameters gnomonFormAlgorithmCommand::parameters() const
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonFormAlgorithmCommand::inputs()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > out_inputs;
-    for(auto input : d->inputs) {
-        QString form_name = input->formName().replace(QString("gnomon"), QString("input"));
-        out_inputs[input->formName()] = input;
+    for(const auto& input : d->inputs) {
+        QString input_name = gnomonAbstractFormAlgorithm::defaultGetter(input->formName());
+        out_inputs[input_name] = input;
     }
     return out_inputs;
 }
@@ -166,9 +166,9 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonFormAlgorithmCo
 gnomonAbstractCommand::orderedMap gnomonFormAlgorithmCommand::inputTypes()
 {
     orderedMap input_types;
-    for(auto input : d->inputs.keys()) {
-        QString form_name = input.replace(QString("gnomon"), QString("input"));
-        input_types.emplace_back(std::make_pair(form_name, input));
+    for(const auto& input : d->inputs) {
+        QString input_name = gnomonAbstractFormAlgorithm::defaultGetter(input->formName());
+        input_types.emplace_back(std::make_pair(input_name, input->formName()));
     }
     return input_types;
 }
@@ -181,9 +181,9 @@ void gnomonFormAlgorithmCommand::setInputForm(const QString& name, std::shared_p
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonFormAlgorithmCommand::outputs()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > out_outputs;
-    for(auto output : d->outputs) {
-        QString form_name = output->formName().replace(QString("gnomon"), QString("output"));
-        out_outputs[output->formName()] = output;
+    for(const auto& output : d->outputs) {
+        QString output_name = gnomonAbstractFormAlgorithm::defaultOutput(output->formName());
+        out_outputs[output_name] = output;
     }
 
     return out_outputs;

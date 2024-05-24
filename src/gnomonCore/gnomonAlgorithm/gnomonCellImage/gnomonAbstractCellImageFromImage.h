@@ -32,7 +32,7 @@ public:
         dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
         return nullptr;
     };
-    virtual inline std::shared_ptr<gnomonBinaryImageSeries> binaryImageSeries() const {
+    virtual inline std::shared_ptr<gnomonBinaryImageSeries> binaryImage() const {
         dtkWarn()<<Q_FUNC_INFO<<"Not implemented";
         return nullptr;
     };
@@ -55,7 +55,7 @@ public:
         } else if (formName == "gnomonPointCloud") {
             return {"cellPoints"};
         } else if (formName == "gnomonBinaryImage") {
-            return {"binaryImageSeries"};
+            return {"binaryImage"};
         }
         return {};
     };
