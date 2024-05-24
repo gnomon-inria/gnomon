@@ -26,6 +26,8 @@ class GNOMONVISUALIZATION_EXPORT gnomonFormManager : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(int maxMemory READ maxMemory WRITE setMaxMemory NOTIFY maxMemoryChanged)
+
 public:
     static gnomonFormManager *instance(void);
 
@@ -33,6 +35,7 @@ signals:
     void added(int id, QString name);
     void removed(int id);
     void alreadyAdded(void);
+    void maxMemoryChanged(int value);
 
 public slots:
     // void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image, std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr);
@@ -60,6 +63,10 @@ public:
 public:
     int formCount(const QString& form_name);
     void setFormDropped(const QString& form_uuid);
+
+public:
+    int maxMemory();
+    void setMaxMemory(int value);
 
 public:
     int formIndex(const QString& form_uuid);

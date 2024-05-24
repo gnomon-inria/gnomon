@@ -102,7 +102,7 @@ public:
     QSet<QString> hibernating_workspaces;
     QList<QString> active_workspaces;
     QTimer *memoryManagementTimer = nullptr;
-
+    int maxMemory = 3000; // in MB
 
 public:
     QMetaObject::Connection connection;
@@ -594,6 +594,17 @@ void gnomonFormManager::setFormDropped(const QString& form_uuid)
     d->formDropped[index] = true;
 }
 
+int gnomonFormManager::maxMemory() {
+    return d->maxMemory;
+}
+
+void gnomonFormManager::setMaxMemory(int value) {
+    if(value != d->maxMemory) {
+        d->maxMemory = value;
+        emit maxMemoryChanged(value);
+    }
+}
+
 QList<int> gnomonFormManager::systemStat(void) const
 {
     QList<int> stat(3); //total_mem, used_mem, this_mem
@@ -787,7 +798,7 @@ void gnomonFormManager::memoryManagement() {
     int used_mem = stats[1];
     int this_mem = stats[2];
     qDebug() << "$$ Memory usage: " << used_mem << " | " << total_mem << " | " << stats[2];
-    while((this_mem > 2000 || (float)used_mem/(float)total_mem>0.8) && d->active_workspaces.size()>1) {
+    while((this_mem > d->maxMemory || (float)used_mem/(float)total_mem>0.8) && d->active_workspaces.size()>1) {
         callHibernateWorkspace();
     }
     checkHibernateForms();
