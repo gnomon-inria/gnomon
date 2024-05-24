@@ -275,7 +275,10 @@ template <typename T> void gnomonTimeSeries<T>::save(uint id)
 {
     if(m_storage_info.contains(id) && m_storage_info.value(id).loaded) {
         QJsonObject serialization = m_forms.value(id)->serialize();
-        auto content = qCompress(QJsonDocument(serialization).toJson(), 5);
+        // temporarily deactivating compression for better performances
+        // TODO: move saving and compressing to the plugins later
+        //auto content = qCompress(QJsonDocument(serialization).toJson(), 1);
+        auto content = QJsonDocument(serialization).toJson();
         QFile file(storage_dir.filePath(m_storage_info.value(id).fileName));
         if(file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             file.write(content);
@@ -292,7 +295,8 @@ template <typename T> void gnomonTimeSeries<T>::load(uint id)
         QFile file(filePath);
         QJsonObject formSerialization;
         if(file.open(QIODevice::ReadOnly)) {
-            auto content = qUncompress(file.readAll());
+            //auto content = qUncompress(file.readAll());
+            auto content = file.readAll();
             file.close();
             formSerialization = QJsonDocument::fromJson(content).object();
             file.close();
