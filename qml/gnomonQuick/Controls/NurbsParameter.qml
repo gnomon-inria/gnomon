@@ -45,8 +45,16 @@ Control {
 
         width: parent.width
         implicitHeight: 200
-        onWidthChanged: _view.setGeom(_view.width, _view.height);
-        onHeightChanged: _view.setGeom(_view.width, _view.height);
+        onWidthChanged : {
+            if (_view.visible) {
+                _view.setGeom(_view.width, _view.height);
+            }
+        }
+        onHeightChanged : {
+           if (_view.visible) {
+               _view.setGeom(_view.width, _view.height);
+           }
+       }
 
         backgroundColor: G.Style.figureColors.bgColor
         lineColor: G.Style.figureColors.lineColor

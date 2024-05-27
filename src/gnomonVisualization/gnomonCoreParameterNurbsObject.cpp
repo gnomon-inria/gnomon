@@ -187,82 +187,46 @@ void gnomonCoreParameterNurbsObjectPrivate::initPSurface(gnomonCoreParameterNurb
             PyObject *p_ctrlpts = PyList_New(int(param->controlPoints().size()));
             int i=0;
             for(auto point: param->controlPoints()) {
-                PyObject *p_point = PyList_New(param->dimension());
+                PyObject *p_point = PyList_New(3);
                 PyList_SetItem(p_point, 0, PyFloat_FromDouble(point[0]));
                 PyList_SetItem(p_point, 1, PyFloat_FromDouble(point[1]));
                 PyList_SetItem(p_point, 2, PyFloat_FromDouble(point[2]));
-                z_buffer = point[2];
-
                 PyList_SetItem(p_ctrlpts, i++, p_point);
-                Py_DECREF(p_point);
+                // Py_DECREF(p_point);
             }
-            if(!p_ctrlpts) { //  || !PyCallable_Check(pFunc_ctrlpts)
+            if(!p_ctrlpts) {
                 dtkWarn() << Q_FUNC_INFO << "Error Building ControlPoint list!";
                 Py_XDECREF(p_ctrlpts);
                 return;
             }
 
-            PyObject* pFunc_ctrlpts = PyObject_GetAttrString(this->pSurface, "set_ctrlpts");
-            if(!pFunc_ctrlpts) { 
-                dtkWarn() << Q_FUNC_INFO << "Error calling function set_ctrlpts";
-                Py_XDECREF(pFunc_ctrlpts);
-                return;
-            }
-            PyObject* args = Py_BuildValue("(Oii)", p_ctrlpts, param->cpsize()[0], param->cpsize()[1]);
-            if(!args) {
-                dtkWarn() << "Could not Create set_ctrlpts args correctly!";
-                Py_DECREF(pFunc_ctrlpts);
-                return;
-            }
+            PyObject_SetAttrString(this->pSurface, "ctrlpts_size_u", PyLong_FromLong(param->cpsize()[0]));
+            PyObject_SetAttrString(this->pSurface, "ctrlpts_size_v", PyLong_FromLong(param->cpsize()[1]));
+            PyObject_SetAttrString(this->pSurface, "ctrlpts", p_ctrlpts);
 
-            PyObject* pResult = PyObject_CallObject(pFunc_ctrlpts, args);
-            if (!pResult) {
-                dtkWarn() << Q_FUNC_INFO << "Error calling function set_ctrlpts with arguments";
-                return;
-            }
-            
-            Py_XDECREF(pResult);
-            Py_DECREF(args);
-            Py_DECREF(pFunc_ctrlpts);
             Py_DECREF(p_ctrlpts);
         }
 
         //2.3 update knotvector
-        PyObject *ctrlpt_u_size = PyObject_GetAttrString(this->pSurface, "ctrlpts_size_u");
-        if(PyLong_Check(ctrlpt_u_size)) {
-            long ctrlpt_size = PyLong_AS_LONG(ctrlpt_u_size);
-            int size_int = static_cast<int>(ctrlpt_size);
-
-            PyObject* pknotvector_u = PyList_New(int(size_int + degree + 1));
-            int i = 0;
-            for(auto k_vector_u : param->knotVectorU()) {
-                PyList_SetItem(pknotvector_u, i++, PyFloat_FromDouble(k_vector_u));
+        PyObject* pknotvector_u = PyList_New(int(param->cpsize()[0] + degree + 1));
+        int i_u = 0;
+        for(auto k_vector_u : param->knotVectorU()) {
+            if (i_u < PyList_Size(pknotvector_u)) {
+                PyList_SetItem(pknotvector_u, i_u++, PyFloat_FromDouble(k_vector_u == 0 ? 0 : 1));
             }
-            PyObject_SetAttrString(this->pSurface, "knotvector_u", pknotvector_u);
-            Py_XDECREF(pknotvector_u);
-
-        } else {
-            dtkWarn() << " pknotvector_u not retrievable ";
         }
-        Py_XDECREF(ctrlpt_u_size);
+        PyObject_SetAttrString(this->pSurface, "knotvector_u", pknotvector_u);
+        Py_XDECREF(pknotvector_u);
 
-        PyObject *ctrlpt_v_size = PyObject_GetAttrString(this->pSurface, "ctrlpts_size_v");
-        if(PyLong_Check(ctrlpt_v_size)) {
-            long ctrlpt_size = PyLong_AS_LONG(ctrlpt_v_size);
-            int size_int = static_cast<int>(ctrlpt_size);
-
-            PyObject* pknotvector_v = PyList_New(int(size_int + degree + 1));
-            int i = 0;
-            for(auto k_vector_v : param->knotVectorU()) {
-                PyList_SetItem(pknotvector_v, i++, PyFloat_FromDouble(k_vector_v));
+        PyObject* pknotvector_v = PyList_New(int(param->cpsize()[1] + degree + 1));
+        int i_v = 0;
+        for(auto k_vector_v : param->knotVectorV()) {
+            if (i_v < PyList_Size(pknotvector_v)) {
+                PyList_SetItem(pknotvector_v, i_v++, PyFloat_FromDouble(k_vector_v == 0 ? 0 : 1));
             }
-            PyObject_SetAttrString(this->pSurface, "knotvector_v", pknotvector_v);
-            Py_XDECREF(pknotvector_v);
-
-        } else {
-            dtkWarn() << " pknotvector_v not retrievable ";
         }
-        Py_XDECREF(ctrlpt_v_size);
+        PyObject_SetAttrString(this->pSurface, "knotvector_v", pknotvector_v);
+        Py_XDECREF(pknotvector_v);
 
         //2.4 delta
         PyObject* p_delta = PyFloat_FromDouble(param->delta());
@@ -291,17 +255,19 @@ void gnomonCoreParameterNurbsObjectPrivate::initPVisSurface(void)
         PyObject* pFunc2;
         pFunc2 = PyObject_GetAttrString(pModule_vis, "VisSurface");
 
-        PyObject* args = Py_BuildValue("OO", this->pSurface, Py_False); 
-        this->pVisSurface = PyObject_CallObject(pFunc2, args);
+        this->pVisSurface = PyObject_CallNoArgs(pFunc2);
         if(!this->pVisSurface) {
             dtkWarn() << "Error making VisSurface, no NURBS visu";
         } else {
             PyObject_SetAttrString(this->pSurface, "vis", this->pVisSurface);
         }
 
-        Py_DECREF(args);
+        PyObject* pRenderFunc = PyObject_GetAttrString(this->pSurface, "render");
+        PyObject* result = PyObject_CallNoArgs(pRenderFunc);
+
         Py_DECREF(pFunc2);
         Py_DECREF(pModule_vis);
+        Py_DECREF(pRenderFunc);
 
         PyGILState_Release(gstate);
     }
@@ -587,14 +553,17 @@ void gnomonCoreParameterNurbsObject::buildNurbsPatch(void)
         PyGILState_STATE gstate;
         gstate = PyGILState_Ensure();
 
-        PyObject* pRenderWindow = PyObject_CallMethod(d->pVisSurface, "set_renderer_window","O",  vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase*>(d->nurbsView->getRendererWindow())));
+        auto render_window = d->nurbsView->renderWindow();
+        PyObject* pRenderWindow = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase*>(render_window));
         if(!pRenderWindow) {
-            dtkWarn() << "Could not set render window from C++ to VisVTK python!";
+            dtkWarn() << "Could not convert render window from C++";
+        } else {
+            PyObject_CallMethod(d->pVisSurface, "set_render_window", "(O)", pRenderWindow);
         }
         Py_DECREF(pRenderWindow);
 
         PyGILState_Release(gstate);
     } else {
-        dtkWarn() << "Problem pCurve or pVisCurve is not initialized";
+        dtkWarn() << "Problem pSurface or pVisSurface is not initialized";
     }
 }

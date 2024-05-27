@@ -468,7 +468,9 @@ class VisSurface(vis.VisAbstract):
         self._module_config['ctrlpts'] = "quads"
         self._module_config['evalpts'] = "triangles"
 
-    def render(self, render_window, **kwargs):
+        self.render_window = None
+
+    def render(self, **kwargs):
         """ Plots the surface and the control points grid. """
         # Calling parent function
         super(VisSurface, self).render(**kwargs)
@@ -516,9 +518,19 @@ class VisSurface(vis.VisAbstract):
                                                        name=plot['name'], index=plot['idx'], size=self.vconf.trim_size)
                     self.vtk_actors.append(actor1)
 
-    def set_renderer_window(self, render_window):
-        self.render()
-        create_render_window(render_window, self.vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)))
+    def set_render_window(self, render_window):
+        self.render_window = render_window
+
+        renderer = self.render_window.GetRenderers().GetFirstRenderer()
+        renderer.SetBackground(1.0, 0, 0)
+
+        # Add actors to the scene
+        print(self.vtk_actors)
+        for actor in self.vtk_actors:
+            renderer.AddActor(actor)
+        interactor = self.render_window.GetInteractor()
+        interactor.Render()
+        # create_render_window(render_window, self.vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)))
 
 class VisVolume(vis.VisAbstract):
     """ VTK visualization module for volumes. """

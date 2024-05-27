@@ -17,10 +17,11 @@ class GNOMONVISUALIZATION_EXPORT gnomonNurbsView : public QObject
 public:
     gnomonNurbsView(QObject *parent = nullptr);
     virtual ~gnomonNurbsView(void)=default;
+
 public:
     void associate(vtkRenderWindow *);
     void addActor(vtkSmartPointer<vtkActor> actor);
-    vtkRenderWindow* getRendererWindow(void) const;
+    vtkRenderWindow* renderWindow(void) const;
 
 private:
     vtkSmartPointer<vtkRenderWindow> m_window;

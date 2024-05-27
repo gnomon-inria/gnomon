@@ -22,7 +22,7 @@ void gnomonNurbsView::addActor(vtkSmartPointer<vtkActor> actor)
     m_renderer->AddActor(actor);
 }
 
-vtkRenderWindow* gnomonNurbsView::getRendererWindow(void) const
+vtkRenderWindow* gnomonNurbsView::renderWindow(void) const
 {
     return m_window;
 }
