@@ -159,9 +159,9 @@ Item {
             if ((old_file_name.split('.').length == 1) || (old_file_name.split('.').pop() == file_name.split('.').pop())) { //same extension
                 if (_self.mode == "Python") {
                     d.fileName = file_name;
-                    _editor.tabName = d.fileName;
+                    editor.tabName = d.fileName;
                 } else {
-                    _editor.tabName = file_name
+                    editor.tabName = file_name
                 }
                 d.save(file_path);
                 if (_self.mode == "L-Py") {
