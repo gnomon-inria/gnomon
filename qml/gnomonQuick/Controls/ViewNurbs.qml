@@ -24,10 +24,5 @@ Rectangle {
 
         mouseEnabled: true;
 
-        onActiveFocusChanged: {
-            if (_view.activeFocus) {
-                window.currentView = self;
-            }
-        }
     }
 }

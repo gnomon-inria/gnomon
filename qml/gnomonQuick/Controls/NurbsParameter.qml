@@ -72,6 +72,15 @@ Control {
     G.ViewNurbs {
         id: _nurbs_view;
 
+        anchors.top: _label.bottom
+
+        width: parent.width
+        implicitHeight: 200
+
+        onActiveFocusChanged: {
+            window.insideParamFigure()
+        }
+
         // Component.onCompleted: G.Associator.associate_nurbs(_nurbs_view, param.nurbsView)
     }
 
