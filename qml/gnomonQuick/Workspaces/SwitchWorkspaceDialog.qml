@@ -83,8 +83,14 @@ G.Dialog {
             highlighted: ListView.isCurrentItem
             onClicked: {
                 listView.currentIndex = index
-                window.switch_workspace(index)
-                self.close();
+                let workspace = window.workspace_at(index)
+                if (workspace.d.hibernating) {
+                    _hibernating_toast.workspace_title = workspace.workspace_title
+                    _hibernating_toast.open()
+                } else {
+                    window.switch_workspace(index)
+                    self.close();
+                }
             }
 
 
@@ -137,7 +143,7 @@ G.Dialog {
                     color: G.Style.colors.textColorBase;
                     visible: window.workspace_at(index).d.hibernating
                     G.ToolTip {
-                        text: "This workspace is hibernating to conserve memory."
+                        text: "This workspace is hibernating to save memory."
                         visible: _hibernating_icon.hovered
                     }
                 }
@@ -197,6 +203,24 @@ G.Dialog {
 
         model: window.workspace_list;
         ScrollIndicator.vertical: ScrollIndicator { }
+    }
+
+    G.Toast {
+        id: _hibernating_toast
+
+        property string workspace_title;
+
+        parent: Overlay.overlay
+        header: "Switching to workspace " + _hibernating_toast.workspace_title
+        message: "The workspace was hibernating, please wait while its data is reloaded. This may take a few seconds."
+
+        type: G.Style.ButtonType.Base
+
+        onOpened: {
+            window.switch_workspace(listView.currentIndex)
+             _hibernating_toast.close()
+            self.close();
+        }
     }
 
     /* ListModel { */

@@ -11,6 +11,7 @@ import gnomonQuick.Workspaces 1.0 as G
 import gnomonQuick.Controls  1.0 as G
 import gnomonQuick.Style      1.0 as G
 
+import gnomon.Visualization 1.0 as GV
 import gnomon.Workspaces 1.0 as GW
 
 G.Workspace {
@@ -64,9 +65,14 @@ G.Workspace {
 
 
             onDroppedFromManager: (index) => {
+                if (!GV.World.formLoaded(index)) {
+                    _hibernating_toast.index = index
+                    _hibernating_toast.open()
+                } else {
+                    d.source.drop(index);
+                }
                 console.info('Retrieving from manager');
                 window.currentView = _source_view
-                d.source.drop(index);
             }
 
             viewLogic: d.source;
@@ -82,6 +88,23 @@ G.Workspace {
             Layout.fillHeight: true;
 
             viewLogic: d.figure;
+        }
+    }
+
+    G.Toast {
+        id: _hibernating_toast
+
+        property int index;
+
+        parent: Overlay.overlay
+        header: "Dropping Hibernating Form"
+        message: "The form was hibernating, please wait while it is reloaded. This may take a few seconds."
+
+        type: G.Style.ButtonType.Base
+
+        onOpened: {
+            d.source.drop(_hibernating_toast.index);
+            _hibernating_toast.close()
         }
     }
 
