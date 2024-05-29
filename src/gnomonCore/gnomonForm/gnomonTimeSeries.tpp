@@ -21,6 +21,7 @@ template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeri
     for (const auto& id : o.m_forms.keys()) {
         m_times[id] = o.m_times[id];
         m_storage_info[id] = o.m_storage_info[id];
+        m_form_metadata_storage[id] = o.m_form_metadata_storage[id];
 
         QFile::copy(
                 o.storage_dir.filePath(o.m_storage_info[id].fileName),
@@ -57,6 +58,7 @@ template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const 
     m_forms = o.m_forms;
     m_times = o.m_times;
     m_storage_info = o.m_storage_info;
+    m_form_metadata_storage = o.m_form_metadata_storage;
     m_current_time = o.m_current_time;
     *(p_metadata) = *(o.p_metadata);
 
@@ -124,10 +126,16 @@ template <typename T> void gnomonTimeSeries<T>::selectCurrentTime(double t)
 
 template <typename T> QMap<QString,QString> gnomonTimeSeries<T>::metadataAtT(double t) const
 {
-    if(containsTime(t))
+    if(!containsTime(t)) {
+        return {};
+    }
+    uint id = idAtT(t);
+    if(m_storage_info[id].loaded) {
         return m_forms[idAtT(t)]->metadata();
-    else
-        return QMap<QString, QString>();
+    }
+    else {
+        return m_form_metadata_storage[id];
+    }
 }
 
 
@@ -306,13 +314,17 @@ template <typename T> void gnomonTimeSeries<T>::load(uint id)
         }
         m_forms[id] = std::make_shared<T>(formSerialization);
         m_storage_info[id].loaded = true;
+        m_form_metadata_storage.remove(id);
     }
 }
 
 template <typename T> void gnomonTimeSeries<T>::unload(uint id)
 {
+    if(!m_forms.contains(id))
+        return;
     auto & form = m_forms[id];
     if(form.unique()) {
+        m_form_metadata_storage[id] = form->metadata();
         m_forms.remove(id);
         m_storage_info[id].loaded = false;
     }
