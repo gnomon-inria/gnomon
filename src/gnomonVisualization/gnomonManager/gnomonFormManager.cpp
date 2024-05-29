@@ -814,7 +814,7 @@ void gnomonFormManager::checkHibernateForms() {
     for(auto& form_uuid: GNOMON_SESSION->trackedForms()) {
         auto form = GNOMON_SESSION->getForm(form_uuid);
         int index = formIndex(form_uuid);
-        if(form.use_count() == 3 && index>=0) {
+        if(form.use_count() == 3 && index>=0 && d->formVisualizations.contains(index)) {
             auto& visu = d->formVisualizations[index];
             visu->clear();
             // qDebug() << "Visu " << visu.get() << " :: use count: " << visu.use_count();
