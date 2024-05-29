@@ -92,7 +92,7 @@ G.Workspace {
             console.log(d.fileName)
             let file_path = GP.ProjectManager.project.findFile(d.fileName)
             console.log(file_path)
-            _editor.readOnly = (file_path.length === 0) & (!d.fileName.includes("example.py"))
+            _editor.readOnly = (file_path.length === 0) && (!d.fileName.includes("example.py"))
             console.log(_editor.readOnly)
         }
 

@@ -481,9 +481,9 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
     QString default_run_code =  "        # implement the run method\n\n        pass\n";
     QString default_run_code_indented =  "            # implement the run method\n\n            pass\n";
 
-    if ((n_forms == 0) | (run_code.startsWith("        ") & !run_code.contains(default_run_code))) {
+    if ((n_forms == 0) || (run_code.startsWith("        ") && !run_code.contains(default_run_code))) {
         plugin_code += "        # #}\n";
-        if (run_code.isEmpty() | run_code.startsWith(default_run_code_indented) | run_code.startsWith(default_run_code)) {
+        if (run_code.isEmpty() || run_code.startsWith(default_run_code_indented) || run_code.startsWith(default_run_code)) {
             plugin_code += default_run_code;
         } else {
             plugin_code += run_code;
@@ -508,7 +508,7 @@ void gnomonPythonAlgorithmPluginCode::updateCode(void)
         }
         plugin_code += "            self.increment_progress()\n";
         plugin_code += "            # #}\n";
-        if (run_code.isEmpty() | run_code.startsWith(default_run_code_indented) | run_code.startsWith(default_run_code)) {
+        if (run_code.isEmpty() || run_code.startsWith(default_run_code_indented) || run_code.startsWith(default_run_code)) {
             plugin_code += default_run_code_indented;
             for (const auto &form_type : d->output_forms.keys()) {
                 gnomonFormDescription desc = d->output_forms[form_type];

@@ -156,15 +156,15 @@ Item {
 
             let old_file_name = d.fileName;
 
-            if ((old_file_name.split('.').length == 1) || (old_file_name.split('.').pop() == file_name.split('.').pop())) { //same extension
-                if (_self.mode == "Python") {
+            if ((old_file_name.split('.').length === 1) || (old_file_name.split('.').pop() === file_name.split('.').pop())) { //same extension
+                d.save(file_path);
+                if (_self.mode === "Python") {
+                    editor.tabName = file_name;
                     d.fileName = file_name;
-                    editor.tabName = d.fileName;
                 } else {
                     editor.tabName = file_name
                 }
-                d.save(file_path);
-                if (_self.mode == "L-Py") {
+                if (_self.mode === "L-Py") {
                     d.fileName = file_name
                 }
                 _self._current_file = _file_dialog_save.file;
@@ -223,7 +223,7 @@ Item {
                 flat: true;
 
                 onClicked: {
-                    d.save(_file_dialog_save.file);
+                    d.save(_self._current_file);
                     _message_dialog.close();
                 }
             }
