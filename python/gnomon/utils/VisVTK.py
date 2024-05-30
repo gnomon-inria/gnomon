@@ -14,6 +14,7 @@ import numpy as np
 import vtk
 from vtk.util.numpy_support import numpy_to_vtk
 from vtk import VTK_FLOAT
+from matplotlib import cm
 
 def create_actor_pts(pts, color, **kwargs):
     """reates a VTK actor for rendering scatter plots.
@@ -28,36 +29,28 @@ def create_actor_pts(pts, color, **kwargs):
     # Keyword arguments
     array_name = kwargs.get('name', "")
     array_index = kwargs.get('index', 0)
-    point_size = kwargs.get('size', 5)
-    point_sphere = kwargs.get('point_as_sphere', True)
+    point_size = kwargs.get('size', 0.05)
 
     # Create points
-    points = vtk.vtkPoints()
-    points.SetData(pts)
+    actors = []
+    for pt in pts:
+        points = vtk.vtkSphereSource()
+        points.SetCenter(pt)
+        points.SetRadius(point_size)
 
-    # Create a PolyData object and add points
-    polydata = vtk.vtkPolyData()
-    polydata.SetPoints(points)
+        # Map ploy data to the graphics primitives
+        mapper = vtk.vtkPolyDataMapper()
+        mapper.SetInputConnection(points.GetOutputPort())
+        mapper.SetArrayName(array_name)
+        mapper.SetArrayId(array_index)
 
-    # Run vertex glyph filter on the points array
-    vertex_filter = vtk.vtkVertexGlyphFilter()
-    vertex_filter.SetInputData(polydata)
+        # Create an actor and set its properties
+        actor = vtk.vtkActor()
+        actor.SetMapper(mapper)
+        actor.GetProperty().SetColor(*color)
+        actors.append(actor)
 
-    # Map ploy data to the graphics primitives
-    mapper = vtk.vtkPolyDataMapper()
-    mapper.SetInputConnection(vertex_filter.GetOutputPort())
-    mapper.SetArrayName(array_name)
-    mapper.SetArrayId(array_index)
-
-    # Create an actor and set its properties
-    actor = vtk.vtkActor()
-    actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(*color)
-    actor.GetProperty().SetPointSize(point_size)
-    actor.GetProperty().SetRenderPointsAsSpheres(point_sphere)
-
-    # Return the actor
-    return actor
+    return actors
 
 def create_actor_polygon(pts, color, **kwargs):
     """ Creates a VTK actor for rendering polygons.
@@ -432,7 +425,7 @@ class VisCurve3D(vis.VisAbstract):
                     pts = np.c_[pts, np.zeros(pts.shape[0], dtype=np.float)]
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
-                actor1 = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
+                actor1 = create_actor_pts(pts=pts, color=create_color(plot['color']),
                                                name=plot['name'], idx=plot['idx'])
                 self.vtk_actors.append(actor1)
                 # Lines
@@ -460,17 +453,28 @@ class VisCurve3D(vis.VisAbstract):
 # It is easier to plot 2-dimensional curves with VisCurve3D
 VisCurve2D = VisCurve3D
 
+class MouveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
+    def __init__(self, parent=None):
+        self.AddObserver("LeftButtonPressEvent", self.leftButtonPressEvent)
 
+    def leftButtonPressEvent(self, obj, event):
+        print("##### Inside leftButtonPressEvent ######")
+        clickPos = self.GetInteractor().GetEventPosition()
+        picker = vtk.vtkPropPicker()
+        picker.Pick(clickPos[0], clickPos[1], 0, obj.GetDefaultRenderer())
+
+        self.OnLeftButtonDown()
+        return
 class VisSurface(vis.VisAbstract):
     """ VTK visualization module for surfaces. """
-    def __init__(self, config=VisConfig(), **kwargs):
+    def __init__(self, surface, config=VisConfig(), **kwargs):
         super(VisSurface, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "quads"
         self._module_config['evalpts'] = "triangles"
-
+        self.surface = surface
         self.render_window = None
 
-    def render(self, **kwargs):
+    def render(self, colormap=cm.cool, **kwargs):
         """ Plots the surface and the control points grid. """
         # Calling parent function
         super(VisSurface, self).render(**kwargs)
@@ -488,9 +492,9 @@ class VisSurface(vis.VisAbstract):
                 pts = np.array(vertices, dtype=np.float)
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
-                actor1 = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
-                                               name=plot['name'], index=plot['idx'])
-                self.vtk_actors.append(actor1)
+                actor1 = create_actor_pts(pts=pts, color=create_color(plot['color']),
+                                               name=plot['name'], index=plot['idx'], size=0.05)
+                self.vtk_actors.extend(actor1)
                 # Quad mesh
                 lines = np.array(faces, dtype=np.int)
                 actor2 = create_actor_mesh(pts=vtkpts, lines=lines, color=create_color(plot['color']),
@@ -522,13 +526,21 @@ class VisSurface(vis.VisAbstract):
         self.render_window = render_window
 
         renderer = self.render_window.GetRenderers().GetFirstRenderer()
-        renderer.SetBackground(1.0, 0, 0)
+        renderer.SetBackground(1.0, 1.0, 1.0)
 
         # Add actors to the scene
         print(self.vtk_actors)
         for actor in self.vtk_actors:
             renderer.AddActor(actor)
         interactor = self.render_window.GetInteractor()
+
+        # Use trackball camera
+        interactor_style = MouveCtrlPointsInteractor()
+        interactor_style.SetDefaultRenderer(renderer)
+        interactor.SetInteractorStyle(interactor_style)
+
+        interactor.Initialize()
+        self.render_window.Render()
         interactor.Render()
         # create_render_window(render_window, self.vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)))
 
@@ -554,20 +566,16 @@ class VisVolume(vis.VisAbstract):
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                vtkpts.SetName(plot['name'])
-                temp_actor = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
+                temp_actor = create_actor_pts(pts=pts, color=create_color(plot['color']),
                                                    name=plot['name'], index=plot['idx'])
-                self.vtk_actors.append(temp_actor)
+                self.vtk_actors.extend(temp_actor)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                vtkpts.SetName(plot['name'])
-                temp_actor = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
+                temp_actor = create_actor_pts(pts=pts, color=create_color(plot['color']),
                                                    name=plot['name'], index=plot['idx'])
-                self.vtk_actors.append(temp_actor)
+                self.vtk_actors.extend(temp_actor)
 
     def set_renderer_window(self, render_window):
         self.render()
@@ -595,11 +603,9 @@ class VisVoxel(vis.VisAbstract):
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                vtkpts.SetName(plot['name'])
-                temp_actor = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
+                temp_actor = create_actor_pts(pts=pts, color=create_color(plot['color']),
                                                    name=plot['name'], index=plot['idx'])
-                self.vtk_actors.append(temp_actor)
+                self.vtk_actors.extend(temp_actor)
 
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:

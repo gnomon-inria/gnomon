@@ -167,6 +167,14 @@ void gnomonCoreParameterNurbsObjectPrivate::initPSurface(gnomonCoreParameterNurb
         }
         Py_DECREF(pName);
 
+        PyObject* pName2 = PyUnicode_FromString("geomdl.utilities");
+        PyObject* pModule_utilities = PyImport_Import(pName2);
+        if(!pModule_utilities) {
+            qWarning() << Q_FUNC_INFO << "Error importing module geomdl.utilities";
+            return;
+        }
+        Py_DECREF(pName2);
+
         // 1 create surface
         PyObject* pFunc = PyObject_GetAttrString(pModule_bspline, "Surface");
         this->pSurface = PyObject_CallNoArgs(pFunc);
@@ -208,25 +216,33 @@ void gnomonCoreParameterNurbsObjectPrivate::initPSurface(gnomonCoreParameterNurb
         }
 
         //2.3 update knotvector
-        PyObject* pknotvector_u = PyList_New(int(param->cpsize()[0] + degree + 1));
-        int i_u = 0;
-        for(auto k_vector_u : param->knotVectorU()) {
-            if (i_u < PyList_Size(pknotvector_u)) {
-                PyList_SetItem(pknotvector_u, i_u++, PyFloat_FromDouble(k_vector_u == 0 ? 0 : 1));
-            }
-        }
-        PyObject_SetAttrString(this->pSurface, "knotvector_u", pknotvector_u);
-        Py_XDECREF(pknotvector_u);
 
-        PyObject* pknotvector_v = PyList_New(int(param->cpsize()[1] + degree + 1));
-        int i_v = 0;
-        for(auto k_vector_v : param->knotVectorV()) {
-            if (i_v < PyList_Size(pknotvector_v)) {
-                PyList_SetItem(pknotvector_v, i_v++, PyFloat_FromDouble(k_vector_v == 0 ? 0 : 1));
-            }
+        PyObject* pFunc_knot_u = PyObject_GetAttrString(pModule_utilities, "generate_knot_vector");
+        PyObject* args_u = Py_BuildValue("(i, i)", degree, int(param->cpsize()[0]));
+        PyObject* pknotvector_u = PyObject_CallObject(pFunc_knot_u, args_u);
+        if(!pknotvector_u) {
+            dtkWarn() << " pknotvector_u error with args " << degree << int(param->cpsize()[0]);
+            return;
+        } else {
+            PyObject_SetAttrString(this->pSurface, "knotvector_u", pknotvector_u);
         }
-        PyObject_SetAttrString(this->pSurface, "knotvector_v", pknotvector_v);
-        Py_XDECREF(pknotvector_v);
+        Py_DECREF(pknotvector_u);
+        Py_XDECREF(args_u);
+        Py_XDECREF(pFunc_knot_u);
+
+        PyObject* pFunc_knot_v = PyObject_GetAttrString(pModule_utilities, "generate_knot_vector");
+        PyObject* args_v = Py_BuildValue("(i, i)", degree, int(param->cpsize()[1]));
+        PyObject* pknotvector_v = PyObject_CallObject(pFunc_knot_v, args_v);
+        if(!pknotvector_v) {
+            dtkWarn() << " pknotvector_u error with args " << degree << int(param->cpsize()[1]);
+            return;
+        } else {
+            PyObject_SetAttrString(this->pSurface, "knotvector_v", pknotvector_v);
+        }
+        Py_DECREF(pknotvector_v);
+        Py_XDECREF(args_v);
+        Py_XDECREF(pFunc_knot_v);
+        Py_DECREF(pModule_utilities);
 
         //2.4 delta
         PyObject* p_delta = PyFloat_FromDouble(param->delta());
@@ -252,10 +268,9 @@ void gnomonCoreParameterNurbsObjectPrivate::initPVisSurface(void)
         }
         Py_DECREF(pName3);
 
-        PyObject* pFunc2;
-        pFunc2 = PyObject_GetAttrString(pModule_vis, "VisSurface");
-
-        this->pVisSurface = PyObject_CallNoArgs(pFunc2);
+        PyObject* pFunc2 = PyObject_GetAttrString(pModule_vis, "VisSurface");
+        PyObject* args = Py_BuildValue("(O)", this->pSurface);
+        this->pVisSurface = PyObject_CallObject(pFunc2, args);
         if(!this->pVisSurface) {
             dtkWarn() << "Error making VisSurface, no NURBS visu";
         } else {

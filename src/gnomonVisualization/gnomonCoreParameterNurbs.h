@@ -44,8 +44,6 @@ public:
     double delta(void) const;
     bool is_function(void) const;
     NURBS_TYPE type(void) const;
-    inline std::vector<double> knotVectorU(void) { return {0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0};};
-    inline std::vector<double> knotVectorV(void) { return {0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0};};
 
     void setDegree(int);
     void setDelta(double);
