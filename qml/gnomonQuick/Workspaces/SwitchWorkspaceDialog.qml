@@ -93,6 +93,14 @@ G.Dialog {
                 }
             }
 
+            Connections {
+                target: _hibernating_toast
+                function onOpened() {
+                    window.switch_workspace(listView.currentIndex)
+                     _hibernating_toast.close()
+                    self.close();
+                }
+            }
 
             Item {
                 id: _icon_container;
@@ -215,12 +223,6 @@ G.Dialog {
         message: "The workspace was hibernating, please wait while its data is reloaded. This may take a few seconds."
 
         type: G.Style.ButtonType.Base
-
-        onOpened: {
-            window.switch_workspace(listView.currentIndex)
-             _hibernating_toast.close()
-            self.close();
-        }
     }
 
     /* ListModel { */

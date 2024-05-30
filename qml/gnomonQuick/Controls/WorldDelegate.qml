@@ -72,7 +72,21 @@ Item {
             fileMode: P.FileDialog.SaveFile
 
             onAccepted: {
-                GV.World.saveAs(form_id, _file_dialog.file);
+                if (!GV.World.formLoaded(form_id)) {
+                    _hibernating_toast.index = form_id
+                    _hibernating_toast.file = _file_dialog.file
+                    _hibernating_toast.open()
+                } else {
+                    GV.World.saveAs(form_id, _file_dialog.file);
+                }
+            }
+
+            Connections {
+                target: _hibernating_toast
+                function onOpened() {
+                    GV.World.saveAs(_hibernating_toast.index, _hibernating_toast.file);
+                    _hibernating_toast.close()
+                }
             }
         }
 
@@ -293,5 +307,18 @@ Item {
         message: "This form has an output edge or already dropped in an other workspace"
 
         type: G.Style.ButtonType.Warning
+    }
+
+    G.Toast {
+        id: _hibernating_toast
+
+        property int index;
+        property var file;
+
+        parent: Overlay.overlay
+        header: "Reloading form " + GV.World.getDynamicFormMetadata(_hibernating_toast.index).data["name"]
+        message: "The form was hibernating, please wait while it is reloaded. This may take a few seconds."
+
+        type: G.Style.ButtonType.Base
     }
 }

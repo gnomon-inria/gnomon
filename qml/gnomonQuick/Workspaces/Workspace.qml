@@ -148,11 +148,6 @@ G.Page {
         message: "The form was hibernating, please wait while it is reloaded. This may take a few seconds."
 
         type: G.Style.ButtonType.Base
-
-        onOpened: {
-            view.drop(_hibernating_toast.index);
-            _hibernating_toast.close()
-        }
     }
 
     function updateParametersModel() {
@@ -185,6 +180,14 @@ G.Page {
             _hibernating_toast.open()
         } else {
             view.drop(index);
+        }
+    }
+
+    Connections {
+        target: _hibernating_toast
+        function onOpened() {
+            view.drop(_hibernating_toast.index);
+            _hibernating_toast.close()
         }
     }
 }
