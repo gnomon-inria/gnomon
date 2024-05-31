@@ -1,5 +1,12 @@
 # ChangeLog
 
+## version 1.0.1 - 2024-05-31
+* Improved `gnomon-utils package search`
+* Fixed pipeline reloading in cli `gnomon-utils run`
+* Fixed various issues in the Python Workspace
+* Fixed inliststring checkbox not working
+* Fixed issues in Workspace Morphonet
+
 ## version 1.0.0 - 2024-03-27
 * Gather gnomon library and GUI in a single repository
 * Include the notion of Project throughout the application:

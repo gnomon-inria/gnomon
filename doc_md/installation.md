@@ -1,6 +1,10 @@
 # How to install gnomon
 
-## [Mac and Linux] Install gnomon using conda
+## [Mac and Linux] Install Gnomon using conda
+
+:::{warning}
+[Mac] Gnomon requires Mac OS 11 (Big Sur) or later
+:::
 
 ### Prerequisite: Install Conda
 - Make sure you have `conda` installed on your system. To check, simply open a new terminal window and type:
@@ -24,27 +28,34 @@ Conda is an open source package management system and environment management sys
 Installing `gnomon` requires around *6 GB* of free disk space.
 :::
 
-- **Step 1:** (Optional) Install Mamba in your `(base)` environment
+#### **Step 1:** (Optional) Install Mamba in your `(base)` environment
 ```shell script
 conda install -n base -c conda-forge mamba
 ```
 
-- **Step 2:**  Create a conda environment with the right python version. Then activate this environment
+#### **Step 2:**  Create a conda environment with the right python version. Then activate this environment
 ```shell script
 conda create -n gnomon python=3.9
-
 conda activate gnomon
 ```
 
+:::{note}
 For Mac M1, you need to tell conda to use x86 architecture like this:
-
 ```shell script
 CONDA_SUBDIR=osx-64 conda create -n gnomon python=3.9
 conda activate gnomon
 conda config --env --set subdir osx-64
 ```
+:::
 
-- **Step 3:** Install **gnomon** and its **dependencies**
+:::{dropdown} Existing environment
+In case you already have a conda environment named `(gnomon)`, you can specify another name after the `-n` option: 
+```shell script
+conda create -n gnomon-stable python=3.9
+```
+:::
+
+#### **Step 3:** Install **gnomon** and its **dependencies**
 ```shell script
 mamba install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
 ```
@@ -53,125 +64,59 @@ mamba install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomo
 At this stage the `gnomon` application is installed but it is "empty" since no plugins are installed by default. To actually make it usable, you will have to install **plugin packages**
 :::
 
-- **Step 4:** Install plugin packages for gnomon for instance:
-```shell script
-gnomon-utils package install gnomon_package_tissueimagemesh
-```
-
-or alternatively:
-```shell script
-mamba install -c gnomon -c dtk-forge6 -c conda-forge -c mosaic -c morpheme gnomon_package_tissueimagemesh
-```
-
-- **Step 5:** Congrats, you can now launch the application
-```shell script
-gnomon
-```
-
-### Update `gnomon`
-
-- **Step 1:** Activate your `(gnomon)` environment
-```shell script
-conda activate gnomon
-```
-
-- **Step 2:**  Update **gnomon** and its **dependencies**
-```shell script
-gnomon-utils package update
-```
-
-or alternatively:
-```shell script
-mamba update -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
-```
-
-## Finding existing plugin packages
-
+#### **Step 4:** Install plugin packages for gnomon:
+:::{admonition} Finding existing plugin packages
 You can find available packages by running the following command in your environment
 ```shell script
 gnomon-utils package search
 ```
+:::
 
-## [Windows] Install with Windows Subsystem for Linux (WSL)
+For instance:
 
-Sources used for these instructions are:
-
- - [Open GUI apps on Windows Subsystem for Linux](https://www.youtube.com/watch?v=ymV7j003ETA&t=6s) (youtube)
- - [VcXsrv](https://sourceforge.net/p/vcxsrv/wiki/VcXsrv%20%26%20Win10/) sur SourceForge.
-
-### 1. Install the following dependencies
-
-1. [WSL 2](https://docs.microsoft.com/fr-fr/windows/wsl/install).
-2. [Putty](https://www.putty.org).
-3. **VcXsrv**, avalable on [Source Forge](https://sourceforge.net/p/vcxsrv/wiki/VcXsrv%20%26%20Win10/).
-
-### 2. Configure WSL
-
-A `$DISPLAY` variable has to be defined to choose on which screen/computer to display. To configure it do this:
-
-```
-\> export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0
+```shell script
+gnomon-utils package install gnomon_package_tissueimagemesh
 ```
 
-Now, if you print `$DISPLAY`, you should see an IP followed by `:0` such as:
-
+:::{dropdown} Alternative command
+```shell script
+mamba install -c gnomon -c dtk-forge6 -c conda-forge -c mosaic -c morpheme gnomon_package_tissueimagemesh
 ```
-> \> echo $DISPLAY
->
-> \> 131.254.160.46:0
-```
+:::
 
-This IP is not constant and as to be set at each start of the WSL. You can tune your `~/.bashrc` to set this variable at each WSL startup is you want.
-
-Install `awk` is needed (for example on debian based distributions:  `sudo apt install awk` ).
-
-### 3. Configure X
-
-#### VcXsrv
-
-Once installed, launch **XLauch** and select options as shown below :
-
-1. Select display setting for windows. Then click *Next*.
-
-![](./_static/xlauch-1.png)
-
-2. Clic on *Next*
-
-![](./_static/xlauch-2.png)
-
-3. Tick `Disable access control` (Note: *When it's ticked, the X server VcXsrv is open to extern connections.*). Clic on *Next*.
-
-![](./_static/xlauch-3.png)
-
-4. Clic on `Finish`.
-
-![](./_static/xlauch-4.png)
-
-#### Putty & SSH
-
-Start **SSH service** on WSL :
-
-```
-> \> sudo service ssh start
-```
-
-On WSL, type the command `ip addr show eth0` and note the IP address. This step should be done at each start of WSL.
-
-Launch Putty and configure the following parameters before connecting to WSL:
-
-1. Type the IP you just noted
-
-![](./_static/putty-1.png)
-
-2. In the Menu `SSH > X11`, tick `Enable X11 Forwarding`.
-
-![](./_static/putty-2.png)
-
-3. You can now start the session.
-
-### 4. Launch gnomon
-
-You can now launch gnomon through the *WSL console*:
-```
+#### **Step 5:** Congrats, you can now launch the application
+```shell script
 gnomon
 ```
+
+### Update Gnomon
+
+#### **Step 1:** Activate your `(gnomon)` environment
+```shell script
+conda activate gnomon
+```
+
+#### **Step 2:**  Update **gnomon** and its **dependencies**
+```shell script
+gnomon-utils package update
+```
+
+:::{dropdown} Alternative command
+```shell script
+mamba update -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
+```
+:::
+
+## [Windows] Install Gnomon via WSL
+
+:::{warning}
+[Windows] Some of the dependencies required by Gnomon are not packaged for Windows, but it is possible to use Linux packages via the Windows Subsystem for Linux (WSL). 
+:::
+
+[Installation guidelines for Windows](installation_windows)
+
+:::{toctree}
+:maxdepth: 1
+:hidden:
+installation_windows
+:::
