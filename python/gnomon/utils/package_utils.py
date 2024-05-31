@@ -39,9 +39,9 @@ class bcolors:
                 setattr(cls, key.lower(), partial(cls._apply_code_arround, code=getattr(cls, key)))
 
     @classmethod
-    def values(cls) -> list[str]:
-        return [cls.HEADER, cls.OKBLUE, cls.OKCYAN, cls.OKGREEN, cls.WARNING, cls.FAIL, cls.ENDC,
-                cls.BOLD, cls.UNDERLINE]
+    def values(cls) -> set[str]:
+        return {cls.HEADER, cls.OKBLUE, cls.OKCYAN, cls.OKGREEN, cls.WARNING, cls.FAIL, cls.ENDC, cls.BOLD,
+                cls.UNDERLINE}
 
     @classmethod
     def _apply_code_arround(cls, string: str, code: str) -> str:
@@ -172,14 +172,19 @@ def available_packages():
     for i, package_info in enumerate(as_is_packages):
         name, vers, build, date, spec, url = package_info
         if (name, vers, build) in packages:
-            as_is_packages[i] = tuple(bcolors.OKGREEN+info+bcolors.ENDC for info in package_info)
+            as_is_packages[i] = tuple(bcolors.BOLD+info+bcolors.ENDC for info in package_info)
 
     for i, package_info in enumerate(upgrade_needed_packages):
         name, vers, build, date, spec, url = package_info
         if (name, vers, build) in packages:
-            upgrade_needed_packages[i] = tuple(bcolors.OKGREEN+info+bcolors.ENDC for info in package_info)
+            upgrade_needed_packages[i] = tuple(bcolors.BOLD+info+bcolors.ENDC for info in package_info)
 
     return as_is_packages, upgrade_needed_packages
+
+
+def printed_length(string: str) -> int:
+    """Returns the printed length of the string"""
+    return len(string) - sum(string.count(x)*len(x) for x in bcolors.values())
 
 
 def print_table(table, header: Optional[list[str]] = None):
@@ -187,14 +192,20 @@ def print_table(table, header: Optional[list[str]] = None):
     From StackOverflow https://stackoverflow.com/a/52247284
     """
     if header:
-        longest_cols = [len(max(col, key=len))+3 for col in zip(*([header] + table))]
+        printed_col_width = [[printed_length(col) for col in row] for row in [header] + table]
+        longest_cols = [max(col)+3 for col in zip(*printed_col_width)]
         separators = ["-"*(length-3) for length in longest_cols]
         table = [header] + [separators] + table
+        printed_col_width.insert(1, [len(separator) for separator in separators])
     else:
-        longest_cols = [len(max(col, key=len))+3 for col in zip(*table)]
-    row_format = "".join(["{:<" + str(longest_col) + "}" for longest_col in longest_cols])
-    for row in table:
-        print(row_format.format(*row))
+        printed_col_width = [[printed_length(col)+3 for col in row] for row in table]
+        longest_cols = [max(col)+3 for col in zip(*printed_col_width)]
+    for i, row in enumerate(table):
+        for j, col in enumerate(row):
+            width = longest_cols[j]
+            invisible_length = len(col) - printed_col_width[i][j]
+            print(("{:<" + str(width+invisible_length) + "}").format(col), end="")
+        print("\n", end="")
 
 
 def print_available_packages(all: bool = False):
