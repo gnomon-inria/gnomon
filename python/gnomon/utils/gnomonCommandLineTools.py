@@ -56,7 +56,7 @@ def update(args: argparse.Namespace):
 def list_packages(args: argparse.Namespace):
     print("")
     installed_packages = package_utils.installed_packages()
-    package_utils.print_table(installed_packages, ["Package Name", "Version"])
+    package_utils.print_table(installed_packages, ["Package Name", "Version", "Build"])
 
 
 def search_packages(args: argparse.Namespace):
