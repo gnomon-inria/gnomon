@@ -44,7 +44,7 @@ from gnomon_package_tissueimage.form.imageData.gnomonImageDataMultiChannelImage 
 from gnomon_package_imageenhancement.form.binaryImageDataSpatialImage import binaryImageDataSpatialImage
 
 
-@algorithmPlugin(version="0.3.1", coreversion="0.81.1")
+@algorithmPlugin(version="0.3.1", coreversion="1.0.1")
 @imageInput('img_dict', gnomonImageDataMultiChannelImage)
 @binaryImageInput('init', binaryImageDataSpatialImage)
 @binaryImageOutput('b_img', binaryImageDataSpatialImage)
