@@ -1,6 +1,20 @@
 #include "gnomonNurbsView.h"
+
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
+
+
+class gnomonNurbsViewPrivate {
+public:
+     gnomonNurbsViewPrivate(void) = default;
+    ~gnomonNurbsViewPrivate(void) = default;
+
+public:
+    vtkSmartPointer<vtkRenderWindow> window;
+    vtkSmartPointer<vtkRenderer> renderer;
+
+    QColor background_color;
+};
 
 // ///////////////////////////////////////////////////////////////////
 // gnomonNurbsView
@@ -8,21 +22,39 @@
 
 gnomonNurbsView::gnomonNurbsView(QObject* parent) : QObject(parent)
 {
-    m_renderer = vtkSmartPointer<vtkRenderer>::New();
+    d = new gnomonNurbsViewPrivate;
+    d->renderer = vtkSmartPointer<vtkRenderer>::New();
+}
+
+void gnomonNurbsView::setBackgroundColor(const QColor& color)
+{
+    if (color != d->background_color) {
+        d->background_color = color;
+        d->renderer->SetBackground(color.redF(), color.greenF(), color.blueF());
+        if (d->window) {
+            d->window->Render();
+        }
+        emit backgroundColorChanged();
+    }
+}
+
+const QColor& gnomonNurbsView::backgroundColor(void)
+{
+    return d->background_color;
 }
 
 void gnomonNurbsView::associate(vtkRenderWindow *window)
 {
-    m_window = window;
-    m_window->AddRenderer(m_renderer);
+    d->window = window;
+    d->window->AddRenderer(d->renderer);
 }
 
 void gnomonNurbsView::addActor(vtkSmartPointer<vtkActor> actor) 
 {
-    m_renderer->AddActor(actor);
+    d->renderer->AddActor(actor);
 }
 
 vtkRenderWindow* gnomonNurbsView::renderWindow(void) const
 {
-    return m_window;
+    return d->window;
 }

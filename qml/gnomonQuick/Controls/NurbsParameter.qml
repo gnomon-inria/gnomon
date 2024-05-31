@@ -94,6 +94,10 @@ Control {
                 mouse.accepted = false
             }
         }
+
+        Component.onCompleted: {
+            param.nurbsView.backgroundColor = Qt.binding(function() {return G.Style.figureColors.bgColor})
+        }
     }
 
     RowLayout {

@@ -292,7 +292,6 @@ def create_render_window(render_window, vtk_actors, callbacks):
     # Create renderer
     # renderer = vtk.vtkRenderer()
     renderer = render_window.GetRenderers().GetFirstRenderer()
-    renderer.setBackground(1.0, 1.0, 1.0)
 
     # Add actors to the scene
     for actor in vtk_actors:
@@ -567,7 +566,6 @@ class VisSurface(vis.VisAbstract):
         self.render_window = render_window
 
         renderer = self.render_window.GetRenderers().GetFirstRenderer()
-        renderer.SetBackground(1.0, 1.0, 1.0)
 
         # Add actors to the scene
         print(self.vtk_actors)
