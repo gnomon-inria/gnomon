@@ -11,6 +11,14 @@ class GNOMONVISUALIZATION_EXPORT gnomonCoreParameterNurbsObject : public dtkCore
 {
     Q_OBJECT
 
+public:
+    enum NURBS_TYPE {
+        CURVE,
+        FUNCTION,
+        SURFACE
+    };
+    Q_ENUM(NURBS_TYPE);
+
     Q_PROPERTY(int figureNumber READ figureNumber WRITE setFigureNumber NOTIFY figureNumberChanged);
     Q_PROPERTY(int degree READ degree WRITE setDegree NOTIFY degreeChanged)
     Q_PROPERTY(double delta READ delta WRITE setDelta NOTIFY deltaChanged)
@@ -48,6 +56,7 @@ signals:
 
 public slots:
     void setFigureNumber(int fig);
+    void updateRenderWindow(void);
 
 private:
     class gnomonCoreParameterNurbsObjectPrivate *d;

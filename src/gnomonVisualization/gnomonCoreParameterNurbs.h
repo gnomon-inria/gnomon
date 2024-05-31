@@ -16,6 +16,7 @@ public:
         FUNCTION,
         SURFACE
     };
+
 public:
 
     using self_type = gnomonCoreParameterNurbs;

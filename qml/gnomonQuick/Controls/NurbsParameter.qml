@@ -81,7 +81,19 @@ Control {
             window.insideParamFigure()
         }
 
-        // Component.onCompleted: G.Associator.associate_nurbs(_nurbs_view, param.nurbsView)
+        MouseArea {
+            id: _mouse_area
+            anchors.fill: parent
+            propagateComposedEvents: true
+
+            onClicked: (mouse)=> {
+                if(param.nurbsType == GV.NurbsParameter.SURFACE) {
+                    param.updateRenderWindow()
+                }
+                _mouse_area.enabled = false
+                mouse.accepted = false
+            }
+        }
     }
 
     RowLayout {
@@ -118,8 +130,7 @@ Control {
 
     Component.onCompleted: {
         //d.onParametersChanged();
-        let nurbs_surface = 2
-        if(param.nurbsType == nurbs_surface) {
+        if(param.nurbsType == GV.NurbsParameter.SURFACE) {
             G.Associator.associateNurbs(_nurbs_view, param.nurbsView)
             _view.visible = false
             _nurbs_view.visible = true

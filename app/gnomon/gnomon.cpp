@@ -402,6 +402,7 @@ void gnomon_rinit()
     qmlRegisterType<gnomonMplView>("gnomon.Visualization", 1, 0, "Figure");
     qmlRegisterSingletonInstance("gnomon.Visualization", 1, 0, "World", gnomonFormManager::instance());
     qmlRegisterType<MaterialPreview>("gnomon.Visualization", 1, 0, "MaterialPreview");
+    qmlRegisterType<gnomonCoreParameterNurbsObject>("gnomon.Visualization", 1, 0, "NurbsParameter");
 
     // -- Algorithms logs
     qmlRegisterSingletonType<gnomonLogCaptureServer>("gnomon.Visualization", 1, 0, "LogServer", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {

@@ -45,6 +45,11 @@ def create_actor_pts(pts, color, **kwargs):
     polydata = vtk.vtkPolyData()
     polydata.SetPoints(points)
 
+    vtk_point_ids = numpy_to_vtk(np.arange(points.GetNumberOfPoints()), deep=True, array_type=vtk.VTK_ID_TYPE)
+    vtk_point_ids.SetNumberOfComponents(1)
+    vtk_point_ids.SetName("PointId")
+    polydata.GetPointData().AddArray(vtk_point_ids)
+
     # Run glyph 3D on the points array
     glyph = vtk.vtkGlyph3D()
     glyph.SetInputData(polydata)
@@ -474,15 +479,29 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
         super().__init__()
         self.AddObserver("LeftButtonPressEvent", self.leftButtonPressEvent)
 
-    def leftButtonPressEvent(self, obj, event):
-        print("##### Inside leftButtonPressEvent ######")
-        clickPos = obj.GetInteractor().GetEventPosition()
-        picker = vtk.vtkPropPicker()
-        picker.Pick(clickPos[0], clickPos[1], 0, obj.GetDefaultRenderer())
+        self.vis = None
 
-    def OnLeftButtonDown(self):
+        # self.picker = vtk.vtkPropPicker()
+        self.picker = vtk.vtkPointPicker()
+        self.picker.SetTolerance(0.005)
+
+    def leftButtonPressEvent(self, obj, event):
+        clickPos = obj.GetInteractor().GetEventPosition()
+        self.picker.Pick(clickPos[0], clickPos[1], 0, obj.GetDefaultRenderer())
+        vtk_id = self.picker.GetPointId()
+        if vtk_id > -1:
+            print(f"Click on point {vtk_id}")
+
+            if self.vis is not None:
+                point_actor = self.vis.vtk_actors[0]
+                polydata = point_actor.GetMapper().GetInput()
+
+                vtk_point_ids = polydata.GetPointData().GetArray("PointId")
+                if vtk_id < vtk_point_ids.GetNumberOfValues():
+                    point_id = vtk_point_ids.GetValue(vtk_id)
+                    print(f"Click on CtrlPt {point_id}")
+
         super().OnLeftButtonDown()
-        print("##### Inside OnLeftButtonDown ######")
 
 
 class VisSurface(vis.VisAbstract):
@@ -558,6 +577,7 @@ class VisSurface(vis.VisAbstract):
 
         # Use trackball camera
         self.interactor_style = MoveCtrlPointsInteractor()
+        self.interactor_style.vis = self
         self.interactor_style.SetDefaultRenderer(renderer)
         interactor.SetInteractorStyle(self.interactor_style)
 
@@ -587,6 +607,8 @@ class VisVolume(vis.VisAbstract):
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
+                vtkpts.SetName(plot['name'])
                 temp_actor = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
                                                    name=plot['name'], index=plot['idx'])
                 self.vtk_actors.append(temp_actor)
@@ -594,6 +616,8 @@ class VisVolume(vis.VisAbstract):
             # Plot evaluated points
             if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
                 pts = np.array(plot['ptsarr'], dtype=np.float)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
+                vtkpts.SetName(plot['name'])
                 temp_actor = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
                                                    name=plot['name'], index=plot['idx'])
                 self.vtk_actors.append(temp_actor)
@@ -624,6 +648,8 @@ class VisVoxel(vis.VisAbstract):
             if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
                 # Points as spheres
                 pts = np.array(plot['ptsarr'], dtype=np.float)
+                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
+                vtkpts.SetName(plot['name'])
                 temp_actor = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
                                                    name=plot['name'], index=plot['idx'])
                 self.vtk_actors.append(temp_actor)

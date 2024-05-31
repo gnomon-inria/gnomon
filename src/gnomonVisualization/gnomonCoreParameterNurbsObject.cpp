@@ -97,7 +97,7 @@ void gnomonCoreParameterNurbsObjectPrivate::initPCurve(gnomonCoreParameterNurbs 
         PyObject* args = Py_BuildValue("(i, i)", param->degree(), int(param->controlPoints().size()));
         PyObject* pknotvector = PyObject_CallObject(pFunc_knot, args);
         if(!pknotvector) {
-            dtkWarn() << " pknotvector error with args " << param->degree(), int(param->controlPoints().size());
+            dtkWarn() << " pknotvector error with args " << param->degree() << int(param->controlPoints().size());
         } else {
             PyObject_SetAttrString(this->pCurve, "knotvector", pknotvector);
         }
@@ -564,21 +564,29 @@ void gnomonCoreParameterNurbsObject::buildNurbsPatch(void)
         d->initPVisSurface();
     }
 
-    if(d->pSurface && d->pVisSurface) {
-        PyGILState_STATE gstate;
-        gstate = PyGILState_Ensure();
+    this->updateRenderWindow();
+}
 
-        auto render_window = d->nurbsView->renderWindow();
-        PyObject* pRenderWindow = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase*>(render_window));
-        if(!pRenderWindow) {
-            dtkWarn() << "Could not convert render window from C++";
+void gnomonCoreParameterNurbsObject::updateRenderWindow(void) {
+
+    if(m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
+        if (d->pVisSurface) {
+            PyGILState_STATE gstate;
+            gstate = PyGILState_Ensure();
+
+            auto render_window = d->nurbsView->renderWindow();
+            PyObject *pRenderWindow = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window));
+            qDebug() << Q_FUNC_INFO << "set_render_window";
+            if (!pRenderWindow) {
+                dtkWarn() << "Could not convert render window from C++";
+            } else {
+                PyObject_CallMethod(d->pVisSurface, "set_render_window", "(O)", pRenderWindow);
+            }
+            Py_DECREF(pRenderWindow);
+
+            PyGILState_Release(gstate);
         } else {
-            PyObject_CallMethod(d->pVisSurface, "set_render_window", "(O)", pRenderWindow);
+            dtkWarn() << "Problem pVisSurface is not initialized";
         }
-        Py_DECREF(pRenderWindow);
-
-        PyGILState_Release(gstate);
-    } else {
-        dtkWarn() << "Problem pSurface or pVisSurface is not initialized";
     }
 }
