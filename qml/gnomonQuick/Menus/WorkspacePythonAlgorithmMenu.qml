@@ -99,11 +99,37 @@ Item {
                 }
 
                 G.TextField {
+                    id: _plugin_class_name
+
+                    Layout.fillWidth: true
+                    text: d.code.pluginClassName
+                    font: G.Style.fonts.formLabel;
+
+                    visible: !d.readOnly
+
+                    onTextChanged: {
+                        d.code.pluginClassName = _plugin_class_name.text
+                    }
+                }
+
+                Label {
+                    Layout.fillWidth: true
+                    height: _plugin_class_name.height
+                    padding: (G.Style.smallPadding+G.Style.tinyPadding+2)/2
+
+                    text: d.code.pluginClassName
+                    visible: d.readOnly
+
+                    color: G.Style.colors.fgColor;
+                    font: G.Style.fonts.formLabel;
+                }
+
+                G.TextField {
                     id: _plugin_name
 
                     Layout.fillWidth: true
                     text: d.code.pluginName
-                    font: G.Style.fonts.formLabel;
+                    font: G.Style.fonts.value;
 
                     visible: !d.readOnly
 
@@ -121,7 +147,7 @@ Item {
                     visible: d.readOnly
 
                     color: G.Style.colors.fgColor;
-                    font: G.Style.fonts.formLabel;
+                    font: G.Style.fonts.value;
                 }
 
                 ScrollView {

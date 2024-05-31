@@ -15,6 +15,7 @@ public:
 public:
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 
+    Q_PROPERTY(QString pluginClassName READ pluginClassName WRITE setPluginClassName NOTIFY pluginClassNameChanged)
     Q_PROPERTY(QString pluginName READ pluginName WRITE setPluginName NOTIFY pluginNameChanged)
     Q_PROPERTY(QString pluginDocumentation READ pluginDocumentation WRITE setPluginDocumentation NOTIFY pluginDocumentationChanged)
 
@@ -40,6 +41,7 @@ public:
 signals:
     void textChanged(const QString&);
     void fileChanged(const QString&);
+    void pluginClassNameChanged(void);
     void pluginNameChanged(void);
     void pluginDocumentationChanged(void);
 
@@ -51,6 +53,10 @@ signals:
 //    void loadButtonClicked(void);
 
     void codeUpdated(void);
+
+public:
+    const QString& pluginClassName(void) const;
+    void setPluginClassName(const QString& name, bool update_code=true);
 
 public:
     const QString& pluginName(void) const;
