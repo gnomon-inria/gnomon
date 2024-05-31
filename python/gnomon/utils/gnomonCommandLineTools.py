@@ -61,7 +61,7 @@ def list_packages(args: argparse.Namespace):
 
 def search_packages(args: argparse.Namespace):
     print("")
-    installed_packages = package_utils.print_available_packages()
+    installed_packages = package_utils.print_available_packages(args.all)
 
 
 # setting parsers
@@ -129,9 +129,11 @@ list_parser.set_defaults(func=list_packages)
 search_parser = package_subparsers.add_parser(
     "search",
     description=f"""
-    List available gnomon packages
+    List available gnomon packages for your installation (all with -a)
     """
 )
+search_parser.add_argument("--all", "-a", action="store_true", required=False, default=False,
+                           help="Print all gnomon packages available in the gnomon conda channel")
 search_parser.set_defaults(func=search_packages)
 
 update_parser = package_subparsers.add_parser(

@@ -2,6 +2,7 @@ import json
 import subprocess
 import pathlib
 import os
+from datetime import datetime
 from importlib.metadata import version, PackageNotFoundError
 from typing import Optional
 
@@ -76,34 +77,39 @@ def available_packages():
                 spec for spec in package_info["depends"] if spec.startswith("libgnomon ")
             ]
             url = f"https://anaconda.org/gnomon/{package_name}"
+            package_info_func = lambda spec:(
+                package_name, package_info["version"],
+                package_info["build"],
+                datetime.fromtimestamp(package_info["timestamp"]/1000).strftime("%d/%m/%Y %H:%M:%S"),
+                spec[0],
+                url
+            )
             if GNOMON_VERSION < parse_version("1.0.0a1"):
                 # gnomon is split between app and lib
                 # package require libgnomon
                 if gnomon_spec:
-                    upgrade_needed_packages.append(
-                        (package_name, package_info["version"], gnomon_spec[0], url)
-                    )
+                    upgrade_needed_packages.append(package_info_func(gnomon_spec))
                 elif libgnomon_spec and MatchSpec(libgnomon_spec[0]).version.match(str(GNOMON_VERSION)):
                     as_is_packages.append(
-                        (package_name, package_info["version"], libgnomon_spec[0], url)
+                        package_info_func(libgnomon_spec)
                     )
                 elif libgnomon_spec:
                     upgrade_needed_packages.append(
-                        (package_name, package_info["version"], libgnomon_spec[0], url)
+                        package_info_func(libgnomon_spec)
                     )
             else:
                 # only one package for gnomon
                 if libgnomon_spec:
                     upgrade_needed_packages.append(
-                        (package_name, package_info["version"], libgnomon_spec[0], url)
+                        package_info_func(libgnomon_spec)
                     )
                 elif gnomon_spec and MatchSpec(gnomon_spec[0]).version.match(str(GNOMON_VERSION)):
                     as_is_packages.append(
-                        (package_name, package_info["version"], gnomon_spec[0], url)
+                        package_info_func(gnomon_spec)
                     )
                 elif gnomon_spec:
                     upgrade_needed_packages.append(
-                        (package_name, package_info["version"], gnomon_spec[0], url)
+                        package_info_func(gnomon_spec)
                     )
 
     return as_is_packages, upgrade_needed_packages
@@ -123,7 +129,7 @@ def print_table(table, header: Optional[list[str]] = None):
         print(row_format.format(*row))
 
 
-def print_available_packages():
+def print_available_packages(all: bool = False):
     as_is_packages, upgrade_needed_packages = available_packages()
     print("The current version of gnomon is", bcolors.BOLD + str(GNOMON_VERSION) + bcolors.ENDC)
     print("")
@@ -131,12 +137,18 @@ def print_available_packages():
         print("The following packages are compatible with the", bcolors.BOLD + "current version" + bcolors.ENDC,
               "of gnomon")
         print("")
-        print_table(as_is_packages, header=["Package name", "Version", "Required gnomon version", "url"])
+        print_table(
+            as_is_packages,
+            header=["Package name", "Version", "Build", "Upload date", "Required Gnomon version", "url"]
+        )
     print("\n")
-    if upgrade_needed_packages:
+    if upgrade_needed_packages and all:
         print("The following packages exists but require a", bcolors.BOLD + "different version" + bcolors.ENDC, "of gnomon")
         print("")
-        print_table(upgrade_needed_packages, header=["Package name", "Version", "Required gnomon version", "url"])
+        print_table(
+            upgrade_needed_packages,
+            header=["Package name", "Version", "Build", "Upload date", "Required Gnomon version", "url"]
+        )
 
 
 def install_package(packages: list[str]):
