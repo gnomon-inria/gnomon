@@ -8,13 +8,16 @@ import gnomonQuick.Style as G
 
 import xQuick.Vis as XVis
 
-Rectangle {
+Control {
 
     id: self;
 
-    color: G.Style.colors.bgColor;
+    background: Rectangle {
+        color: G.Style.colors.bgColor;
+    }
 
     focus: true;
+    hoverEnabled: true;
 
     XVis.Viewer {
 

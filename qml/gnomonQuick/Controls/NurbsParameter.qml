@@ -77,7 +77,7 @@ Control {
         width: parent.width
         implicitHeight: 200
 
-        onActiveFocusChanged: {
+        onHoveredChanged: {
             window.insideParamFigure()
         }
 
