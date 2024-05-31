@@ -186,7 +186,7 @@ G.Page {
     Connections {
         target: _hibernating_toast
         function onOpened() {
-            view.drop(_hibernating_toast.index);
+            _hibernating_toast.view.drop(_hibernating_toast.index);
             _hibernating_toast.close()
         }
     }

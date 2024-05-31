@@ -813,6 +813,9 @@ void gnomonFormManager::checkHibernateForms() {
     // checks if any form can be unloaded
     for(auto& form_uuid: GNOMON_SESSION->trackedForms()) {
         auto form = GNOMON_SESSION->getForm(form_uuid);
+        if(form.use_count() <= 0) {
+            continue;
+        }
         int index = formIndex(form_uuid);
         if(form.use_count() == 3 && index>=0 && d->formVisualizations.contains(index)) {
             auto& visu = d->formVisualizations[index];
