@@ -4,7 +4,7 @@
 This section is under construction! Some information might be missing.
 :::
 
-When you lauch the Gnomon application, you land on a home screen where you can have access to your recently opened **Projects**. A project in Gnomon represents a series of processing steps performed starting from one or several data files. It can generally be represented as a [**Pipeline**](../concepts.md#pipeline) where the steps are building blocks linked together.
+When you launch the Gnomon application, you land on a home screen where you can have access to your recently opened **Projects**. A project in Gnomon represents a series of processing steps performed starting from one or several data files. It can generally be represented as a [**Pipeline**](../concepts.md#pipeline) where the steps are building blocks linked together.
 
 ## Load a project
 
@@ -21,4 +21,4 @@ Note that it might be an interesting way to process several data files with the 
 
 ## New project
 
-However, the first time you open Gnomon, the *Recent projects* section will be empty, and you generally won't have a `.json` file to load. You will need to create a new project by clicking on the `New` button. This action lets you start from a blank pipeline, and brings to an empty  [**Browsing Workspace**](../workspace/browsing)  where you can [import your data and start designing your own processing pipeline...](browser)
+However, the first time you open Gnomon, the *Recent projects* section will be empty, and you generally won't have a `.json` file to load. You will need to create a new project by clicking on the `New` button. This action lets you start from a blank pipeline, and brings to an empty  [**Browsing Workspace**](../workspace/data_browsing)  where you can [import your data and start designing your own processing pipeline...](browser)

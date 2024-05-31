@@ -1,7 +1,13 @@
 # Image Segmentation Scenario
 
-Segment a 3D membrane-marker image and measure cell properties
+:::{note}
+To run this example you will need to install the following plugin package(s):
+```shell script
+gnomon-utils package install gnomon_package_tissueimage
+```
+:::
 
+Segment a 3D membrane-marker image and measure cell properties
 
 1. **Browsing**
     - Load image p58-t0_imgFus_down_interp_2x.inr.gz

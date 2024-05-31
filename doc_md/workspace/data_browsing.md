@@ -28,3 +28,11 @@ Tutorial #2 : Load a data file
 ## Reading a data file 
 
 A single file can be imported by dragging and dropping it either from the file browser (right space) or from your local file system to the 3D viewer (central space). The file will then be read using a **Reader** plugin, chosen based on the file extension. In case several plugins can read the file extension, a dialog will ask you which to use.
+
+:::{note}
+Plugins for this workspace can be installed with the following plugin package(s):
+```shell script
+gnomon-utils package install gnomon_package_tissueimage
+gnomon-utils package install gnomon_package_tissuemesh
+```
+:::

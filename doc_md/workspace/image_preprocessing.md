@@ -1,6 +1,6 @@
 # Image Preprocessing Workspace
 
-The Image Preprocessing Workspace allows to apply preprocessing steps on the intensity signal of an Image form, producing a new output Image.
+The Image Preprocessing Workspace allows to apply preprocessing steps on the intensity signal of an [Image form](../form/image), producing a new output Image.
 
 :::::{hint}
 ::::{grid}
@@ -26,3 +26,11 @@ Image Ehancement Scenario
 :::::
 
 Using the input Image from the left view, a processed Image will be computed and displayed in the right view. In some cases, a BinaryImage form can be used as a mask for some plugins, if there is one in the input view.
+
+:::{note}
+Plugins for this workspace can be installed with the following plugin package(s):
+```shell script
+gnomon-utils package install gnomon_package_tissueimage
+gnomon-utils package install gnomon_package_imageenhancement
+```
+:::
