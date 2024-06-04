@@ -14,6 +14,17 @@ QString stripQuotes(const QString& str)
     }
 }
 
+QString removeSpaces(const QString& str)
+{
+    QRegularExpression space_rx("[ ]*(.*)");
+    auto match = space_rx.match(str);
+    if (match.hasMatch()) {
+        return match.capturedTexts()[1];
+    } else {
+        return str;
+    }
+}
+
 QString capitalize(const QString& str)
 {
     QString cap = str.at(0).toUpper() + str.mid(1);
@@ -33,9 +44,9 @@ QString argumentValue(const QString& arguments, const QString& argument_name, in
     int arg_pos = 0;
     for (const auto& arg : args) {
         if (arg.contains("=")) {
-            QString arg_name = arg.split("=")[0];
+            QString arg_name = removeSpaces(arg.split("=")[0]);
             if (arg_name == argument_name) {
-                arg_value = arg.split("=")[1];
+                arg_value = removeSpaces(arg.split("=")[1]);
             }
         } else if (arg_pos == argument_position) {
             arg_value = arg;
@@ -55,6 +66,7 @@ QString argumentValue(const QString& arguments, const QString& argument_name, in
 class gnomonPythonPluginParserPrivate: public QObject
 {
 public:
+    QString plugin_class_name;
     QString plugin_name;
     QString plugin_documentation;
 
@@ -106,6 +118,11 @@ gnomonPythonPluginParser::~gnomonPythonPluginParser(void)
     delete d;
 }
 
+const QString& gnomonPythonPluginParser::pluginClassName(void) const
+{
+    return d->plugin_class_name;
+}
+
 const QString& gnomonPythonPluginParser::pluginName(void) const
 {
     return d->plugin_name;
@@ -155,7 +172,9 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
 
     d->plugin_documentation = "";
 
-    QRegularExpression plugin_rx("class (.*)[(]gnomon");
+    QRegularExpression plugin_rx("@(.*)Plugin[(](.*)[)]");
+
+    QRegularExpression class_rx("class (.*)[(]gnomon");
     QRegularExpression docstring_rx("(\"\"\"|''')(.*)");
 
     QRegularExpression init_rx("def[ ]*__init__[(]self");
@@ -194,9 +213,16 @@ void gnomonPythonPluginParser::parsePluginCode(const QString& plugin_code)
             }
         }
 
-        auto match = plugin_rx.match(line);
+        auto match = class_rx.match(line);
         if (match.hasMatch()) {
-            d->plugin_name = match.capturedTexts()[1];
+            d->plugin_class_name = match.capturedTexts()[1];
+        }
+
+        match = plugin_rx.match(line);
+        if (match.hasMatch()) {
+            QString args = match.capturedTexts()[2];
+            QString name = stripQuotes(argumentValue(args, "name", 2));
+            d->plugin_name = name;
         }
 
         match = input_rx.match(line);

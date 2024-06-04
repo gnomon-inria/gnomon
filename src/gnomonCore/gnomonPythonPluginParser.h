@@ -50,6 +50,7 @@ public:
 
 public:
     const QString& pluginName(void) const;
+    const QString& pluginClassName(void) const;
     const QString& pluginDocumentation(void) const;
 
 public:

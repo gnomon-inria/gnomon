@@ -221003,7 +221003,7 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
     editor = monaco_editor_esm_vs_editor_editor_api_js__WEBPACK_IMPORTED_MODULE_11__.editor.create(document.getElementById('container'),{
         fontFamily: "Fira Code",
-        scrollBeyondLastLine: false,
+        scrollBeyondLastLine: true,
         automaticLayout: true,
         model: null
         });

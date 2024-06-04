@@ -1,5 +1,12 @@
 # Cell Image Tracking Workspace
 
-The Cell Image Tracking Workspace is used to compute the lineage of cells from an intensity image series and a segmented image series (or cell image series).
+The Cell Image Tracking Workspace is used to compute the lineage of cells in a segmented [Cell Image form](../form/cell_image) series of at least 2 time points. For some plugins, a corresponding intensity [Image form](../form/image) series can be also used as an input.
 
-It outputs the lineage tree and a cell image series where each cell knows its parents.
+The Cell Image Tracking Workspace always displays two consecutive time points of the Cell Image, and it also allows to manually select cells to specify input pairings. It outputs the lineage tree and a Cell Lmage series where each cell knows its parent.
+
+:::{note}
+Plugins for this workspace can be installed with the following plugin package(s):
+```shell script
+gnomon-utils package install gnomon_package_tissueimage
+```
+:::

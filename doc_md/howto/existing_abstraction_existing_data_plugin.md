@@ -22,7 +22,7 @@ a plugin package)
 
     linearFilterTimagetk.py
 
-``` python
+```python
 from gnomon.core import gnomonAbstractImageFilter
 
 class linearFilterTimagetk(gnomonAbstractImageFilter):
@@ -35,31 +35,34 @@ In order for the plugin to be registered to the plugin factory some
 specific decorators must be added to the class.
 
 
-**`gnomonPlugin` decorator**
+**`gnomonPlugin` decorator family**
 
-Gnomon defines a Python class decorator that implements all the
+Gnomon defines a family Python class decorator that implements all the
 necessary methods to register the plugin to the platform, with just one
-line of code.
+line of code. The available decorators are:
+ - `formDataPlugin`
+ - `algorithmPlugin`
+ - `modelPlugin`
+ - `visualizationPlugin`
+
+In this example we will use `algorithmPlugin` because we want to implement a filter
+which Gnomon considers an algorithm.
 
 ```{eval-rst}
-.. py:function:: gnomonPlugin(version, coreversion, cls=None, namespace=gnomoncore, base_class=None)
+.. py:function:: algorithmPlugin(version, coreversion, name="", base_class=None)
 
    :param str version: version of the plugin
    :param str coreversion: version of gnomoncore
 ```
 
 
-```{warning}
-Keep the cls arg equal to `None`
-```
-
-``` python
+```python
 import gnomon.core
 from gnomon.core import gnomonAbstractImageFilter
 
-from gnomon.utils import corePlugin
+from gnomon.utils import algorithmPlugin
 
-@corePlugin(version="0.1.0", coreversion="0.81.1")
+@algorithmPlugin(version="0.1.0", coreversion="1.0.1")
 class linearFilterTimagetk(gnomonAbstractImageFilter):
 ```
 
@@ -106,10 +109,10 @@ representing intensity images : a dictionnary of instances
 are channel names.
 ```
 
-``` python
+```python
 from gnomon.utils.decorators import imageInput, imageOutput
 
-@gnomonPlugin(version="0.1.0", coreversion="0.81.1")
+@algorithmPlugin(version="0.1.0", coreversion="1.0.1")
 @imageInput(attr='images')
 @imageOutput(attr='filtered_images')
 class linearFilterTimagetk(gnomonAbstractImageFilter):
@@ -173,7 +176,7 @@ Parameters are defined as a dictionary attribute `_parameters` of the
 plugin class for which keys are the names of the parameter. This dictionary must be
 filled at init.
 
-``` python
+```python
 self._parameters["sigma"] = dtkcore.d_real("sigma", 1., 0, 10., 2, "Standard deviation of the Gaussian kernel")
 ```
 
@@ -183,19 +186,19 @@ self._parameters["sigma"] = dtkcore.d_real("sigma", 1., 0, 10., 2, "Standard dev
 The `gnomonParametric` Python class decorator allows to map the
 parameters to a graphical rendering in the Gnomon interface by defining
 all the necessary functions. It also provides shortened access to the
-parameter values as `self['parameter_name']`. It is included in the `corePlugin` decorator.
+parameter values as `self['parameter_name']`. It is included in the `algorithmPlugin` decorator.
 
 
-``` python
+```python
 import gnomon.core
 from gnomon.core import gnomonAbstractImageFilter
 
-from gnomon.utils import corePlugin
+from gnomon.utils import algorithmPlugin
 from gnomon.utils.decorators import imageInput, imageOutput
 
 import dtkcore
 
-@corePlugin(version="0.1.0", coreversion="0.81.1")
+@algorithmPlugin(version="0.1.0", coreversion="1.0.1")
 @imageInput("images")
 @imageOutput("filtered_images")
 class linearFilterTimagetk(gnomonAbstractImageFilter):
@@ -242,12 +245,12 @@ channel at each time point, and fill the output dictionary
 `filtered_images` with the results.
 
 
-``` python
+```python
 from timagetk.plugins.linear_filtering import linear_filtering
 from timagetk import MultiChannelimage
 ```
 
-``` python
+```python
 def run(self):
     self.filtered_images = {}
 
@@ -288,7 +291,7 @@ of expected calls to `increment_progress`.
 
 For instance:
 
-``` python
+```python
 def run(self):
     self.set_max_progress(1*sum(len(img) for img in self.images.values))
     self.filtered_images = {}
@@ -332,7 +335,7 @@ should follow the NumPy style for Python docstrings and contain at least
 
 
 
-``` python
+```python
 class linearFilterTimagetk(gnomonAbstractImageFilter):
 """Compute the Gaussian smoothing of an image.
 
@@ -356,11 +359,11 @@ For more, see how they are declared [here](entry_points)
 
 ## Complete plugin module
 
-``` python
+```python
 import gnomon.core
 from gnomon.core import gnomonAbstractImageFilter
 
-from gnomon.utils import corePlugin
+from gnomon.utils import algorithmPlugin
 from gnomon.utils.decorators import imageInput, imageOutput
 
 import dtkcore
@@ -368,7 +371,7 @@ import dtkcore
 from timagetk.plugins.linear_filtering import linear_filtering
 from timagetk import MultiChannelimage
 
-@corePlugin(version="0.1.0", coreversion="0.81.1")
+@algorithmPlugin(version="0.1.0", coreversion="1.0.1")
 @imageInput(attr="images")
 @imageOutput(attr="filtered_images")
 class linearFilterTimagetk(gnomonAbstractImageFilter):

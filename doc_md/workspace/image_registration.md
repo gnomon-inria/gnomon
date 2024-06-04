@@ -1,6 +1,6 @@
 # Image Registration Workspace
 
-The Image Registration Workspace allows to perform the geometrical registration of an Image form (called "floating") onto another Image form (called "reference").
+The Image Registration Workspace allows to perform the temporal registration of an [Image form](../form/image) series of at least 2 time points.
 
 :::::{hint}
 ::::{grid}
@@ -25,4 +25,11 @@ Image Registration Scenario
 ::::
 :::::
 
-The output is a Image form that corresponds to the transformed floating Image. The resulting geometrical trasformation is also stored as an output, displayed in the right menu.
+The output is a Image form that corresponds to the transformed Image series where the time points have been registered. The resulting geometrical trasformation is also output as a [Data Dict form](../form/data_dict).
+
+:::{note}
+Plugins for this workspace can be installed with the following plugin package(s):
+```shell script
+gnomon-utils package install gnomon_package_tissueimage
+```
+:::

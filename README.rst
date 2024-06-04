@@ -1,4 +1,4 @@
-The official documentation can be found here: [Gnomon](https://gnomon.gitlabpages.inria.fr/gnomon/staging).
+The official documentation can be found here: [Gnomon](https://gnomon.gitlabpages.inria.fr/gnomon).
 
 Existing plugins
 ====================

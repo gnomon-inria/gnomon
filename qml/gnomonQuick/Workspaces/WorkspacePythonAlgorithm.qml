@@ -66,95 +66,134 @@ G.Workspace {
         }
     }
 
-    ColumnLayout {
-        anchors.top: parent.top;
-        anchors.bottom: parent.bottom;
+    G.Monaco {
+        id: _editor
         anchors.left: parent.left;
         anchors.right: parent.right;
-        anchors.margins: 0;
+        anchors.top: parent.top;
+        anchors.bottom: _console_panel.top;
 
-        RowLayout {
-            Layout.fillWidth: true;
-            Layout.fillHeight: true;
-            Layout.margins: 0;
+        visible: d.editMode
 
-            G.Monaco {
-                id: _editor
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: d.editMode
+        theme: G.Style.mode == G.Style.Mode.Dark ? 'vs-dark' : 'vs-light';
+        language: 'python';
+        fileName: d.fileName
 
-                theme: G.Style.mode == G.Style.Mode.Dark ? 'vs-dark' : 'vs-light';
-                language: 'python';
-                fileName: d.fileName
+        onModified: (contents) => {
+            d.code.text = eval(contents);
+            d.code.parseCode()
+        }
 
-                onModified: (contents) => {
-                    d.code.text = eval(contents);
-                    d.code.parseCode()
-                }
+        onFileSwitched : (name) => {
+            name = eval(name)
+            // Don't emit fileNameChanged signal when Tab 0
+            if(!name.endsWith("0"))
+                d.fileName = name
+            console.log(d.fileName)
+            let file_path = GP.ProjectManager.project.findFile(d.fileName)
+            console.log(file_path)
+            _editor.readOnly = (file_path.length === 0) && (!d.fileName.includes("example.py"))
+            console.log(_editor.readOnly)
+        }
 
-                onFileSwitched : (name) => {
-                    name = eval(name)
-                    // Don't emit fileNameChanged signal when Tab 0
-                    if(!name.endsWith("0"))
-                        d.fileName = name
-                    console.log(d.fileName)
-                    let file_path = GP.ProjectManager.project.findFile(d.fileName)
-                    console.log(file_path)
-                    _editor.readOnly = (file_path.length === 0) & (!d.fileName.includes("example.py"))
-                    console.log(_editor.readOnly)
-                }
+        onFileClosed : (name) => {
+            d.close(name)
+        }
 
-                onFileClosed : (name) => {
-                    d.close(name)
-                }
+        onIdeIsReady : () => {
+            //d.restore();
+            _self.viewSelected = _editor
+            d.codeEditorReady()
+        }
 
-                onIdeIsReady : () => {
-                    //d.restore();
-                    d.codeEditorReady()
-                }
+        onMakeFileEditable: () => {
+            import_file_to_project.importPath = GP.ProjectManager.project.currentDir;
+            import_file_to_project.open()
+        }
 
-                onMakeFileEditable: () => {
-                    import_file_to_project.importPath = GP.ProjectManager.project.currentDir;
-                    import_file_to_project.open()
-                }
+        onReadOnlyChanged: () => {
+            d.readOnly = _editor.readOnly
+        }
+    }
 
-                onReadOnlyChanged: () => {
-                    d.readOnly = _editor.readOnly
-                }
+    RowLayout {
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+        anchors.top: parent.top;
+        anchors.bottom: _console_panel.top;
+
+        visible: !d.editMode
+
+        G.View {
+            id: _source_view
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            onDroppedFromManager: (index) => {
+                console.info('Retrieving from manager');
+                window.currentView = _source_view
+                d.source.drop(index);
             }
 
-            G.View {
-                id: _source_view
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: !d.editMode
+            viewLogic: d.source
+        }
 
-                onDroppedFromManager: (index) => {
-                    console.info('Retrieving from manager');
-                    window.currentView = _source_view
-                    d.source.drop(index);
+        G.View {
+            id: _target_view
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            visible: !d.editMode
+
+            viewLogic: d.target
+        }
+    }
+
+    Rectangle {
+        id: _console_panel;
+
+        anchors.left: parent.left;
+        anchors.right: parent.right;
+        anchors.bottom: parent.bottom;
+        anchors.margins: G.Style.mediumPadding;
+
+        radius: G.Style.panelRadius;
+        color: G.Style.colors.gutterColor;
+        border.color: G.Style.colors.fgColor;
+        border.width: 1;
+
+        width: G.Style.mediumPanelWidth;
+        height: _console.height
+
+        G.Dragger {
+            id: _console_dragger;
+            anchors.horizontalCenter: parent.horizontalCenter;
+            anchors.verticalCenter: parent.top;
+            orientation: Qt.Horizontal;
+
+            z: _self.parent? _self.parent.z + 1 : 0;
+
+            onClicked: {
+                if (_console.visible) {
+                    _console.height = 0;
+                    _console.visible = false;
+                } else {
+                    _console.height = G.Style.smallPanelHeight;
+                    _console.visible = true;
                 }
-
-                viewLogic: d.source
-            }
-
-            G.View {
-                id: _target_view
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: !d.editMode
-
-                viewLogic: d.target
             }
         }
 
         G.JupyterConsole {
             id: _console;
-            Layout.fillWidth: true;
-            Layout.preferredHeight:parent.height/3
 
-            focus: true;
+            anchors.left: parent.left;
+            anchors.right: parent.right;
+            anchors.bottom: parent.bottom;
+            anchors.margins: 0;
+
+            // focus: true;
+            visible: false
+            height: 0
 
             Component.onCompleted: _console.set_style_sheet(G.Style.colors.bgColor);
         }
@@ -182,6 +221,5 @@ G.Workspace {
         if(d.fileName)
             _editor.tabName = d.fileName;
         _editor.contents = d.code.text;
-        drawel.close();
     }
 }

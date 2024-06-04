@@ -87,7 +87,6 @@ void gnomonFormAlgorithmCommand::predo(void)
 void gnomonFormAlgorithmCommand::postdo(void)
 {
     auto algorithm = this->formAlgorithm();
-    algorithm->run();
 
     std::shared_ptr<gnomonBinaryImageSeries> binaryImage = algorithm->outputBinaryImage();
     if ((binaryImage) && (binaryImage->times().size() != 0)) {
