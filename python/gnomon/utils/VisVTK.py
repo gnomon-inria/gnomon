@@ -28,47 +28,28 @@ def create_actor_pts(pts, color, **kwargs):
     """
     # Keyword arguments
     array_name = kwargs.get('name', "")
-    array_index = kwargs.get('index', 0)
     point_size = kwargs.get('size', 0.05)
 
-    sphere = vtk.vtkSphereSource()
-    sphere.SetRadius(point_size)
-    sphere.SetThetaResolution(12)
-    sphere.SetPhiResolution(12)
-    sphere.Update()
+    actors = []
+    for array_index, pt in enumerate(pts):
+        points = vtk.vtkSphereSource()
+        points.SetCenter(pt)
+        points.SetRadius(point_size)
 
-    # Create points
-    points = vtk.vtkPoints()
-    points.SetData(pts)
+        # Map points data to the graphics primitives
+        mapper = vtk.vtkPolyDataMapper()
+        mapper.SetInputConnection(points.GetOutputPort())
+        mapper.SetArrayName(array_name)
+        mapper.SetArrayId(array_index)
 
-    # Create a PolyData object and add points
-    polydata = vtk.vtkPolyData()
-    polydata.SetPoints(points)
-
-    vtk_point_ids = numpy_to_vtk(np.arange(points.GetNumberOfPoints()), deep=True, array_type=vtk.VTK_ID_TYPE)
-    vtk_point_ids.SetNumberOfComponents(1)
-    vtk_point_ids.SetName("PointId")
-    polydata.GetPointData().AddArray(vtk_point_ids)
-
-    # Run glyph 3D on the points array
-    glyph = vtk.vtkGlyph3D()
-    glyph.SetInputData(polydata)
-    glyph.SetSourceData(sphere.GetOutput())
-    glyph.SetScaleModeToDataScalingOff()
-
-    # Map polydata to the graphics primitives
-    mapper = vtk.vtkPolyDataMapper()
-    mapper.SetInputConnection(glyph.GetOutputPort())
-    mapper.SetArrayName(array_name)
-    mapper.SetArrayId(array_index)
-
-    # Create an actor and set its properties
-    actor = vtk.vtkActor()
-    actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(*color)
+        # Create an actor and set its properties
+        actor = vtk.vtkActor()
+        actor.SetMapper(mapper)
+        actor.GetProperty().SetColor(*color)
+        actors.append(actor)
 
     # Return the actor
-    return actor
+    return actors
 
 
 def create_actor_polygon(pts, color, **kwargs):
@@ -284,41 +265,6 @@ def create_actor_hexahedron(grid, color, **kwargs):
     # Return the actor
     return actor
 
-def create_render_window(render_window, vtk_actors, callbacks):
-    figure_size = (800, 600)
-    camera_position = (0, 0, 100)
-    display_plot = True
-
-    # Create renderer
-    # renderer = vtk.vtkRenderer()
-    renderer = render_window.GetRenderers().GetFirstRenderer()
-
-    # Add actors to the scene
-    for actor in vtk_actors:
-        renderer.AddActor(actor)
-
-    # Render window
-    render_window.AddRenderer(renderer)
-    render_window.SetSize(*figure_size)
-    render_window.SetOffScreenRendering(not display_plot)
-
-    # Render actors
-    render_window.Render()
-
-    # Render window interactor
-    window_interactor = vtk.vtkRenderWindowInteractor()
-    window_interactor.SetRenderWindow(render_window)
-
-    # Add event observers
-    for cb in callbacks:
-        window_interactor.AddObserver(cb, callbacks[cb][0], callbacks[cb][1])  # cb name, cb function ref, cb priority
-
-    # Use trackball camera
-    interactor_style = vtk.vtkInteractorStyleTrackballCamera()
-    window_interactor.SetInteractorStyle(interactor_style)
-
-    # Start interactor
-    window_interactor.Start()
 class VisConfig(vis.VisConfigAbstract):
     """ Configuration class for VTK visualization module.
 
@@ -463,11 +409,6 @@ class VisCurve3D(vis.VisAbstract):
                                                    name=plot['name'], index=plot['idx'], size=self.vconf.line_width * 2)
                 self.vtk_actors.append(actor1)
 
-    def set_renderer_window(self, render_window):
-        self.render()
-        create_render_window(render_window, self.vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)))
-
-
 # It is easier to plot 2-dimensional curves with VisCurve3D
 VisCurve2D = VisCurve3D
 
@@ -477,31 +418,63 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
     def __init__(self):
         super().__init__()
         self.AddObserver("LeftButtonPressEvent", self.leftButtonPressEvent)
+        self.AddObserver("LeftButtonReleaseEvent", self.leftButtonReleaseEvent)
+        self.AddObserver("MouseMoveEvent", self.mouseMoveEvent)
 
         self.vis = None
 
-        # self.picker = vtk.vtkPropPicker()
+        self.click = 0
+        self.grab_plane = vtk.vtkPlaneSource()
+        self.selected_actor = None
+        self.last_pick_position = None
+        self.is_moving = False
+
         self.picker = vtk.vtkPointPicker()
         self.picker.SetTolerance(0.005)
 
     def leftButtonPressEvent(self, obj, event):
         clickPos = obj.GetInteractor().GetEventPosition()
         self.picker.Pick(clickPos[0], clickPos[1], 0, obj.GetDefaultRenderer())
-        vtk_id = self.picker.GetPointId()
-        if vtk_id > -1:
-            print(f"Click on point {vtk_id}")
+        self.selected_actor = self.picker.GetActor()
 
-            if self.vis is not None:
-                point_actor = self.vis.vtk_actors[0]
-                polydata = point_actor.GetMapper().GetInput()
-
-                vtk_point_ids = polydata.GetPointData().GetArray("PointId")
-                if vtk_id < vtk_point_ids.GetNumberOfValues():
-                    point_id = vtk_point_ids.GetValue(vtk_id)
-                    print(f"Click on CtrlPt {point_id}")
+        if self.selected_actor:
+            self.last_pick_position = self.picker.GetPickPosition()
+            if self.selected_actor.GetMapper().GetArrayName() == "ctrl_point":
+                self.is_moving = True
+            else : 
+                self.is_moving = False
 
         super().OnLeftButtonDown()
 
+
+    def mouseMoveEvent(self, obj, event):
+        if self.is_moving and self.selected_actor:
+            interactor = obj.GetInteractor()
+            new_clickPos = interactor.GetEventPosition()
+            self.picker.Pick(new_clickPos[0], new_clickPos[1], 0, obj.GetDefaultRenderer())
+            new_pick_position = self.picker.GetPickPosition()
+
+            if self.last_pick_position:
+                delta = [new_pick_position[i] - self.last_pick_position[i] for i in range(3)]
+                actor_position = self.selected_actor.GetPosition()
+                new_actor_position = [actor_position[i] + delta[i] for i in range(3)]
+                self.selected_actor.SetPosition(new_actor_position)
+
+                # Update controls points array
+                ctr_pt_id = self.selected_actor.GetMapper().GetArrayId()
+                self.vis.control_points[ctr_pt_id] = new_actor_position
+                self.vis.update()
+                obj.GetDefaultRenderer().Render()
+                self.last_pick_position = new_pick_position
+                
+        else:
+            super().OnMouseMove()
+
+    def leftButtonReleaseEvent(self, obj, event):
+        self.is_moving = False
+        self.selected_actor = None
+        self.last_pick_position = None
+        super().OnLeftButtonUp()
 
 class VisSurface(vis.VisAbstract):
     """ VTK visualization module for surfaces. """
@@ -510,9 +483,24 @@ class VisSurface(vis.VisAbstract):
         self._module_config['ctrlpts'] = "quads"
         self._module_config['evalpts'] = "triangles"
         self.surface = surface
+        self.control_points = None
 
         self.render_window = None
         self.interactor_style = None
+    
+    def update(self):
+        self.clear_actors()
+        self.surface.ctrlpts = self.control_points.tolist()
+        self.surface.render()
+        self.render()
+        renderer = self.render_window.GetRenderers().GetFirstRenderer()
+        for actor in self.vtk_actors:
+            renderer.AddActor(actor)
+
+    def clear_actors(self):
+        renderer = self.render_window.GetRenderers().GetFirstRenderer()
+        for actor in self.vtk_actors:
+            renderer.RemoveActor(actor)
 
     def render(self, colormap=cm.cool, **kwargs):
         """ Plots the surface and the control points grid. """
@@ -530,11 +518,12 @@ class VisSurface(vis.VisAbstract):
                 faces = [q.data for q in plot['ptsarr'][1]]
                 # Points as spheres
                 pts = np.array(vertices, dtype=np.float)
+                self.control_points = pts
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
-                actor1 = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
-                                               name=plot['name'], index=plot['idx'], size=0.5)
-                self.vtk_actors.append(actor1)
+                actors = create_actor_pts(pts=pts, color=create_color(plot['color']),
+                                               name="ctrl_point", index=plot['idx'], size=0.05)
+                self.vtk_actors.extend(actors)
                 # Quad mesh
                 lines = np.array(faces, dtype=np.int)
                 actor2 = create_actor_mesh(pts=vtkpts, lines=lines, color=create_color(plot['color']),
@@ -580,8 +569,6 @@ class VisSurface(vis.VisAbstract):
         interactor.SetInteractorStyle(self.interactor_style)
 
         interactor.Render()
-        # create_render_window(render_window, self.vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)))
-
 
 class VisVolume(vis.VisAbstract):
     """ VTK visualization module for volumes. """
@@ -620,10 +607,6 @@ class VisVolume(vis.VisAbstract):
                                                    name=plot['name'], index=plot['idx'])
                 self.vtk_actors.append(temp_actor)
 
-    def set_renderer_window(self, render_window):
-        self.render()
-        create_render_window(render_window, self.vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)))
-
 class VisVoxel(vis.VisAbstract):
     """ VTK visualization module for voxel representation of the volumes. """
     def __init__(self, config=VisConfig(), **kwargs):
@@ -660,7 +643,3 @@ class VisVoxel(vis.VisAbstract):
                 temp_actor = create_actor_hexahedron(grid=grid_filled, color=create_color(plot['color']),
                                                           name=plot['name'], index=plot['idx'])
                 self.vtk_actors.append(temp_actor)
-
-    def set_renderer_window(self, render_window):
-        self.render()
-        create_render_window(render_window, self.vtk_actors, dict(KeyPressEvent=(self.vconf.keypress_callback, 1.0)))
