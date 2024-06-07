@@ -169,6 +169,56 @@ def create_actor_mesh(pts, lines, color, **kwargs):
     # Return the actor
     return actor
 
+def create_actor_lines(pts, lines, color, **kwargs):
+    """ Creates a VTK actor for rendering quadrilateral plots.
+
+    :param pts: points
+    :type pts: vtkFloatArray
+    :param lines: point connectivity information
+    :type lines: vtkIntArray
+    :param color: actor color
+    :type color: list
+    :return: a VTK actor
+    :rtype: vtkActor
+    """
+    # Keyword arguments
+    array_name = kwargs.get('name', "")
+    array_index = kwargs.get('index', 0)
+    line_width = kwargs.get('size', 0.5)
+
+    # Create points
+    points = vtk.vtkPoints()
+    points.SetData(pts)
+
+    # Create lines
+    cells = vtk.vtkCellArray()
+    for line in lines:
+        pline = vtk.vtkPolyLine()
+        pline.GetPointIds().SetNumberOfIds(len(line))
+        for i in range(len(line)):
+            pline.GetPointIds().SetId(i, line[i])
+        cells.InsertNextCell(pline)
+
+    # Create a PolyData object and add points & lines
+    polydata = vtk.vtkPolyData()
+    polydata.SetPoints(points)
+    polydata.SetLines(cells)
+
+    # Map poly data to the graphics primitives
+    mapper = vtk.vtkPolyDataMapper()
+    mapper.SetInputDataObject(polydata)
+    mapper.SetArrayName(array_name)
+    mapper.SetArrayId(array_index)
+
+    # Create an actor and set its properties
+    actor = vtk.vtkActor()
+    actor.SetMapper(mapper)
+    actor.GetProperty().SetColor(*color)
+    actor.GetProperty().SetLineWidth(line_width)
+
+    # Return the actor
+    return actor
+
 def create_actor_tri(pts, tris, color, **kwargs):
     """ Creates a VTK actor for rendering triangulated surface plots.
 
@@ -499,7 +549,7 @@ class VisSurface(vis.VisAbstract):
     def __init__(self, surface, config=VisConfig(), **kwargs):
         super(VisSurface, self).__init__(config, **kwargs)
         self._module_config['ctrlpts'] = "quads"
-        self._module_config['evalpts'] = "triangles"
+        self._module_config['evalpts'] = "quads"
         self.surface = surface
         self.control_points = None
 
@@ -514,6 +564,8 @@ class VisSurface(vis.VisAbstract):
         renderer = self.render_window.GetRenderers().GetFirstRenderer()
         for actor in self.vtk_actors:
             renderer.AddActor(actor)
+        interactor = self.render_window.GetInteractor()
+        interactor.Render()
 
     def clear_actors(self):
         renderer = self.render_window.GetRenderers().GetFirstRenderer()
@@ -539,8 +591,11 @@ class VisSurface(vis.VisAbstract):
                 self.control_points = pts
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
+
+                extent = np.max(np.max(pts, axis=1) - np.min(pts, axis=1))
+                n_points = np.max([self.surface.ctrlpts_size_u, self.surface.ctrlpts_size_v])
                 actors = create_actor_pts(pts=pts, color=create_color(plot['color']),
-                                               name="ctrl_point", index=plot['idx'], size=0.05)
+                                               name="ctrl_point", index=plot['idx'], size=extent/(10*n_points))
                 self.vtk_actors.extend(actors)
                 # Quad mesh
                 lines = np.array(faces, dtype=np.int)
@@ -554,10 +609,27 @@ class VisSurface(vis.VisAbstract):
                 vtkpts = numpy_to_vtk(vertices, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])
                 faces = [t.data for t in plot['ptsarr'][1]]
-                tris = np.array(faces, dtype=np.int)
+
+                if self._module_config['evalpts'] == "triangles":
+                    tris = np.array(faces, dtype=np.int)
+                elif self._module_config['evalpts'] == "quads":
+                    quad_triangle_indices= np.array([[0, 1, 3], [1, 2, 3]])
+                    tris = np.concatenate([np.array(f)[quad_triangle_indices] for f in faces], axis=0).astype(int)
                 actor1 = create_actor_tri(pts=vtkpts, tris=tris, color=create_color(plot['color']),
-                                               name=plot['name'], index=plot['idx'])
+                                          name=plot['name'], index=plot['idx'])
                 self.vtk_actors.append(actor1)
+
+                u_range = np.round(np.linspace(0, self.surface.sample_size_u-1, self.surface.ctrlpts_size_u)).astype(int)
+                v_range = np.round(np.linspace(0, self.surface.sample_size_v-1, self.surface.ctrlpts_size_v)).astype(int)
+
+                u_lines = [v + np.arange(self.surface.sample_size_u)*self.surface.sample_size_v for v in v_range]
+                v_lines = [u*self.surface.sample_size_v + np.arange(self.surface.sample_size_v) for u in u_range]
+                lines = np.array(u_lines + v_lines).astype(int)
+
+                actor2 = create_actor_lines(pts=vtkpts, lines=lines, color=create_color(plot['color']),
+                                           name=plot['name'], index=plot['idx'], size=self.vconf.line_width)
+                self.vtk_actors.append(actor2)
+
 
             # Plot trim curves
             if self.vconf.display_trims:

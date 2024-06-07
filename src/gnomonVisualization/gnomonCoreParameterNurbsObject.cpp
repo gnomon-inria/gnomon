@@ -1,5 +1,7 @@
 #include "gnomonCoreParameterNurbsObject.h"
 
+#include <math.h>
+
 #include <QtCore>
 #include <vtkActor.h>
 #include <vtkRenderWindow.h>
@@ -245,7 +247,7 @@ void gnomonCoreParameterNurbsObjectPrivate::initPSurface(gnomonCoreParameterNurb
         Py_DECREF(pModule_utilities);
 
         //2.4 delta
-        PyObject* p_delta = PyFloat_FromDouble(param->delta());
+        PyObject* p_delta = PyFloat_FromDouble(std::sqrt(param->delta())/2); // 3D can not handle 0.01 delta
         PyObject_SetAttrString(this->pSurface, "delta", p_delta);
         Py_DECREF(p_delta);
 
