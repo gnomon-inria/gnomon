@@ -423,7 +423,7 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
 
         self.vis = None
 
-        self.click = 0
+        self.grab_actor = vtk.vtkActor()
         self.grab_plane = vtk.vtkPlaneSource()
         self.selected_actor = None
         self.last_pick_position = None
@@ -441,7 +441,23 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
             self.last_pick_position = self.picker.GetPickPosition()
             if self.selected_actor.GetMapper().GetArrayName() == "ctrl_point":
                 self.is_moving = True
-            else : 
+
+                # create grab plane here and set its normal
+                mouse_position = np.array(self.last_pick_position)
+                self.grab_plane.SetCenter(*mouse_position)
+                normal_plane = [ a - b for a,b in zip(obj.GetDefaultRenderer().GetActiveCamera().GetFocalPoint(), 
+                                                      obj.GetDefaultRenderer().GetActiveCamera().GetPosition())]
+                self.grab_plane.SetNormal(normal_plane)
+
+                grab_mapper = vtk.vtkPolyDataMapper()
+                grab_mapper.SetInputConnection(self.grab_plane.GetOutputPort())
+
+                self.grab_actor.SetMapper(grab_mapper)
+                self.grab_actor.GetProperty().SetOpacity(0.0001)
+                obj.GetDefaultRenderer().AddActor(self.grab_actor)
+                obj.GetDefaultRenderer().Render()
+
+            else :
                 self.is_moving = False
 
         super().OnLeftButtonDown()
@@ -474,6 +490,8 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
         self.is_moving = False
         self.selected_actor = None
         self.last_pick_position = None
+        obj.GetDefaultRenderer().RemoveActor(self.grab_actor)
+        obj.GetDefaultRenderer().Render()
         super().OnLeftButtonUp()
 
 class VisSurface(vis.VisAbstract):
