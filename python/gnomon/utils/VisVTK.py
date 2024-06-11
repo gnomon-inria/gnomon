@@ -170,7 +170,7 @@ def create_actor_mesh(pts, lines, color, **kwargs):
     return actor
 
 def create_actor_lines(pts, lines, color, **kwargs):
-    """ Creates a VTK actor for rendering quadrilateral plots.
+    """ Creates a VTK actor for rendering lines.
 
     :param pts: points
     :type pts: vtkFloatArray
@@ -184,7 +184,7 @@ def create_actor_lines(pts, lines, color, **kwargs):
     # Keyword arguments
     array_name = kwargs.get('name', "")
     array_index = kwargs.get('index', 0)
-    line_width = kwargs.get('size', 0.5)
+    line_width = kwargs.get('size', 2)
 
     # Create points
     points = vtk.vtkPoints()
@@ -215,6 +215,7 @@ def create_actor_lines(pts, lines, color, **kwargs):
     actor.SetMapper(mapper)
     actor.GetProperty().SetColor(*color)
     actor.GetProperty().SetLineWidth(line_width)
+    actor.GetProperty().SetRenderLinesAsTubes(1)
 
     # Return the actor
     return actor
@@ -476,7 +477,6 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
         self.selected_actor = None
         self.last_pick_position = None
         self.is_moving = False
-        self.selected_actor_property = vtk.vtkProperty()
 
         self.picker = vtk.vtkPointPicker()
         self.picker.SetTolerance(0.005)
@@ -490,11 +490,9 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
             self.last_pick_position = self.picker.GetPickPosition()
             if self.selected_actor.GetMapper().GetArrayName() == "ctrl_point":
                 self.is_moving = True
-                self.selected_actor_property.SetColor(vtk.vtkNamedColors().GetColor3d('Red'))
-                self.selected_actor_property.SetDiffuse(1.0)
-                self.selected_actor_property.SetSpecular(0.0)
-                self.selected_actor_property.EdgeVisibilityOn()
-                self.selected_actor.SetProperty(self.selected_actor_property)
+                self.selected_actor.GetProperty().SetColor(vtk.vtkNamedColors().GetColor3d('Red'))
+                self.selected_actor.GetProperty().SetDiffuse(1.0)
+                self.selected_actor.GetProperty().SetSpecular(0.0)
             else :
                 self.is_moving = False
 
@@ -516,6 +514,7 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
 
                 # Update controls points array
                 ctr_pt_id = self.selected_actor.GetMapper().GetArrayId()
+                self.vis.selected_point = ctr_pt_id
                 new_point_position = [self.vis.control_points[ctr_pt_id][i] + delta[i] for i in range(3)]
                 self.vis.control_points[ctr_pt_id] = new_point_position
                 self.vis.update()
@@ -540,6 +539,7 @@ class VisSurface(vis.VisAbstract):
         self._module_config['evalpts'] = "quads"
         self.surface = surface
         self.control_points = None
+        self.selected_point = -1
 
         self.render_window = None
         self.interactor_style = None
@@ -582,12 +582,17 @@ class VisSurface(vis.VisAbstract):
 
                 extent = np.max(np.max(pts, axis=1) - np.min(pts, axis=1))
                 n_points = np.max([self.surface.ctrlpts_size_u, self.surface.ctrlpts_size_v])
-                actors = create_actor_pts(pts=pts, color=create_color(plot['color']),
+                actors = create_actor_pts(pts=pts, color=create_color('cornflowerblue'),
                                                name="ctrl_point", index=plot['idx'], size=extent/(10*n_points))
+                for actor in actors:
+                    if actor.GetMapper().GetArrayId() == self.selected_point:
+                        actor.GetProperty().SetColor(vtk.vtkNamedColors().GetColor3d('Red'))
+                        actor.GetProperty().SetDiffuse(1.0)
+                        actor.GetProperty().SetSpecular(0.0)
                 self.vtk_actors.extend(actors)
                 # Quad mesh
                 lines = np.array(faces, dtype=np.int)
-                actor2 = create_actor_mesh(pts=vtkpts, lines=lines, color=create_color(plot['color']),
+                actor2 = create_actor_mesh(pts=vtkpts, lines=lines, color=create_color('lightgrey'),
                                                 name=plot['name'], index=plot['idx'], size=self.vconf.line_width)
                 self.vtk_actors.append(actor2)
 
@@ -603,18 +608,20 @@ class VisSurface(vis.VisAbstract):
                 elif self._module_config['evalpts'] == "quads":
                     quad_triangle_indices= np.array([[0, 1, 3], [1, 2, 3]])
                     tris = np.concatenate([np.array(f)[quad_triangle_indices] for f in faces], axis=0).astype(int)
-                actor1 = create_actor_tri(pts=vtkpts, tris=tris, color=create_color(plot['color']),
+                actor1 = create_actor_tri(pts=vtkpts, tris=tris, color=create_color('grey'),
                                           name=plot['name'], index=plot['idx'])
                 self.vtk_actors.append(actor1)
 
-                u_range = np.round(np.linspace(0, self.surface.sample_size_u-1, self.surface.ctrlpts_size_u)).astype(int)
-                v_range = np.round(np.linspace(0, self.surface.sample_size_v-1, self.surface.ctrlpts_size_v)).astype(int)
+                #u_range = np.round(np.linspace(0, self.surface.sample_size_u-1, self.surface.ctrlpts_size_u)).astype(int)
+                #v_range = np.round(np.linspace(0, self.surface.sample_size_v-1, self.surface.ctrlpts_size_v)).astype(int)
+                u_range = np.arange(self.surface.sample_size_u)[::2]
+                v_range = np.arange(self.surface.sample_size_v)[::2]
 
                 u_lines = [v + np.arange(self.surface.sample_size_u)*self.surface.sample_size_v for v in v_range]
                 v_lines = [u*self.surface.sample_size_v + np.arange(self.surface.sample_size_v) for u in u_range]
                 lines = np.array(u_lines + v_lines).astype(int)
 
-                actor2 = create_actor_lines(pts=vtkpts, lines=lines, color=create_color(plot['color']),
+                actor2 = create_actor_lines(pts=vtkpts, lines=lines, color=create_color('deepskyblue'),
                                            name=plot['name'], index=plot['idx'], size=self.vconf.line_width)
                 self.vtk_actors.append(actor2)
 
@@ -648,76 +655,4 @@ class VisSurface(vis.VisAbstract):
 
         interactor.Render()
 
-class VisVolume(vis.VisAbstract):
-    """ VTK visualization module for volumes. """
-    def __init__(self, config=VisConfig(), **kwargs):
-        super(VisVolume, self).__init__(config, **kwargs)
-        self._module_config['ctrlpts'] = "points"
-        self._module_config['evalpts'] = "points"
-        self.vtk_actors = []
 
-    def render(self, render_window, **kwargs):
-        """ Plots the volume and the control points. """
-        # Calling parent function
-        super(VisVolume, self).render(**kwargs)
-
-        # Initialize a list to store VTK actors
-        self.vtk_actors = []
-
-        # Start plotting
-        for plot in self._plots:
-            # Plot control points
-            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                # Points as spheres
-                pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                vtkpts.SetName(plot['name'])
-                temp_actor = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
-                                                   name=plot['name'], index=plot['idx'])
-                self.vtk_actors.append(temp_actor)
-
-            # Plot evaluated points
-            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                vtkpts.SetName(plot['name'])
-                temp_actor = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
-                                                   name=plot['name'], index=plot['idx'])
-                self.vtk_actors.append(temp_actor)
-
-class VisVoxel(vis.VisAbstract):
-    """ VTK visualization module for voxel representation of the volumes. """
-    def __init__(self, config=VisConfig(), **kwargs):
-        super(VisVoxel, self).__init__(config, **kwargs)
-        self._module_config['ctrlpts'] = "points"
-        self._module_config['evalpts'] = "voxels"
-        self.vtk_actors = []
-
-    def render(self, render_window, **kwargs):
-        """ Plots the volume and the control points. """
-        # Calling parent function
-        super(VisVoxel, self).render(**kwargs)
-
-        # Initialize a list to store VTK actors
-        self.vtk_actors = []
-
-        # Start plotting
-        for plot in self._plots:
-            # Plot control points
-            if plot['type'] == 'ctrlpts' and self.vconf.display_ctrlpts:
-                # Points as spheres
-                pts = np.array(plot['ptsarr'], dtype=np.float)
-                vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
-                vtkpts.SetName(plot['name'])
-                temp_actor = create_actor_pts(pts=vtkpts, color=create_color(plot['color']),
-                                                   name=plot['name'], index=plot['idx'])
-                self.vtk_actors.append(temp_actor)
-
-            # Plot evaluated points
-            if plot['type'] == 'evalpts' and self.vconf.display_evalpts:
-                faces = np.array(plot['ptsarr'][1], dtype=np.float)
-                filled = np.array(plot['ptsarr'][2], dtype=np.int)
-                grid_filled = faces[filled == 1]
-                temp_actor = create_actor_hexahedron(grid=grid_filled, color=create_color(plot['color']),
-                                                          name=plot['name'], index=plot['idx'])
-                self.vtk_actors.append(temp_actor)
