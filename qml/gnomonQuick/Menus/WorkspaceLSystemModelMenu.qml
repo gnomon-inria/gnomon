@@ -52,7 +52,7 @@ Item {
         }
 
         ListView {
-            id: _control;
+            id: _list_view;
 
             Layout.fillWidth: true;
             Layout.fillHeight: true;
@@ -70,7 +70,7 @@ Item {
 
                 title: _menu.getTitleString(group);
                 model: parameters;
-                width: _control.width;
+                width: _list_view.width;
 
                 onValueChanged: {
                     if (_auto_apply.checked) {
@@ -81,13 +81,13 @@ Item {
             }
 
             ScrollIndicator.vertical: ScrollIndicator {
-                visible: _control.contentHeight > _control.height;
+                visible: _list_view.contentHeight > _list_view.height;
             }
 
             Connections {
                 target: window
                 function onInsideParamFigure() {
-                    _control.interactive = !_control.interactive;
+                    _list_view.interactive = !_list_view.interactive;
                 }
             }
         }

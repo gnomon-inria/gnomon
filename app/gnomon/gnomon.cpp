@@ -81,6 +81,7 @@ public:
 
 public:
     Q_INVOKABLE void associate(QObject *, gnomonVtkView *);
+    Q_INVOKABLE void associateNurbs(QObject *, gnomonNurbsView *);
 
 private:
     static gnomonViewAssociator *s_instance;
@@ -109,6 +110,14 @@ void gnomonViewAssociator::associate(QObject *source, gnomonVtkView *destination
 
     destination->associate(viewer->GetRenderWindow());
  }
+
+void gnomonViewAssociator::associateNurbs(QObject *source, gnomonNurbsView *destination)
+{
+    xVisViewer *viewer = source->findChild<xVisViewer*>("", Qt::FindDirectChildrenOnly);
+    viewer->setExternalEnabled(true);
+
+    destination->associate(viewer->GetRenderWindow());
+}
 
 gnomonViewAssociator *gnomonViewAssociator::s_instance = 0;
 
@@ -388,10 +397,12 @@ void gnomon_rinit()
 
     // -- Visualization logic registration
     qmlRegisterType<gnomonVtkView>("gnomon.Visualization", 1, 0, "View");
+    qmlRegisterType<gnomonNurbsView>("gnomon.Visualization", 1, 0, "ViewNurbs");
     qmlRegisterType<gnomonVtkViewList>("gnomon.Visualization", 1, 0, "ViewList");
     qmlRegisterType<gnomonMplView>("gnomon.Visualization", 1, 0, "Figure");
     qmlRegisterSingletonInstance("gnomon.Visualization", 1, 0, "World", gnomonFormManager::instance());
     qmlRegisterType<MaterialPreview>("gnomon.Visualization", 1, 0, "MaterialPreview");
+    qmlRegisterType<gnomonCoreParameterNurbsObject>("gnomon.Visualization", 1, 0, "NurbsParameter");
 
     // -- Algorithms logs
     qmlRegisterSingletonType<gnomonLogCaptureServer>("gnomon.Visualization", 1, 0, "LogServer", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {

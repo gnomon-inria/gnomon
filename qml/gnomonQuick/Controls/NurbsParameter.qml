@@ -4,6 +4,7 @@ import QtQuick.Layouts  1.15
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
+import gnomon.Utils as G
 
 import gnomon.Visualization 1.0 as GV
 import gnomon.Mpl           1.0 as GV
@@ -44,8 +45,16 @@ Control {
 
         width: parent.width
         implicitHeight: 200
-        onWidthChanged: _view.setGeom(_view.width, _view.height);
-        onHeightChanged: _view.setGeom(_view.width, _view.height);
+        onWidthChanged : {
+            if (_view.visible) {
+                _view.setGeom(_view.width, _view.height);
+            }
+        }
+        onHeightChanged : {
+           if (_view.visible) {
+               _view.setGeom(_view.width, _view.height);
+           }
+       }
 
         backgroundColor: G.Style.figureColors.bgColor
         lineColor: G.Style.figureColors.lineColor
@@ -57,6 +66,37 @@ Control {
 
         onMouseReleased : {
             param.updateControlPointsFromPython()
+        }
+    }
+
+    G.ViewNurbs {
+        id: _nurbs_view;
+
+        anchors.top: _label.bottom
+
+        width: parent.width
+        implicitHeight: 200
+
+        onHoveredChanged: {
+            window.insideParamFigure()
+        }
+
+        MouseArea {
+            id: _mouse_area
+            anchors.fill: parent
+            propagateComposedEvents: true
+
+            onClicked: (mouse)=> {
+                if(param.nurbsType == GV.NurbsParameter.SURFACE) {
+                    param.updateRenderWindow()
+                }
+                _mouse_area.enabled = false
+                mouse.accepted = false
+            }
+        }
+
+        Component.onCompleted: {
+            param.nurbsView.backgroundColor = Qt.binding(function() {return G.Style.figureColors.bgColor})
         }
     }
 
@@ -94,6 +134,15 @@ Control {
 
     Component.onCompleted: {
         //d.onParametersChanged();
-        param.figureNumber = _view.number
+        if(param.nurbsType == GV.NurbsParameter.SURFACE) {
+            G.Associator.associateNurbs(_nurbs_view, param.nurbsView)
+            _view.visible = false
+            _nurbs_view.visible = true
+            param.buildNurbsPatch()
+        } else {
+            _view.visible = true
+            _nurbs_view.visible = false
+            param.figureNumber = _view.number
+        }
     }
 }
