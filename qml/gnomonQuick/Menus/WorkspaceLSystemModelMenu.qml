@@ -51,6 +51,42 @@ Item {
             }
         }
 
+        Item {
+            Layout.fillWidth: true;
+            Layout.preferredHeight: G.Style.iconMedium
+
+            Label {
+                text: "Model Parameters"
+                font: G.Style.fonts.subHeader
+                color: G.Style.colors.textColorBase;
+                horizontalAlignment: Text.AlignRight;
+                verticalAlignment: Text.AlignVCenter;
+
+                anchors.left: parent.left
+                anchors.right: _edit_icon.left
+                anchors.verticalCenter: _edit_icon.verticalCenter
+                anchors.margins: G.Style.smallPadding
+            }
+
+            G.IconButton {
+                id: _edit_icon;
+
+                iconName: "pencil-box";
+                size: G.Style.iconMedium;
+                tooltip: "Edit parameters";
+
+                anchors.top: parent.top
+                anchors.right: parent.right
+
+                // TODO: Read-only in L-System Workspace
+                // visible: !d.readOnly
+
+                onClicked: {
+                    _parameter_edit_dialog.open()
+                }
+            }
+        }
+
         ListView {
             id: _list_view;
 
@@ -293,5 +329,11 @@ Item {
 
     function getTitleString(group : string) : string {
         return (group.charAt(0).toUpperCase() + group.slice(1)).replace('_', ' ')
+    }
+
+    G.ParameterEditDialog {
+        id: _parameter_edit_dialog
+
+        parameters: _menu.parameters
     }
 }

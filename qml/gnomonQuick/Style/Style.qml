@@ -122,6 +122,7 @@ QtObject {
     property int smallDialogWidth: S.spacing["14"]
     property int mediumDialogWidth: S.spacing["15"]
     property int largeDialogWidth: S.spacing["16"]
+    property int hugeDialogWidth: S.spacing["17"]
 
     property int tinyDialogHeight: S.spacing["11"]
     property int smallDialogHeight: S.spacing["12"]
