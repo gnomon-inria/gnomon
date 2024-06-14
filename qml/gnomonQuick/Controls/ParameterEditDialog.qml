@@ -35,7 +35,7 @@ G.Dialog {
     G.Gutter {
         id: _group_panel;
 
-        width: _self.width / 4;
+        width: _self.width / 5;
 
         anchors.top: parent.top;
         anchors.bottom: parent.bottom;
@@ -135,9 +135,9 @@ G.Dialog {
         anchors.top: parent.top;
         anchors.bottom: parent.bottom;
         anchors.left: _group_panel.right;
-        anchors.margins: G.Style.smallPadding;
+        anchors.leftMargin: 2;
 
-        width: _self.width / 4;
+        width: _self.width / 5;
 
         Label {
             id: _parameter_title;
@@ -168,6 +168,10 @@ G.Dialog {
             focus: true;
             currentIndex: -1
 
+            onCurrentIndexChanged: {
+                _parameter_config_panel.param = currentIndex != -1 ? model.get(currentIndex).param : undefined
+            }
+
             delegate: G.ListItemDelegate {
                 id: _parameter_delegate
 
@@ -179,36 +183,14 @@ G.Dialog {
                 required property var param;
                 required property int index;
 
-                Label {
-                    id: _parameter_name_label
-
-                    anchors.top: _parameter_delegate.top
-                    anchors.left: _parameter_delegate.left
-                    anchors.margins: G.Style.smallPadding
-
-                    text: param.label
-                    horizontalAlignment: Text.AlignLeft
-                    font: G.Style.fonts.cardLabel
-                }
-
-                Label {
-                    id: _parameter_type_label
-
-                    anchors.bottom: _parameter_delegate.bottom
-                    anchors.right: _parameter_delegate.right
-                    anchors.margins: G.Style.smallPadding
-
-                    text: param.type
-                    horizontalAlignment: Text.AlignRight;
-                    font: G.Style.fonts.value
-                }
+                text: getTitleString(param.label);
 
                 onClicked: {
                     _parameter_list.currentIndex = index
                 }
             }
 
-            ScrollBar.vertical: ScrollBar { visible: _group_list.contentHeight > _group_list.height; }
+            ScrollBar.vertical: ScrollBar { visible: _parameter_list.contentHeight > _parameter_list.height; }
         }
 
         G.ListItemDelegate {
@@ -240,6 +222,20 @@ G.Dialog {
                 }
             }
         }
+    }
+
+    G.ParameterConfigurationPanel {
+        id: _parameter_config_panel;
+
+        anchors.top: parent.top;
+        anchors.bottom: parent.bottom;
+        anchors.left: _parameter_panel.right;
+        anchors.right: parent.right;
+        anchors.margins: G.Style.smallPadding;
+
+        param: undefined
+
+        visible: _parameter_list.currentIndex != -1
     }
 
     function getTitleString(group : string) : string {

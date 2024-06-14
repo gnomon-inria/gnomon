@@ -53,6 +53,7 @@ QML_FILES
   NurbsParameter.qml
   Page.qml
   Panel.qml
+  ParameterConfigurationPanel.qml
   ParameterEditDialog.qml
   ParameterGroup.qml
   Parameters.qml
