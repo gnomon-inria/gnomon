@@ -116,12 +116,14 @@ gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const gnomonCore
 
 void gnomonCoreParameterNurbs::setControlPoints(const ctrls_type& ctrl_points)
 {
-    m_ctrl_points = ctrl_points;
-    if(m_degree >= m_ctrl_points.size() ) {
-        dtkWarn() << "degree " << m_degree << " is too big setting it to " << m_ctrl_points.size() - 1;
-        this->setDegree(m_ctrl_points.size() -1);
+    if(m_ctrl_points!=ctrl_points) {
+        m_ctrl_points = ctrl_points;
+        if(m_degree >= m_ctrl_points.size() ) {
+            dtkWarn() << "degree " << m_degree << " is too big setting it to " << m_ctrl_points.size() - 1;
+            this->setDegree(m_ctrl_points.size() -1);
+        }
+        m_object->notifyControlPointsChanged();
     }
-    m_object->notifyControlPointsChanged();
 }
 
 gnomonCoreParameterNurbs::ctrls_type gnomonCoreParameterNurbs::controlPoints(void) const
