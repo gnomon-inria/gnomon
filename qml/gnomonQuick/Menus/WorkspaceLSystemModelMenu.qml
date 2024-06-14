@@ -71,6 +71,15 @@ Item {
                 title: _menu.getTitleString(group);
                 model: parameters;
                 width: _list_view.width;
+                enabled: !d.readOnly;
+
+                Rectangle {
+                    anchors.fill: parent
+                    z: 100
+                    opacity: 0.5
+                    color: G.Style.colors.gutterColor
+                    visible: !parent.enabled
+                }
 
                 onValueChanged: {
                     if (_auto_apply.checked) {
