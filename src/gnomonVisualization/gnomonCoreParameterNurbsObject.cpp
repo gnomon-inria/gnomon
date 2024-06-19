@@ -29,17 +29,22 @@ public:
     int figureNumber=-1;
     double z_buffer = 0.;
     gnomonNurbsView* nurbsView = nullptr;
+    gnomonNurbsView* nurbsViewWidget = nullptr;
 
     PyObject* pCurve = nullptr;
     PyObject* pVisCurve = nullptr;
     PyObject* pSurface = nullptr;
     PyObject* pVisSurface = nullptr;
+    PyObject* pSurfaceWidget = nullptr;
+    PyObject* pVisSurfaceWidget = nullptr;
 };
 
 gnomonCoreParameterNurbsObjectPrivate::~gnomonCoreParameterNurbsObjectPrivate(void)
 {
     if(this->nurbsView)
         delete nurbsView;
+    if(this->nurbsViewWidget)
+        delete nurbsViewWidget;
 }
 void gnomonCoreParameterNurbsObjectPrivate::initPCurve(gnomonCoreParameterNurbs *param)
 {
@@ -251,6 +256,19 @@ void gnomonCoreParameterNurbsObjectPrivate::initPSurface(gnomonCoreParameterNurb
         PyObject_SetAttrString(this->pSurface, "delta", p_delta);
         Py_DECREF(p_delta);
 
+        //3 Deepcopy pSurface into pSurfaceWidget
+        PyObject* pNameCopy = PyUnicode_FromString("copy");
+        PyObject* pModule_copy = PyImport_Import(pNameCopy);
+        Py_DECREF(pNameCopy);
+        if(pModule_copy) {
+            PyObject* pDeepcopyFunc = PyObject_GetAttrString(pModule_copy, "deepcopy");
+            if(pDeepcopyFunc && PyCallable_Check(pDeepcopyFunc)) {
+                PyObject* deepcopy_args = Py_BuildValue("(O)", this->pSurface);
+                this->pSurfaceWidget = PyObject_CallObject(pDeepcopyFunc, deepcopy_args);
+                Py_DECREF(pDeepcopyFunc);
+            }
+            Py_DECREF(pModule_copy);
+        }
         PyGILState_Release(gstate);
     }
 }
@@ -282,9 +300,22 @@ void gnomonCoreParameterNurbsObjectPrivate::initPVisSurface(void)
         PyObject* pRenderFunc = PyObject_GetAttrString(this->pSurface, "render");
         PyObject* result = PyObject_CallNoArgs(pRenderFunc);
 
+        PyObject* argsWidget = Py_BuildValue("(O)", this->pSurfaceWidget);
+        this->pVisSurfaceWidget = PyObject_CallObject(pFunc2, argsWidget);
+        if(!this->pVisSurfaceWidget) {
+            dtkWarn() << "Error making Widget VisSurface, no NURBS widget visu";
+        } else {
+            PyObject_SetAttrString(this->pSurfaceWidget, "vis", this->pVisSurfaceWidget);
+        }
+
+        PyObject* pRenderFuncWidget = PyObject_GetAttrString(this->pSurfaceWidget, "render");
+        PyObject_CallNoArgs(pRenderFuncWidget);
+
+        Py_DECREF(argsWidget);
         Py_DECREF(pFunc2);
         Py_DECREF(pModule_vis);
         Py_DECREF(pRenderFunc);
+        Py_DECREF(pRenderFuncWidget);
 
         PyGILState_Release(gstate);
     }
@@ -299,6 +330,7 @@ gnomonCoreParameterNurbsObject::gnomonCoreParameterNurbsObject(gnomonCoreParamet
     d = new gnomonCoreParameterNurbsObjectPrivate();
     if(m_param->type() == gnomonCoreParameterNurbs::NURBS_TYPE::SURFACE) {
         d->nurbsView = new gnomonNurbsView(this);
+        d->nurbsViewWidget = new gnomonNurbsView(this);
     }
 }
 
@@ -378,6 +410,11 @@ int gnomonCoreParameterNurbsObject::figureNumber(void)
 gnomonNurbsView* gnomonCoreParameterNurbsObject::nurbsView(void) 
 {
     return d->nurbsView;
+}
+
+gnomonNurbsView* gnomonCoreParameterNurbsObject::nurbsViewWidget(void) 
+{
+    return d->nurbsViewWidget;
 }
 
 int gnomonCoreParameterNurbsObject::nurbsType(void) const
@@ -570,7 +607,7 @@ void gnomonCoreParameterNurbsObject::buildNurbsPatch(void)
 }
 
 void gnomonCoreParameterNurbsObject::updateRenderWindow(void) {
-
+    static bool do_it_once = true;
     if(m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
         if (d->pVisSurface) {
             PyGILState_STATE gstate;
@@ -585,6 +622,18 @@ void gnomonCoreParameterNurbsObject::updateRenderWindow(void) {
                 PyObject_CallMethod(d->pVisSurface, "set_render_window", "(O)", pRenderWindow);
             }
             Py_DECREF(pRenderWindow);
+            if(do_it_once) {
+                auto render_window_widget = d->nurbsViewWidget->renderWindow();
+                PyObject *pRenderWindowWidget = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window_widget));
+                qDebug() << Q_FUNC_INFO << "set_render_window";
+                if (!pRenderWindowWidget) {
+                    dtkWarn() << "Could not convert render window from C++";
+                } else {
+                    PyObject_CallMethod(d->pVisSurfaceWidget, "set_render_window", "(O)", pRenderWindowWidget);
+                }
+                Py_DECREF(pRenderWindowWidget);
+                do_it_once = false;
+            }
 
             PyGILState_Release(gstate);
         } else {
