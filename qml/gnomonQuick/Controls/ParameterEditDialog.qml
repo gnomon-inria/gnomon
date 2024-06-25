@@ -99,6 +99,22 @@ G.Dialog {
             ScrollBar.vertical: ScrollBar { visible: _group_list.contentHeight > _group_list.height; }
         }
 
+        DropArea {
+            anchors.fill: parent
+
+            onDropped: {
+                // Change the parent of dropped item here
+            }
+
+            onEntered: {
+                console.log("##### Entered in Drop Area #####")
+                parent.z = 0
+            }
+
+            onExited: {
+            }
+        }
+
         G.ListItemDelegate {
             id: _new_group_delegate
 
@@ -136,6 +152,7 @@ G.Dialog {
         anchors.bottom: parent.bottom;
         anchors.left: _group_panel.right;
         anchors.leftMargin: 2;
+        z: 1
 
         width: _self.width / 5;
 
@@ -185,9 +202,29 @@ G.Dialog {
 
                 text: getTitleString(param.label);
 
-                onClicked: {
-                    _parameter_list.currentIndex = index
+                Drag.active: _drag_handler.drag.active
+                Drag.hotSpot.x: _drag_handler.width
+                Drag.hotSpot.y: _drag_handler.height
+                Drag.source: _drag_handler
+
+                MouseArea {
+                    id: _drag_handler
+                    anchors.fill: parent
+                    drag.target: parent
+                    onReleased: {
+                        parent.z = 0
+                    }
+                    onClicked: {
+                        _parameter_list.currentIndex = index
+                        parent.z = 10
+                    }
+                    onPressAndHold: {
+                        _drag_handler.startDrag()
+                    }
                 }
+                // onClicked: {
+                //     _parameter_list.currentIndex = index
+                // }
             }
 
             ScrollBar.vertical: ScrollBar { visible: _parameter_list.contentHeight > _parameter_list.height; }
