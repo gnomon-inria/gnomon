@@ -94,25 +94,34 @@ G.Dialog {
                 onClicked: {
                     _group_list.currentIndex = index
                 }
+
+                DropArea {
+                    id: _group_drop;
+
+                    anchors.fill: parent;
+
+                    G.IconButton {
+                        iconName: "arrow-down-drop-circle";
+                        size: G.Style.largeButtonHeight
+                        color: _group_delegate.highlighted? G.Style.colors.baseColor : G.Style.colors.fgColor;
+                        visible: _group_drop.containsDrag;
+                        anchors.centerIn: parent;
+                    }
+
+                    onDropped: (drop) => {
+                        console.log(drop)
+
+                        let source_index = _group_list.currentIndex
+                        let source_group = _group_list.model.get(source_index).group
+                        if (source_group != group) {
+                            let param = drag.source.param
+                            console.log("Move parameter", param.label, "from group", source_group, "to group", group)
+                        }
+                    }
+                }
             }
 
-            ScrollBar.vertical: ScrollBar { visible: _group_list.contentHeight > _group_list.height; }
-        }
-
-        DropArea {
-            anchors.fill: parent
-
-            onDropped: {
-                // Change the parent of dropped item here
-            }
-
-            onEntered: {
-                console.log("##### Entered in Drop Area #####")
-                parent.z = 0
-            }
-
-            onExited: {
-            }
+            ScrollBar.vertical: ScrollBar { visible: _group_list._delegate_contentHeight > _group_list.height; }
         }
 
         G.ListItemDelegate {
@@ -184,6 +193,7 @@ G.Dialog {
             clip: true;
             focus: true;
             currentIndex: -1
+            interactive: false
 
             onCurrentIndexChanged: {
                 _parameter_config_panel.param = currentIndex != -1 ? model.get(currentIndex).param : undefined
@@ -201,30 +211,33 @@ G.Dialog {
                 required property int index;
 
                 text: getTitleString(param.label);
+                        
+                Drag.active: _parameter_drag.active
+                Drag.hotSpot.x: width / 2
+                Drag.hotSpot.y: height / 2
+                Drag.dragType: Drag.Automatic
 
-                Drag.active: _drag_handler.drag.active
-                Drag.hotSpot.x: _drag_handler.width
-                Drag.hotSpot.y: _drag_handler.height
-                Drag.source: _drag_handler
+                DragHandler {
+                    id: _parameter_drag
 
-                MouseArea {
-                    id: _drag_handler
-                    anchors.fill: parent
-                    drag.target: parent
-                    onReleased: {
-                        parent.z = 0
-                    }
-                    onClicked: {
-                        _parameter_list.currentIndex = index
-                        parent.z = 10
-                    }
-                    onPressAndHold: {
-                        _drag_handler.startDrag()
+                    xAxis.minimum: _parameter_delegate.x
+                    xAxis.maximum: _parameter_delegate.x
+                    yAxis.minimum: _parameter_delegate.y
+                    yAxis.maximum: _parameter_delegate.y
+
+                    onActiveChanged : {
+                        if(active) {
+                            _parameter_delegate.Drag.mimeData = {"text/plain" : getTitleString(param.label)};
+                            parent.grabToImage(function(result) {
+                                _parameter_delegate.Drag.imageSource = result.url;
+                            })
+                        }
                     }
                 }
-                // onClicked: {
-                //     _parameter_list.currentIndex = index
-                // }
+
+                onClicked: {
+                    _parameter_list.currentIndex = index
+                }
             }
 
             ScrollBar.vertical: ScrollBar { visible: _parameter_list.contentHeight > _parameter_list.height; }
