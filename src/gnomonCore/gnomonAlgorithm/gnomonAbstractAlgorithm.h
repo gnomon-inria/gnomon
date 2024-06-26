@@ -25,8 +25,8 @@ public:
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
     virtual void connectParameter(const QString& parameter_name);
-    virtual void refreshParameters(void);
     virtual void onParameterChanged(const QString& parameter_name = "");
+    virtual void refreshParameters(void);
 
 public:
     virtual int run(void) = 0;

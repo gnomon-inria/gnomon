@@ -118,7 +118,9 @@ G.Workspace {
                 readOnly: d.readOnly
 
                 onModified: (contents) => {
-                    d.text = eval(contents);
+                    if(eval(contents)) {
+                        d.text = eval(contents);
+                    }
                 }
 
                 onFileSwitched: (name) => {
@@ -144,6 +146,14 @@ G.Workspace {
                 onMakeFileEditable: () => {
                     import_lpy_file_to_project.importPath = GP.ProjectManager.project.currentDir;
                     import_lpy_file_to_project.open()
+                }
+                Connections {
+                    target: d
+                    function onTextChanged() {
+                        if(_editor.contents !== d.text) {
+                            _editor.contents = d.text;
+                        }
+                    }
                 }
             }
         }

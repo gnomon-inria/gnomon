@@ -196,7 +196,7 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
 
     d->readFileTimer.setInterval(1000);
     connect(&d->readFileTimer, &QTimer::timeout, this, &gnomonWorkspaceLSystemModel::updateFromCurrentFile);
-    //d->readFileTimer.start();
+    d->readFileTimer.start();
 
     this->setDefaultLSystem();
 }

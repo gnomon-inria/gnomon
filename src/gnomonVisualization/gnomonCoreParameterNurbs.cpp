@@ -73,6 +73,7 @@ gnomonCoreParameterNurbs::~gnomonCoreParameterNurbs(void)
 gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const ctrls_type& ctrl_points)
 {
     this->m_ctrl_points = ctrl_points;
+    this->sync();
     return *this;
 }
 
@@ -109,6 +110,7 @@ gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const gnomonCore
         m_is_function = o.m_is_function;
         m_nurbs_type = o.m_nurbs_type;
         m_ctrl_points_size = o.m_ctrl_points_size;
+        this->sync();
     }
 
     return *this;
@@ -123,6 +125,7 @@ void gnomonCoreParameterNurbs::setControlPoints(const ctrls_type& ctrl_points)
             this->setDegree(m_ctrl_points.size() -1);
         }
         m_object->notifyControlPointsChanged();
+        this->sync();
     }
 }
 
@@ -196,8 +199,8 @@ void gnomonCoreParameterNurbs::setValue(const QVariant &v)
                 vv[i] = l_point[i].toDouble();
             }
             m_ctrl_points.append(vv);
-
         }
+        this->sync();
     } else {
         dtkWarn() << Q_FUNC_INFO << "cannot convert variant to list"
         << v.metaType().name() << v;

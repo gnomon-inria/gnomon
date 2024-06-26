@@ -220919,6 +220919,7 @@ function receive(name, value) {
     let model = editor.getModel()
     switch (name) {
     case "value":
+        let viewState = editor.saveViewState();
         model.setValue(data);
         monaco_editor_esm_vs_editor_editor_api_js__WEBPACK_IMPORTED_MODULE_11__.editor.removeAllMarkers("owner");
 
@@ -220928,7 +220929,17 @@ function receive(name, value) {
         if(match) {
             editor.setSelection({startLineNumber: match.range.startLineNumber, startColumn: 0,
                                  endLineNumber: model.getLineCount() , endColumn: 2});
-            editor.trigger('fold', 'editor.createFoldingRangeFromSelection');
+            editor.getAction('editor.createFoldingRangeFromSelection').run().then(() => {
+                let newViewState = editor.saveViewState()
+                newViewState.viewState = viewState.viewState
+                newViewState.cursorState = viewState.cursorState
+                editor.restoreViewState(newViewState);
+            });
+        } else {
+            let newViewState = editor.saveViewState()
+            newViewState.viewState = viewState.viewState
+            newViewState.cursorState = viewState.cursorState
+            editor.restoreViewState(newViewState);
         }
         break;
     case "language":
