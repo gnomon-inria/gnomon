@@ -12,6 +12,11 @@ G.Dialog {
     id: _self
 
     property var parameters
+    property var d
+
+    onParametersChanged: {
+        _parameter_list.model = _group_list.currentIndex != -1 ? _self.parameters.get(_group_list.currentIndex).parameters : undefined
+    }
 
     parent: Overlay.overlay
 
@@ -41,6 +46,7 @@ G.Dialog {
         anchors.bottom: parent.bottom;
         anchors.left: parent.left;
         anchors.margins: 0;
+        anchors.leftMargin: G.Style.smallPadding
 
         Label {
             id: _group_title;
@@ -73,7 +79,7 @@ G.Dialog {
             currentIndex: -1
 
             onCurrentIndexChanged: {
-                _parameter_list.model = currentIndex != -1 ? model.get(currentIndex).parameters : undefined
+                _parameter_list.model = currentIndex != -1 ? _self.parameters.get(currentIndex).parameters : undefined
             }
 
             delegate: G.ListItemDelegate {
@@ -109,13 +115,18 @@ G.Dialog {
                     }
 
                     onDropped: (drop) => {
-                        console.log(drop)
-
                         let source_index = _group_list.currentIndex
                         let source_group = _group_list.model.get(source_index).group
+
                         if (source_group != group) {
                             let param = drag.source.param
+
                             console.log("Move parameter", param.label, "from group", source_group, "to group", group)
+
+                            param.group = group
+                            _self.d.updateParametersModel(false);
+
+                            drop.accept()
                         }
                     }
                 }

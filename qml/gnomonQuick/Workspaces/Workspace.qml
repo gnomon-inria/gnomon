@@ -137,8 +137,10 @@ G.Page {
         }
     }
 
-    function updateParametersModel() {
-        _params.parameters = d.parameters;
+    function updateParametersModel(from_workspace=true) {
+        if (from_workspace) {
+            _params.parameters = d.parameters;
+        }
         _params.updateParametersModel();
     }
 

@@ -81,6 +81,10 @@ G.Workspace {
             _self.editor.contents = d.text
             _self.editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
         }
+
+        function updateParametersModel(from_workspace=true) {
+            _self.updateParametersModel(from_workspace);
+        }
     }
 
     property string _path: d.defaultReadPath()

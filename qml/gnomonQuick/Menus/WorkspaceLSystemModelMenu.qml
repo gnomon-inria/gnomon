@@ -329,5 +329,6 @@ Item {
         id: _parameter_edit_dialog
 
         parameters: _menu.parameters
+        d: _menu.d
     }
 }
