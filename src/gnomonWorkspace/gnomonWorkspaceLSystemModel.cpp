@@ -294,7 +294,6 @@ void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
 void gnomonWorkspaceLSystemModel::updateFromCurrentFile() {
     QFile file(d->model_file->fileName());
     if(file.open(QIODevice::ReadOnly)) {
-        qDebug() << "coucou " << file.fileName();
         QTextStream in(&file);
         QString new_text(in.readAll());
         file.close();

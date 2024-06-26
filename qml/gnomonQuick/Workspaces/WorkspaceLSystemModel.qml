@@ -141,6 +141,7 @@ G.Workspace {
                 onIdeIsReady : () => {
                     //d.restore();
                     d.codeEditorReady()
+                    contents = d.text
                 }
 
                 onMakeFileEditable: () => {
