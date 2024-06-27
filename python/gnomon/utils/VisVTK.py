@@ -517,7 +517,8 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
                 self.vis.selected_point = ctr_pt_id
                 new_point_position = [self.vis.control_points[ctr_pt_id][i] + delta[i] for i in range(3)]
                 self.vis.control_points[ctr_pt_id] = new_point_position
-                self.vis.update()
+                print(f"***new_point_position***{new_point_position} ::: ctr_pt_id {ctr_pt_id}")
+                self.vis.update(True)
                 obj.GetDefaultRenderer().Render()
                 self.last_pick_position = new_pick_position
                 
@@ -544,9 +545,10 @@ class VisSurface(vis.VisAbstract):
         self.render_window = None
         self.interactor_style = None
     
-    def update(self):
+    def update(self, from_python=False):
         self.clear_actors()
-        self.surface.ctrlpts = self.control_points.tolist()
+        if from_python:
+            self.surface.ctrlpts = self.control_points.tolist()
         self.surface.render()
         self.render()
         renderer = self.render_window.GetRenderers().GetFirstRenderer()
@@ -576,6 +578,7 @@ class VisSurface(vis.VisAbstract):
                 faces = [q.data for q in plot['ptsarr'][1]]
                 # Points as spheres
                 pts = np.array(vertices, dtype=np.float)
+                print(f"#####{pts}")
                 self.control_points = pts
                 vtkpts = numpy_to_vtk(pts, deep=False, array_type=VTK_FLOAT)
                 vtkpts.SetName(plot['name'])

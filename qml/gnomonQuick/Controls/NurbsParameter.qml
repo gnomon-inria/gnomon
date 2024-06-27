@@ -237,6 +237,7 @@ Control {
                         _nurbs_config_dialog.close()
                         if(_control._is_curve)
                             _view.parent = _control
+                        param.updateControlPointsFromPython()
                     }
                 }
 
@@ -250,6 +251,7 @@ Control {
                         _nurbs_config_dialog.close()
                         if(_control._is_curve)
                             _view.parent = _control
+                        param.updateControlPointsInPython()
                     }
                 }
             }

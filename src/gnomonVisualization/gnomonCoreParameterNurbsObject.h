@@ -33,6 +33,7 @@ public:
 
 public:
     Q_INVOKABLE void updateControlPointsFromPython(void);
+    Q_INVOKABLE void updateControlPointsInPython(void);
     Q_INVOKABLE void buildNurbsPatch(void);
 
 public:

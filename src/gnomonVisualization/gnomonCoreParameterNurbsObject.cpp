@@ -350,6 +350,47 @@ double gnomonCoreParameterNurbsObject::delta(void)
     return m_param->delta();
 }
 
+void gnomonCoreParameterNurbsObject::updateControlPointsInPython(void)
+{
+    // This update concern nurbs patch control points
+    if(!d->pSurface)
+        return;
+    PyGILState_STATE gstate;
+    gstate = PyGILState_Ensure();
+    PyObject *p_ctrlpts = PyList_New(int(m_param->controlPoints().size()));
+    int i=0;
+    for(auto point: m_param->controlPoints()) {
+        PyObject *p_point = PyList_New(3);
+        PyList_SetItem(p_point, 0, PyFloat_FromDouble(point[0]));
+        PyList_SetItem(p_point, 1, PyFloat_FromDouble(point[1]));
+        PyList_SetItem(p_point, 2, PyFloat_FromDouble(point[2]));
+        PyList_SetItem(p_ctrlpts, i++, p_point);
+    }
+    if(!p_ctrlpts) {
+        dtkWarn() << Q_FUNC_INFO << "Error Updating ControlPoint list!";
+        Py_XDECREF(p_ctrlpts);
+        return;
+    }
+
+    PyObject_SetAttrString(d->pSurface, "ctrlpts", p_ctrlpts);
+
+    Py_DECREF(p_ctrlpts);
+
+    auto render_window = d->nurbsView->renderWindow();
+    PyObject *pRenderWindow = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window));
+    qDebug() << Q_FUNC_INFO << "update";
+    if (!pRenderWindow) {
+        dtkWarn() << "Could not convert render window from C++";
+    } else {
+        PyObject* pFunc = PyObject_GetAttrString(d->pVisSurface, "update");
+        PyObject_CallNoArgs(pFunc);
+        Py_DECREF(pFunc);
+    }
+    Py_DECREF(pRenderWindow);
+    
+    PyGILState_Release(gstate);
+}
+
 void gnomonCoreParameterNurbsObject::updateControlPointsFromPython(void)
 {
     //get theupdated list of control points
