@@ -294,9 +294,14 @@ G.Dialog {
 
                 onClicked: {
                     console.log("New parameter")
+                    _new_parameter_dialog.open()
                 }
             }
         }
+    }
+
+    G.ParameterCreationDialog {
+        id: _new_parameter_dialog
     }
 
     G.ParameterConfigurationPanel {

@@ -54,6 +54,7 @@ QML_FILES
   Page.qml
   Panel.qml
   ParameterConfigurationPanel.qml
+  ParameterCreationDialog.qml
   ParameterEditDialog.qml
   ParameterGroup.qml
   Parameters.qml
