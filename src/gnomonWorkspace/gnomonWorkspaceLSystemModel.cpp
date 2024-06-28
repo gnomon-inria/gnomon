@@ -579,6 +579,14 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
     return parameters;
 }
 
+void gnomonWorkspaceLSystemModel::addParameter(const QString& parameterName, const QString& parameterType) {
+    d->command->addParameter(parameterName, parameterName);
+}
+
+void gnomonWorkspaceLSystemModel::removeParameter(const QString& parameterName) {
+    d->command->removeParameter(parameterName);
+}
+
 QStringList gnomonWorkspaceLSystemModel::missingTextures(void) const
 {
     return d->missing_textures;

@@ -30,6 +30,8 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
+    virtual void addParameter(const QString& parameterName, const QString& parameterType) { };
+    virtual void removeParameter(const QString& parameterName) { };
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
 

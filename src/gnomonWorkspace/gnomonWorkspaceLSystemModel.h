@@ -106,6 +106,8 @@ public:
     gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
+    void addParameter(const QString& parameterName, const QString& parameterType);
+    void removeParameter(const QString& name);
 
     QJsonObject serialize() override;
     void deserialize(const QJsonObject &state) override;
