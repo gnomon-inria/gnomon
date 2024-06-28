@@ -156,6 +156,10 @@ G.Workspace {
                         }
                     }
                 }
+
+                onFileClosed : (name) => {
+                    d.close(name)
+                }
             }
         }
 
