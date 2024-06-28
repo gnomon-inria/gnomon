@@ -21,6 +21,7 @@
 }
 
 struct gnomonAbstractCommandTraits {
+    virtual ~gnomonAbstractCommandTraits() = default;
     bool isEmpty() {
         return availablePlugins().empty();
     };
@@ -29,7 +30,8 @@ struct gnomonAbstractCommandTraits {
 
 template <typename T>
 struct GNOMONCORE_EXPORT gnomonAbstractCommandTraitsBase : public gnomonAbstractCommandTraits
-{    
+{
+    virtual ~gnomonAbstractCommandTraitsBase() = default;
     QStringList availablePlugins() override {
         return availablePluginsFromGroup(T::groupName);
     }

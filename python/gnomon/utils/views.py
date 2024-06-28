@@ -30,6 +30,9 @@ class gnomonStandaloneVtkView(gnomonVtkView):
     def show(self):
         self._render_window_interactor.Start()
 
+    def empty(self):
+        return False
+
 
 class gnomonStandaloneMplView(gnomonMplView):
     """
@@ -63,3 +66,6 @@ class gnomonStandaloneMplView(gnomonMplView):
 
     def show(self):
         self._figure.show()
+
+    def empty(self):
+        return False
