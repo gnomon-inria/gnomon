@@ -73,6 +73,7 @@ gnomonCoreParameterNurbs::~gnomonCoreParameterNurbs(void)
 gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const ctrls_type& ctrl_points)
 {
     this->m_ctrl_points = ctrl_points;
+    this->sync();
     return *this;
 }
 
@@ -109,6 +110,7 @@ gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const gnomonCore
         m_is_function = o.m_is_function;
         m_nurbs_type = o.m_nurbs_type;
         m_ctrl_points_size = o.m_ctrl_points_size;
+        this->sync();
     }
 
     return *this;
@@ -116,12 +118,15 @@ gnomonCoreParameterNurbs& gnomonCoreParameterNurbs::operator = (const gnomonCore
 
 void gnomonCoreParameterNurbs::setControlPoints(const ctrls_type& ctrl_points)
 {
-    m_ctrl_points = ctrl_points;
-    if(m_degree >= m_ctrl_points.size() ) {
-        dtkWarn() << "degree " << m_degree << " is too big setting it to " << m_ctrl_points.size() - 1;
-        this->setDegree(m_ctrl_points.size() -1);
+    if(m_ctrl_points!=ctrl_points) {
+        m_ctrl_points = ctrl_points;
+        if(m_degree >= m_ctrl_points.size() ) {
+            dtkWarn() << "degree " << m_degree << " is too big setting it to " << m_ctrl_points.size() - 1;
+            this->setDegree(m_ctrl_points.size() -1);
+        }
+        m_object->notifyControlPointsChanged();
+        this->sync();
     }
-    m_object->notifyControlPointsChanged();
 }
 
 gnomonCoreParameterNurbs::ctrls_type gnomonCoreParameterNurbs::controlPoints(void) const
@@ -194,8 +199,8 @@ void gnomonCoreParameterNurbs::setValue(const QVariant &v)
                 vv[i] = l_point[i].toDouble();
             }
             m_ctrl_points.append(vv);
-
         }
+        this->sync();
     } else {
         dtkWarn() << Q_FUNC_INFO << "cannot convert variant to list"
         << v.metaType().name() << v;

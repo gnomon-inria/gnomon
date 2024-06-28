@@ -58,7 +58,7 @@ Item {
                 extension_ok = extension_ok | relative_path.endsWith(".lpy")
             }
             if (extension_ok) {
-                _self._read_only = false
+                _self._read_only = GP.ProjectManager.project.isReadOnly(relative_path)
                 open_source_file(relative_path)
             } else {
                 _wrong_extension_toast.open()
@@ -133,8 +133,10 @@ Item {
         nameFilters: _self.mode == "L-Py" ? ["L-Py source files (*.lpy *.py)"] : ["Python source files (*.py)"]
 
         onAccepted: {
-            _self._read_only = true
-            _read_only_toast.open()
+            _self._read_only = GP.ProjectManager.project.isReadOnly(_file_dialog.file)
+            if(_self._read_only) {
+                _read_only_toast.open()
+            }
             open_source_file(_file_dialog.file)
         }
     }
