@@ -742,7 +742,6 @@ void gnomonWorkspaceLSystemModel::restore()
 }
 
 bool gnomonWorkspaceLSystemModel::readOnly() {
-    qDebug()<<Q_FUNC_INFO<<d->open_files[d->file]<<d->lpy_dir->path();
     if (d->open_files[d->file].contains(d->lpy_dir->path())) {
         return d->file != "vonKoch.lpy";
     } else {

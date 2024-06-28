@@ -134,8 +134,6 @@ G.Workspace {
                     if(name.endsWith("py"))
                         d.fileName = name
                     let file_path = GP.ProjectManager.project.findFile(d.fileName)
-                    //_editor.readOnly = GP.ProjectManager.project.isReadOnly(file_path) && (!d.fileName.includes("vonKoch.lpy"))
-
                 }
 
                 onIdeIsReady : () => {
