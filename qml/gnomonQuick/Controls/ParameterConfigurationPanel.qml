@@ -48,6 +48,38 @@ Control {
     }
 
     Label {
+        id: _type_label
+
+        anchors.left: _self.left
+        anchors.top:  _type.top
+        anchors.margins: G.Style.smallPadding
+
+        width: G.Style.shortButtonWidth
+
+        text: "TYPE"
+        font: G.Style.fonts.label
+        color: G.Style.colors.textColorBase
+        horizontalAlignment: Text.AlignRight
+    }
+
+    Label {
+        id: _type
+
+        anchors.left: _type_label.right
+        anchors.top: _name_edit.bottom
+        anchors.margins: G.Style.smallPadding
+
+        width: _self.width/2
+        height: G.Style.smallLabelHeight
+
+        text : _self.param ? _parameter_types.get(findIndex(_parameter_types, "type", _self.param.type)).name : ""
+        font: G.Style.fonts.value
+        color: G.Style.colors.textColorBase
+        horizontalAlignment: Text.AlignLeft
+        verticalAlignment: Text.AlignVCenter
+    }
+
+    Label {
         id: _doc_label
 
         anchors.left: _self.left
@@ -67,7 +99,7 @@ Control {
 
         anchors.left: _doc_label.right
         anchors.right: _self.right
-        anchors.top: _name_edit.bottom
+        anchors.top: _type.bottom
         anchors.margins: G.Style.smallPadding
 
         height: G.Style.largeLabelHeight
@@ -75,37 +107,6 @@ Control {
         text: _self.param ? _self.param.doc : ""
         color: G.Style.colors.hoveredBaseColor
         font: G.Style.fonts.value
-    }
-
-    Label {
-        id: _type_label
-
-        anchors.left: _self.left
-        anchors.top:  _type_combobox.top
-        anchors.margins: G.Style.smallPadding
-
-        width: G.Style.shortButtonWidth
-
-        text: "TYPE"
-        font: G.Style.fonts.label
-        color: G.Style.colors.textColorBase
-        horizontalAlignment: Text.AlignRight
-    }
-
-    G.ComboBox {
-        id: _type_combobox
-
-        anchors.left: _type_label.right
-        anchors.top: _doc_edit.bottom
-        anchors.margins: G.Style.smallPadding
-
-        width: _self.width/2
-        height: G.Style.mediumLabelHeight
-
-        model: _parameter_types
-        textRole: "name"
-
-        currentIndex: _self.param ? findIndex(model, "type", _self.param.type) : -1
     }
 
     Label {
@@ -128,7 +129,7 @@ Control {
 
         anchors.left: _args_label.right
         anchors.right: _self.right
-        anchors.top:  _type_combobox.bottom
+        anchors.top:  _doc_edit.bottom
         anchors.bottom: _preview_panel.top
         anchors.margins: G.Style.smallPadding
     }

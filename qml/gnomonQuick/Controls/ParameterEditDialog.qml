@@ -86,7 +86,7 @@ G.Dialog {
 
                 highlighted: _group_list.currentIndex == index
 
-                text: getTitleString(group);
+                text: group
                 font: G.Style.fonts.cardLabel
 
                 onClicked: {
@@ -219,6 +219,10 @@ G.Dialog {
                     _parameter_config_panel.param = currentIndex != -1 ? model.get(currentIndex).param : undefined
                 }
 
+                onVisibleChanged: {
+                    currentIndex = -1
+                }
+
                 delegate: G.ListItemDelegate {
                     id: _parameter_delegate
 
@@ -230,7 +234,7 @@ G.Dialog {
                     required property var param;
                     required property int index;
 
-                    text: getTitleString(param.label);
+                    text: param.label;
 
                     Drag.active: _parameter_drag.active
                     Drag.hotSpot.x: width / 2
@@ -247,7 +251,7 @@ G.Dialog {
 
                         onActiveChanged : {
                             if(active) {
-                                _parameter_delegate.Drag.mimeData = {"text/plain" : getTitleString(param.label)};
+                                _parameter_delegate.Drag.mimeData = {"text/plain" : param.label};
                                 parent.grabToImage(function(result) {
                                     _parameter_delegate.Drag.imageSource = result.url;
                                 })
@@ -306,11 +310,6 @@ G.Dialog {
 
         param: undefined
 
-        visible: _parameter_list.currentIndex != -1
+        visible: param != undefined
     }
-
-    function getTitleString(group : string) : string {
-        return (group.charAt(0).toUpperCase() + group.slice(1)).replace('_', ' ')
-    }
-
 }
