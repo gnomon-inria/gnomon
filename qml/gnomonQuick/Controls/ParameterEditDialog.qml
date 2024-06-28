@@ -14,10 +14,6 @@ G.Dialog {
     property var parameters
     property var d
 
-    onParametersChanged: {
-        _parameter_list.model = _group_list.currentIndex != -1 ? _self.parameters.get(_group_list.currentIndex).parameters : undefined
-    }
-
     parent: Overlay.overlay
 
     x: Math.round((window.width - width) / 2)
@@ -77,10 +73,6 @@ G.Dialog {
             clip: true
             focus: true;
             currentIndex: -1
-
-            onCurrentIndexChanged: {
-                _parameter_list.model = currentIndex != -1 ? _self.parameters.get(currentIndex).parameters : undefined
-            }
 
             delegate: G.ListItemDelegate {
                 id: _group_delegate
@@ -194,7 +186,7 @@ G.Dialog {
         }
 
         ListView {
-            id: _parameter_list
+            id: _all_parameter_list
 
             anchors.top: _parameter_title.bottom
             anchors.bottom: _new_parameter_delegate.top
@@ -203,55 +195,73 @@ G.Dialog {
 
             clip: true;
             focus: true;
-            currentIndex: -1
             interactive: false
 
-            onCurrentIndexChanged: {
-                _parameter_config_panel.param = currentIndex != -1 ? model.get(currentIndex).param : undefined
-            }
+            model: _self.parameters
 
-            delegate: G.ListItemDelegate {
-                id: _parameter_delegate
+            delegate: ListView {
+                id: _parameter_list
 
-                height: G.Style.largeButtonHeight
-                width: _parameter_list.width
+                height: visible? _all_parameter_list.height : 0
+                width: _all_parameter_list.width
 
-                highlighted: _parameter_list.currentIndex == index
+                required property var parameters;
+                required property string group;
+                required property int index
 
-                required property var param;
-                required property int index;
+                visible: _group_list.currentIndex == index
+                interactive: false
+                currentIndex: -1
 
-                text: getTitleString(param.label);
-                        
-                Drag.active: _parameter_drag.active
-                Drag.hotSpot.x: width / 2
-                Drag.hotSpot.y: height / 2
-                Drag.dragType: Drag.Automatic
+                model: parameters
 
-                DragHandler {
-                    id: _parameter_drag
+                onCurrentIndexChanged: {
+                    _parameter_config_panel.param = currentIndex != -1 ? model.get(currentIndex).param : undefined
+                }
 
-                    xAxis.minimum: _parameter_delegate.x
-                    xAxis.maximum: _parameter_delegate.x
-                    yAxis.minimum: _parameter_delegate.y
-                    yAxis.maximum: _parameter_delegate.y
+                delegate: G.ListItemDelegate {
+                    id: _parameter_delegate
 
-                    onActiveChanged : {
-                        if(active) {
-                            _parameter_delegate.Drag.mimeData = {"text/plain" : getTitleString(param.label)};
-                            parent.grabToImage(function(result) {
-                                _parameter_delegate.Drag.imageSource = result.url;
-                            })
+                    height: G.Style.largeButtonHeight
+                    width: _parameter_list.width
+
+                    highlighted: _parameter_list.currentIndex == index
+
+                    required property var param;
+                    required property int index;
+
+                    text: getTitleString(param.label);
+
+                    Drag.active: _parameter_drag.active
+                    Drag.hotSpot.x: width / 2
+                    Drag.hotSpot.y: height / 2
+                    Drag.dragType: Drag.Automatic
+
+                    DragHandler {
+                        id: _parameter_drag
+
+                        xAxis.minimum: _parameter_delegate.x
+                        xAxis.maximum: _parameter_delegate.x
+                        yAxis.minimum: _parameter_delegate.y
+                        yAxis.maximum: _parameter_delegate.y
+
+                        onActiveChanged : {
+                            if(active) {
+                                _parameter_delegate.Drag.mimeData = {"text/plain" : getTitleString(param.label)};
+                                parent.grabToImage(function(result) {
+                                    _parameter_delegate.Drag.imageSource = result.url;
+                                })
+                            }
                         }
+                    }
+
+                    onClicked: {
+                        _parameter_list.currentIndex = index
                     }
                 }
 
-                onClicked: {
-                    _parameter_list.currentIndex = index
-                }
+                ScrollBar.vertical: ScrollBar { visible: _parameter_list.contentHeight > _parameter_list.height; }
             }
-
-            ScrollBar.vertical: ScrollBar { visible: _parameter_list.contentHeight > _parameter_list.height; }
         }
 
         G.ListItemDelegate {

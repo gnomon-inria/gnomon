@@ -102,6 +102,7 @@ conda_build_linux:
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh"
     - conda activate base
+    - rm -rf conda-bld
     - mkdir conda-bld
     - conda mambabuild -c gnomon -c dtk-forge6 -c conda-forge conda/ --output-folder conda-bld/
   extends: .template_retry
@@ -119,6 +120,7 @@ conda_build_macos:
   script:
     - source /Users/ci/miniconda3/etc/profile.d/conda.sh
     - conda activate base
+    - rm -rf conda-bld
     - mkdir conda-bld
     - conda mambabuild -c gnomon -c dtk-forge6 -c conda-forge conda/ --output-folder conda-bld/
   extends: .template_retry

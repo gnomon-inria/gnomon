@@ -35,6 +35,24 @@ public:
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
 
+    virtual void connectParameter(const QString& parameter_name) {
+        dtkCoreParameters params = this->parameters();
+        dtkCoreParameter *parameter = params.value(parameter_name, nullptr);
+        if (parameter) {
+            parameter->connect([=]() {
+                this->onParameterChanged(parameter_name);
+            });
+        }
+    }
+
+    virtual void onParameterChanged(const QString& parameter_name = "") {
+        qDebug()<<Q_FUNC_INFO<<"Not implemented";
+    }
+
+    virtual void refreshParameters(void) {
+        qDebug()<<Q_FUNC_INFO<<"Not implemented";
+    }
+
 public:
     void setLogServerAddress(QString addr) {};
 };

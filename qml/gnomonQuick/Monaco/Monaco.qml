@@ -13,6 +13,7 @@ Control {
     property var theme;
     property var language;
     property var contents;
+    property bool _suppressOnContentsChanged: false;
     property var markers
     property var fileName;
     property var tabName;
@@ -32,7 +33,7 @@ Control {
 
     onThemeChanged: if(self.connected) bridge.send('theme',    self.theme);
     onLanguageChanged: if(self.connected) bridge.send('language', self.language);
-    onContentsChanged: if(self.connected) bridge.send('value',    self.contents);
+    onContentsChanged: if(self.connected && !self._suppressOnContentsChanged) bridge.send('value',    self.contents);
     onMarkersChanged: if(self.connected) bridge.send('markers',  self.markers);
 
     onFileNameChanged: {
@@ -81,6 +82,9 @@ Control {
             case "language":
                 break;
             case "value":
+                self._suppressOnContentsChanged = true;
+                self.contents = eval(value)
+                self._suppressOnContentsChanged = false;
                 self.modified(value);
                 break;
             case "filename":
