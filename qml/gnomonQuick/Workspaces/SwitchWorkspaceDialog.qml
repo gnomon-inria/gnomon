@@ -220,7 +220,7 @@ G.Dialog {
 
         parent: Overlay.overlay
         header: "Switching to workspace " + _hibernating_toast.workspace_title
-        message: "The workspace was hibernating, please wait while its data is reloaded. This may take a few seconds."
+        message: "The workspace was hibernating, please wait while its data is reloaded. This may take a few seconds. (You may change the hibernation threshold in the ⚙ Settings)"
 
         type: G.Style.ButtonType.Base
     }
