@@ -30,7 +30,6 @@ G.CollapsiblePanel {
 
     width: _control.width - G.Style.sizes.s4
 
-
     spacing: G.Style.mediumColumnSpacing
 
     interactive: false
@@ -42,7 +41,7 @@ G.CollapsiblePanel {
       property var lparam: param
 
       height: _control.collapsed ? 0 :
-        implicitHeight ? implicitHeight : G.Style.controlHeight
+      implicitHeight ? implicitHeight : G.Style.controlHeight
       width: _parameters.width
 
       opacity: _control.collapsed ? 0 : 1

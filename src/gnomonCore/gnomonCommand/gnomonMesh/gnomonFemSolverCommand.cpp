@@ -49,7 +49,7 @@ void gnomonFemSolverCommand::predo(void)
     if (d->mesh) {
         d->mesh->load();
     }
-    ((gnomonAbstractFemSolver *) this->action)->setMesh(d->mesh);
+    ((gnomonAbstractFemSolver *) this->action)->setInputMesh(d->mesh);
 }
 
 void gnomonFemSolverCommand::postdo(void)
@@ -59,7 +59,7 @@ void gnomonFemSolverCommand::postdo(void)
 
 void gnomonFemSolverCommand::undo()
 {
-    ((gnomonAbstractFemSolver *) this->action)->setMesh(nullptr);
+    ((gnomonAbstractFemSolver *) this->action)->setInputMesh(nullptr);
 }
 
 void gnomonFemSolverCommand::setMesh(std::shared_ptr<gnomonMeshSeries> mesh)

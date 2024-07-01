@@ -8,6 +8,7 @@
 
 %init %{
 import_array();
+gnomonForm::registerForms();
 %}
 
 %include "std_array.i"
@@ -634,7 +635,7 @@ PyObject *FromFormSeries(std::shared_ptr<gnomonAbstractDynamicForm> series) {
 %define WRAP_GNOMONCORE_FORM_SERIES(form_name)
     %typemap(in) std::shared_ptr<gnomon## form_name## Series> {
         if (PyDict_Check($input)) {
-            $1 = std::dynamic_pointer_cast<gnomon## form_name## Series>(ToFormSeries($input, #form_name));
+            $1 = std::dynamic_pointer_cast<gnomon## form_name## Series>(ToFormSeries($input, "gnomon" #form_name));
         } else {
             qDebug("typemap in PyDict is expected as input. Empty gnomon## form_name## Series is returned.");
             $1 = std::make_shared<gnomon## form_name## Series>();
@@ -644,7 +645,7 @@ PyObject *FromFormSeries(std::shared_ptr<gnomonAbstractDynamicForm> series) {
     %typemap(directorout) std::shared_ptr<gnomon## form_name## Series> {
         PyObject *dict = static_cast<PyObject *>($1);
         if (PyDict_Check(dict)) {
-            $result = std::dynamic_pointer_cast<gnomon## form_name## Series>(ToFormSeries(dict, #form_name));
+            $result = std::dynamic_pointer_cast<gnomon## form_name## Series>(ToFormSeries(dict, "gnomon" #form_name));
         } else {
             qDebug("typemap dirout PyDict is expected as input. Empty gnomon## form_name## Series is returned.");
             $result = std::make_shared<gnomon## form_name## Series>();

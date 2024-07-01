@@ -93,6 +93,7 @@ QML_FILES
   TreeView.qml
   utils.js
   View.qml
+  ViewNurbs.qml
   ViewParameters.qml
   World.qml
   WorldDelegate.qml

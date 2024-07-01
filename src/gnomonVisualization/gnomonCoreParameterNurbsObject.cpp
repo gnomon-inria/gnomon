@@ -1,28 +1,46 @@
 #include "gnomonCoreParameterNurbsObject.h"
 
+#include <math.h>
+
 #include <QtCore>
+#include <vtkActor.h>
+#include <vtkRenderWindow.h>
 
 #pragma push_macro("slots")
 #undef slots
 #include <Python.h>
+#include <vtkPythonUtil.h>
 #pragma pop_macro("slots")
 
+// /////////////////////////////////////////////////////////////////////////////
+// gnomonCoreParameterNurbsObjectPrivate
+// /////////////////////////////////////////////////////////////////////////////
 class gnomonCoreParameterNurbsObjectPrivate {
 public:
     gnomonCoreParameterNurbsObjectPrivate() = default;
-    ~gnomonCoreParameterNurbsObjectPrivate() = default;
+    ~gnomonCoreParameterNurbsObjectPrivate(void);
 
     void initPCurve(gnomonCoreParameterNurbs *param);
     void initPVisCurve(int dimension, bool is_function);
+    void initPSurface(gnomonCoreParameterNurbs *param);
+    void initPVisSurface(void);
 
 public:
     int figureNumber=-1;
     double z_buffer = 0.;
+    gnomonNurbsView* nurbsView = nullptr;
 
     PyObject* pCurve = nullptr;
     PyObject* pVisCurve = nullptr;
+    PyObject* pSurface = nullptr;
+    PyObject* pVisSurface = nullptr;
 };
 
+gnomonCoreParameterNurbsObjectPrivate::~gnomonCoreParameterNurbsObjectPrivate(void)
+{
+    if(this->nurbsView)
+        delete nurbsView;
+}
 void gnomonCoreParameterNurbsObjectPrivate::initPCurve(gnomonCoreParameterNurbs *param)
 {
     if(!this->pCurve) {
@@ -81,7 +99,7 @@ void gnomonCoreParameterNurbsObjectPrivate::initPCurve(gnomonCoreParameterNurbs 
         PyObject* args = Py_BuildValue("(i, i)", param->degree(), int(param->controlPoints().size()));
         PyObject* pknotvector = PyObject_CallObject(pFunc_knot, args);
         if(!pknotvector) {
-            dtkWarn() << " pknotvector error with args " << param->degree(), int(param->controlPoints().size());
+            dtkWarn() << " pknotvector error with args " << param->degree() << int(param->controlPoints().size());
         } else {
             PyObject_SetAttrString(this->pCurve, "knotvector", pknotvector);
         }
@@ -137,9 +155,151 @@ void gnomonCoreParameterNurbsObjectPrivate::initPVisCurve(int dimension, bool is
 
 }
 
+void gnomonCoreParameterNurbsObjectPrivate::initPSurface(gnomonCoreParameterNurbs *param) 
+{
+    if(!this->pSurface) {
+        PyGILState_STATE gstate;
+        gstate = PyGILState_Ensure();
+
+        PyObject* pName = PyUnicode_FromString("geomdl.BSpline");
+        PyObject* pModule_bspline = PyImport_Import(pName);
+        if(!pModule_bspline) {
+            dtkWarn() << Q_FUNC_INFO << "Error importing module geomdl.BSpline";
+            return;
+        }
+        Py_DECREF(pName);
+
+        PyObject* pName2 = PyUnicode_FromString("geomdl.utilities");
+        PyObject* pModule_utilities = PyImport_Import(pName2);
+        if(!pModule_utilities) {
+            qWarning() << Q_FUNC_INFO << "Error importing module geomdl.utilities";
+            return;
+        }
+        Py_DECREF(pName2);
+
+        // 1 create surface
+        PyObject* pFunc = PyObject_GetAttrString(pModule_bspline, "Surface");
+        this->pSurface = PyObject_CallNoArgs(pFunc);
+        Py_DECREF(pFunc);
+
+        //2 set surface params
+        //2.1 degree
+        int degree = 3;
+        PyObject *p_deg_u = PyLong_FromLong(degree);
+        PyObject *p_deg_v = PyLong_FromLong(degree);
+        PyObject_SetAttrString(this->pSurface, "degree_u", p_deg_u);
+        PyObject_SetAttrString(this->pSurface, "degree_v", p_deg_v);
+        Py_DECREF(p_deg_u);
+        Py_DECREF(p_deg_v);
+
+        //2.2 ctrlpoints
+        if(param->controlPoints().size() > param->degree()) {
+            PyObject *p_ctrlpts = PyList_New(int(param->controlPoints().size()));
+            int i=0;
+            for(auto point: param->controlPoints()) {
+                PyObject *p_point = PyList_New(3);
+                PyList_SetItem(p_point, 0, PyFloat_FromDouble(point[0]));
+                PyList_SetItem(p_point, 1, PyFloat_FromDouble(point[1]));
+                PyList_SetItem(p_point, 2, PyFloat_FromDouble(point[2]));
+                PyList_SetItem(p_ctrlpts, i++, p_point);
+                // Py_DECREF(p_point);
+            }
+            if(!p_ctrlpts) {
+                dtkWarn() << Q_FUNC_INFO << "Error Building ControlPoint list!";
+                Py_XDECREF(p_ctrlpts);
+                return;
+            }
+
+            PyObject_SetAttrString(this->pSurface, "ctrlpts_size_u", PyLong_FromLong(param->cpsize()[0]));
+            PyObject_SetAttrString(this->pSurface, "ctrlpts_size_v", PyLong_FromLong(param->cpsize()[1]));
+            PyObject_SetAttrString(this->pSurface, "ctrlpts", p_ctrlpts);
+
+            Py_DECREF(p_ctrlpts);
+        }
+
+        //2.3 update knotvector
+
+        PyObject* pFunc_knot_u = PyObject_GetAttrString(pModule_utilities, "generate_knot_vector");
+        PyObject* args_u = Py_BuildValue("(i, i)", degree, int(param->cpsize()[0]));
+        PyObject* pknotvector_u = PyObject_CallObject(pFunc_knot_u, args_u);
+        if(!pknotvector_u) {
+            dtkWarn() << " pknotvector_u error with args " << degree << int(param->cpsize()[0]);
+            return;
+        } else {
+            PyObject_SetAttrString(this->pSurface, "knotvector_u", pknotvector_u);
+        }
+        Py_DECREF(pknotvector_u);
+        Py_XDECREF(args_u);
+        Py_XDECREF(pFunc_knot_u);
+
+        PyObject* pFunc_knot_v = PyObject_GetAttrString(pModule_utilities, "generate_knot_vector");
+        PyObject* args_v = Py_BuildValue("(i, i)", degree, int(param->cpsize()[1]));
+        PyObject* pknotvector_v = PyObject_CallObject(pFunc_knot_v, args_v);
+        if(!pknotvector_v) {
+            dtkWarn() << " pknotvector_u error with args " << degree << int(param->cpsize()[1]);
+            return;
+        } else {
+            PyObject_SetAttrString(this->pSurface, "knotvector_v", pknotvector_v);
+        }
+        Py_DECREF(pknotvector_v);
+        Py_XDECREF(args_v);
+        Py_XDECREF(pFunc_knot_v);
+        Py_DECREF(pModule_utilities);
+
+        //2.4 delta
+        PyObject* p_delta = PyFloat_FromDouble(std::sqrt(param->delta())/2); // 3D can not handle 0.01 delta
+        PyObject_SetAttrString(this->pSurface, "delta", p_delta);
+        Py_DECREF(p_delta);
+
+        PyGILState_Release(gstate);
+    }
+}
+
+void gnomonCoreParameterNurbsObjectPrivate::initPVisSurface(void)
+{
+    if(!this->pVisSurface) {
+        PyGILState_STATE gstate;
+        gstate = PyGILState_Ensure();
+
+        //3 set surface visu
+        PyObject* pName3 = PyUnicode_FromString("gnomon.utils.VisVTK");
+        PyObject* pModule_vis = PyImport_Import(pName3);
+        if(!pModule_vis) {
+            dtkWarn() << Q_FUNC_INFO << "Error importing module gnomon.utils.VisVTK";
+            return;
+        }
+        Py_DECREF(pName3);
+
+        PyObject* pFunc2 = PyObject_GetAttrString(pModule_vis, "VisSurface");
+        PyObject* args = Py_BuildValue("(O)", this->pSurface);
+        this->pVisSurface = PyObject_CallObject(pFunc2, args);
+        if(!this->pVisSurface) {
+            dtkWarn() << "Error making VisSurface, no NURBS visu";
+        } else {
+            PyObject_SetAttrString(this->pSurface, "vis", this->pVisSurface);
+        }
+
+        PyObject* pRenderFunc = PyObject_GetAttrString(this->pSurface, "render");
+        PyObject* result = PyObject_CallNoArgs(pRenderFunc);
+
+        Py_DECREF(pFunc2);
+        Py_DECREF(pModule_vis);
+        Py_DECREF(pRenderFunc);
+
+        PyGILState_Release(gstate);
+    }
+}
+
+// /////////////////////////////////////////////////////////////////////////////
+// gnomonCoreParameterNurbsObject
+// /////////////////////////////////////////////////////////////////////////////
+
 gnomonCoreParameterNurbsObject::gnomonCoreParameterNurbsObject(gnomonCoreParameterNurbs *p) : dtkCoreParameterObject(p), m_param(p)
 {
     d = new gnomonCoreParameterNurbsObjectPrivate();
+    if(m_param->type() == gnomonCoreParameterNurbs::NURBS_TYPE::SURFACE) {
+        d->nurbsView = new gnomonNurbsView(this);
+    }
 }
 
 gnomonCoreParameterNurbsObject::~gnomonCoreParameterNurbsObject(void)
@@ -162,12 +322,17 @@ void gnomonCoreParameterNurbsObject::updateControlPointsFromPython(void)
 {
     //get theupdated list of control points
     // they may have changed with mouse interaction!
-    if(!d->pCurve)
+    if(!d->pCurve && !d->pSurface)
         return;
 
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure();
-    PyObject *p_ctrl_pts = PyObject_GetAttrString(d->pCurve, "_control_points");
+    PyObject *p_ctrl_pts;
+    if(d->pSurface) {
+        p_ctrl_pts = PyObject_GetAttrString(d->pSurface, "_control_points");
+    } else {
+        p_ctrl_pts = PyObject_GetAttrString(d->pCurve, "_control_points");
+    }
 
     gnomonCoreParameterNurbs::ctrls_type ctrl_points;
     if(PyList_Check(p_ctrl_pts) ) {
@@ -210,23 +375,57 @@ int gnomonCoreParameterNurbsObject::figureNumber(void)
     return d->figureNumber;
 }
 
+gnomonNurbsView* gnomonCoreParameterNurbsObject::nurbsView(void) 
+{
+    return d->nurbsView;
+}
+
+int gnomonCoreParameterNurbsObject::nurbsType(void) const
+{
+    return m_param->type();
+}
+
 void gnomonCoreParameterNurbsObject::setDegree(int degree)
 {
-    m_param->setDegree(degree);
-    if(!d->pCurve) {
-        d->initPCurve(m_param);
-    }
+    if(m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
 
-    if(d->pCurve) {
+        m_param->setDegree(degree);
+        if(!d->pSurface) {
+            d->initPSurface(m_param);
+        }
 
-        PyGILState_STATE gstate;
-        gstate = PyGILState_Ensure();
+        if(d->pSurface) {
 
-        PyObject *p_deg = PyLong_FromLong(m_param->degree());
-        PyObject_SetAttrString(d->pCurve, "degree", p_deg);
-        Py_DECREF(p_deg);
+            PyGILState_STATE gstate;
+            gstate = PyGILState_Ensure();
 
-        PyGILState_Release(gstate);
+            PyObject *p_deg_u = PyLong_FromLong(m_param->degree());
+            PyObject *p_deg_v = PyLong_FromLong(m_param->degree());
+            PyObject_SetAttrString(d->pSurface, "degree_u", p_deg_u);
+            PyObject_SetAttrString(d->pSurface, "degree_v", p_deg_v);
+            Py_DECREF(p_deg_u);
+            Py_DECREF(p_deg_v);
+
+            PyGILState_Release(gstate);
+        }
+    } else {
+        m_param->setDegree(degree);
+        if(!d->pCurve) {
+            d->initPCurve(m_param);
+        }
+
+        if(d->pCurve) {
+
+            PyGILState_STATE gstate;
+            gstate = PyGILState_Ensure();
+
+            PyObject *p_deg = PyLong_FromLong(m_param->degree());
+            PyObject_SetAttrString(d->pCurve, "degree", p_deg);
+            Py_DECREF(p_deg);
+
+            PyGILState_Release(gstate);
+        }
+
     }
 }
 
@@ -234,21 +433,31 @@ void gnomonCoreParameterNurbsObject::setDelta(double delta)
 {
     m_param->setDelta(delta);
 
-    if(!d->pCurve) {
-        d->initPCurve(m_param);
+    PyObject *obj = nullptr;
+    if(m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
+        if(!d->pSurface) {
+            d->initPSurface(m_param);
+        }
+        obj = d->pSurface;
+    } else {
+        if(!d->pCurve) {
+            d->initPCurve(m_param);
+        }
+        obj = d->pCurve;
     }
 
-    if(d->pCurve) {
+
+    if(obj) {
         PyGILState_STATE gstate;
         gstate = PyGILState_Ensure();
 
         PyObject *p_delta = PyFloat_FromDouble(m_param->delta());
-        PyObject_SetAttrString(d->pCurve, "delta", p_delta);
+        PyObject_SetAttrString(obj, "delta", p_delta);
         Py_DECREF(p_delta);
 
         PyGILState_Release(gstate);
     } else {
-        dtkWarn() << "Problem pCurve is not initialized";
+        dtkWarn() << "Problem pCurve/pSurface is not initialized";
     }
 }
 
@@ -317,7 +526,7 @@ void gnomonCoreParameterNurbsObject::notifyControlPointsChanged()
 void gnomonCoreParameterNurbsObject::setFigureNumber(int fig)
 {
     d->figureNumber = fig;
-
+   
     if(!d->pCurve) {
         d->initPCurve(m_param);
     }
@@ -343,5 +552,43 @@ void gnomonCoreParameterNurbsObject::setFigureNumber(int fig)
         PyGILState_Release(gstate);
     } else {
         dtkWarn() << "Problem pCurve or pVisCurve is not initialized";
+    }
+    
+}
+
+void gnomonCoreParameterNurbsObject::buildNurbsPatch(void)
+{
+    if(!d->pSurface) {
+        d->initPSurface(m_param);
+    }
+
+    if(!d->pVisSurface) {
+        d->initPVisSurface();
+    }
+
+    this->updateRenderWindow();
+}
+
+void gnomonCoreParameterNurbsObject::updateRenderWindow(void) {
+
+    if(m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
+        if (d->pVisSurface) {
+            PyGILState_STATE gstate;
+            gstate = PyGILState_Ensure();
+
+            auto render_window = d->nurbsView->renderWindow();
+            PyObject *pRenderWindow = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window));
+            qDebug() << Q_FUNC_INFO << "set_render_window";
+            if (!pRenderWindow) {
+                dtkWarn() << "Could not convert render window from C++";
+            } else {
+                PyObject_CallMethod(d->pVisSurface, "set_render_window", "(O)", pRenderWindow);
+            }
+            Py_DECREF(pRenderWindow);
+
+            PyGILState_Release(gstate);
+        } else {
+            dtkWarn() << "Problem pVisSurface is not initialized";
+        }
     }
 }

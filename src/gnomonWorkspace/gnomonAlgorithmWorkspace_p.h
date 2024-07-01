@@ -61,6 +61,8 @@ public:
     gnomonVtkViewList *targets = nullptr;
     gnomonVtkViewPool *pool = nullptr;
 
+    QList<QMetaObject::Connection> connect_target_view_exports;
+
     gnomonMplView *figure = nullptr;
     gnomonQmlView *text_view = nullptr;
     bool canBeDestroyed = true;

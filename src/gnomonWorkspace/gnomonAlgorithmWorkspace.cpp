@@ -81,12 +81,13 @@ gnomonAlgorithmWorkspace::gnomonAlgorithmWorkspace(QObject *parent) : gnomonAbst
 
     d->targets = new gnomonVtkViewList(this);
     connect(d->targets, &gnomonVtkViewList::viewAdded, [=] (gnomonVtkView *v) {
-        connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
+        auto connect_export = connect(v, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> f) {
             d->registerPipeline();
             d->pipeline_manager->addForm(f->uuid());
             this->m_can_be_destroyed = false;
             emit canBeDestroyedChanged(false);
         });
+        d->connect_target_view_exports.push_back(connect_export);
     });
 
     connect(d->sources, &gnomonVtkViewList::formsChanged, [=] ()
@@ -151,7 +152,7 @@ void gnomonAlgorithmWorkspace::setAlgoName(const QString& algorithm)
         this->setInputs();
         for(auto & param:d->command->parameters()) {
             param->connect([=] {
-               emit parametersChanged();
+                emit stateChanged();
             });
         }
         emit parametersChanged();

@@ -237,18 +237,18 @@ void gnomonLStringEvolutionModelCommand::setModelName(const QString& model_name)
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringEvolutionModelCommand::initialState()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > initial_state;
-    initial_state["axiom"] = this->axiom();
+    initial_state["initialState"] = this->axiom();
     return initial_state;
 }
 
 gnomonAbstractCommand::orderedMap gnomonLStringEvolutionModelCommand::initialStateTypes() {
     gnomonAbstractCommand::orderedMap types;
-    types.emplace_back(std::make_pair("axiom", "gnomonLString"));
+    types.emplace_back(std::make_pair("initialState", "gnomonLString"));
     return types;
 }
 
 void gnomonLStringEvolutionModelCommand::setInitialState(const QString& name, std::shared_ptr<gnomonAbstractDynamicForm> form) {
-    if (name == "axiom") {
+    if (name == "initialState" || name == "axiom") { // DEPRECATED: "axiom" is the old name
         this->setAxiom(std::dynamic_pointer_cast<gnomonLStringSeries>(form));
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown initial state "<< name;
@@ -258,13 +258,13 @@ void gnomonLStringEvolutionModelCommand::setInitialState(const QString& name, st
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonLStringEvolutionModelCommand::state()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > state;
-    state["lString"] = this->lString();
+    state["state"] = this->lString();
     return state;
 }
 
 gnomonAbstractCommand::orderedMap gnomonLStringEvolutionModelCommand::stateTypes() {
     gnomonAbstractCommand::orderedMap types;
-    types.emplace_back(std::make_pair("lString", "gnomonLString"));
+    types.emplace_back(std::make_pair("state", "gnomonLString"));
     return types;
 }
 

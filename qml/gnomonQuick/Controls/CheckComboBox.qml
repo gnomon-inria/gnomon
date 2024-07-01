@@ -39,6 +39,7 @@ ComboBox {
         ischecked = false
       }
       _control.displayText = values.toString()
+      _control.activated(index)
     }
   }
 

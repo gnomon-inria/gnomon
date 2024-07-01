@@ -45,7 +45,7 @@ void gnomonPointCloudQuantificationCommand::predo(void)
 
 void gnomonPointCloudQuantificationCommand::postdo(void)
 {
-    std::shared_ptr<gnomonPointCloudSeries> pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->pointCloud();
+    std::shared_ptr<gnomonPointCloudSeries> pointCloud = ((gnomonAbstractPointCloudQuantification *) this->action)->outputPointCloud();
 
     if ((!pointCloud)||pointCloud->times().empty()) {
         d->pointCloud = nullptr;
@@ -53,7 +53,7 @@ void gnomonPointCloudQuantificationCommand::postdo(void)
         d->pointCloud = pointCloud;
     }
 
-    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->dataFrame();
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractPointCloudQuantification *) this->action)->outputDataFrame();
 
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
@@ -138,8 +138,8 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudQuant
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonPointCloudQuantificationCommand::outputs()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
-    outputs["pointCloud"] = this->pointCloud();
-    outputs["dataFrame"] = this->dataFrame();
+    outputs["outputPointCloud"] = this->pointCloud();
+    outputs["outputDataFrame"] = this->dataFrame();
     return outputs;
 }
 
@@ -153,8 +153,8 @@ gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::inputTy
 
 gnomonAbstractCommand::orderedMap gnomonPointCloudQuantificationCommand::outputTypes() {
     orderedMap output_types;
-    output_types.emplace_back(std::make_pair("pointCloud", "gnomonPointCloud"));
-    output_types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));
+    output_types.emplace_back(std::make_pair("outputPointCloud", "gnomonPointCloud"));
+    output_types.emplace_back(std::make_pair("outputDataFrame", "gnomonDataFrame"));
     return output_types;
 }
 
@@ -174,19 +174,19 @@ void gnomonPointCloudQuantificationCommand::deserializeResults(QJsonObject &seri
     if(!d->pointCloud) {
         d->pointCloud = std::make_shared<gnomonPointCloudSeries>();
     }
-    auto tmp = serialization["pointCloud"].toObject();
+    auto tmp = serialization["outputPointCloud"].toObject();
     d->pointCloud->deserialize(tmp);
     if(!d->dataFrame) {
         d->dataFrame = std::make_shared<gnomonDataFrameSeries>();
     }
-    auto tmp2 = serialization["dataFrame"].toObject();
+    auto tmp2 = serialization["outputDataFrame"].toObject();
     d->dataFrame->deserialize(tmp2);
 }
 
 QJsonObject gnomonPointCloudQuantificationCommand::serializeResults(void) {
     QJsonObject out;
-    out["pointCloud"] = d->pointCloud->serialize();
-    out["dataFrame"] = d->dataFrame->serialize();
+    out["outputPointCloud"] = d->pointCloud->serialize();
+    out["outputDataFrame"] = d->dataFrame->serialize();
     return out;
 }
 

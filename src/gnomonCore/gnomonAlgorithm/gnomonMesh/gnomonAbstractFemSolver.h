@@ -13,7 +13,7 @@ class GNOMONCORE_EXPORT gnomonAbstractFemSolver : public gnomonAbstractAlgorithm
 {
 
 public:
-    virtual void setMesh(std::shared_ptr<gnomonMeshSeries> mesh) = 0;
+    virtual void setInputMesh(std::shared_ptr<gnomonMeshSeries> mesh) = 0;
     virtual std::shared_ptr<gnomonMeshSeries> inputMesh(void) const = 0;
 
 public:
@@ -22,7 +22,7 @@ public:
 public:
     static inline QString defaultSetter(QString formName) {
         if(formName == "gnomonMesh") {
-            return {"setMesh"};
+            return {"setInputMesh"};
         }
         return {};
     };

@@ -53,6 +53,7 @@ public:
 
     QFutureWatcher<void> *watcher = nullptr;
     QMetaObject::Connection connect_finished;
+    QTimer save_timer;
 };
 
 void gnomonWorkspacePythonAlgorithmPrivate::loadAlgorithm(void)
@@ -161,6 +162,16 @@ gnomonWorkspacePythonAlgorithm::gnomonWorkspacePythonAlgorithm(QObject *parent) 
 
     d->pool->addView(this->source());
     d->pool->addView(this->target());
+    d->save_timer.setSingleShot(true);
+    connect(d->code, &gnomonPythonAlgorithmPluginCode::textChanged, [=] () {
+        d->save_timer.start(800);
+    });
+    connect(&d->save_timer, &QTimer::timeout, [=]() {
+        if(!d->current_file.isEmpty() && QFile::exists(d->current_file)){
+            // TODO: not overwrite the backup later
+            save(d->current_file);
+        }
+    });
 }
 
 gnomonWorkspacePythonAlgorithm::~gnomonWorkspacePythonAlgorithm(void)
@@ -255,7 +266,6 @@ void gnomonWorkspacePythonAlgorithm::save(const QString& file_url) const
             out << d->code->text();
             settings.setValue("Python/load", file_path);
             f.close();
-            emit d->code->codeUpdated();
             this->backup();
         } else {
             dtkWarn()<<"Could not save to file"<<file_path;
@@ -358,7 +368,7 @@ void gnomonWorkspacePythonAlgorithm::setInputs()
         connect(d->command, &gnomonFormAlgorithmCommand::finished, [this]() {
             this->viewOutputs();
             emit finished();
-        }); // never called as the algo is run directly and not through the command
+        });
 
         if (this->source()->binaryImage()) {
             d->algorithm->setInputBinaryImage(this->source()->binaryImage());

@@ -45,7 +45,7 @@ void gnomonCellImageQuantificationCommand::predo(void)
 
 void gnomonCellImageQuantificationCommand::postdo(void)
 {
-    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->cellImage();
+    std::shared_ptr<gnomonCellImageSeries> cellImage = ((gnomonAbstractCellImageQuantification *) this->action)->outputCellImage();
 
     if ((!cellImage)||cellImage->times().empty()) {
         d->cellImage = nullptr;
@@ -53,7 +53,7 @@ void gnomonCellImageQuantificationCommand::postdo(void)
         d->cellImage = cellImage;
     }
 
-    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->dataFrame();
+    std::shared_ptr<gnomonDataFrameSeries> dataFrame = ((gnomonAbstractCellImageQuantification *) this->action)->outputDataFrame();
 
     if ((!dataFrame)||(dataFrame->times().empty())) {
         d->dataFrame = nullptr;
@@ -138,8 +138,8 @@ QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageQuanti
 QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > gnomonCellImageQuantificationCommand::outputs()
 {
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs;
-    outputs["cellImage"] = this->cellImage();
-    outputs["dataFrame"] = this->dataFrame();
+    outputs["outputCellImage"] = this->cellImage();
+    outputs["outputDataFrame"] = this->dataFrame();
     return outputs;
 }
 
@@ -153,8 +153,8 @@ gnomonAbstractCommand::orderedMap gnomonCellImageQuantificationCommand::inputTyp
 
 gnomonAbstractCommand::orderedMap gnomonCellImageQuantificationCommand::outputTypes() {
     orderedMap types;
-    types.emplace_back(std::make_pair("cellImage", "gnomonCellImage"));
-    types.emplace_back(std::make_pair("dataFrame", "gnomonDataFrame"));
+    types.emplace_back(std::make_pair("outputCellImage", "gnomonCellImage"));
+    types.emplace_back(std::make_pair("outputDataFrame", "gnomonDataFrame"));
     return types;
 }
 
@@ -174,19 +174,19 @@ void gnomonCellImageQuantificationCommand::deserializeResults(QJsonObject &seria
     if(!d->cellImage) {
         d->cellImage = std::make_shared<gnomonCellImageSeries>();
     }
-    auto tmp = serialization["cellImage"].toObject();
+    auto tmp = serialization["outputCellImage"].toObject();
     d->cellImage->deserialize(tmp);
     if(!d->dataFrame) {
         d->dataFrame = std::make_shared<gnomonDataFrameSeries>();
     }
-    auto tmp2 = serialization["dataFrame"].toObject();
+    auto tmp2 = serialization["outputDataFrame"].toObject();
     d->dataFrame->deserialize(tmp2);
 }
 
 QJsonObject gnomonCellImageQuantificationCommand::serializeResults(void) {
     QJsonObject out;
-    out["cellImage"] = d->cellImage->serialize();
-    out["dataFrame"] = d->dataFrame->serialize();
+    out["outputCellImage"] = d->cellImage->serialize();
+    out["outputDataFrame"] = d->dataFrame->serialize();
     return out;
 }
 

@@ -58,7 +58,7 @@ Item {
                 extension_ok = extension_ok | relative_path.endsWith(".lpy")
             }
             if (extension_ok) {
-                _self._read_only = false
+                _self._read_only = GP.ProjectManager.project.isReadOnly(relative_path)
                 open_source_file(relative_path)
             } else {
                 _wrong_extension_toast.open()
@@ -133,8 +133,10 @@ Item {
         nameFilters: _self.mode == "L-Py" ? ["L-Py source files (*.lpy *.py)"] : ["Python source files (*.py)"]
 
         onAccepted: {
-            _self._read_only = true
-            _read_only_toast.open()
+            _self._read_only = GP.ProjectManager.project.isReadOnly(_file_dialog.file)
+            if(_self._read_only) {
+                _read_only_toast.open()
+            }
             open_source_file(_file_dialog.file)
         }
     }
@@ -156,15 +158,15 @@ Item {
 
             let old_file_name = d.fileName;
 
-            if ((old_file_name.split('.').length == 1) || (old_file_name.split('.').pop() == file_name.split('.').pop())) { //same extension
-                if (_self.mode == "Python") {
-                    d.fileName = file_name;
-                    _editor.tabName = d.fileName;
-                } else {
-                    _editor.tabName = file_name
-                }
+            if ((old_file_name.split('.').length === 1) || (old_file_name.split('.').pop() === file_name.split('.').pop())) { //same extension
                 d.save(file_path);
-                if (_self.mode == "L-Py") {
+                if (_self.mode === "Python") {
+                    editor.tabName = file_name;
+                    d.fileName = file_name;
+                } else {
+                    editor.tabName = file_name
+                }
+                if (_self.mode === "L-Py") {
                     d.fileName = file_name
                 }
                 _self._current_file = _file_dialog_save.file;
@@ -223,7 +225,7 @@ Item {
                 flat: true;
 
                 onClicked: {
-                    d.save(_file_dialog_save.file);
+                    d.save(_self._current_file);
                     _message_dialog.close();
                 }
             }
