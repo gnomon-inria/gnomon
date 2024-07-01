@@ -236,7 +236,7 @@ void gnomonWorkspaceRegistration::viewOutputs()
     if(command->outputs()["outputTransformation"]) {
         std::shared_ptr<gnomonAbstractDynamicForm> data_dict = command->outputs()["outputTransformation"];
         GNOMON_SESSION->trackForm(data_dict);
-        int form_count = gnomonFormManager::instance()->formCount(data_dict->formName());
+        int form_count = GNOMON_FORM_MANAGER->formCount(data_dict->formName());
         data_dict->metadata()->set("name", data_dict->formName().remove("gnomon") + QString::number(form_count+1));
         data_dict->metadata()->set("source", d->algorithm);
         iterate();
@@ -244,9 +244,9 @@ void gnomonWorkspaceRegistration::viewOutputs()
     }
 }
 
-QJsonObject gnomonWorkspaceRegistration::serialize(void)
+QJsonObject gnomonWorkspaceRegistration::_serialize(void)
 {
-    QJsonObject state = gnomonAlgorithmWorkspace::serialize();
+    QJsonObject state = gnomonAlgorithmWorkspace::_serialize();
     QJsonObject image_stack;
     for( auto [id, form_uuid]: dd->image_stack.asKeyValueRange()) {
         image_stack[QString::number(id)] = form_uuid;
@@ -262,7 +262,7 @@ QJsonObject gnomonWorkspaceRegistration::serialize(void)
     return state;
 }
 
-void gnomonWorkspaceRegistration::deserialize(const QJsonObject &state)
+void gnomonWorkspaceRegistration::_deserialize(const QJsonObject &state)
 {
     dd->image_stack.clear();
     dd->transformation_stack.clear();
@@ -276,7 +276,7 @@ void gnomonWorkspaceRegistration::deserialize(const QJsonObject &state)
     for(auto id : transformation_stack.keys()) {
         dd->transformation_stack.insert(id.toInt(), transformation_stack[id].toString());
     }
-    gnomonAlgorithmWorkspace::deserialize(state);
+    gnomonAlgorithmWorkspace::_deserialize(state);
     emit stackSizeChanged();
     this->setStackLevel(dd->stack_level+1);
 }

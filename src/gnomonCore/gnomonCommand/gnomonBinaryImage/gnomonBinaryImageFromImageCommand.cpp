@@ -71,6 +71,9 @@ void gnomonBinaryImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeri
         d->input = image;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractBinaryImageFromImage *) this->action)->setInput(d->input);
     this->action->refreshParameters();
 }
@@ -88,6 +91,9 @@ void gnomonBinaryImageFromImageCommand::setInitialization(std::shared_ptr<gnomon
         d->initialization = init;
     }
     Q_ASSERT(this->action);
+    if (d->initialization) {
+        d->initialization->load();
+    }
     ((gnomonAbstractBinaryImageFromImage *) this->action)->setInitialization(d->initialization);
     this->action->refreshParameters();
 }
@@ -155,6 +161,13 @@ QJsonObject gnomonBinaryImageFromImageCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonBinaryImageFromImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+    d->initialization = nullptr;
 }
 
 //

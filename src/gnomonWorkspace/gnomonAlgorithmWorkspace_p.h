@@ -47,7 +47,6 @@ public:
     QVariantList algorithmsData;
     QString algorithm;
     int currentIndex = 0;
-    QJsonObject savedState;
 
 public:
     gnomonPipelineManager *pipeline_manager;

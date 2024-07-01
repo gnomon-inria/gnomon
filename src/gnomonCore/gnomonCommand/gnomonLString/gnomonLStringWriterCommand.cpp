@@ -44,6 +44,9 @@ void gnomonLStringWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonLStringWriterCommand::predo(void)
 {
     ((gnomonAbstractLStringWriter *) this->action)->setPath(this->m_path);
+    if (d->lString) {
+        d->lString->load();
+    }
     ((gnomonAbstractLStringWriter *) this->action)->setLString(d->lString);
 }
 
@@ -87,6 +90,11 @@ void gnomonLStringWriterCommand::setInputForm(const QString &name, std::shared_p
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonLStringWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->lString = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonLStringWriterCommand)

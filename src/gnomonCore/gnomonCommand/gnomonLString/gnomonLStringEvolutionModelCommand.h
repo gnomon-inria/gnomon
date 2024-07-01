@@ -34,6 +34,8 @@ public:
 
     std::shared_ptr<gnomonLStringSeries> lString(void);
 
+    void clear(void) override;
+
 public:
     void setLSystem(const QString& code);
     const QString& lSystemCode(void) const;

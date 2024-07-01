@@ -119,13 +119,15 @@ public:
 
     QJSValue parameters(void);
 
-    QJsonObject serialize() override;
+protected:
+    QJsonObject _serialize() override;
 
-    void deserialize(const QJsonObject &state) override;
+    void _deserialize(const QJsonObject &state) override;
+
+public:
+    void restoreView(void) override;
 
 public slots:
-    void saveState(void);
-    void restoreState(void);
     bool backup(void) const;
     void restore(void);
 

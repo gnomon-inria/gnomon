@@ -91,8 +91,17 @@ void gnomonAbstractVisualizationCommand::clear(void)
     this->disconnectVisualization();
     if (this->visu) {
         this->visu->clear();
-        this->visu = nullptr;
     }
+    this->visu = nullptr;
+}
+
+void gnomonAbstractVisualizationCommand::clear(bool clear_visu)
+{
+    this->disconnectVisualization();
+    if (this->visu && clear_visu) {
+        this->visu->clear();
+    }
+    this->visu = nullptr;
 }
 
 void gnomonAbstractVisualizationCommand::setVisible(bool visible)

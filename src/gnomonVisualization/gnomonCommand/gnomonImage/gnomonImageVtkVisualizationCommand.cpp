@@ -37,7 +37,7 @@ gnomonImageVtkVisualizationCommand::~gnomonImageVtkVisualizationCommand()
 
 void gnomonImageVtkVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::imageVtkVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractImageVtkVisualization>(visu);
     this->connectVisualization();
@@ -48,6 +48,9 @@ void gnomonImageVtkVisualizationCommand::setFormVisualization(const QString& vis
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractImageVtkVisualization>(this->visu);
     if (visu) {
+        if (d->image) {
+            d->image->load();
+        }
         visu->setImage(d->image);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();
@@ -80,6 +83,16 @@ void gnomonImageVtkVisualizationCommand::setInputForm(const QString &name, std::
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonImageVtkVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->image = nullptr;
+}
+
+void gnomonImageVtkVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->image = nullptr;
 }
 
 //

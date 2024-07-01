@@ -94,6 +94,11 @@ QJsonObject gnomonTreeReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonTreeReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->tree = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonTreeReaderCommand)
 
 //

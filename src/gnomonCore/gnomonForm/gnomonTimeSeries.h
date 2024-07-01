@@ -86,6 +86,8 @@ private:
     void readManifest();
 
     QMap<uint, formStorageInfo> m_storage_info;
+    // need to store metadata to access when the form is unloaded
+    QMap<uint, QMap<QString,QString>> m_form_metadata_storage;
     uint form_id_counter = 0; // counter for incrementing unique form indices
 
 protected:

@@ -160,7 +160,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
             if(node->inputPort(inputPortsNames[1])->formIndex() >=0) {
                 int second = node->inputPort(inputPortsNames[1])->formIndex();
                 qDebug() << "COMPOSE " << first << " -> " << second;
-                gnomonFormManager::instance()->compose(first, second);
+                GNOMON_FORM_MANAGER->compose(first, second);
             }
         }
 
@@ -515,7 +515,7 @@ void gnomonSessionManager::sync() {
 
         cleanExpiredForms();
         settings.beginGroup("forms");
-        settings.setValue("form_manager_state", gnomonFormManager::instance()->serialize());
+        settings.setValue("form_manager_state", GNOMON_FORM_MANAGER->serialize());
 
         settings.setValue("owned_form_ids", m_owned_forms.keys());
         QStringList form_ids;
@@ -579,7 +579,7 @@ bool gnomonSessionManager::load() {
     }
 
     QJsonObject form_manager_state = settings.value("form_manager_state").toJsonObject();
-    gnomonFormManager::instance()->deserialize(form_manager_state);
+    GNOMON_FORM_MANAGER->deserialize(form_manager_state);
 
     settings.endGroup();
 

@@ -94,6 +94,11 @@ QJsonObject gnomonDataFrameReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonDataFrameReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->dataFrame = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonDataFrameReaderCommand)
 
 //

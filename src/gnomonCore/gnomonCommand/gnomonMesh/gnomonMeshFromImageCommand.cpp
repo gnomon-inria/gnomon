@@ -68,6 +68,9 @@ void gnomonMeshFromImageCommand::setImage(std::shared_ptr<gnomonImageSeries> ima
         d->image = image;
     }
     Q_ASSERT(this->action);
+    if (d->image) {
+        d->image->load();
+    }
     ((gnomonAbstractMeshFromImage *) this->action)->setImage(d->image);
     this->action->refreshParameters();
 }
@@ -85,6 +88,9 @@ void gnomonMeshFromImageCommand::setCellImage(std::shared_ptr<gnomonCellImageSer
         d->cellImage = cellImage;
     }
     Q_ASSERT(this->action);
+    if (d->cellImage) {
+        d->cellImage->load();
+    }
     ((gnomonAbstractMeshFromImage *) this->action)->setCellImage(d->cellImage);
     this->action->refreshParameters();
 }
@@ -102,6 +108,9 @@ void gnomonMeshFromImageCommand::setBinaryImage(std::shared_ptr<gnomonBinaryImag
         d->binaryImage = binaryImage;
     }
     Q_ASSERT(this->action);
+    if (d->binaryImage) {
+        d->binaryImage->load();
+    }
     ((gnomonAbstractMeshFromImage *) this->action)->setBinaryImage(d->binaryImage);
     this->action->refreshParameters();
 }
@@ -170,6 +179,14 @@ QJsonObject gnomonMeshFromImageCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonMeshFromImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->image = nullptr;
+    d->cellImage = nullptr;
+    d->binaryImage = nullptr;
+    d->output = nullptr;
 }
 
 //

@@ -27,6 +27,8 @@ public:
 
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
+    void clear(void) override;
+
 public:
     inline static const QString groupName = "pointCloudWriter";
 

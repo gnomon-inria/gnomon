@@ -268,5 +268,12 @@ gnomonAbstractCommand::orderedMap gnomonLStringEvolutionModelCommand::stateTypes
     return types;
 }
 
+void gnomonLStringEvolutionModelCommand::clear(void) {
+    gnomonAbstractEvolutionModelCommand::clear();
+    // TODO: monitor here, clearing may cause problem later in this workspace
+    d->init_lString = nullptr;
+    d->lString = nullptr;
+}
+
 //
 // gnomonLStringEvolutionModelCommand.cpp ends here

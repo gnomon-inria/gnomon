@@ -66,6 +66,9 @@ void gnomonMeshWriterCommand::predo(void)
     }
 
     ((gnomonAbstractMeshWriter *) this->action)->setPath(this->m_path);
+    if (d->mesh) {
+        d->mesh->load();
+    }
     ((gnomonAbstractMeshWriter *) this->action)->setMesh(d->mesh);
 }
 
@@ -116,6 +119,11 @@ void gnomonMeshWriterCommand::setInputForm(const QString &name, std::shared_ptr<
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonMeshWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->mesh = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonMeshWriterCommand)

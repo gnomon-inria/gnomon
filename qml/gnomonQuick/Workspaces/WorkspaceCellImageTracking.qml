@@ -96,7 +96,7 @@ G.Workspace {
                     anchors.fill: parent
 
                     onDroppedFromManager: (index) => {
-                        d.sourceDict.drop(index);
+                        _self.dropForm(d.sourceDict, index)
                     }
 
                     Label {
@@ -281,7 +281,7 @@ G.Workspace {
 
                     onDroppedFromManager: (index) => {
                         window.currentView = _source_view
-                        d.source.drop(index);
+                        _self.dropForm(d.source, index)
                     }
 
                     viewLogic: d.source;

@@ -70,6 +70,9 @@ void gnomonTreeFromLStringCommand::setInput(std::shared_ptr<gnomonLStringSeries>
         d->input = input;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractTreeFromLString *) this->action)->setInput(d->input);
     this->action->refreshParameters();
 }
@@ -130,6 +133,12 @@ QJsonObject gnomonTreeFromLStringCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonTreeFromLStringCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->input = nullptr;
+    d->output = nullptr;
 }
 
 //
