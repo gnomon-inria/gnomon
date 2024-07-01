@@ -10,8 +10,8 @@
 class gnomonImageRegistrationCommandPrivate
 {
 public:
-    gnomonAbstractCommand::orderedMap input_types = {{"image", "gnomonImage"}, {"initialTransformation", "gnomonDataDict"}};
-    gnomonAbstractCommand::orderedMap output_types = {{"output", "gnomonImage"}, {"outputTransformation", "gnomonDataDict"}};
+    const gnomonAbstractCommand::orderedMap input_types = {{"image", "gnomonImage"}, {"initialTransformation", "gnomonDataDict"}};
+    const gnomonAbstractCommand::orderedMap output_types = {{"output", "gnomonImage"}, {"outputTransformation", "gnomonDataDict"}};
 
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > inputs = {{"image", nullptr},  {"initialTransformation", nullptr}};
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs = {{"output", nullptr}, {"outputTransformation", nullptr}};
@@ -162,6 +162,12 @@ QJsonObject gnomonImageRegistrationCommand::serializeResults(void) {
     out["output"] = std::dynamic_pointer_cast<gnomonImageSeries>(d->outputs["output"])->serialize();
     out["outputTransformation"] = std::dynamic_pointer_cast<gnomonDataDictSeries>(d->outputs["outputTransformation"])->serialize();
     return out;
+}
+
+void gnomonImageRegistrationCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->inputs = {{"image", nullptr},  {"initialTransformation", nullptr}};
+    d->outputs = {{"output", nullptr}, {"outputTransformation", nullptr}};
 }
 
 //

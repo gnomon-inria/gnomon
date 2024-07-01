@@ -24,6 +24,12 @@ void  gnomonAbstractAlgorithmCommand::clear(void)
     if(this->action) {
         this->action->clearInputs();
         this->action->clearOutputs();
+        /*
+        auto name = algorithmName();
+        delete this->action;
+        this->action = nullptr;
+        setAlgorithmName(name);
+        */
     }
 }
 

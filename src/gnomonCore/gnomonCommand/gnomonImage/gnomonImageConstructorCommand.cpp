@@ -90,5 +90,10 @@ QJsonObject gnomonImageConstructorCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonImageConstructorCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+}
+
 //
 // gnomonImageConstructorCommand.cpp ends here

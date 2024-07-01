@@ -93,6 +93,11 @@ QJsonObject gnomonLStringReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonLStringReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->lString = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonLStringReaderCommand)
 
 //

@@ -23,6 +23,8 @@ public:
 
     orderedMap outputTypes() override;
 
+    void clear(void) override;
+
     void deserializeResults(QJsonObject &serialization) override;
 
     QJsonObject serializeResults(void) override;

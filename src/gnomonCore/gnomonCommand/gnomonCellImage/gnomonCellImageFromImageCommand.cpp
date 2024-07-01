@@ -71,6 +71,9 @@ void gnomonCellImageFromImageCommand::setInput(std::shared_ptr<gnomonImageSeries
         d->image_series = image_series;
     }
     Q_ASSERT(this->action);
+    if (d->image_series) {
+        d->image_series->load();
+    }
     ((gnomonAbstractCellImageFromImage *) this->action)->setInput(d->image_series);
     ((gnomonAbstractCellImageFromImage *) this->action)->refreshParameters();
 }
@@ -88,6 +91,9 @@ void gnomonCellImageFromImageCommand::setCellPoints(std::shared_ptr<gnomonPointC
         d->pointCloud_series = pointCloud_series;
     }
     Q_ASSERT(this->action);
+    if (d->pointCloud_series) {
+        d->pointCloud_series->load();
+    }
     ((gnomonAbstractCellImageFromImage *) this->action)->setCellPoints(d->pointCloud_series);
     this->action->refreshParameters();
 }
@@ -154,6 +160,9 @@ void gnomonCellImageFromImageCommand::setBinaryImage(std::shared_ptr<gnomonBinar
         d->binary_image_series = binary_image_series;
     }
      Q_ASSERT(this->action);
+    if (d->binary_image_series) {
+        d->binary_image_series->load();
+    }
     ((gnomonAbstractCellImageFromImage *) this->action)->setBinaryImage(d->binary_image_series);
     this->action->refreshParameters();
 }
@@ -174,6 +183,14 @@ QJsonObject gnomonCellImageFromImageCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonCellImageFromImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->image_series = nullptr;
+    d->pointCloud_series = nullptr;
+    d->binary_image_series = nullptr;
+    d->output = nullptr;
 }
 
 //

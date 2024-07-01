@@ -78,6 +78,9 @@ void gnomonLStringTranslationCommand::setInputTree(std::shared_ptr<gnomonTreeSer
     } else {
         d->tree_series = tree_series;
         Q_ASSERT(this->action);
+        if (d->tree_series) {
+                d->tree_series->load();
+        }
         ((gnomonAbstractLStringTranslation *) this->action)->setInputTree(d->tree_series);
         this->action->refreshParameters();
     }
@@ -91,6 +94,9 @@ void gnomonLStringTranslationCommand::setInputLString(std::shared_ptr<gnomonLStr
         d->lString_series = lString_series;
     }
     Q_ASSERT(this->action);
+    if (d->lString_series) {
+        d->lString_series->load();
+    }
     ((gnomonAbstractLStringTranslation *) this->action)->setInputLString(d->lString_series);
     this->action->refreshParameters();
 }
@@ -173,6 +179,14 @@ QJsonObject gnomonLStringTranslationCommand::serializeResults(void) {
     out["outputLString"] = d->output_lString_series->serialize();
     out["outputTree"] = d->output_tree_series->serialize();
     return out;
+}
+
+void gnomonLStringTranslationCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->lString_series = nullptr;
+    d->tree_series = nullptr;
+    d->output_lString_series = nullptr;
+    d->output_tree_series = nullptr;
 }
 
 //

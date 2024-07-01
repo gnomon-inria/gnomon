@@ -36,7 +36,7 @@ gnomonLStringQmlVisualizationCommand::~gnomonLStringQmlVisualizationCommand()
 
 void gnomonLStringQmlVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::lStringQmlVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractLStringQmlVisualization>(visu);
     this->connectVisualization();
@@ -47,6 +47,9 @@ void gnomonLStringQmlVisualizationCommand::setFormVisualization(const QString& v
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractLStringQmlVisualization>(this->visu);
     if (visu) {
+        if (d->lString) {
+            d->lString->load();
+        }
         visu->setLString(d->lString);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();
@@ -93,6 +96,16 @@ void gnomonLStringQmlVisualizationCommand::setInputForm(const QString &name, std
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonLStringQmlVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->lString = nullptr;
+}
+
+void gnomonLStringQmlVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->lString = nullptr;
 }
 
 //

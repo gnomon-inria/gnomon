@@ -59,6 +59,9 @@ void gnomonCellComplexAdapterCommand::setInput(std::shared_ptr<gnomonCellComplex
         d->input = input;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractCellComplexAdapter *) this->action)->setInput(d->input);
     this->action->refreshParameters();
 }
@@ -110,6 +113,12 @@ QJsonObject gnomonCellComplexAdapterCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonCellComplexAdapterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
 }
 
 //

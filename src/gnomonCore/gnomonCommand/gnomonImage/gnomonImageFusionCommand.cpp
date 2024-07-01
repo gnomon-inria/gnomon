@@ -176,5 +176,13 @@ QJsonObject gnomonImageFusionCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonImageFusionCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->images_series.clear();
+    d->image_indices.clear();
+    d->landmarks.clear();
+}
+
 //
 // gnomonImageFusionCommand.cpp ends here

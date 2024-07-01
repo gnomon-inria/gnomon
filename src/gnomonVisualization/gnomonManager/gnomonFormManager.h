@@ -9,6 +9,9 @@
 #include <gnomonCore/gnomonForm/gnomonAbstractDynamicForm>
 #include "gnomonForm/gnomonDynamicFormMetadata.h"
 
+
+#define GNOMON_FORM_MANAGER gnomonFormManager::instance()
+
 class gnomonAbstractForm;
 class gnomonAbstractDynamicForm;
 class gnomonAbstractCommand;
@@ -23,6 +26,8 @@ class GNOMONVISUALIZATION_EXPORT gnomonFormManager : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(int maxMemory READ maxMemory WRITE setMaxMemory NOTIFY maxMemoryChanged)
+
 public:
     static gnomonFormManager *instance(void);
 
@@ -30,6 +35,7 @@ signals:
     void added(int id, QString name);
     void removed(int id);
     void alreadyAdded(void);
+    void maxMemoryChanged(int value);
 
 public slots:
     // void addForm(std::shared_ptr<gnomonAbstractDynamicForm>, const QImage& image, std::shared_ptr<gnomonAbstractVisualization> visualization = nullptr);
@@ -49,7 +55,7 @@ public:
     Q_INVOKABLE QVariantList timeKeys(int id);
     Q_INVOKABLE QStringList formMetadataKeysAtT(int id, double t);
     Q_INVOKABLE QString formMetadataValueAtT(int id, double t, const QString& key);
-    Q_INVOKABLE QList<int> systemStat(void) const; //total_mem, used_mem, this_mem
+    Q_INVOKABLE bool formLoaded(int id);
 
 public:
     Q_INVOKABLE QString formWriterNameFilter(int id);
@@ -57,6 +63,10 @@ public:
 public:
     int formCount(const QString& form_name);
     void setFormDropped(const QString& form_uuid);
+
+public:
+    int maxMemory();
+    void setMaxMemory(int value);
 
 public:
     int formIndex(const QString& form_uuid);
@@ -73,6 +83,22 @@ public:
 public:
     QJsonObject serialize(void);
     void deserialize(const QJsonObject& state);
+
+public:
+    Q_INVOKABLE QList<int> systemStat(void) const; //total_mem, used_mem, this_mem
+    Q_INVOKABLE void testDeactivate(void);
+    void registerNewWorkspace(const QString& uuid);
+    void registerWorkspaceWakeup(const QString& uuid);
+
+    signals:
+    void requestHibernation(QString uuid);
+
+public slots:
+    void memoryManagement();
+
+private:
+    void callHibernateWorkspace();
+    void checkHibernateForms();
 
 protected:
      gnomonFormManager(QObject *parent = nullptr);

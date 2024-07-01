@@ -46,6 +46,9 @@ void gnomonPointCloudWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonPointCloudWriterCommand::predo(void)
 {
     ((gnomonAbstractPointCloudWriter *) this->action)->setPath(this->m_path);
+    if (d->pointCloud) {
+        d->pointCloud->load();
+    }
     ((gnomonAbstractPointCloudWriter *) this->action)->setPointCloud(d->pointCloud);
 }
 
@@ -88,6 +91,11 @@ void gnomonPointCloudWriterCommand::setInputForm(const QString &name, std::share
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonPointCloudWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->pointCloud = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonPointCloudWriterCommand)

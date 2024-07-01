@@ -192,7 +192,12 @@ void gnomonAbstractView::clear(void)
     for (const auto & form_type : form_types) {
         QString visu_name = d->visualizationCommands[form_type]->visualizationName();
         d->viewParameters.parameters.remove(visu_name);
-        d->visualizationCommands[form_type]->clear();
+        auto visu_view = d->visualizationCommands[form_type]->visualization()->view();
+        if(this == visu_view) {
+            d->visualizationCommands[form_type]->clear(true);
+        } else {
+            d->visualizationCommands[form_type]->clear(false);
+        }
         d->visualizationCommands[form_type]->setForm(nullptr);
     }
     d->viewParameters.visuSelected.clear();
@@ -207,14 +212,14 @@ void gnomonAbstractView::clear(void)
 
 void gnomonAbstractView::drop(int index, bool new_visu)
 {
-    QString form_uuid = gnomonFormManager::instance()->get(index);
-    std::shared_ptr<gnomonAbstractVisualization> visu = gnomonFormManager::instance()->getVisualization(index);
+    QString form_uuid = GNOMON_FORM_MANAGER->get(index);
+    std::shared_ptr<gnomonAbstractVisualization> visu = GNOMON_FORM_MANAGER->getVisualization(index);
     if (new_visu) {
         visu = nullptr;
     }
     this->setForm("formManager", GNOMON_SESSION->getForm(form_uuid), visu);
     this->render();
-    gnomonFormManager::instance()->setFormDropped(form_uuid);
+    GNOMON_FORM_MANAGER->setFormDropped(form_uuid);
 }
 
 void gnomonAbstractView::transmit(void)
@@ -235,7 +240,7 @@ void gnomonAbstractView::transmitForm(const QString& form_type)
             image.fill(Qt::GlobalColor::black);
         }
         GNOMON_SESSION->addForm(d->forms[form_type]);
-        gnomonFormManager::instance()->addForm(d->forms[form_type]->uuid(), image, visualization);
+        GNOMON_FORM_MANAGER->addForm(d->forms[form_type]->uuid(), image, visualization);
         emit exportedForm(d->forms[form_type]);
     }
 }

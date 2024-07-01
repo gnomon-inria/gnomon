@@ -575,8 +575,8 @@ gnomonVtkView::gnomonVtkView(QObject *parent) : gnomonAbstractView(parent)
     d->acceptForms["gnomonPointCloud"] = false;
 
     connect(this, &gnomonVtkView::exportedForm, [=] (std::shared_ptr<gnomonAbstractDynamicForm> form) {
-        int index = gnomonFormManager::instance()->formIndex(form->uuid());
-        gnomonFormManager::instance()->setCamera(index, dd->renderer3D->GetActiveCamera());
+        int index = GNOMON_FORM_MANAGER->formIndex(form->uuid());
+        GNOMON_FORM_MANAGER->setCamera(index, dd->renderer3D->GetActiveCamera());
     });
     connect(this, &gnomonVtkView::formsChanged, this, &gnomonVtkView::updateBounds);
 }
@@ -1706,7 +1706,7 @@ void gnomonVtkView::updateShortcutKeys(void)
 void gnomonVtkView::drop(int index, bool new_visu)
 {
     if (this->empty()) {
-        if (vtkCamera *cam = gnomonFormManager::instance()->getCamera(index)) {
+        if (vtkCamera *cam = GNOMON_FORM_MANAGER->getCamera(index)) {
             this->setCamera(cam);
         }
     }

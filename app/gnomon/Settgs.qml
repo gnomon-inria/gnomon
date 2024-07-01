@@ -17,7 +17,7 @@ G.Dialog {
     y: Math.round(parent.height / 6)
 
     width: G.Style.mediumDialogWidth;
-    height: G.Style.largeDialogHeight;
+    height: G.Style.hugeDialogHeight;
 
     modal: true
     focus: true
@@ -125,9 +125,9 @@ G.Dialog {
                                 radius: 8
 
                                 border.width: 1
-                                border.color: "#302B27"
+                                border.color: G.Style.colors.gutterColor
 
-                                color: "#1B264F"
+                                color: G.Style.colors.gutterColor
 
                                 MouseArea {
 
@@ -149,7 +149,7 @@ G.Dialog {
 
                                     width: (_memory_used.value - _memory_this.value) / _memory_total.value * _memory_total.width
                                     height: parent.height
-                                    color: "#274690"
+                                    color: G.Style.colors.baseColor
                                     radius: parent.radius - 2
 
                                     Rectangle {
@@ -184,7 +184,9 @@ G.Dialog {
 
                                     width: _memory_this.value / _memory_total.value * _memory_total.width
                                     height: parent.height
-                                    color: "#576CA8"
+                                    color: _memory_this.value > GV.World.maxMemory
+                                        ? G.Style.colors.dangerColor
+                                        : G.Style.colors.warningColor
 
                                     MouseArea {
 
@@ -208,18 +210,38 @@ G.Dialog {
                             spacing: 15;
 
                             Label {
-                                text: (_memory_total.value - _memory_used.value) > 1000
-                                    ? (_memory_total.value - _memory_used.value) / 1000 + "GB remaining"
-                                    : (_memory_total.value - _memory_used.value)        + "MB remaining"
-                                color: "#1B264F"
+                                text: "gnomon: " + (_memory_this.value > 1000
+                                    ? _memory_this.value / 1000 + "GB"
+                                    : _memory_this.value        + "MB")
+                                color: _memory_this.value > GV.World.maxMemory
+                                    ? G.Style.colors.dangerColor
+                                    : G.Style.colors.warningColor
                             }
 
-                            Label { 
-                                text: _memory_this.value > 1000
-                                        ? _memory_this.value / 1000 + "GB self"
-                                        : _memory_this.value        + "MB self"
-                                color: "#576CA8"
+                            Label {
+                                text: "remaining: " + ((_memory_total.value - _memory_used.value) > 1000
+                                    ? (_memory_total.value - _memory_used.value) / 1000 + "GB"
+                                    : (_memory_total.value - _memory_used.value)        + "MB")
+                                color: G.Style.colors.textColorNeutral
                             }
+                        }
+                        Label {
+                            width: parent.width
+                            text: qsTr("Maximum memory")
+                            color: G.Style.colors.textColorBase
+                            font: G.Style.fonts.subHeader
+                        }
+
+                        G.NumericSlider {
+                            id: max_memory_edit
+                            width: parent.width
+                            value: GV.World.maxMemory
+                            min: 1000
+                            max: GV.World.systemStat()[0]
+                            decimals: 0
+                            stepSize: 100
+                            label: qsTr("Memory Threshold (MB)")
+                            doc: qsTr("Memory value above which gnomon tries to limit its size in memory")
                         }
                     }
                     
@@ -267,6 +289,7 @@ G.Dialog {
     Component.onCompleted: {
         let data_path = settings.value("data_path", "")
         GUtils.initDataPath(data_path)
+        GV.World.maxMemory = settings.value("maxMemory", 3000)
     }
 
     onAboutToShow: {
@@ -275,8 +298,10 @@ G.Dialog {
 
     onAccepted: {
         setDataPath(data_path_edit.text)
+        GV.World.maxMemory = max_memory_edit.value
         settings.setValue("data_path", GUtils.dataPath)
         settings.mode = G.Style.mode
+        settings.setValue("maxMemory", GV.World.maxMemory)
         settingsDialog.close()
     }
 

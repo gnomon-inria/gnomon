@@ -47,7 +47,7 @@ def form_output(cls, attr, method, data_plugin, form_data_factory, plugin_group,
     def getter(self, update=True):
         form_dict, data_list = buildFormSeries(form_dict=getattr(self, attr), form_class=form_class,
                                                data_plugin=data_plugin)
-        register_formDataPlugin(cls, data_list)
+        #register_formDataPlugin(cls, data_list)
         return form_dict
 
     setattr(cls, method, getter)

@@ -85,4 +85,9 @@ QJsonObject gnomonDataDictReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonDataDictReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->dataDict = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonDataDictReaderCommand)

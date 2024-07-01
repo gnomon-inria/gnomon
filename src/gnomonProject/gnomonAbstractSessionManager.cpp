@@ -59,6 +59,7 @@ std::shared_ptr<gnomonAbstractDynamicForm> gnomonAbstractSessionManager::getForm
         return this->m_tracked_forms[uuid].lock();
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"No existing Form with UUID"<<uuid<<"!";
+        qWarning()<<Q_FUNC_INFO<<"No existing Form with UUID"<<uuid<<"!";
         return nullptr;
     }
 }
@@ -97,4 +98,8 @@ void gnomonAbstractSessionManager::cleanExpiredForms() {
             gnomonProject::recursiveRemoveDir(file_info.filePath());
         }
     }
+}
+
+QStringList gnomonAbstractSessionManager::trackedForms() {
+    return m_tracked_forms.keys();
 }

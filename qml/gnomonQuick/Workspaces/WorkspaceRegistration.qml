@@ -69,7 +69,7 @@ G.Workspace {
 
             onDroppedFromManager: (index) => {
                 window.currentView = _source_view_other
-                d.sources.views[1].drop(index);
+                _self.dropForm(d.sources.views[1], index)
                 if(GV.World.timeKeys(index).length > 1) {
                     d.sources.views[0].drop(index, true);
                     ts_slider.value = Math.max(_source_view_ref.ts_slider.value - 1, ts_slider.from)
@@ -121,7 +121,7 @@ G.Workspace {
                     viewLogic: d.textView;
 
                     onDroppedFromManager: (index) => {
-                        d.textView.drop(index);
+                        _self.dropForm(d.textView, index)
                     }
                 }
 
@@ -160,7 +160,7 @@ G.Workspace {
 
             onDroppedFromManager: (index) => {
                 window.currentView = _source_view_ref
-                d.sources.views[0].drop(index);
+                _self.dropForm(d.sources.views[0], index)
                 if(GV.World.timeKeys(index).length > 1) {
                     d.sources.views[1].drop(index, true);
                     ts_slider.value =  Math.min(_source_view_other.ts_slider.value + 1, ts_slider.to)

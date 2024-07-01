@@ -113,11 +113,11 @@ public:
     void addParameter(const QString& parameterName, const QString& parameterType);
     void removeParameter(const QString& name);
 
-    QJsonObject serialize() override;
-    void deserialize(const QJsonObject &state) override;
-public slots:
-    void saveState();
-    void restoreState();
+protected:
+    QJsonObject _serialize() override;
+    void _deserialize(const QJsonObject &state) override;
+public:
+    void restoreView(void) override;
 
 protected:
     class gnomonWorkspaceLSystemModelPrivate *d = nullptr;

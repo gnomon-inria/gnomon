@@ -71,7 +71,7 @@ G.Workspace {
             onDroppedFromManager: (index) => {
                 console.info('Retrieving from manager');
                 window.currentView = _source_view
-                d.source.drop(index);
+                _self.dropForm(d.source, index)
             }
 
             viewLogic: d.source;

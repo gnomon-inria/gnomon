@@ -31,6 +31,8 @@ public:
 
     void setInputForm(const QString &name, std::shared_ptr<gnomonAbstractDynamicForm> form) override;
 
+    void clear(void) override;
+
     void deserializeResults(QJsonObject &serialization) override;
 
     QJsonObject serializeResults(void) override;

@@ -79,6 +79,9 @@ void gnomonPointCloudQuantificationCommand::setImage(std::shared_ptr<gnomonImage
         d->image = image;
     }
     Q_ASSERT(this->action);
+    if (d->image) {
+        d->image->load();
+    }
     ((gnomonAbstractPointCloudQuantification *) this->action)->setImage(d->image);
     this->action->refreshParameters();
 }
@@ -91,6 +94,9 @@ void gnomonPointCloudQuantificationCommand::setMesh(std::shared_ptr<gnomonMeshSe
         d->mesh = mesh;
     }
     Q_ASSERT(this->action);
+    if (d->mesh) {
+        d->mesh->load();
+    }
     ((gnomonAbstractPointCloudQuantification *) this->action)->setMesh(d->mesh);
     this->action->refreshParameters();
 }
@@ -103,6 +109,9 @@ void gnomonPointCloudQuantificationCommand::setPointCloud(std::shared_ptr<gnomon
         d->input_pointCloud = pointCloud;
     }
     Q_ASSERT(this->action);
+    if (d->input_pointCloud) {
+        d->input_pointCloud->load();
+    }
     ((gnomonAbstractPointCloudQuantification *) this->action)->setPointCloud(d->input_pointCloud);
     this->action->refreshParameters();
 }
@@ -179,6 +188,15 @@ QJsonObject gnomonPointCloudQuantificationCommand::serializeResults(void) {
     out["outputPointCloud"] = d->pointCloud->serialize();
     out["outputDataFrame"] = d->dataFrame->serialize();
     return out;
+}
+
+void gnomonPointCloudQuantificationCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->mesh = nullptr;
+    d->dataFrame = nullptr;
+    d->pointCloud = nullptr;
+    d->image = nullptr;
+    d->input_pointCloud = nullptr;
 }
 
 //

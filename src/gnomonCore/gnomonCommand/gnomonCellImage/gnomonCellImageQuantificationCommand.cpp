@@ -79,6 +79,9 @@ void gnomonCellImageQuantificationCommand::setImage(std::shared_ptr<gnomonImageS
         d->image = image;
     }
     Q_ASSERT(this->action);
+    if (d->image) {
+        d->image->load();
+    }
     ((gnomonAbstractCellImageQuantification *) this->action)->setImage(d->image);
     this->action->refreshParameters();
 }
@@ -91,6 +94,9 @@ void gnomonCellImageQuantificationCommand::setMesh(std::shared_ptr<gnomonMeshSer
         d->mesh = mesh;
     }
     Q_ASSERT(this->action);
+    if (d->mesh) {
+        d->mesh->load();
+    }
     ((gnomonAbstractCellImageQuantification *) this->action)->setMesh(d->mesh);
     this->action->refreshParameters();
 }
@@ -103,6 +109,9 @@ void gnomonCellImageQuantificationCommand::setCellImage(std::shared_ptr<gnomonCe
         d->input_cellImage = cellImage;
     }
     Q_ASSERT(this->action);
+    if (d->input_cellImage) {
+        d->input_cellImage->load();
+    }
     ((gnomonAbstractCellImageQuantification *) this->action)->setCellImage(d->input_cellImage);
     this->action->refreshParameters();
 }
@@ -179,6 +188,15 @@ QJsonObject gnomonCellImageQuantificationCommand::serializeResults(void) {
     out["outputCellImage"] = d->cellImage->serialize();
     out["outputDataFrame"] = d->dataFrame->serialize();
     return out;
+}
+
+void gnomonCellImageQuantificationCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->input_cellImage = nullptr;
+    d->cellImage = nullptr;
+    d->dataFrame = nullptr;
+    d->image = nullptr;
+    d->mesh = nullptr;
 }
 
 //

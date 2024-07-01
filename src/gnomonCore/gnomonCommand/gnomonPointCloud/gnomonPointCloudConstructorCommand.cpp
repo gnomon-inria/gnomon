@@ -89,5 +89,10 @@ QJsonObject gnomonPointCloudConstructorCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonPointCloudConstructorCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+}
+
 //
 // gnomonPointCloudConstructorCommand.cpp ends here

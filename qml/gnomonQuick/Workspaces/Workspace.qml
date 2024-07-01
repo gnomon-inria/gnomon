@@ -144,6 +144,19 @@ G.Page {
         _params.updateParametersModel();
     }
 
+    G.Toast {
+        id: _hibernating_toast
+
+        property int index;
+        property var view;
+
+        parent: Overlay.overlay
+        header: "Reloading form " + GV.World.getDynamicFormMetadata(_hibernating_toast.index).data["name"]
+        message: "The form was hibernating, please wait while it is reloaded. This may take a few seconds. (You may change the hibernation threshold in the ⚙ Settings)"
+
+        type: G.Style.ButtonType.Base
+    }
+
     function idleStart() {
         _banner.z = Infinity;
         _logs_dragger.z = Infinity;
@@ -160,5 +173,23 @@ G.Page {
         _logs_control.show = false;
         _logs_control.close();
         _logs_control.close_console()
+    }
+
+    function dropForm(view, index) {
+        if (!GV.World.formLoaded(index)) {
+            _hibernating_toast.index = index
+            _hibernating_toast.view = view
+            _hibernating_toast.open()
+        } else {
+            view.drop(index);
+        }
+    }
+
+    Connections {
+        target: _hibernating_toast
+        function onOpened() {
+            _hibernating_toast.view.drop(_hibernating_toast.index);
+            _hibernating_toast.close()
+        }
     }
 }
