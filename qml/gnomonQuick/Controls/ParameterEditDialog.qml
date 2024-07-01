@@ -139,6 +139,11 @@ G.Dialog {
             text: "New Group";
             font: G.Style.fonts.cardLabel
 
+            onClicked: {
+                _new_group_dialog.name = ""
+                _new_group_dialog.open()
+            }
+
             G.IconButton {
                 id: _new_group_button;
 
@@ -150,8 +155,10 @@ G.Dialog {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
+
                 onClicked: {
-                    console.log("New parameter group")
+                    _new_group_dialog.name = ""
+                    _new_group_dialog.open()
                 }
             }
         }
@@ -281,6 +288,12 @@ G.Dialog {
             text: "New Parameter";
             font: G.Style.fonts.cardLabel
 
+            onClicked: {
+                _new_parameter_dialog.name = ""
+                _new_parameter_dialog.type_index = 0
+                _new_parameter_dialog.open()
+            }
+
             G.IconButton {
                 id: _new_parameter_button;
 
@@ -293,11 +306,18 @@ G.Dialog {
                 anchors.margins: G.Style.smallPadding
 
                 onClicked: {
-                    console.log("New parameter")
+                    _new_parameter_dialog.name = ""
+                    _new_parameter_dialog.type_index = 0
                     _new_parameter_dialog.open()
                 }
             }
         }
+    }
+
+    G.ParameterCreationDialog {
+        id: _new_group_dialog
+
+        isGroup: true
     }
 
     G.ParameterCreationDialog {

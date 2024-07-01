@@ -13,6 +13,11 @@ G.Dialog {
 
     parent: Overlay.overlay
 
+    property bool isGroup: false
+
+    property alias name: _name_edit.text
+    property alias type_index: _type_combobox.currentIndex
+
     x: Math.round((window.width - width) / 2)
     y: Math.round((window.height - height) / 2)
 
@@ -22,9 +27,34 @@ G.Dialog {
     focus: true
     modal: true
 
-    standardButtons:  Dialog.Ok | Dialog.Cancel
+    footer: DialogButtonBox {
+        alignment: Qt.AlignRight
+        spacing: G.Style.smallPadding
 
-    title: "New Parameter"
+        background: Rectangle {
+            anchors.fill: parent
+            color: G.Style.colors.gutterColor
+        }
+
+        G.Button {
+            text: 'Cancel';
+            flat: true
+            type: G.Style.ButtonType.Neutral
+            width: G.Style.buttonWidth
+            onClicked: _self.reject();
+        }
+
+        G.Button {
+            text: 'OK';
+            type: _name_edit.text != "" ? G.Style.ButtonType.OK : G.Style.ButtonType.Danger
+            width: G.Style.buttonWidth
+            enabled: _name_edit.text != ""
+            flat: _name_edit.text == ""
+            onClicked: _self.accept();
+        }
+    }
+
+    title: _self.isGroup ? "New Parameter Group" : "New Parameter"
 
     Label {
         id: _name_label
@@ -56,6 +86,8 @@ G.Dialog {
         color: G.Style.colors.hoveredBaseColor
         font: G.Style.fonts.header
 
+        backgroundHighlightColor: text != "" ? G.Style.colors.okColor : G.Style.colors.dangerColor
+
         background: Rectangle {
             color: G.Style.colors.gutterColor;
             radius: G.Style.panelRadius;
@@ -70,6 +102,7 @@ G.Dialog {
         anchors.margins: G.Style.smallPadding
 
         width: G.Style.shortButtonWidth
+        visible: !_self.isGroup
 
         text: "TYPE"
         font: G.Style.fonts.label
@@ -86,6 +119,7 @@ G.Dialog {
 
         width: parent.width/2
         height: G.Style.mediumLabelHeight
+        visible: !_self.isGroup
 
         model: _parameter_types
         textRole: "name"
@@ -112,58 +146,8 @@ G.Dialog {
         }
 
         ListElement {
-            type: "dtkCoreParameterSimple<QString>"
-            name: "String"
-        }
-
-        ListElement {
-            type: "dtkCoreParameterPath"
-            name: "Path"
-        }
-
-        ListElement {
-            type: "dtkCoreParameterRange<qlonglong>"
-            name: "Integer Range"
-        }
-
-        ListElement {
-            type: "dtkCoreParameterRange<double>"
-            name: "Real Range"
-        }
-
-        ListElement {
-            type: "dtkCoreParameterInList<QString>"
-            name: "String in List"
-        }
-
-        ListElement {
-            type: "dtkCoreParameterInListStringList"
-            name: "String List in List"
-        }
-
-        ListElement {
-            type: "gnomonCoreParameterColorMap"
-            name: "Color Map"
-        }
-
-        ListElement {
-            type: "gnomonCoreParameterLookupTable"
-            name: "Color Lookup Table"
-        }
-
-        ListElement {
-            type: "gnomonCoreParameterColorTable"
-            name: "Material Table"
-        }
-
-        ListElement {
             type: "gnomonCoreParameterNurbs"
             name: "Nurbs Curve/Surface"
-        }
-
-        ListElement {
-            type: "gnomonCoreParameterGraphical"
-            name: "Graphical"
         }
     }
 
