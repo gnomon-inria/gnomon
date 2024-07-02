@@ -613,8 +613,8 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
     return parameters;
 }
 
-void gnomonWorkspaceLSystemModel::addParameter(const QString& parameterName, const QString& parameterType) {
-    d->command->addParameter(parameterName, parameterName);
+void gnomonWorkspaceLSystemModel::addParameter(const QString& parameterName, const QString& parameterType, const QString& group) {
+    d->command->addParameter(parameterName, parameterName, group);
 }
 
 void gnomonWorkspaceLSystemModel::removeParameter(const QString& parameterName) {

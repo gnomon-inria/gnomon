@@ -79,8 +79,8 @@ public:
     inline virtual dtkCoreParameters parameters() const override { return this->model->parameters(); };
     inline virtual void setParameter(const QString& parameter, const QVariant& value) override { this->model->setParameter(parameter, value); }
     inline virtual QMap<QString, QString> parameterGroups() const override { return this->model->parameterGroups(); };
-    inline virtual void addParameter(const QString& parameterName, const QString& parameterType) {
-        return this->model->addParameter(parameterName, parameterType);
+    inline virtual void addParameter(const QString& parameterName, const QString& parameterType, const QString& group) {
+        return this->model->addParameter(parameterName, parameterType, group);
     };
     inline virtual void removeParameter(const QString& parameterName) {
         return this->model->removeParameter(parameterName);

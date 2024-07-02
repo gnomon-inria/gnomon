@@ -110,7 +110,7 @@ public:
     gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
-    void addParameter(const QString& parameterName, const QString& parameterType);
+    void addParameter(const QString& parameterName, const QString& parameterType, const QString& group);
     void removeParameter(const QString& name);
 
 protected:
