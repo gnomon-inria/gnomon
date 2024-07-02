@@ -110,8 +110,8 @@ public:
     gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
-    void addParameter(const QString& parameterName, const QString& parameterType);
-    void removeParameter(const QString& name);
+    Q_INVOKABLE void addParameter(const QString& parameterName, const QString& parameterType);
+    Q_INVOKABLE void removeParameter(const QString& name);
 
 protected:
     QJsonObject _serialize() override;

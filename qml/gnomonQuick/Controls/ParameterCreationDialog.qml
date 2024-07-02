@@ -146,8 +146,18 @@ G.Dialog {
         }
 
         ListElement {
-            type: "gnomonCoreParameterNurbs"
-            name: "Nurbs Curve/Surface"
+            type: "gnomonCoreParameterNurbs|Function"
+            name: "Nurbs Function"
+        }
+
+        ListElement {
+            type: "gnomonCoreParameterNurbs|Curve"
+            name: "Nurbs Curve"
+        }
+
+        ListElement {
+            type: "gnomonCoreParameterNurbs|Surface"
+            name: "Nurbs Surface"
         }
     }
 

@@ -269,6 +269,25 @@ G.Dialog {
                     onClicked: {
                         _parameter_list.currentIndex = index
                     }
+
+                    G.IconButton {
+                        id: _remove_parameter_button;
+
+                        iconName: "close";
+                        size: G.Style.iconSmall
+                        tooltip: "Remove parameter";
+
+                        hoverColor : G.Style.colors.dangerColor;
+
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.margins: G.Style.smallPadding
+
+                        onClicked: {
+                            _remove_parameter_dialog.param = param;
+                            _remove_parameter_dialog.open()
+                        }
+                    }
                 }
 
                 ScrollBar.vertical: ScrollBar { visible: _parameter_list.contentHeight > _parameter_list.height; }
@@ -322,6 +341,19 @@ G.Dialog {
 
     G.ParameterCreationDialog {
         id: _new_parameter_dialog
+    }
+
+    G.SimpleDialog {
+        id: _remove_parameter_dialog
+
+        property var param;
+
+        message: "Do you really want to remove the parameter \"" + param.label + "\"?"
+        caption: "Removing a parameter does not remove its occurrences in the code. It may end up generating a lot of errors."
+
+        onAccepted: {
+            d.removeParameter(param.label)
+        }
     }
 
     G.ParameterConfigurationPanel {
