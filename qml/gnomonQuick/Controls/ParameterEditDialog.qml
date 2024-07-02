@@ -139,6 +139,11 @@ G.Dialog {
             text: "New Group";
             font: G.Style.fonts.cardLabel
 
+            onClicked: {
+                _new_group_dialog.name = ""
+                _new_group_dialog.open()
+            }
+
             G.IconButton {
                 id: _new_group_button;
 
@@ -150,8 +155,10 @@ G.Dialog {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.margins: G.Style.smallPadding
 
+
                 onClicked: {
-                    console.log("New parameter group")
+                    _new_group_dialog.name = ""
+                    _new_group_dialog.open()
                 }
             }
         }
@@ -262,6 +269,25 @@ G.Dialog {
                     onClicked: {
                         _parameter_list.currentIndex = index
                     }
+
+                    G.IconButton {
+                        id: _remove_parameter_button;
+
+                        iconName: "close";
+                        size: G.Style.iconSmall
+                        tooltip: "Remove parameter";
+
+                        hoverColor : G.Style.colors.dangerColor;
+
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.margins: G.Style.smallPadding
+
+                        onClicked: {
+                            _remove_parameter_dialog.param = param;
+                            _remove_parameter_dialog.open()
+                        }
+                    }
                 }
 
                 ScrollBar.vertical: ScrollBar { visible: _parameter_list.contentHeight > _parameter_list.height; }
@@ -281,6 +307,12 @@ G.Dialog {
             text: "New Parameter";
             font: G.Style.fonts.cardLabel
 
+            onClicked: {
+                _new_parameter_dialog.name = ""
+                _new_parameter_dialog.type_index = 0
+                _new_parameter_dialog.open()
+            }
+
             G.IconButton {
                 id: _new_parameter_button;
 
@@ -293,7 +325,8 @@ G.Dialog {
                 anchors.margins: G.Style.smallPadding
 
                 onClicked: {
-                    console.log("New parameter")
+                    _new_parameter_dialog.name = ""
+                    _new_parameter_dialog.type_index = 0
                     _new_parameter_dialog.open()
                 }
             }
@@ -301,7 +334,26 @@ G.Dialog {
     }
 
     G.ParameterCreationDialog {
+        id: _new_group_dialog
+
+        isGroup: true
+    }
+
+    G.ParameterCreationDialog {
         id: _new_parameter_dialog
+    }
+
+    G.SimpleDialog {
+        id: _remove_parameter_dialog
+
+        property var param;
+
+        message: "Do you really want to remove the parameter \"" + param.label + "\"?"
+        caption: "Removing a parameter does not remove its occurrences in the code. It may end up generating a lot of errors."
+
+        onAccepted: {
+            d.removeParameter(param.label)
+        }
     }
 
     G.ParameterConfigurationPanel {
