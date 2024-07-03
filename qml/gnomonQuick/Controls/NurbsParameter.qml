@@ -83,6 +83,9 @@ Control {
 
             onClicked: {
                 _control._is_curve = true
+
+                _nurbs_config_dialog.x = window.x
+                _nurbs_config_dialog.y = window.y
                 _nurbs_config_dialog.visible = true
                 _nurbs_view_in_dialog.visible = false
                 _view.parent = _curve_container_in_dialog
@@ -114,6 +117,9 @@ Control {
 
             onClicked: {
                 _control._is_curve = false
+
+                _nurbs_config_dialog.x = window.x
+                _nurbs_config_dialog.y = window.y
                 _nurbs_config_dialog.visible = true
                 // _nurbs_view.parent = _nurbs_config_dialog.contentItem
             }
@@ -166,8 +172,6 @@ Control {
         minimumHeight : height
         maximumHeight : height
 
-        x: window.x + width/2
-        y: window.y + height/2
         Rectangle {
             id: _curve_container_in_dialog
             visible: false

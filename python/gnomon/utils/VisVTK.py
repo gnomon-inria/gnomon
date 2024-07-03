@@ -460,6 +460,7 @@ class VisCurve3D(vis.VisAbstract):
                                                    name=plot['name'], index=plot['idx'], size=self.vconf.line_width * 2)
                 self.vtk_actors.append(actor1)
 
+
 # It is easier to plot 2-dimensional curves with VisCurve3D
 VisCurve2D = VisCurve3D
 
@@ -490,14 +491,18 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
             self.last_pick_position = self.picker.GetPickPosition()
             if self.selected_actor.GetMapper().GetArrayName() == "ctrl_point":
                 self.is_moving = True
-                self.selected_actor.GetProperty().SetColor(vtk.vtkNamedColors().GetColor3d('Red'))
-                self.selected_actor.GetProperty().SetDiffuse(1.0)
-                self.selected_actor.GetProperty().SetSpecular(0.0)
-            else :
+                ctr_pt_id = self.selected_actor.GetMapper().GetArrayId()
+                self.vis.selected_point = ctr_pt_id
+            else:
                 self.is_moving = False
+                self.vis.selected_point = -1
+        else:
+            self.is_moving = False
+            self.vis.selected_point = -1
 
+        self.vis.update(True)
+        obj.GetDefaultRenderer().Render()
         super().OnLeftButtonDown()
-
 
     def mouseMoveEvent(self, obj, event):
         if self.is_moving and self.selected_actor:
@@ -532,6 +537,7 @@ class MoveCtrlPointsInteractor(vtk.vtkInteractorStyleTrackballCamera):
         obj.GetDefaultRenderer().Render()
         super().OnLeftButtonUp()
 
+
 class VisSurface(vis.VisAbstract):
     """ VTK visualization module for surfaces. """
     def __init__(self, surface, config=VisConfig(), **kwargs):
@@ -544,7 +550,8 @@ class VisSurface(vis.VisAbstract):
 
         self.render_window = None
         self.interactor_style = None
-    
+
+    # TODO: update existing actors without re-creating them
     def update(self, from_python=False):
         self.clear_actors()
         if from_python:
