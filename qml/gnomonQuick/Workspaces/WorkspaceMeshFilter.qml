@@ -15,7 +15,7 @@ import gnomon.Workspaces 1.0 as GW
 
 G.Workspace {
 
-    id: _workspace;
+    id: _self;
 
     workspace_title: "Mesh Processing";
 
@@ -48,7 +48,7 @@ G.Workspace {
         onFinished: idleStop();
 
         onParametersChanged: {
-            updateParametersModel(); //_workspace.updateParametersModel();
+            updateParametersModel(); //_self.updateParametersModel();
         }
     }
 
@@ -75,7 +75,7 @@ G.Workspace {
             onDroppedFromManager: (index) => {
                 console.info('Retrieving from manager');
                 window.currentView = _source_view
-                d.source.drop(index);
+                _self.dropForm(d.source, index)
             }
         }
 

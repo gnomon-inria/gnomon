@@ -75,6 +75,9 @@ void gnomonImageFilterCommand::setInput(std::shared_ptr<gnomonImageSeries> input
         d->input = input;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractImageFilter *) this->action)->setInput(d->input);
     ((gnomonAbstractImageFilter *) this->action)->refreshParameters();
 }
@@ -138,6 +141,9 @@ void gnomonImageFilterCommand::setMask(std::shared_ptr<gnomonBinaryImageSeries> 
         d->mask = init;
     }
     Q_ASSERT(this->action);
+    if (d->mask) {
+        d->mask->load();
+    }
     ((gnomonAbstractImageFilter *) this->action)->setMask(d->mask);
     this->action->refreshParameters();
 }
@@ -159,6 +165,13 @@ QJsonObject gnomonImageFilterCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonImageFilterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+    d->mask = nullptr;
 }
 
 // gnomonImageFilterCommand.cpp ends here

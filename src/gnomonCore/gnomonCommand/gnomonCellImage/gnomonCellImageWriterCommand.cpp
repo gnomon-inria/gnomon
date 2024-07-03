@@ -46,6 +46,9 @@ void gnomonCellImageWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonCellImageWriterCommand::predo(void)
 {
     ((gnomonAbstractCellImageWriter *) this->action)->setPath(this->m_path);
+    if (d->cellImage) {
+        d->cellImage->load();
+    }
     ((gnomonAbstractCellImageWriter *) this->action)->setCellImage(d->cellImage);
 }
 
@@ -88,6 +91,11 @@ void gnomonCellImageWriterCommand::setInputForm(const QString &name, std::shared
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonCellImageWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->cellImage = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonCellImageWriterCommand)

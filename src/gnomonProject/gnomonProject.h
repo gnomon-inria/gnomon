@@ -59,6 +59,7 @@ public:
     Q_INVOKABLE void addDirectoryToDataPath(const QString& path);
     Q_INVOKABLE bool isAccessible(const QString& path) const;
     Q_INVOKABLE QString relativePath(const QString& path) const;
+    Q_INVOKABLE bool isReadOnly(const QString& path) const;
 
 public:
     static QVariantMap readProjectInfoFromPath(const QString &path);

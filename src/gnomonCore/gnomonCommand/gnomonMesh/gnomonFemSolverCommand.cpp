@@ -46,6 +46,9 @@ void gnomonFemSolverCommand::setAlgorithmName(const QString& algo_name)
 
 void gnomonFemSolverCommand::predo(void)
 {
+    if (d->mesh) {
+        d->mesh->load();
+    }
     ((gnomonAbstractFemSolver *) this->action)->setInputMesh(d->mesh);
 }
 
@@ -117,6 +120,11 @@ QJsonObject gnomonFemSolverCommand::serializeResults(void) {
     QJsonObject out;
     out["updatedMesh"] = d->mesh->serialize();
     return out;
+}
+
+void gnomonFemSolverCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->mesh = nullptr;
 }
 
 //

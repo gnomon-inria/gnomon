@@ -38,6 +38,9 @@ void gnomonBinaryImageWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonBinaryImageWriterCommand::predo(void)
 {
     ((gnomonAbstractBinaryImageWriter *) this->action)->setPath(this->m_path);
+    if (d->binaryImage) {
+        d->binaryImage->load();
+    }
     ((gnomonAbstractBinaryImageWriter *) this->action)->setBinaryImage(d->binaryImage);
 }
 
@@ -80,6 +83,11 @@ void gnomonBinaryImageWriterCommand::setInputForm(const QString &name, std::shar
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonBinaryImageWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->binaryImage = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonBinaryImageWriterCommand)

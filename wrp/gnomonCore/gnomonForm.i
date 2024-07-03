@@ -619,8 +619,9 @@ PyObject *FromFormSeries(std::shared_ptr<gnomonAbstractDynamicForm> series) {
         for (auto it = times.begin(); it != times.end(); ++it) {
             t = *it;
             c = new std::shared_ptr<gnomonAbstractForm>(series->atAsAbstract(t));
-            v = SWIG_NewPointerObj(SWIG_as_voidptr(c), swig_type, SWIG_POINTER_OWN |  0 );
-            PyDict_SetItem(dict, PyFloat_FromDouble(t), v);
+            v = SWIG_NewPointerObj(SWIG_as_voidptr(c), swig_type, SWIG_POINTER_OWN);  // ref count: 1
+            PyDict_SetItem(dict, PyFloat_FromDouble(t), v);  // ref count: 2 (+1)
+            Py_XDECREF(v);  // ref count: 1 (-1)
         }
         series->selectCurrentTime(current_t);
         return dict;

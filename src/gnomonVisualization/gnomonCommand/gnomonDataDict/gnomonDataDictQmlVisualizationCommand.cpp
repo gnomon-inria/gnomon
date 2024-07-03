@@ -36,7 +36,7 @@ gnomonDataDictQmlVisualizationCommand::~gnomonDataDictQmlVisualizationCommand()
 
 void gnomonDataDictQmlVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::dataDictQmlVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractDataDictQmlVisualization>(visu);
     this->connectVisualization();
@@ -47,6 +47,9 @@ void gnomonDataDictQmlVisualizationCommand::setFormVisualization(const QString& 
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractDataDictQmlVisualization>(this->visu);
     if (visu) {
+        if (d->dataDict) {
+            d->dataDict->load();
+        }
         visu->setDataDict(d->dataDict);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();
@@ -93,6 +96,16 @@ void gnomonDataDictQmlVisualizationCommand::setInputForm(const QString &name, st
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonDataDictQmlVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->dataDict = nullptr;
+}
+
+void gnomonDataDictQmlVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->dataDict = nullptr;
 }
 
 //

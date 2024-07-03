@@ -64,6 +64,9 @@ void gnomonCellComplexFromCellImageCommand::setInput(std::shared_ptr<gnomonCellI
         d->input = input;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractCellComplexFromCellImage *) this->action)->setInput(d->input);
     this->action->refreshParameters();
 }
@@ -124,6 +127,12 @@ QJsonObject gnomonCellComplexFromCellImageCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonCellComplexFromCellImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
 }
 
 //

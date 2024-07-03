@@ -74,7 +74,7 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
         d->sources->views()[0]->setForm("gnomonCellImage", command->cellImage());
         std::shared_ptr<gnomonCellImageSeries> out_cellimage = d->sources->views()[0]->cellImage();
         GNOMON_SESSION->trackForm(out_cellimage);
-        int form_count = gnomonFormManager::instance()->formCount(out_cellimage->formName());
+        int form_count = GNOMON_FORM_MANAGER->formCount(out_cellimage->formName());
         out_cellimage->metadata()->set("name", out_cellimage->formName().remove("gnomon") + QString::number(form_count+1));
         out_cellimage->metadata()->set("source", d->algorithm);
         //gnomonPipelineManager::instance()->addClonedForm(command->cellImage(), out_cellimage);
@@ -85,7 +85,7 @@ void gnomonWorkspaceCellImageQuantification::viewOutputs()
     if(command->dataFrame()) {
         d->figure->setForm("gnomonDataFrame", command->dataFrame());
         GNOMON_SESSION->trackForm(command->dataFrame());
-        int form_count = gnomonFormManager::instance()->formCount(command->dataFrame()->formName());
+        int form_count = GNOMON_FORM_MANAGER->formCount(command->dataFrame()->formName());
         command->dataFrame()->metadata()->set("name", command->dataFrame()->formName().remove("gnomon") + QString::number(form_count+1));
         command->dataFrame()->metadata()->set("source", d->algorithm);
     }

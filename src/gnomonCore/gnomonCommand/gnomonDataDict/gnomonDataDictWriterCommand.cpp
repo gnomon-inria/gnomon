@@ -39,6 +39,9 @@ void gnomonDataDictWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonDataDictWriterCommand::predo(void)
 {
     ((gnomonAbstractDataDictWriter *) this->action)->setPath(this->m_path);
+    if (d->dataDict) {
+        d->dataDict->load();
+    }
     ((gnomonAbstractDataDictWriter *) this->action)->setDataDict(d->dataDict);
 }
 
@@ -81,6 +84,11 @@ void gnomonDataDictWriterCommand::setInputForm(const QString &name, std::shared_
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonDataDictWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->dataDict = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonDataDictWriterCommand)

@@ -73,6 +73,9 @@ void gnomonPointCloudFromImageCommand::setInput(std::shared_ptr<gnomonImageSerie
         d->input = image;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractPointCloudFromImage *) this->action)->setInput(d->input);
     this->action->refreshParameters();
 }
@@ -90,6 +93,9 @@ void gnomonPointCloudFromImageCommand::setCellImage(std::shared_ptr<gnomonCellIm
         d->cellImage = cellImage;
     }
     Q_ASSERT(this->action);
+    if (d->cellImage) {
+        d->cellImage->load();
+    }
     ((gnomonAbstractPointCloudFromImage *) this->action)->setCellImage(d->cellImage);
     this->action->refreshParameters();
 }
@@ -154,6 +160,13 @@ QJsonObject gnomonPointCloudFromImageCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonPointCloudFromImageCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
+    d->cellImage = nullptr;
 }
 
 //

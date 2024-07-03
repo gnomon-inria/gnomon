@@ -38,6 +38,9 @@ void gnomonCellComplexWriterCommand::predo()
 {
     Q_ASSERT(this->action);
     ((gnomonAbstractCellComplexWriter *) this->action)->setPath(this->m_path);
+    if (d->cellComplex) {
+        d->cellComplex->load();
+    }
     ((gnomonAbstractCellComplexWriter *) this->action)->setCellComplex(d->cellComplex);
 }
 
@@ -79,6 +82,11 @@ void gnomonCellComplexWriterCommand::setInputForm(const QString &name, std::shar
 
 void gnomonCellComplexWriterCommand::postdo(void) {
 
+}
+
+void gnomonCellComplexWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->cellComplex = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonCellComplexWriterCommand)

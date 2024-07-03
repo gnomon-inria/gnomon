@@ -36,7 +36,7 @@ gnomonTreeMplVisualizationCommand::~gnomonTreeMplVisualizationCommand()
 
 void gnomonTreeMplVisualizationCommand::newVisualization(void)
 {
-    this->clear();
+    gnomonAbstractVisualizationCommand::clear();
     auto visu = gnomonVisualization::treeMplVisualization::pluginFactory().create(this->visu_name);
     this->visu = std::shared_ptr<gnomonAbstractTreeMplVisualization>(visu);
     this->connectVisualization();
@@ -47,6 +47,9 @@ void gnomonTreeMplVisualizationCommand::setFormVisualization(const QString& visu
     this->setVisualizationName(visu_name);
     auto &&visu = std::static_pointer_cast<gnomonAbstractTreeMplVisualization>(this->visu);
     if (visu) {
+        if (d->tree) {
+            d->tree->load();
+        }
         visu->setTree(d->tree);
         this->setVisualizationParameters(parameters);
         visu->refreshParameters();
@@ -93,6 +96,16 @@ void gnomonTreeMplVisualizationCommand::setInputForm(const QString &name, std::s
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonTreeMplVisualizationCommand::clear(void) {
+    gnomonAbstractVisualizationCommand::clear();
+    d->tree = nullptr;
+}
+
+void gnomonTreeMplVisualizationCommand::clear(bool clear_visu) {
+    gnomonAbstractVisualizationCommand::clear(clear_visu);
+    d->tree = nullptr;
 }
 
 //

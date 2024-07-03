@@ -8,10 +8,11 @@ import gnomonQuick.Style as G
 Control {
     id: _control
 
-    property var value: 1
-    property var min: 0
-    property var max: 1
-    property var decimals: 2
+    property double value: 1
+    property double min: 0
+    property double max: 1
+    property int decimals: 2
+    property double stepSize: 0.0
 
     property var label: "";
     property var doc: "";
@@ -47,6 +48,7 @@ Control {
         from: _control.min
         to: _control.max
         value: _control.value
+        stepSize: _control.stepSize
 
         onValueChanged: {
             if (_slider.value != _control.value)

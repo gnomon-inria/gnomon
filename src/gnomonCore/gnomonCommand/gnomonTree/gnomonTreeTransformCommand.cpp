@@ -72,6 +72,9 @@ void gnomonTreeTransformCommand::setInput(std::shared_ptr<gnomonTreeSeries> inpu
         d->input = input;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractTreeTransform *) this->action)->setInput(d->input);
     this->action->refreshParameters();
 }
@@ -131,6 +134,12 @@ QJsonObject gnomonTreeTransformCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonTreeTransformCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
 }
 
 //

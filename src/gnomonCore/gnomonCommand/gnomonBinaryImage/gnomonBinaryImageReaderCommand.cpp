@@ -86,4 +86,9 @@ QJsonObject gnomonBinaryImageReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonBinaryImageReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->binaryImage = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonBinaryImageReaderCommand)

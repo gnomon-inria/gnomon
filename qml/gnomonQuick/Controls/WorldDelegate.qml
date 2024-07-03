@@ -72,7 +72,21 @@ Item {
             fileMode: P.FileDialog.SaveFile
 
             onAccepted: {
-                GV.World.saveAs(form_id, _file_dialog.file);
+                if (!GV.World.formLoaded(form_id)) {
+                    _hibernating_toast.index = form_id
+                    _hibernating_toast.file = _file_dialog.file
+                    _hibernating_toast.open()
+                } else {
+                    GV.World.saveAs(form_id, _file_dialog.file);
+                }
+            }
+
+            Connections {
+                target: _hibernating_toast
+                function onOpened() {
+                    GV.World.saveAs(_hibernating_toast.index, _hibernating_toast.file);
+                    _hibernating_toast.close()
+                }
             }
         }
 
@@ -81,6 +95,27 @@ Item {
             anchors.fill: parent
             fillMode: Image.PreserveAspectFit
             source: "image://thumbnails/" + form_id
+        }
+
+        G.Icon {
+            id: _hibernating_icon
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: G.Style.smallPadding/2
+
+            icon: "database"
+            size: G.Style.iconSmall;
+            color: G.Style.colors.textColorLightBase;
+            outline: true
+            visible: !GV.World.formLoaded(form_id)
+            G.ToolTip {
+                text: "This form is not in memory but available on the disk."
+                visible: _hibernating_icon.hovered
+            }
+            Timer {
+                interval: 1000; running: true; repeat: true
+                onTriggered: _hibernating_icon.visible = !GV.World.formLoaded(form_id)
+            }
         }
 
         MouseArea {
@@ -272,5 +307,18 @@ Item {
         message: "This form has an output edge or already dropped in an other workspace"
 
         type: G.Style.ButtonType.Warning
+    }
+
+    G.Toast {
+        id: _hibernating_toast
+
+        property int index;
+        property var file;
+
+        parent: Overlay.overlay
+        header: "Reloading form " + GV.World.getDynamicFormMetadata(_hibernating_toast.index).data["name"]
+        message: "The form was hibernating, please wait while it is reloaded. This may take a few seconds. (You may change the hibernation threshold in the ⚙ Settings)"
+
+        type: G.Style.ButtonType.Base
     }
 }

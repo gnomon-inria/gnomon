@@ -49,8 +49,6 @@ public slots:
     virtual void run(bool no_async=false);
     virtual void setInputs(void);
     virtual void viewOutputs(void);
-    virtual void saveState(void);
-    virtual void restoreState(void);
     virtual void export_outputs(void) override;
 
 public slots:
@@ -81,8 +79,12 @@ public:
     gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
-    QJsonObject serialize(void) override;
-    void deserialize(const QJsonObject&) override;
+    QJsonObject _serialize(void) override;
+    void _deserialize(const QJsonObject&) override;
+
+    void restoreView(void) override;
+
+    void hibernate(QString uuid) override;
 
 protected:
     void addInputView(const QVector<QString>& accepted_forms = {}, QStringList nodePortNames = {});

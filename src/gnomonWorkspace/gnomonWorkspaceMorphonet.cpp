@@ -59,7 +59,6 @@ public:
     QFutureWatcher<void> *watcher = nullptr;
     QProcess *morphoplot_process =  nullptr;
     QTemporaryDir *morphoplot_tmp_dir = nullptr;
-    QJsonObject state;
 private:
     SimpleCrypt crypto = SimpleCrypt(Q_UINT64_C(0x0c2ad6a4adb3f073));
 };
@@ -378,7 +377,7 @@ void gnomonWorkspaceMorphonet::onDataLoaded(int startTime, int endTime)
 {
     if(!d->img_series->times().isEmpty()) {
         d->view->clear();
-        int form_count = gnomonFormManager::instance()->formCount(d->img_series->formName());
+        int form_count = GNOMON_FORM_MANAGER->formCount(d->img_series->formName());
         d->img_series->metadata()->set("name", d->img_series->formName().remove("gnomon") + QString::number(form_count+1));
         d->view->setForm("gnomonCellImage", d->img_series, {});
         GNOMON_SESSION->trackForm(d->img_series);
@@ -493,22 +492,16 @@ gnomonVtkView *gnomonWorkspaceMorphonet::view(void)
     return d->view;
 }
 
-void gnomonWorkspaceMorphonet::saveState(void) 
-{
-    d->state = serialize();
-}
-
-void gnomonWorkspaceMorphonet::restoreState(void) 
-{
-    deserialize(d->state);
+void gnomonWorkspaceMorphonet::restoreView(void) {
+    d->view->restoreState();
 }
 
 void gnomonWorkspaceMorphonet::export_outputs(void) {
     d->view->transmit();
 }
 
-QJsonObject gnomonWorkspaceMorphonet::serialize() {
-    QJsonObject state = gnomonAbstractWorkspace::serialize();
+QJsonObject gnomonWorkspaceMorphonet::_serialize() {
+    QJsonObject state = gnomonAbstractWorkspace::_serialize();
     state.insert("current_id", currentId());
     state.insert("upload", uploadMode());
     state.insert("voxelsize", d->voxelsize);
@@ -518,8 +511,8 @@ QJsonObject gnomonWorkspaceMorphonet::serialize() {
     return state;
 }
 
-void gnomonWorkspaceMorphonet::deserialize(const QJsonObject &state) {
-    gnomonAbstractWorkspace::deserialize(state);
+void gnomonWorkspaceMorphonet::_deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::_deserialize(state);
     setCurrentId(state["current_id"].toInt());
     setUploadMode(state["upload"].toBool());
     d->voxelsize = state["voxelsize"].toDouble();
