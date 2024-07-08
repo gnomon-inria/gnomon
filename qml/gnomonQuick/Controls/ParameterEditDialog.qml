@@ -341,6 +341,9 @@ G.Dialog {
 
     G.ParameterCreationDialog {
         id: _new_parameter_dialog
+        onAccepted: {
+            d.addParameter(name, type, _group_list.currentItem.group)
+        }
     }
 
     G.SimpleDialog {
@@ -352,6 +355,7 @@ G.Dialog {
         caption: "Removing a parameter does not remove its occurrences in the code. It may end up generating a lot of errors."
 
         onAccepted: {
+            console.log("=====!!!!!!!!!!============", param)
             d.removeParameter(param.label)
         }
     }

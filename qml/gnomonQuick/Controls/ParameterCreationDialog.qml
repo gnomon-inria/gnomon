@@ -17,6 +17,7 @@ G.Dialog {
 
     property alias name: _name_edit.text
     property alias type_index: _type_combobox.currentIndex
+    property var type: _parameter_types.get(type_index).type
 
     x: Math.round((window.width - width) / 2)
     y: Math.round((window.height - height) / 2)
