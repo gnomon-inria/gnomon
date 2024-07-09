@@ -39,7 +39,7 @@ G.Dialog {
         width: _self.width / 5;
 
         anchors.top: parent.top;
-        anchors.bottom: parent.bottom;
+        anchors.bottom: _new_parameter_delegate.top;
         anchors.left: parent.left;
         anchors.margins: 0;
         anchors.leftMargin: G.Style.smallPadding
@@ -64,7 +64,7 @@ G.Dialog {
             id: _group_list
 
             anchors.top: _group_title.bottom
-            anchors.bottom: _new_group_delegate.top
+            anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
 
@@ -126,49 +126,13 @@ G.Dialog {
 
             ScrollBar.vertical: ScrollBar { visible: _group_list._delegate_contentHeight > _group_list.height; }
         }
-
-        G.ListItemDelegate {
-            id: _new_group_delegate
-
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            implicitHeight: G.Style.largeButtonHeight
-
-            text: "New Group";
-            font: G.Style.fonts.cardLabel
-
-            onClicked: {
-                _new_group_dialog.name = ""
-                _new_group_dialog.open()
-            }
-
-            G.IconButton {
-                id: _new_group_button;
-
-                iconName: "plus";
-                size: G.Style.iconMedium;
-                tooltip: "Add a new parameter group";
-
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-
-                onClicked: {
-                    _new_group_dialog.name = ""
-                    _new_group_dialog.open()
-                }
-            }
-        }
     }
 
     G.Gutter {
         id: _parameter_panel;
 
         anchors.top: parent.top;
-        anchors.bottom: parent.bottom;
+        anchors.bottom: _new_parameter_delegate.top
         anchors.left: _group_panel.right;
         anchors.leftMargin: 2;
         z: 1
@@ -196,7 +160,7 @@ G.Dialog {
             id: _all_parameter_list
 
             anchors.top: _parameter_title.bottom
-            anchors.bottom: _new_parameter_delegate.top
+            anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
 
@@ -293,50 +257,43 @@ G.Dialog {
                 ScrollBar.vertical: ScrollBar { visible: _parameter_list.contentHeight > _parameter_list.height; }
             }
         }
+    }
 
-        G.ListItemDelegate {
-            id: _new_parameter_delegate
+    G.ListItemDelegate {
+        id: _new_parameter_delegate
 
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        anchors.left: _group_panel.left
+        anchors.right: _parameter_panel.right
+
+        implicitHeight: G.Style.largeButtonHeight
+
+        text: "New Parameter";
+        font: G.Style.fonts.cardLabel
+
+        onClicked: {
+            _new_parameter_dialog.name = ""
+            _new_parameter_dialog.type_index = 0
+            _new_parameter_dialog.open()
+        }
+
+        G.IconButton {
+            id: _new_parameter_button;
+
+            iconName: "plus";
+            size: G.Style.iconMedium;
+            tooltip: "Add a new parameter";
+
             anchors.right: parent.right
-
-            implicitHeight: G.Style.largeButtonHeight
-            visible: _group_list.currentIndex != -1
-
-            text: "New Parameter";
-            font: G.Style.fonts.cardLabel
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.margins: G.Style.smallPadding
 
             onClicked: {
                 _new_parameter_dialog.name = ""
                 _new_parameter_dialog.type_index = 0
                 _new_parameter_dialog.open()
             }
-
-            G.IconButton {
-                id: _new_parameter_button;
-
-                iconName: "plus";
-                size: G.Style.iconMedium;
-                tooltip: "Add a new parameter";
-
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.margins: G.Style.smallPadding
-
-                onClicked: {
-                    _new_parameter_dialog.name = ""
-                    _new_parameter_dialog.type_index = 0
-                    _new_parameter_dialog.open()
-                }
-            }
         }
-    }
-
-    G.ParameterCreationDialog {
-        id: _new_group_dialog
-
-        isGroup: true
     }
 
     G.ParameterCreationDialog {

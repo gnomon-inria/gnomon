@@ -13,17 +13,17 @@ G.Dialog {
 
     parent: Overlay.overlay
 
-    property bool isGroup: false
-
     property alias name: _name_edit.text
     property alias type_index: _type_combobox.currentIndex
     property var type: _parameter_types.get(type_index).type
+
+    property bool is_valid: (_name_edit.text != "") && (!_new_group_checkbox.checked || (_group_name_edit.text != ""))
 
     x: Math.round((window.width - width) / 2)
     y: Math.round((window.height - height) / 2)
 
     width: G.Style.smallDialogWidth
-    height: G.Style.smallDialogHeight
+    height: (G.Style.smallDialogHeight + G.Style.mediumDialogHeight)/2
 
     focus: true
     modal: true
@@ -47,15 +47,15 @@ G.Dialog {
 
         G.Button {
             text: 'OK';
-            type: _name_edit.text != "" ? G.Style.ButtonType.OK : G.Style.ButtonType.Danger
+            type: _self.is_valid ? G.Style.ButtonType.OK : G.Style.ButtonType.Danger
             width: G.Style.buttonWidth
-            enabled: _name_edit.text != ""
-            flat: _name_edit.text == ""
+            enabled: _self.is_valid
+            flat: !_self.is_valid
             onClicked: _self.accept();
         }
     }
 
-    title: _self.isGroup ? "New Parameter Group" : "New Parameter"
+    title: "New Parameter"
 
     Label {
         id: _name_label
@@ -103,7 +103,6 @@ G.Dialog {
         anchors.margins: G.Style.smallPadding
 
         width: G.Style.shortButtonWidth
-        visible: !_self.isGroup
 
         text: "TYPE"
         font: G.Style.fonts.label
@@ -120,12 +119,61 @@ G.Dialog {
 
         width: parent.width/2
         height: G.Style.mediumLabelHeight
-        visible: !_self.isGroup
 
         model: _parameter_types
         textRole: "name"
 
         currentIndex: 0
+    }
+
+    G.CheckBox {
+        id: _new_group_checkbox
+
+        anchors.left: _type_label.right
+        anchors.top: _type_combobox.bottom
+        anchors.margins: G.Style.smallPadding
+
+        text: "Create a new group"
+        checked: false
+    }
+
+    Label {
+        id: _group_name_label
+
+        anchors.left: parent.left
+        anchors.top:  _new_group_checkbox.bottom
+        anchors.margins: G.Style.smallPadding
+
+        width: G.Style.shortButtonWidth
+        visible: _new_group_checkbox.checked
+
+        text: "GROUP NAME"
+        font: G.Style.fonts.label
+        color: G.Style.colors.textColorBase
+        horizontalAlignment: Text.AlignRight
+    }
+
+    G.TextField {
+        id: _group_name_edit
+
+        anchors.left: _group_name_label.right
+        anchors.top: _new_group_checkbox.bottom
+        anchors.margins: G.Style.smallPadding
+
+        width: parent.width/2
+        height: G.Style.mediumLabelHeight
+        visible: _new_group_checkbox.checked
+
+        text: ""
+        color: G.Style.colors.hoveredBaseColor
+        font: G.Style.fonts.header
+
+        backgroundHighlightColor: text != "" ? G.Style.colors.okColor : G.Style.colors.dangerColor
+
+        background: Rectangle {
+            color: G.Style.colors.gutterColor;
+            radius: G.Style.panelRadius;
+        }
     }
 
     ListModel {
