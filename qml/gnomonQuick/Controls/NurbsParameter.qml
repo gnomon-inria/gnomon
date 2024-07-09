@@ -1,6 +1,7 @@
 import QtQuick          2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts  1.15
+import QtQuick.Window
 
 import gnomonQuick.Controls as G
 import gnomonQuick.Style as G
@@ -15,6 +16,7 @@ Control {
     required property var param
     property alias view: _view;
     property int number: _view.number;
+    property bool _is_curve : true
 
     implicitHeight: _label.implicitHeight + G.Style.smallPanelHeight
     width: G.Style.largePanelWidth
@@ -44,7 +46,8 @@ Control {
         //anchors.bottom: parent.bottom
 
         width: parent.width
-        implicitHeight: 200
+        implicitHeight: _edit_appeareance_curve.visible ? 200 : parent.height
+
         onWidthChanged : {
             if (_view.visible) {
                 _view.setGeom(_view.width, _view.height);
@@ -67,6 +70,28 @@ Control {
         onMouseReleased : {
             param.updateControlPointsFromPython()
         }
+
+        G.IconButton {
+            id: _edit_appeareance_curve
+
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.rightMargin: G.Style.smallPadding
+            size: G.Style.iconSmall;
+            iconName: "pencil"
+            visible: !_nurbs_config_dialog.visible
+
+            onClicked: {
+                _control._is_curve = true
+
+                _nurbs_config_dialog.x = window.x
+                _nurbs_config_dialog.y = window.y
+                _nurbs_config_dialog.visible = true
+                _nurbs_view_in_dialog.visible = false
+                _view.parent = _curve_container_in_dialog
+                _curve_container_in_dialog.visible = true
+            }
+        }
     }
 
     G.ViewNurbs {
@@ -81,22 +106,27 @@ Control {
             window.insideParamFigure()
         }
 
-        MouseArea {
-            id: _mouse_area
-            anchors.fill: parent
-            propagateComposedEvents: true
+        G.IconButton {
 
-            onClicked: (mouse)=> {
-                if(param.nurbsType == GV.NurbsParameter.SURFACE) {
-                    param.updateRenderWindow()
-                }
-                _mouse_area.enabled = false
-                mouse.accepted = false
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.rightMargin: G.Style.smallPadding
+            size: G.Style.iconSmall;
+            iconName: "pencil"
+            visible: !_nurbs_config_dialog.visible
+
+            onClicked: {
+                _control._is_curve = false
+
+                _nurbs_config_dialog.x = window.x
+                _nurbs_config_dialog.y = window.y
+                _nurbs_config_dialog.visible = true
+                // _nurbs_view.parent = _nurbs_config_dialog.contentItem
             }
         }
 
         Component.onCompleted: {
-            param.nurbsView.backgroundColor = Qt.binding(function() {return G.Style.figureColors.bgColor})
+            param.nurbsViewWidget.backgroundColor = Qt.binding(function() {return G.Style.figureColors.bgColor})
         }
     }
 
@@ -131,11 +161,112 @@ Control {
         */
     }
 
+    Window {
+        id: _nurbs_config_dialog
+        flags: Qt.Dialog
+
+        width: window.width / 2
+        height: window.height
+        minimumWidth : width
+        maximumWidth : width
+        minimumHeight : height
+        maximumHeight : height
+
+        Rectangle {
+            id: _curve_container_in_dialog
+            visible: false
+            width: parent.width
+            implicitHeight: parent.height
+        }
+
+        G.ViewNurbs {
+            id: _nurbs_view_in_dialog;
+
+            width: parent.width
+            implicitHeight: parent.height
+
+            onHoveredChanged: {
+                window.insideParamFigure()
+            }
+
+            
+            MouseArea {
+                id: _mouse_area
+                anchors.fill: parent
+                propagateComposedEvents: true
+
+                onClicked: (mouse)=> {
+                    if(param.nurbsType == GV.NurbsParameter.SURFACE) {
+                        param.updateRenderWindow()
+                    }
+                    _mouse_area.enabled = false
+                    mouse.accepted = false
+                }
+            }
+
+            Component.onCompleted: {
+                param.nurbsView.backgroundColor = Qt.binding(function() {return G.Style.figureColors.bgColor})
+            }
+        }
+
+        onClosing : (close) => {
+            if(_control._is_curve)
+                _view.parent = _control
+        }
+
+        Rectangle {
+            implicitHeight : _buttons.implicitHeight
+            implicitWidth : parent.width
+            anchors.bottom: parent.bottom
+            anchors.topMargin: G.Style.mediumPadding
+
+            DialogButtonBox {
+                id: _buttons
+                anchors.fill: parent
+                visible: true
+                alignment: Qt.AlignRight
+                spacing: G.Style.smallPadding
+
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: G.Style.colors.bgColor
+                }
+
+                G.Button {
+                    text: 'OK';
+                    type: G.Style.ButtonType.Base
+                    width: G.Style.buttonWidth
+
+                    onClicked: {
+                        _nurbs_config_dialog.close()
+                        if(_control._is_curve)
+                            _view.parent = _control
+                        param.updateControlPointsFromPython()
+                    }
+                }
+
+                G.Button {
+                    text: 'Cancel';
+                    flat: true
+                    type: G.Style.ButtonType.Neutral
+                    width: G.Style.buttonWidth
+
+                    onClicked: {
+                        _nurbs_config_dialog.close()
+                        if(_control._is_curve)
+                            _view.parent = _control
+                        param.updateControlPointsInPython()
+                    }
+                }
+            }
+        }
+    }
 
     Component.onCompleted: {
         //d.onParametersChanged();
         if(param.nurbsType == GV.NurbsParameter.SURFACE) {
-            G.Associator.associateNurbs(_nurbs_view, param.nurbsView)
+            G.Associator.associateNurbs(_nurbs_view_in_dialog, param.nurbsView)
+            G.Associator.associateNurbs(_nurbs_view, param.nurbsViewWidget)
             _view.visible = false
             _nurbs_view.visible = true
             param.buildNurbsPatch()
