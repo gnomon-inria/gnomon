@@ -24,6 +24,7 @@ public:
     Q_PROPERTY(double delta READ delta WRITE setDelta NOTIFY deltaChanged)
     Q_PROPERTY(QStringList controlPoints READ controlPoints WRITE setControlPoints NOTIFY controlPointsChanged)
     Q_PROPERTY(gnomonNurbsView* nurbsView READ nurbsView CONSTANT);
+    Q_PROPERTY(gnomonNurbsView* nurbsViewWidget READ nurbsViewWidget CONSTANT);
     Q_PROPERTY(int nurbsType READ nurbsType CONSTANT);
 
 public:
@@ -32,6 +33,7 @@ public:
 
 public:
     Q_INVOKABLE void updateControlPointsFromPython(void);
+    Q_INVOKABLE void updateControlPointsInPython(void);
     Q_INVOKABLE void buildNurbsPatch(void);
 
 public:
@@ -40,6 +42,7 @@ public:
     QStringList controlPoints(void);
     int figureNumber(void);
     gnomonNurbsView *nurbsView(void);
+    gnomonNurbsView *nurbsViewWidget(void);
     int nurbsType(void) const;
 
     void setDegree(int);
