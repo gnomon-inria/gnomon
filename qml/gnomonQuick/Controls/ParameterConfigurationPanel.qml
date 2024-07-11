@@ -72,7 +72,7 @@ Control {
         width: _self.width/2
         height: G.Style.smallLabelHeight
 
-        text : _self.param ? _parameter_types.get(findIndex(_parameter_types, "type", _self.param.type)).name : ""
+        text : _self.param ? (findIndex(_parameter_types, "type", _self.param.type) != -1? _parameter_types.get(findIndex(_parameter_types, "type", _self.param.type)).name : "") : ""
         font: G.Style.fonts.value
         color: G.Style.colors.textColorBase
         horizontalAlignment: Text.AlignLeft

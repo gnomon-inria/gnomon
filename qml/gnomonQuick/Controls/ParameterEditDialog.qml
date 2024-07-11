@@ -33,13 +33,19 @@ G.Dialog {
     title: "Edit Parameters"
     padding: 0;
 
+    onOpened : {
+        if (_group_list.model.count > 0) {
+            _group_list.currentIndex = 0
+        }
+    }
+
     G.Gutter {
         id: _group_panel;
 
         width: _self.width / 5;
 
         anchors.top: parent.top;
-        anchors.bottom: _new_parameter_delegate.top;
+        anchors.bottom: _new_group_delegate.top;
         anchors.left: parent.left;
         anchors.margins: 0;
         anchors.leftMargin: G.Style.smallPadding
@@ -125,44 +131,43 @@ G.Dialog {
             }
 
             ScrollBar.vertical: ScrollBar { visible: _group_list._delegate_contentHeight > _group_list.height; }
+        }
+    }
 
-            DropArea {
-                id: _new_group_drop;
+    G.ListItemDelegate {
+        id: _new_group_delegate
 
-                anchors.fill: parent;
-                anchors.topMargin: _group_list.model.count * G.Style.largeButtonHeight
+        anchors.bottom: parent.bottom
+        anchors.left: _group_panel.left
+        anchors.right: _group_panel.right
 
-                G.IconButton {
-                    anchors.horizontalCenter: parent.horizontalCenter;
-                    anchors.bottom: _new_group_label.top;
+        implicitHeight: G.Style.largeButtonHeight
+        hoverColor: G.Style.colors.fgColor
 
-                    iconName: "arrow-down-drop-circle";
-                    size: G.Style.largeButtonHeight
-                    color: G.Style.colors.bgColor;
-                    visible: _new_group_drop.containsDrag;
-                }
+        highlighted: _new_group_drop.containsDrag;
 
-                Label {
-                    id: _new_group_label
+        text: "New Group";
+        font: G.Style.fonts.cardLabel
 
-                    anchors.horizontalCenter: parent.horizontalCenter;
-                    anchors.bottom: parent.bottom;
+        DropArea {
+            id: _new_group_drop;
 
-                    height: G.Style.largeButtonHeight
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
+            anchors.fill: parent;
 
-                    text: "New Group"
-                    font: G.Style.fonts.cardLabel
-                    color: G.Style.colors.bgColor;
-                    visible: _new_group_drop.containsDrag;
-                }
+            G.IconButton {
+                anchors.centerIn: parent;
 
-                onDropped: (drop) => {
-                    _new_group_dialog.param = drag.source.param
-                    _new_group_dialog.open()
-                    drop.accept()
-                }
+                iconName: "arrow-down-drop-circle";
+                size: G.Style.largeButtonHeight
+                color: G.Style.colors.baseColor;
+                visible: _new_group_drop.containsDrag;
+            }
+
+            onDropped: (drop) => {
+                _new_group_dialog.name = ""
+                _new_group_dialog.param = drag.source.param
+                _new_group_dialog.open()
+                drop.accept()
             }
         }
     }
@@ -226,11 +231,13 @@ G.Dialog {
                 model: parameters
 
                 onCurrentIndexChanged: {
-                    _parameter_config_panel.param = currentIndex != -1 ? model.get(currentIndex).param : undefined
+                    if (currentIndex != -1) {
+                        _parameter_config_panel.param = model.get(currentIndex).param
+                    }
                 }
 
                 onVisibleChanged: {
-                    currentIndex = -1
+                    currentIndex = visible? 0 : -1
                 }
 
                 delegate: G.ListItemDelegate {
@@ -302,7 +309,7 @@ G.Dialog {
         id: _new_parameter_delegate
 
         anchors.bottom: parent.bottom
-        anchors.left: _group_panel.left
+        anchors.left: _parameter_panel.left
         anchors.right: _parameter_panel.right
 
         implicitHeight: G.Style.largeButtonHeight
@@ -313,6 +320,8 @@ G.Dialog {
         onClicked: {
             _new_parameter_dialog.name = ""
             _new_parameter_dialog.type_index = 0
+            _new_parameter_dialog.new_group = _group_list.currentIdex == -1
+            _new_parameter_dialog.group_name = ""
             _new_parameter_dialog.open()
         }
 
