@@ -13,6 +13,8 @@ G.Dialog {
 
     parent: Overlay.overlay
 
+    property bool isGroup: false
+
     property alias name: _name_edit.text
     property alias type_index: _type_combobox.currentIndex
     property var type: _parameter_types.get(type_index).type
@@ -23,7 +25,7 @@ G.Dialog {
     y: Math.round((window.height - height) / 2)
 
     width: G.Style.smallDialogWidth
-    height: (G.Style.smallDialogHeight + G.Style.mediumDialogHeight)/2
+    height: _self.isGroup? G.Style.smallDialogHeight : (G.Style.smallDialogHeight + G.Style.mediumDialogHeight)/2
 
     focus: true
     modal: true
@@ -55,7 +57,8 @@ G.Dialog {
         }
     }
 
-    title: "New Parameter"
+    title: _self.isGroup ? "New Parameter Group" : "New Parameter"
+
 
     Label {
         id: _name_label
@@ -103,6 +106,7 @@ G.Dialog {
         anchors.margins: G.Style.smallPadding
 
         width: G.Style.shortButtonWidth
+        visible: !_self.isGroup
 
         text: "TYPE"
         font: G.Style.fonts.label
@@ -119,6 +123,7 @@ G.Dialog {
 
         width: parent.width/2
         height: G.Style.mediumLabelHeight
+        visible: !_self.isGroup
 
         model: _parameter_types
         textRole: "name"
@@ -135,6 +140,7 @@ G.Dialog {
 
         text: "Create a new group"
         checked: false
+        visible: !_self.isGroup
     }
 
     Label {

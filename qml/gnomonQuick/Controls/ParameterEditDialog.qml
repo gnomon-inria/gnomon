@@ -125,6 +125,45 @@ G.Dialog {
             }
 
             ScrollBar.vertical: ScrollBar { visible: _group_list._delegate_contentHeight > _group_list.height; }
+
+            DropArea {
+                id: _new_group_drop;
+
+                anchors.fill: parent;
+                anchors.topMargin: _group_list.model.count * G.Style.largeButtonHeight
+
+                G.IconButton {
+                    anchors.horizontalCenter: parent.horizontalCenter;
+                    anchors.bottom: _new_group_label.top;
+
+                    iconName: "arrow-down-drop-circle";
+                    size: G.Style.largeButtonHeight
+                    color: G.Style.colors.bgColor;
+                    visible: _new_group_drop.containsDrag;
+                }
+
+                Label {
+                    id: _new_group_label
+
+                    anchors.horizontalCenter: parent.horizontalCenter;
+                    anchors.bottom: parent.bottom;
+
+                    height: G.Style.largeButtonHeight
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    text: "New Group"
+                    font: G.Style.fonts.cardLabel
+                    color: G.Style.colors.bgColor;
+                    visible: _new_group_drop.containsDrag;
+                }
+
+                onDropped: (drop) => {
+                    _new_group_dialog.param = drag.source.param
+                    _new_group_dialog.open()
+                    drop.accept()
+                }
+            }
         }
     }
 
@@ -300,6 +339,23 @@ G.Dialog {
         id: _new_parameter_dialog
         onAccepted: {
             d.addParameter(name, type, _group_list.currentItem.group)
+        }
+    }
+
+    G.ParameterCreationDialog {
+        id: _new_group_dialog
+
+        property var param
+
+        isGroup: true
+
+        onAccepted: {
+            let group = _new_group_dialog.name
+            let source_group = param.group
+            console.log("Move parameter", param.label, "from group", source_group, "to NEW group", group)
+
+            param.group = group
+            _self.d.updateParametersModel(false);
         }
     }
 
