@@ -663,7 +663,6 @@ void gnomonCoreParameterNurbsObject::buildNurbsPatch(void)
 }
 
 void gnomonCoreParameterNurbsObject::updateRenderWindow(void) {
-    static bool do_it_once = true;
     if(m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
         if (d->pVisSurface) {
             PyGILState_STATE gstate;
@@ -671,25 +670,21 @@ void gnomonCoreParameterNurbsObject::updateRenderWindow(void) {
 
             auto render_window = d->nurbsView->renderWindow();
             PyObject *pRenderWindow = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window));
-            qDebug() << Q_FUNC_INFO << "set_render_window";
             if (!pRenderWindow) {
                 dtkWarn() << "Could not convert render window from C++";
             } else {
                 PyObject_CallMethod(d->pVisSurface, "set_render_window", "(O)", pRenderWindow);
             }
             Py_DECREF(pRenderWindow);
-            if(do_it_once) {
-                auto render_window_widget = d->nurbsViewWidget->renderWindow();
-                PyObject *pRenderWindowWidget = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window_widget));
-                qDebug() << Q_FUNC_INFO << "set_render_window";
-                if (!pRenderWindowWidget) {
-                    dtkWarn() << "Could not convert render window from C++";
-                } else {
-                    PyObject_CallMethod(d->pVisSurfaceWidget, "set_render_window", "(O)", pRenderWindowWidget);
-                }
-                Py_DECREF(pRenderWindowWidget);
-                do_it_once = false;
+
+            auto render_window_widget = d->nurbsViewWidget->renderWindow();
+            PyObject *pRenderWindowWidget = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window_widget));
+            if (!pRenderWindowWidget) {
+                dtkWarn() << "Could not convert render window from C++";
+            } else {
+                PyObject_CallMethod(d->pVisSurfaceWidget, "set_render_window", "(O)", pRenderWindowWidget);
             }
+            Py_DECREF(pRenderWindowWidget);
 
             PyGILState_Release(gstate);
         } else {
