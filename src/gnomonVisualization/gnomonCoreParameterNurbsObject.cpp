@@ -353,7 +353,7 @@ double gnomonCoreParameterNurbsObject::delta(void)
 void gnomonCoreParameterNurbsObject::updateControlPointsInPython(void)
 {
     // This update concern nurbs patch control points
-    if(!d->pSurface)
+    if(!d->pSurface && !d->pSurfaceWidget)
         return;
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure();
@@ -372,13 +372,16 @@ void gnomonCoreParameterNurbsObject::updateControlPointsInPython(void)
         return;
     }
 
-    PyObject_SetAttrString(d->pSurface, "ctrlpts", p_ctrlpts);
-
+    if(d->pSurface)
+        PyObject_SetAttrString(d->pSurface, "ctrlpts", p_ctrlpts);
+    if(d->pSurfaceWidget)
+        PyObject_SetAttrString(d->pSurfaceWidget, "ctrlpts", p_ctrlpts);
     Py_DECREF(p_ctrlpts);
+
+    qDebug() << Q_FUNC_INFO << "update";
 
     auto render_window = d->nurbsView->renderWindow();
     PyObject *pRenderWindow = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window));
-    qDebug() << Q_FUNC_INFO << "update";
     if (!pRenderWindow) {
         dtkWarn() << "Could not convert render window from C++";
     } else {
@@ -387,7 +390,18 @@ void gnomonCoreParameterNurbsObject::updateControlPointsInPython(void)
         Py_DECREF(pFunc);
     }
     Py_DECREF(pRenderWindow);
-    
+
+    auto render_window_widget = d->nurbsViewWidget->renderWindow();
+    PyObject *pRenderWindowWidget = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window_widget));
+    if (!pRenderWindowWidget) {
+        dtkWarn() << "Could not convert render window from C++";
+    } else {
+        PyObject* pFunc = PyObject_GetAttrString(d->pVisSurfaceWidget, "update");
+        PyObject_CallNoArgs(pFunc);
+        Py_DECREF(pFunc);
+    }
+    Py_DECREF(pRenderWindowWidget);
+
     PyGILState_Release(gstate);
 }
 
@@ -428,6 +442,7 @@ void gnomonCoreParameterNurbsObject::updateControlPointsFromPython(void)
     Py_XDECREF(p_ctrl_pts);
     PyGILState_Release(gstate);
     m_param->setControlPoints(ctrl_points);
+    this->updateControlPointsInPython();
 }
 
 QStringList gnomonCoreParameterNurbsObject::controlPoints(void)
