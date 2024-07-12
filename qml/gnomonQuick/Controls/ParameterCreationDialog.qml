@@ -19,6 +19,7 @@ G.Dialog {
     property alias type_index: _type_combobox.currentIndex
     property alias new_group: _new_group_checkbox.checked
     property alias group_name: _group_name_edit.text
+    property bool force_new_group: false
 
     property var type: _parameter_types.get(type_index).type
 
@@ -144,6 +145,7 @@ G.Dialog {
         text: "Create a new group"
         checked: false
         visible: !_self.isGroup
+        enabled: !_self.force_new_group
     }
 
     Label {

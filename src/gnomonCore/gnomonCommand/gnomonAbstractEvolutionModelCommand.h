@@ -85,6 +85,18 @@ public:
     inline virtual void removeParameter(const QString& parameterName) {
         return this->model->removeParameter(parameterName);
     };
+    virtual void setGroup(const QString& parameterName, const QString& group) {
+        return this->model->setGroup(parameterName, group);
+    };
+    virtual void removeGroup(const QString& groupName) {
+        return this->model->removeGroup(groupName);
+    };
+    virtual void renameParameter(const QString& oldName, const QString& newName) {
+        return this->model->renameParameter(oldName, newName);
+    };
+    virtual void renameGroup(const QString& oldName, const QString& newName) {
+        return this->model->renameGroup(oldName, newName);
+    };
 
 protected:
     class gnomonAbstractModel *model = nullptr;

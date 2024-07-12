@@ -120,9 +120,12 @@ G.Dialog {
                             let param = drag.source.param
 
                             console.log("Move parameter", param.label, "from group", source_group, "to group", group)
-
-                            param.group = group
-                            _self.d.updateParametersModel(false);
+                            if(_group_list.currentItem.count === 1) {
+                                d.setGroup(param.label, group)
+                                d.removeGroup(source_group)
+                            } else {
+                                d.setGroup(param.label, group)
+                            }
 
                             drop.accept()
                         }
@@ -320,7 +323,7 @@ G.Dialog {
         onClicked: {
             _new_parameter_dialog.name = ""
             _new_parameter_dialog.type_index = 0
-            _new_parameter_dialog.new_group = _group_list.currentIdex == -1
+            _new_parameter_dialog.new_group = _group_list.count === 0
             _new_parameter_dialog.group_name = ""
             _new_parameter_dialog.open()
         }
@@ -346,8 +349,13 @@ G.Dialog {
 
     G.ParameterCreationDialog {
         id: _new_parameter_dialog
+        force_new_group: _group_list.count === 0
         onAccepted: {
-            d.addParameter(name, type, _group_list.currentItem.group)
+            if(new_group) {
+                d.addParameter(name, type, group_name)
+            } else {
+                d.addParameter(name, type, _group_list.currentItem.group)
+            }
         }
     }
 
@@ -362,9 +370,12 @@ G.Dialog {
             let group = _new_group_dialog.name
             let source_group = param.group
             console.log("Move parameter", param.label, "from group", source_group, "to NEW group", group)
-
-            param.group = group
-            _self.d.updateParametersModel(false);
+            if(_group_list.currentItem.count === 1) {
+                d.setGroup(param.label, group)
+                d.removeGroup(source_group)
+            } else {
+                d.setGroup(param.label, group)
+            }
         }
     }
 
@@ -377,8 +388,13 @@ G.Dialog {
         caption: "Removing a parameter does not remove its occurrences in the code. It may end up generating a lot of errors."
 
         onAccepted: {
-            console.log("=====!!!!!!!!!!============", param)
-            d.removeParameter(param.label)
+            let source_group = param.group
+            if(_group_list.currentItem.count === 1) {
+                d.removeParameter(param.label)
+                d.removeGroup(source_group)
+            } else {
+                d.removeParameter(param.label)
+            }
         }
     }
 
@@ -393,6 +409,6 @@ G.Dialog {
 
         param: undefined
 
-        visible: param != undefined
+        visible: param !== undefined
     }
 }
