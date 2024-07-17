@@ -243,7 +243,9 @@ G.Dialog {
 
                 onCurrentIndexChanged: {
                     if (currentIndex !== -1) {
+                        _parameter_config_panel.component = undefined
                         _parameter_config_panel.param = model.get(currentIndex).param
+                        _parameter_config_panel.component = model.get(currentIndex).component
                     }
                 }
 
@@ -416,6 +418,7 @@ G.Dialog {
         anchors.margins: G.Style.smallPadding;
 
         param: undefined
+        component: undefined
 
         visible: param !== undefined
     }

@@ -10,7 +10,7 @@ Control {
     id: _self
 
     required property var param;
-
+    required property var component;
 
     Label {
         id: _name_label
@@ -81,36 +81,6 @@ Control {
     }
 
     Label {
-        id: _doc_label
-
-        anchors.left: _self.left
-        anchors.top:  _doc_edit.top
-        anchors.margins: G.Style.smallPadding
-
-        width: G.Style.shortButtonWidth
-
-        text: "DOCUMENTATION"
-        font: G.Style.fonts.label
-        color: G.Style.colors.textColorBase
-        horizontalAlignment: Text.AlignRight
-    }
-
-    G.TextArea {
-        id: _doc_edit
-
-        anchors.left: _doc_label.right
-        anchors.right: _self.right
-        anchors.top: _type.bottom
-        anchors.margins: G.Style.smallPadding
-
-        height: G.Style.largeLabelHeight
-
-        text: _self.param ? _self.param.doc : ""
-        color: G.Style.colors.hoveredBaseColor
-        font: G.Style.fonts.value
-    }
-
-    Label {
         id: _args_label
 
         anchors.left: _self.left
@@ -130,7 +100,7 @@ Control {
 
         anchors.left: _args_label.right
         anchors.right: _self.right
-        anchors.top:  _doc_edit.bottom
+        anchors.top:  _type.bottom
         anchors.bottom: _preview_panel.top
         anchors.margins: G.Style.smallPadding
     }
@@ -143,7 +113,24 @@ Control {
         anchors.bottom: _self.bottom
         anchors.margins: G.Style.smallPadding
 
-        height: G.Style.largeLabelHeight
+        height: _parameter_preview.height
+
+        Loader {
+            id: _parameter_preview
+
+            property var param: _self.param;
+            property var component: _self.component;
+
+            property var lparam: param
+            sourceComponent: component
+
+            anchors.centerIn: parent
+            anchors.margins: G.Style.smallPadding
+            height: implicitHeight ? implicitHeight : G.Style.controlHeight
+            width: G.Style.mediumPanelWidth
+
+            enabled: false
+        }
     }
 
     ListModel {
