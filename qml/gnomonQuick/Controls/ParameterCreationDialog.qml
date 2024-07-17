@@ -21,7 +21,9 @@ G.Dialog {
     property alias group_name: _group_name_edit.text
     property bool force_new_group: false
 
-    property var type: _parameter_types.get(type_index).type
+    property var type: (_parameter_types.get(type_index).subType ?
+        _parameter_types.get(type_index).type + "|" + _parameter_types.get(type_index).subType :
+        _parameter_types.get(type_index).type)
 
     property bool is_valid: (_name_edit.text != "") && (!_new_group_checkbox.checked || (_group_name_edit.text != ""))
 

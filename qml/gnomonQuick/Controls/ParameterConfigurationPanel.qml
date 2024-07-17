@@ -72,7 +72,8 @@ Control {
         width: _self.width/2
         height: G.Style.smallLabelHeight
 
-        text : _self.param ? (findIndex(_parameter_types, "type", _self.param.type) != -1? _parameter_types.get(findIndex(_parameter_types, "type", _self.param.type)).name : "") : ""
+        property int param_index: _self.param ? findParamIndex(_parameter_types, _self.param): -1
+        text : param_index !== -1 ? _parameter_types.get(param_index).name : ""
         font: G.Style.fonts.value
         color: G.Style.colors.textColorBase
         horizontalAlignment: Text.AlignLeft
@@ -150,88 +151,114 @@ Control {
 
         ListElement {
             type: "dtkCoreParameterNumeric<qlonglong>"
+            subType: ""
             name: "Integer Number"
         }
 
         ListElement {
             type: "dtkCoreParameterNumeric<double>"
+            subType: ""
             name: "Real Number"
         }
 
         ListElement {
             type: "dtkCoreParameterNumeric<bool>"
+            subType: ""
             name: "Boolean"
         }
 
         ListElement {
             type: "dtkCoreParameterSimple<QString>"
+            subType: ""
             name: "String"
         }
 
         ListElement {
             type: "dtkCoreParameterPath"
+            subType: ""
             name: "Path"
         }
 
         ListElement {
             type: "dtkCoreParameterRange<qlonglong>"
+            subType: ""
             name: "Integer Range"
         }
 
         ListElement {
             type: "dtkCoreParameterRange<double>"
+            subType: ""
             name: "Real Range"
         }
 
         ListElement {
             type: "dtkCoreParameterInList<QString>"
+            subType: ""
             name: "String in List"
         }
 
         ListElement {
             type: "dtkCoreParameterInListStringList"
+            subType: ""
             name: "String List in List"
         }
 
         ListElement {
             type: "gnomonCoreParameterColorMap"
+            subType: ""
             name: "Color Map"
         }
 
         ListElement {
             type: "gnomonCoreParameterLookupTable"
+            subType: ""
             name: "Color Lookup Table"
         }
 
         ListElement {
             type: "gnomonCoreParameterColorTable"
+            subType: ""
             name: "Material Table"
         }
 
         ListElement {
-            type: "gnomonCoreParameterNurbs|Curve"
+            type: "gnomonCoreParameterNurbs"
+            subType: "Curve"
             name: "Nurbs Curve"
         }
 
         ListElement {
-            type: "gnomonCoreParameterNurbs|Surface"
+            type: "gnomonCoreParameterNurbs"
+            subType: "Surface"
             name: "Nurbs Surface"
         }
 
         ListElement {
-            type: "gnomonCoreParameterNurbs|Function"
-            name: "Nurbs Curve - Function"
+            type: "gnomonCoreParameterNurbs"
+            subType: "Function"
+            name: "Nurbs Function"
         }
 
         ListElement {
             type: "gnomonCoreParameterGraphical"
+            subType: ""
             name: "Graphical"
         }
     }
 
-    function findIndex(model, field, value) {
+    function findParamIndex(model, param) {
+        const type = param.type
+        const nurbstype = type === "gnomonCoreParameterNurbs" ? param.nurbsType : -1
+        let subtype = ""
+        if(nurbstype === 0) {
+            subtype = "Curve"
+        } else if(nurbstype === 1) {
+            subtype = "Function"
+        } else if(nurbstype === 2) {
+            subtype = "Surface"
+        }
         for(var i=0; i<model.count; i++) {
-            if (model.get(i)[field] === value) {
+            if (model.get(i)["type"] === type && model.get(i)["subType"] === subtype) {
                 return i
             }
         }

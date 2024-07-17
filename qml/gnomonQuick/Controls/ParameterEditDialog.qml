@@ -80,6 +80,14 @@ G.Dialog {
             focus: true;
             currentIndex: -1
 
+            function indexOfGroup(group) {
+                for(let i=0; i<count; i++) {
+                    if(itemAtIndex(i).text === group) {
+                        return i
+                    }
+                }
+            }
+
             delegate: G.ListItemDelegate {
                 id: _group_delegate
 
@@ -120,7 +128,7 @@ G.Dialog {
                             let param = drag.source.param
 
                             console.log("Move parameter", param.label, "from group", source_group, "to group", group)
-                            if(_group_list.currentItem.count === 1) {
+                            if(_all_parameter_list.itemAtIndex(_group_list.indexOfGroup(source_group)).count === 1) {
                                 d.setGroup(param.label, group)
                                 d.removeGroup(source_group)
                             } else {
@@ -227,14 +235,14 @@ G.Dialog {
                 required property string group;
                 required property int index
 
-                visible: _group_list.currentIndex == index
+                visible: _group_list.currentIndex === index
                 interactive: false
                 currentIndex: -1
 
                 model: parameters
 
                 onCurrentIndexChanged: {
-                    if (currentIndex != -1) {
+                    if (currentIndex !== -1) {
                         _parameter_config_panel.param = model.get(currentIndex).param
                     }
                 }
@@ -249,7 +257,7 @@ G.Dialog {
                     height: G.Style.largeButtonHeight
                     width: _parameter_list.width
 
-                    highlighted: _parameter_list.currentIndex == index
+                    highlighted: _parameter_list.currentIndex === index
 
                     required property var param;
                     required property int index;
@@ -370,7 +378,7 @@ G.Dialog {
             let group = _new_group_dialog.name
             let source_group = param.group
             console.log("Move parameter", param.label, "from group", source_group, "to NEW group", group)
-            if(_group_list.currentItem.count === 1) {
+            if(_all_parameter_list.itemAtIndex(_group_list.indexOfGroup(source_group)).count === 1) {
                 d.setGroup(param.label, group)
                 d.removeGroup(source_group)
             } else {
@@ -389,7 +397,7 @@ G.Dialog {
 
         onAccepted: {
             let source_group = param.group
-            if(_group_list.currentItem.count === 1) {
+            if(_all_parameter_list.itemAtIndex(_group_list.indexOfGroup(source_group)).count === 1) {
                 d.removeParameter(param.label)
                 d.removeGroup(source_group)
             } else {
