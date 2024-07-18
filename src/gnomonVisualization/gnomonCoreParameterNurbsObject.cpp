@@ -458,6 +458,24 @@ QStringList gnomonCoreParameterNurbsObject::controlPoints(void)
     return res;
 }
 
+int gnomonCoreParameterNurbsObject::controlPointSizeU(void)
+{
+    if (m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
+        return m_param->cpsize()[0];
+    } else {
+        return m_param->controlPoints().size();
+    }
+}
+
+int gnomonCoreParameterNurbsObject::controlPointSizeV(void)
+{
+    if (m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
+        return m_param->cpsize()[1];
+    } else {
+        return -1;
+    }
+}
+
 int gnomonCoreParameterNurbsObject::figureNumber(void)
 {
     return d->figureNumber;
@@ -609,6 +627,23 @@ void gnomonCoreParameterNurbsObject::setControlPoints(const QStringList &ctrl_po
     }
 
     //emit controlPointsChanged(ctrl_points_list);
+}
+
+void gnomonCoreParameterNurbsObject::setControlPointSizeU(int size)
+{
+    if (size != this->controlPointSizeU()) {
+        // TODO: actually change cpsize in m_param
+        emit controlPointSizeChanged();
+    }
+}
+
+void gnomonCoreParameterNurbsObject::setControlPointSizeV(int size) {
+    if (m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
+        if (size != this->controlPointSizeU()) {
+            // TODO: actually change cpsize in m_param
+            emit controlPointSizeChanged();
+        }
+    }
 }
 
 void gnomonCoreParameterNurbsObject::notifyControlPointsChanged()

@@ -95,8 +95,10 @@ Control {
         horizontalAlignment: Text.AlignRight
     }
 
-    G.Gutter {
+    G.ParameterArgumentsEditor {
         id: _arguments_panel
+
+        param: _self.param
 
         anchors.left: _args_label.right
         anchors.right: _self.right

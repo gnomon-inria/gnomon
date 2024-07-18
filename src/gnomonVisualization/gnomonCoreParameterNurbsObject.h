@@ -23,6 +23,8 @@ public:
     Q_PROPERTY(int degree READ degree WRITE setDegree NOTIFY degreeChanged)
     Q_PROPERTY(double delta READ delta WRITE setDelta NOTIFY deltaChanged)
     Q_PROPERTY(QStringList controlPoints READ controlPoints WRITE setControlPoints NOTIFY controlPointsChanged)
+    Q_PROPERTY(int controlPointSizeU READ controlPointSizeU WRITE setControlPointSizeU NOTIFY controlPointSizeChanged)
+    Q_PROPERTY(int controlPointSizeV READ controlPointSizeV WRITE setControlPointSizeV NOTIFY controlPointSizeChanged)
     Q_PROPERTY(gnomonNurbsView* nurbsView READ nurbsView CONSTANT);
     Q_PROPERTY(gnomonNurbsView* nurbsViewWidget READ nurbsViewWidget CONSTANT);
     Q_PROPERTY(int nurbsType READ nurbsType CONSTANT);
@@ -40,6 +42,8 @@ public:
     int degree(void);
     double delta(void);
     QStringList controlPoints(void);
+    int controlPointSizeU(void);
+    int controlPointSizeV(void);
     int figureNumber(void);
     gnomonNurbsView *nurbsView(void);
     gnomonNurbsView *nurbsViewWidget(void);
@@ -48,12 +52,15 @@ public:
     void setDegree(int);
     void setDelta(double);
     void setControlPoints(const QStringList&);
+    void setControlPointSizeU(int);
+    void setControlPointSizeV(int);
     void notifyControlPointsChanged(void);
 
 signals:
     void degreeChanged(int);
     void deltaChanged(double);
     void controlPointsChanged(void);
+    void controlPointSizeChanged(void);
     void figureNumberChanged(int);
 
 
