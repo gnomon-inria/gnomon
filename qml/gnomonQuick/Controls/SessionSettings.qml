@@ -1,9 +1,15 @@
-import QtQuick              
-import Qt.labs.settings
+import QtQuick
+import QtCore
 
 import gnomon.Project  as GP
 
 Settings {
     id: _self
-    fileName : ".gnomon/session/session.ini"
+    location : GP.ProjectManager.project.absolutePath(".gnomon/session/session.ini", true, true)
+    onLocationChanged: {
+        console.log(location)
+    }
+    Component.onCompleted: {
+        console.log(location)
+    }
 }
