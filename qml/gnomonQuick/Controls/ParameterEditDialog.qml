@@ -242,8 +242,9 @@ G.Dialog {
                 model: parameters
 
                 onCurrentIndexChanged: {
+                    _parameter_config_panel.component = undefined
+                    _parameter_config_panel.param = undefined
                     if (currentIndex !== -1) {
-                        _parameter_config_panel.component = undefined
                         _parameter_config_panel.param = model.get(currentIndex).param
                         _parameter_config_panel.component = model.get(currentIndex).component
                     }
