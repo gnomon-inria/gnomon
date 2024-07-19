@@ -797,7 +797,7 @@ void gnomonFormManager::memoryManagement() {
     int total_mem = stats[0];
     int used_mem = stats[1];
     int this_mem = stats[2];
-    qDebug() << "$$ Memory usage: " << used_mem << " | " << total_mem << " | " << stats[2];
+    //qDebug() << "$$ Memory usage: " << used_mem << " | " << total_mem << " | " << stats[2];
     while((this_mem > d->maxMemory || (float)used_mem/(float)total_mem>0.8) && d->active_workspaces.size()>1) {
         callHibernateWorkspace();
     }

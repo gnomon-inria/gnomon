@@ -138,6 +138,12 @@ Control {
 
         Drag.active: _drag_area.drag.active
 
+        G.SessionSettings {
+            category: "pipeline_canvas"
+            property alias x: _canvas.x
+            property alias y: _canvas.y
+        }
+
         MouseArea {
             id: _drag_area;
             anchors.fill: _canvas;
@@ -166,6 +172,12 @@ Control {
 
         }
 
+        G.SessionSettings {
+            id: _transform_settings
+            category: "pipeline_canvas"
+            property alias scale: _transform.scale
+        }
+
         Behavior on x { PropertyAnimation { duration: _internal.transitionDuration;  easing.type: Easing.InOutCubic } }
         Behavior on y { PropertyAnimation { duration: _internal.transitionDuration;  easing.type: Easing.InOutCubic } }
 
@@ -182,8 +194,9 @@ Control {
                         var e = _self.addEdge(edge);
                     }
                 }
-
-                _self.computeLayout(n.id)
+                if(!GP.SessionManager.isSessionLoading) {
+                    _self.computeLayout(n.id)
+                }
             }
         }
 
@@ -385,6 +398,11 @@ Control {
         property var layout: new PJS.Layout.ForceDirected(new PJS.Graph(), 10, 6, 0.2)
         property var nodeComponents: new Object()
         property var edgeComponents: []
+
+        property var settings: G.SessionSettings {
+            category: "pipeline_canvas"
+            property alias zoomLevel: _internal.zoomLevel
+        }
 
         onZoomLevelChanged: {
             updateCanvas(_self.width/2, _self.height/2);
