@@ -151,8 +151,12 @@ G.Page {
         property var view;
 
         parent: Overlay.overlay
-        header: "Reloading form " + GV.World.getDynamicFormMetadata(_hibernating_toast.index).data["name"]
+        header: "Reloading form"
         message: "The form was hibernating, please wait while it is reloaded. This may take a few seconds. (You may change the hibernation threshold in the ⚙ Settings)"
+
+        onIndexChanged: {
+            header = "Reloading form " + GV.World.getDynamicFormMetadata(index).data["name"]
+        }
 
         type: G.Style.ButtonType.Base
     }

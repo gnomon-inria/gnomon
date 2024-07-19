@@ -53,6 +53,10 @@ G.Gutter {
                 placeholderText: qsTr("Enter value")
 
                 validator: getValidator(type)
+
+                onEditingFinished: {
+                    _self.param[name] = text
+                }
             }
 
             color: G.Style.colors.bgColor;
@@ -158,7 +162,9 @@ G.Gutter {
     }
 
     function getArguments(param) {
-        const type = param.type
+        let type = param.type
+        type = type.replace(",void", "")
+        console.log(param.label, type)
         if (type === "dtkCoreParameterNumeric<qlonglong>") {
             return _int_arguments
         } else if (type === "dtkCoreParameterNumeric<double>") {

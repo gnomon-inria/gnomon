@@ -614,6 +614,7 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
 }
 
 void gnomonWorkspaceLSystemModel::addParameter(const QString& parameterName, const QString& parameterType, const QString& group) {
+    qDebug()<<Q_FUNC_INFO<<parameterName<<parameterType<<group;
     d->command->addParameter(parameterName, parameterType, group);
 }
 

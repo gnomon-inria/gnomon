@@ -498,6 +498,8 @@ int gnomonCoreParameterNurbsObject::nurbsType(void) const
 
 void gnomonCoreParameterNurbsObject::setDegree(int degree)
 {
+    qDebug()<<Q_FUNC_INFO<<degree;
+
     if(m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
 
         m_param->setDegree(degree);

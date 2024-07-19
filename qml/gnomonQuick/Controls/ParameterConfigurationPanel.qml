@@ -103,19 +103,34 @@ Control {
         anchors.left: _args_label.right
         anchors.right: _self.right
         anchors.top:  _type.bottom
-        anchors.bottom: _preview_panel.top
         anchors.margins: G.Style.smallPadding
+
+        height: G.Style.mediumDelegateHeight
+    }
+
+    Label {
+        id: _preview_label
+
+        anchors.left: _self.left
+        anchors.top:  _preview_panel.top
+        anchors.margins: G.Style.smallPadding
+
+        width: G.Style.shortButtonWidth
+
+        text: "PREVIEW"
+        font: G.Style.fonts.label
+        color: G.Style.colors.textColorBase
+        horizontalAlignment: Text.AlignRight
     }
 
     G.Gutter {
         id: _preview_panel
 
-        anchors.left: _self.left
+        anchors.left: _preview_label.right
         anchors.right: _self.right
+        anchors.top: _arguments_panel.bottom
         anchors.bottom: _self.bottom
         anchors.margins: G.Style.smallPadding
-
-        height: _parameter_preview.height
 
         Loader {
             id: _parameter_preview
@@ -236,7 +251,8 @@ Control {
     }
 
     function findParamIndex(model, param) {
-        const type = param.type
+        let type = param.type
+        type = type.replace(',void', '')
         const nurbstype = type === "gnomonCoreParameterNurbs" ? param.nurbsType : -1
         let subtype = ""
         if(nurbstype === 0) {
