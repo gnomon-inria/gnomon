@@ -345,10 +345,15 @@ Layout.ForceDirected.prototype.removeEdge = function(edge) {
 	}
 }
 
+Layout.ForceDirected.prototype.initPoint = function(nodeId, x, y) {
+	let point = new Layout.ForceDirected.Point(new Vector(x, y));
+	this.nodePoints[nodeId] = point
+};
+
 Layout.ForceDirected.prototype.point = function(node) {
 	if (!(node.id in this.nodePoints)) {
-		let point = new Layout.ForceDirected.Point(Vector.random());
-        this.nodePoints[node.id] = point
+		let p = Vector.random();
+		this.initPoint(node.id, p.x, p.y)
         if(node.isSink) {
             const bb = this.getBoundingBox()
             this.nodePoints[node.id].p.x += bb.topright.x

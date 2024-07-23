@@ -194,8 +194,11 @@ Control {
                         var e = _self.addEdge(edge);
                     }
                 }
+
                 if(!GP.SessionManager.isSessionLoading) {
                     _self.computeLayout(n.id)
+                } else {
+                    _self.bindLayout(n.id)
                 }
             }
         }
@@ -221,20 +224,11 @@ Control {
 
             const node = _internal.layout.graph.addNode(nodeData)
 
-
             const n = node_component.createObject(_canvas, {
                 node: node,
                 color: _getNodeColor(node.data),
-                x: Qt.binding(
-                    function() {
-                        return _internal.originX
-                    }
-                ),
-                y: Qt.binding(
-                    function() {
-                        return _internal.originY
-                    }
-                ),
+                x: _internal.originX,
+                y: _internal.originY,
                 interactive: !_self.readOnly,
                 workspaceIndex: window.current_workspace_index(),
             });
@@ -309,11 +303,7 @@ Control {
     }
 
     function computeLayout(newNodeId) {
-
         const currentBoundingBox = _internal.layout.getBoundingBox();
-
-        const offsetX = _internal.originX// - _self.windowWidth / 2
-        const offsetY = _internal.originY// - _self.windowHeight / 2
 
         //in case of drag actions by the user
         _self.initializePositions(newNodeId)
@@ -323,23 +313,29 @@ Control {
 
         //upadte the components
         for(let nodeId in _internal.layout.nodePoints) {
+            _self.bindLayout(nodeId)
+        }
+    }
 
-            const p = _internal.layout.nodePoints[nodeId].p
-
-            _internal.nodeComponents[nodeId].x = Qt.binding(
-                function() {
-
-                    return p.x + offsetX - _internal.nodeComponents[nodeId].width / 2
-                }
-            )
-
-            _internal.nodeComponents[nodeId].y = Qt.binding(
-                function() {
-                    return p.y + offsetY - _internal.nodeComponents[nodeId].height / 2
-                }
-            )
+    function bindLayout(nodeId) {
+        let nodeComponent = _internal.nodeComponents[nodeId]
+        if (!(nodeId in _internal.layout.nodePoints)) {
+            let x = nodeComponent.x + nodeComponent.width/2 - _internal.originX
+            let y = nodeComponent.y + nodeComponent.height/2 - _internal.originY
+            _internal.layout.initPoint(nodeId, x, y)
         }
 
+        const p = _internal.layout.nodePoints[nodeId].p
+        nodeComponent.x = Qt.binding(
+            function() {
+                return p.x + _internal.originX - nodeComponent.width / 2
+            }
+        )
+        nodeComponent.y = Qt.binding(
+            function() {
+                return p.y + _internal.originY - nodeComponent.height / 2
+            }
+        )
     }
 
     //Dynamic object creation in qml does not let us use onXChanged and onYChanged properly
@@ -347,9 +343,10 @@ Control {
     //case the user has done some drags)
     function initializePositions(newNodeId) {
         for(let nodeId in _internal.nodeComponents) {
+            let nodeComponent = _internal.nodeComponents[nodeId]
             if(nodeId !== newNodeId) {
-                _internal.layout.nodePoints[nodeId].p.x = _internal.nodeComponents[nodeId].x -_internal.originX + _internal.nodeComponents[nodeId].width / 2
-                _internal.layout.nodePoints[nodeId].p.y = _internal.nodeComponents[nodeId].y -_internal.originY + _internal.nodeComponents[nodeId].height / 2
+                _internal.layout.nodePoints[nodeId].p.x = nodeComponent.x + nodeComponent.width/2 - _internal.originX
+                _internal.layout.nodePoints[nodeId].p.y = nodeComponent.y + nodeComponent.height/2 - _internal.originY
             }
         }
     }
@@ -402,10 +399,6 @@ Control {
         property var settings: G.SessionSettings {
             category: "pipeline_canvas"
             property alias zoomLevel: _internal.zoomLevel
-        }
-
-        onZoomLevelChanged: {
-            updateCanvas(_self.width/2, _self.height/2);
         }
     }
 
