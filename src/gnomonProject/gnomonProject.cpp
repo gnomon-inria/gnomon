@@ -234,6 +234,26 @@ QString gnomonProject::relativePath(const QString& path) const
     return relative_path;
 }
 
+QString gnomonProject::absolutePath(const QString &path, bool url, bool force_project_dir) const {
+    QString abs_path;
+    if(force_project_dir || d->projectDir.exists(path)) {
+        abs_path = d->projectDir.absoluteFilePath(path);
+    } else {
+        for(const auto& data_dir_path: d->dataPath) {
+            QDir data_dir(data_dir_path);
+            if(data_dir.exists(path)) {
+                abs_path = data_dir.absoluteFilePath(path);
+                break;
+            }
+        }
+    }
+    if(url) {
+        return QUrl::fromLocalFile(abs_path).toString(QUrl::None);
+    } else {
+        return abs_path;
+    }
+}
+
 bool gnomonProject::isReadOnly(const QString &path) const {
     QString sanitized_path = sanitizeUrlToPath(path);
     QString abs_path;

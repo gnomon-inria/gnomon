@@ -59,6 +59,7 @@ public:
     Q_INVOKABLE void addDirectoryToDataPath(const QString& path);
     Q_INVOKABLE bool isAccessible(const QString& path) const;
     Q_INVOKABLE QString relativePath(const QString& path) const;
+    Q_INVOKABLE QString absolutePath(const QString& path, bool url = false, bool force_project_dir = false) const;
     Q_INVOKABLE bool isReadOnly(const QString& path) const;
 
 public:

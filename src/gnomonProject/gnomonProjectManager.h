@@ -19,7 +19,7 @@ public:
     gnomonProjectManager(gnomonProjectManager &) = delete;
     void operator=(const gnomonProjectManager &) = delete;
 public:
-    Q_PROPERTY(gnomonProject *project READ project CONSTANT);
+    Q_PROPERTY(gnomonProject *project READ project NOTIFY projectCreated);
     
 public:
     Q_INVOKABLE gnomonProject *openProject(const QString &path, bool restore_session=true, bool load_pipeline=false);
@@ -34,6 +34,7 @@ public:
 
 signals:
     void projectLoaded(void);
+    void projectCreated(void);
 
 protected:
     gnomonProjectManager(QObject *parent = nullptr);
