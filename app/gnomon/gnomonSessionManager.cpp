@@ -538,8 +538,10 @@ void gnomonSessionManager::sync() {
 
 bool gnomonSessionManager::load() {
     qDebug() << "===========" << "loading session";
+    m_session_loading = true;
+    emit isSessionLoadingChanged();
     this->setLoadingSessionProgress(0, "Loading Session");
-    d->disable_sync = true;
+    d->disable_sync = true; //TODO: could probably be replaced by m_session_laoding instead
 
     auto setSessionLoader = [=](double progress, const QString& message){
         this->setLoadingSessionProgress(this->loadingSessionProgress() + progress, message);
@@ -627,10 +629,14 @@ bool gnomonSessionManager::load() {
         d->init = true;
         d->disable_sync = false;
 
+        m_session_loading = false;
+        emit isSessionLoadingChanged();
         return true;
     } else {
 
         d->disable_sync = false;
+        m_session_loading = false;
+        emit isSessionLoadingChanged();
         return false;
     }
 }

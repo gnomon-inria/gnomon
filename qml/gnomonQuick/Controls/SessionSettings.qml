@@ -1,9 +1,9 @@
-import QtQuick              
-import Qt.labs.settings
+import QtQuick
+import QtCore
 
 import gnomon.Project  as GP
 
 Settings {
     id: _self
-    fileName : ".gnomon/session/session.ini"
+    location : GP.ProjectManager.project ? GP.ProjectManager.project.absolutePath(".gnomon/session/session.ini", true, true) : ""
 }

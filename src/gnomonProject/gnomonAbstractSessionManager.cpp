@@ -39,6 +39,10 @@ void gnomonAbstractSessionManager::setLoadingSessionProgress(double progress, co
     emit loadProgress(step);
 }
 
+bool gnomonAbstractSessionManager::isSessionLoading(void) {
+    return m_session_loading;
+}
+
 bool gnomonAbstractSessionManager::addForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form)
 {
     this->trackForm(form);
@@ -84,7 +88,7 @@ bool gnomonAbstractSessionManager::trackForm(const std::shared_ptr<gnomonAbstrac
 void gnomonAbstractSessionManager::cleanExpiredForms() {
     auto keys = this->m_tracked_forms.keys();
     for(const auto &uuid: keys) {
-        qDebug() << "$$ form: " << uuid << " >> n ref: " << m_tracked_forms[uuid].use_count();
+        //qDebug() << "$$ form: " << uuid << " >> n ref: " << m_tracked_forms[uuid].use_count();
         //TODO: some references left because commands are not cleaned (especially outputs)
         if(this->m_tracked_forms[uuid].expired()) {
             this->m_tracked_forms.remove(uuid);
