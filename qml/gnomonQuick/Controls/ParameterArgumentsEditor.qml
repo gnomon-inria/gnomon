@@ -162,20 +162,24 @@ G.Gutter {
     }
 
     function getArguments(param) {
-        let type = param.type
-        type = type.replace(",void", "")
-        console.log(param.label, type)
-        if (type === "dtkCoreParameterNumeric<qlonglong>") {
-            return _int_arguments
-        } else if (type === "dtkCoreParameterNumeric<double>") {
-            return _double_arguments
-        } else if  (type === "gnomonCoreParameterNurbs") {
-            if(param.nurbsType === 0) {
-                return _nurbs_curve_arguments
-            } else if(param.nurbsType === 1) {
-                return _nurbs_curve_arguments
-            } else if(param.nurbsType === 2) {
-                return _nurbs_surface_arguments
+        if (param) {
+            let type = param.type
+            type = type.replace(",void", "")
+            console.log(param.label, type)
+            if (type === "dtkCoreParameterNumeric<qlonglong>") {
+                return _int_arguments
+            } else if (type === "dtkCoreParameterNumeric<double>") {
+                return _double_arguments
+            } else if  (type === "gnomonCoreParameterNurbs") {
+                if(param.nurbsType === 0) {
+                    return _nurbs_curve_arguments
+                } else if(param.nurbsType === 1) {
+                    return _nurbs_curve_arguments
+                } else if(param.nurbsType === 2) {
+                    return _nurbs_surface_arguments
+                }
+            } else {
+                return undefined
             }
         } else {
             return undefined

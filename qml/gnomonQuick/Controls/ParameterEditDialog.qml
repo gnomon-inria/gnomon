@@ -107,6 +107,45 @@ G.Dialog {
                     _group_list.currentIndex = index
                 }
 
+                onDoubleClicked: {
+                    _group_name_edit.text = text
+                    _group_name_edit.visible = true
+                }
+
+                tooltip: "Double click to change group name"
+
+                G.TextField {
+                    id: _group_name_edit
+
+                    anchors.left: parent.left;
+                    anchors.right: parent.right;
+                    anchors.verticalCenter: parent.verticalCenter;
+                    anchors.margins: G.Style.smallPadding;
+
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+
+                    leftPadding: 1.5*G.Style.smallPadding;
+
+                    visible: false;
+                    z: 1
+
+                    font: font;
+                    color: textColor;
+
+                    onEditingFinished: {
+                        visible = false
+                        if (_group_name_edit.text != _group_delegate.text) {
+                            _group_delegate.text = _group_name_edit.text
+                            d.renameGroup(group, _group_name_edit.text)
+                        }
+                    }
+
+                    background: Rectangle {
+                        color: G.Style.colors.gutterColor;
+                    }
+                }
+
                 DropArea {
                     id: _group_drop;
 
@@ -159,6 +198,8 @@ G.Dialog {
 
         text: "New Group";
         font: G.Style.fonts.cardLabel
+
+        tooltip: "Drop a parameter here to assign it to a new group"
 
         DropArea {
             id: _new_group_drop;
@@ -395,7 +436,7 @@ G.Dialog {
 
         property var param;
 
-        message: "Do you really want to remove the parameter \"" + param.label + "\"?"
+        message: "Do you really want to remove the parameter \"" + param?.label + "\"?"
         caption: "Removing a parameter does not remove its occurrences in the code. It may end up generating a lot of errors."
 
         onAccepted: {
