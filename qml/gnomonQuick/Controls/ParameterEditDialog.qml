@@ -422,5 +422,11 @@ G.Dialog {
         component: undefined
 
         visible: param !== undefined
+
+        onParamNameChanged: {
+            if (param) {
+                d.renameParameter(param.label, paramName)
+            }
+        }
     }
 }

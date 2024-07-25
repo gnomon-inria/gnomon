@@ -11,6 +11,7 @@ Control {
 
     required property var param;
     required property var component;
+    property string paramName : ""
 
     Label {
         id: _name_label
@@ -40,6 +41,10 @@ Control {
         text: _self.param ? _self.param.label : ""
         color: G.Style.colors.hoveredBaseColor
         font: G.Style.fonts.header
+
+        onEditingFinished: {
+            _self.paramName = text
+        }
 
         background: Rectangle {
             color: G.Style.colors.gutterColor;
