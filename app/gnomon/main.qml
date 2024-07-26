@@ -101,6 +101,10 @@ G.Application {
         nameFilters: [ "Json files (*.json)" ]
 
          onAccepted: {
+            if (GP.PipelineManager.pipeline.name === "") {
+                let filename = decodeURIComponent(saveFileDialog.file).split('/').pop()
+                GP.PipelineManager.pipeline.name = filename.slice(0, -5)
+            }
             GP.PipelineManager.pipeline.exportToJson(saveFileDialog.file);
         }
     }
