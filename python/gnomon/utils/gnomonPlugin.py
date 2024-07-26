@@ -132,6 +132,24 @@ def plugin_metadata(group_name: str, plugin_name: str) -> dict[str, str]:
     except AttributeError as e:
         print(f"Missing either 'package' or 'conda_channel' from root package {ep.module_name.split('.')[0]}")
 
+    # parse plugin decorator for version, coreversion and name
+    plugin_code_path = importlib.util.find_spec(ep.module_name).origin
+    with open(plugin_code_path, "r") as plugin_code_file:
+        plugin_code = plugin_code_file.readlines()
+
+        for line in plugin_code:
+            if re.match("@[A-z]+Plugin", line):
+                for field in ['version', 'coreversion', 'name']:
+                    regex = "[^A-z]" + field + "[ ]*=[ ]*"
+                    if "version" in field:
+                        regex += "[\"\']([0-9\.]+)[\"\']"
+                    else:
+                        regex += "[\"\'](.+)[\"\']"
+                    regex += "[ ]*[,\)]"
+                    match = re.findall(regex, line)
+                    if len(match) > 0:
+                        out[field] = match[0]
+
     # plugin metadata
     *module, resource = ep.module_name.split(".")
     path = resource_filename(".".join(module), resource + ".json")
