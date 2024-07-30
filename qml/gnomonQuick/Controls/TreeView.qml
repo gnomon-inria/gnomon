@@ -12,7 +12,13 @@ ListView {
 
     property var data_paths : []
     property var _delegate_heights: []
-    property bool is_project_dir : false
+
+    property bool expanded : false
+    property bool selectFolder: false
+    property bool singleSelection: false
+    property bool dragEnabled: true
+
+    property var selectedPaths: []
 
     signal fileDoubleClicked(string fileUrl)
     signal fileRightClicked(string fileUrl)
@@ -48,7 +54,7 @@ ListView {
             indentation: G.Style.smallPadding
             hoverEnabled: true;
             highlighted: (_item_selection_model.selectedIndexes.includes(_tree_view.index(index, 0)) &&
-                          !_model.isDir(_tree_view.index(index, 0)))
+                          (_self.selectFolder || !_model.isDir(_tree_view.index(index, 0))))
 
             implicitWidth: _self.width
             implicitHeight: model.filePath.includes(_model.rootDir) ? G.Style.smallButtonHeight : 0.01
@@ -75,13 +81,16 @@ ListView {
                 yAxis.minimum: _delegate.y
                 yAxis.maximum: _delegate.y
 
+                enabled: _self.dragEnabled
+
                 onActiveChanged : {
                     if(active) {
                         let paths = "";
-                        for (let i=0; i<_item_selection_model.selectedIndexes.length; i++) {
-                            let _model_index = _item_selection_model.selectedIndexes[i];
-                            if (i>0) paths += ","
-                            paths += _model.filePath(_model_index)
+                        for (let i=0; i<_self.selectedPaths.length; i++) {
+                            if (i>0) {
+                                paths += ","
+                            }
+                            paths += _self.selectedPaths[i]
                         }
                         _label.Drag.mimeData = {"text/uri-list" : paths};
                         parent.grabToImage(function(result) {
@@ -124,13 +133,21 @@ ListView {
 
             TapHandler {
                 acceptedButtons: Qt.RightButton
-                onTapped : _self.fileRightClicked(model.filePath)
+                onTapped : {
+                    _self.fileRightClicked(model.filePath)
+                }
             }
 
             TapHandler {
                 acceptedButtons: Qt.LeftButton
                 acceptedModifiers: Qt.ControlModifier
-                onTapped: _item_selection_model.select(_tree_view.index(index, 0), ItemSelectionModel.Select)
+                onTapped: {
+                    if (!_self.singleSelection) {
+                        _item_selection_model.select(_tree_view.index(index, 0), ItemSelectionModel.Select)
+                    } else {
+                        _item_selection_model.select(_tree_view.index(index, 0), ItemSelectionModel.ClearAndSelect)
+                    }
+                }
             }
 
             TapHandler {
@@ -142,13 +159,17 @@ ListView {
         }
 
         ItemSelectionModel {
-             id: _item_selection_model
+            id: _item_selection_model
 
-             model: _model
+            model: _model
 
-             onSelectionChanged : {
-                 console.log("selected items:", _item_selection_model.selectedIndexes)
-             }
+            onSelectionChanged : {
+                _self.selectedPaths = [];
+                for (let i=0; i<_item_selection_model.selectedIndexes.length; i++) {
+                    let _model_index = _item_selection_model.selectedIndexes[i];
+                     _self.selectedPaths.push(_model.filePath(_model_index))
+                }
+            }
         }
 
         onHeightChanged : {
@@ -161,13 +182,13 @@ ListView {
         Component.onCompleted : {
             _tree_view.rootRow = _model.rootDir.split('/').length - 1
             _tree_view.expandRecursively()
-            if(!_self.is_project_dir)
+            if(!_self.expanded)
                 _tree_view.collapseRecursively(_tree_view.rootRow)
             _tree_view._index = _delegate_heights.length
 
             _delegate_heights.push(_tree_view.height)
 
-             _self.onRequestFileSelection.connect(selectFile)
+            _self.onRequestFileSelection.connect(selectFile)
         }
 
         // FIXME: this doesn't work (tree_view not updated soon enough with newly created files?)
