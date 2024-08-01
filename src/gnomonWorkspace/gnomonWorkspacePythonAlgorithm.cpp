@@ -540,6 +540,23 @@ QJSValue gnomonWorkspacePythonAlgorithm::parameters(void)
     }
 }
 
+QStringList gnomonWorkspacePythonAlgorithm::parameterNames(void)
+{
+    if (d->command) {
+        return d->command->parameters().keys();
+    } else {
+        return {};
+    }
+}
+
+void gnomonWorkspacePythonAlgorithm::setParameter(const QString& parameter, const QVariant& value)
+{
+    if (d->command) {
+        d->command->setParameter(parameter, value);
+        emit parametersChanged();
+    }
+}
+
 bool gnomonWorkspacePythonAlgorithm::isEmpty(void)
 {
     return false;

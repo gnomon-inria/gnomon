@@ -190,6 +190,13 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
             }
         }
 
+        auto p_map = node->parameters().toVariantMap();
+        for (const auto& param_name : p_map.keys()) {
+            if (w_p->parameterNames().contains(param_name)) {
+                w_p->setParameter(param_name, p_map[param_name]);
+            }
+        }
+
         callbackConnection = QObject::connect(w_p, &gnomonAbstractWorkspace::finished, [=]() {
             disconnect(callbackConnection);
             //TOCHECK only transmit from one target!
@@ -214,6 +221,13 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
         if(!w_p || !ok) {
             emit q->failed(file_path);
             return false;
+        }
+
+        auto p_map = node->parameters().toVariantMap();
+        for (const auto& param_name : p_map.keys()) {
+            if (w_p->parameterNames().contains(param_name)) {
+                w_p->setParameter(param_name, p_map[param_name]);
+            }
         }
 
         callbackConnection = connect(w_p, &gnomonAbstractWorkspace::finished, [=]() {
@@ -263,6 +277,13 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
         if (node->algorithmClass().contains("imageRegistration", Qt::CaseInsensitive)) {
             if(node->inputPortsNames().contains("initialTransformation") && node->inputPort("initialTransformation")->formIndex() >=0) {
                 w_d->textView()->drop(node->inputPort("initialTransformation")->formIndex());
+            }
+        }
+
+        auto p_map = node->parameters().toVariantMap();
+        for (const auto& param_name : p_map.keys()) {
+            if (w_d->parameterNames().contains(param_name)) {
+                w_d->setParameter(param_name, p_map[param_name]);
             }
         }
 
