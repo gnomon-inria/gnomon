@@ -190,9 +190,10 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
             }
         }
 
-        for (const auto& param_name : node->parameters().toVariantMap().keys()) {
+        auto p_map = node->parameters().toVariantMap();
+        for (const auto& param_name : p_map.keys()) {
             if (w_p->parameterNames().contains(param_name)) {
-                w_p->setParameter(param_name, node->parameters().toVariantMap()[param_name]);
+                w_p->setParameter(param_name, p_map[param_name]);
             }
         }
 
@@ -222,9 +223,10 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
             return false;
         }
 
-        for (const auto& param_name : node->parameters().toVariantMap().keys()) {
+        auto p_map = node->parameters().toVariantMap();
+        for (const auto& param_name : p_map.keys()) {
             if (w_p->parameterNames().contains(param_name)) {
-                w_p->setParameter(param_name, node->parameters().toVariantMap()[param_name]);
+                w_p->setParameter(param_name, p_map[param_name]);
             }
         }
 
@@ -278,9 +280,10 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
             }
         }
 
-        for (const auto& param_name : node->parameters().toVariantMap().keys()) {
+        auto p_map = node->parameters().toVariantMap();
+        for (const auto& param_name : p_map.keys()) {
             if (w_d->parameterNames().contains(param_name)) {
-                w_d->setParameter(param_name, node->parameters().toVariantMap()[param_name]);
+                w_d->setParameter(param_name, p_map[param_name]);
             }
         }
 

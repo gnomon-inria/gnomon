@@ -715,7 +715,6 @@ G.Application {
         GP.SessionManager.newWorkspace(workspace_source(workspace_name))
         let workspace = window.current_workspace()
         workspace.d.currentIndex = workspace.d.algorithms.indexOf(plugin_name)
-
         for(let param in parameters) {
             if ("value" in parameters[param]) {
                 workspace.d.parameters[param].value = parameters[param]["value"]
