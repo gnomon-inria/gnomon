@@ -191,6 +191,17 @@ QJSValue gnomonAlgorithmWorkspace::parameters(void)
     return parameters;
 }
 
+QStringList gnomonAlgorithmWorkspace::parameterNames(void)
+{
+    return d->command->parameters().keys();
+}
+
+void gnomonAlgorithmWorkspace::setParameter(const QString& parameter, const QVariant& value)
+{
+    d->command->setParameter(parameter, value);
+    emit parametersChanged();
+}
+
 gnomonVtkViewList* gnomonAlgorithmWorkspace::sources(void) const
 {
     return d->sources;
