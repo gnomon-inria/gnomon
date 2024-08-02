@@ -118,6 +118,8 @@ public:
     gnomonVtkView *target(void) const { return (*this->targets())[0]; };
 
     QJSValue parameters(void);
+    QStringList parameterNames(void);
+    void setParameter(const QString& parameter, const QVariant& value);
 
 protected:
     QJsonObject _serialize() override;
