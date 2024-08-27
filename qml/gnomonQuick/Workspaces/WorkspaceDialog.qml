@@ -27,6 +27,8 @@ G.Dialog {
     property alias plugin_workspace: _internal.plugin_workspace
     property alias available_workspaces: _available_workspaces
 
+    property bool isValid: _internal.selected_workspace.available;
+
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
     width: G.Style.largeDialogWidth
@@ -37,7 +39,34 @@ G.Dialog {
     parent: Overlay.overlay
     modal: true
     title: "Open a new Workspace"
-    standardButtons:  Dialog.Open | Dialog.Cancel
+
+
+    footer: DialogButtonBox {
+        alignment: Qt.AlignRight
+        spacing: G.Style.smallPadding
+
+        background: Rectangle {
+            anchors.fill: parent
+            color: G.Style.colors.gutterColor
+        }
+
+        G.Button {
+            text: 'Cancel';
+            flat: true
+            type: G.Style.ButtonType.Neutral
+            width: G.Style.buttonWidth
+            onClicked: _self.reject();
+        }
+
+        G.Button {
+            text: 'Open';
+            type: _self.isValid ? G.Style.ButtonType.Base : G.Style.ButtonType.Danger
+            width: G.Style.buttonWidth
+            enabled: _self.isValid
+            flat: !_self.isValid
+            onClicked: _self.accept();
+        }
+    }
 
     onAccepted: {
         if (_internal.selected_workspace) {
