@@ -164,11 +164,13 @@ ListView {
             model: _model
 
             onSelectionChanged : {
-                _self.selectedPaths = [];
+                let paths = [];
                 for (let i=0; i<_item_selection_model.selectedIndexes.length; i++) {
                     let _model_index = _item_selection_model.selectedIndexes[i];
-                     _self.selectedPaths.push(_model.filePath(_model_index))
+                    if(_self.selectFolder || !_model.isDir(_model_index))
+                        paths.push(_model.filePath(_model_index))
                 }
+                _self.selectedPaths = paths
             }
         }
 

@@ -19,6 +19,8 @@ Control
 
     property alias projectTree: _project_tree_view
 
+    property var selectedPaths: []
+
     signal fileDoubleClicked(string fileUrl)
     signal fileRightClicked(string fileUrl)
 
@@ -84,6 +86,9 @@ Control
             onFileRightClicked : (fileUrl) => {
                 _self.fileRightClicked(fileUrl)
             }
+            onSelectedPathsChanged: {
+                _self.selectedPaths = _project_tree_view.selectedPaths
+            }
         }
 
         Label {
@@ -119,6 +124,9 @@ Control
             }
             onFileRightClicked : (fileUrl) => {
                 _self.fileRightClicked(fileUrl)
+            }
+            onSelectedPathsChanged: {
+                _self.selectedPaths = _data_tree_view.selectedPaths
             }
         }
 
