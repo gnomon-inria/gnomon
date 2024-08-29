@@ -905,6 +905,7 @@ G.Workspace {
 
         onAccepted : {
              if(GP.ProjectManager.cleanProject(_workspace._dialog_source)) {
+                remove_from_history(_workspace._dialog_source)
                 create_project()
             }
         }
