@@ -111,8 +111,10 @@ public:
 
     QJSValue parameters(void);
     Q_INVOKABLE void addParameter(const QString& parameterName, const QString& parameterType, const QString& group);
+    Q_INVOKABLE void duplicateParameter(const QString& parameterName, const QString& newName, const QString& group);
     Q_INVOKABLE void removeParameter(const QString& name);
     Q_INVOKABLE void setGroup(const QString& parameterName, const QString& group);
+    Q_INVOKABLE void duplicateGroup(const QString& groupName, const QString& newName);
     Q_INVOKABLE void removeGroup(const QString& groupName);
     Q_INVOKABLE void renameParameter(const QString& oldName, const QString& newName);
     Q_INVOKABLE void renameGroup(const QString& oldName, const QString& newName);

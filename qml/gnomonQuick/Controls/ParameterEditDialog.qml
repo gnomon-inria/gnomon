@@ -86,6 +86,7 @@ G.Dialog {
                         return i
                     }
                 }
+                return -1
             }
 
             delegate: G.ListItemDelegate {
@@ -143,6 +144,30 @@ G.Dialog {
 
                     background: Rectangle {
                         color: G.Style.colors.gutterColor;
+                    }
+                }
+
+                G.IconButton {
+                    id: duplicate_group
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.margins: G.Style.smallPadding
+                    //anchors.verticalCenter: parent.verticalCenter
+
+                    visible: !_group_name_edit.visible
+                    enabled: visible
+                    iconName: "content-duplicate"
+                    size: G.Style.iconSmall;
+                    color: G.Style.colors.textColorFaded;
+
+                    onClicked: {
+                        let new_name_index = 1
+                        let new_name_suffix = " (" + new_name_index.toString() + ")"
+                        while(_group_list.indexOfGroup(group + new_name_suffix) >= 0) {
+                            new_name_index++
+                            new_name_suffix = " (" + new_name_index.toString() + ")"
+                        }
+                        d.duplicateGroup(group, group + new_name_suffix)
                     }
                 }
 
@@ -345,12 +370,30 @@ G.Dialog {
                         hoverColor : G.Style.colors.dangerColor;
 
                         anchors.right: parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.margins: G.Style.smallPadding
+                        anchors.top: parent.top
+                        anchors.topMargin: G.Style.smallPadding
+                        anchors.rightMargin: G.Style.smallPadding
 
                         onClicked: {
                             _remove_parameter_dialog.param = param;
                             _remove_parameter_dialog.open()
+                        }
+                    }
+
+                    G.IconButton {
+                        id: duplicate_parameter_button
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.top: _remove_parameter_button.bottom
+                        anchors.bottomMargin: G.Style.smallPadding
+                        anchors.rightMargin: G.Style.smallPadding
+
+                        iconName: "content-duplicate"
+                        size: G.Style.iconSmall;
+                        color: G.Style.colors.textColorFaded;
+
+                        onClicked: {
+                            d.duplicateParameter(param.label, param.label, _parameter_list.group)
                         }
                     }
                 }

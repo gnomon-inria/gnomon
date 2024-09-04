@@ -82,19 +82,25 @@ public:
     inline virtual void addParameter(const QString& parameterName, const QString& parameterType, const QString& group) {
         return this->model->addParameter(parameterName, parameterType, group);
     };
+    inline virtual void duplicateParameter(const QString& parameterName, const QString& newName, const QString& group) {
+        return this->model->duplicateParameter(parameterName, newName, group);
+    };
     inline virtual void removeParameter(const QString& parameterName) {
         return this->model->removeParameter(parameterName);
     };
-    virtual void setGroup(const QString& parameterName, const QString& group) {
+    inline virtual void setGroup(const QString& parameterName, const QString& group) {
         return this->model->setGroup(parameterName, group);
     };
-    virtual void removeGroup(const QString& groupName) {
+    inline virtual void duplicateGroup(const QString& groupName, const QString& newName) {
+        return this->model->duplicateGroup(groupName, newName);
+    };
+    inline virtual void removeGroup(const QString& groupName) {
         return this->model->removeGroup(groupName);
     };
-    virtual void renameParameter(const QString& oldName, const QString& newName) {
+    inline virtual void renameParameter(const QString& oldName, const QString& newName) {
         return this->model->renameParameter(oldName, newName);
     };
-    virtual void renameGroup(const QString& oldName, const QString& newName) {
+    inline virtual void renameGroup(const QString& oldName, const QString& newName) {
         return this->model->renameGroup(oldName, newName);
     };
 

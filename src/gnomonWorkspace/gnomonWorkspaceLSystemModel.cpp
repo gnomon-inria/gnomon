@@ -615,15 +615,24 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
 
 void gnomonWorkspaceLSystemModel::addParameter(const QString& parameterName, const QString& parameterType, const QString& group) {
     qDebug()<<Q_FUNC_INFO<<parameterName<<parameterType<<group;
-    d->command->addParameter(parameterName, parameterType, group);
+    return d->command->addParameter(parameterName, parameterType, group);
+}
+
+void gnomonWorkspaceLSystemModel::duplicateParameter(const QString &parameterName, const QString &newName,
+                                                     const QString &group) {
+    return d->command->duplicateParameter(parameterName, newName, group);
 }
 
 void gnomonWorkspaceLSystemModel::removeParameter(const QString& parameterName) {
-    d->command->removeParameter(parameterName);
+    return d->command->removeParameter(parameterName);
 }
 
 void gnomonWorkspaceLSystemModel::setGroup(const QString &parameterName, const QString &group) {
     return d->command->setGroup(parameterName, group);
+}
+
+void gnomonWorkspaceLSystemModel::duplicateGroup(const QString &groupName, const QString &newName) {
+    return d->command->duplicateGroup(groupName, newName);
 }
 
 void gnomonWorkspaceLSystemModel::removeGroup(const QString &groupName) {
