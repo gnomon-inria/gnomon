@@ -110,6 +110,8 @@ public:
     gnomonQmlView *textView(void) const;
 
     QJSValue parameters(void);
+    QStringList parameterNames(void);
+    void setParameter(const QString& parameter, const QVariant& value);
     Q_INVOKABLE void addParameter(const QString& parameterName, const QString& parameterType, const QString& group);
     Q_INVOKABLE void duplicateParameter(const QString& parameterName, const QString& newName, const QString& group);
     Q_INVOKABLE void removeParameter(const QString& name);

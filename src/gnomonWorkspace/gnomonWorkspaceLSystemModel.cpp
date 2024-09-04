@@ -647,6 +647,17 @@ void gnomonWorkspaceLSystemModel::renameGroup(const QString &oldName, const QStr
     return d->command->renameGroup(oldName, newName);
 }
 
+QStringList gnomonWorkspaceLSystemModel::parameterNames(void)
+{
+    return d->command->parameters().keys();
+}
+
+void gnomonWorkspaceLSystemModel::setParameter(const QString& parameter, const QVariant& value)
+{
+    d->command->setParameter(parameter, value);
+    emit parametersChanged();
+}
+
 QStringList gnomonWorkspaceLSystemModel::missingTextures(void) const
 {
     return d->missing_textures;

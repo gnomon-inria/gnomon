@@ -653,9 +653,11 @@ G.Application {
             if (param != "python_code") {
                 if ("value" in parameters[param]) {
                     workspace.d.parameters[param].value = parameters[param]["value"]
-                } else if ("values" in parameters[param] && "index" in parameters[param]) {
+                } else if ("values" in parameters[param]) {
                     workspace.d.parameters[param].values = parameters[param]["values"]
-                    workspace.d.parameters[param].index = parameters[param]["index"]
+                    if ("index" in parameters[param]) {
+                        workspace.d.parameters[param].index = parameters[param]["index"]
+                    }
                 } else {
                     console.warn("function loadWorkspace TODO: implement for param : " , param, parameters[param])
                 }
@@ -675,9 +677,11 @@ G.Application {
             if ((param != "lsystem_code") && (param != "derivation_length")) {
                 if ("value" in parameters[param]) {
                     workspace.d.parameters[param].value = parameters[param]["value"]
-                } else if ("values" in parameters[param] && "index" in parameters[param]) {
+                } else if ("values" in parameters[param]) {
                     workspace.d.parameters[param].values = parameters[param]["values"]
-                    workspace.d.parameters[param].index = parameters[param]["index"]
+                    if ("index" in parameters[param]) {
+                        workspace.d.parameters[param].index = parameters[param]["index"]
+                    }
                 } else {
                     console.warn("function loadWorkspace TODO: implement for param : " , param, parameters[param])
                 }
@@ -706,9 +710,11 @@ G.Application {
         for(let param in parameters) {
             if ("value" in parameters[param]) {
                 workspace.d.parameters[param].value = parameters[param]["value"]
-            } else if ("values" in parameters[param] && "index" in parameters[param]) {
+            } else if ("values" in parameters[param]) {
                 workspace.d.parameters[param].values = parameters[param]["values"]
-                workspace.d.parameters[param].index = parameters[param]["index"]
+                if ("index" in parameters[param]) {
+                    workspace.d.parameters[param].index = parameters[param]["index"]
+                }
             } else {
                 console.warn("function loadWorkspace TODO: implement for param : " , param, parameters[param])
             }
