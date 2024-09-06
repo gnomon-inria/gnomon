@@ -104,70 +104,99 @@ G.Dialog {
                 text: group
                 font: G.Style.fonts.cardLabel
 
-                onClicked: {
-                    _group_list.currentIndex = index
-                }
+                contentItem: Item {
 
-                onDoubleClicked: {
-                    _group_name_edit.text = text
-                    _group_name_edit.visible = true
-                }
+                    Label {
+                        anchors.left: parent.left;
+                        anchors.right: _duplicate_group_button.left;
+                        anchors.top: parent.top;
+                        anchors.bottom: parent.bottom;
 
-                tooltip: "Double click to change group name"
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignLeft
 
-                G.TextField {
-                    id: _group_name_edit
+                        leftPadding: G.Style.smallPadding;
 
-                    anchors.left: parent.left;
-                    anchors.right: parent.right;
-                    anchors.verticalCenter: parent.verticalCenter;
-                    anchors.margins: G.Style.smallPadding;
+                        text: _group_delegate.text;
+                        visible: text;
+                        font: _group_delegate.font
+                        color: _group_delegate.textColor
 
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignLeft
+                        MouseArea {
+                            id: _label_area
+                            anchors.fill: parent
+                            hoverEnabled: true
 
-                    leftPadding: 1.5*G.Style.smallPadding;
+                            onClicked: {
+                                _group_list.currentIndex = index
+                            }
 
-                    visible: false;
-                    z: 1
+                            onDoubleClicked: {
+                                _group_name_edit.text = _group_delegate.text
+                                _group_name_edit.visible = true
+                            }
+                        }
 
-                    font: font;
-                    color: textColor;
-
-                    onEditingFinished: {
-                        visible = false
-                        if (_group_name_edit.text != _group_delegate.text) {
-                            _group_delegate.text = _group_name_edit.text
-                            d.renameGroup(group, _group_name_edit.text)
+                        G.ToolTip {
+                            text: "Double click to change group name";
+                            visible: _label_area.containsMouse
                         }
                     }
 
-                    background: Rectangle {
-                        color: G.Style.colors.gutterColor;
-                    }
-                }
+                    G.TextField {
+                        id: _group_name_edit
 
-                G.IconButton {
-                    id: duplicate_group
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    anchors.margins: G.Style.smallPadding
-                    //anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left;
+                        anchors.right: _duplicate_group_button.left;
+                        anchors.verticalCenter: parent.verticalCenter;
+                        anchors.rightMargin: G.Style.smallPadding;
+                        anchors.leftMargin: -G.Style.smallPadding/2;
 
-                    visible: !_group_name_edit.visible
-                    enabled: visible
-                    iconName: "content-duplicate"
-                    size: G.Style.iconSmall;
-                    color: G.Style.colors.textColorFaded;
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignLeft
 
-                    onClicked: {
-                        let new_name_index = 1
-                        let new_name_suffix = " (" + new_name_index.toString() + ")"
-                        while(_group_list.indexOfGroup(group + new_name_suffix) >= 0) {
-                            new_name_index++
-                            new_name_suffix = " (" + new_name_index.toString() + ")"
+                        leftPadding: 1.5*G.Style.smallPadding;
+
+                        visible: false;
+                        z: 1
+
+                        font: font;
+                        color: textColor;
+
+                        onEditingFinished: {
+                            visible = false
+                            if (_group_name_edit.text != _group_delegate.text) {
+                                _group_delegate.text = _group_name_edit.text
+                                d.renameGroup(group, _group_name_edit.text)
+                            }
                         }
-                        d.duplicateGroup(group, group + new_name_suffix)
+
+                        background: Rectangle {
+                            color: G.Style.colors.gutterColor;
+                        }
+                    }
+
+                    G.IconButton {
+                        id: _duplicate_group_button
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        visible: _group_delegate.highlighted & !_group_name_edit.visible
+                        tooltip: "Duplicate parameter group"
+                        enabled: visible
+                        iconName: "content-duplicate"
+                        size: G.Style.iconSmall;
+                        color: G.Style.colors.textColorFaded;
+
+                        onClicked: {
+                            let new_name_index = 1
+                            let new_name_suffix = " (" + new_name_index.toString() + ")"
+                            while(_group_list.indexOfGroup(group + new_name_suffix) >= 0) {
+                                new_name_index++
+                                new_name_suffix = " (" + new_name_index.toString() + ")"
+                            }
+                            d.duplicateGroup(group, group + new_name_suffix)
+                        }
                     }
                 }
 
@@ -199,7 +228,7 @@ G.Dialog {
                                 d.setGroup(param.label, group)
                             }
 
-                            drop.accept()
+                            drop.accept(Qt.IgnoreAction)
                         }
                     }
                 }
@@ -244,7 +273,7 @@ G.Dialog {
                 _new_group_dialog.name = ""
                 _new_group_dialog.param = drag.source.param
                 _new_group_dialog.open()
-                drop.accept()
+                drop.accept(Qt.IgnoreAction)
             }
         }
     }
@@ -308,8 +337,6 @@ G.Dialog {
                 model: parameters
 
                 onCurrentIndexChanged: {
-                    _parameter_config_panel.component = undefined
-                    _parameter_config_panel.param = undefined
                     if (currentIndex !== -1) {
                         _parameter_config_panel.param = model.get(currentIndex).param
                         _parameter_config_panel.component = model.get(currentIndex).component
@@ -370,9 +397,8 @@ G.Dialog {
                         hoverColor : G.Style.colors.dangerColor;
 
                         anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.topMargin: G.Style.smallPadding
-                        anchors.rightMargin: G.Style.smallPadding
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.margins: G.Style.smallPadding
 
                         onClicked: {
                             _remove_parameter_dialog.param = param;
@@ -381,16 +407,17 @@ G.Dialog {
                     }
 
                     G.IconButton {
-                        id: duplicate_parameter_button
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-                        anchors.top: _remove_parameter_button.bottom
-                        anchors.bottomMargin: G.Style.smallPadding
-                        anchors.rightMargin: G.Style.smallPadding
+                        id: _duplicate_parameter_button
+
+                        anchors.right: _remove_parameter_button.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.margins: G.Style.smallPadding
 
                         iconName: "content-duplicate"
                         size: G.Style.iconSmall;
                         color: G.Style.colors.textColorFaded;
+                        visible: _parameter_delegate.highlighted
+                        tooltip: "Duplicate parameter"
 
                         onClicked: {
                             d.duplicateParameter(param.label, param.label, _parameter_list.group)
