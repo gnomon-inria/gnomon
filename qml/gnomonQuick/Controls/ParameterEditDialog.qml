@@ -14,6 +14,13 @@ G.Dialog {
     property var parameters
     property var d
 
+    QtObject {
+        id: _internal;
+
+        property string group_to_select
+        property string param_to_select
+    }
+
     parent: Overlay.overlay
 
     x: Math.round((window.width - width) / 2)
@@ -195,6 +202,7 @@ G.Dialog {
                                 new_name_index++
                                 new_name_suffix = " (" + new_name_index.toString() + ")"
                             }
+                            _internal.group_to_select = group + new_name_suffix
                             d.duplicateGroup(group, group + new_name_suffix)
                         }
                     }
@@ -221,6 +229,8 @@ G.Dialog {
                             let param = drag.source.param
 
                             console.log("Move parameter", param.label, "from group", source_group, "to group", group)
+                            _internal.group_to_select = group
+                            _internal.param_to_select = param.label
                             if(_all_parameter_list.itemAtIndex(_group_list.indexOfGroup(source_group)).count === 1) {
                                 d.setGroup(param.label, group)
                                 d.removeGroup(source_group)
@@ -336,6 +346,28 @@ G.Dialog {
 
                 model: parameters
 
+                onModelChanged: {
+                    if (_internal.group_to_select == group) {
+                        _group_list.currentIndex = index
+
+                        if (indexOfParam(_internal.param_to_select) != -1) {
+                            currentIndex = indexOfParam(_internal.param_to_select)
+                        }
+
+                        _internal.group_to_select = ""
+                        _internal.param_to_select = ""
+                    }
+                }
+
+                function indexOfParam(param) {
+                    for(let i=0; i<model.count; i++) {
+                        if(model.get(i).param.label === param) {
+                            return i
+                        }
+                    }
+                    return -1
+                }
+
                 onCurrentIndexChanged: {
                     if (currentIndex !== -1) {
                         _parameter_config_panel.param = model.get(currentIndex).param
@@ -420,6 +452,8 @@ G.Dialog {
                         tooltip: "Duplicate parameter"
 
                         onClicked: {
+                            _internal.group_to_select = group
+                            _internal.param_to_select = param.label
                             d.duplicateParameter(param.label, param.label, _parameter_list.group)
                         }
                     }
@@ -473,9 +507,12 @@ G.Dialog {
         id: _new_parameter_dialog
         force_new_group: _group_list.count === 0
         onAccepted: {
+            _internal.param_to_select = name
             if(new_group) {
+                _internal.group_to_select = group_name
                 d.addParameter(name, type, group_name)
             } else {
+                _internal.group_to_select = _group_list.currentItem.group
                 d.addParameter(name, type, _group_list.currentItem.group)
             }
         }
@@ -492,6 +529,8 @@ G.Dialog {
             let group = _new_group_dialog.name
             let source_group = param.group
             console.log("Move parameter", param.label, "from group", source_group, "to NEW group", group)
+            _internal.group_to_select = group
+            _internal.param_to_select = param.label
             if(_all_parameter_list.itemAtIndex(_group_list.indexOfGroup(source_group)).count === 1) {
                 d.setGroup(param.label, group)
                 d.removeGroup(source_group)
@@ -511,10 +550,32 @@ G.Dialog {
 
         onAccepted: {
             let source_group = param.group
+            let source_group_index = _group_list.indexOfGroup(source_group)
+
             if(_all_parameter_list.itemAtIndex(_group_list.indexOfGroup(source_group)).count === 1) {
+                if (_self.parameters.count > 1) {
+                    if (source_group_index === 0) {
+                         _internal.group_to_select = _self.parameters.get(1).group
+                        let param_0 = _self.parameters.get(1).parameters.get(0).param
+                        _internal.param_to_select = param_0.label
+                    } else {
+                         _internal.group_to_select = _self.parameters.get(0).group
+                        let param_0 = _self.parameters.get(0).parameters.get(0).param
+                        _internal.param_to_select = param_0.label
+                    }
+                }
                 d.removeParameter(param.label)
                 d.removeGroup(source_group)
             } else {
+                _internal.group_to_select = source_group
+                let source_group_parameters = _self.parameters.get(source_group_index).parameters
+                let param_0 = source_group_parameters.get(0).param
+                let param_1 = source_group_parameters.get(1).param
+                if (param_0.label === param.label) {
+                    _internal.param_to_select = param_1.label
+                } else {
+                    _internal.param_to_select = param_0.label
+                }
                 d.removeParameter(param.label)
             }
         }
