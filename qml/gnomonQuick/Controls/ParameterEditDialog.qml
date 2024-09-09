@@ -174,6 +174,8 @@ G.Dialog {
                             visible = false
                             if (_group_name_edit.text != _group_delegate.text) {
                                 _group_delegate.text = _group_name_edit.text
+                                _internal.param_to_select = _parameter_list.currentItem.param.label
+                                _internal.group_to_select = _group_name_edit.text
                                 d.renameGroup(group, _group_name_edit.text)
                             }
                         }
@@ -597,6 +599,8 @@ G.Dialog {
 
         onParamNameChanged: {
             if (param) {
+                _internal.param_to_select = paramName
+                _internal.group_to_select = param.group
                 d.renameParameter(param.label, paramName)
             }
         }
