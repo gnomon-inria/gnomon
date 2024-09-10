@@ -1,0 +1,19 @@
+html
+{
+    --pst-icon-book: "📖";
+}
+
+.admonition.definition,div.admonition.definition
+{
+    border-color:var(--sd-color-primary)
+}
+.admonition.definition>.admonition-title,div.admonition.definition>.admonition-title
+{
+    background-color:var(--sd-color-primary-bg)
+}
+.admonition.definition>.admonition-title:after,div.admonition.definition>.admonition-title:after
+{
+    color:var(--sd-color-primary);content:var(--pst-icon-book)
+}
+
+
