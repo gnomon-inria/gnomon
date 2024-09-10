@@ -5,5 +5,4 @@
 
 install
 install_packages
-glossary
 :::
