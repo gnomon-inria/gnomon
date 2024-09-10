@@ -4,7 +4,10 @@
 :maxdepth: 1
 :hidden:
 
-install
+quickstart/index
+user_guide/index
+plugins/index
+gallery/index
 :::
 
 
