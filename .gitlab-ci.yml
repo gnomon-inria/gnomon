@@ -219,15 +219,15 @@ pages:
     - mamba env update -f conda/env_linux.yaml
     - conda activate gnomon-dev
     - mamba install -c conda-forge sphinx sphinx-design make matplotlib-base myst-parser doxygen breathe=4.32
-    - pip install sphinx-press-theme
+    - pip install sphinx_press_theme pydata-press-theme
     - rm -rf build
     - mkdir build
     - cd build
     - cmake ..
-    - cd ../doc_md
+    - cd ../doc
     - make html
     - mv _build/html ../public
-    - cd ../doc
+    - cd ../doc_md
     - make html
     - mkdir -p ../public/legacy
     - cp -R build/html/* ../public/legacy
@@ -238,3 +238,4 @@ pages:
   only:
     - master
     - develop
+    - doc
