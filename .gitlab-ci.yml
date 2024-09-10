@@ -226,11 +226,11 @@ pages:
     - cmake ..
     - cd ../doc
     - make html
-    - mv build/html ../public
+    - mkdir -p ../public/staging
+    - cp -R build/html/* ../public/staging
     - cd ../doc_md
     - make html
-    - mkdir -p ../public/legacy
-    - cp -R _build/html/* ../public/legacy
+    - mv _build/html ../public
   extends: .template_retry
   artifacts:
     paths:

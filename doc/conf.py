@@ -40,6 +40,9 @@ html_logo = '_static/gnomon_logo.png'
 html_favicon = '_static/gnomon_logo.png'
 
 html_theme_options = {
+    "logo": {
+        "text": "Gnomon"
+    },
     "icon_links": [
         {
             "name": "GitLab",
@@ -51,4 +54,4 @@ html_theme_options = {
 }
 
 # -- MyST options ------------------------------------------------------------
-myst_enable_extensions = ["colon_fence"]
+myst_enable_extensions = ["colon_fence", "attrs_inline"]
