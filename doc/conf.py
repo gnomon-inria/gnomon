@@ -23,6 +23,7 @@ extensions = [
     "sphinx_design",
 ]
 
+
 templates_path = ['_templates']
 exclude_patterns = []
 
@@ -36,6 +37,7 @@ source_suffix = '.md'
 
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
+html_css_files = ['css/gallery_custom.css']
 html_logo = '_static/gnomon_logo.png'
 html_favicon = '_static/gnomon_logo.png'
 
