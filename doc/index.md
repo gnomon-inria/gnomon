@@ -8,6 +8,7 @@ quickstart/index
 user_guide/index
 plugins/index
 gallery/index
+api_doc/index
 :::
 
 
