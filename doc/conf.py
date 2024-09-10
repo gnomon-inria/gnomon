@@ -37,8 +37,17 @@ source_suffix = '.md'
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
 html_logo = '_static/gnomon_logo.png'
+html_favicon = '_static/gnomon_logo.png'
 
 html_theme_options = {
+    "icon_links": [
+        {
+            "name": "GitLab",
+            "url": "https://gitlab.inria.com/mosaic/gnomon",
+            "icon": "fab fa-gitlab",
+            "type": "fontawesome",
+        },
+    ],
 }
 
 # -- MyST options ------------------------------------------------------------
