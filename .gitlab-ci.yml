@@ -219,18 +219,18 @@ pages:
     - mamba env update -f conda/env_linux.yaml
     - conda activate gnomon-dev
     - mamba install -c conda-forge sphinx sphinx-design make matplotlib-base doxygen breathe=4.32
-    - pip install "myst-parser>=2" sphinx_press_theme pydata-sphinx-theme
+    - pip install "myst-parser>=2" sphinx-press-theme pydata-sphinx-theme
     - rm -rf build
     - mkdir build
     - cd build
     - cmake ..
+    - cd ../doc_md
+    - make html
+    - mv _build/html ../public
     - cd ../doc
     - make html
     - mkdir -p ../public/staging
     - cp -R build/html/* ../public/staging
-    - cd ../doc_md
-    - make html
-    - mv _build/html ../public
   extends: .template_retry
   artifacts:
     paths:
