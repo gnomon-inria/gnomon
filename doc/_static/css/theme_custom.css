@@ -4,6 +4,20 @@ html {
     --pst-font-family-monospace: Courier, var(--pst-font-family-monospace-system);
 }
 
+html[data-theme="light"] {
+    --pst-color-primary: #3271B8;
+    --pst-color-primary-bg: #c2dcec;
+    --sd-color-primary: #3271B8;
+    --sd-color-primary-bg: #c2dcec;
+}
+
+html[data-theme="dark"] {
+    --pst-color-primary: #3271B8;
+    --pst-color-primary-bg: #2b4257;
+    --sd-color-primary: #3271B8;
+    --sd-color-primary-bg: #2b4257;
+}
+
 .logo__title {
     font-family: var(--pst-font-family-heading);
 }
