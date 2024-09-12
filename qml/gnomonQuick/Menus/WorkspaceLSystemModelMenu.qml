@@ -339,5 +339,15 @@ Item {
 
         parameters: _menu.parameters
         d: _menu.d
+
+        onOpened: {
+            _parameter_edit_dialog.code = d.text
+        }
+
+        onRejected: {
+            d.text = _parameter_edit_dialog.code
+            d.onParametersChanged();
+            _parameter_edit_dialog.code = ""
+        }
     }
 }

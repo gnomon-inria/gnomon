@@ -13,6 +13,7 @@ G.Dialog {
 
     property var parameters
     property var d
+    property var code
 
     QtObject {
         id: _internal;
