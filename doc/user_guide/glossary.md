@@ -25,5 +25,5 @@ A **View** is an object dedicated to the materialization of **Forms** in the GUI
 :name: workspace-definition
 :class: definition
 
-A **Workspace** is the graphical counterpart of an **Algorithm**, where the user is able to pass **Forms** as inputs through and input **View**, set the values of the **Parameters** and obtain **Forms** as outputs in an output **View**.
+A **Workspace** is the graphical counterpart of an **Algorithm**, where the user is able to set **Forms** as inputs through an input **View**, tune the values of the **Parameters** and retrieve **Forms** as outputs in an output **View**.
 :::
