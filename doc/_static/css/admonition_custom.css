@@ -16,4 +16,5 @@ html
     color:var(--sd-color-primary);content:var(--pst-icon-book)
 }
 
-
+.svg-inline--fa.fa-2xs{vertical-align:.75em;margin-left:.25em}
+.fa-2xs{font-size:.5em;line-height:.1em;vertical-align:.5em}

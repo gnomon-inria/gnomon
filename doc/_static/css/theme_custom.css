@@ -1,0 +1,9 @@
+html {
+    --pst-font-family-base: Helvetica, var(--pst-font-family-base-system);
+    --pst-font-family-heading: Helvetica, var(--pst-font-family-base-system);
+    --pst-font-family-monospace: Courier, var(--pst-font-family-monospace-system);
+}
+
+.logo__title {
+    font-family: var(--pst-font-family-heading);
+}
