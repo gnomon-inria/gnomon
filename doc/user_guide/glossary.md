@@ -26,7 +26,7 @@ A **Plugin** is an inherited object conforming with the API of one type of
 [**Visualization**](visualization-definition),
 and generally relying on a third-party software library providing the functionality.
 
-Available **plugin** packages are listed [here](../plugins/index).
+Available **plugin** packages are listed [**here**](../plugins/index).
 :::
 
 :::{admonition} View
@@ -56,5 +56,5 @@ where the user is able to set [**Forms**](form-definition)
 as inputs through an input [**View**](view-definition),
 tune the values of the **Parameters** and retrieve **Forms** as outputs in an output **View**.
 
-Available workspaces are listed [here](workspaces)
+Available workspaces are listed [**here**](workspaces).
 :::
