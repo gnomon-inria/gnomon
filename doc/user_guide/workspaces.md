@@ -2,7 +2,8 @@
 
 **Workspaces** constitute the elementary bricks in the Gnomon user experience. You are going to chain processing steps to apply to your data by creating new Workspaces and by moving **Forms** from one Workspace to the next.
 
-A Workspace is the graphical counterpart of an **Algorithm**, through which the user will be able to:
+A Workspace is the graphical counterpart of an **Algorithm**[{fas}`book-open;sd-text-primary fa-2xs`](algorithm-definition), through which the user will be able to:
+
 * Set the Form(s) corresponding to its input
 * Tune the values of its **Parameters**
 * Run it and access to logs and progress
@@ -111,10 +112,23 @@ Parameters
 ::::
 :::::
 
-:::{div} sd-text-center
-Typical layout of a Workspace
-:::
-
+The typical layout of a Workspace consists of input and output Views[{fas}`book-open;sd-text-primary fa-2xs`](view-definition) at the center, rendering the input and output Forms of the Algorithm, with lateral menus to control the Algorithm (right) and the Visualization of the active view (left).
 
 ## Available workspaces
 
+
+
+| Workspace Name                                      | Input Forms                                                                                                      | Output Forms                                                                                                                                                                                                                                                                          | Preview  |
+|:----------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------:|
+| [Data Browsing](workspaces/data_browsing)           |                                                                                                                  | {bdg-link-success}`Image <forms/image.html>`<br/> {bdg-link-success}`BinaryImage <forms/binary_image.html>` <br/> {bdg-link-success}`CellImage <forms/cell_image.html>`<br/> {bdg-link-success}`Mesh <forms/mesh.html>`<br/> {bdg-link-success}`CellComplex <forms/cellcomplex.html>` |          |
+| [Preprocessing](workspaces/preprocessing)           | {bdg-link-success}`Image <forms/image.html>`<br/> {bdg-link-success-line}`BinaryImage <forms/binary_image.html>` | {bdg-link-success}`Image <forms/image.html>`                                                                                                                                                                                                                                          |          |
+| [Binarization](workspaces/binarization)             | {bdg-link-success}`Image <forms/image.html>`                                                                     | {bdg-link-success}`BinaryImage <forms/binary_image.html>`                                                                                                                                                                                                                             |          |
+| [Segmentation](workspaces/segmentation)             | {bdg-link-success}`Image <forms/image.html>`                                                                     | {bdg-link-success}`CellImage <forms/cell_image.html>`                                                                                                                                                                                                                                 |          |
+| [Image Registration](workspaces/image_registration) | {bdg-link-success}`Image <forms/image.html>` <br/> {bdg-link-success-line}`DataDict <forms/data_dict.html>`      | {bdg-link-success}`Image <forms/image.html>` <br/> {bdg-link-success}`DataDict <forms/data_dict.html>`                                                                                                                                                                                |          |
+
+:::{toctree}
+:maxdepth: 1
+:hidden:
+
+workspaces/segmentation
+:::
