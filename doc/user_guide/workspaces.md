@@ -8,7 +8,7 @@ A Workspace is the graphical counterpart of an **Algorithm**, through which the 
 * Run it and access to logs and progress
 * Retrieve the Form(s) corresponding to its output
 
-:::::{grid} 8
+:::::{grid}
 :padding: 1
 :gutter: 0
 
@@ -114,3 +114,7 @@ Parameters
 :::{div} sd-text-center
 Typical layout of a Workspace
 :::
+
+
+## Available workspaces
+
