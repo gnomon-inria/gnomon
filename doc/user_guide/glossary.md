@@ -1,13 +1,74 @@
 # Glossary
 
-:::{admonition} Algorithm
+:::::{admonition} Algorithm
 :name: algorithm-definition
 :class: definition
 
 An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**.
 Some **Algorithms** serve as a **source** (no input **Form**) or a **sink** (no output **Form**).
-It is implemented by [**Plugins**](plugin-definition).
+
+::::{grid}
+:padding: 1
+
+:::{grid-item}
+:columns: 3
+:margin: auto
+:class: sd-text-center sd-badge sd-text-success
+<br/>
+
+{fas}`images; fa-xl`
+
+Input Form(s)
 :::
+
+:::{grid-item}
+:columns: 1
+:margin: auto
+:class: sd-text-center sd-badge sd-text-success
+
+{material-outlined}`east;3em;sd-text-success`
+
+:::
+
+:::{grid-item-card}
+:columns: 3
+:margin: auto
+:class-body: sd-outline-warning sd-text-center sd-badge sd-text-warning
+{fas}`gear; fa-xl`
+
+Algorithm
+:::
+
+:::{grid-item}
+:columns: 1
+:margin: auto
+:class: sd-text-center sd-badge sd-text-success
+
+{material-outlined}`east;3em;sd-text-success`
+
+:::
+
+:::{grid-item}
+:columns: 3
+:margin: auto
+:class: sd-text-center sd-badge sd-text-success
+<br/>
+
+{fas}`images; fa-xl`
+
+Output Form(s)
+:::
+
+
+:::{grid-item}
+:columns: 1
+:margin: auto
+:::
+
+::::
+
+It is implemented by [**Plugins**](plugin-definition).
+:::::
 
 :::{admonition} Form
 :name: form-definition
