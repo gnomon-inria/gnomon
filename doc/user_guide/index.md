@@ -47,4 +47,5 @@ tutorials
 workspaces
 concepts
 glossary
+forms_index
 :::

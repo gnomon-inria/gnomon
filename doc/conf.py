@@ -49,7 +49,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitLab",
-            "url": "https://gitlab.inria.com/mosaic/gnomon",
+            "url": "https://gitlab.inria.fr/gnomon/gnomon",
             "icon": "fab fa-gitlab",
             "type": "fontawesome",
         },

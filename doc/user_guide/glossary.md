@@ -7,11 +7,27 @@
 A **Form** is a temporal sequence representing the evolution of a biological object, using a given computational representation. It consists of a time-indexed set of instances of an archetypal data structure (e.g. Image, Mesh, Tree...).
 :::
 
+:::{admonition} Algorithm
+:name: algorithm-definition
+:class: definition
+
+An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**.
+Some **Algorithms** serve as a **source** (no input **Form**) or a **sink** (no output **Forms**).
+It is implemented by **plugins**.
+:::
+
 :::{admonition} Plugin
 :name: plugin-definition
 :class: definition
 
 A **Plugin** is an inherited object conforming with the API of one type of **Algorithm**, **Form** or **Visualization**, and generally relying on a third-party software library providing the functionality.
+:::
+
+:::{admonition} Visualizations
+:name: visualizations-definition
+:class: definition
+
+A **Visualizations** defines how a **Form** is rendered in a **View**. It is implemented by **plugins**.
 :::
 
 :::{admonition} View
