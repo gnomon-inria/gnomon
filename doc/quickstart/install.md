@@ -61,7 +61,7 @@ mamba install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomo
 ```
 
 :::{note}
-At this stage the `gnomon` application is installed but "empty" since no plugins are installed by default. To actually make it usable, you will have to install **plugin packages**
+At this stage the `gnomon` application is installed but "empty" since no plugins are installed by default. To actually make it usable, you will have to install [**plugin packages**](install_packages)
 :::
 
 #### **Step 4:** Congrats, you can now launch the application

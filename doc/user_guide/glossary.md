@@ -1,5 +1,14 @@
 # Glossary
 
+:::{admonition} Algorithm
+:name: algorithm-definition
+:class: definition
+
+An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**.
+Some **Algorithms** serve as a **source** (no input **Form**) or a **sink** (no output **Form**).
+It is implemented by [**plugins**](plugin-definition).
+:::
+
 :::{admonition} Form
 :name: form-definition
 :class: definition
@@ -7,39 +16,45 @@
 A **Form** is a temporal sequence representing the evolution of a biological object, using a given computational representation. It consists of a time-indexed set of instances of an archetypal data structure (e.g. Image, Mesh, Tree...).
 :::
 
-:::{admonition} Algorithm
-:name: algorithm-definition
-:class: definition
-
-An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**.
-Some **Algorithms** serve as a **source** (no input **Form**) or a **sink** (no output **Forms**).
-It is implemented by **plugins**.
-:::
-
 :::{admonition} Plugin
 :name: plugin-definition
 :class: definition
 
-A **Plugin** is an inherited object conforming with the API of one type of **Algorithm**, **Form** or **Visualization**, and generally relying on a third-party software library providing the functionality.
-:::
+A **Plugin** is an inherited object conforming with the API of one type of
+[**Algorithm**](algorithm-definition),
+[**Form**](form-definition) or 
+[**Visualization**](visualization-definition),
+and generally relying on a third-party software library providing the functionality.
 
-:::{admonition} Visualizations
-:name: visualizations-definition
-:class: definition
-
-A **Visualizations** defines how a **Form** is rendered in a **View**. It is implemented by **plugins**.
+Available **plugin** packages are listed [here](../plugins/index).
 :::
 
 :::{admonition} View
 :name: view-definition
 :class: definition
 
-A **View** is an object dedicated to the materialization of **Forms** in the GUI through a third-party rendering framework. It relies on **Visualizations** to control the way a particular Form is rendered in a given View.
+A **View** is an object dedicated to the materialization of [**Forms**](form-definition)
+in the GUI through a third-party rendering framework.
+It relies on [**Visualizations**](visualization-definition)
+to control the way a particular Form is rendered in a given View.
+:::
+
+:::{admonition} Visualization
+:name: visualization-definition
+:class: definition
+
+A **Visualizations** defines how a [**Form**](form-definition) is rendered in a [**View**](view-definition). 
+It is implemented by [**plugins**](plugin-definition).
 :::
 
 :::{admonition} Workspace
 :name: workspace-definition
 :class: definition
 
-A **Workspace** is the graphical counterpart of an **Algorithm**, where the user is able to set **Forms** as inputs through an input **View**, tune the values of the **Parameters** and retrieve **Forms** as outputs in an output **View**.
+A **Workspace** is the graphical counterpart of an [**Algorithm**](algorithm-definition),
+where the user is able to set [**Forms**](form-definition)
+as inputs through an input [**View**](view-definition),
+tune the values of the **Parameters** and retrieve **Forms** as outputs in an output **View**.
+
+Available workspaces are listed [here](workspaces)
 :::

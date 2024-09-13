@@ -1,7 +1,11 @@
 # Plugins
 
-Plugins are the meat of Gnomon. 
-This is where the different forms, visualization and algorithms are implemented.
+Plugins
+are the meat of Gnomon. 
+This is where the different forms[{fas}`book-open;sd-text-primary fa-2xs`](form-definition), 
+visualization[{fas}`book-open;sd-text-primary fa-2xs`](visualization-definition) 
+and algorithms[{fas}`book-open;sd-text-primary fa-2xs`](algorithm-definition) 
+are implemented.
 
 ## Available packages
 

@@ -37,6 +37,23 @@ Concepts
 ^^^
 Get a better understanding of the principles underlying the architecture of the Gnomon platform.
 :::
+
+
+:::{grid-item-card}
+:class-header: sd-bg-light sd-font-weight-bold sd-text-center
+:link: forms_index.html
+Forms
+^^^
+Find the available form primitives in Gnomon.
+:::
+
+:::{grid-item-card}
+:class-header: sd-bg-light sd-font-weight-bold sd-text-center
+:link: glossary.html
+Glossary
+^^^
+Short description for Gnomon concepts.
+:::
 ::::
 
 :::{toctree}

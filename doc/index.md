@@ -23,7 +23,15 @@ A computational platform to analyze and simulate the development of living forms
 
 ## What is Gnomon?
 
-**Gnomon** is an open-source platform that allows to intuitively design reproducible computational pipelines for the analysis and simulation of morphogenesis. It manipulates 3D+t representations of developing living forms[{fas}`book-open;sd-text-primary fa-2xs`](form-definition), and lets the user seamlessly interoperate plugins[{fas}`book-open;sd-text-primary fa-2xs`](plugin-definition) to visualize and process them in dedicated workspaces[{fas}`book-open;sd-text-primary fa-2xs`](workspace-definition).
+**Gnomon** is an open-source platform that allows
+to intuitively design reproducible computational 
+pipelines for the analysis and simulation of morphogenesis.
+It manipulates 3D+t representations of developing living 
+forms[{fas}`book-open;sd-text-primary fa-2xs`](form-definition),
+and lets the user seamlessly interoperate 
+plugins[{fas}`book-open;sd-text-primary fa-2xs`](plugin-definition) 
+to visualize and process them in dedicated 
+workspaces[{fas}`book-open;sd-text-primary fa-2xs`](workspace-definition).
 
 ::::{grid} 3
 :padding: 0
