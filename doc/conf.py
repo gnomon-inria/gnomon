@@ -21,6 +21,7 @@ extensions = [
     'myst_parser',
     # "sphinx_external_toc",
     "sphinx_design",
+    "sphinx_tippy",
 ]
 
 
@@ -60,4 +61,11 @@ html_theme_options = {
 }
 
 # -- MyST options ------------------------------------------------------------
-myst_enable_extensions = ["colon_fence", "attrs_inline"]
+myst_enable_extensions = [
+    "colon_fence",
+    "dollarmath",
+    "amsmath",
+    "deflist",
+    "attrs_inline",
+    "attrs_block"
+]

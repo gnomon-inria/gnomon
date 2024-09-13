@@ -8,18 +8,15 @@ A Workspace is the graphical counterpart of an **Algorithm**, through which the 
 * Run it and access to logs and progress
 * Retrieve the Form(s) corresponding to its output
 
-::::::{grid} 4
-:class-container: sd-border-1 sd-rounded-3
+:::::{grid} 8
 :padding: 1
-:gutter: 1
+:gutter: 0
 
-:::::{grid-item}
+::::{grid-item-card}
 :columns: 2
-
-::::{card}
-:margin: 0
-:class-card: sd-outline-danger
-:class-body: sd-text-center sd-badge sd-text-danger
+:margin: auto
+:padding: 0
+:class-body: sd-text-center sd-badge sd-text-danger sd-outline-danger
 
 {fas}`eye; fa-xl`
 
@@ -29,6 +26,7 @@ Visualization
 
 :::{card}
 :margin: auto
+:class-body: sd-outline-dark sd-text-dark sd-rounded-1
 {fas}`sliders; fa-xl`
 
 Parameters
@@ -37,16 +35,13 @@ Parameters
 <br/> <br/> <br/>
 
 ::::
-:::::
 
-:::::{grid-item}
+::::{grid-item-card}
 :columns: 4
-:child-align: center
+:margin: auto
+:padding: 0
+:class-body: sd-text-center sd-badge  sd-text-secondary sd-outline-secondary
 
-::::{card}
-:margin: 0
-:class-card: sd-outline-secondary
-:class-body: sd-text-center sd-badge  sd-text-secondary
 {fas}`display; fa-xl`
 
 Input View
@@ -54,8 +49,7 @@ Input View
 <br/> <br/>
 
 :::{card}
-:class-card: sd-outline-success
-:class-body: sd-text-success 
+:class-body: sd-outline-success sd-text-success sd-rounded-1
 :margin: auto
 :width: 50%
 {fas}`images; fa-xl`
@@ -66,16 +60,13 @@ Input Form(s)
 <br/> <br/> <br/>
 
 ::::
-:::::
 
-:::::{grid-item}
+::::{grid-item-card}
 :columns: 4
-:child-align: center
+:margin: auto
+:padding: 0
+:class-body: sd-text-center sd-badge sd-text-secondary sd-outline-secondary
 
-::::{card}
-:margin: 0
-:class-card: sd-outline-secondary
-:class-body: sd-text-center sd-badge sd-text-secondary  
 {fas}`display; fa-xl`
 
 Output View
@@ -85,8 +76,7 @@ Output View
 :::{card}
 :margin: auto
 :width: 50%
-:class-card: sd-outline-success
-:class-body: sd-text-success
+:class-body: sd-outline-success sd-text-success sd-rounded-1
 {fas}`images; fa-xl`
 
 Output Form(s)
@@ -95,15 +85,12 @@ Output Form(s)
 <br/> <br/> <br/>
 
 ::::
-:::::
 
-:::::{grid-item}
+::::{grid-item-card}
 :columns: 2
-
-::::{card}
-:margin: 0
-:class-card: sd-outline-warning
-:class-body: sd-text-center sd-badge sd-text-warning
+:margin: auto
+:padding: 0
+:class-body: sd-outline-warning sd-text-center sd-badge sd-text-warning
 
 {fas}`gear; fa-xl`
 
@@ -112,8 +99,8 @@ Algorithm
 <br/> <br/>
 
 :::{card}
-:margin: auto
-
+:margin: 0
+:class-body: sd-outline-dark sd-text-dark sd-rounded-1
 {fas}`sliders; fa-xl`
 
 Parameters
@@ -123,4 +110,7 @@ Parameters
 
 ::::
 :::::
-:::::::
+
+:::{div} sd-text-center
+Typical layout of a Workspace
+:::

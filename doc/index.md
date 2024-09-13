@@ -7,7 +7,7 @@ sd_hide_title: true
 
 ::::{div} sd-text-center
 
-# ![Gnomon](_static/gnomon_logo.png){width=100px} Gnomon
+# ![Gnomon](_static/gnomon_logo.png){width=100px class=dark-light} Gnomon
 
 A computational platform to analyze and simulate the development of living forms in 3D.
 

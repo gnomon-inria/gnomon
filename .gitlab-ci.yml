@@ -218,8 +218,8 @@ pages:
     - . "/builds/miniconda3/etc/profile.d/conda.sh" 
     - mamba env update -f conda/env_linux.yaml
     - conda activate gnomon-dev
-    - mamba install -c conda-forge sphinx sphinx-design make matplotlib-base doxygen breathe=4.32
-    - pip install "myst-parser>=2" sphinx-press-theme pydata-sphinx-theme
+    - mamba install -c conda-forge sphinx make matplotlib-base doxygen breathe=4.32
+    - pip install -r doc/requirements.txt
     - rm -rf build
     - mkdir build
     - cd build

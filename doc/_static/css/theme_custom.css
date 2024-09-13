@@ -9,6 +9,8 @@ html[data-theme="light"] {
     --pst-color-primary-bg: #c2dcec;
     --sd-color-primary: #3271B8;
     --sd-color-primary-bg: #c2dcec;
+    --sd-color-light: var(--pst-color-on-background);
+    --sd-color-dark: var(--pst-color-text-base);
 }
 
 html[data-theme="dark"] {
@@ -16,8 +18,20 @@ html[data-theme="dark"] {
     --pst-color-primary-bg: #2b4257;
     --sd-color-primary: #3271B8;
     --sd-color-primary-bg: #2b4257;
+    --sd-color-light: var(--pst-color-on-background);
+    --sd-color-dark: var(--pst-color-text-base);
 }
 
 .logo__title {
     font-family: var(--pst-font-family-heading);
+}
+
+.sd-outline-primary {
+    border-color:var(--sd-color-primary) !important;
+    border-style:solid !important;
+    border-width:1px !important
+}
+
+a.sd-outline-primary:focus,a.sd-outline-primary:hover {
+    border-color:var(--sd-color-primary-highlight) !important
 }
