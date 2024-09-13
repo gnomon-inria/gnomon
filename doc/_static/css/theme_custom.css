@@ -64,12 +64,6 @@ a.sd-text-warning-dark:focus, a.sd-text-warning-dark:hover {
     color:var(--pst-color-warning-highlight) !important
 }
 
-.tippy-box {
-    background-color:var(--pst-color-surface);
-    color:var(--pst-color-text-base);
-    border: 1px solid var(--pst-color-border);
-}
-
 .table tbody tr:nth-child(odd):focus, .table tbody tr:nth-child(odd):hover {
     background-color:var(--pst-color-table-row-zebra-low-bg);
 }

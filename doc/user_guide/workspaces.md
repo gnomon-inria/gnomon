@@ -2,10 +2,10 @@
 
 **Workspaces** constitute the elementary bricks in the Gnomon user experience. You are going to chain processing steps to apply to your data by creating new Workspaces and by moving **Forms** from one Workspace to the next.
 
-A Workspace is the graphical counterpart of an **Algorithm**[{fas}`book-open;sd-text-primary fa-2xs`](algorithm-definition), through which the user will be able to:
+Generally speaking, a Workspace is the graphical counterpart of an **Algorithm**[{fas}`book-open;sd-text-primary fa-2xs`](algorithm-definition), through which the user will be able to:
 
 * Set the Form(s) corresponding to its input
-* Tune the values of its **Parameters**
+* Tune the values of its **Parameters**[{fas}`book-open;sd-text-primary fa-2xs`](parameter-definition)
 * Run it and access to logs and progress
 * Retrieve the Form(s) corresponding to its output
 
@@ -119,7 +119,7 @@ Parameters
 
 ::::::
 
-The typical layout of a Workspace consists of input and output Views[{fas}`book-open;sd-text-primary fa-2xs`](view-definition) at the center, rendering the input and output Forms of the Algorithm, with lateral menus to control the Algorithm (right) and the Visualization of the active view (left).
+The typical layout of a Workspace consists of input and output Views[{fas}`book-open;sd-text-primary fa-2xs`](view-definition) at the center, rendering the input and output Forms of the Algorithm, with lateral menus to control the Algorithm (right) and the Visualizations[{fas}`book-open;sd-text-primary fa-2xs`](visualization-definition) of the active View (left).
 
 ## Available workspaces
 
