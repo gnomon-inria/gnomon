@@ -353,7 +353,7 @@ double gnomonCoreParameterNurbsObject::delta(void)
 void gnomonCoreParameterNurbsObject::updateControlPointsInPython(void)
 {
     // This update concern nurbs patch control points
-    if(!d->pSurface)
+    if(!d->pSurface && !d->pSurfaceWidget)
         return;
     PyGILState_STATE gstate;
     gstate = PyGILState_Ensure();
@@ -372,13 +372,16 @@ void gnomonCoreParameterNurbsObject::updateControlPointsInPython(void)
         return;
     }
 
-    PyObject_SetAttrString(d->pSurface, "ctrlpts", p_ctrlpts);
-
+    if(d->pSurface)
+        PyObject_SetAttrString(d->pSurface, "ctrlpts", p_ctrlpts);
+    if(d->pSurfaceWidget)
+        PyObject_SetAttrString(d->pSurfaceWidget, "ctrlpts", p_ctrlpts);
     Py_DECREF(p_ctrlpts);
+
+    qDebug() << Q_FUNC_INFO << "update";
 
     auto render_window = d->nurbsView->renderWindow();
     PyObject *pRenderWindow = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window));
-    qDebug() << Q_FUNC_INFO << "update";
     if (!pRenderWindow) {
         dtkWarn() << "Could not convert render window from C++";
     } else {
@@ -387,7 +390,18 @@ void gnomonCoreParameterNurbsObject::updateControlPointsInPython(void)
         Py_DECREF(pFunc);
     }
     Py_DECREF(pRenderWindow);
-    
+
+    auto render_window_widget = d->nurbsViewWidget->renderWindow();
+    PyObject *pRenderWindowWidget = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window_widget));
+    if (!pRenderWindowWidget) {
+        dtkWarn() << "Could not convert render window from C++";
+    } else {
+        PyObject* pFunc = PyObject_GetAttrString(d->pVisSurfaceWidget, "update");
+        PyObject_CallNoArgs(pFunc);
+        Py_DECREF(pFunc);
+    }
+    Py_DECREF(pRenderWindowWidget);
+
     PyGILState_Release(gstate);
 }
 
@@ -428,6 +442,7 @@ void gnomonCoreParameterNurbsObject::updateControlPointsFromPython(void)
     Py_XDECREF(p_ctrl_pts);
     PyGILState_Release(gstate);
     m_param->setControlPoints(ctrl_points);
+    this->updateControlPointsInPython();
 }
 
 QStringList gnomonCoreParameterNurbsObject::controlPoints(void)
@@ -441,6 +456,24 @@ QStringList gnomonCoreParameterNurbsObject::controlPoints(void)
         res.append(p_str);
     }
     return res;
+}
+
+int gnomonCoreParameterNurbsObject::controlPointSizeU(void)
+{
+    if (m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
+        return m_param->cpsize()[0];
+    } else {
+        return m_param->controlPoints().size();
+    }
+}
+
+int gnomonCoreParameterNurbsObject::controlPointSizeV(void)
+{
+    if (m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
+        return m_param->cpsize()[1];
+    } else {
+        return -1;
+    }
 }
 
 int gnomonCoreParameterNurbsObject::figureNumber(void)
@@ -465,6 +498,8 @@ int gnomonCoreParameterNurbsObject::nurbsType(void) const
 
 void gnomonCoreParameterNurbsObject::setDegree(int degree)
 {
+    qDebug()<<Q_FUNC_INFO<<degree;
+
     if(m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
 
         m_param->setDegree(degree);
@@ -596,6 +631,23 @@ void gnomonCoreParameterNurbsObject::setControlPoints(const QStringList &ctrl_po
     //emit controlPointsChanged(ctrl_points_list);
 }
 
+void gnomonCoreParameterNurbsObject::setControlPointSizeU(int size)
+{
+    if (size != this->controlPointSizeU()) {
+        // TODO: actually change cpsize in m_param
+        emit controlPointSizeChanged();
+    }
+}
+
+void gnomonCoreParameterNurbsObject::setControlPointSizeV(int size) {
+    if (m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
+        if (size != this->controlPointSizeU()) {
+            // TODO: actually change cpsize in m_param
+            emit controlPointSizeChanged();
+        }
+    }
+}
+
 void gnomonCoreParameterNurbsObject::notifyControlPointsChanged()
 {
     emit controlPointsChanged();
@@ -648,7 +700,6 @@ void gnomonCoreParameterNurbsObject::buildNurbsPatch(void)
 }
 
 void gnomonCoreParameterNurbsObject::updateRenderWindow(void) {
-    static bool do_it_once = true;
     if(m_param->type() == gnomonCoreParameterNurbs::SURFACE) {
         if (d->pVisSurface) {
             PyGILState_STATE gstate;
@@ -656,25 +707,21 @@ void gnomonCoreParameterNurbsObject::updateRenderWindow(void) {
 
             auto render_window = d->nurbsView->renderWindow();
             PyObject *pRenderWindow = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window));
-            qDebug() << Q_FUNC_INFO << "set_render_window";
             if (!pRenderWindow) {
                 dtkWarn() << "Could not convert render window from C++";
             } else {
                 PyObject_CallMethod(d->pVisSurface, "set_render_window", "(O)", pRenderWindow);
             }
             Py_DECREF(pRenderWindow);
-            if(do_it_once) {
-                auto render_window_widget = d->nurbsViewWidget->renderWindow();
-                PyObject *pRenderWindowWidget = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window_widget));
-                qDebug() << Q_FUNC_INFO << "set_render_window";
-                if (!pRenderWindowWidget) {
-                    dtkWarn() << "Could not convert render window from C++";
-                } else {
-                    PyObject_CallMethod(d->pVisSurfaceWidget, "set_render_window", "(O)", pRenderWindowWidget);
-                }
-                Py_DECREF(pRenderWindowWidget);
-                do_it_once = false;
+
+            auto render_window_widget = d->nurbsViewWidget->renderWindow();
+            PyObject *pRenderWindowWidget = vtkPythonUtil::GetObjectFromPointer(static_cast<vtkObjectBase *>(render_window_widget));
+            if (!pRenderWindowWidget) {
+                dtkWarn() << "Could not convert render window from C++";
+            } else {
+                PyObject_CallMethod(d->pVisSurfaceWidget, "set_render_window", "(O)", pRenderWindowWidget);
             }
+            Py_DECREF(pRenderWindowWidget);
 
             PyGILState_Release(gstate);
         } else {

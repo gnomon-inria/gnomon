@@ -248,7 +248,13 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
             model_stream.flush();
 
             d->model_file->close();
+
+            auto params = d->command->parameters();
             d->command->setLSystem(d->model_file->fileName());
+            if (d->command->parameters() != params) {
+                emit parametersChanged();
+            }
+
             // TODO: doesn't that force recomputing / rendering at every character change?
             // this->reset();
         } else {
@@ -256,7 +262,6 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
         }
         emit derivationLengthChanged(d->command->derivationLength());
         emit textChanged(d->text);
-        emit parametersChanged();
     }
 }
 
@@ -611,6 +616,48 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
         it.value().setProperty("group", group != "" ? group : nullptr);
     }
     return parameters;
+}
+
+void gnomonWorkspaceLSystemModel::addParameter(const QString& parameterName, const QString& parameterType, const QString& group) {
+    qDebug()<<Q_FUNC_INFO<<parameterName<<parameterType<<group;
+    d->command->addParameter(parameterName, parameterType, group);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::duplicateParameter(const QString &parameterName, const QString &newName,
+                                                     const QString &group) {
+    d->command->duplicateParameter(parameterName, newName, group);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::removeParameter(const QString& parameterName) {
+    d->command->removeParameter(parameterName);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::setGroup(const QString &parameterName, const QString &group) {
+    d->command->setGroup(parameterName, group);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::duplicateGroup(const QString &groupName, const QString &newName) {
+    d->command->duplicateGroup(groupName, newName);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::removeGroup(const QString &groupName) {
+    d->command->removeGroup(groupName);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::renameParameter(const QString &oldName, const QString &newName) {
+    d->command->renameParameter(oldName, newName);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::renameGroup(const QString &oldName, const QString &newName) {
+    d->command->renameGroup(oldName, newName);
+    emit parametersChanged();
 }
 
 QStringList gnomonWorkspaceLSystemModel::parameterNames(void)

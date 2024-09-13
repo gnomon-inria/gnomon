@@ -30,6 +30,14 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
+    virtual void addParameter(const QString& parameterName, const QString& parameterType, const QString& group) { };
+    virtual void duplicateParameter(const QString& parameterName, const QString& newName, const QString& group) { };
+    virtual void removeParameter(const QString& parameterName) { };
+    virtual void setGroup(const QString& parameterName, const QString& group) { };
+    virtual void duplicateGroup(const QString& groupName, const QString& newName) { };
+    virtual void removeGroup(const QString& groupName) { };
+    virtual void renameParameter(const QString& oldName, const QString& newName) { };
+    virtual void renameGroup(const QString& oldName, const QString& newName) { };
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
 

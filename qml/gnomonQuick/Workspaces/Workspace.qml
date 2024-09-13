@@ -137,6 +137,13 @@ G.Page {
         }
     }
 
+    function updateParametersModel(from_workspace=true) {
+        if (from_workspace) {
+            _params.parameters = d.parameters;
+        }
+        _params.updateParametersModel();
+    }
+
     G.Toast {
         id: _hibernating_toast
 
@@ -144,15 +151,14 @@ G.Page {
         property var view;
 
         parent: Overlay.overlay
-        header: "Reloading form " + GV.World.getDynamicFormMetadata(_hibernating_toast.index).data["name"]
+        header: "Reloading form"
         message: "The form was hibernating, please wait while it is reloaded. This may take a few seconds. (You may change the hibernation threshold in the ⚙ Settings)"
 
-        type: G.Style.ButtonType.Base
-    }
+        onIndexChanged: {
+            header = "Reloading form " + GV.World.getDynamicFormMetadata(index).data["name"]
+        }
 
-    function updateParametersModel() {
-        _params.parameters = d.parameters;
-        _params.updateParametersModel();
+        type: G.Style.ButtonType.Base
     }
 
     function idleStart() {
