@@ -8,100 +8,119 @@ A Workspace is the graphical counterpart of an **Algorithm**, through which the 
 * Run it and access to logs and progress
 * Retrieve the Form(s) corresponding to its output
 
-:::::{grid} 4
+::::::{grid} 4
 :class-container: sd-border-1 sd-rounded-3
 :padding: 1
 :gutter: 1
 
-::::{grid-item}
+:::::{grid-item}
 :columns: 2
 
-:::{card}
+::::{card}
 :margin: 0
-:class-header: sd-text-center sd-text-nowrap
-:class-body: sd-text-center
-{fas}`eye; fa-xl` <br/>
+:class-card: sd-outline-danger
+:class-body: sd-text-center sd-badge sd-text-danger
+
+{fas}`eye; fa-xl`
+
 Visualization
 
-^^^
+<br/> <br/>
 
-<br/>
-
+:::{card}
+:margin: auto
 {fas}`sliders; fa-xl`
-{bdg-dark-line}`Parameters`
 
-<br/>
-
+Parameters
 :::
 
-::::
+<br/> <br/> <br/>
 
-::::{grid-item}
+::::
+:::::
+
+:::::{grid-item}
 :columns: 4
 :child-align: center
 
-:::{card}
+::::{card}
 :margin: 0
-:class-header: sd-text-center sd-text-nowrap
-:class-body: sd-text-center
-{fas}`display; fa-xl` <br/>
+:class-card: sd-outline-secondary
+:class-body: sd-text-center sd-badge  sd-text-secondary
+{fas}`display; fa-xl`
+
 Input View
 
-^^^
-<br/>
+<br/> <br/>
 
-{fas}`images; fa-xl` <br/>
-{bdg-dark-line}`Input Form(s)`
+:::{card}
+:class-card: sd-outline-success
+:class-body: sd-text-success 
+:margin: auto
+:width: 50%
+{fas}`images; fa-xl`
 
-<br/>
-
+Input Form(s)
 :::
-::::
 
-::::{grid-item}
+<br/> <br/> <br/>
+
+::::
+:::::
+
+:::::{grid-item}
 :columns: 4
 :child-align: center
 
-:::{card}
+::::{card}
 :margin: 0
-:class-header: sd-text-center sd-text-nowrap
-:class-body: sd-text-center
-{fas}`display; fa-xl` <br/>
+:class-card: sd-outline-secondary
+:class-body: sd-text-center sd-badge sd-text-secondary  
+{fas}`display; fa-xl`
+
 Output View
 
-^^^
-
-<br/>
-
-{fas}`images; fa-xl` <br/>
-{bdg-dark-line}`Output Form(s)`
-
-<br/>
-
-:::
-::::
-
-::::{grid-item}
-:columns: 2
+<br/> <br/>
 
 :::{card}
-:margin: 0
-:class-header: sd-text-center sd-text-nowrap
-:class-body: sd-text-center
+:margin: auto
+:width: 50%
+:class-card: sd-outline-success
+:class-body: sd-text-success
+{fas}`images; fa-xl`
 
-{fas}`gear; fa-xl` <br/>
-Algorithm
-
-^^^
-<br/>
-
-{fas}`sliders; fa-xl`
-{bdg-dark-line}`Parameters`
-
-<br/>
-
+Output Form(s)
 :::
 
-::::
+<br/> <br/> <br/>
 
-::::::
+::::
+:::::
+
+:::::{grid-item}
+:columns: 2
+
+::::{card}
+:margin: 0
+:class-card: sd-outline-warning
+:class-body: sd-text-center sd-badge sd-text-warning
+
+{fas}`gear; fa-xl`
+
+Algorithm
+
+<br/> <br/>
+
+:::{card}
+:margin: auto
+
+{fas}`sliders; fa-xl`
+
+Parameters
+:::
+
+<br/> <br/> <br/>
+
+::::
+:::::
+:::::::
