@@ -1,74 +1,17 @@
 # Glossary
 
-:::::{admonition} Algorithm
+::::{admonition} Algorithm
 :name: algorithm-definition
 :class: definition
 
 An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**.
 Some **Algorithms** serve as a **source** (no input **Form**) or a **sink** (no output **Form**).
 
-::::{grid}
-:padding: 1
-
-:::{grid-item}
-:columns: 3
-:margin: auto
-:class: sd-text-center sd-badge sd-text-success
-<br/>
-
-{fas}`images; fa-xl`
-
-Input Form(s)
+:::{include} diagrams/algorithm_diagram.md
 :::
-
-:::{grid-item}
-:columns: 1
-:margin: auto
-:class: sd-text-center sd-badge sd-text-success
-
-{material-outlined}`east;3em;sd-text-success`
-
-:::
-
-:::{grid-item-card}
-:columns: 3
-:margin: auto
-:class-body: sd-outline-warning sd-text-center sd-badge sd-text-warning
-{fas}`gear; fa-xl`
-
-Algorithm
-:::
-
-:::{grid-item}
-:columns: 1
-:margin: auto
-:class: sd-text-center sd-badge sd-text-success
-
-{material-outlined}`east;3em;sd-text-success`
-
-:::
-
-:::{grid-item}
-:columns: 3
-:margin: auto
-:class: sd-text-center sd-badge sd-text-success
-<br/>
-
-{fas}`images; fa-xl`
-
-Output Form(s)
-:::
-
-
-:::{grid-item}
-:columns: 1
-:margin: auto
-:::
-
-::::
 
 It is implemented by [**Plugins**](plugin-definition).
-:::::
+::::
 
 :::{admonition} Form
 :name: form-definition
@@ -107,13 +50,16 @@ It relies on [**Visualizations**](visualization-definition)
 to control the way a particular Form is rendered in a given View.
 :::
 
-:::{admonition} Visualization
+::::{admonition} Visualization
 :name: visualization-definition
 :class: definition
 
 A **Visualization** is an operation that defines how a [**Form**](form-definition) is rendered in a [**View**](view-definition). 
 It is implemented by specific [**Plugins**](plugin-definition) relying on the View's rendering framework.
+
+:::{include} diagrams/visualization_diagram.md
 :::
+::::
 
 :::{admonition} Workspace
 :name: workspace-definition
@@ -124,5 +70,5 @@ where the user is able to set [**Forms**](form-definition)
 as inputs through an input [**View**](view-definition),
 tune the values of the **Parameters** and retrieve **Forms** as outputs in an output **View**.
 
-Available workspaces are listed [**here**](workspaces).
+Available workspaces are listed [**here**](available-workspace-list).
 :::
