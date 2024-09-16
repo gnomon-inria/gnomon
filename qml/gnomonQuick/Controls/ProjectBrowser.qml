@@ -19,6 +19,8 @@ Control
 
     property alias projectTree: _project_tree_view
 
+    property var selectedPaths: []
+
     signal fileDoubleClicked(string fileUrl)
     signal fileRightClicked(string fileUrl)
 
@@ -72,7 +74,7 @@ Control
             id: _project_tree_view
 
             data_paths : [_self.rootDir]
-            is_project_dir : true
+            expanded : true
 
             anchors.top : _project_label.bottom;
             width: parent.width
@@ -83,6 +85,9 @@ Control
             }
             onFileRightClicked : (fileUrl) => {
                 _self.fileRightClicked(fileUrl)
+            }
+            onSelectedPathsChanged: {
+                _self.selectedPaths = _project_tree_view.selectedPaths
             }
         }
 
@@ -119,6 +124,9 @@ Control
             }
             onFileRightClicked : (fileUrl) => {
                 _self.fileRightClicked(fileUrl)
+            }
+            onSelectedPathsChanged: {
+                _self.selectedPaths = _data_tree_view.selectedPaths
             }
         }
 

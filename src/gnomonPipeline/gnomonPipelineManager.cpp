@@ -321,8 +321,11 @@ void gnomonPipelineManager::addReader(gnomonAbstractReaderCommand *command)
     for (auto it = forms.begin(); it != forms.end(); ++it) {
         auto&& form_name = it.key();
         const QString& form_uuid = it.value();
-        d->reader_nodes[form_uuid] = node;
-        d->reader_output[form_uuid] = form_name;
+        // Do not add node if the form is already there!
+        if (!d->reader_nodes.contains(form_uuid)) {
+            d->reader_nodes[form_uuid] = node;
+            d->reader_output[form_uuid] = form_name;
+        }
     }
 }
 

@@ -90,6 +90,7 @@ public:
     Q_INVOKABLE QVariant formVisuParameter(const QString& form_type, const QString& parameter_name);
     Q_INVOKABLE void setFormVisuParameter(const QString& form_type, const QString& parameter_name, const QVariant& value);
 
+    Q_INVOKABLE bool formIsVisible(const QString& form_type);
     Q_INVOKABLE void setFormVisible(const QString& form_type, bool visible);
 
 public:

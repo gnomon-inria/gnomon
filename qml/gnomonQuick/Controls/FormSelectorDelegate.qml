@@ -10,12 +10,16 @@ ItemDelegate {
     required property int index;
     required property string modelData;
 
+    property string formType;
     property string thumbnailIndex;
+    property alias formVisible : _visibility_icon.checked
+
     signal toggleVisibility(bool flag);
     signal deleteForm();
 
     implicitHeight: G.Style.formDelegateHeight;
 
+    text: formType
     font: G.Style.fonts.formLabel;
 
     background: Rectangle {
