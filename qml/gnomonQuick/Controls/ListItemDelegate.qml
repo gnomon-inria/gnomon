@@ -18,6 +18,8 @@ ItemDelegate {
     property color highlightColor: G.Style.colors.baseColor
     property color textColor: G.Style.colors.textColorNeutral
 
+    property string tooltip: ""
+
     contentItem: Item {
 
         Label {
@@ -48,6 +50,11 @@ ItemDelegate {
             anchors.bottom: parent.bottom
         }
     }
+
+    G.ToolTip {
+        text: self.tooltip;
+        visible: self.tooltip && self.hovered
+   }
 
     function getEmbossColor() {
       if(down || highlighted) return G.Style.colors.embossColorBlue;

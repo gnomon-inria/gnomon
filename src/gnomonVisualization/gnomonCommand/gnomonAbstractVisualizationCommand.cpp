@@ -104,6 +104,11 @@ void gnomonAbstractVisualizationCommand::clear(bool clear_visu)
     this->visu = nullptr;
 }
 
+bool gnomonAbstractVisualizationCommand::isVisible(void)
+{
+    return this->visible;
+}
+
 void gnomonAbstractVisualizationCommand::setVisible(bool visible)
 {
     this->visible = visible;

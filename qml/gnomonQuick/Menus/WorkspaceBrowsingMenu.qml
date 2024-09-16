@@ -98,16 +98,84 @@ Item {
         Item {
             id: _button_container
 
-            height: G.Style.largeButtonHeight
+            height: 2 * G.Style.largeButtonHeight + G.Style.smallPadding
             Layout.fillWidth: true;
 
             G.Button {
-                id: _load_file_button
+                id: _load_button
                 anchors.top: _button_container.top
-                anchors.left: _button_container.left;
+                anchors.right: _load_as_button.left;
                 anchors.margins: G.Style.smallPadding;
 
-                text: "File";
+                text: "Load";
+                tooltip: "Load the selected file(s) into the Workspace with the lastly used Reader plugin."
+
+                width: G.Style.extendedButtonWidth
+                type: _project_browser.selectedPaths.length > 0 ? G.Style.ButtonType.Base : G.Style.ButtonType.Neutral
+                iconName: "upload"
+                enabled: _project_browser.selectedPaths.length > 0
+                empty: false
+                flat: _project_browser.selectedPaths.length == 0
+
+                onClicked: {
+                    let relative_paths = []
+                    for (let i_n in _project_browser.selectedPaths) {
+                        let path = decodeURIComponent(_project_browser.selectedPaths[i_n])
+                        relative_paths.push(GP.ProjectManager.project.relativePath(path));
+                    }
+                    window.current_workspace().requestOpenFiles(relative_paths)
+
+                    // let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
+                    // d.readerPath = decodeURIComponent(relative_path);
+                    // d.requestReaders("");
+                }
+            }
+
+            G.Button {
+                id: _load_as_button
+                anchors.top: _button_container.top
+                anchors.right: _button_container.right
+                anchors.margins: G.Style.smallPadding;
+
+                text: "Load as...";
+                tooltip: "Select which Reader plugin to use to load the selected file(s) into the Workspace."
+
+                width: G.Style.extendedButtonWidth
+                type: _project_browser.selectedPaths.length > 0 ? G.Style.ButtonType.Base : G.Style.ButtonType.Neutral
+                iconName: "file-upload"
+                enabled: _project_browser.selectedPaths.length > 0
+                flat: _project_browser.selectedPaths.length == 0
+                empty: _project_browser.selectedPaths.length > 0
+
+                onClicked: {
+
+                    let paths = "";
+                    for (let i_n in _project_browser.selectedPaths) {
+                        let path = decodeURIComponent(_project_browser.selectedPaths[i_n])
+                        let relative_path = GP.ProjectManager.project.relativePath(path);
+                        if (i_n > 0) {
+                            paths += ","
+                        }
+                        paths += relative_path
+                    }
+                    d.readerPath = decodeURIComponent(paths);
+                    d.requestReaders("");
+
+                    // let relative_path = GP.ProjectManager.project.relativePath(fileUrl)
+                    // window.current_workspace().requestOpenFiles([relative_path])
+                }
+            }
+
+            G.Button {
+                id: _load_file_button
+                anchors.top: _load_as_button.bottom
+                anchors.right: _load_url_button.left;
+                anchors.margins: G.Style.smallPadding;
+
+                text: "Browse Files...";
+                tooltip: "Select file(s) in your local system to load into the Workspace."
+
+                width: G.Style.extendedButtonWidth
                 type: G.Style.ButtonType.Base
                 iconName: "folder-multiple-plus"
                 empty: true
@@ -119,11 +187,13 @@ Item {
 
             G.Button {
                 id: _load_url_button
-                anchors.top: _button_container.top
-                anchors.left: _load_file_button.right
+                anchors.top: _load_as_button.bottom
+                anchors.right: _button_container.right
                 anchors.margins: G.Style.smallPadding;
 
-                text: "URL";
+                text: "Enter URL...";
+                tooltip: "Enter the address of a distant file to download it into the Workspace."
+                width: G.Style.extendedButtonWidth
                 type: G.Style.ButtonType.Base
                 iconName: "cloud-download"
                 empty: true

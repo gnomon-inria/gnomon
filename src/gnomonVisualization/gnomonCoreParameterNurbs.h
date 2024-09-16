@@ -24,7 +24,9 @@ public:
     using ctrls_type = QList<std::array<double, 3>>;
 
     gnomonCoreParameterNurbs(void);
-    gnomonCoreParameterNurbs(const QString& label,const ctrls_type control_points, int dimension, gnomonCoreParameterNurbs::NURBS_TYPE nurbs_type, const QList<double>& ctrl_points_size, const QString& doc = QString());
+    gnomonCoreParameterNurbs(const QString& label, const ctrls_type control_points, int dimension,
+                             gnomonCoreParameterNurbs::NURBS_TYPE nurbs_type, const QList<double>& ctrl_points_size,
+                             const QString& doc = QString());
     gnomonCoreParameterNurbs(const dtkCoreParameter *);
     gnomonCoreParameterNurbs(const QVariant&);
     gnomonCoreParameterNurbs(const gnomonCoreParameterNurbs&);

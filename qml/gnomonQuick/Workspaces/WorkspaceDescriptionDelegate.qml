@@ -14,6 +14,7 @@ Item {
     property var description: ""
     property var preview: ""
     property var plugins: []
+    property var plugin_names: []
     signal openWithAlgo(string algo_name)
 
     ColumnLayout {
@@ -123,7 +124,7 @@ Item {
                 anchors.fill: _plugins_section;
                 clip: true;
                 focus: true
-                model: _self.plugins
+                model: _self.plugin_names
 
                 delegate: G.ListItemDelegate {
                     width: parent.width
@@ -134,7 +135,7 @@ Item {
 
                     onDoubleClicked: {
                         _plugins.currentIndex = index
-                        openWithAlgo(modelData)
+                        openWithAlgo(_self.plugins[index])
                     }
                 }
 

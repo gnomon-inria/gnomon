@@ -276,34 +276,6 @@ Rectangle {
     }
 
     G.IconButton {
-        id: _color_icon;
-
-        iconName: "palette"
-        size: G.Style.iconLarge;
-        color: G.Style.colors.textColorNeutral;
-        tooltip: "Choose background color"
-        enabled: icons_enabled
-        visible: enabled
-
-        anchors.top: _view.top
-        anchors.topMargin: G.Style.smallPadding
-        anchors.left: _3d_icon.right
-        anchors.leftMargin: G.Style.smallPadding
-
-        P.ColorDialog {
-            id: _color_dialog
-            onAccepted: {
-               viewLogic.bgColor = _color_dialog.color
-            }
-        }
-
-        onClicked: {
-            _color_dialog.color = viewLogic.bgColor
-            _color_dialog.open()
-        }
-    }
-
-    G.IconButton {
         id: _camera_icon;
         property bool active: false;
         iconName: "video";
@@ -315,7 +287,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _color_icon.right
+        anchors.left: _3d_icon.right
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
@@ -336,8 +308,7 @@ Rectangle {
 
         anchors.top: _camera_icon.bottom
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _color_icon.right
-        anchors.leftMargin: G.Style.smallPadding
+        anchors.horizontalCenter: _camera_icon.horizontalCenter
 
         onClicked: {
             viewLogic.setCameraXY(self.shift_pressed, self.ctrl_pressed)
@@ -358,8 +329,7 @@ Rectangle {
 
         anchors.top: _camera_xy_icon.bottom
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _color_icon.right
-        anchors.leftMargin: G.Style.smallPadding
+        anchors.horizontalCenter: _camera_icon.horizontalCenter
 
         onClicked: {
             viewLogic.setCameraXZ(self.shift_pressed, self.ctrl_pressed)
@@ -379,30 +349,10 @@ Rectangle {
 
         anchors.top: _camera_xz_icon.bottom
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _color_icon.right
-        anchors.leftMargin: G.Style.smallPadding
+        anchors.horizontalCenter: _camera_icon.horizontalCenter
 
         onClicked: {
             viewLogic.setCameraYZ(self.shift_pressed, self.ctrl_pressed)
-        }
-    }
-
-    G.IconButton {
-        id: _representation_button
-        iconName: ["dots-triangle", "vector-triangle", "triangle"][viewLogic.representation]
-        size: G.Style.iconLarge;
-        color: G.Style.colors.textColorNeutral;
-        tooltip: "Set representation to Point/Wireframe/Surface"
-        enabled: icons_enabled
-        visible: enabled
-
-        anchors.top: _view.top
-        anchors.topMargin: G.Style.smallPadding
-        anchors.left: _camera_icon.visible? _camera_icon.right : _color_icon.right
-        anchors.leftMargin: G.Style.smallPadding
-
-        onClicked: {
-            viewLogic.representation = (viewLogic.representation + 1)%3
         }
     }
 
@@ -417,7 +367,7 @@ Rectangle {
 
         anchors.top: _view.top
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _representation_button.right
+        anchors.left: _camera_icon.visible? _camera_icon.right : _3d_icon.right
         anchors.leftMargin: G.Style.smallPadding
 
         onClicked: {
@@ -452,18 +402,86 @@ Rectangle {
     }
 
     G.IconButton {
+        id: _link;
+        iconName: viewLogic.synced ? "lock" : "lock-open";
+        size: G.Style.iconLarge;
+        color: viewLogic.synced ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        visible: viewLogic.inPool && icons_enabled
+        tooltip: "(Un)Link with other views for this workspace"
+        enabled: visible
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _grid_button.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            viewLogic.tryLinking();
+        }
+    }
+
+    G.IconButton {
+        id: _more_icon;
+        property bool active: false;
+        iconName: "dots-horizontal";
+        size: G.Style.iconLarge;
+        color: active? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
+        visible: icons_enabled
+        tooltip: "More view options"
+        enabled: visible
+
+        anchors.top: _view.top
+        anchors.topMargin: G.Style.smallPadding
+        anchors.left: _link.visible? _link.right : _grid_button.right
+        anchors.leftMargin: G.Style.smallPadding
+
+        onClicked: {
+            active = !active
+        }
+    }
+
+    G.IconButton {
+        id: _color_icon;
+
+        iconName: "palette"
+        size: G.Style.iconLarge;
+        color: G.Style.colors.textColorNeutral;
+        tooltip: "Choose background color"
+        enabled: icons_enabled
+        visible: enabled && _more_icon.active
+
+        anchors.top: _more_icon.bottom
+        anchors.topMargin: G.Style.smallPadding
+        anchors.horizontalCenter: _more_icon.horizontalCenter
+
+        P.ColorDialog {
+            id: _color_dialog
+
+            modality: Qt.WindowModal;
+
+            onAccepted: {
+               viewLogic.bgColor = _color_dialog.color
+            }
+        }
+
+        onClicked: {
+            _color_dialog.color = viewLogic.bgColor
+            _color_dialog.open()
+        }
+    }
+
+    G.IconButton {
         id: _axes_button;
         iconName: "axis-arrow"
         size: G.Style.iconLarge;
         color: viewLogic.axesVisible ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Show/Hide the axes orientation widget"
         enabled: icons_enabled
-        visible: enabled
+        visible: enabled && _more_icon.active
 
-        anchors.top: _view.top
+        anchors.top: _color_icon.bottom
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _grid_button.right
-        anchors.leftMargin: G.Style.smallPadding
+        anchors.horizontalCenter: _more_icon.horizontalCenter
 
         onClicked: {
             viewLogic.axesVisible = !viewLogic.axesVisible
@@ -477,12 +495,11 @@ Rectangle {
         color: viewLogic.cameraFixed ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
         tooltip: "Forbid/Allow visualization updates to change the field of view"
         enabled: icons_enabled
-        visible: enabled
+        visible: enabled && _more_icon.active
 
-        anchors.top: _view.top
+        anchors.top: _axes_button.bottom
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _axes_button.right
-        anchors.leftMargin: G.Style.smallPadding
+        anchors.horizontalCenter: _more_icon.horizontalCenter
 
         onClicked: {
             viewLogic.cameraFixed = !viewLogic.cameraFixed
@@ -490,21 +507,20 @@ Rectangle {
     }
 
     G.IconButton {
-        id: _link;
-        iconName: viewLogic.synced ? "lock" : "lock-open";
+        id: _representation_button
+        iconName: ["dots-triangle", "vector-triangle", "triangle"][viewLogic.representation]
         size: G.Style.iconLarge;
-        color: viewLogic.synced ? G.Style.colors.textColorNeutral : G.Style.colors.fgColor;
-        visible: viewLogic.inPool && icons_enabled
-        tooltip: "(Un)Link with other views for this workspace"
-        enabled: visible
+        color: G.Style.colors.textColorNeutral;
+        tooltip: "Set representation to Point/Wireframe/Surface"
+        enabled: icons_enabled
+        visible: enabled && _more_icon.active
 
-        anchors.top: _view.top
+        anchors.top: _fixed_camera_button.bottom
         anchors.topMargin: G.Style.smallPadding
-        anchors.left: _fixed_camera_button.right
-        anchors.leftMargin: G.Style.smallPadding
+        anchors.horizontalCenter: _more_icon.horizontalCenter
 
         onClicked: {
-            viewLogic.tryLinking();
+            viewLogic.representation = (viewLogic.representation + 1)%3
         }
     }
 
@@ -778,17 +794,6 @@ Rectangle {
         }
     }
 
-    //layer.enabled: true
-    //layer.effect: OpacityMask
-    //{
-    //    maskSource: Rectangle
-    //    {
-    //         width: self.width
-    //        height: self.height
-    //        radius: G.Style.panelRadius;
-    //    }
-    //}
-
     Rectangle {
         id: _icon_banner
 
@@ -798,7 +803,7 @@ Rectangle {
         anchors.margins: G.Style.smallPadding/2
 
         height: G.Style.iconLarge + G.Style.smallPadding
-        radius: G.Style.cardRadius;
+        radius: G.Style.bannerRadius;
 
         color: G.Style.colors.fgColor
         opacity: 0.33
@@ -813,7 +818,7 @@ Rectangle {
         anchors.margins: G.Style.smallPadding/2
 
         width: G.Style.iconLarge + G.Style.smallPadding;
-        radius: G.Style.cardRadius;
+        radius: G.Style.bannerRadius;
 
         color: G.Style.colors.fgColor
         opacity: 0.33
@@ -829,12 +834,46 @@ Rectangle {
         anchors.margins: G.Style.smallPadding/2
         anchors.bottomMargin: -G.Style.smallPadding/2
 
-        width: G.Style.iconLarge + G.Style.smallPadding;
-        radius: G.Style.cardRadius;
+        width: G.Style.iconLarge + G.Style.smallPadding - G.Style.smallPadding/2;
+        radius: G.Style.bannerRadius;
 
         color: G.Style.colors.fgColor
         opacity: 0.33
         visible: _camera_yz_icon.visible
+    }
+
+    Rectangle {
+        id: _grid_banner
+
+        anchors.horizontalCenter: _grid_button.horizontalCenter
+        anchors.top: _icon_banner.bottom
+        anchors.bottom: _grid_type_button.bottom
+        anchors.margins: G.Style.smallPadding/2
+        anchors.bottomMargin: -G.Style.smallPadding/2
+
+        width: G.Style.iconLarge + G.Style.smallPadding - G.Style.smallPadding/2;
+        radius: G.Style.bannerRadius;
+
+        color: G.Style.colors.fgColor
+        opacity: 0.33
+        visible: _grid_type_button.visible
+    }
+
+    Rectangle {
+        id: _more_banner
+
+        anchors.horizontalCenter: _more_icon.horizontalCenter
+        anchors.top: _icon_banner.bottom
+        anchors.bottom: _representation_button.bottom
+        anchors.margins: G.Style.smallPadding/2
+        anchors.bottomMargin: -G.Style.smallPadding/2
+
+        width: G.Style.iconLarge + G.Style.smallPadding - G.Style.smallPadding/2
+        radius: G.Style.bannerRadius;
+
+        color: G.Style.colors.fgColor
+        opacity: 0.33
+        visible: _representation_button.visible
     }
 
     Rectangle {

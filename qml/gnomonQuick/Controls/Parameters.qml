@@ -155,7 +155,7 @@ Item {
             })
 
         //Instantiating the parameters by groups
-        for(let i in groups) {
+        for(let i in groups.sort()) {
             const group_params = params.filter(p => p.group === groups[i])
 
             const element = {}

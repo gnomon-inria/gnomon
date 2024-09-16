@@ -11,7 +11,7 @@ TabButton {
     font: G.Style.fonts.header
     property alias color: _label.color
 
-    property bool active: TabBar.tabBar.currentIndex == TabBar.index
+    property bool active: TabBar.tabBar ? TabBar.tabBar.currentIndex == TabBar.index : false
 
     contentItem: Label {
         id: _label

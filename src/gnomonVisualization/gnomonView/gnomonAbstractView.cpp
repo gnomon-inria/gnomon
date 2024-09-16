@@ -442,6 +442,14 @@ void gnomonAbstractView::setFormVisuParameter(const QString& form_type, const QS
     }
 }
 
+bool gnomonAbstractView::formIsVisible(const QString& form_type)
+{
+    if (d->forms.contains(form_type)) {
+        return d->visualizationCommands[form_type]->isVisible();
+    }
+    return false;
+}
+
 void gnomonAbstractView::setFormVisible(const QString& form_type, bool visible)
 {
     if (d->forms.contains(form_type)) {

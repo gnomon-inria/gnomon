@@ -82,6 +82,7 @@ public slots:
     void disconnectVisualization(void);
 
 public:
+    bool isVisible(void);
     void setVisible(bool visible);
 
 signals:
