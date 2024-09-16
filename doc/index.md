@@ -50,7 +50,7 @@ Install the Gnomon platform on your system.
 :link: quickstart/index.html
 Getting Started
 ^^^
-Make your first steps inside Gnomon.
+Make your first steps with Gnomon.
 :::
 
 :::{grid-item-card}
