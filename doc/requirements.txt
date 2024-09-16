@@ -2,4 +2,4 @@ myst-parser>=2
 sphinx-press-theme
 pydata-sphinx-theme
 sphinx-design
-sphinx-tippy
+sphinx-tippy @ git+https://github.com/NamelessIV/sphinx-tippy.git
