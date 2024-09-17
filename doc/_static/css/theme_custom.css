@@ -2,6 +2,13 @@ html {
     --pst-font-family-base: Helvetica, var(--pst-font-family-base-system);
     --pst-font-family-heading: Helvetica, var(--pst-font-family-base-system);
     --pst-font-family-monospace: Courier, var(--pst-font-family-monospace-system);
+
+    --pst-font-size-h1: 2.2rem;
+    --pst-font-size-h2: 1.8rem;
+    --pst-font-size-h3: 1.6rem;
+    --pst-font-size-h4: 1.4rem;
+    --pst-font-size-h5: 1.2rem;
+    --pst-font-size-h6: 1.1rem;
 }
 
 html[data-theme="light"] {
@@ -26,6 +33,10 @@ html[data-theme="dark"] {
 
 .logo__title {
     font-family: var(--pst-font-family-heading);
+}
+
+.bd-header ul.navbar-nav>li.nav-item {
+    margin-inline: 8px;
 }
 
 .sd-outline-secondary-dark {
@@ -73,9 +84,18 @@ a.sd-text-warning-dark:focus, a.sd-text-warning-dark:hover {
 }
 
 /* .bd-header {
+    justify-content: left !important;
     background-color:var(--sd-color-primary-bg) !important;
+}
+
+.bd-container {
+    justify-content: left !important;
 }
 
 .bd-sidebar {
     background-color:var(--sd-color-primary-bg);
+}
+
+.bd-footer {
+    justify-content: left !important;
 } */

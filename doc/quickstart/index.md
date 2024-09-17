@@ -26,7 +26,7 @@ Gnomon relies of **Plugins**[{fas}`book-open;sd-text-primary fa-2xs`](plugin-def
 
 ## General Presentation
 
-Gnomon is a software whose goal is to facilitate the creation of complex processing pipelines through an intuitive user interface. If you want to learn more about the principles guiding its conception, please read [this brief introduction](introduction).
+Gnomon is a software whose goal is to facilitate the creation of complex processing pipelines through an intuitive user interface. If you want to learn more about the principles guiding its conception, please read [this brief introduction](about).
 
 ## Tutorials
 
@@ -38,5 +38,5 @@ For detailed use cases giving a more complete view of what you can do with Gnomo
 
 install
 install_packages
-introduction
+about
 :::
