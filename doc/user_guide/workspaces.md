@@ -12,7 +12,7 @@ Generally speaking, a Workspace is the graphical counterpart of an **Algorithm**
 :::{include} diagrams/workspace_diagram.md
 ::: 
 
-The typical layout of a Workspace consists of input and output Views[{fas}`book-open;sd-text-primary fa-2xs`](view-definition) at the center, rendering respectively the input and output Forms of the Algorithm, with lateral menus to control the Algorithm (right) and the Visualizations[{fas}`book-open;sd-text-primary fa-2xs`](visualization-definition) of the active View (left).
+The typical layout of a Workspace consists of input and output **Views**[{fas}`book-open;sd-text-primary fa-2xs`](view-definition) at the center, rendering respectively the input and output Forms of the Algorithm, with two collapsible lateral menus to control the Algorithm (right) and the **Visualizations**[{fas}`book-open;sd-text-primary fa-2xs`](visualization-definition) of the active View (left).
 
 (available-workspace-list)=
 ## Available workspaces
@@ -44,7 +44,7 @@ The following table lists all the available Workspaces and sums up the types of 
 *   - [Segmentation](workspaces/segmentation)
     - {bdg-link-success}`Image <forms/image.html>`
     - {bdg-link-success}`CellImage <forms/cell_image.html>`
-    - ![gnomon_screenshot_segmentation.png](../_static/index/gnomon_screenshot_segmentation.png)
+    - ![workspace_segmentation.png](../_static/user_guide/workspaces/workspace_segmentation.png)
 *   - [Image Registration](workspaces/image_registration)
     - {bdg-link-success}`Image <forms/image.html>` <br/> {bdg-link-success-line}`DataDict <forms/data_dict.html>`
     - {bdg-link-success}`Image <forms/image.html>` <br/> {bdg-link-success}`DataDict <forms/data_dict.html>`

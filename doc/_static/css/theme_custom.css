@@ -71,3 +71,11 @@ a.sd-text-warning-dark:focus, a.sd-text-warning-dark:hover {
 .table tbody tr:nth-child(even):focus, .table tbody tr:nth-child(even):hover {
     background-color:var(--pst-color-table-row-zebra-high-bg);
 }
+
+/* .bd-header {
+    background-color:var(--sd-color-primary-bg) !important;
+}
+
+.bd-sidebar {
+    background-color:var(--sd-color-primary-bg);
+} */

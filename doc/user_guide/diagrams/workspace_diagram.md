@@ -1,17 +1,15 @@
-::::::{card}
-:class-body: sd-text-center sd-badge sd-text-danger sd-outline-danger
+::::::{div} sd-width-100 sd-align-major-center sd-text-center sd-text-danger sd-outline-danger sd-rounded-3 sd-mx-0 sd-mb-4 sd-px-1 sd-pt-2 sd-pb-0 sd-shadow-sm
 
-Workspace
-
-:::::{grid}
+:::::{grid} 12
 :padding: 1
 :gutter: 2
+:margin: auto
 
 ::::{grid-item-card}
 :columns: 2
 :margin: auto
 :padding: 0
-:class-body: sd-text-center sd-badge sd-text-secondary sd-outline-secondary
+:class-body: sd-text-secondary sd-outline-secondary sd-badge
 
 {fas}`eye; fa-xl`
 
@@ -35,7 +33,7 @@ Parameters
 :columns: 4
 :margin: auto
 :padding: 0
-:class-body: sd-text-center sd-badge  sd-text-secondary-dark sd-outline-secondary-dark
+:class-body: sd-text-secondary-dark sd-outline-secondary-dark sd-badge
 
 {fas}`display; fa-xl`
 
@@ -60,7 +58,7 @@ Input Form(s)
 :columns: 4
 :margin: auto
 :padding: 0
-:class-body: sd-text-center sd-badge sd-text-secondary-dark sd-outline-secondary-dark
+:class-body: sd-text-secondary-dark sd-outline-secondary-dark sd-badge
 
 {fas}`display; fa-xl`
 
@@ -85,7 +83,7 @@ Output Form(s)
 :columns: 2
 :margin: auto
 :padding: 0
-:class-body: sd-outline-warning sd-text-center sd-badge sd-text-warning
+:class-body: sd-outline-warning sd-text-warning sd-badge
 
 {fas}`gear; fa-xl`
 
@@ -105,4 +103,7 @@ Parameters
 
 ::::
 :::::
+
+{bdg-danger-line}`Workspace`
+
 ::::::

@@ -24,7 +24,7 @@ A **Form** is a temporal sequence representing the evolution of a biological obj
 :name: parameter-definition
 :class: definition
 
-A **Parameter** is a typed variable proceeding from an atomic type (boolean, number, character string) or from a more complex one (range, color, 2D curve) whose value the user can manipulate through a graphical editor.
+A **Parameter** is a typed variable proceeding from an atomic type (boolean, number, character string) or from a more complex one (range, color, 2D curve) whose value can be manipulated by the user through a graphical editor.
 :::
 
 :::{admonition} Plugin
