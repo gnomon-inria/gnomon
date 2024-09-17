@@ -21,6 +21,7 @@ extensions = [
     'myst_parser',
     # "sphinx_external_toc",
     "sphinx_design",
+    "sphinx_tippy",
 ]
 
 
@@ -37,7 +38,7 @@ source_suffix = '.md'
 
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
-html_css_files = ['css/gallery_custom.css']
+html_css_files = ['css/theme_custom.css', 'css/tippy_custom.css', 'css/gallery_custom.css', 'css/admonition_custom.css']
 html_logo = '_static/gnomon_logo.png'
 html_favicon = '_static/gnomon_logo.png'
 
@@ -48,12 +49,23 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitLab",
-            "url": "https://gitlab.inria.com/mosaic/gnomon",
+            "url": "https://gitlab.inria.fr/gnomon/gnomon",
             "icon": "fab fa-gitlab",
             "type": "fontawesome",
         },
     ],
+    "navbar_align": "content",
+    "announcement": "This new version of the documentation is currently under construction, but you can still access <a href='https://gnomon.gitlabpages.inria.fr/gnomon/'>the previous version!</a>",
+    "footer_start": ["copyright"],
+    "footer_end": ["sphinx-version", "theme-version"]
 }
 
 # -- MyST options ------------------------------------------------------------
-myst_enable_extensions = ["colon_fence", "attrs_inline"]
+myst_enable_extensions = [
+    "colon_fence",
+    "dollarmath",
+    "amsmath",
+    "deflist",
+    "attrs_inline",
+    "attrs_block"
+]

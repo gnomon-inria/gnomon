@@ -289,6 +289,8 @@ G.Workspace {
                     G.Dialog {
                         id: new_project_dialog
 
+                        property bool isValid: _folder_path.text != ""
+
                         parent: Overlay.overlay
                         x: (parent.width - width) / 2
                         y: (parent.height - height) / 2
@@ -297,7 +299,34 @@ G.Workspace {
 
                         modal: true
                         title: "Create a new Project"
-                        standardButtons:  Dialog.Open | Dialog.Cancel
+
+                        footer: DialogButtonBox {
+                            alignment: Qt.AlignRight
+                            spacing: G.Style.smallPadding
+
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: G.Style.colors.gutterColor
+                            }
+
+                            G.Button {
+                                text: 'Cancel';
+                                flat: true
+                                type: G.Style.ButtonType.Neutral
+                                width: G.Style.buttonWidth
+                                onClicked: new_project_dialog.reject();
+                            }
+
+                            G.Button {
+                                text: 'Create';
+                                iconName: new_project_dialog.isValid ? "folder-plus-outline" : "folder-alert-outline"
+                                type: new_project_dialog.isValid ? G.Style.ButtonType.OK : G.Style.ButtonType.Danger
+                                width: G.Style.buttonWidth
+                                enabled: new_project_dialog.isValid
+                                flat: !new_project_dialog.isValid
+                                onClicked: new_project_dialog.accept();
+                            }
+                        }
 
                         background: Rectangle {
                             anchors.fill: parent
@@ -336,7 +365,7 @@ G.Workspace {
                                     anchors.left: parent.left
                                     anchors.bottom: parent.bottom;
                                     anchors.bottomMargin: G.Style.tinyPadding
-                                    placeholderText: qsTr("Enter folder path like: file://...")
+                                    readOnly: true
                                 }
                                 G.Button {
                                     id: _folder_button
@@ -876,6 +905,7 @@ G.Workspace {
 
         onAccepted : {
              if(GP.ProjectManager.cleanProject(_workspace._dialog_source)) {
+                remove_from_history(_workspace._dialog_source)
                 create_project()
             }
         }

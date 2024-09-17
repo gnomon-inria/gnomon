@@ -1,0 +1,20 @@
+html
+{
+    --pst-icon-book: "📖";
+}
+
+.admonition.definition,div.admonition.definition
+{
+    border-color:var(--sd-color-primary)
+}
+.admonition.definition>.admonition-title,div.admonition.definition>.admonition-title
+{
+    background-color:var(--sd-color-primary-bg)
+}
+.admonition.definition>.admonition-title:after,div.admonition.definition>.admonition-title:after
+{
+    color:var(--sd-color-primary);content:var(--pst-icon-book)
+}
+
+.svg-inline--fa.fa-2xs{vertical-align:.75em;margin-left:.25em}
+.fa-2xs{font-size:.5em;line-height:.1em;vertical-align:.5em}

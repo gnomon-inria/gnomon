@@ -22,31 +22,61 @@ Item {
         anchors.fill: parent
         anchors.margins: G.Style.smallPadding;
 
-        G.ComboBoxWithLabel {
-            id: _models;
-
-            label: "Model:"
-            model: d ? d.models : null;
-
+        Item {
             Layout.fillWidth: true;
+            Layout.preferredHeight: G.Style.mediumButtonHeight
 
-            onCurrentIndexChanged: {
-                if (d && d.models) {
-                    d.currentIndex = _models.currentIndex;
-                    d.modelName = d.models[d.currentIndex];
+            G.ComboBox {
+                id: _models;
+
+                anchors.left: parent.left
+                anchors.right: _edit_button.left
+                anchors.top: parent.top
+                anchors.rightMargin: G.Style.smallPadding
+
+                model: d ? d.models : null;
+                enabled: false
+
+                onCurrentIndexChanged: {
+                    if (d && d.models) {
+                        d.currentIndex = _models.currentIndex;
+                        d.modelName = d.models[d.currentIndex];
+                    }
+                }
+
+                // creating an alias for signal handling
+                property string modelName: d ? d.modelName : ""
+                onModelNameChanged: {
+                    if(d.modelName != d.models[_models.currentIndex]) {
+                        for(let i=0; i<model.length; i++) {
+                            if(d.models[i] == d.modelName) {
+                                _models.currentIndex = i
+                                d.currentIndex = i
+                            }
+                        }
+                    }
                 }
             }
 
-            // creating an alias for signal handling
-            property string modelName: d ? d.modelName : ""
-            onModelNameChanged: {
-                if(d.modelName != d.models[_models.currentIndex]) {
-                    for(let i=0; i<model.length; i++) {
-                        if(d.models[i] == d.modelName) {
-                            _models.currentIndex = i
-                            d.currentIndex = i
-                        }
-                    }
+            G.Button {
+                id: _edit_button;
+
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.rightMargin: G.Style.smallPadding
+
+                implicitWidth: 2*G.Style.shortButtonWidth + G.Style.smallPadding
+
+                // TODO: Read-only in L-System Workspace
+                // enabled: !d.readOnly
+                text: "Edit parameters"
+                type: enabled? G.Style.ButtonType.Base : G.Style.ButtonType.Neutral
+                tooltip: "Edit model parameters";
+
+                iconName: "pencil";
+
+                onClicked: {
+                    _parameter_edit_dialog.open()
                 }
             }
         }
@@ -302,5 +332,22 @@ Item {
 
     function getTitleString(group : string) : string {
         return (group.charAt(0).toUpperCase() + group.slice(1)).replace('_', ' ')
+    }
+
+    G.ParameterEditDialog {
+        id: _parameter_edit_dialog
+
+        parameters: _menu.parameters
+        d: _menu.d
+
+        onOpened: {
+            _parameter_edit_dialog.code = d.text
+        }
+
+        onRejected: {
+            d.text = _parameter_edit_dialog.code
+            d.onParametersChanged();
+            _parameter_edit_dialog.code = ""
+        }
     }
 }
