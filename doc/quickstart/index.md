@@ -36,7 +36,7 @@ For detailed use cases giving a more complete view of what you can do with Gnomo
 :maxdepth: 1
 :hidden:
 
+about
 install
 install_packages
-about
 :::

@@ -55,7 +55,7 @@ html_theme_options = {
         },
     ],
     "navbar_align": "content",
-
+    "announcement": "This new version of the documentation is currently under construction, but you can still access <a href='https://gnomon.gitlabpages.inria.fr/gnomon/'>the previous version!</a>",
     "footer_start": ["copyright"],
     "footer_end": ["sphinx-version", "theme-version"]
 }

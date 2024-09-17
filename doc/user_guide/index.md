@@ -61,8 +61,8 @@ Short description for Gnomon concepts.
 :hidden:
 
 tutorials
-workspaces
 concepts
-glossary
 forms_index
+workspaces
+glossary
 :::

@@ -4,7 +4,7 @@
 :name: algorithm-definition
 :class: definition
 
-An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**.
+An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**, and can be controlled trough [**Parameters**](parameter-definition).
 Some **Algorithms** serve as a **source** (no input **Form**) or a **sink** (no output **Form**).
 
 :::{include} diagrams/algorithm_diagram.md
@@ -40,6 +40,15 @@ and generally relying on a third-party software library providing the functional
 Available **Plugin** packages are listed [**here**](../plugins/index).
 :::
 
+:::{admonition} Project
+:name: project-definition
+:class: definition
+
+A **Project** corresponds to a local directory in your file system that gathers the pipelines, custom plugins, data and other resources files constituting a digital experiment.
+
+The Gnomon application manages the Project in order to keep track of the various files required to replay the computations.
+:::
+
 :::{admonition} View
 :name: view-definition
 :class: definition
@@ -55,7 +64,7 @@ to control the way a particular Form is rendered in a given View.
 :class: definition
 
 A **Visualization** is an operation that defines how a [**Form**](form-definition) is rendered in a [**View**](view-definition). 
-It is implemented by specific [**Plugins**](plugin-definition) relying on the View's rendering framework.
+It is implemented by specific [**Plugins**](plugin-definition) relying on the View's rendering framework, and can be controlled trough [**Parameters**](parameter-definition).
 
 :::{include} diagrams/visualization_diagram.md
 :::

@@ -1,5 +1,5 @@
-::::{grid}
-:padding: 1
+:::::{grid}
+:class-container: sd-px-1 sd-pt-3
 
 :::{grid-item}
 :columns: 3
@@ -21,14 +21,20 @@ Input Form(s)
 
 :::
 
-:::{grid-item-card}
+::::{grid-item-card}
 :columns: 3
 :margin: auto
 :class-body: sd-outline-warning sd-text-center sd-badge sd-text-warning
 {fas}`gear; fa-xl`
 
 Algorithm
+
+:::{card}
+:class-card: position-absolute top-0 start-100 translate-middle sd-outline-warning-dark sd-text-warning-dark sd-bg-light
+
+{fas}`sliders; fa-xl`
 :::
+::::
 
 :::{grid-item}
 :columns: 1
@@ -56,4 +62,4 @@ Output Form(s)
 :margin: auto
 :::
 
-::::
+:::::
