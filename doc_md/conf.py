@@ -79,7 +79,7 @@ autodoc_mock_imports = ["gnomon.core", "gnomon.visualization", "gnomon.pipeline"
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'press'
+html_theme = 'pydata_sphinx_theme'
 
 if html_theme == 'press':
     html_sidebars = {'**': ['util/searchbox.html', 'globaltoc.html']}

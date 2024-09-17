@@ -3,6 +3,7 @@
 :::{toctree}
 :maxdepth: 1
 :hidden:
+example_segmentation
 example1
 example2
 :::
@@ -43,9 +44,9 @@ example2
 <div class="gallery-grid">
 
 <div class="gallery-item">
-  <a href="example1.html">
-    <img src="../_static/thumbnail/example1_thumbnail.gif" alt="Exemple 1">
-    <div class="gallery-title">Utilisation Basique</div>
+  <a href="example_segmentation.html">
+    <img src="../_static/thumbnail/example_segmentation_thumbnail.gif" alt="Image segmentation">
+    <div class="gallery-title">Image segmentation</div>
   </a>
 </div>
 
