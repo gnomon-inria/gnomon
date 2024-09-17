@@ -4,7 +4,7 @@
 :name: algorithm-definition
 :class: definition
 
-An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**, and can be controlled trough [**Parameters**](parameter-definition).
+An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**, and can be controlled through [**Parameters**](parameter-definition).
 Some **Algorithms** serve as a **source** (no input **Form**) or a **sink** (no output **Form**).
 
 :::{include} diagrams/algorithm_diagram.md
@@ -64,7 +64,7 @@ to control the way a particular Form is rendered in a given View.
 :class: definition
 
 A **Visualization** is an operation that defines how a [**Form**](form-definition) is rendered in a [**View**](view-definition). 
-It is implemented by specific [**Plugins**](plugin-definition) relying on the View's rendering framework, and can be controlled trough [**Parameters**](parameter-definition).
+It is implemented by specific [**Plugins**](plugin-definition) relying on the View's rendering framework, and can be controlled through [**Parameters**](parameter-definition).
 
 :::{include} diagrams/visualization_diagram.md
 :::
