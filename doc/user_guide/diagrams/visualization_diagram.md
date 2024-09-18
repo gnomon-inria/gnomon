@@ -7,7 +7,7 @@
 :class: sd-text-center sd-badge sd-text-success
 <br/>
 
-{fas}`images; fa-xl`
+{fas}`images; fa-2x`
 
 Form
 :::
@@ -24,14 +24,14 @@ Form
 :columns: 3
 :margin: auto
 :class-body: sd-outline-secondary sd-text-center sd-badge sd-text-secondary
-{fas}`eye; fa-xl`
+{fas}`eye; fa-2x`
 
 Visualization
 
 :::{card}
 :class-card: position-absolute top-0 start-100 translate-middle sd-outline-warning-dark sd-text-warning-dark sd-bg-light
 
-{fas}`sliders; fa-xl`
+{fas}`sliders; fa-2x`
 :::
 ::::
 
@@ -49,7 +49,7 @@ Visualization
 :class: sd-text-center sd-badge sd-text-secondary-dark
 <br/>
 
-{fas}`display; fa-xl`
+{fas}`display; fa-2x`
 
 View
 :::

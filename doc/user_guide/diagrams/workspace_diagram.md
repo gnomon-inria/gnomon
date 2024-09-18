@@ -11,7 +11,7 @@
 :padding: 0
 :class-body: sd-text-secondary sd-outline-secondary sd-badge
 
-{fas}`eye; fa-xl`
+{fas}`eye; fa-2x`
 
 Visualization
 
@@ -20,7 +20,7 @@ Visualization
 :::{card}
 :margin: auto
 :class-body: sd-outline-warning-dark sd-text-warning-dark sd-rounded-1
-{fas}`sliders; fa-xl`
+{fas}`sliders; fa-2x`
 
 Parameters
 :::
@@ -35,7 +35,7 @@ Parameters
 :padding: 0
 :class-body: sd-text-secondary-dark sd-outline-secondary-dark sd-badge
 
-{fas}`display; fa-xl`
+{fas}`display; fa-2x`
 
 Input View
 
@@ -45,7 +45,7 @@ Input View
 :class-body: sd-outline-success sd-text-success sd-rounded-1
 :margin: auto
 :width: 50%
-{fas}`images; fa-xl`
+{fas}`images; fa-2x`
 
 Input Form(s)
 :::
@@ -60,7 +60,7 @@ Input Form(s)
 :padding: 0
 :class-body: sd-text-secondary-dark sd-outline-secondary-dark sd-badge
 
-{fas}`display; fa-xl`
+{fas}`display; fa-2x`
 
 Output View
 
@@ -70,7 +70,7 @@ Output View
 :margin: auto
 :width: 50%
 :class-body: sd-outline-success sd-text-success sd-rounded-1
-{fas}`images; fa-xl`
+{fas}`images; fa-2x`
 
 Output Form(s)
 :::
@@ -85,7 +85,7 @@ Output Form(s)
 :padding: 0
 :class-body: sd-outline-warning sd-text-warning sd-badge
 
-{fas}`gear; fa-xl`
+{fas}`gear; fa-2x`
 
 Algorithm
 
@@ -94,7 +94,7 @@ Algorithm
 :::{card}
 :margin: 0
 :class-body: sd-outline-warning-dark sd-text-warning-dark sd-rounded-1
-{fas}`sliders; fa-xl`
+{fas}`sliders; fa-2x`
 
 Parameters
 :::

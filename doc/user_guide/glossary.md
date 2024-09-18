@@ -4,13 +4,13 @@
 :name: algorithm-definition
 :class: definition
 
-An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**, and can be controlled through [**Parameters**](parameter-definition).
+An **Algorithm** is an operation that transforms a [**Form**](form-definition) (or more) into another or other **Forms**.
 Some **Algorithms** serve as a **source** (no input **Form**) or a **sink** (no output **Form**).
 
 :::{include} diagrams/algorithm_diagram.md
 :::
 
-It is implemented by [**Plugins**](plugin-definition).
+It is implemented by [**Plugins**](plugin-definition), and can be controlled through [**Parameters**](parameter-definition).
 ::::
 
 :::{admonition} Form
@@ -18,6 +18,8 @@ It is implemented by [**Plugins**](plugin-definition).
 :class: definition
 
 A **Form** is a temporal sequence representing the evolution of a biological object, using a given computational representation. It consists of a time-indexed set of instances of an archetypal data structure (e.g. Image, Mesh, Tree...).
+
+The different types of Forms that Gnomon manipulates are listed [here](forms_index)
 :::
 
 :::{admonition} Parameter
@@ -79,5 +81,5 @@ where the user is able to set [**Forms**](form-definition)
 as inputs through an input [**View**](view-definition),
 tune the values of the **Parameters** and retrieve **Forms** as outputs in an output **View**.
 
-Available workspaces are listed [**here**](available-workspace-list).
+Available Workspaces are listed [**here**](available-workspace-list).
 :::
