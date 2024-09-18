@@ -17,7 +17,7 @@ The typical layout of a Workspace consists of input and output **Views**[{fas}`b
 (available-workspace-list)=
 ## Available workspaces
 
-In Gnomon, through the {bdg-secondary-line}`New Workspace` menu, you will have access to several types of **Workspaces**. Each Workspace corresponds to a specific task  to perform, and is generally defined by the types of its input and output Forms. 
+In Gnomon, through the <span class="sd-outline-secondary sd-text-secondary sd-rounded-2 sd-badge"> {fas}`folder-plus; fa-1x`&nbsp; **NEW WORKSPACE** </span> menu, you will have access to several types of **Workspaces**. Each Workspace corresponds to a specific task  to perform, and is generally defined by the types of its input and output Forms. 
 
 The following table lists all the available Workspaces and sums up the types of Forms it expects as inputs, and will yield as outputs. Input forms are generally {bdg-success}`Mandatory` for the Workspace to perform its task, but it some cases it may also accept {bdg-success-line}`Optional` input Forms.
 

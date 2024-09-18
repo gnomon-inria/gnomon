@@ -4,7 +4,7 @@ When you launch the Gnomon application, you land on a home screen where you can 
 
 ## 1.1 New Project
 
-The first time you open Gnomon, the *Recent projects* section will be empty, and you generally won't have an existing Project directory to open. You will need to create a new project by clicking on the {bdg-primary}`+ NEW` button:
+The first time you open Gnomon, the *Recent projects* section will be empty, and you generally won't have an existing Project directory to open. You will need to create a new project by clicking on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`plus; fa-1x`&nbsp; **NEW** </span> button:
 
 :::{raw} html
     <video width="100%" height="auto" controls muted> 
@@ -20,3 +20,25 @@ The "New Project" dialog that pops lets you select a directory path on your loca
 
 
 ## 1.2 Opening an existing Project
+
+If you have a folder on your system that is already a Gnomon Project (*e.g.* a Project shared by another Gnomon user) you can directly load it by clicking on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`folder-open; fa-1x`&nbsp; **OPEN** </span> button. This opens a dialog that lets you browse your file system to select the path of the Project:
+
+:::{raw} html
+<video width="100%" height="auto" controls muted>
+    <source
+        src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+        type="video/mp4" style="margin-left: 0px; margin-right: 0%"
+    >
+    Your browser does not support the video tag.  
+</video>
+:::
+
+:::{dropdown} Not a Gnomon Project
+:color: info
+:icon: info
+
+If the folder you selected is actually not an existing Gnomon Project, you will be redirected to the "New Project" dialog to create it with a customized name and description. 
+
+:::
+
+## 1.3 Loading a recent Project
