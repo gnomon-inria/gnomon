@@ -1,7 +1,7 @@
 # Mesh
 
 ## Description
->A gnomon Mesh is a data structure modelling the geometry of a biological object using smaller discrete elements. It consists in a set of topological elements (typically polygonal or polyhedral) built upon a list of points. The embedding of the points in the 3D space is what defines the resuting geometry of the object.
+>A gnomon Mesh is a data structure modelling the geometry of a biological object using smaller discrete elements. It consists in a set of topological elements (typically polygonal or polyhedral) built upon a list of points. The embedding of the points in the 3D space is what defines the resulting geometry of the object.
 The default data classes implementing Mesh in gnomon are `gnomonMeshDataStdVector` relying on c++ vector containers, and `gnomonMeshDataPropertyTopomesh` using the mesh implementation provided by the [cellcomplex](https://mosaic.gitlabpages.inria.fr/cellcomplex/examples/property_topomesh.html) Python package.
 
 ## Default reader plugin

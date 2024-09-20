@@ -1,0 +1,65 @@
+# {{name}}
+Version: {{version}}
+
+{{ description }}
+
+## Plugins
+
+{% if forms -%}
+### Forms
+
+:::{list-table}
+:widths: 15 10 30
+:header-rows: 1
+
+*   - Name
+    - Form
+    - Description
+{% for plugin in forms.values() -%}
+*   - {{plugin.name}}
+    - {{plugin.form}}
+    - {{plugin.description.split("\n")[0]}}
+{% endfor %}
+:::
+
+{%- endif %}
+
+{% if visu -%}
+### Visualization
+
+:::{list-table}
+:widths: 15 10 30
+:header-rows: 1
+
+*   - Name
+    - Form
+    - Description
+{% for plugin in visu.values() -%}
+*   - {{plugin.name}}
+    - {{plugin.form}}
+    - {{plugin.image}}
+{% endfor %}
+:::
+
+{%- endif %}
+
+{% if algorithms -%}
+### Algorithms
+
+:::{list-table}
+:widths: 15 10 10 40
+:header-rows: 1
+
+*   - Name
+    - Inputs
+    - Outputs
+    - Description
+{% for plugin in algorithms.values() -%}
+*   - {{plugin.name}}
+    - {{plugin.inputs}}
+    - {{plugin.outputs}}
+    - {{plugin.description.split("\n")[0]}}
+{% endfor %}
+:::
+
+{%- endif %}

@@ -1,5 +1,14 @@
 # Forms
 
+Here is the list of the different forms[{fas}`book-open;sd-text-primary fa-2xs`](form-definition) defined by Gnomon. 
+Usually a form is stored and moved around a time series.
+
+A form in itself is only an interface. Their implementation, meaning how the actual data is stored and served to 
+different plugins is defined in **data plugins** which are a special kind of plugin. Readers and writers are also defined in plugins.
+
+To find which plugin (and plugin package) you need for the form you want to manipulate, you may look at the doc for this form
+ or alternatively browse through the different plugin packages available [here](../plugins/index)
+
 :::{list-table} Forms primitives
 :widths: 15 30 10
 :header-rows: 1
@@ -33,7 +42,7 @@
   - ![gnomonLString](../_static/user_guide/lstring.png){.bg-warning w=100px align=center}
 * 
   - [gnomonMesh](forms/mesh.md)
-  - 3D mesh
+  - 3D surface or volumetric mesh
   - ![gnomonMesh](../_static/user_guide/mesh.png){.bg-warning w=100px align=center}
 * 
   - [gnomonPointCloud](forms/point_cloud.md)
