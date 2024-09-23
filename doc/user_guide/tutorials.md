@@ -1,6 +1,6 @@
 # Tutorials
 
-Here you will find a step-by-step guide to walk you in your first usage of Gnomon. The tutorial pages
+Here you will find a step-by-step guide to walk you in your first usage of Gnomon. The tutorial pages provide additional information on the components of the application and links to the other pages of this documentation.
 
 :::{toctree}
 :maxdepth: 2

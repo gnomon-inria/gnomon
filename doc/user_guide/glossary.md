@@ -51,6 +51,18 @@ A **Project** corresponds to a local directory in your file system that gathers 
 The Gnomon application manages the Project in order to keep track of the various files required to replay the computations.
 :::
 
+::::{admonition} Reader
+:name: reader-definition
+:class: definition
+
+A **Reader** is a specific type of [**Algorithm**](algorithm-definition) that is used to load [**Forms**](form-definition) from data files. It has no input Form and no Parameters apart from a mandatory **path**, and returns a single type of output Form.
+
+:::{include} diagrams/reader_diagram.md
+:::
+
+Reader [**Plugins**](plugin-definition) declare the list of file extensions they support.
+::::
+
 :::{admonition} View
 :name: view-definition
 :class: definition
