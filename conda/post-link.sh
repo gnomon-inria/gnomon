@@ -1,6 +1,6 @@
 #!/bin/bash
 
-${PREFIX}/bin/pip install morphonet
+${PREFIX}/bin/pip install morphonet "numpy<2"
 ${PREFIX}/bin/pip install 'python-lsp-server[websockets]'
 
 envname=$(basename ${PREFIX})
@@ -32,12 +32,12 @@ fi
 
 if [ `uname` == Darwin ]
 then
-    ln -s ${PREFIX}/bin/Gnomon.app/Contents/Resources/gnomon ${PREFIX}/bin/
     ln -s ${PREFIX}/bin/Gnomon.app /Applications/
-    mv ${PREFIX}/bin/Gnomon.app/Contents/MacOS/gnomon ${PREFIX}/bin/Gnomon.app/Contents/Resources/gnomon_app
+    mv ${PREFIX}/bin/Gnomon.app/Contents/MacOS/gnomon ${PREFIX}/bin/Gnomon.app/Contents/Resources/gnomon
+    ln -s ${PREFIX}/bin/Gnomon.app/Contents/Resources/gnomon ${PREFIX}/bin/
     cat > ${PREFIX}/bin/Gnomon.app/Contents/MacOS/gnomon <<EOF
 #!/bin/sh
-. "${PREFIX}/../../etc/profile.d/conda.sh" && conda activate ${envname} && ${PREFIX}/bin/Gnomon.app/Contents/Resources/gnomon_app
+. "${PREFIX}/../../etc/profile.d/conda.sh" && conda activate ${envname} && ${PREFIX}/bin/Gnomon.app/Contents/Resources/gnomon
 EOF
     chmod +x ${PREFIX}/bin/Gnomon.app/Contents/MacOs/gnomon
 fi
