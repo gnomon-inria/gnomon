@@ -32,7 +32,7 @@ You can find an example usecase for the Data Browsing Workspace in &nbsp;
 ::::
 :::::
 
-
+(data-browsing-project-browser)=
 ## Loading from the Project Browser
 
 In the menu on the right, the Project Browser lets you navigate and select files from the root directory of your Project. There are three options to load the selected data file from this component:
