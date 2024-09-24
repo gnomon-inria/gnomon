@@ -1,5 +1,9 @@
 # Image
 
+![Gnomon Image illustration](../../_static/user_guide/image.png){width=200px class="sd-rounded-1 sd-shadow-sm" align=center}
+
+In Gnomon, an {bdg-success}`Image` **Form** is a data structure representing a 3D multi-channel intensity image.
+
 ## Description
 >A gnomon Image is a data strucure which could hold time series image in one channel or multi-channel (4D data set).  
 The corresponding class in gnomon is `gnomonImageDataMultiChannelImage`.  
@@ -9,16 +13,12 @@ It gives possibility to access some information about image like:
 - Voxel Type
 - Voxel Size
 
-
 ## Default reader plugin
 >The default reader of image form is **imageReaderTimagetk**. Which reads a 3D microscopy intensity image file.<br> Extensions supported by this reader are: `inr, inr.gz, mha, .mha.gz, tif, tiff, czi, lsm`.
 
 ## Default writer plugin
 >The default writer of image form is **gnomonImageWriter**
 
-## Gnomon Image Example
-
-![Gnomon Image illustration](../../_static/user_guide/image.png)
 
 
 ## Plugins which take Image as input

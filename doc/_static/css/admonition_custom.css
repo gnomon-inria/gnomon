@@ -1,6 +1,7 @@
 html
 {
     --pst-icon-book: "📖";
+    --pst-icon-bookmark: "🔖";
 }
 
 .admonition.definition,div.admonition.definition
@@ -15,6 +16,20 @@ html
 {
     color:var(--sd-color-primary);content:var(--pst-icon-book)
 }
+
+.admonition.tutorial,div.admonition.tutorial
+{
+    border-color:var(--sd-color-success)
+}
+.admonition.tutorial>.admonition-title,div.admonition.tutorial>.admonition-title
+{
+    background-color:var(--pst-color-background)
+}
+.admonition.tutorial>.admonition-title:after,div.admonition.tutorial>.admonition-title:after
+{
+    color:var(--sd-color-success);content:var(--pst-icon-bookmark)
+}
+
 
 .svg-inline--fa.fa-2xs{vertical-align:.75em;margin-left:.25em}
 .fa-2xs{font-size:.5em;line-height:.1em;vertical-align:.5em}

@@ -25,7 +25,7 @@ When you open a file for the first time, Gnomon will try to guess what type of F
 
 :::{admonition} Example
 :class: tip
-For instance a file with the `.tif` extension can contain an {bdg-link-success}`Image <forms/image.html>` Form coming directly from a microscope acquisition, but it may also contain a {bdg-link-success}`Cell Image <forms/cell_image.html>` Form issuing from a cell segmentation process.
+For instance a file with the `.tif` extension can contain an {bdg-link-success}`Image <../forms/image.html>` Form coming directly from a microscope acquisition, but it may also contain a {bdg-link-success}`Cell Image <../forms/cell_image.html>` Form issuing from a cell segmentation process.
 :::
 
 The Reader you choose the first time that you read a given file will be saved and used by default for this file from now on. If you wish to change, you can use the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`file-arrow-up; fa-1x`&nbsp; **LOAD AS** </span> button to access the Reader selection once again. 
@@ -58,6 +58,6 @@ In the case where external data files are already in a structured file architect
 
 ## 2.3 Loading multiple files
 
-If several files are selected when you press the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`up-long; fa-1x`&nbsp; **LOAD** </span>, or if you drag&drop several files from the Project Browser, Gnomon will try to read them as a single **Form** with multiple time points. You need to make sure that they all have the same format (and actually correspond to a time series of the same type of Form). 
+If several files are selected when you press the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`up-long; fa-1x`&nbsp; **LOAD** </span> button, or if you drag&drop several files from the Project Browser, Gnomon will try to read them as a single **Form** with multiple time points. You need to make sure that they all have the same format (and actually correspond to a time series of the same type of Form). 
 
 You can also achieve the same result by selecting multiple files in the dialog that opens when you click on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`folder-plus; fa-1x`&nbsp; **BROWSE FILES...** </span> button.
