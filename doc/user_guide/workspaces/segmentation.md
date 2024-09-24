@@ -1,13 +1,6 @@
 # Segmentation Workspace
 
-:::{card}
-:width: 75%
-:margin: auto
-:img-background: ../../_static/user_guide/workspaces/workspace_segmentation.png
-
-:::
-
-<br/>
+![workspace_segmentation.png](../../_static/user_guide/workspaces/workspace_segmentation.png){width=600px class="sd-rounded-1 sd-shadow-sm" align=center}
 
 ::::{admonition} Example
 :class: sidebar tip

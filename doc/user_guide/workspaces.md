@@ -32,7 +32,7 @@ The following table lists all the available Workspaces and sums up the types of 
 *   - [Data Browsing](workspaces/data_browsing)
     - 
     - {bdg-link-success}`Image <forms/image.html>`<br/> {bdg-link-success}`BinaryImage <forms/binary_image.html>` <br/> {bdg-link-success}`CellImage <forms/cell_image.html>`<br/> {bdg-link-success}`Mesh <forms/mesh.html>`<br/> {bdg-link-success}`CellComplex <forms/cellcomplex.html>`
-    - ![gnomon_screenshot_segmentation.png](../_static/index/gnomon_screenshot_segmentation.png)
+    - ![workspace_data_browsing.png](../_static/user_guide/workspaces/workspace_data_browsing.png)
 *   - [Preprocessing](workspaces/preprocessing)
     - {bdg-link-success}`Image <forms/image.html>`<br/> {bdg-link-success-line}`BinaryImage <forms/binary_image.html>`
     - {bdg-link-success}`Image <forms/image.html>`
@@ -56,5 +56,6 @@ The following table lists all the available Workspaces and sums up the types of 
 :hidden:
 
 workspaces/home_screen
+workspaces/data_browsing
 workspaces/segmentation
 :::
