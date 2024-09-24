@@ -6,6 +6,7 @@
 example_segmentation
 example1
 example2
+example_data
 :::
 
 ```{raw} html

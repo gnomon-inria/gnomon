@@ -2,6 +2,8 @@
 
 Example of cell segmentation from a 3D intensity image of cell wall (floral meristem of *Arabidopsis Thaliana*).
 
+This example requires the [**p58** sample data](p58-sample-data)
+
 <div style="text-align: center;">
   <video width="700" controls>
     <source src="../_static/examples/example_segmentation.mp4" type="video/mp4">

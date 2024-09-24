@@ -1,16 +1,15 @@
 # 1. Create a Project
 
-When you launch the Gnomon application, you land on a Home screen where you can have access to your recently opened **Projects**[{fas}`book-open;sd-text-primary fa-2xs`](project-definition). Any processing you will perform in Gnomon has to be related to a Project directory, inside which the necessary information will be stored.
+When you launch the Gnomon application, you land on a Home screen where you can have access to your recently opened **Projects**[{fas}`book-open;sd-text-primary fa-2xs`](project-definition). 
 
-(1-1-new-project)=
-## 1.1 New Project
+## 1.1 Open the New Project Dialog
 
-The first time you open Gnomon, the *Recent projects* section will be empty, and you generally won't have an existing Project directory to open. You will need to create a new project by clicking on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`plus; fa-1x`&nbsp; **NEW** </span> button:
+Any processing you will perform in Gnomon has to be related to a Project directory, inside which the necessary information will be stored. However, the first time you open Gnomon, the *Recent projects* section will be empty, and you generally won't have an existing Project directory to open.
 
 ::::{admonition} Step 1
 :class: tutorial
 
-Click on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`plus; fa-1x`&nbsp; **NEW** </span> button:
+Let's create a new project by clicking on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`plus; fa-1x`&nbsp; **NEW** </span> button:
 
 :::{raw} html
     <video width="93%" height="auto" controls muted> 
@@ -21,19 +20,17 @@ Click on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {f
         Your browser does not support the video tag.  
     </video>
 :::
-
 ::::
 
-The "New Project" dialog that pops lets you select a directory path on your local system that will become a Gnomon project. It also allows you to give a personalized name and a quick description to the project, and lest you choose in which **Workspace**[{fas}`book-open;sd-text-primary fa-2xs`](workspace-definition) you wish to begin when starting a new session:
-* The [**Data Browsing** Workspace](../workspaces/data_browsing) to [load data files form your system](2_load_data)
-* The [Python Algorithm Workspace](../workspace/python_algorithm) to start by running a custom plugin
-* The [L-System Model Workspace](../workspace/lsystem_model) to create a branching architecture from [`lpy` L-System code](https://lpy.readthedocs.io/en/latest/)
-* The [Morphonet Workspace](../workspace/morphonet) to download datasets from the [MorphoNet 3D+t browser](https://morphonet.org/)
+## 1.2 Configure the Project
+
+The "New Project" dialog that pops lets you select a directory on your local system that will become a Gnomon project. It also allows you to give it a name and a  description to the project, and to choose in which **Workspace**[{fas}`book-open;sd-text-primary fa-2xs`](workspace-definition)
+to initialize a new session. For more information on the initial workspaces, you can have a look at [how to create a Project in general](home-screen-new-project).
 
 ::::{admonition} Step 2
 :class: tutorial
 
-Let's get started by creating a new Project: navigate to the directory of your choice in the file dialog, then create a new folder named `gnomon_tutorial` and select that folder with the dialog. Then, fill in the New Project dialog with the following details:
+Let's first create a directory for your Project: navigate to the directory of your choice in the file dialog, then create a new folder named `gnomon_tutorial` and select that folder with the dialog. Then, fill in the New Project dialog with the following details:
 * **Name**: Gnomon Tutorial
 * **Description**: A project to get started with Gnomon
 * **Initial Workspace**: Data Browsing
@@ -52,30 +49,8 @@ Then press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> 
 
 ::::
 
-When you press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> **OK** </span> button, your project is created, and a new session immediately starts, in the **Data Browsing** workspace. You can now proceed to the next step of this tutorial to learn [**How to load data files**](2_load_data).
+When you press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> **OK** </span> button, your project is created, and from now on it will appear in your list of Recent Projects. Learn more about how to load a recent project by taking a look at [the different loading options](home-screen-load-recent-project).
 
-## 1.2 Opening an existing Project
+A new session immediately starts, and it will start in the **Data Browsing** workspace since you chose it as Intitial Workspace. You can now proceed to the next step of this tutorial to learn [**How to load data files**](2_load_data).
 
-In the case where you have a folder on your system that is already a Gnomon Project (*e.g.* a Project shared by another Gnomon user) you can directly load it by clicking on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`folder-open; fa-1x`&nbsp; **OPEN** </span> button. This opens a dialog that lets you browse your file system to select the path of the Project:
-
-:::{raw} html
-<video width="100%" height="auto" controls muted>
-    <source
-        src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
-        type="video/mp4" style="margin-left: 0px; margin-right: 0%"
-    >
-    Your browser does not support the video tag.  
-</video>
-:::
-
-:::{dropdown} Not a Gnomon Project
-:color: info
-:icon: info
-
-If the folder you selected is actually not an existing Gnomon Project, you will be redirected to the "New Project" dialog to create it with a customized name and description. 
-
-:::
-
-(1-3-load-recent-project)=
-## 1.3 Loading a recent Project
 

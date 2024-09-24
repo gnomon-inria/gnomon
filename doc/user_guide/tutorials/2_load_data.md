@@ -1,6 +1,6 @@
 # 2. Load a Data File
 
-When you open a new session in a **Project** (either [the first time you create it](1-1-new-project) or when you [create a new blank session](1-3-load-recent-project), you may start in the [**Data Browsing Workspace**](../workspaces/data_browsing) if you chose it as the default starting Workspace.
+When you open a new session in a **Project** (either [the first time you create it](home-screen-new-project) or when you [create a new blank session](home-screen-load-recent-project), you may start in the [**Data Browsing Workspace**](../workspaces/data_browsing) if you chose it as the default starting Workspace.
 
 The Data Browsing Workspace is a space dedicated to the loading of data files containing **Forms**[{fas}`book-open;sd-text-primary fa-2xs`](form-definition) from your local system. Loading a data file relies on a **Reader**[{fas}`book-open;sd-text-primary fa-2xs`](reader-definition) to create a new Form (image, mesh and so on) that will be displayed in the central 3D **View**[{fas}`book-open;sd-text-primary fa-2xs`](view-definition), where you will be able to interact with it.
 

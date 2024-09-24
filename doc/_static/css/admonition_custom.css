@@ -23,7 +23,7 @@ html
 }
 .admonition.tutorial>.admonition-title,div.admonition.tutorial>.admonition-title
 {
-    background-color:var(--pst-color-background)
+    background-color:var(--pst-color-on-background)
 }
 .admonition.tutorial>.admonition-title:after,div.admonition.tutorial>.admonition-title:after
 {

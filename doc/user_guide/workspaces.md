@@ -55,5 +55,6 @@ The following table lists all the available Workspaces and sums up the types of 
 :maxdepth: 1
 :hidden:
 
+workspaces/home_screen
 workspaces/segmentation
 :::
