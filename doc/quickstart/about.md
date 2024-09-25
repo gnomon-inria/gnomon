@@ -11,7 +11,7 @@ In order to manipulate indifferently computational tools coming from different s
 ::::{card}
 :class-card: sidebar sd-bg-light sd-px-0 sd-pb-0 sd-mt-2
 
-:::{include} ../user_guide/diagrams/plugin_diagram.md
+:::{include} diagrams/plugin_diagram.md
 :::
 ::::
 
@@ -21,8 +21,24 @@ The list of available plugins is not hard-coded, instead they are **dynamically 
 
 ## Reproduce computations
 
-## Conceive intuitively
+Guaranteeing the reproducibility of the results in a fundamental issue in scientific computing. Gnomon tackles it by keeping track of all the choices made by the user while processing its data: the **plugins that have been used**, with their versions and dependencies, and all **the values of their parameters**. It is then possible to trace back any produced output to its source data, through the process that computed it.
 
+Gnomon formalizes this notion in the concept of **pipeline**, a directed graph of computational steps that represent the dependency links between the processes required to compute a given data. Pipelines can be replayed to **reproduce the computations** that have been performed by the user, but they can also be applied to different source data, in order to **automatize a processing** made manually on one sample data to a whole dataset.
+
+## Design intuitively
+
+Conceiving a user interface to efficiently design computational pipelines is not an obvious task. On the one hand, interfaces that let the user explicitly create boxes and connect them require to know in advance the expected outcome, and all the steps to reach it. On the other hand, interfaces that allow to apply computational steps one by one and explore the result generally alter the central data structure, making it impossible to design pipelines with convoluted dependency links.
+
+::::{card}
+:class-card: sidebar sd-bg-light sd-px-0 sd-pb-0 sd-mt-2
+
+:::{include} diagrams/workspace_diagram.md
+:::
+::::
+
+Gnomon proposes an original interface paradigm centered on one processing step, and the **transformation of data** from inputs to outputs. It materializes into the concept of **workspace**, the visual counterpart of one box in the pipeline graph. In a workspace, the user chooses a plugin and configures it through graphical editors, before running it and visually exploring the results. The data is materialized in **input and output views** that allow to interact simultaneously with the data before and after the transformation.
+
+By moving data through several of these workspaces, the user, while focusing on the transformation steps, is **implicitly designing** the dependency graph between all the data it progressively generates. We believe that this dynamic way of interacting with computational steps constitutes an original user interface that allows an **intuitive an efficient conception of reproducible pipelines**.
 
 :::{admonition} About us
 :class: note

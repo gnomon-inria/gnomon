@@ -9,7 +9,7 @@
 
 Library 1
 
-{material-outlined}`south;3em;sd-text-primary`
+{material-outlined}`south;2em;sd-text-primary`
 
 :::{card}
 :margin: auto
@@ -18,6 +18,8 @@ Library 1
 
 Plugin 1
 :::
+
+<br/>
 
 {fas}`arrows-up-down; fa-2x sd-text-success`
 ::::
@@ -29,7 +31,7 @@ Plugin 1
 
 Library 2
 
-{material-outlined}`south;3em;sd-text-primary`
+{material-outlined}`south;2em;sd-text-primary`
 
 
 :::{card}
@@ -40,13 +42,15 @@ Library 2
 Plugin 2
 :::
 
+<br/>
+
 {fas}`arrows-up-down; fa-2x sd-text-success`
 ::::
 
 :::{grid-item-card}
 :margin: auto
 :columns: 12
-:class-card: sd-text-center sd-text-success sd-outline-success sd-badge sd-mb-0
+:class-card: sd-text-center sd-text-success sd-outline-success sd-badge sd-mb-0 sd-mt-3
 {fas}`list; fa-2x`
 
 Gnomon API
