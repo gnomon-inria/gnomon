@@ -1,6 +1,6 @@
 # 1. Create a Project
 
-When you launch the Gnomon application, you land on a Home screen where you can have access to your recently opened **Projects**[{fas}`book-open;sd-text-primary fa-2xs`](project-definition). 
+When you launch the Gnomon application, you land on a [Home screen](../workspaces/home_screen) where you can have access to your recently opened **Projects**[{fas}`book-open;sd-text-primary fa-2xs`](project-definition). 
 
 ## 1.1 Open the New Project Dialog
 
@@ -51,6 +51,6 @@ Then press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> 
 
 When you press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> **OK** </span> button, your project is created, and from now on it will appear in your list of Recent Projects. Learn more about how to load a recent project by taking a look at [the different loading options](home-screen-load-recent-project).
 
-A new session immediately starts, and it will start in the **Data Browsing** workspace since you chose it as Intitial Workspace. You can now proceed to the next step of this tutorial to learn [**How to load data files**](2_load_data).
+A new session immediately starts, and it will start in the [Data Browsing Workspace](../workspaces/data_browsing) since you chose it as Intitial Workspace. You can now proceed to the next step of this tutorial to learn [**How to load data files**](2_load_data).
 
 
