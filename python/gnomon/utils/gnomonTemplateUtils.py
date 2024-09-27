@@ -2,21 +2,22 @@ import os
 import json
 from glob import glob
 from collections import OrderedDict, UserDict
+import importlib.resources as ir
 import pathlib
-import pkg_resources
-from pprint import pprint
 
 from jinja2 import Environment, StrictUndefined, FileSystemLoader, BaseLoader
 
-if not __package__:
-    __package__ = "gnomon"
 
+if not __package__:
+    __package__ = "gnomon.utils"
+
+# awfull line where the context manager is never closed
+templates_path = ir.as_file(ir.files(__package__).joinpath('templates')).__enter__()
 template_env = Environment(
-    loader=FileSystemLoader(pkg_resources.resource_filename(__package__, "templates")),
+    loader=FileSystemLoader(templates_path),
     autoescape=False,
     undefined=StrictUndefined,
 )
-# print(template_env.list_templates())
 
 
 class Schematic(UserDict):
@@ -131,8 +132,9 @@ def get_asks(questions, base_env):
 
 
 def schematic_reader_from_path(schematic_path, output_path, base_env):
-    with open(schematic_path, "r") as file:
-        root = Schematic(json.loads(file.read()))
+    with ir.as_file(pathlib.Path(schematic_path).absolute())  as file_path:
+        with open(file_path, "r") as file:
+            root = Schematic(json.loads(file.read()))
     os.makedirs(output_path, exist_ok=True)
     dispatch(Schematic(root), base_env, output_path)
 
@@ -140,12 +142,15 @@ def schematic_reader_from_path(schematic_path, output_path, base_env):
 def register_known_schematics(path="") -> OrderedDict:
     schematic_list = OrderedDict()
     if not path:
-        path = pkg_resources.resource_filename(__package__, "schematic")
-    #print(path)
-    for entry in sorted(glob(os.path.join(path, "*.json"), recursive=True)):
-        with open(entry, "r") as file:
-            name = json.load(file)["schematic_name"]
-        schematic_list[name] = entry
+        path = ir.files(__package__).joinpath("schematic")
+    else:
+        path = pathlib.PosixPath(path)
+
+    for entry in sorted(filter(lambda _path: _path.match("*.json"), path.iterdir())):
+        with ir.as_file(entry) as file_path:
+            with open(file_path, "r") as file:
+                name = json.load(file)["schematic_name"]
+            schematic_list[name] = entry
     return schematic_list
 
 

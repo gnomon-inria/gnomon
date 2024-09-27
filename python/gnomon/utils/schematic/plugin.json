@@ -41,7 +41,7 @@
       "name": "src",
       "tree": [
         {
-          "name": "plugin_{{package_name}}",
+          "name": "{{package_name.replace('-', '_')}}",
           "python_package": true,
           "tree": [
             {
