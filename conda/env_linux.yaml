@@ -22,7 +22,7 @@ dependencies:
     - dtk-plugins-imaging
     - python =3.9
     - ipython
-    - numpy
+    - numpy<2
     - scipy != 1.8.1
     - swig >=4.1
     - pymongo
