@@ -43,5 +43,6 @@ src/gnomonOmero/gnomonOmeroConfig.h
 *.vscode
 
 ######################################################################
-### .gitignore ends here
+
 !/python/gnomon/utils/gnomonPlugin.py
+doc/plugins/packages/

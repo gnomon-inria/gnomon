@@ -12,7 +12,7 @@ from packaging.version import parse as parse_version
 from conda.models.match_spec import MatchSpec, VersionSpec
 
 
-CONDA_EXE = "mamba" if pathlib.Path(os.getenv("CONDA_EXE")).with_name("mamba").exists() else "conda"
+CONDA_EXE = pathlib.Path(os.getenv("CONDA_EXE")).with_name("mamba") if pathlib.Path(os.getenv("CONDA_EXE")).with_name("mamba").exists() else pathlib.Path(os.getenv("CONDA_EXE"))
 INSTALL_CHANNELS = ["-c", "gnomon", "-c", "mosaic", "-c", "conda-forge", "-c", "dtk-forge6", "-c", "morpheme"]
 
 
@@ -53,7 +53,7 @@ def installed_packages():
     completed_process = subprocess.run(
         [CONDA_EXE, "list", "gnomon", "--json"],
         capture_output=True,
-        encoding="utf-8"
+        encoding="utf-8", executable=CONDA_EXE
     )
     out = json.loads(completed_process.stdout)
     return [(package["name"], package["version"], package["build_string"]) for package in out]
@@ -61,7 +61,7 @@ def installed_packages():
 
 def update(packages: list[str]):
     if packages:
-        subprocess.run([CONDA_EXE, "update"] + packages + INSTALL_CHANNELS)
+        subprocess.run([CONDA_EXE, "update"] + packages + INSTALL_CHANNELS, executable=CONDA_EXE)
     else:
         print("Looking for installed gnomon packages")
         packages = list(list(zip(*installed_packages()))[0])
@@ -73,14 +73,14 @@ def update(packages: list[str]):
             package_name.replace("-", "_") if package_name.startswith("gnomon-package-") else package_name
             for package_name in packages
         ]
-        subprocess.run([CONDA_EXE, "update"] + packages + INSTALL_CHANNELS)
+        subprocess.run([CONDA_EXE, "update"] + packages + INSTALL_CHANNELS, executable=CONDA_EXE)
 
 
 def available_packages():
     completed_process = subprocess.run(
         ["conda", "search", "-c", "gnomon", "--override-channels", "--json", "gnomon_package*"],
         capture_output=True,
-        encoding="utf-8"
+        encoding="utf-8", executable=CONDA_EXE
     )
     out = json.loads(completed_process.stdout)
 
@@ -235,5 +235,5 @@ def install_package(packages: list[str]):
         package_name.replace("-", "_") if package_name.startswith("gnomon-package-") else package_name
         for package_name in packages
     ]
-    subprocess.run([CONDA_EXE, "install"] + packages + INSTALL_CHANNELS)
+    subprocess.run([CONDA_EXE, "install"] + packages + INSTALL_CHANNELS, executable=CONDA_EXE)
 

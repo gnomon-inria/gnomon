@@ -41,6 +41,7 @@ dependencies:
     - importlib_metadata
     - pyvista
     - conda
+    - requests
     - pip
     - pip:
         - morphonet

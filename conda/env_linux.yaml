@@ -73,6 +73,7 @@ dependencies:
     - qtpy >=2.0
     - pyvista
     - conda
+    - requests
     - pip
     - pip:
         - morphonet
