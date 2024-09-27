@@ -69,6 +69,10 @@
       "template": "plugins/pyproject.toml"
     },
     {
+      "name": "setup.py",
+      "template": "plugins/setup.py"
+    },
+    {
       "name": "README.md",
       "template": "plugins/README.md"
     }
