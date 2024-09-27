@@ -1,5 +1,9 @@
 # ChangeLog
 
+## version 1.0.2 - 2024-09-27
+* Fixed package generation template
+* Fixed issues with installation
+
 ## version 1.0.1 - 2024-05-31
 * Improved `gnomon-utils package search`
 * Fixed pipeline reloading in cli `gnomon-utils run`

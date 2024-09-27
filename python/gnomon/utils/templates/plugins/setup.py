@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-
 from setuptools import setup, find_packages
 
 short_descr = "{{short_descr}}"
@@ -10,16 +6,14 @@ readme = open("README.md")
 # find packages
 pkgs = find_packages('src')
 
-
-
 setup_kwds = dict(
-    name='plugin_{{package_name}}',
+    name='{{package_name}}',
     version="0.1.0",
     description=short_descr,
     long_description=readme,  
     author="{{author.name}}",
     author_email="{{author.mail}}",
-    url='',
+    url='{{url}}',
     license='{{license}}',
     zip_safe=False,
 
@@ -37,12 +31,11 @@ setup_kwds = dict(
     ],
     # declare package plugins
     entry_points={
-        # "plugin-group": ["plugin-module = package_name.import.path.plugin-module"]
+        # "plugin_group": ["plugin_module = package_name.import.path.plugin_module"]
     },
     keywords='',
 
     test_suite='nose.collector',
 )
-
 
 setup(**setup_kwds)
