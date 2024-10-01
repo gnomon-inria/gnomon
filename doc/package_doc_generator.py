@@ -79,7 +79,7 @@ def format_form_to_badge(form_name, outline=False):
         parts = [stripped_name[start:finish] for start, finish in zip(indices[:-1], indices[1:])]
         name = stripped_name
         link = "../../user_guide/forms/{}.html".format("_".join(map(lambda s:s.lower(), parts)))
-        print(f"Unknown form: {form_name}, guessing name: {name} and link: {link}")
+        print(f"Unknown form: {form_name}, guessing name: {name} and link: {link}", flush=True)
     if outline:
         return "{bdg-link-success-line}`" + f"{name} <{link}>`"
     else:
@@ -201,9 +201,9 @@ def has_conda_package_been_updated(install_infos: dict, old_specs: tuple[str, st
             old_timestamp = package["timestamp"]
     for package in package_list:
         if package["name"] == _name and parse_version(package["version"]) >= parse_version(_version) and package["timestamp"] > old_timestamp:
-            print("new version or build available")
+            print("new version or build available", flush=True)
             return True
-    print("up to date")
+    print("up to date", flush=True)
     return False
 
 
@@ -229,7 +229,7 @@ def process_package(package_name, infos):
     # 1 - clone base env
     env_name = f"{package_name}-doc-{secrets.token_hex(5)}"
     command = [CONDA_EXE.stem, "create", "--name", env_name, "--clone", BASE_GNOMON_ENV]
-    print("\n1 - ", " ".join(command))
+    print("\n1 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=False,
@@ -259,8 +259,15 @@ def process_package(package_name, infos):
         encoding="utf-8", executable=CONDA_EXE
     )
     # 3 - parse package
+    command = [CONDA_EXE.stem, "run", "-n", env_name, "python", "-c", "\"import os;print(os.getenv('CONDA_PREFIX'))\""]
+    print("\n3 - ", " ".join(command), flush=True)
+    completed_process = subprocess.run(
+        command,
+        capture_output=False,
+        encoding="utf-8", executable=CONDA_EXE
+    )
     command = [CONDA_EXE.stem, "run", "-n", env_name, "python", "package_doc_generator.py", "build", install_info["package_name"]]
-    print("\n3 - ", " ".join(command))
+    print("\n3 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=False,
@@ -270,7 +277,7 @@ def process_package(package_name, infos):
 
     # 4 - get build marker (dist_name)
     command = [CONDA_EXE.stem, "list", "-n", env_name, install_info["package_name"], "--json"]
-    print("\n4 - ", " ".join(command))
+    print("\n4 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=True,
@@ -283,14 +290,14 @@ def process_package(package_name, infos):
 
     # 5 - remove env
     command = [CONDA_EXE.stem, "env", "remove", "-n", env_name]
-    print("\n5 - ", " ".join(command))
+    print("\n5 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=False,
         encoding="utf-8", executable=CONDA_EXE
     )
     print("done - ", install_name, _version, _build)
-    print("======================================")
+    print("======================================", flush=True)
     return install_name, _version, _build
 
 def main(args: argparse.Namespace):
@@ -302,7 +309,7 @@ def main(args: argparse.Namespace):
         file_name, _version, _build = infos
         shutil.copy(DOC_ARCHIVE.joinpath(f"{file_name}.md"), f"plugins/packages/{file_name}.md")
     for package_name, infos in to_process.items():
-        print(f"\n\n === Processing {package_name} ===\n\n")
+        print(f"\n\n === Processing {package_name} ===\n\n", flush=True)
         install_name, _version, _build = process_package(package_name, infos)
         history.append(f"{package_name} {install_name} {_version} {_build}\n")
     with open(HISTORY_FILE, "w") as f:
