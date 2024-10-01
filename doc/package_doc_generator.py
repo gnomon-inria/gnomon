@@ -1,4 +1,5 @@
 import argparse
+import glob
 import inspect
 import json
 import os
@@ -14,7 +15,8 @@ import gnomon.core as gc
 import gnomon.visualization as gv
 import jinja2
 import requests
-from importlib_metadata import entry_points, metadata, version
+from importlib_metadata import entry_points, metadata, version, EntryPoint
+from importlib.resources import files, as_file
 from packaging.version import parse as parse_version
 
 BASE_GNOMON_ENV = "gnomon-doc"
@@ -85,6 +87,19 @@ def format_form_to_badge(form_name, outline=False):
     else:
         return "{bdg-link-success}`" + f"{name} <{link}>`"
 
+def get_visualization_image(ep: EntryPoint) -> str:
+    submodule_name = ".".join(ep.module.split(".")[:-1])
+    submodule_files = files(submodule_name)
+    image_name = f"{ep.name}.png"
+    if submodule_files and submodule_files.joinpath(image_name).is_file():
+        with as_file(submodule_files.joinpath(image_name)) as path:
+            shutil.copy(path, DOC_ARCHIVE.joinpath(ep.dist.name).joinpath(image_name))
+        return image_name
+    else:
+        return ""
+
+
+
 
 def parse_plugin_package(package_name: str) -> dict:
     """Parses a plugin package and returns the name, description and plugins of the package"""
@@ -127,10 +142,11 @@ def parse_plugin_package(package_name: str) -> dict:
                     continue
                 plugin = getattr(module, ep.name)
                 inputs, _ = find_plugin_inputs_outputs(plugin)
+                image = get_visualization_image(ep)
                 out["visu"][ep.name] = {
                     "name": ep.name,
                     "form": "<br/>".join(map(format_form_to_badge, inputs)),
-                    "image": "",
+                    "image": f"![](../../_static/plugins/packages/{package_name}/{image})" if image else "",
                 }
 
     for abstract_algo in algo_interfaces:
@@ -242,7 +258,7 @@ def process_package(package_name, infos):
 
     # 2 - install package
     channels = reduce(lambda x, y: x + y, [["-c", channel] for channel in install_info["channels"]])
-    command = [CONDA_EXE.stem, "install", "-C", "-y", "-n", env_name] + channels + [install_info["package_name"]]
+    command = [CONDA_EXE.stem, "install", "-y", "-n", env_name] + channels + [install_info["package_name"]]
     print("\n2 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
@@ -322,6 +338,12 @@ def main(args: argparse.Namespace):
             package_list[package_name]["summary"] = f.read()
     with open(HISTORY_FILE, "w") as f:
         f.writelines(history)
+    for package_name, infos in package_list.items():
+        install_name = infos["install"]["package_name"]
+        _static_dir = pathlib.PosixPath("_static/plugins/packages").joinpath(install_name)
+        _static_dir.mkdir(exist_ok=True, parents=True)
+        for file_path in glob.glob(str(DOC_ARCHIVE.joinpath(install_name).joinpath("*.png"))):
+            shutil.copy(file_path, _static_dir.joinpath(pathlib.Path(file_path).name))
     generate_index(package_list)
 
 
