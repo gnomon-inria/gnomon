@@ -1,0 +1,36 @@
+# Plugins
+
+Plugins
+are the meat of Gnomon. 
+This is where the different forms[{fas}`book-open;sd-text-primary fa-2xs`](form-definition), 
+visualization[{fas}`book-open;sd-text-primary fa-2xs`](visualization-definition) 
+and algorithms[{fas}`book-open;sd-text-primary fa-2xs`](algorithm-definition) 
+are implemented.
+
+## Available packages
+
+:::{list-table}
+:widths: 15 30 5
+:header-rows: 1
+
+*   - Package
+    - Description
+    - 
+{% for package, package_info in packages.items() -%}
+*   - [{{package}}](packages/{{package_info.install.package_name}})
+    - {{package_info.summary}}
+    - [{fab}`gitlab`]({{package_info.source}})
+{% endfor %}
+:::
+
+## Making a plugin package
+
+
+:::{toctree}
+:maxdepth: 1
+:hidden:
+
+{% for package, package_info in packages.items() -%} 
+packages/{{package_info.install.package_name}}
+{% endfor %}
+:::

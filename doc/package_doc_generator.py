@@ -94,6 +94,7 @@ def parse_plugin_package(package_name: str) -> dict:
     out = OrderedDict(
         {
             "name": package_name,
+            "summary": metadata(package_name).get("Summary", "").strip(),
             "description": match.group(2),
             "version": version(package_name),
             "forms": OrderedDict(),
@@ -164,8 +165,11 @@ def generate_template(args: argparse.Namespace):
     pathlib.PosixPath("plugins/packages").mkdir(exist_ok=True)
     with open(f"plugins/packages/{package_name}.md", "w") as f:
         f.write(template.render(template_var))
-    with open(DOC_ARCHIVE.joinpath(f"{package_name}.md"), "w") as f:
+    DOC_ARCHIVE.joinpath(package_name).mkdir(exist_ok=True)
+    with open(DOC_ARCHIVE.joinpath(package_name).joinpath(f"{package_name}.md"), "w") as f:
         f.write(template.render(template_var))
+    with open(DOC_ARCHIVE.joinpath(package_name).joinpath(f"summary.txt"), "w") as f:
+        f.write(template_var["summary"])
 
 def get_package_list() ->dict[str, dict]:
     package_list_address = "https://gitlab.com/gnomon-inria/gnomon-package-list/-/raw/main/package_list.json?ref_type=heads"
@@ -245,27 +249,15 @@ def process_package(package_name, infos):
         capture_output=False,
         encoding="utf-8", executable=CONDA_EXE
     )
-    # TODO: remove when install fix for numpy is done
-    command = [CONDA_EXE.stem, "run", "-n", env_name, "pip", "uninstall", "numpy", "-y"]
-    completed_process = subprocess.run(
-        command,
-        capture_output=False,
-        encoding="utf-8", executable=CONDA_EXE
-    )
-    command = [CONDA_EXE.stem, "install", "-C", "-y", "--force-reinstall", "-n", env_name] + channels + ['"numpy<2"']
-    completed_process = subprocess.run(
-        command,
-        capture_output=False,
-        encoding="utf-8", executable=CONDA_EXE
-    )
     # 3 - parse package
-    command = [CONDA_EXE.stem, "run", "-n", env_name, "python", "-c", "\"import os;print(os.getenv('CONDA_PREFIX'), flush=True)\""]
+    command = [CONDA_EXE.stem, "run", "-n", env_name, "python", "-c", "\"import os;print(os.getenv('CONDA_PREFIX'))\""]
     print("\n3 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
-        capture_output=False,
+        capture_output=True,
         encoding="utf-8", executable=CONDA_EXE
     )
+    print(completed_process.stdout, flush=True)
     command = [CONDA_EXE.stem, "run", "-n", env_name, "python", "package_doc_generator.py", "build", install_info["package_name"]]
     print("\n3 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
@@ -299,20 +291,38 @@ def process_package(package_name, infos):
     print("======================================", flush=True)
     return install_name, _version, _build
 
+def generate_index(package_dict):
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader("./templates"),
+        autoescape=jinja2.select_autoescape()
+    )
+    template = env.get_template("index.md.jinja")
+    with open(f"plugins/index.md", "w") as f:
+        f.write(template.render({"packages": package_dict}))
+
 def main(args: argparse.Namespace):
     DOC_ARCHIVE.mkdir(exist_ok=True)
-
-    to_process, others = get_packages_to_process()
+    package_list = get_package_list()
+    if args.redo:
+        to_process = package_list
+        others = {}
+    else:
+        to_process, others = get_packages_to_process()
     history = [f"{package_name} {' '.join(spec)}\n" for package_name, spec in others.items()]
     for package_name, infos in others.items():
         file_name, _version, _build = infos
-        shutil.copy(DOC_ARCHIVE.joinpath(f"{file_name}.md"), f"plugins/packages/{file_name}.md")
+        shutil.copy(DOC_ARCHIVE.joinpath(file_name).joinpath(f"{file_name}.md"), f"plugins/packages/{file_name}.md")
+        with open(DOC_ARCHIVE.joinpath(file_name).joinpath("summary.txt")) as f:
+            package_list[package_name]["summary"] = f.read()
     for package_name, infos in to_process.items():
         print(f"\n\n === Processing {package_name} ===\n\n", flush=True)
         install_name, _version, _build = process_package(package_name, infos)
         history.append(f"{package_name} {install_name} {_version} {_build}\n")
+        with open(DOC_ARCHIVE.joinpath(install_name).joinpath("summary.txt")) as f:
+            package_list[package_name]["summary"] = f.read()
     with open(HISTORY_FILE, "w") as f:
         f.writelines(history)
+    generate_index(package_list)
 
 
 if __name__ == "__main__":
@@ -320,6 +330,8 @@ if __name__ == "__main__":
     subparsers = arg_parser.add_subparsers(required=True)
     all = subparsers.add_parser("all", description="Create docs for all packages listed at https://gitlab.com/gnomon-inria/gnomon-package-list/-/raw/main/package_list.json?ref_type=heads")
     all.set_defaults(func=main)
+    all.add_argument("--redo",  action="store_true", required=False, default=False,
+                     help="Force redo of the doc page of all packages")
     build = subparsers.add_parser("build", description="Build docs for one gnomon plugin package")
     build.set_defaults(func=generate_template)
     build.add_argument("package_name")

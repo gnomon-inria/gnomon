@@ -220,7 +220,7 @@ plugin_pages:
     - mamba create -y -n gnomon-doc -c conda-forge -c gnomon -c dtk-forge6 -c morpheme -c mosaic gnomon
     - conda activate gnomon-doc
     - cd doc
-    - python3 package_doc_generator.py all
+    - python3 package_doc_generator.py all --redo # remove --redo to only generate doc for packages that have been updated
     - conda deactivate
   extends: .template_retry
   artifacts:
