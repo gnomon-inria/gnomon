@@ -239,7 +239,7 @@ def process_package(package_name, infos):
     # 2 - install package
     channels = reduce(lambda x, y: x + y, [["-c", channel] for channel in install_info["channels"]])
     command = [CONDA_EXE.stem, "install", "-C", "-y", "-n", env_name] + channels + [install_info["package_name"]]
-    print("\n2 - ", " ".join(command))
+    print("\n2 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=False,
@@ -259,7 +259,7 @@ def process_package(package_name, infos):
         encoding="utf-8", executable=CONDA_EXE
     )
     # 3 - parse package
-    command = [CONDA_EXE.stem, "run", "-n", env_name, "python", "-c", "\"import os;print(os.getenv('CONDA_PREFIX'))\""]
+    command = [CONDA_EXE.stem, "run", "-n", env_name, "python", "-c", "\"import os;print(os.getenv('CONDA_PREFIX'), flush=True)\""]
     print("\n3 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
@@ -273,7 +273,6 @@ def process_package(package_name, infos):
         capture_output=False,
         encoding="utf-8", executable=CONDA_EXE
     )
-    template_var = parse_plugin_package(install_info["package_name"])
 
     # 4 - get build marker (dist_name)
     command = [CONDA_EXE.stem, "list", "-n", env_name, install_info["package_name"], "--json"]
