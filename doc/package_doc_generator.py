@@ -15,7 +15,7 @@ import gnomon.visualization as gv
 import jinja2
 import requests
 from importlib_metadata import entry_points, metadata, version
-from pkg_resources import parse_version
+from packaging.version import parse as parse_version
 
 BASE_GNOMON_ENV = "gnomon-doc"
 DOC_ARCHIVE = pathlib.Path.home().joinpath("gnomon_doc_archive")
@@ -161,6 +161,7 @@ def generate_template(args: argparse.Namespace):
         autoescape=jinja2.select_autoescape()
     )
     template = env.get_template("package_doc_template.md.jinja")
+    pathlib.PosixPath("plugins/packages").mkdir(exist_ok=True)
     with open(f"plugins/packages/{package_name}.md", "w") as f:
         f.write(template.render(template_var))
     with open(DOC_ARCHIVE.joinpath(f"{package_name}.md"), "w") as f:
