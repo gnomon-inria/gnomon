@@ -1,5 +1,4 @@
 import argparse
-import glob
 import inspect
 import json
 import pathlib
@@ -14,7 +13,6 @@ import gnomon.core as gc
 import gnomon.visualization as gv
 import jinja2
 import requests
-from docutils.nodes import description
 from gnomon.utils.package_utils import CONDA_EXE
 from importlib_metadata import entry_points, metadata, version
 from pkg_resources import parse_version
