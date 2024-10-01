@@ -217,9 +217,11 @@ plugin_pages:
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh"
     - mamba env remove -n gnomon-doc
-    - mamba create -n gnomon-doc -c conda-forge -c gnomon -c dtk-forge6 -c morpheme -c mosaic gnomon
+    - mamba create -y -n gnomon-doc -c conda-forge -c gnomon -c dtk-forge6 -c morpheme -c mosaic gnomon
+    - conda activate gnomon-doc
     - cd doc
-    - python package_doc_generator.py all
+    - python3 package_doc_generator.py all
+    - conda deactivate
   extends: .template_retry
   artifacts:
     paths:
@@ -233,6 +235,7 @@ pages:
   stage: deploy
   tags:
     - linux
+  needs: [plugin_pages]
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh" 
     - mamba env update -f conda/env_linux.yaml
