@@ -210,10 +210,32 @@ anaconda_linux_develop :
     - develop
 
 
+plugin_pages:
+  stage: deploy
+  tags:
+    - linux
+  script:
+    - . "/builds/miniconda3/etc/profile.d/conda.sh"
+    - mamba env remove -n gnomon-doc
+    - mamba create -y -n gnomon-doc -c conda-forge -c gnomon -c dtk-forge6 -c morpheme -c mosaic gnomon
+    - conda activate gnomon-doc
+    - cd doc
+    - python3 package_doc_generator.py all --redo # remove --redo to only generate doc for packages that have been updated
+    - conda deactivate
+  extends: .template_retry
+  artifacts:
+    paths:
+      - doc/plugins/packages
+  only:
+    - master
+    - develop
+    - doc
+
 pages:
   stage: deploy
   tags:
     - linux
+  needs: [plugin_pages]
   script:
     - . "/builds/miniconda3/etc/profile.d/conda.sh" 
     - mamba env update -f conda/env_linux.yaml
@@ -232,6 +254,8 @@ pages:
     - mkdir -p ../public/staging
     - cp -R build/html/* ../public/staging
   extends: .template_retry
+  dependencies:
+    - plugin_pages
   artifacts:
     paths:
       - public

@@ -32,4 +32,5 @@ packages/gnomon_package_imageenhancement
 packages/gnomon_package_data
 packages/gnomon_package_tissueimagemesh
 packages/gnomon_package_tissuemesh
+packages/gnomon_package_treelsystem
 :::

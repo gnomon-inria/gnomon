@@ -1,7 +1,10 @@
 import argparse
+import glob
 import inspect
 import json
+import os
 import pathlib
+import re
 import secrets
 import shutil
 import subprocess
@@ -12,13 +15,16 @@ import gnomon.core as gc
 import gnomon.visualization as gv
 import jinja2
 import requests
-from gnomon.utils.package_utils import CONDA_EXE
-from importlib_metadata import entry_points, metadata, version
-from pkg_resources import parse_version
+from importlib_metadata import entry_points, metadata, version, EntryPoint
+from importlib.resources import files, as_file
+from packaging.version import parse as parse_version
 
 BASE_GNOMON_ENV = "gnomon-doc"
 DOC_ARCHIVE = pathlib.Path.home().joinpath("gnomon_doc_archive")
 HISTORY_FILE = DOC_ARCHIVE.joinpath("gnomon_package_doc_history.txt")
+
+CONDA_EXE = pathlib.Path(os.getenv("CONDA_EXE")).with_name("mamba") if pathlib.Path(os.getenv("CONDA_EXE")).with_name("mamba").exists() else pathlib.Path(os.getenv("CONDA_EXE"))
+
 
 form_names = [
     name for name, c in gc.__dict__.items() if isinstance(c, type) and issubclass(c, gc.gnomonAbstractForm) and c is not gc.gnomonAbstractForm
@@ -55,17 +61,60 @@ def group_name(interface_name: str) -> str:
 def form_name_from_data(data_interface_name: str) -> str:
     return "gnomon" + data_interface_name.removeprefix("gnomonAbstract").removesuffix("Data")
 
+
+FORM_BADGE_TABLE = {
+    "gnomonImage": ("Image", "../../user_guide/forms/image.html"),
+    "gnomonCellImage": ("CellImage", "../../user_guide/forms/cell_image.html"),
+    "gnomonDataDict": ("DataDict", "../../user_guide/forms/data_dict.html"),
+    "gnomonDataFrame": ("DataFrame", "../../user_guide/forms/dataframe.html"),
+    "gnomonLString": ("LString", "../../user_guide/forms/lstring.html"),
+    "gnomonMesh": ("Mesh", "../../user_guide/forms/mesh.html"),
+    "gnomonPointCloud": ("PointCloud", "../../user_guide/forms/point_cloud.html"),
+}
+
+def format_form_to_badge(form_name, outline=False):
+    if form_name in FORM_BADGE_TABLE:
+        name, link = FORM_BADGE_TABLE[form_name]
+    else:
+        stripped_name: str = form_name.removeprefix("gnomon")
+        indices = [i for i, c in enumerate(stripped_name) if c.isupper()] + [len(stripped_name)]
+        parts = [stripped_name[start:finish] for start, finish in zip(indices[:-1], indices[1:])]
+        name = stripped_name
+        link = "../../user_guide/forms/{}.html".format("_".join(map(lambda s:s.lower(), parts)))
+        print(f"Unknown form: {form_name}, guessing name: {name} and link: {link}", flush=True)
+    if outline:
+        return "{bdg-link-success-line}`" + f"{name} <{link}>`"
+    else:
+        return "{bdg-link-success}`" + f"{name} <{link}>`"
+
+def get_visualization_image(ep: EntryPoint) -> str:
+    submodule_name = ".".join(ep.module.split(".")[:-1])
+    submodule_files = files(submodule_name)
+    image_name = f"{ep.name}.png"
+    if submodule_files and submodule_files.joinpath(image_name).is_file():
+        with as_file(submodule_files.joinpath(image_name)) as path:
+            shutil.copy(path, DOC_ARCHIVE.joinpath(ep.dist.name).joinpath(image_name))
+        return image_name
+    else:
+        return ""
+
+
+
+
 def parse_plugin_package(package_name: str) -> dict:
     """Parses a plugin package and returns the name, description and plugins of the package"""
     eps = entry_points()
+    _description: str = metadata(package_name).get("description", "").strip()
+    match = re.match("(# [\S ]*)[\s]*([\S\s]*)", _description)
     out = OrderedDict(
         {
             "name": package_name,
-            "description": metadata(package_name).get("description", ""),
+            "summary": metadata(package_name).get("Summary", "").strip(),
+            "description": match.group(2),
             "version": version(package_name),
-            "forms": {},
-            "visu": {},
-            "algorithms": {},
+            "forms": OrderedDict(),
+            "visu": OrderedDict(),
+            "algorithms": OrderedDict(),
         }
     )
     for abstract_form_data in forms_interfaces:
@@ -79,7 +128,7 @@ def parse_plugin_package(package_name: str) -> dict:
                 plugin = getattr(module, ep.name)
                 out["forms"][ep.name] = {
                     "name": ep.name,
-                    "form": form_name_from_data(abstract_form_data.__name__),
+                    "form": format_form_to_badge(form_name_from_data(abstract_form_data.__name__)),
                     "description": inspect.cleandoc(plugin.__doc__) if plugin.__doc__ else "",
                 }
 
@@ -93,10 +142,11 @@ def parse_plugin_package(package_name: str) -> dict:
                     continue
                 plugin = getattr(module, ep.name)
                 inputs, _ = find_plugin_inputs_outputs(plugin)
+                image = get_visualization_image(ep)
                 out["visu"][ep.name] = {
                     "name": ep.name,
-                    "form": inputs,
-                    "image": "image",
+                    "form": "<br/>".join(map(format_form_to_badge, inputs)),
+                    "image": f"![](../../_static/plugins/packages/{package_name}/{image})" if image else "",
                 }
 
     for abstract_algo in algo_interfaces:
@@ -111,8 +161,8 @@ def parse_plugin_package(package_name: str) -> dict:
                 inputs, outputs = find_plugin_inputs_outputs(plugin)
                 out["algorithms"][ep.name] = {
                     "name": ep.name,
-                    "inputs": inputs,
-                    "outputs": outputs,
+                    "inputs": "<br/>".join(map(format_form_to_badge, inputs)),
+                    "outputs": "<br/>".join(map(format_form_to_badge, outputs)),
                     "description": inspect.cleandoc(plugin.__doc__) if plugin.__doc__ else "",
                 }
 
@@ -124,16 +174,20 @@ def generate_template(args: argparse.Namespace):
 
     # 5 - render template
     env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader("."),
+        loader=jinja2.FileSystemLoader("./templates"),
         autoescape=jinja2.select_autoescape()
     )
     template = env.get_template("package_doc_template.md.jinja")
+    pathlib.PosixPath("plugins/packages").mkdir(exist_ok=True)
     with open(f"plugins/packages/{package_name}.md", "w") as f:
         f.write(template.render(template_var))
-    with open(DOC_ARCHIVE.joinpath(f"{package_name}.md"), "w") as f:
+    DOC_ARCHIVE.joinpath(package_name).mkdir(exist_ok=True)
+    with open(DOC_ARCHIVE.joinpath(package_name).joinpath(f"{package_name}.md"), "w") as f:
         f.write(template.render(template_var))
+    with open(DOC_ARCHIVE.joinpath(package_name).joinpath(f"summary.txt"), "w") as f:
+        f.write(template_var["summary"])
 
-def get_package_list():
+def get_package_list() ->dict[str, dict]:
     package_list_address = "https://gitlab.com/gnomon-inria/gnomon-package-list/-/raw/main/package_list.json?ref_type=heads"
     r = requests.get(package_list_address)
     return r.json()
@@ -167,9 +221,9 @@ def has_conda_package_been_updated(install_infos: dict, old_specs: tuple[str, st
             old_timestamp = package["timestamp"]
     for package in package_list:
         if package["name"] == _name and parse_version(package["version"]) >= parse_version(_version) and package["timestamp"] > old_timestamp:
-            print("new version or build available")
+            print("new version or build available", flush=True)
             return True
-    print("up to date")
+    print("up to date", flush=True)
     return False
 
 
@@ -189,11 +243,13 @@ def get_packages_to_process():
     return to_process, others
 
 
-def process_package(package_name, install_info):
+def process_package(package_name, infos):
+    source = infos["source"]
+    install_info = infos["install"]
     # 1 - clone base env
     env_name = f"{package_name}-doc-{secrets.token_hex(5)}"
     command = [CONDA_EXE.stem, "create", "--name", env_name, "--clone", BASE_GNOMON_ENV]
-    print("\n1 - ", " ".join(command))
+    print("\n1 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=False,
@@ -202,39 +258,33 @@ def process_package(package_name, install_info):
 
     # 2 - install package
     channels = reduce(lambda x, y: x + y, [["-c", channel] for channel in install_info["channels"]])
-    command = [CONDA_EXE.stem, "install", "-C", "-y", "-n", env_name] + channels + [install_info["package_name"]]
-    print("\n2 - ", " ".join(command))
-    completed_process = subprocess.run(
-        command,
-        capture_output=False,
-        encoding="utf-8", executable=CONDA_EXE
-    )
-    # TODO: remove when install fix for numpy is done
-    command = [CONDA_EXE.stem, "run", "-n", env_name, "pip", "uninstall", "numpy", "-y"]
-    completed_process = subprocess.run(
-        command,
-        capture_output=False,
-        encoding="utf-8", executable=CONDA_EXE
-    )
-    command = [CONDA_EXE.stem, "install", "-C", "-y", "--force-reinstall", "-n", env_name] + channels + ['"numpy<2"']
+    command = [CONDA_EXE.stem, "install", "-y", "-n", env_name] + channels + [install_info["package_name"]]
+    print("\n2 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=False,
         encoding="utf-8", executable=CONDA_EXE
     )
     # 3 - parse package
+    command = [CONDA_EXE.stem, "run", "-n", env_name, "python", "-c", "\"import os;print(os.getenv('CONDA_PREFIX'))\""]
+    print("\n3 - ", " ".join(command), flush=True)
+    completed_process = subprocess.run(
+        command,
+        capture_output=True,
+        encoding="utf-8", executable=CONDA_EXE
+    )
+    print(completed_process.stdout, flush=True)
     command = [CONDA_EXE.stem, "run", "-n", env_name, "python", "package_doc_generator.py", "build", install_info["package_name"]]
-    print("\n3 - ", " ".join(command))
+    print("\n3 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=False,
         encoding="utf-8", executable=CONDA_EXE
     )
-    template_var = parse_plugin_package(install_info["package_name"])
 
     # 4 - get build marker (dist_name)
     command = [CONDA_EXE.stem, "list", "-n", env_name, install_info["package_name"], "--json"]
-    print("\n4 - ", " ".join(command))
+    print("\n4 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=True,
@@ -247,30 +297,54 @@ def process_package(package_name, install_info):
 
     # 5 - remove env
     command = [CONDA_EXE.stem, "env", "remove", "-n", env_name]
-    print("\n5 - ", " ".join(command))
+    print("\n5 - ", " ".join(command), flush=True)
     completed_process = subprocess.run(
         command,
         capture_output=False,
         encoding="utf-8", executable=CONDA_EXE
     )
     print("done - ", install_name, _version, _build)
-    print("======================================")
+    print("======================================", flush=True)
     return install_name, _version, _build
+
+def generate_index(package_dict):
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader("./templates"),
+        autoescape=jinja2.select_autoescape()
+    )
+    template = env.get_template("index.md.jinja")
+    with open(f"plugins/index.md", "w") as f:
+        f.write(template.render({"packages": package_dict}))
 
 def main(args: argparse.Namespace):
     DOC_ARCHIVE.mkdir(exist_ok=True)
-
-    to_process, others = get_packages_to_process()
+    package_list = get_package_list()
+    if args.redo:
+        to_process = package_list
+        others = {}
+    else:
+        to_process, others = get_packages_to_process()
     history = [f"{package_name} {' '.join(spec)}\n" for package_name, spec in others.items()]
     for package_name, infos in others.items():
         file_name, _version, _build = infos
-        shutil.copy(DOC_ARCHIVE.joinpath(f"{file_name}.md"), f"plugins/packages/{file_name}.md")
+        shutil.copy(DOC_ARCHIVE.joinpath(file_name).joinpath(f"{file_name}.md"), f"plugins/packages/{file_name}.md")
+        with open(DOC_ARCHIVE.joinpath(file_name).joinpath("summary.txt")) as f:
+            package_list[package_name]["summary"] = f.read()
     for package_name, infos in to_process.items():
-        print(f"\n\n === Processing {package_name} ===\n\n")
-        install_name, _version, _build = process_package(package_name, infos["install"])
+        print(f"\n\n === Processing {package_name} ===\n\n", flush=True)
+        install_name, _version, _build = process_package(package_name, infos)
         history.append(f"{package_name} {install_name} {_version} {_build}\n")
+        with open(DOC_ARCHIVE.joinpath(install_name).joinpath("summary.txt")) as f:
+            package_list[package_name]["summary"] = f.read()
     with open(HISTORY_FILE, "w") as f:
         f.writelines(history)
+    for package_name, infos in package_list.items():
+        install_name = infos["install"]["package_name"]
+        _static_dir = pathlib.PosixPath("_static/plugins/packages").joinpath(install_name)
+        _static_dir.mkdir(exist_ok=True, parents=True)
+        for file_path in glob.glob(str(DOC_ARCHIVE.joinpath(install_name).joinpath("*.png"))):
+            shutil.copy(file_path, _static_dir.joinpath(pathlib.Path(file_path).name))
+    generate_index(package_list)
 
 
 if __name__ == "__main__":
@@ -278,6 +352,8 @@ if __name__ == "__main__":
     subparsers = arg_parser.add_subparsers(required=True)
     all = subparsers.add_parser("all", description="Create docs for all packages listed at https://gitlab.com/gnomon-inria/gnomon-package-list/-/raw/main/package_list.json?ref_type=heads")
     all.set_defaults(func=main)
+    all.add_argument("--redo",  action="store_true", required=False, default=False,
+                     help="Force redo of the doc page of all packages")
     build = subparsers.add_parser("build", description="Build docs for one gnomon plugin package")
     build.set_defaults(func=generate_template)
     build.add_argument("package_name")
