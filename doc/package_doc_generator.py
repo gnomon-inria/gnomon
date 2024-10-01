@@ -1,6 +1,7 @@
 import argparse
 import inspect
 import json
+import os
 import pathlib
 import re
 import secrets
@@ -13,13 +14,15 @@ import gnomon.core as gc
 import gnomon.visualization as gv
 import jinja2
 import requests
-from gnomon.utils.package_utils import CONDA_EXE
 from importlib_metadata import entry_points, metadata, version
 from pkg_resources import parse_version
 
 BASE_GNOMON_ENV = "gnomon-doc"
 DOC_ARCHIVE = pathlib.Path.home().joinpath("gnomon_doc_archive")
 HISTORY_FILE = DOC_ARCHIVE.joinpath("gnomon_package_doc_history.txt")
+
+CONDA_EXE = pathlib.Path(os.getenv("CONDA_EXE")).with_name("mamba") if pathlib.Path(os.getenv("CONDA_EXE")).with_name("mamba").exists() else pathlib.Path(os.getenv("CONDA_EXE"))
+
 
 form_names = [
     name for name, c in gc.__dict__.items() if isinstance(c, type) and issubclass(c, gc.gnomonAbstractForm) and c is not gc.gnomonAbstractForm
