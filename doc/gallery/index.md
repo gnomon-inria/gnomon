@@ -4,6 +4,7 @@
 :maxdepth: 1
 :hidden:
 example_segmentation
+example_cell_tracking
 example1
 example2
 example_data
@@ -52,9 +53,9 @@ example_data
 </div>
 
 <div class="gallery-item">
-  <a href="example2.html">
-    <img src="../_static/thumbnail/example2_thumbnail.gif" alt="Exemple 2">
-    <div class="gallery-title">Utilisation Avancée</div>
+  <a href="example_cell_tracking.html">
+    <img src="../_static/thumbnail/example_cell_tracking.gif" alt="Image cell tracking">
+    <div class="gallery-title">Image cell tracking</div>
   </a>
 </div>
 
