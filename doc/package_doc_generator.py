@@ -1,7 +1,9 @@
 import argparse
+import glob
 import inspect
 import json
 import pathlib
+import re
 import secrets
 import shutil
 import subprocess
@@ -12,6 +14,7 @@ import gnomon.core as gc
 import gnomon.visualization as gv
 import jinja2
 import requests
+from docutils.nodes import description
 from gnomon.utils.package_utils import CONDA_EXE
 from importlib_metadata import entry_points, metadata, version
 from pkg_resources import parse_version
@@ -55,17 +58,46 @@ def group_name(interface_name: str) -> str:
 def form_name_from_data(data_interface_name: str) -> str:
     return "gnomon" + data_interface_name.removeprefix("gnomonAbstract").removesuffix("Data")
 
+
+FORM_BADGE_TABLE = {
+    "gnomonImage": ("Image", "../../user_guide/forms/image.html"),
+    "gnomonCellImage": ("CellImage", "../../user_guide/forms/cell_image.html"),
+    "gnomonDataDict": ("DataDict", "../../user_guide/forms/data_dict.html"),
+    "gnomonDataFrame": ("DataFrame", "../../user_guide/forms/dataframe.html"),
+    "gnomonLString": ("LString", "../../user_guide/forms/lstring.html"),
+    "gnomonMesh": ("Mesh", "../../user_guide/forms/mesh.html"),
+    "gnomonPointCloud": ("PointCloud", "../../user_guide/forms/point_cloud.html"),
+}
+
+def format_form_to_badge(form_name, outline=False):
+    if form_name in FORM_BADGE_TABLE:
+        name, link = FORM_BADGE_TABLE[form_name]
+    else:
+        stripped_name: str = form_name.removeprefix("gnomon")
+        indices = [i for i, c in enumerate(stripped_name) if c.isupper()] + [len(stripped_name)]
+        parts = [stripped_name[start:finish] for start, finish in zip(indices[:-1], indices[1:])]
+        name = stripped_name
+        link = "../../user_guide/forms/{}.html".format("_".join(map(lambda s:s.lower(), parts)))
+        print(f"Unknown form: {form_name}, guessing name: {name} and link: {link}")
+    if outline:
+        return "{bdg-link-success-line}`" + f"{name} <{link}>`"
+    else:
+        return "{bdg-link-success}`" + f"{name} <{link}>`"
+
+
 def parse_plugin_package(package_name: str) -> dict:
     """Parses a plugin package and returns the name, description and plugins of the package"""
     eps = entry_points()
+    _description: str = metadata(package_name).get("description", "").strip()
+    match = re.match("(# [\S ]*)[\s]*([\S\s]*)", _description)
     out = OrderedDict(
         {
             "name": package_name,
-            "description": metadata(package_name).get("description", ""),
+            "description": match.group(2),
             "version": version(package_name),
-            "forms": {},
-            "visu": {},
-            "algorithms": {},
+            "forms": OrderedDict(),
+            "visu": OrderedDict(),
+            "algorithms": OrderedDict(),
         }
     )
     for abstract_form_data in forms_interfaces:
@@ -79,7 +111,7 @@ def parse_plugin_package(package_name: str) -> dict:
                 plugin = getattr(module, ep.name)
                 out["forms"][ep.name] = {
                     "name": ep.name,
-                    "form": form_name_from_data(abstract_form_data.__name__),
+                    "form": format_form_to_badge(form_name_from_data(abstract_form_data.__name__)),
                     "description": inspect.cleandoc(plugin.__doc__) if plugin.__doc__ else "",
                 }
 
@@ -95,8 +127,8 @@ def parse_plugin_package(package_name: str) -> dict:
                 inputs, _ = find_plugin_inputs_outputs(plugin)
                 out["visu"][ep.name] = {
                     "name": ep.name,
-                    "form": inputs,
-                    "image": "image",
+                    "form": "<br/>".join(map(format_form_to_badge, inputs)),
+                    "image": "",
                 }
 
     for abstract_algo in algo_interfaces:
@@ -111,8 +143,8 @@ def parse_plugin_package(package_name: str) -> dict:
                 inputs, outputs = find_plugin_inputs_outputs(plugin)
                 out["algorithms"][ep.name] = {
                     "name": ep.name,
-                    "inputs": inputs,
-                    "outputs": outputs,
+                    "inputs": "<br/>".join(map(format_form_to_badge, inputs)),
+                    "outputs": "<br/>".join(map(format_form_to_badge, outputs)),
                     "description": inspect.cleandoc(plugin.__doc__) if plugin.__doc__ else "",
                 }
 
@@ -124,7 +156,7 @@ def generate_template(args: argparse.Namespace):
 
     # 5 - render template
     env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader("."),
+        loader=jinja2.FileSystemLoader("./templates"),
         autoescape=jinja2.select_autoescape()
     )
     template = env.get_template("package_doc_template.md.jinja")
@@ -133,7 +165,7 @@ def generate_template(args: argparse.Namespace):
     with open(DOC_ARCHIVE.joinpath(f"{package_name}.md"), "w") as f:
         f.write(template.render(template_var))
 
-def get_package_list():
+def get_package_list() ->dict[str, dict]:
     package_list_address = "https://gitlab.com/gnomon-inria/gnomon-package-list/-/raw/main/package_list.json?ref_type=heads"
     r = requests.get(package_list_address)
     return r.json()
@@ -189,7 +221,9 @@ def get_packages_to_process():
     return to_process, others
 
 
-def process_package(package_name, install_info):
+def process_package(package_name, infos):
+    source = infos["source"]
+    install_info = infos["install"]
     # 1 - clone base env
     env_name = f"{package_name}-doc-{secrets.token_hex(5)}"
     command = [CONDA_EXE.stem, "create", "--name", env_name, "--clone", BASE_GNOMON_ENV]
@@ -267,7 +301,7 @@ def main(args: argparse.Namespace):
         shutil.copy(DOC_ARCHIVE.joinpath(f"{file_name}.md"), f"plugins/packages/{file_name}.md")
     for package_name, infos in to_process.items():
         print(f"\n\n === Processing {package_name} ===\n\n")
-        install_name, _version, _build = process_package(package_name, infos["install"])
+        install_name, _version, _build = process_package(package_name, infos)
         history.append(f"{package_name} {install_name} {_version} {_build}\n")
     with open(HISTORY_FILE, "w") as f:
         f.writelines(history)

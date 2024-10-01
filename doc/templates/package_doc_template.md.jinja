@@ -1,5 +1,4 @@
 # {{name}}
-Version: {{version}}
 
 {{ description }}
 
@@ -33,7 +32,7 @@ Version: {{version}}
 
 *   - Name
     - Form
-    - Description
+    - 
 {% for plugin in visu.values() -%}
 *   - {{plugin.name}}
     - {{plugin.form}}
@@ -58,8 +57,11 @@ Version: {{version}}
 *   - {{plugin.name}}
     - {{plugin.inputs}}
     - {{plugin.outputs}}
-    - {{plugin.description.split("\n")[0]}}
+    - <small>{{plugin.description.split("\n")[0]}}<small/>
 {% endfor %}
 :::
 
 {%- endif %}
+
+<br/>
+<p align="right"><span style="color: #808080"><small>Package version: {{version}}<small/><span/><p/>
