@@ -23,7 +23,7 @@ You can find an example usecase for the Data Browsing Workspace in &nbsp;
 :::{grid-item}
 :columns: auto  
 :child-align: center
-```{button-link} ../tutorials/2_load_data.html
+```{button-link} ../tutorial/2_load_data.html
 :color: success
 :outline:
 2. Load a data file

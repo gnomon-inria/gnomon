@@ -1,6 +1,6 @@
 # Getting Started
 
-This section is here to help you make your first steps with the Gnomon platform. It provides guidelines on how to install it on your system, details of the general principles of the platform and basic step-by-step tutorials to get you started! 
+This section is here to help you make your first steps with the Gnomon platform. It provides guidelines on how to install it on your system, details of the general principles of the platform and basic step-by-step tutorial to get you started! 
 
 ## Installation
 
@@ -28,9 +28,9 @@ Gnomon relies of **Plugins**[{fas}`book-open;sd-text-primary fa-2xs`](plugin-def
 
 Gnomon is a software whose goal is to facilitate the creation of complex processing pipelines through an intuitive user interface. If you want to learn more about the principles guiding its conception, please read [this brief introduction](about).
 
-## Tutorials
+## Tutorial
 
-For detailed use cases giving a more complete view of what you can do with Gnomon, have a look at the [Tutorials](../user_guide/tutorials) section, or at the [Examples Gallery](../gallery/index).
+For detailed use cases giving a more complete view of what you can do with Gnomon, have a look at the [Tutorial](../user_guide/tutorial) section, or at the [Examples Gallery](../gallery/index).
 
 :::{toctree}
 :maxdepth: 1

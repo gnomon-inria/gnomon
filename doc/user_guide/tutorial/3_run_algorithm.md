@@ -1,4 +1,4 @@
-# 3. Designing a first Pipeline
+# 3. Run a first Algorithm
 
 Now that you have loaded your data, what you generally want to do next is to process it, using several consecutive computational steps. In Gnomon, you will achieve this by creating **Workspaces**[{fas}`book-open;sd-text-primary fa-2xs`](workspace-definition) that visually represent the execution of one of these steps.
 
@@ -90,3 +90,25 @@ Once it is computed, the *output* Form is displayed in the right View of the Wor
 
 ## 3.4 Save the resulting Form 
 
+At this stage, the output Form of the Algorithm only exists inside the current Workspace, and is not accessible to the rest of the application. This allows to re-run the Algorithm with different Parameter values until the result is satisfactory. This is generally the moment when you would like to export it to the World to *validate* the output of the Workspace, and possibly save the result on your disk.
+
+
+::::{admonition} Step 4
+:class: tutorial
+
+Click on the <span class="sd-bg-secondary sd-text-light sd-rounded-circle sd-badge sd-px-2"> {fas}`caret-up; fa-1x` </span> Export button in the top right corner of the output View where to export the segmented image to the World.  In the thumbnail that just appeared in the World, right click to display the menu, and click on the <span class="sd-outline-dark sd-text-dark sd-rounded-2 sd-badge"> Save </span> item to open a file dialog.
+
+The dialog shoul open in your project directory. Navigate to the `data/` folder, select the `p58-t1_imgFus_down_interp_2x.inr.gz` file and change the filename in the dialog into `p58-t1_imgSeg_down_interp_2x.tif`, then press on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> **SAVE** </span> button.
+
+:::{raw} html
+    <video width="93%" height="auto" controls muted>
+        <source
+            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            type="video/mp4" style="margin-left: 0px; margin-right: 0%"
+        >
+        Your browser does not support the video tag.  
+    </video>
+:::
+::::
+
+The World will write the Form you computed onto your disk, relying on a suitable **Writer**[{fas}`book-open;sd-text-primary fa-2xs`](writer-definition) to write the data in the format specified by the file *extension*. Congratulations! You have been able to save the result of your work to use it with other applications ...or in another Gnomon session! You can now move on to the next level to discover [**How to replay your pipeline on more data**](4_replay_pipeline).

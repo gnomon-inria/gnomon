@@ -16,8 +16,8 @@ Make your first steps in Gnomon by following the quick start tutorial.
 
 :::{grid-item-card}
 :class-header: sd-bg-light sd-font-weight-bold sd-text-center
-:link: tutorials.html
-Tutorials
+:link: tutorial.html
+Tutorial
 ^^^
 Learn how to perform basic tasks using Gnomon and discover its main features.
 :::
@@ -60,7 +60,7 @@ Short description for Gnomon concepts.
 :maxdepth: 1
 :hidden:
 
-tutorials
+tutorial
 concepts
 forms_index
 workspaces

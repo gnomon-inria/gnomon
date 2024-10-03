@@ -93,5 +93,20 @@ where the user is able to set [**Forms**](form-definition)
 as inputs through an input [**View**](view-definition),
 tune the values of the **Parameters** and retrieve **Forms** as outputs in an output **View**.
 
+:::{include} diagrams/workspace_diagram.md
+:::
+
 Available Workspaces are listed [**here**](available-workspace-list).
 :::
+
+::::{admonition} Writer
+:name: writer-definition
+:class: definition
+
+A **Writer** is a specific type of [**Algorithm**](algorithm-definition) that is used to save [**Forms**](form-definition) as local files. It has no output Form and no Parameters apart from a mandatory **path**, and takes a single type of Form as input.
+
+:::{include} diagrams/writer_diagram.md
+:::
+
+Writer [**Plugins**](plugin-definition) declare the list of file extensions corresponding to the formats they are able to write.
+::::

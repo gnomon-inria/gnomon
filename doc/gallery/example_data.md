@@ -1,6 +1,6 @@
 # Sample Data
 
-The examples in the [Example Gallery](index) as well as various [steps of the Tutorial](../user_guide/tutorials) require data files containing the **Forms** to be processed. Here you will find a list of these files with download links and a brief description of their content.
+The examples in the [Example Gallery](index) as well as various [steps of the Tutorial](../user_guide/tutorial) require data files containing the **Forms** to be processed. Here you will find a list of these files with download links and a brief description of their content.
 
 :::{list-table}
 :widths: 6 9 12 12 3

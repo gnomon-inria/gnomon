@@ -1,10 +1,11 @@
 # 1. Create a Project
 
-When you launch the Gnomon application, you land on a [Home screen](../workspaces/home_screen) where you can have access to your recently opened **Projects**[{fas}`book-open;sd-text-primary fa-2xs`](project-definition). 
+Any processing you will perform in Gnomon has to be related to a **Project**[{fas}`book-open;sd-text-primary fa-2xs`](project-definition), a directory inside which the necessary information will be stored. The first thing you will do when starting to use Gnomon is therefore to create a new Project.
+
 
 ## 1.1 Open the New Project Dialog
 
-Any processing you will perform in Gnomon has to be related to a Project directory, inside which the necessary information will be stored. However, the first time you open Gnomon, the *Recent projects* section will be empty, and you generally won't have an existing Project directory to open.
+When you launch the Gnomon application, you land on a [Home screen](../workspaces/home_screen) where you can have access to your recently opened Projects. However, the first time you open Gnomon, the *Recent projects* section will be empty, and you generally won't have an existing Project directory to open.
 
 ::::{admonition} Step 1
 :class: tutorial

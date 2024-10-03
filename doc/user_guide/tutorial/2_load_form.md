@@ -1,4 +1,4 @@
-# 2. Load a data file
+# 2. Load a Form from a local file
 
 When you open a new session in a **Project** (either [the first time you create it](home-screen-new-project) or when you [create a new blank session](home-screen-load-recent-project), you may start in the [**Data Browsing Workspace**](../workspaces/data_browsing) if you chose it as Initial Workspace in the project configuration. The Data Browsing Workspace is where you will be able to load the data files that you want to process as **Forms**[{fas}`book-open;sd-text-primary fa-2xs`](form-definition).
 
