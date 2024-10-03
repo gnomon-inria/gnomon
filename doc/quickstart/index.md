@@ -12,7 +12,7 @@ The preferred way to install Gnomon is through its **conda** package. If you don
 
 To install Gnomon in a new conda environment, you can use the following command:
 
-```bash
+```shell script
 conda create -n gnomon -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon
 ```
 ::: 

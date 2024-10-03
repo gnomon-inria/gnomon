@@ -17,7 +17,11 @@ To install a package use the command:
 gnomon-utils package install <name-of-the-package>
 ```
 
-For instance:
+::::{admonition} Recommended Packages
+:class: tip
+:name: recommended-packages
+
+For instance, for a basic usage, we recommend that you install the following plugin package:
 
 ```shell script
 gnomon-utils package install gnomon_package_tissueimagemesh
@@ -28,7 +32,7 @@ gnomon-utils package install gnomon_package_tissueimagemesh
 mamba install -c gnomon -c dtk-forge6 -c conda-forge -c mosaic -c morpheme gnomon_package_tissueimagemesh
 ```
 :::
-
+::::
 
 ## Updating a package
 
