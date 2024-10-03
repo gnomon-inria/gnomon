@@ -84,7 +84,7 @@ It is implemented by specific [**Plugins**](plugin-definition) relying on the Vi
 :::
 ::::
 
-:::{admonition} Workspace
+::::{admonition} Workspace
 :name: workspace-definition
 :class: definition
 
@@ -93,11 +93,11 @@ where the user is able to set [**Forms**](form-definition)
 as inputs through an input [**View**](view-definition),
 tune the values of the **Parameters** and retrieve **Forms** as outputs in an output **View**.
 
-:::{include} diagrams/workspace_diagram.md
+:::{include} diagrams/workspace_simple_diagram.md
 :::
 
 Available Workspaces are listed [**here**](available-workspace-list).
-:::
+::::
 
 ::::{admonition} Writer
 :name: writer-definition
@@ -110,3 +110,8 @@ A **Writer** is a specific type of [**Algorithm**](algorithm-definition) that is
 
 Writer [**Plugins**](plugin-definition) declare the list of file extensions corresponding to the formats they are able to write.
 ::::
+
+:::{toctree}
+:maxdepth: 1
+:hidden:
+:::

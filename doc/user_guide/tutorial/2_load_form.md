@@ -47,3 +47,28 @@ Given the file **extension** `inr.gz`, Gnomon tries to guess what type of Form i
 ::::
 
 The Image Form that you have loaded through the Reader is now displayed in the central 3D **View**[{fas}`book-open;sd-text-primary fa-2xs`](view-definition) of the Data Browsing Workspace. The Reader that you chose is now saved and will be used by default to load this file from now on.
+
+## 2.3 Interact with the Visualization
+
+Once the Form is loaded, its rendering in the View of the Workspace relies on a **Visualization**[{fas}`book-open;sd-text-primary fa-2xs`](visualization-definition). It is possible to configure the
+Visualization through the *View Menu* located in the left panel of the Gnomon window.
+
+::::{admonition} Step 3
+:class: tutorial
+
+In the View menu, make sure that the <span class="sd-outline-dark sd-text-dark sd-rounded-2 sd-badge">**Image**</span> Form is selected. The lower part of the menu allows you to change values of the Parameters of its Visualization. In the LUT drop-down list select the `viridis` colormap, then drag the slider located underneath to adjust the contrast. 
+
+In the upper left corner of the View, click on the {far}`square; fa-1x` icon to switch from 3D to 2D rendering. Click on the <span class="sd-outline-dark sd-text-dark sd-rounded-1 sd-px-1 sd-badge">**XZ**</span> button to change the orientation of the 2D slice, then drag the slider on the left side to browse the image. Zoom in or out using the mouse wheel, hold <span class="sd-outline-dark sd-text-dark sd-rounded-1 sd-px-1 sd-badge">{fas}`up-long; fa-1x` Shift</span> and drag to pan in the image slice. Click on the {fas}`cube; fa-1x` icon to go back to a 3D rendering and use the mouse to rotate the 3D volume.
+
+:::{raw} html
+    <video width="100%" height="auto" controls muted> 
+        <source
+            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            type="video/mp4" style="margin-left: 0px; margin-right: 0%"
+        >
+        Your browser does not support the video tag.  
+    </video>
+:::
+::::
+
+Being able to explore your data in 3D is a very important first step. For a more detailed example, you can have a look at [the options you have to visualize an Image Form](../../gallery/image_visualization). Now, if you want to go further, you can read the next step of the tutorial to see [**How to actually run a processing step on your data**](3_run_algorithm).

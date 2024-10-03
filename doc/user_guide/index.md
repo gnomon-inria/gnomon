@@ -8,14 +8,6 @@ Gnomon enables users to create shareable projects gathering data, computational 
 
 :::{grid-item-card}
 :class-header: sd-bg-light sd-font-weight-bold sd-text-center
-:link: quickstart/quickstart.html
-Quick Start
-^^^
-Make your first steps in Gnomon by following the quick start tutorial.
-:::
-
-:::{grid-item-card}
-:class-header: sd-bg-light sd-font-weight-bold sd-text-center
 :link: tutorial.html
 Tutorial
 ^^^
@@ -29,6 +21,11 @@ Workspaces
 ^^^
 Get familiar with the available workspaces in Gnomon and find out which ones suit your needs.
 :::
+::::
+
+::::{grid} 3
+:padding: 0
+:gutter: 4
 
 :::{grid-item-card}
 :class-header: sd-bg-light sd-font-weight-bold sd-text-center
@@ -38,13 +35,12 @@ Concepts
 Get a better understanding of the principles underlying the architecture of the Gnomon platform.
 :::
 
-
 :::{grid-item-card}
 :class-header: sd-bg-light sd-font-weight-bold sd-text-center
 :link: forms_index.html
 Forms
 ^^^
-Find the available form primitives in Gnomon.
+Find out the Form primitives that are natively available in Gnomon.
 :::
 
 :::{grid-item-card}
@@ -52,7 +48,7 @@ Find the available form primitives in Gnomon.
 :link: glossary.html
 Glossary
 ^^^
-Short description for Gnomon concepts.
+Read definitions of the terms used in Gnomon and throughout this documentation.
 :::
 ::::
 

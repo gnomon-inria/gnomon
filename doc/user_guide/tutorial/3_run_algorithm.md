@@ -9,7 +9,7 @@ To make the **Form** you just loaded accessible from outside the [**Data Browsin
 ::::{admonition} Step 1
 :class: tutorial
 
-Click on the <span class="sd-bg-secondary sd-text-light sd-rounded-circle sd-badge sd-px-2"> {fas}`caret-up; fa-1x` </span> Export button in the top right corner of the **View** to send the {bdg-link-success}`Image <../forms/image.html>` Form you previously loaded from the Data Browsing Workspace into the World.
+Click on the <span class="sd-bg-secondary sd-text-light sd-rounded-circle sd-badge sd-px-2"> {fas}`caret-up; fa-1x` </span> Export button in the upper right corner of the **View** to send the {bdg-link-success}`Image <../forms/image.html>` Form you previously loaded from the Data Browsing Workspace into the World.
 
 :::{raw} html
     <video width="93%" height="auto" controls muted>
@@ -48,7 +48,7 @@ In the Workspace list on the left, select the "Segmentation" Workspace (you can 
 :::
 ::::
 
-The application opens the Workspace you just created, and (provided it is of a supported Form type) immediately sets a Form as input of the Algorithm by putting the active Form from the World into the left *input* **View** of the Workspace.
+The application opens the [Segmentation Workspace](../workspaces/segmentation) you just created, and (provided it is of a supported Form type) immediately sets a Form as input of the Algorithm by putting the active Form from the World into the left *input* **View** of the Workspace.
 
 ## 3.3 Run the Algorithm
 
@@ -96,9 +96,9 @@ At this stage, the output Form of the Algorithm only exists inside the current W
 ::::{admonition} Step 4
 :class: tutorial
 
-Click on the <span class="sd-bg-secondary sd-text-light sd-rounded-circle sd-badge sd-px-2"> {fas}`caret-up; fa-1x` </span> Export button in the top right corner of the output View where to export the segmented image to the World.  In the thumbnail that just appeared in the World, right click to display the menu, and click on the <span class="sd-outline-dark sd-text-dark sd-rounded-2 sd-badge"> Save </span> item to open a file dialog.
+Click on the <span class="sd-bg-secondary sd-text-light sd-rounded-circle sd-badge sd-px-2"> {fas}`caret-up; fa-1x` </span> Export button in the upper right corner of the output View where to export the segmented image to the World.  In the thumbnail that just appeared in the World, right click to display the menu, and click on the <span class="sd-outline-dark sd-text-dark sd-rounded-2 sd-badge"> **Save** </span> item to open a file dialog.
 
-The dialog shoul open in your project directory. Navigate to the `data/` folder, select the `p58-t1_imgFus_down_interp_2x.inr.gz` file and change the filename in the dialog into `p58-t1_imgSeg_down_interp_2x.tif`, then press on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> **SAVE** </span> button.
+The dialog should open in your project directory. Navigate to the `data/` folder, select the `p58-t1_imgFus_down_interp_2x.inr.gz` file and change the filename in the dialog into `p58-t1_imgSeg_down_interp_2x.tif`, then press on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> **SAVE** </span> button.
 
 :::{raw} html
     <video width="93%" height="auto" controls muted>

@@ -43,11 +43,6 @@ Writer
 :::
 
 :::{grid-item}
-:columns: 1
-:margin: auto
-:::
-
-:::{grid-item}
 :columns: 3
 :margin: auto
 :class: sd-text-center sd-badge sd-text-warning-dark
@@ -56,6 +51,11 @@ Writer
 {fas}`database; fa-2x`
 
 Path
+:::
+
+:::{grid-item}
+:columns: 1
+:margin: auto
 :::
 
 :::::
