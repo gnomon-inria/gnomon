@@ -19,7 +19,7 @@ from importlib_metadata import entry_points, metadata, version, EntryPoint
 from importlib.resources import files, as_file
 from packaging.version import parse as parse_version
 
-BASE_GNOMON_ENV = "gnomon-qt6"
+BASE_GNOMON_ENV = "gnomon-doc"
 DOC_ARCHIVE = pathlib.Path.home().joinpath("gnomon_doc_archive")
 HISTORY_FILE = DOC_ARCHIVE.joinpath("gnomon_package_doc_history.txt")
 
