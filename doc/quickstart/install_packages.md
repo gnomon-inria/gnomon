@@ -1,7 +1,7 @@
 # Installing Plugin Packages
 
 
-Available plugin packages can be found {bdg-link-primary-line}`here <../plugins/packages.html>`
+Available plugin packages can be found {bdg-link-primary-line}`here <../plugins/index.html>`
 or by running the following command in your environment:
 
 ```shell script
