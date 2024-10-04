@@ -22,7 +22,7 @@ More complete guidelines can be found on the [**Installation**](install) page.
 
 ### Installing plugin packages
 
-Gnomon relies of **Plugins**[{fas}`book-open;sd-text-primary fa-2xs`](plugin-definition) for all its processing functionalities, and once you have installed the core platform, you will have you [**Install Plugin Packages**](install_packages) to actually be able to use it.
+Gnomon relies on **Plugins**[{fas}`book-open;sd-text-primary fa-2xs`](plugin-definition) for all its processing functionalities, and once you have installed the core platform, you will have you [**Install Plugin Packages**](install_packages) to actually be able to use it.
 
 ## General Presentation
 

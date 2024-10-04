@@ -18,7 +18,7 @@ Click on the title to open a dialog to customize your Pipeline. Modify its name 
 :::{raw} html
     <video width="93%" height="auto" controls muted>
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_4_1.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  
@@ -35,12 +35,12 @@ If you plan to repeat the processing on more data, or simply to keep a track of 
 ::::{admonition} Step 2
 :class: tutorial
 
-In the upper rigt corner of the Pipeline panel, click on the {fas}`floppy-disk; fa-1x` icon to open a file dialog to select where to save your Pipeline. The dialog should open in the root directory of your Project. Create a `pipelines/` folder, navigate in it, and press the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> **SAVE** </span> button to save the `image_segmentation.json` file.
+In the upper right corner of the Pipeline panel, click on the {fas}`floppy-disk; fa-1x` icon to open a file dialog to select where to save your Pipeline. The dialog should open in the root directory of your Project. Create a `pipelines/` folder, navigate in it, and press the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> **SAVE** </span> button to save the `image_segmentation.json` file.
 
 :::{raw} html
     <video width="93%" height="auto" controls muted>
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_4_2.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  
@@ -64,7 +64,7 @@ Select the `image_segmentation.json` file in the `pipelines/` folder. This opens
 :::{raw} html
     <video width="93%" height="auto" controls muted>
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_4_3.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  

@@ -14,7 +14,7 @@ Click on the <span class="sd-bg-secondary sd-text-light sd-rounded-circle sd-bad
 :::{raw} html
     <video width="93%" height="auto" controls muted>
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_3_1.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  
@@ -40,7 +40,7 @@ In the Workspace list on the left, select the "Segmentation" Workspace (you can 
 :::{raw} html
     <video width="93%" height="auto" controls muted>
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_3_2.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  
@@ -69,7 +69,7 @@ Press the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}
 :::{raw} html
     <video width="93%" height="auto" controls muted>
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_3_3.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  
@@ -103,7 +103,7 @@ The dialog should open in your project directory. Navigate to the `data/` folder
 :::{raw} html
     <video width="93%" height="auto" controls muted>
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_3_4.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  

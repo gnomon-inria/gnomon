@@ -2,6 +2,13 @@
 
 Any processing you will perform in Gnomon has to be related to a **Project**[{fas}`book-open;sd-text-primary fa-2xs`](project-definition), a directory inside which the necessary information will be stored. The first thing you will do when starting to use Gnomon is therefore to create a new Project.
 
+:::{dropdown} Requirements
+:color: success
+:icon: info
+
+To be able run this tutorial you will need to [have installed Gnomon ](../quickstart/install) and to install the [`gnomon-package-data`](../plugins/packages/gnomon_package_data) and  [`gnomon-package-tissueimage`](../plugins/packages/gnomon_package_image) [Plugin packages](../quickstart/install_packages).
+
+:::
 
 ## 1.1 Open the New Project Dialog
 
@@ -15,7 +22,7 @@ Let's create a new project by clicking on the <span class="sd-bg-primary sd-text
 :::{raw} html
     <video width="93%" height="auto" controls muted> 
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_1_1.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  
@@ -36,12 +43,12 @@ Let's first create a directory for your Project: navigate to the directory of yo
 * **Description**: A project to get started with Gnomon
 * **Initial Workspace**: Data Browsing
 
-Then press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> **OK** </span> button.
+Then press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> {fas}`folder-plus; fa-1x`&nbsp; **CREATE** </span> button.
 
 :::{raw} html
 <video width="93%" height="auto" controls muted>
     <source
-        src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+        src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_1_2.mp4"
         type="video/mp4" style="margin-left: 0px; margin-right: 0%"
     >
     Your browser does not support the video tag.  
@@ -50,7 +57,7 @@ Then press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> 
 
 ::::
 
-When you press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> **OK** </span> button, your project is created, and from now on it will appear in your list of Recent Projects. Learn more about how to load a recent project by taking a look at [the different loading options](home-screen-load-recent-project).
+When you press the <span class="sd-bg-success sd-text-light sd-rounded-2 sd-badge"> {fas}`folder-plus; fa-1x`&nbsp; **CREATE** </span> button, your project is created, and from now on it will appear in your list of Recent Projects. Learn more about how to load a recent project by taking a look at [the different loading options](home-screen-load-recent-project).
 
 A new session immediately starts, and it will start in the [Data Browsing Workspace](../workspaces/data_browsing) since you chose it as Intitial Workspace. You can now proceed to the next step of this tutorial to learn [**How to load data files**](2_load_form).
 

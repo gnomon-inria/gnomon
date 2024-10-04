@@ -14,7 +14,7 @@ Download the  [**p58** sample data](p58-sample-data) <a href="https://gitlab.com
 :::{raw} html
     <video width="93%" height="auto" controls muted>
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_2_1.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  
@@ -38,7 +38,7 @@ Given the file **extension** `inr.gz`, Gnomon tries to guess what type of Form i
 :::{raw} html
     <video width="100%" height="auto" controls muted> 
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_2_2.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  
@@ -63,7 +63,7 @@ In the upper left corner of the View, click on the {far}`square; fa-1x` icon to 
 :::{raw} html
     <video width="100%" height="auto" controls muted> 
         <source
-            src="https://mybox.inria.fr/f/e719ccc8e5134e4e9908/"
+            src="https://gitlab.com/gnomon-inria/gnomon-videos/-/raw/main/tutorial/GnomonTutorial_2_3.mp4"
             type="video/mp4" style="margin-left: 0px; margin-right: 0%"
         >
         Your browser does not support the video tag.  
