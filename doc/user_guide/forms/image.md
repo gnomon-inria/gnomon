@@ -2,74 +2,39 @@
 
 ![Gnomon Image illustration](../../_static/user_guide/image.png){width=200px class="sd-rounded-1 sd-shadow-sm" align=center}
 
-In Gnomon, an {bdg-success}`Image` **Form** is a data structure representing a 3D multi-channel intensity image.
+In Gnomon, an Image form is a data structure representing a 3D multichannel intensity image.
 
-## Description
->A gnomon Image is a data strucure which could hold time series image in one channel or multi-channel (4D data set).  
-The corresponding class in gnomon is `gnomonImageDataMultiChannelImage`.  
-It gives possibility to access some information about image like: 
+## Properties
+The following properties are accessible for Images
+
 - Number of channels
 - Dimensions
-- Voxel Type
 - Voxel Size
 
-## Default reader plugin
->The default reader of image form is **imageReaderTimagetk**. Which reads a 3D microscopy intensity image file.<br> Extensions supported by this reader are: `inr, inr.gz, mha, .mha.gz, tif, tiff, czi, lsm`.
+## Default implementation
+This form is implemented in the package [gnomon_package_tissueimage](../../plugins/packages/gnomon_package_tissueimage).
+In this package a **reader**, a **writer** and several **visualization** plugins for Images can be found.
 
-## Default writer plugin
->The default writer of image form is **gnomonImageWriter**
-
-
-
-## Plugins which take Image as input
-
->Here is a non exhaustive list of some algorithms which take this form as input.  
-- boundaryEdgeEnhancement
-- linearFilterTimagetk
-- binarization
-- lsmCellsSegmentation
-
-## Plugins which produce Image as output
-> Here is a non exhaustive list of some algorithms which produce this form as output.  
-- anisotropic3dImageEnhancement
-- edgeIndicatorLSM3d
-- linearFilterTimagetk
-- registrationTimagetk
-
-## A Use Case, Resampling an image
-```python
-from copy import deepcopy
-import numpy as np
-
-from dtkcore import d_real
-
-import gnomon.core
-from gnomon.utils import algorithmPlugin
-from gnomon.utils.decorators import imageInput, imageOutput
-
-from timagetk.algorithms.resample import isometric_resampling
+The default reader of image form is **imageReaderTimagetk**. It can read 3D microscopy intensity image files.
+Extensions supported by this reader are: `inr, inr.gz, mha, .mha.gz, tif, tiff, czi, lsm`.
 
 
-@algorithmPlugin(version='0.3.1', coreversion='1.0.1')
-@imageInput(attr='in_img', data_plugin='gnomonImageDataMultiChannelImage')
-@imageOutput(attr='out_img', data_plugin='gnomonImageDataMultiChannelImage')
-class isometricResampling(gnomon.core.gnomonAbstractFormAlgorithm):
+## Workspaces using Images
 
-    def __init__(self):
-        super().__init__()
+### Producers
+- [Data Browsing](../workspaces/data_browsing)
+- [Image Preprocessing](../workspaces/image_preprocessing)
+- [Image Registration](../workspaces/image_registration)
+- [Python Algorithm](../workspaces/python_algorithm)
 
-        self._parameters = {}
-        self._parameters['voxelsize'] = d_real("Voxelsize", 1., 0.1, 5., 2, "Target voxelsize after resampling")
-
-        self.in_img = {}
-        self.out_img = {}
-
-    def run(self):
-        self.out_img = {}
-
-        for time in self.in_img.keys():
-            resampled_img = isometric_resampling(deepcopy(self.in_img[time]), method=self['voxelsize'])
-            self.out_img[time] = resampled_img
-
-```
- 
+### Consumers
+- [Binarization](../workspaces/binarization)
+- [Cell Image Quantification](../workspaces/cell_image_quantification)
+- [Cell Image Tracking](../workspaces/cell_image_tracking)
+- [Image Meshing](../workspaces/image_meshing)
+- [Point Cloud Quantification](../workspaces/point_cloud_quantification)
+- [Point Detection](../workspaces/point_detection)
+- [Image Preprocessing](../workspaces/image_preprocessing)
+- [Image Registration](../workspaces/image_registration)
+- [Segmentation](../workspaces/segmentation)
+- [Python Algorithm](../workspaces/python_algorithm)

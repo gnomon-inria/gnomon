@@ -1,80 +1,26 @@
 # Binary Image
 
-## Description
->A gnomon Binary Image is a data structure which could hold time series binary (black or white) image.  
-The corresponding class in gnomon is `binaryImageDataSpatialImage`.  
-It gives possibility to access some information about image like:
-- Dimensions
-- Voxel Size
+![Gnomon Bimary Image illustration](../../_static/user_guide/binary_image.png){width=200px class="sd-rounded-1 sd-shadow-sm" align=center}
 
-## Default reader plugin
->The default reader of binary image form  is **binaryImageReader**. Which reads a 3D microscopy intensity image file.  
-Extensions supported by this reader are : `inr, inr.gz, mha, tif`.  
+A gnomon Binary Image is a 3D raster image where the values are either True (not 0) or False(0).
 
-## Default writer plugin
->The default writer of binary image form is **binaryImageWriter**
+## Default implementation
+An implementation of this form can be found in the package [gnomon_package_imageenhancement](../../plugins/packages/gnomon_package_imageenhancement).
+This package also contains a **reader**, a **writer** and a **visualization** plugin for Binary Images.
 
-## Gnomon Binary Image Example
+Binary Images can be read from files with the following extensions: `.inr, .inr.gz, .mha, .tif`.
 
-![Gnomon Bimary Image illustration](../../_static/user_guide/binary_image.png)
+## Workspaces using Binary Images
 
-## Plugins which take Binary Image as input
+### Producers
+ - [Data Browsing](../workspaces/data_browsing)
+ - [Binarization](../workspaces/binarization)
+ - [Python Algorithm](../workspaces/python_algorithm)
 
->Here is a non exhaustive list of some algorithms which take this form as input.  
-- edgeEnhancementBinaryImage
-- lsmContour
+### Consumers
+ - [Binarization](../workspaces/binarization)
+ - [Image Meshing](../workspaces/image_meshing)
+ - [Image Preprocessing](../workspaces/image_preprocessing)
+ - [Segmentation](../workspaces/segmentation)
+ - [Python Algorithm](../workspaces/python_algorithm)
 
-## Plugins which produce Binary Image as output
-> Here is a non exhaustive list of some algorithms which produce this form as output.  
-- lsmContour
-- binarization
-
-## A Use Case, Resampling an image
-```python
-import numpy as np
-
-from dtkcore import d_int, d_inliststring
-
-import gnomon.core as gnomoncore
-from gnomon.core import gnomonAbstractBinaryImageFromImage
-
-from gnomon.utils import algorithmPlugin
-from gnomon.utils.decorators import imageInput, binaryImageInput, binaryImageOutput
-from gnomon_package_tissueimage.form.imageData.gnomonImageDataMultiChannelImage import gnomonImageDataMultiChannelImage
-from gnomon_package_imageenhancement.form.binaryImageDataSpatialImage import binaryImageDataSpatialImage
-
-
-@algorithmPlugin(version="0.3.1", coreversion="1.0.1")
-@imageInput('img_dict', gnomonImageDataMultiChannelImage)
-@binaryImageInput('init', binaryImageDataSpatialImage)
-@binaryImageOutput('b_img', binaryImageDataSpatialImage)
-class binarization(gnomonAbstractBinaryImageFromImage):
-    """
-    Image Binarization Plugin
-    """
-    def __init__(self):
-        super().__init__()
-
-        self._parameters = {
-            'channel': d_inliststring("Channel", "", [""], "Channel on which to apply the algorithm"),
-            'greater_or_lower': d_inliststring("> or <", "greater >", ["greater >", "lower <"], "Channel on which to apply the algorithm"),
-            "threshold": d_int("Threshold", 127, 0, 255, "Image is true where intensity > threshold"),
-        }
-
-        self.img_dict = {}
-        self.init = {}
-        self.b_img = {}
-    
-    def run(self):
-        self.b_img = {}
-        for time in self.img_dict.keys():
-            in_img = self.img_dict[time]
-
-            for channel in in_img.keys():
-                if 'channel' not in self._parameters.keys() or channel == self['channel']:
-                    if self['greater_or_lower'] == 'greater >':
-                        binary_img = in_img[channel] > self['threshold']
-                    else:
-                        binary_img = in_img[channel] < self['threshold']
-                    self.b_img[time] = binary_img.astype('bool')
-```

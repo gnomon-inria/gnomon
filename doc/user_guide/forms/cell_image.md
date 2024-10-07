@@ -1,78 +1,45 @@
 # Cell Image
 
-## Description
->A gnomon Cell Image is a data strucure which could hold time series segmented image.  
-The correspoonding class in gnomon is `gnomonCellImageDataTissueImage`.  
-It gives possibility to access some information about image like: 
-- Cell property
-- Number of cells
-- Dimensions
-- Voxel Size
+![Gnomon Image illustration](../../_static/user_guide/cell_image.png){width=200px class="sd-rounded-1 sd-shadow-sm" align=center}
 
-## Default reader plugin
-> The default reader of cell image form is **cellImageReaderTimagetk**. Which reads a 3D image file.  
-Extensions supported by this reader are: `tif, inr.gz, inr`.
+A gnomon Cell Image is a data structure which represents a segmented image. It is a 3D raster image where the values 
+correspond to the class of a segment, in other words, each voxel of a cell has the same value which is not shared with
+other cells.
 
-## Default writer plugin
->The default writer of cell image form is **cellImageWriterTissueImage**
+## Properties
+The following properties are accessible for Cell Images
 
-## Gnomon Cell Image Example
+- Cell count
+- Cell ids
+- Cell properties
+- Adjacent cells
+- Wall ids
+- Wall properties
+- Wall cell ids
+ 
 
-![Gnomon Image illustration](../../_static/user_guide/cell_image.png)
+## Default implementation
+This form is implemented in the package [gnomon_package_tissueimage](../../plugins/packages/gnomon_package_tissueimage.md).
+This package also contains a **reader**, a **writer** and a **visualization** plugin for Cell Image.
+Extensions supported by this reader are: `.tif, .inr.gz, .inr`.
 
-## Plugins which take Cell Image as input
+Multiple algorithms using Cell Images are also provided in this package
 
->Here is a non exhaustive list of some algorithms which take this form as input.  
-- morphoCellFilter
-- seededWatershedSegmentationTimagetk
-- signalQuantificationImageSignal
+## Workspaces using Cell Images
 
-## Plugins which produce Image as output
-> Here is a non exhaustive list of some algorithms which produce this form as output.  
-- seededWatershedSegmentationTimagetk
-- seedImageDetectionTimagetk
-- surfaceCellCurvature
+### Producers
+- [Data Browsing](../workspaces/data_browsing)
+- [Segmentation](../workspaces/segmentation)
+- [Cell Image Filter](../workspaces/cell_image_filter)
+- [Cell Image Tracking](../workspaces/cell_image_tracking)
+- [MorphoNet](../workspaces/morphonet)
+- [Python Algorithm](../workspaces/python_algorithm)
 
-```python
-from dtkcore import d_inliststring
-from dtkcore import d_int
-
-from gnomon.utils import algorithmPlugin
-from gnomon.utils import load_plugin_group
-from gnomon.utils.decorators import cellImageInput
-from gnomon.utils.decorators import cellImageOutput
-from gnomon.core import gnomonAbstractCellImageFilter
-
-from timagetk.algorithms.morphology import label_filtering
-from timagetk.components.tissue_image import TissueImage3D
-
-load_plugin_group("cellImageData")
-
-@algorithmPlugin(version="0.3.1", coreversion="1.0.1")
-@cellImageInput("in_tissue", data_plugin="gnomonCellImageDataTissueImage")
-@cellImageOutput("out_tissue", data_plugin="gnomonCellImageDataTissueImage")
-class morphoCellFilter(gnomonAbstractCellImageFilter):
-
-    def __init__(self):
-        super(morphoCellFilter, self).__init__()
-        self.in_tissue = {}
-        self.out_tissue = {}
-
-        self._parameters = {}
-        self._parameters['method'] = d_inliststring("Morphological operation to apply", "erosion", ["erosion", "dilation", "opening", "closing"])
-        self._parameters['radius'] = d_int("Radius of the structuring element", 1, 1, 50)
-        self._parameters['iterations'] = d_int("Number of iteration of the morphological operation", 1, 1, 5)
-
-    def run(self):
-        self.out_tissue = {}
-
-        for time in self.in_tissue.keys():
-            img = self.in_tissue[time]  # This is a SpatialImage!
-            filtered_img = label_filtering(img,
-                                           method=self['method'],
-                                           radius=self['radius'],
-                                           iterations=self['iterations'])
-
-            tissue = TissueImage3D(filtered_img, background=1, not_a_label=0)
-            self.out_tissue[time] = tissue
-```
+### Consumers
+- [Cell Image Filter](../workspaces/cell_image_filter)
+- [Cell Image Quantification](../workspaces/cell_image_quantification)
+- [Cell Image Tracking](../workspaces/cell_image_tracking)
+- [Image Meshing](../workspaces/iamge_meshing)
+- [Mesh Processing](../workspaces/mesh_processing)
+- [MorphoNet](../workspaces/morphonet)
+- [Python Algorithm](../workspaces/python_algorithm)

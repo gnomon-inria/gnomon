@@ -66,7 +66,7 @@ FORM_BADGE_TABLE = {
     "gnomonImage": ("Image", "../../user_guide/forms/image.html"),
     "gnomonCellImage": ("CellImage", "../../user_guide/forms/cell_image.html"),
     "gnomonDataDict": ("DataDict", "../../user_guide/forms/data_dict.html"),
-    "gnomonDataFrame": ("DataFrame", "../../user_guide/forms/dataframe.html"),
+    "gnomonDataFrame": ("DataFrame", "../../user_guide/forms/data_frame.html"),
     "gnomonLString": ("LString", "../../user_guide/forms/lstring.html"),
     "gnomonMesh": ("Mesh", "../../user_guide/forms/mesh.html"),
     "gnomonPointCloud": ("PointCloud", "../../user_guide/forms/point_cloud.html"),
