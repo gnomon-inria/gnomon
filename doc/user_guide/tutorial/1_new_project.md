@@ -17,7 +17,7 @@ When you launch the Gnomon application, you land on a [Home screen](../workspace
 ::::{admonition} Step 1
 :class: tutorial
 
-Let's create a new project by clicking on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`plus; fa-1x`&nbsp; **NEW** </span> button:
+Start Gnomon and create a new project by clicking on the <span class="sd-bg-primary sd-text-light sd-rounded-2 sd-badge"> {fas}`plus; fa-1x`&nbsp; **NEW** </span> button:
 
 :::{raw} html
     <video width="93%" height="auto" controls muted> 
@@ -32,13 +32,13 @@ Let's create a new project by clicking on the <span class="sd-bg-primary sd-text
 
 ## 1.2 Configure the Project
 
-The "New Project" dialog that pops lets you select a directory on your local system that will become a Gnomon project. It also allows you to give it a name and a  description to the project, and to choose in which **Workspace**[{fas}`book-open;sd-text-primary fa-2xs`](workspace-definition)
+The "Create a new Project" dialog that pops lets you select a directory on your local system that will become a Gnomon project. It also allows you to give it a name and a  description to the project, and to choose in which **Workspace**[{fas}`book-open;sd-text-primary fa-2xs`](workspace-definition)
 to initialize a new session. For more information on the initial workspaces, you can have a look at [how to create a Project in general](home-screen-new-project).
 
 ::::{admonition} Step 2
 :class: tutorial
 
-Let's first create a directory for your Project: navigate to the directory of your choice in the file dialog, then create a new folder named `gnomon_tutorial` and select that folder with the dialog. Then, fill in the New Project dialog with the following details:
+Let's first create a directory for your Project: click on the <span class="sd-outline-dark sd-text-dark sd-rounded-2 sd-badge"> {fas}`folder; fa-1x`&nbsp; **FOLDER** </span> button, navigate to the directory of your choice in the file dialog, then create a new folder named `gnomon_tutorial` and select that folder with the dialog. Then, fill in the New Project dialog with the following details:
 * **Name**: Gnomon Tutorial
 * **Description**: A project to get started with Gnomon
 * **Initial Workspace**: Data Browsing
