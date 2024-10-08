@@ -1,13 +1,10 @@
-# Plugins
+# Plugin Packages
 
-Plugins
-are the meat of Gnomon. 
-This is where the different forms[{fas}`book-open;sd-text-primary fa-2xs`](form-definition), 
-visualization[{fas}`book-open;sd-text-primary fa-2xs`](visualization-definition) 
-and algorithms[{fas}`book-open;sd-text-primary fa-2xs`](algorithm-definition) 
-are implemented.
+For convenience, Gnomon Plugins are gathered into thematic packages that can be installed in your environment to provide a set of functionalities, generally related to a given applicative domain.
 
 ## Available packages
+
+Here you will find a list of the currently available packages for Gnomon:
 
 :::{list-table}
 :widths: 15 30 5
@@ -23,14 +20,12 @@ are implemented.
 {% endfor %}
 :::
 
-## Making a plugin package
-
 
 :::{toctree}
 :maxdepth: 1
 :hidden:
 
 {% for package, package_info in packages.items() -%} 
-packages/{{package_info.install.package_name}}
+{{package_info.install.package_name}}
 {% endfor %}
 :::

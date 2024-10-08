@@ -313,7 +313,8 @@ def generate_index(package_dict):
         autoescape=jinja2.select_autoescape()
     )
     template = env.get_template("index.md.jinja")
-    with open(f"plugins/index.md", "w") as f:
+    pathlib.PosixPath("plugins/packages").mkdir(exist_ok=True)
+    with open(f"plugins/packages/index.md", "w") as f:
         f.write(template.render({"packages": package_dict}))
 
 def main(args: argparse.Namespace):

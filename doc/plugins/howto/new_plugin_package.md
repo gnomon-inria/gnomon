@@ -1,13 +1,20 @@
-# How to make a new Plugin Package
+# Creating a new Plugin Package
+
+To make sure that your **Python Plugins**[{fas}`book-open;sd-text-primary fa-2xs`](plugin-definition) will be discovered by Gnomon, the best way is to store them into an installable [Python package](https://packaging.python.org/en/latest/tutorials/packaging-projects/) that will declare them as [entry points](https://packaging.python.org/en/latest/specifications/entry-points/). In this page we provide a step-by-step guide to easily create a Python package for your Plugins.
 
 ## Package folder architecture
 
-**Minimal files for packaging are**
+Create a folder named `gnomon-package-pkgname` that should at least contain the following items:
 - `setup.py`
 - `pyproject.toml`
-- `src/plugin_name` :  with a subfolder for algorithm, form, IO, ...
-- `__init__.py` in each subfolder
+- `src/gnomon_package_pkgname` :  with subfolders for different plugin categories
+    - with an `__init__.py` in each subfolder
+- `README.md`
 
+:::{dropdown} Package Architecture
+:class: note
+
+Here is the typical architecture of a plugin package:
 ```
 gnomon-package-pkgname
 │   README.md
@@ -21,30 +28,43 @@ gnomon-package-pkgname
 │   │   meta.yaml
 │
 └───src
-    └───plugin_name
-        └───algorithm
-        │   │   __init__.py
-        │   │   algorithm_plugin1.py
-        │   │   algorithm_plugin2.py
-        │   │   ...
-        │
-        └───form
-        │   │   __init__.py
-        │   │   form_plugin1.py
-        │
-        └───io
-        │   │   __init__.py
-        │   │   io_plugin1.py
-        │
-        │   __init__.py
+│   └───gnomon_package_pkgname
+│       └───algorithm
+│       │   │   __init__.py
+│       │   │   algorithm_plugin1.py
+│       │   │   algorithm_plugin2.py
+│       │   │   ...
+│       │
+│       └───form
+│       │   │   __init__.py
+│       │   │   form_plugin1.py
+│       │
+│       └───io
+│       │   │   __init__.py
+│       │   │   io_plugin1.py
+│       │
+│       │   __init__.py
+│       
+└───test
+    └───resources
+    │   │   ...
+    │
+    │   test_algorithm_plugin1.py
+    │   test_algorithm_plugin2.py
+    │   test_form_plugin1.py
+    │   test_io_plugin1.py
 ```
+::: 
 
-**Go to package directory** on  https://gitlab.inria.fr/gnomon/gnomon-packages and choose one package to get inspiration from.
+:::{tip}
+You can have a look at the existing packages on  https://gitlab.inria.fr/gnomon/gnomon-packages to get inspiration from.
+:::
 
-### setup.py & pyproject.toml: python packaging
+## Python Packaging
 
-#### `setup.py`
-To write the `setup.py` you can follow this minimal template:
+### Create a `setup.py` file
+
+You can initialize your `setup.py` you can follow this minimal template:
 
 ```python
 #!/usr/bin/env python
@@ -59,14 +79,14 @@ readme = open("README.md")
 pkgs = find_packages('src')
 
 setup_kwds = {
-    name: 'plugin_name',
+    name: 'gnomon_package_pkgname',
     version: "X.X.X",
     description: short_descr,
     long_description: readme,
     author: "Author",
     author_email: "author@email.com",
     url: '',
-    license: 'LGPL',
+    license: 'LGPLv3-or-later',
     zip_safe: False,
 
     packages: pkgs,
@@ -110,7 +130,7 @@ This python file includes the following functions from [`setuptools`](https://se
 - `setup` : create the Python Egg for the package.
 - `find_packages` : find modules from source directory, given as arg.
 
-**Create a setup keywords dictionary**: in this dictionary you precise plugin's name, version, licence. The requirement keywords are all left empty as we consider that dependencies are managed through the conda environment.
+The setup **keywords dictionary** lets you indicate the name of the plugin package, as well as its version, licence, etc. We advise that requirement keywords remain empty and to manage the dependencies of the package through the **conda** environment.
 
 (entry_points)=
 ### Advertising your plugins in the global namespace: entry points
@@ -133,14 +153,13 @@ entry_points = {
 }
 ```
 
-**Note:** entry points are part of the arguments of the `setup` function and needs to be passed to it as showed
-in the `setup.py` template.
+:::{note}
+Entry points are part of the arguments of the `setup` function and needs to be passed to it as showed in the `setup.py` template.
+:::
 
-In the context of gnomon we will only be advertising modules, the group name is the abstract base class
-minus the `gnomonAbstract` part and the entry point name should be the same name as the module name and the class name of the plugin.
+In the context of gnomon we will only be advertising modules, the group name is the abstract base class minus the `gnomonAbstract` part and the entry point name should be the same name as the module name and the class name of the plugin.
 
-For example, if we were to register a plugin called `downsampleFilter` which implements the abstract base class
-`gnomonAbstractImageFilter` and is located in `src/plugin_name/algorithm` we would get:
+For example, if we were to register a plugin called `downsampleFilter` which implements the abstract base class `gnomonAbstractImageFilter` and is located in `src/plugin_name/algorithm` we would get:
 ```python
 entry_points = {
     'imageFilter': [
@@ -149,10 +168,10 @@ entry_points = {
 }
 ```
 
-There are two special entry points' group: `console_scripts` and `gui_scripts` which we **won't** be using here.
 
+### Configure the `pyproject.toml`
 
-#### `pyproject.toml`
+Create the `pyproject.toml` with the following content:
 
 ```toml
 [build-system]
@@ -167,23 +186,30 @@ omit = ["*__init__.py", "test/*", "setup.py"]
 omit = ["*__init__.py", "test/*", "setup.py"]
 ```
 
-## Package installation
-**At the root of the package**
-- activate your local environment e.g.: `conda activate gnomon-x`
-- run `pip install .`
+### Package installation
+
+In a terminal window, navigate to the root directory of your plugin package and then:
+- Activate your local environment, for instance 
+```shell script
+conda activate gnomon
+```
+- Install the package in your environment by running
+```shell script
+pip install .
+```
 
 You can check that everything is okay by importing your package in your python interpreter:
 ```bash
-  python -c "import plugin_name; print(plugin_name)"
+  python -c "import gnomon_package_pkgname; print(gnomon_package_pkgname)"
 ```
 
 ## Adding unit tests
 
-**Each plugin should be tested**
-- add a `test/` folder at the root of the package
-- write one module per plugin, defining a test class inheriting [`unittest.TestCase`](https://docs.python.org/3/library/unittest.html#unittest.TestCase)
-- the `test_XXX` methods should check that the plugin runs without errors and generates the expected output
-- if necessary, you may add a `resources` folder with (**small !**) sample data to run your tests on
+Each plugin should be tested by a unit test, to make sure Gnomon is able to intantiate it and that it performs the desired task correctly.
+- Add a `test/` folder at the root of the package
+- Write one module per plugin, defining a test class inheriting [`unittest.TestCase`](https://docs.python.org/3/library/unittest.html#unittest.TestCase)
+- The `test_XXX` methods should check that the plugin runs without errors and generates the expected output
+- If necessary, you may add a `resources` folder with (**small !**) sample data to run your tests on
 
 ```
 gnomon-package-pkgname
@@ -202,28 +228,38 @@ gnomon-package-pkgname
     │   test_io_plugin1.py
 ```
 
-## Building and Publishing a conda package
+## Publishing as a conda package
 
-We need to set up 2 files in order to build a package: `build.sh` and `meta.yaml`.
-In addition to that we will also use an `env.yaml` file to define our working environment.
+To share more conveniently your Plugin package, we recommend that you build it into a conda package. You will need to set up two files in order to build a conda package: `build.sh` and `meta.yaml`.
+
+In addition to that, we will also use an `env.yaml` file to define an environment that includes all the dependencies required to use your Plugins. Create a `conda/` folder with the following structure:
+
+```
+gnomon-package-pkgname
+│   ...
+│
+└───src
+│   │   ...
+
+└───conda
+    │   build.sh
+    │   env.yaml
+    │   meta.yaml
+```
 
 ### Defining an environment: `env.yaml`
 
-Conda can save the state of an environment in a `.yaml` file and then create an environment from it.
-This is useful as it helps to have a consistent environment when developing, especially if one wants to build from source.
-Getting the environment setup becomes as easy as:
-```bash
+Conda can save the state of an environment in a `.yaml` file and then create an environment from it. This is useful as it helps to have a consistent environment when developing, especially if one wants to build from source.
+Setting up all the dependencies becomes as easy as:
+```shell script
 git clone https://gitlab.com/your-org/gnomon-package-pkgname.git
 cd gnomon-package-pkgname
 conda env create -f conda/env.yaml
 ```
 
-There are two ways to make an `env.yaml` file:
-1. by exporting an existing env with `conda env export`
-2. by hand
+You could create the `env.yaml` file by exporting an existing conda environment with `conda env export`, but to get a more parcimonious environment, we recommend to write it manually.
 
-In this section we will look at the second method.
-
+Create
 An `env.yaml` file looks as follows:
 ```yaml
 name: gnomon-package-pkgname
@@ -300,13 +336,11 @@ As you can see `jinja2` templating can be used here.
 
 #### package
 In this section the package name and version are defined.
-Here we use the template `{{ environ.get('GIT_DESCRIBE_TAG', 'default') }}`
-to get the tag from git if you're using git to hold the version.
+Here we use the template `{{ environ.get('GIT_DESCRIBE_TAG', 'default') }}` to get the tag from git if you're using git to hold the version.
 Otherwise put the version manually.
 
 #### source
-We only have one source and it is local. The path should be the relative
-path to the root of the package where the `setup.py` is located.
+We only have one source and it is local. The path should be the relative path to the root of the package where the `setup.py` is located.
 
 #### build
 For a pure python package this section should stay the same.
@@ -314,8 +348,7 @@ For a pure python package this section should stay the same.
 The line `preserve_egg_dir: True` **must** be there.
 
 #### requirements
-In this section we define the different requirements needed to build,
-to link and to run. There are three sections which basically go like this:
+In this section we define the different requirements needed to build, to link and to run. There are three sections which basically go like this:
 - `build`: what packages are needed in order to build the package
 - `host`: what packages should be linked in the destination platform
 - `run`: what packages are needed at runtime
@@ -324,8 +357,7 @@ More information on the definition of `meta.yaml` [here](https://docs.conda.io/p
 
 ### Build script: `build.sh`
 
-This one is rather easy. It is simply the bash script that needs to be called in order
-to build what needs to be packaged, in our case a python package.
+This one is rather easy. It is simply the bash script that needs to be called in order to build what needs to be packaged, in our case a python package.
 
 The content should therefor simply be:
 ```bash
@@ -333,8 +365,12 @@ The content should therefor simply be:
 pip install .
 ```
 
-### Building
+### Building the conda package
 
-```bash
+Once all the files are ready, you can build the conda package. If you are doing this for the first time, you will need to [install the build utility from conda](https://docs.conda.io/projects/conda-build/en/latest/install-conda-build.html). You will then be able to run the following command, using the channel names required by your package after a `-c`: 
+
+```shell script
 conda build . -c conda-forge -c gnomon -c mosaic -c morpheme -c dtk-forge6
 ```
+
+Such a package can then be [uploaded on your Anaconda channel using the recommended procedure](https://docs.anaconda.com/anacondaorg/user-guide/packages/conda-packages/#uploading-conda-packages).
