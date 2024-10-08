@@ -250,11 +250,11 @@ pages:
     - cmake ..
     - cd ../doc
     - make html
-    - mv _build/html ../public
+    - mv build/html ../public
     - cd ../doc_md
     - make html
     - mkdir -p ../public/legacy
-    - cp -R build/html/* ../public/legacy
+    - cp -R _build/html/* ../public/legacy
   extends: .template_retry
   dependencies:
     - plugin_pages
