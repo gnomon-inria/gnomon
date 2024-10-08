@@ -226,7 +226,6 @@ plugin_pages:
   artifacts:
     paths:
       - doc/plugins/packages
-      - doc/plugins/index.md
       - doc/_static/plugins/packages
   only:
     - master
