@@ -19,9 +19,9 @@ The default reader of lstring form is **lStringReaderText** which reads a lstrin
 
 ### Producers
 - [Data Browsing](../workspaces/data_browsing)
-- [L-System Model](../workspaces/image_preprocessing)
+- [L-System Model](../workspaces/lsystem_model)
 - [Python Algorithm](../workspaces/python_algorithm)
 
 ### Consumers
-- [L-System Model](../workspaces/image_preprocessing)
+- [L-System Model](../workspaces/lsystem_model)
 - [Python Algorithm](../workspaces/python_algorithm)
