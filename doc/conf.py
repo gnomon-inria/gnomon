@@ -22,13 +22,34 @@ extensions = [
     # "sphinx_external_toc",
     "sphinx_design",
     "sphinx_tippy",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
 ]
-
+autodoc2_packages = [
+    "../build/python/gnomon/utils/gnomonPlugin.py",
+    "../build/python/gnomon/utils/decorators",
+    "../build/python/gnomon/utils/gnomonCommandLineTools.py",
+    "../build/python/gnomon/utils/gnomonTemplateUtils.py",
+    "../build/python/gnomon/utils/package_utils.py",
+    "../build/python/gnomon/utils/pipelines.py",
+]
 
 templates_path = ['_templates']
 exclude_patterns = []
 
 source_suffix = '.md'
+
+# Napoleon options
+napoleon_attr_annotations = False
+autodoc_typehints = "both"
+autodoc_class_signature = "separated"
+add_module_names = False
+autodoc_default_options = {
+    "member-order": "bysource",
+    "special-members": "__init__",
+
+}
+#autodoc_mock_imports = ["gnomon.core", "gnomon.visualization", "gnomon.pipeline"]
 
 # external_toc_path = "_toc.yml"
 # external_toc_exclude_missing = False
