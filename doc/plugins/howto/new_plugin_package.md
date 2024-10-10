@@ -13,6 +13,7 @@ Create a folder named `gnomon-package-pkgname` that should at least contain the 
 
 :::{dropdown} Package Architecture
 :class: note
+:name: plugin-package-architecture
 
 Here is the typical architecture of a plugin package:
 ```
@@ -132,7 +133,7 @@ This python file includes the following functions from [`setuptools`](https://se
 
 The setup **keywords dictionary** lets you indicate the name of the plugin package, as well as its version, licence, etc. We advise that requirement keywords remain empty and to manage the dependencies of the package through the **conda** environment.
 
-(entry_points)=
+(package-entry-points)=
 ### Advertising your plugins in the global namespace: entry points
 
 Before your plugins can be used by gnomon they need to be advertised so gnomon can dynamically discover them.
