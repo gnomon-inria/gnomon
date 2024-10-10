@@ -5,9 +5,7 @@
 :hidden:
 example_segmentation
 example_cell_tracking
-example1
-example2
-example_data
+example_cell_signal
 :::
 
 ```{raw} html
@@ -60,16 +58,9 @@ example_data
 </div>
 
 <div class="gallery-item">
-  <a href="example1.html">
-    <img src="../_static/thumbnail/example1_thumbnail.gif" alt="Exemple 1">
-    <div class="gallery-title">Utilisation Basique</div>
-  </a>
-</div>
-
-<div class="gallery-item">
-  <a href="example2.html">
-    <img src="../_static/thumbnail/example2_thumbnail.gif" alt="Exemple 2">
-    <div class="gallery-title">Utilisation Avancée</div>
+  <a href="example_cell_signal.html">
+    <img src="../_static/thumbnail/example_cell_signal.gif" alt="Image cell signal quantification">
+    <div class="gallery-title">Image cell signal quantification</div>
   </a>
 </div>
 
