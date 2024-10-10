@@ -22,7 +22,7 @@ Click on the <span class="sd-bg-secondary sd-text-light sd-rounded-circle sd-bad
 :::
 ::::
 
-The Form "Image 1" now appears in the World with a thumbnail image displaying the way it was visualized. For more information, you can have a look at [what it is possible to do with Forms in the World](../concepts/world).
+The Form "Image1" now appears in the World with a thumbnail image displaying the way it was visualized. For more information, you can have a look at [what it is possible to do with Forms in the World](../concepts/world).
 
 ## 3.2 Create a new Workspace
 

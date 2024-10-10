@@ -56,9 +56,9 @@ Visualization through the *View Menu* located in the left panel of the Gnomon wi
 ::::{admonition} Step 3
 :class: tutorial
 
-In the View menu, make sure that the <span class="sd-outline-dark sd-text-dark sd-rounded-2 sd-badge">**Image**</span> Form is selected. The lower part of the menu allows you to change values of the Parameters of its Visualization. In the LUT drop-down list select the `viridis` colormap, then drag the slider located underneath to adjust the contrast. 
+In the View menu, make sure that the <span class="sd-outline-dark sd-text-dark sd-rounded-2 sd-badge">**gnomonImage**</span> Form is selected. The lower part of the menu allows you to change values of the Parameters of its Visualization. In the LUT drop-down list select the `viridis` colormap, then drag the slider located underneath to adjust the contrast. 
 
-In the upper left corner of the View, click on the {far}`square; fa-1x` icon to switch from 3D to 2D rendering. Click on the <span class="sd-outline-dark sd-text-dark sd-rounded-1 sd-px-1 sd-badge">**XZ**</span> button to change the orientation of the 2D slice, then drag the slider on the left side to browse the image. Zoom in or out using the mouse wheel, hold <span class="sd-outline-dark sd-text-dark sd-rounded-1 sd-px-1 sd-badge">{fas}`up-long; fa-1x` Shift</span> and drag to pan in the image slice. Click on the {fas}`cube; fa-1x` icon to go back to a 3D rendering and use the mouse to rotate the 3D volume.
+In the upper left corner of the View, click on the {fas}`expand; fa-1x` icon to switch from 3D to 2D rendering. Click on the <span class="sd-outline-dark sd-text-dark sd-rounded-1 sd-px-1 sd-badge">**XZ**</span> button to change the orientation of the 2D slice, then drag the slider on the left side to browse the image. Zoom in or out using the mouse wheel, hold <span class="sd-outline-dark sd-text-dark sd-rounded-1 sd-px-1 sd-badge">{fas}`up-long; fa-1x` Shift</span> and drag to pan in the image slice. Click on the {fas}`cube; fa-1x` icon to go back to a 3D rendering and use the mouse to rotate the 3D volume.
 
 :::{raw} html
     <video width="100%" height="auto" controls muted> 

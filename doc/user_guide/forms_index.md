@@ -1,51 +1,52 @@
 # Forms
 
-Here is the list of the different forms[{fas}`book-open;sd-text-primary fa-2xs`](form-definition) defined by Gnomon. 
-Usually a form is stored and moved around a time series.
+In Gnomon **Forms**[{fas}`book-open;sd-text-primary fa-2xs`](form-definition) are the data structures that represent the state of a developing biological system. They are usually stored and moved around as time series. Here you will find the list of the different types of Forms defined by Gnomon.
 
-A form in itself is only an interface. Their implementation, meaning how the actual data is stored and served to 
-different plugins is defined in **data plugins** which are a special kind of plugin. Readers and writers are also defined in plugins.
+##  Implementation of Forms
 
-To find which plugin (and plugin package) you need for the form you want to manipulate, you may look at the doc for this form
- or alternatively browse through the different plugin packages available [here](../plugins/index)
+Gnomon interacts with Forms only through their *interface*. Their implementation, meaning how the actual data is stored and served to different plugins is defined in **Data Plugins** which are a special kind of Plugin. Readers and Writers for the different Forms are also defined in plugins.
 
-:::{list-table} Forms primitives
-:widths: 15 30 10
+To find which plugin (and plugin package) you need for the form you want to manipulate, you may look at the documentation page for this Form, or alternatively browse through [the available plugin packages](../plugins/packages/index).
+
+## Types of Forms
+
+:::{list-table}
+:widths: 10 30 10
 :header-rows: 1
 
 * - Name
   - Description
   - 
 * 
-  - [gnomonImage](forms/image.md)
+  - {bdg-link-success}`Image <forms/image.html>`
   - A 3D image with multiple channels support
   - ![gnomonImage](../_static/user_guide/image.png){.bg-warning w=100px align=center}
 * 
-  - [gnomonCellImage](forms/cell_image.md)
+  - {bdg-link-success}`CellImage <forms/cell_image.html>`
   - A 3D segmented image. The value of the voxel represents its class
   - ![gnomonCellImage](../_static/user_guide/cell_image.png){.bg-warning w=100px align=center}
 * 
-  - [gnomonBinaryImage](forms/binary_image.md)
+  - {bdg-link-success}`BinaryImage <forms/binary_image.html>`
   - A 3D image where the values are either true or false
   - ![gnomonBinaryImage](../_static/user_guide/binary_image.png){.bg-warning w=100px align=center}
 * 
-  - [gnomonDataDict](forms/data_dict.md)
+  - {bdg-link-success}`DataDict <forms/data_dict.html>`
   - A versatile form which can be used to store any data
   - ![gnomonDataDict](../_static/user_guide/data_dict_image.png){.bg-warning w=100px align=center}
 * 
-  - [gnomonDataFrame](forms/data_frame.md)
+  - {bdg-link-success}`DataFrame <forms/data_frame.html>`
   - Two-dimensional tabular data. This data structure contains labeled axes (rows and columns)
   - ![gnomonDataFrame](../_static/user_guide/data_frame__image.png){.bg-warning w=100px align=center}
 * 
-  - [gnomonLString](forms/lstring.md)
+  - {bdg-link-success}`LString <forms/lstring.html>`
   - Axial tree. Used to represent the evolution of a branching structure
   - ![gnomonLString](../_static/user_guide/lstring.png){.bg-warning w=100px align=center}
 * 
-  - [gnomonMesh](forms/mesh.md)
+  - {bdg-link-success}`Mesh <forms/mesh.html>`
   - 3D surface or volumetric mesh
   - ![gnomonMesh](../_static/user_guide/mesh.png){.bg-warning w=100px align=center}
 * 
-  - [gnomonPointCloud](forms/point_cloud.md)
+  - {bdg-link-success}`Image <forms/point_cloud.html>`
   - Hold points and their properties
   - ![gnomonPointCloud](../_static/user_guide/point_cloud_image.png){.bg-warning w=100px align=center}
 
