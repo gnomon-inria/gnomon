@@ -6,7 +6,7 @@ Any processing you will perform in Gnomon has to be related to a **Project**[{fa
 :color: success
 :icon: info
 
-To be able run this tutorial you will need to [have installed Gnomon ](../quickstart/install) and to install the [`gnomon-package-data`](../plugins/packages/gnomon_package_data) and  [`gnomon-package-tissueimage`](../plugins/packages/gnomon_package_image) [Plugin packages](../quickstart/install_packages).
+To be able run this tutorial you will need to [have installed Gnomon ](../quickstart/install) and to install the [`gnomon-package-data`](../../plugins/packages/gnomon_package_data) and  [`gnomon-package-tissueimage`](../../plugins/packages/gnomon_package_tissueimage) [Plugin packages](../quickstart/install_packages).
 
 :::
 
