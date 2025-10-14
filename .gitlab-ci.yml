@@ -243,7 +243,7 @@ pages:
     - conda activate gnomon-dev
     - mamba install -c conda-forge sphinx make matplotlib-base doxygen breathe=4.32
     - mamba remove -c dtk-forge6 -c conda-forge vtk-base
-    - mamba install -c dtk-forge6 -c conda-forge vtk=9.2.6
+    - mamba install -c dtk-forge6 -c conda-forge --force-reinstall vtk=9.2.6
     - pip install -r doc/requirements.txt
     - rm -rf build
     - mkdir build
