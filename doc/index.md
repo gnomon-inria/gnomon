@@ -14,8 +14,8 @@ A computational platform to analyze and simulate the development of living forms
 ::::
 
 :::{card}
-:img-background: _static/index/gnomon_screenshot_segmentation.png
-:img-alt: screenshot_segmentation
+:img-background: _static/index/gnomon_screenshot_quantification.png
+:img-alt: screenshot_quantification
 :width: auto
 :margin: 5
 :class-card: sd-rounded-1
