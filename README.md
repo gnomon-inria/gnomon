@@ -14,7 +14,7 @@
 
 ## Why Gnomon?
 
-Studying morphogenesis requires combining computational tools that use different data structures and rely on independent software libraries. Handling such complex processing pipelines and turing them into reproducible tools is a major challenge.
+Studying morphogenesis requires combining computational tools that use different data structures and rely on independent software libraries. Handling such complex processing pipelines and turning them into reproducible tools is a major challenge.
 
 Gnomon addresses this through three complementary principles:
 - **Interoperate & extend** (implementation-agnostic plugin architecture)
@@ -35,7 +35,7 @@ conda activate gnomon
 Then install Gnomon and its dependencies, together with recommended [plugin packages](https://gnomon.gitlabpages.inria.fr/gnomon/plugins/packages/):
 
 ```bash
-conda install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon gnomon_package_tisueimagemesh
+conda install -c dtk-forge6 -c gnomon -c mosaic -c morpheme -c conda-forge gnomon gnomon_package_tissueimagemesh
 ```
 
 Launch the application with:
