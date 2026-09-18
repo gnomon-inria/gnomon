@@ -101,6 +101,11 @@ QJsonObject gnomonImageReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonImageReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->image = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonImageReaderCommand)
 
 //

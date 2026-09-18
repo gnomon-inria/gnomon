@@ -52,7 +52,7 @@ QtObject {
     property QtObject figureColors:  _self.mode == Style.Mode.Dark ? _figureColorDark : _figureColorLight
     // property alias fonts: _fonts
     property int panelRadius: S.spacing["1"]
-
+    property int bannerRadius: S.spacing["2"]
     property int cardRadius: S.spacing["3"]
 
     property int borderWidth: S.spacing["0"]
@@ -62,6 +62,7 @@ QtObject {
 
     property int shortButtonWidth: S.spacing["9"] + S.spacing["2"]
     property int buttonWidth: S.spacing["10"]
+    property int extendedButtonWidth: S.spacing["10"] + S.spacing["7"] + S.spacing["2"]
     //= 2 small buttons with small padding
     property int mediumButtonWidth: S.spacing["11"] + S.spacing["2"]
     //= 2 buttons with small padding
@@ -122,6 +123,7 @@ QtObject {
     property int smallDialogWidth: S.spacing["14"]
     property int mediumDialogWidth: S.spacing["15"]
     property int largeDialogWidth: S.spacing["16"]
+    property int hugeDialogWidth: S.spacing["17"]
 
     property int tinyDialogHeight: S.spacing["11"]
     property int smallDialogHeight: S.spacing["12"]
@@ -170,6 +172,7 @@ QtObject {
     // /////////////////////////////////////////////////////////////////////////////
 
     property QtObject sizes: QtObject {
+        property int s0: S.spacing["0"] //2
         property int s1: S.spacing["1"] //4
         property int s2: S.spacing["2"] //8
         property int s3: S.spacing["3"] //12

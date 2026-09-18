@@ -1,0 +1,31 @@
+/* Style pour la galerie en grille */
+.gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.gallery-item {
+    flex-basis: 24%;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);  /* Effet de zoom au survol */
+}
+
+.gallery-title {
+    font-size: 1.2em;
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+}

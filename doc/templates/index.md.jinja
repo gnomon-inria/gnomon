@@ -1,0 +1,31 @@
+# Plugin Packages
+
+For convenience, Gnomon Plugins are gathered into thematic packages that can be installed in your environment to provide a set of functionalities, generally related to a given applicative domain.
+
+## Available packages
+
+Here you will find a list of the currently available packages for Gnomon:
+
+:::{list-table}
+:widths: 15 30 5
+:header-rows: 1
+
+*   - Package
+    - Description
+    - 
+{% for package, package_info in packages.items() -%}
+*   - [{{package}}](packages/{{package_info.install.package_name}})
+    - {{package_info.summary}}
+    - [{fab}`gitlab`]({{package_info.source}})
+{% endfor %}
+:::
+
+
+:::{toctree}
+:maxdepth: 1
+:hidden:
+
+{% for package, package_info in packages.items() -%} 
+{{package_info.install.package_name}}
+{% endfor %}
+:::

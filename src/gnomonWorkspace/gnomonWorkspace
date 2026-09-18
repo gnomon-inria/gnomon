@@ -22,7 +22,7 @@
 // #include "gnomonWorkspaceCellImageQuantification.h"
 #include "gnomonWorkspaceCellImageTracking.h"
 // #include "gnomonWorkspaceCellImageConstructor.h"
-// #include "gnomonWorkspaceCellImageFilter.h"
+#include "gnomonWorkspaceCellImageFilter.h"
 #include "gnomonWorkspaceRegistration.h"
 #include "gnomonWorkspaceSegmentation.h"
 #include "gnomonWorkspaceCellImageQuantification.h"

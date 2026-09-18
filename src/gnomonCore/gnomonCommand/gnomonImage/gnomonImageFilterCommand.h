@@ -33,6 +33,8 @@ public:
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
     orderedMap outputTypes() override;
 
+    void clear(void) override;
+
     void deserializeResults(QJsonObject &serialization) override;
 
     QJsonObject serializeResults(void) override;

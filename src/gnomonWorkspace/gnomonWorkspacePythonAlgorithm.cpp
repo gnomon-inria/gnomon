@@ -48,7 +48,6 @@ public:
 
     gnomonAbstractFormAlgorithm *algorithm = nullptr;
     gnomonFormAlgorithmCommand *command = nullptr;
-    QJsonObject state;
 
     QMetaObject::Connection editor_connect;
 
@@ -484,7 +483,7 @@ void gnomonWorkspacePythonAlgorithm::viewOutputs(void)
                 output = dtkScriptInterpreterPython::instance()->interpret(form_statement, &stat);
                 output_form_added = true;
                 GNOMON_SESSION->trackForm(form);
-                int form_count = gnomonFormManager::instance()->formCount(form_name);
+                int form_count = GNOMON_FORM_MANAGER->formCount(form_name);
                 form->metadata()->set("name", form_name.remove("gnomon") + QString::number(form_count + 1));
                 form->metadata()->set("source", d->algorithm_key);
             }
@@ -562,14 +561,15 @@ bool gnomonWorkspacePythonAlgorithm::isEmpty(void)
     return false;
 }
 
-void gnomonWorkspacePythonAlgorithm::saveState(void)
-{
-    d->state = serialize();
-}
 
-void gnomonWorkspacePythonAlgorithm::restoreState(void)
+void gnomonWorkspacePythonAlgorithm::restoreView(void)
 {
-    deserialize(d->state);
+    for (auto view : d->sources->views()) {
+        view->restoreState();
+    }
+    for (auto view : d->targets->views()) {
+        view->restoreState();
+    }
 }
 
 void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
@@ -578,8 +578,8 @@ void gnomonWorkspacePythonAlgorithm::export_outputs(void) {
     }
 }
 
-QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
-    QJsonObject state = gnomonAbstractWorkspace::serialize();
+QJsonObject gnomonWorkspacePythonAlgorithm::_serialize() {
+    QJsonObject state = gnomonAbstractWorkspace::_serialize();
 
     QJsonObject open_file_json;
     for (const auto& file_name : d->open_files.keys()) {
@@ -614,8 +614,8 @@ QJsonObject gnomonWorkspacePythonAlgorithm::serialize() {
     return state;
 }
 
-void gnomonWorkspacePythonAlgorithm::deserialize(const QJsonObject &state) {
-    gnomonAbstractWorkspace::deserialize(state);
+void gnomonWorkspacePythonAlgorithm::_deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::_deserialize(state);
     disconnect(d->editor_connect);
 
     QJsonObject open_file_json = state["open_files"].toObject();

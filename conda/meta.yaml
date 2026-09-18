@@ -86,12 +86,14 @@ requirements:
     - swig >=4.1
     - libzip
     - matplotlib-base=3.7.1
+    - geomdl
     - qtpy >=2.0
     - qtconsole-base >=5.2
     - importlib_metadata
     - jedi=0.18.2
     - python-lsp-server=1.7.1
     - conda
+    - requests
     - pip
 
 

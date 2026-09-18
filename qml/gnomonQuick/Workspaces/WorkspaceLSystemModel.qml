@@ -81,6 +81,10 @@ G.Workspace {
             _self.editor.contents = d.text
             _self.editor.language = _self._current_file.endsWith(".lpy") ? "lpy" : "python"
         }
+
+        function updateParametersModel(from_workspace=true) {
+            _self.updateParametersModel(from_workspace);
+        }
     }
 
     property string _path: d.defaultReadPath()
@@ -115,9 +119,12 @@ G.Workspace {
                 theme: G.Style.mode == G.Style.Mode.Dark ? 'vs-dark' : 'vs-light';
                 language: "lpy";
                 fileName: d.fileName
+                readOnly: d.readOnly
 
                 onModified: (contents) => {
-                    d.text = eval(contents);
+                    if(eval(contents)) {
+                        d.text = eval(contents);
+                    }
                 }
 
                 onFileSwitched: (name) => {
@@ -131,18 +138,29 @@ G.Workspace {
                     if(name.endsWith("py"))
                         d.fileName = name
                     let file_path = GP.ProjectManager.project.findFile(d.fileName)
-                    _editor.readOnly = (file_path.length === 0) & (!d.fileName.includes("vonKoch.lpy"))
-
                 }
 
                 onIdeIsReady : () => {
                     //d.restore();
                     d.codeEditorReady()
+                    contents = d.text
                 }
 
                 onMakeFileEditable: () => {
                     import_lpy_file_to_project.importPath = GP.ProjectManager.project.currentDir;
                     import_lpy_file_to_project.open()
+                }
+                Connections {
+                    target: d
+                    function onTextChanged() {
+                        if(_editor.contents !== d.text) {
+                            _editor.contents = d.text;
+                        }
+                    }
+                }
+
+                onFileClosed : (name) => {
+                    d.close(name)
                 }
             }
         }
@@ -212,7 +230,7 @@ G.Workspace {
         id: import_lpy_file_to_project
 
         onAccepted : {
-            _editor.readOnly = false
+            //_editor.readOnly = false
             d.importFile(d.fileName, import_lpy_file_to_project.importPath)
         }
     }

@@ -1,4 +1,4 @@
-# How to make a new plugin package
+# How to make a new Plugin Package
 
 ## Package folder architecture
 

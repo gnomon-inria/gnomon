@@ -14,6 +14,7 @@ def is_form_series_modified(algo, form_name, form_series):
 
 
 def buildFormSeries(form_dict: dict, form_class: type, data_plugin: type):
+    """{t: specificForm} -> {t: gnomonForm} where specificForm is of the type specified by the plugin (python -> c++)"""
     form = {}
     form_data = {}
 
@@ -29,6 +30,7 @@ def buildFormSeries(form_dict: dict, form_class: type, data_plugin: type):
 
 
 def formDictFromSeries(form, data_plugin: type):
+    """{t: gnomonForm} -> {t: specificForm} where specificForm is of the type specified by the plugin (c++ -> python)"""
     form_dict = {}
     data_to_clean = []
     for time in form.keys():

@@ -160,7 +160,7 @@ bool gnomonSessionManagerPrivate::runNodes(QStringList scheduled_nodes, std::sha
             if(node->inputPort(inputPortsNames[1])->formIndex() >=0) {
                 int second = node->inputPort(inputPortsNames[1])->formIndex();
                 qDebug() << "COMPOSE " << first << " -> " << second;
-                gnomonFormManager::instance()->compose(first, second);
+                GNOMON_FORM_MANAGER->compose(first, second);
             }
         }
 
@@ -536,7 +536,7 @@ void gnomonSessionManager::sync() {
 
         cleanExpiredForms();
         settings.beginGroup("forms");
-        settings.setValue("form_manager_state", gnomonFormManager::instance()->serialize());
+        settings.setValue("form_manager_state", GNOMON_FORM_MANAGER->serialize());
 
         settings.setValue("owned_form_ids", m_owned_forms.keys());
         QStringList form_ids;
@@ -559,8 +559,10 @@ void gnomonSessionManager::sync() {
 
 bool gnomonSessionManager::load() {
     qDebug() << "===========" << "loading session";
+    m_session_loading = true;
+    emit isSessionLoadingChanged();
     this->setLoadingSessionProgress(0, "Loading Session");
-    d->disable_sync = true;
+    d->disable_sync = true; //TODO: could probably be replaced by m_session_laoding instead
 
     auto setSessionLoader = [=](double progress, const QString& message){
         this->setLoadingSessionProgress(this->loadingSessionProgress() + progress, message);
@@ -600,7 +602,7 @@ bool gnomonSessionManager::load() {
     }
 
     QJsonObject form_manager_state = settings.value("form_manager_state").toJsonObject();
-    gnomonFormManager::instance()->deserialize(form_manager_state);
+    GNOMON_FORM_MANAGER->deserialize(form_manager_state);
 
     settings.endGroup();
 
@@ -648,10 +650,14 @@ bool gnomonSessionManager::load() {
         d->init = true;
         d->disable_sync = false;
 
+        m_session_loading = false;
+        emit isSessionLoadingChanged();
         return true;
     } else {
 
         d->disable_sync = false;
+        m_session_loading = false;
+        emit isSessionLoadingChanged();
         return false;
     }
 }

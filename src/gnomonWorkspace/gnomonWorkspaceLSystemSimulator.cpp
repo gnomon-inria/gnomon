@@ -572,7 +572,7 @@ void gnomonWorkspaceLSystemSimulator::apply(QWidget *view)
 //
 //    qDebug() << Q_FUNC_INFO << 5 << image;
 //
-//    gnomonFormManager::instance()->addForm(lstring_series, this->color, image);
+//    GNOMON_FORM_MANAGER->addForm(lstring_series, this->color, image);
 //
     qDebug() << Q_FUNC_INFO << "Done";
 }

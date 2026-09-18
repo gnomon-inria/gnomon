@@ -64,6 +64,9 @@ void gnomonLStringAdapterCommand::setInput(std::shared_ptr<gnomonLStringSeries> 
         d->input = input;
     }
     Q_ASSERT(this->action);
+    if (d->input) {
+        d->input->load();
+    }
     ((gnomonAbstractLStringAdapter *) this->action)->setInput(d->input);
     this->action->refreshParameters();
 }
@@ -115,6 +118,12 @@ QJsonObject gnomonLStringAdapterCommand::serializeResults(void) {
     QJsonObject out;
     out["output"] = d->output->serialize();
     return out;
+}
+
+void gnomonLStringAdapterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+    d->input = nullptr;
 }
 //
 // gnomonLStringAdapterCommand.cpp ends here

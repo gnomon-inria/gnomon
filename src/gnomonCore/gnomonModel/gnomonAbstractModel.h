@@ -30,8 +30,34 @@ public:
 
 public:
     virtual void setParameter(const QString& parameterName, const QVariant& parameterValue) = 0;
+    virtual void addParameter(const QString& parameterName, const QString& parameterType, const QString& group) { };
+    virtual void duplicateParameter(const QString& parameterName, const QString& newName, const QString& group) { };
+    virtual void removeParameter(const QString& parameterName) { };
+    virtual void setGroup(const QString& parameterName, const QString& group) { };
+    virtual void duplicateGroup(const QString& groupName, const QString& newName) { };
+    virtual void removeGroup(const QString& groupName) { };
+    virtual void renameParameter(const QString& oldName, const QString& newName) { };
+    virtual void renameGroup(const QString& oldName, const QString& newName) { };
     virtual dtkCoreParameters parameters(void) const = 0;
     virtual QMap<QString, QString> parameterGroups(void) { return QMap<QString, QString>(); };
+
+    virtual void connectParameter(const QString& parameter_name) {
+        dtkCoreParameters params = this->parameters();
+        dtkCoreParameter *parameter = params.value(parameter_name, nullptr);
+        if (parameter) {
+            parameter->connect([=]() {
+                this->onParameterChanged(parameter_name);
+            });
+        }
+    }
+
+    virtual void onParameterChanged(const QString& parameter_name = "") {
+        qDebug()<<Q_FUNC_INFO<<"Not implemented";
+    }
+
+    virtual void refreshParameters(void) {
+        qDebug()<<Q_FUNC_INFO<<"Not implemented";
+    }
 
 public:
     void setLogServerAddress(QString addr) {};

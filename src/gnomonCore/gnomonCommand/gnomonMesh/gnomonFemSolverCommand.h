@@ -30,6 +30,8 @@ public:
 
     orderedMap outputTypes() override;
 
+    void clear(void) override;
+
     std::shared_ptr<gnomonMeshSeries> updatedMesh();
 
     void deserializeResults(QJsonObject &serialization) override;

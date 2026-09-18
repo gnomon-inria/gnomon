@@ -288,7 +288,7 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
         if(d->command->outputs()[name] && (*d->targets)[i]->acceptedForms().contains(output_type)) {
             auto form =  d->command->outputs()[name];
             GNOMON_SESSION->trackForm(form);
-            int form_count = gnomonFormManager::instance()->formCount(output_type);
+            int form_count = GNOMON_FORM_MANAGER->formCount(output_type);
             form->metadata()->set("name", output_type.remove("gnomon") + QString::number(form_count+1));
             form->metadata()->set("source", d->algorithm);
             (*d->targets)[i]->setForm(output_type, form);
@@ -306,8 +306,8 @@ void gnomonAlgorithmWorkspace::viewOutputs(void)
     }
 }
 
-QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
-    QJsonObject state = gnomonAbstractWorkspace::serialize();
+QJsonObject gnomonAlgorithmWorkspace::_serialize(void) {
+    QJsonObject state = gnomonAbstractWorkspace::_serialize();
     state.insert("algoName", algoName());
     state.insert("currentIndex", currentIndex());
 
@@ -339,8 +339,8 @@ QJsonObject gnomonAlgorithmWorkspace::serialize(void) {
     return state;
 }
 
-void gnomonAlgorithmWorkspace::deserialize(const QJsonObject & state) {
-    gnomonAbstractWorkspace::deserialize(state);
+void gnomonAlgorithmWorkspace::_deserialize(const QJsonObject & state) {
+    gnomonAbstractWorkspace::_deserialize(state);
     setCurrentIndex(state["currentIndex"].toInt());
     setAlgoName(state["algoName"].toString());
 
@@ -372,14 +372,45 @@ void gnomonAlgorithmWorkspace::deserialize(const QJsonObject & state) {
     emit parametersChanged();
 }
 
-void gnomonAlgorithmWorkspace::saveState(void) {
-    d->savedState = serialize();
+
+void gnomonAlgorithmWorkspace::restoreView(void) {
+    for (auto view : d->sources->views()) {
+        view->restoreState();
+    }
+    for (auto view : d->targets->views()) {
+        view->restoreState();
+    }
 }
 
-void gnomonAlgorithmWorkspace::restoreState(void) {
-    if(!d->savedState.isEmpty()) {
-        QString previousAlgo = algoName();
-        deserialize(d->savedState);
+void gnomonAlgorithmWorkspace::hibernate(QString uuid) {
+    gnomonAbstractWorkspace::hibernate(uuid);
+    if(this->uuid() == uuid) {
+        QList<std::shared_ptr<gnomonAbstractDynamicForm>> temp_holder; // prevent the forms from being outright deleted
+        for (auto view : d->sources->views()) {
+            for(auto form_name: view->formNames()) {
+                temp_holder.append(view->form(form_name));
+            }
+        }
+        for (auto view : d->targets->views()) {
+            for(auto form_name: view->formNames()) {
+                temp_holder.append(view->form(form_name));
+            }
+        }
+
+        d->command->clear();
+        for (auto view : d->sources->views()) {
+            view->clear();
+        }
+        for (auto view : d->targets->views()) {
+            view->clear();
+        }
+
+        for(const auto& form: temp_holder) {
+            if(form.use_count() == 1) {
+                // only the temp holder holds a reference
+                deactivated_forms.append(form);
+            }
+        }
     }
 }
 

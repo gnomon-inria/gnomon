@@ -21,6 +21,7 @@ template <typename T> gnomonTimeSeries<T>::gnomonTimeSeries(const gnomonTimeSeri
     for (const auto& id : o.m_forms.keys()) {
         m_times[id] = o.m_times[id];
         m_storage_info[id] = o.m_storage_info[id];
+        m_form_metadata_storage[id] = o.m_form_metadata_storage[id];
 
         QFile::copy(
                 o.storage_dir.filePath(o.m_storage_info[id].fileName),
@@ -57,6 +58,7 @@ template <typename T> gnomonTimeSeries<T>& gnomonTimeSeries<T>::operator=(const 
     m_forms = o.m_forms;
     m_times = o.m_times;
     m_storage_info = o.m_storage_info;
+    m_form_metadata_storage = o.m_form_metadata_storage;
     m_current_time = o.m_current_time;
     *(p_metadata) = *(o.p_metadata);
 
@@ -124,10 +126,16 @@ template <typename T> void gnomonTimeSeries<T>::selectCurrentTime(double t)
 
 template <typename T> QMap<QString,QString> gnomonTimeSeries<T>::metadataAtT(double t) const
 {
-    if(containsTime(t))
+    if(!containsTime(t)) {
+        return {};
+    }
+    uint id = idAtT(t);
+    if(m_storage_info[id].loaded) {
         return m_forms[idAtT(t)]->metadata();
-    else
-        return QMap<QString, QString>();
+    }
+    else {
+        return m_form_metadata_storage[id];
+    }
 }
 
 
@@ -275,7 +283,10 @@ template <typename T> void gnomonTimeSeries<T>::save(uint id)
 {
     if(m_storage_info.contains(id) && m_storage_info.value(id).loaded) {
         QJsonObject serialization = m_forms.value(id)->serialize();
-        auto content = qCompress(QJsonDocument(serialization).toJson(), 5);
+        // temporarily deactivating compression for better performances
+        // TODO: move saving and compressing to the plugins later
+        //auto content = qCompress(QJsonDocument(serialization).toJson(), 1);
+        auto content = QJsonDocument(serialization).toJson();
         QFile file(storage_dir.filePath(m_storage_info.value(id).fileName));
         if(file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             file.write(content);
@@ -292,7 +303,8 @@ template <typename T> void gnomonTimeSeries<T>::load(uint id)
         QFile file(filePath);
         QJsonObject formSerialization;
         if(file.open(QIODevice::ReadOnly)) {
-            auto content = qUncompress(file.readAll());
+            //auto content = qUncompress(file.readAll());
+            auto content = file.readAll();
             file.close();
             formSerialization = QJsonDocument::fromJson(content).object();
             file.close();
@@ -302,12 +314,20 @@ template <typename T> void gnomonTimeSeries<T>::load(uint id)
         }
         m_forms[id] = std::make_shared<T>(formSerialization);
         m_storage_info[id].loaded = true;
+        m_form_metadata_storage.remove(id);
     }
 }
 
 template <typename T> void gnomonTimeSeries<T>::unload(uint id)
 {
-
+    if(!m_forms.contains(id))
+        return;
+    auto & form = m_forms[id];
+    if(form.unique()) {
+        m_form_metadata_storage[id] = form->metadata();
+        m_forms.remove(id);
+        m_storage_info[id].loaded = false;
+    }
 }
 
 template <typename T> void gnomonTimeSeries<T>::load()
@@ -320,15 +340,13 @@ template <typename T> void gnomonTimeSeries<T>::load()
 
 template <typename T> void gnomonTimeSeries<T>::unload()
 {
-    readManifest();
-    for(uint id: m_storage_info.keys()) {
-        save(id);
-    }
-    updateManifest();
+    // If any form has changed compared to what was saved it should be saved. Unfortunately there are no
+    // way implemented at the moment to check for changes that is not memory and cpu intensive
+    // A mechanism should be implemented for forms (and form datas) to compute a hash of themselves that would be
+    // stored in the manifest when saved
     for(uint id: m_storage_info.keys()) {
         unload(id);
     }
-
 }
 
 template <typename T> bool gnomonTimeSeries<T>::loaded()
@@ -452,7 +470,6 @@ void gnomonTimeSeries<T>::deserialize(const QJsonObject &serialization) {
         }
     } else {
         readManifest();
-        load();
     }
 
 }

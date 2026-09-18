@@ -35,6 +35,7 @@ public:
     Q_PROPERTY(QJSValue parameters READ parameters NOTIFY parametersChanged)
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileChanged);
     Q_PROPERTY(QStringList missingTextures READ missingTextures NOTIFY missingTexturesChanged);
+    Q_PROPERTY(bool readOnly READ readOnly NOTIFY readOnlyChanged);
 
 signals:
     void textChanged(const QString&);
@@ -49,6 +50,7 @@ signals:
     void currentIndexChanged(void);
     void requestOpenFile(const QString& path);
     void missingTexturesChanged(void);
+    void readOnlyChanged();
 
     // TODO: factorize in a code editor workspace class
     void codeEditorReady(void);
@@ -74,6 +76,7 @@ public slots:
     void read(const QString& file_url, bool read_only=false, bool restoring=false);
     void save(const QString& file_url) const;
     void close(const QString& file_name);
+    void updateFromCurrentFile();
 
     void setDefaultLSystem(void);
 
@@ -97,6 +100,7 @@ public:
     QString fileName(void) const;
     void setModelName(const QString &);
     void setFileName(const QString &);
+    bool readOnly();
     int currentIndex(void) const;
     void setCurrentIndex(int);
     bool backup(void);
@@ -108,12 +112,20 @@ public:
     QJSValue parameters(void);
     QStringList parameterNames(void);
     void setParameter(const QString& parameter, const QVariant& value);
+    Q_INVOKABLE void addParameter(const QString& parameterName, const QString& parameterType, const QString& group);
+    Q_INVOKABLE void duplicateParameter(const QString& parameterName, const QString& newName, const QString& group);
+    Q_INVOKABLE void removeParameter(const QString& name);
+    Q_INVOKABLE void setGroup(const QString& parameterName, const QString& group);
+    Q_INVOKABLE void duplicateGroup(const QString& groupName, const QString& newName);
+    Q_INVOKABLE void removeGroup(const QString& groupName);
+    Q_INVOKABLE void renameParameter(const QString& oldName, const QString& newName);
+    Q_INVOKABLE void renameGroup(const QString& oldName, const QString& newName);
 
-    QJsonObject serialize() override;
-    void deserialize(const QJsonObject &state) override;
-public slots:
-    void saveState();
-    void restoreState();
+protected:
+    QJsonObject _serialize() override;
+    void _deserialize(const QJsonObject &state) override;
+public:
+    void restoreView(void) override;
 
 protected:
     class gnomonWorkspaceLSystemModelPrivate *d = nullptr;

@@ -101,6 +101,10 @@ G.Application {
         nameFilters: [ "Json files (*.json)" ]
 
          onAccepted: {
+            if (GP.PipelineManager.pipeline.name === "") {
+                let filename = decodeURIComponent(saveFileDialog.file).split('/').pop()
+                GP.PipelineManager.pipeline.name = filename.slice(0, -5)
+            }
             GP.PipelineManager.pipeline.exportToJson(saveFileDialog.file);
         }
     }
@@ -153,6 +157,13 @@ G.Application {
                     shortcut: StandardKey.Save
                     onTriggered: {
                         GP.ProjectManager.project.save()
+                    }
+                }
+
+                P.MenuItem {
+                    text: qsTr("Test emit requestHibernation")
+                    onTriggered: {
+                        GV.World.testDeactivate()
                     }
                 }
 
@@ -390,7 +401,6 @@ G.Application {
         type: G.Style.ButtonType.Warning
     }
 
-
 // /////////////////////////////////////////////////////////////////////////////
 // Focused views API
 // /////////////////////////////////////////////////////////////////////////////
@@ -581,6 +591,7 @@ G.Application {
         if (window.current_workspace()) {
             window.current_workspace().d.saveState();
         }
+        window.workspace_at(index).d.wakeUp();
         window.drawelr_closed = false
         stack_launcher.currentIndex  = 1
         workspaces.currentIndex = index;
@@ -592,7 +603,7 @@ G.Application {
         drawel.update_menu();
         drawer.update_menu(_internal.menu_sources[index]);
         if (window.current_workspace()) {
-            window.current_workspace().d.restoreState();
+            window.current_workspace().d.restoreView();
             if(window.current_workspace().viewSelected) {
                 window.currentView = window.current_workspace().viewSelected
                 window.currentView.forceFocus()

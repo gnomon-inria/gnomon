@@ -86,6 +86,11 @@ QJsonObject gnomonCellComplexReaderCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonCellComplexReaderCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->cellComplex = nullptr;
+}
+
 GNOMON_REGISTER_TYPE(gnomonCellComplexReaderCommand)
 //
 // gnomonCellComplexReaderCommand.cpp ends here

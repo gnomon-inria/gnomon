@@ -50,6 +50,9 @@ void gnomonTreeWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonTreeWriterCommand::predo(void)
 {
     ((gnomonAbstractTreeWriter *) this->action)->setPath(this->m_path);
+    if (d->tree) {
+        d->tree->load();
+    }
     ((gnomonAbstractTreeWriter *) this->action)->setTree(d->tree);
 }
 
@@ -93,6 +96,11 @@ void gnomonTreeWriterCommand::setInputForm(const QString &name, std::shared_ptr<
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonTreeWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->tree = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonTreeWriterCommand)

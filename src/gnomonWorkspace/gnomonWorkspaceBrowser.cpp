@@ -252,7 +252,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
         } else {
             image_series->selectCurrentTime(image_series->times().first());
             GNOMON_SESSION->trackForm(image_series);
-            int form_count = gnomonFormManager::instance()->formCount(image_series->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(image_series->formName());
             image_series->metadata()->set("name", image_series->formName().remove("gnomon") + QString::number(form_count+1));
             image_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonImage",image_series);
@@ -268,9 +268,8 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
             return false;
         } else {
             cellImage_series->selectCurrentTime(cellImage_series->times().first());
-            qDebug() << "###### " << cellImage_series->time() << cellImage_series->times();
             GNOMON_SESSION->trackForm(cellImage_series);
-            int form_count = gnomonFormManager::instance()->formCount(cellImage_series->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(cellImage_series->formName());
             cellImage_series->metadata()->set("name", cellImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             cellImage_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonCellImage",cellImage_series);
@@ -287,7 +286,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
         } else {
             cellComplex_series->selectCurrentTime(cellComplex_series->times().first());
             GNOMON_SESSION->trackForm(cellComplex_series);
-            int form_count = gnomonFormManager::instance()->formCount(cellComplex_series->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(cellComplex_series->formName());
             cellComplex_series->metadata()->set("name", cellComplex_series->formName().remove("gnomon") + QString::number(form_count+1));
             cellComplex_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonCellComplex",cellComplex_series);
@@ -304,7 +303,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
         } else {
             binaryImage_series->selectCurrentTime(binaryImage_series->times().first());
             GNOMON_SESSION->trackForm(binaryImage_series);
-            int form_count = gnomonFormManager::instance()->formCount(binaryImage_series->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(binaryImage_series->formName());
             binaryImage_series->metadata()->set("name", binaryImage_series->formName().remove("gnomon") + QString::number(form_count+1));
             binaryImage_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonBinaryImage",binaryImage_series);
@@ -321,7 +320,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
         } else {
             dataFrame_series->selectCurrentTime(dataFrame_series->times().first());
             GNOMON_SESSION->trackForm(dataFrame_series);
-            int form_count = gnomonFormManager::instance()->formCount(dataFrame_series->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(dataFrame_series->formName());
             dataFrame_series->metadata()->set("name", dataFrame_series->formName().remove("gnomon") + QString::number(form_count+1));
             dataFrame_series->metadata()->set("source", source);
 //            this->browse_figure->setForm("gnomonDataFrame",dataFrame_series);
@@ -338,7 +337,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
         } else {
             lString_series->selectCurrentTime(lString_series->times().first());
             GNOMON_SESSION->trackForm(lString_series);
-            int form_count = gnomonFormManager::instance()->formCount(lString_series->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(lString_series->formName());
             lString_series->metadata()->set("name", lString_series->formName().remove("gnomon") + QString::number(form_count+1));
             lString_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonLString",lString_series);
@@ -355,7 +354,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
         } else {
             mesh_series->selectCurrentTime(mesh_series->times().first());
             GNOMON_SESSION->trackForm(mesh_series);
-            int form_count = gnomonFormManager::instance()->formCount(mesh_series->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(mesh_series->formName());
             mesh_series->metadata()->set("name", mesh_series->formName().remove("gnomon") + QString::number(form_count+1));
             mesh_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonMesh",mesh_series);
@@ -372,7 +371,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
         } else {
             pointCloud_series->selectCurrentTime(pointCloud_series->times().first());
             GNOMON_SESSION->trackForm(pointCloud_series);
-            int form_count = gnomonFormManager::instance()->formCount(pointCloud_series->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(pointCloud_series->formName());
             pointCloud_series->metadata()->set("name", pointCloud_series->formName().remove("gnomon") + QString::number(form_count+1));
             pointCloud_series->metadata()->set("source", source);
             this->browse_view->setForm("gnomonPointCloud",pointCloud_series);
@@ -389,7 +388,7 @@ bool gnomonWorkspaceBrowserPrivate::viewOutputs(gnomonAbstractReaderCommand* com
         } else {
             tree_series->selectCurrentTime(tree_series->times().first());
             GNOMON_SESSION->trackForm(tree_series);
-            int form_count = gnomonFormManager::instance()->formCount(tree_series->formName());
+            int form_count = GNOMON_FORM_MANAGER->formCount(tree_series->formName());
             tree_series->metadata()->set("name", tree_series->formName().remove("gnomon") + QString::number(form_count+1));
             tree_series->metadata()->set("source", source);
             //gnomonPipelineManager::instance()->addForm(tree_series->uuid());
@@ -554,24 +553,38 @@ gnomonVtkView *gnomonWorkspaceBrowser::view(void) const
     return d->browse_view;
 }
 
-QJsonObject gnomonWorkspaceBrowser::serialize() {
-    QJsonObject serialization = gnomonAbstractWorkspace::serialize();
+QJsonObject gnomonWorkspaceBrowser::_serialize() {
+    QJsonObject serialization = gnomonAbstractWorkspace::_serialize();
     serialization.insert("view", d->browse_view->serialize());
     return serialization;
 }
 
-void gnomonWorkspaceBrowser::deserialize(const QJsonObject &state) {
-    gnomonAbstractWorkspace::deserialize(state);
+void gnomonWorkspaceBrowser::_deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::_deserialize(state);
     d->browse_view->deserialize(state.value("view").toObject());
 }
 
-void gnomonWorkspaceBrowser::saveState(void) {
-    d->savedState = serialize();
+void gnomonWorkspaceBrowser::restoreView(void) {
+    d->browse_view->restoreState();
 }
 
-void gnomonWorkspaceBrowser::restoreState(void) {
-    if(!d->savedState.isEmpty()) {
-        deserialize(d->savedState);
+void gnomonWorkspaceBrowser::hibernate(QString uuid) {
+    gnomonAbstractWorkspace::hibernate(uuid);
+    if(this->uuid() == uuid) {
+        QList<std::shared_ptr<gnomonAbstractDynamicForm>> temp_holder; // prevent the forms from being outright deleted
+        for(auto form_name: d->browse_view->formNames()) {
+            temp_holder.append(d->browse_view->form(form_name));
+        }
+        d->browse_view->clear();
+        for(auto [form_type, command]: d->form_type_commands.asKeyValueRange()) {
+            command->clear();
+        }
+        for(const auto& form: temp_holder) {
+            if(form.use_count() == 1) {
+                // only the temp holder holds a reference
+                deactivated_forms.append(form);
+            }
+        }
     }
 }
 

@@ -92,6 +92,7 @@ public:
     QStringList missing_textures;
 
     QMetaObject::Connection editor_connect;
+    QTimer readFileTimer; // to keep d->text up to date with what's on the disk
 };
 
 gnomonWorkspaceLSystemModelPrivate::gnomonWorkspaceLSystemModelPrivate(void)
@@ -190,6 +191,13 @@ gnomonWorkspaceLSystemModel::gnomonWorkspaceLSystemModel(QObject *parent) : gnom
             this->messageChanged();
     });
 
+    connect(this, &gnomonWorkspaceLSystemModel::fileChanged,
+            this, &gnomonWorkspaceLSystemModel::readOnlyChanged);
+
+    d->readFileTimer.setInterval(1000);
+    connect(&d->readFileTimer, &QTimer::timeout, this, &gnomonWorkspaceLSystemModel::updateFromCurrentFile);
+    d->readFileTimer.start();
+
     this->setDefaultLSystem();
 }
 
@@ -202,11 +210,14 @@ gnomonWorkspaceLSystemModel::~gnomonWorkspaceLSystemModel(void)
     }
 
     if(d->model_file) {
-        // d->model_file->remove();
         delete d->model_file;
         d->model_file = nullptr;
     }
 
+    // TODO: clear read-only files on exit?
+    // for (auto lpy_file : d->lpy_dir->entryList(QStringList() << "*.lpy", QDir::Files)) {
+    //     QFile(d->lpy_dir->filePath(lpy_file)).remove();
+    // }
 
     delete d;
 }
@@ -228,6 +239,7 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
 
         if(!d->model_file) {
             d->model_file = new QFile(d->lpy_dir->filePath(d->file));
+            d->open_files[d->file] = d->model_file->fileName();
         }
 
         if (d->model_file->open(QIODevice::WriteOnly)) {
@@ -236,7 +248,13 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
             model_stream.flush();
 
             d->model_file->close();
+
+            auto params = d->command->parameters();
             d->command->setLSystem(d->model_file->fileName());
+            if (d->command->parameters() != params) {
+                emit parametersChanged();
+            }
+
             // TODO: doesn't that force recomputing / rendering at every character change?
             // this->reset();
         } else {
@@ -244,7 +262,6 @@ void gnomonWorkspaceLSystemModel::setText(const QString& text)
         }
         emit derivationLengthChanged(d->command->derivationLength());
         emit textChanged(d->text);
-        emit parametersChanged();
     }
 }
 
@@ -283,6 +300,18 @@ void gnomonWorkspaceLSystemModel::setAnimationTime(const QString& time)
     }
 }
 
+void gnomonWorkspaceLSystemModel::updateFromCurrentFile() {
+    QFile file(d->model_file->fileName());
+    if(file.open(QIODevice::ReadOnly)) {
+        QTextStream in(&file);
+        QString new_text(in.readAll());
+        file.close();
+        this->setText(new_text);
+    } else {
+        dtkWarn() << "Could not open file" << d->model_file;
+    }
+}
+
 // TODO: to factorize in a code editor workspace class
 void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only, bool restoring)
 {
@@ -296,7 +325,8 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only, 
         absolute_path = GNOMON_PROJECT->findFile(relative_path);
     }
 
-    bool to_copy = (!read_only) & (absolute_path=="");
+    // FIXME: this condition should never happen (not read only and not in project)
+    /* bool to_copy = (!read_only) && (absolute_path=="");
     if(to_copy) {
         QString file_name = relative_path.split(QRegularExpression("/")).last();
         QString project_file_path = GNOMON_PROJECT->projectDir() + "/" + file_name;
@@ -305,32 +335,25 @@ void gnomonWorkspaceLSystemModel::read(const QString& file_url, bool read_only, 
             return;
         }
         relative_path = GNOMON_PROJECT->relativePath(project_file_path);
-    }
+    } */
 
-    QFile f(relative_path);
-    if (f.open(QIODevice::ReadOnly)) {
-        QTextStream in(&f);
-
-        if(d->model_file) {
-            delete d->model_file;
-        }
-        if(read_only) {
-            d->model_file = new QFile(d->lpy_dir->filePath(file_name));
-        } else {
-            d->model_file = new QFile(relative_path);
-        }
-
-        this->setFileName(file_name);
-        this->setText(in.readAll());
+    if (!read_only) {
         d->open_files[file_name] = relative_path;
-        if (!restoring) {
-            this->reset();
-        }
-        if(!read_only)
-            this->backup();
     } else {
-        dtkWarn()<<"Could not open file"<<relative_path;
+        // Ensure read-only file is not modified by Python plugin by copying it in lpy_dir
+        d->open_files[file_name] = d->lpy_dir->filePath(file_name);
+        QFile::copy(relative_path, d->open_files[file_name]);
+        // d->open_files[file_name] = relative_path;
     }
+
+    this->setFileName(file_name);
+    this->updateFromCurrentFile();
+
+    if (!restoring) {
+        this->reset();
+    }
+    if(!read_only)
+        this->backup();
     emit stateChanged();
 }
 
@@ -537,6 +560,22 @@ void gnomonWorkspaceLSystemModel::setFileName(const QString &filename)
 {
     if(filename != d->file) {
         d->file = filename;
+
+        if(d->model_file) {
+            delete d->model_file;
+        }
+        if (d->open_files.contains(d->file)) {
+            d->model_file = new QFile(d->open_files[d->file]);
+        } else {
+            d->model_file = nullptr;
+        }
+
+        // TODO: shouldn't we reset to use the axiom of the current model?
+        // if(d->model_file) {
+        //     d->command->setLSystem(d->model_file->fileName());
+        //     this->reset();
+        // }
+
         emit fileChanged(filename);
     }
 }
@@ -579,6 +618,48 @@ QJSValue gnomonWorkspaceLSystemModel::parameters(void)
     return parameters;
 }
 
+void gnomonWorkspaceLSystemModel::addParameter(const QString& parameterName, const QString& parameterType, const QString& group) {
+    qDebug()<<Q_FUNC_INFO<<parameterName<<parameterType<<group;
+    d->command->addParameter(parameterName, parameterType, group);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::duplicateParameter(const QString &parameterName, const QString &newName,
+                                                     const QString &group) {
+    d->command->duplicateParameter(parameterName, newName, group);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::removeParameter(const QString& parameterName) {
+    d->command->removeParameter(parameterName);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::setGroup(const QString &parameterName, const QString &group) {
+    d->command->setGroup(parameterName, group);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::duplicateGroup(const QString &groupName, const QString &newName) {
+    d->command->duplicateGroup(groupName, newName);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::removeGroup(const QString &groupName) {
+    d->command->removeGroup(groupName);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::renameParameter(const QString &oldName, const QString &newName) {
+    d->command->renameParameter(oldName, newName);
+    emit parametersChanged();
+}
+
+void gnomonWorkspaceLSystemModel::renameGroup(const QString &oldName, const QString &newName) {
+    d->command->renameGroup(oldName, newName);
+    emit parametersChanged();
+}
+
 QStringList gnomonWorkspaceLSystemModel::parameterNames(void)
 {
     return d->command->parameters().keys();
@@ -606,16 +687,18 @@ void gnomonWorkspaceLSystemModel::copyTextureFiles(const QStringList& files)
 void gnomonWorkspaceLSystemModel::importFile(const QString& file_name, const QString& path)
 {
     auto project_file = path + "/" + file_name;
-    if (QFile::copy(d->lpy_dir->filePath(file_name), project_file)) {
-        QFile::remove(d->lpy_dir->filePath(file_name));
+    if (QFile::copy(d->open_files[file_name], project_file)) {
+        QFile::remove(d->open_files[file_name]);
         this->backup();
         delete(d->model_file);
+        d->open_files[file_name] = project_file;
         d->model_file = new QFile(project_file);
+        emit fileChanged(file_name);
     }
 }
 
-QJsonObject gnomonWorkspaceLSystemModel::serialize() {
-    QJsonObject state = gnomonAbstractWorkspace::serialize();
+QJsonObject gnomonWorkspaceLSystemModel::_serialize() {
+    QJsonObject state = gnomonAbstractWorkspace::_serialize();
 
     QJsonObject open_file_json;
     for (const auto& file_name : d->open_files.keys()) {
@@ -649,8 +732,8 @@ QJsonObject gnomonWorkspaceLSystemModel::serialize() {
     return state;
 }
 
-void gnomonWorkspaceLSystemModel::deserialize(const QJsonObject &state) {
-    gnomonAbstractWorkspace::deserialize(state);
+void gnomonWorkspaceLSystemModel::_deserialize(const QJsonObject &state) {
+    gnomonAbstractWorkspace::_deserialize(state);
     disconnect(d->editor_connect);
 
     QJsonObject open_file_json = state["open_files"].toObject();
@@ -664,7 +747,6 @@ void gnomonWorkspaceLSystemModel::deserialize(const QJsonObject &state) {
             emit requestOpenFile(d->open_files[file_name]);
         }
     });
-
     QJsonObject parameters_json = state["parameters"].toObject();
 
     // TODO: to remove if code is restored from file / backup ?
@@ -688,13 +770,11 @@ void gnomonWorkspaceLSystemModel::deserialize(const QJsonObject &state) {
     }
 }
 
-void gnomonWorkspaceLSystemModel::saveState() {
-    d->state = serialize();
+void gnomonWorkspaceLSystemModel::restoreView(void) {
+    d->view->restoreState();
+    d->text_view->restoreState();
 }
 
-void gnomonWorkspaceLSystemModel::restoreState() {
-    deserialize(d->state);
-}
 
 bool gnomonWorkspaceLSystemModel::backup(void)
 {
@@ -713,5 +793,13 @@ void gnomonWorkspaceLSystemModel::restore()
 
     for (auto f : lpy_files) {
         emit requestOpenFile(f);
+    }
+}
+
+bool gnomonWorkspaceLSystemModel::readOnly() {
+    if (d->open_files[d->file].contains(d->lpy_dir->path())) {
+        return d->file != "vonKoch.lpy";
+    } else {
+        return GNOMON_PROJECT->isReadOnly(d->open_files[d->file]);
     }
 }

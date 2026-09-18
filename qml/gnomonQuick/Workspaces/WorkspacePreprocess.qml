@@ -16,7 +16,7 @@ import gnomon.Project 1.0 as GP
 
 G.Workspace {
 
-    id: _workspace;
+    id: _self;
 
     workspace_title: "Image Preprocessing";
 
@@ -50,7 +50,7 @@ G.Workspace {
 
         onParametersChanged: {
             stt.sync()
-            updateParametersModel(); //_workspace.updateParametersModel();
+            updateParametersModel(); //_self.updateParametersModel();
         }
     }
 
@@ -77,7 +77,7 @@ G.Workspace {
             onDroppedFromManager: (index) => {
                 console.info('Retrieving from manager');
                 window.currentView = _source_view
-                d.source.drop(index);
+                _self.dropForm(d.source, index)
             }
         }
 

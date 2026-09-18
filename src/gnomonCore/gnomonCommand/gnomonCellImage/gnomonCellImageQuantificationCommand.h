@@ -34,6 +34,8 @@ public:
     std::shared_ptr<gnomonDataFrameSeries> dataFrame();
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm> > outputs() override;
 
+    void clear(void) override;
+
     void deserializeResults(QJsonObject &serialization) override;
 
     QJsonObject serializeResults(void) override;

@@ -45,6 +45,9 @@ void gnomonImageWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonImageWriterCommand::predo(void)
 {
     ((gnomonAbstractImageWriter *) this->action)->setPath(this->m_path);
+    if (d->image) {
+        d->image->load();
+    }
     ((gnomonAbstractImageWriter *) this->action)->setImage(d->image);
 }
 
@@ -87,6 +90,11 @@ void gnomonImageWriterCommand::setInputForm(const QString &name, std::shared_ptr
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonImageWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->image = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonImageWriterCommand)

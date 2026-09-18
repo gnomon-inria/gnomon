@@ -28,7 +28,12 @@ public:
 
     gnomonAbstractForm *clone(void) override { return new gnomonImage(*this); };
 
-    ~gnomonImage(void) { if (m_data) { delete m_data; } m_data = nullptr; }
+    ~gnomonImage(void) {
+        if (m_data) {
+            delete m_data;
+        }
+        m_data = nullptr;
+    }
 
 public:
     gnomonImage& operator = (const gnomonImage& o)

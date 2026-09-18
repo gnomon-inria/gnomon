@@ -90,5 +90,10 @@ QJsonObject gnomonMeshConstructorCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonMeshConstructorCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+}
+
 //
 // gnomonMeshConstructorCommand.cpp ends here

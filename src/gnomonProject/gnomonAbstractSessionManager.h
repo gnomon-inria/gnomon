@@ -22,12 +22,15 @@ public:
 public:
     Q_PROPERTY(double progress READ progress NOTIFY progressChanged);
     Q_PROPERTY(double loadingSessionProgress READ loadingSessionProgress NOTIFY loadProgress);
+    Q_PROPERTY(bool isSessionLoading READ isSessionLoading NOTIFY isSessionLoadingChanged);
 
     double progress();
     void setProgress(double);
 
     double loadingSessionProgress(void);
     void setLoadingSessionProgress(double, const QString&);
+
+    bool isSessionLoading(void);
 
 public:
     Q_INVOKABLE virtual bool save(const QString &id, const QString &path) = 0;
@@ -69,18 +72,21 @@ public:
     bool addForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form);
     bool trackForm(const std::shared_ptr<gnomonAbstractDynamicForm>& form);
     std::shared_ptr<gnomonAbstractDynamicForm> getForm(const QString& uuid);
+    QStringList trackedForms();
 
 signals:
     void progressChanged(void);
     void finished(void);
     void failed(QString);
     void loadProgress(const QString&);
+    void isSessionLoadingChanged(void);
 
 protected:
     void cleanExpiredForms();
 
     double m_progress = 0.; // from 0 to 1
     double m_session_progress = 0.;
+    bool m_session_loading = false;
     static void registerInstance(gnomonAbstractSessionManager *o);
 
     QMap<QString, std::shared_ptr<gnomonAbstractDynamicForm>> m_owned_forms;

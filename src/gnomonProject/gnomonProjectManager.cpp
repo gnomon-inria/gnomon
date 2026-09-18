@@ -44,6 +44,7 @@ gnomonProject *gnomonProjectManager::project(void)
 gnomonProject *gnomonProjectManager::openProject(const QString &path, bool restore_session, bool load_pipeline) {
     closeProject();
     d->project = new gnomonProject(path);
+    emit projectCreated();
     if(!load_pipeline){
         if(!restore_session || !GNOMON_SESSION->load()) {
             GNOMON_SESSION->newSession(d->project->projectInfo().default_source);
@@ -58,6 +59,7 @@ gnomonProject *gnomonProjectManager::createProject(const QString &path, const QS
                                                    const QString &description, const QString &source) {
     closeProject();
     d->project = gnomonProject::newProject(path, name, description, source);
+    emit projectCreated();
     // if there is a session definition load otherwise newSession
     if(!GNOMON_SESSION->load()) {
         GNOMON_SESSION->newSession(source);

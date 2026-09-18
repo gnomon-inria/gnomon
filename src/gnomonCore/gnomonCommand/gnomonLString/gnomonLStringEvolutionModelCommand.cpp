@@ -184,12 +184,12 @@ std::shared_ptr<gnomonLStringSeries> gnomonLStringEvolutionModelCommand::lString
     return d->lString;
 }
 
-void gnomonLStringEvolutionModelCommand::setLSystem(const QString& code)
+void gnomonLStringEvolutionModelCommand::setLSystem(const QString& path)
 {
     // code is an opened file
-    if(!d->opened_files.contains(code))
-        d->opened_files.append(code);
-    ((gnomonAbstractLStringEvolutionModel *) this->model)->setLSystem(code);
+    if(!d->opened_files.contains(path))
+        d->opened_files.append(path);
+    ((gnomonAbstractLStringEvolutionModel *) this->model)->setLSystem(path);
 }
 
 const QString& gnomonLStringEvolutionModelCommand::lSystemCode(void) const
@@ -266,6 +266,13 @@ gnomonAbstractCommand::orderedMap gnomonLStringEvolutionModelCommand::stateTypes
     gnomonAbstractCommand::orderedMap types;
     types.emplace_back(std::make_pair("state", "gnomonLString"));
     return types;
+}
+
+void gnomonLStringEvolutionModelCommand::clear(void) {
+    gnomonAbstractEvolutionModelCommand::clear();
+    // TODO: monitor here, clearing may cause problem later in this workspace
+    d->init_lString = nullptr;
+    d->lString = nullptr;
 }
 
 //

@@ -46,6 +46,9 @@ void gnomonDataFrameWriterCommand::setAlgorithmName(const QString& algo_name)
 void gnomonDataFrameWriterCommand::predo(void)
 {
     ((gnomonAbstractDataFrameWriter *) this->action)->setPath(this->m_path);
+    if (d->dataFrame) {
+        d->dataFrame->load();
+    }
     ((gnomonAbstractDataFrameWriter *) this->action)->setDataFrame(d->dataFrame);
 }
 
@@ -88,6 +91,11 @@ void gnomonDataFrameWriterCommand::setInputForm(const QString &name, std::shared
     } else {
         dtkWarn()<<Q_FUNC_INFO<<"Unknown input "<< name;
     }
+}
+
+void gnomonDataFrameWriterCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->dataFrame = nullptr;
 }
 
 GNOMON_REGISTER_TYPE(gnomonDataFrameWriterCommand)

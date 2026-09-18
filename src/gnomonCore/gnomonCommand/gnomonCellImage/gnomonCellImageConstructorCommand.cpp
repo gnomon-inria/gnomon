@@ -89,5 +89,10 @@ QJsonObject gnomonCellImageConstructorCommand::serializeResults(void) {
     return out;
 }
 
+void gnomonCellImageConstructorCommand::clear(void) {
+    gnomonAbstractAlgorithmCommand::clear();
+    d->output = nullptr;
+}
+
 //
 // gnomonCellImageConstructorCommand.cpp ends here

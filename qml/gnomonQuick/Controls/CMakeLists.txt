@@ -53,6 +53,10 @@ QML_FILES
   NurbsParameter.qml
   Page.qml
   Panel.qml
+  ParameterArgumentsEditor.qml
+  ParameterConfigurationPanel.qml
+  ParameterCreationDialog.qml
+  ParameterEditDialog.qml
   ParameterGroup.qml
   Parameters.qml
   PathParameter.qml
@@ -93,6 +97,7 @@ QML_FILES
   TreeView.qml
   utils.js
   View.qml
+  ViewNurbs.qml
   ViewParameters.qml
   World.qml
   WorldDelegate.qml

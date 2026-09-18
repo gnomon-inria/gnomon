@@ -28,6 +28,7 @@ dependencies:
     - pymongo
     - jinja2
     - matplotlib-base=3.7.1
+    - geomdl
     - timagetk =3
     - openalea.lpy >=3.13
     - libzip
@@ -72,6 +73,7 @@ dependencies:
     - qtpy >=2.0
     - pyvista
     - conda
+    - requests
     - pip
     - pip:
         - morphonet

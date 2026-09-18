@@ -73,6 +73,7 @@ public:
 public slots:
     virtual void update(void);
     virtual void clear(void) override;
+    virtual void clear(bool clear_visu);
 
     virtual void setVisualization(std::shared_ptr<gnomonAbstractVisualization>);
     virtual inline void newVisualization(void) { };
@@ -81,6 +82,7 @@ public slots:
     void disconnectVisualization(void);
 
 public:
+    bool isVisible(void);
     void setVisible(bool visible);
 
 signals:

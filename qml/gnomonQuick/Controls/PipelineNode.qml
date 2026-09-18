@@ -45,6 +45,12 @@ Rectangle {
         }
     }
 
+    G.SessionSettings {
+        category: "pipeline_nodes__"+node.data.name
+        property alias x: _self.x
+        property alias y: _self.y
+    }
+
     // onXChanged: {
     //     if (_self.x != _canvas.width/2 + node.data.position.x) {
     //         node.data.position = Qt.point(_self.x - _canvas.width/2, (_self.y - _canvas.height/2)/0.33)

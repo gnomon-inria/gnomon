@@ -1,0 +1,64 @@
+# User Guide
+
+Gnomon enables users to create shareable projects gathering data, computational tools and reproducible pipelines. This section is here to help new users finding their marks in the platform in order to get the most of its possibilities.
+
+::::{grid} 2
+:padding: 0
+:gutter: 4
+
+:::{grid-item-card}
+:class-header: sd-bg-light sd-font-weight-bold sd-text-center
+:link: tutorial.html
+Tutorial
+^^^
+Learn how to perform basic tasks using Gnomon and discover its main features.
+:::
+
+:::{grid-item-card}
+:class-header: sd-bg-light sd-font-weight-bold sd-text-center
+:link: workspaces.html
+Workspaces
+^^^
+Get familiar with the available workspaces in Gnomon and find out which ones suit your needs.
+:::
+::::
+
+::::{grid} 3
+:padding: 0
+:gutter: 4
+
+:::{grid-item-card}
+:class-header: sd-bg-light sd-font-weight-bold sd-text-center
+:link: concepts.html
+Concepts
+^^^
+Get a better understanding of the principles underlying the architecture of the Gnomon platform.
+:::
+
+:::{grid-item-card}
+:class-header: sd-bg-light sd-font-weight-bold sd-text-center
+:link: forms_index.html
+Forms
+^^^
+Find out the Form primitives that are natively available in Gnomon.
+:::
+
+:::{grid-item-card}
+:class-header: sd-bg-light sd-font-weight-bold sd-text-center
+:link: glossary.html
+Glossary
+^^^
+Read definitions of the terms used in Gnomon and throughout this documentation.
+:::
+::::
+
+:::{toctree}
+:maxdepth: 1
+:hidden:
+
+tutorial
+concepts
+forms_index
+workspaces
+glossary
+:::

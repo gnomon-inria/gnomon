@@ -2,9 +2,11 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 
+import Qt.labs.platform  1.0 as P
 
 import gnomonQuick.Style as G
 import gnomonQuick.Controls as G
+import gnomon.Project         1.0 as GP
 
 Control {
     id: _control
@@ -44,7 +46,8 @@ Control {
         tooltip: "Browse local files"
 
         onClicked: {
-            _file_dialog.open();
+            _path_tree_view.requestFileSelection(_control.param?.path)
+            _path_dialog.open();
         }
     }
 
@@ -60,17 +63,57 @@ Control {
         font: G.Style.fonts.value
     }
 
-    FileDialog {
-        id: _file_dialog
+    G.Dialog {
+        id: _path_dialog
 
-        currentFile: _control.param ? _control.param.baseName : "";
-        currentFolder: _control.param ? _control.param.dirName : "";
-        nameFilters: _control.param ? _control.param.filters : [];
+        parent: Overlay.overlay
 
-        modality: Qt.NonModal;
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: G.Style.mediumDialogWidth
+        height: G.Style.mediumDialogHeight
+
+        modal: true
+        title: "Select path"
+        padding: 0
+
+        standardButtons:  Dialog.Ok | Dialog.Cancel
+
+        ScrollView {
+            id: _scroll_view
+
+            anchors.fill: parent
+
+            clip: true
+            contentWidth: availableWidth
+            contentHeight: _path_tree_view.implicitHeight
+
+            ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+
+            G.TreeView {
+                id: _path_tree_view
+
+                anchors.fill: parent
+
+                interactive: true
+
+                data_paths: [decodeURIComponent(P.StandardPaths.writableLocation(P.StandardPaths.HomeLocation)).slice(7)]
+                expanded: true
+                selectFolder: true
+                singleSelection: false
+                dragEnabled: false
+            }
+        }
 
         onAccepted: {
-            _control.param.path = decodeURIComponent(_file_dialog.selectedFile);
+            let paths = "";
+            for (let i=0; i<_path_tree_view.selectedPaths.length; i++) {
+                if (i>0) {
+                    paths += ","
+                }
+                paths += _path_tree_view.selectedPaths[i]
+            }
+            _control.param.path = paths;
         }
     }
 }

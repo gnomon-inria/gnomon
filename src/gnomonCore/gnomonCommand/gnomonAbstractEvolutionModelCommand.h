@@ -79,6 +79,30 @@ public:
     inline virtual dtkCoreParameters parameters() const override { return this->model->parameters(); };
     inline virtual void setParameter(const QString& parameter, const QVariant& value) override { this->model->setParameter(parameter, value); }
     inline virtual QMap<QString, QString> parameterGroups() const override { return this->model->parameterGroups(); };
+    inline virtual void addParameter(const QString& parameterName, const QString& parameterType, const QString& group) {
+        return this->model->addParameter(parameterName, parameterType, group);
+    };
+    inline virtual void duplicateParameter(const QString& parameterName, const QString& newName, const QString& group) {
+        return this->model->duplicateParameter(parameterName, newName, group);
+    };
+    inline virtual void removeParameter(const QString& parameterName) {
+        return this->model->removeParameter(parameterName);
+    };
+    inline virtual void setGroup(const QString& parameterName, const QString& group) {
+        return this->model->setGroup(parameterName, group);
+    };
+    inline virtual void duplicateGroup(const QString& groupName, const QString& newName) {
+        return this->model->duplicateGroup(groupName, newName);
+    };
+    inline virtual void removeGroup(const QString& groupName) {
+        return this->model->removeGroup(groupName);
+    };
+    inline virtual void renameParameter(const QString& oldName, const QString& newName) {
+        return this->model->renameParameter(oldName, newName);
+    };
+    inline virtual void renameGroup(const QString& oldName, const QString& newName) {
+        return this->model->renameGroup(oldName, newName);
+    };
 
 protected:
     class gnomonAbstractModel *model = nullptr;
