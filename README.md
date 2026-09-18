@@ -7,7 +7,7 @@
 > A computational platform to analyze and simulate the development of living forms in 3D.
 
 <p align="center">
-  <img src="https://github.com/gnomon-inria/gnomon/raw/master/doc/_static/index/gnomon_screenshot_quantification.png)" alt="Gnomon Workspace" width="600" /> 
+  <img src="https://github.com/gnomon-inria/gnomon/raw/master/doc/_static/index/gnomon_screenshot_quantification.png" alt="Gnomon Workspace" width="600" /> 
 </p>
 
 **Gnomon** is an open-source platform that allows to intuitively design reproducible computational pipelines for the analysis and simulation of morphogenesis. It manipulates **3D+t representations of developing living forms**, and lets the user seamlessly interoperate plugins to visualize and process them in dedicated workspaces.
